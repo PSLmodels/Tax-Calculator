@@ -21,6 +21,7 @@ from taxcalc import (
     GrowFactors,
     is_paramtools_format,
 )
+from taxcalc.growdiff import GrowDiff
 
 
 # Test specification and use of simple Parameters-derived class that has
@@ -232,27 +233,22 @@ def test_json_file_contents(tests_path, fname):
                               param.get('indexable', False),
                               param['value_type'])
             failures += fail + '\n'
-        # check that indexed parameters have all known years in value_yrs list
-        # (form_parameters are those whose value is available only on IRS form)
-        form_parameters = []
-        if param.get('indexed', False):
-            defined_years = set(
-                vo["year"] for vo in param["value"]
-            )
-            error = False
-            if pname in long_params:
-                exp_years = long_known_years
-            else:
-                exp_years = known_years
-            if pname in form_parameters:
-                if defined_years != exp_years:
-                    error = True
-            else:
-                if defined_years != exp_years:
-                    error = True
-            if error:
-                msg = 'param:<{}>; len(value_yrs)={}; known_years={}'
-                fail = msg.format(pname, len(defined_years), exp_years)
+    if fname == "consumption.json":
+        o = Consumption()
+    elif fname == "policy_current_law.json":
+        o = Policy()
+    elif fname == "growdiff.json":
+        o = GrowDiff()
+    param_list = []
+    for k, v in o.__dict__.items():
+        if k[0].isupper():  # find parameters by case of first letter
+            param_list.append(k)
+    for param in param_list:
+        for y in known_years:
+            o.set_year(y)
+            if np.isnan(o.__getattribute__(param)).any():
+                msg = 'param:<{}>; not found in year={}'
+                fail = msg.format(param, y)
                 failures += fail + '\n'
     if failures:
         raise ValueError(failures)
