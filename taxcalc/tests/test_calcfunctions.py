@@ -221,3 +221,93 @@ def test_StdDed(test_tuple, expected_value, skip_jit):
     test_value = calcfunctions.StdDed(*test_tuple)
 
     assert np.allclose(test_value, expected_value)
+
+
+def test_AfterTaxIncome(skip_jit):
+    '''
+    Tests the AfterTaxIncome function
+    '''
+    test_tuple = (1000, 5000, 4000)
+    test_value = calcfunctions.AfterTaxIncome(*test_tuple)
+    expected_value = 4000
+    assert np.allclose(test_value, expected_value)
+
+
+def test_ExpandIncome(skip_jit):
+    '''
+    Tests the ExpandIncome function
+    '''
+    test_tuple = (10000, 1000, 500, 100, 200, 300, 400, 20, 500, 50, 250, 10,
+                  20, 30, 40, 60, 70, 80, 1500, 2000, 16380)
+    test_value = calcfunctions.ExpandIncome(*test_tuple)
+    expected_value = 16380
+    assert np.allclose(test_value, expected_value)
+
+
+tuple1 = (1, 1, 2, 0, 0, 1000)
+tuple2 = (0, 1, 2, 0, 0, 1000)
+tuple3 = (1, 1, 2, 100, 0, 1000)
+tuple4 = (0, 2, 1, 100, 200, 1000)
+tuple5 = (0, 1, 3, 100, 300, 1000)
+expected1 = (0, 1000)
+expected2 = (0, 1000)
+expected3 = (0, 1000)
+expected4 = (200, 1200)
+expected5 = (300, 1300)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple1, expected1), (tuple2, expected2), (tuple3, expected3),
+        (tuple4, expected4), (tuple5, expected5)])
+def test_LumpSumTax(test_tuple, expected_value, skip_jit):
+    '''
+    Tests LumpSumTax function
+    '''
+    test_value = calcfunctions.LumpSumTax(*test_tuple)
+    assert np.allclose(test_value, expected_value)
+
+
+FST_AGI_thd_lo_in = [1000000, 1000000, 500000, 1000000, 1000000]
+FST_AGI_thd_hi_in = [2000000, 2000000, 1000000, 2000000, 2000000]
+tuple1 = (1100000, 1, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+          FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple2 = (2100000, 1, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+          FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple3 = (1100000, 1, 1000, 100, 100, 0, FST_AGI_thd_lo_in,
+          FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple4 = (1100000, 2, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+          FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple5 = (2100000, 2, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+          FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple6 = (1100000, 2, 1000, 100, 100, 0, FST_AGI_thd_lo_in,
+          FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple7 = (510000, 3, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+          FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple8 = (1100000, 3, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+          FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple9 = (510000, 3, 1000, 100, 100, 0, FST_AGI_thd_lo_in,
+          FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+expected1 = (10915, 11115, 12915, 11215)
+expected2 = (209150, 209350, 211150, 209450)
+expected3 = (0, 200, 2000, 300)
+expected4 = (10915, 11115, 12915, 11215)
+expected5 = (209150, 209350, 211150, 209450)
+expected6 = (0, 200, 2000, 300)
+expected7 = (1003, 1203, 3003, 1303)
+expected8 = (109150, 109350, 111150, 109450)
+expected9 = (0, 200, 2000, 300)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple1, expected1), (tuple2, expected2), (tuple3, expected3),
+        (tuple4, expected4), (tuple5, expected5), (tuple6, expected6),
+        (tuple7, expected7), (tuple8, expected8), (tuple9, expected9)])
+def test_FairShareTax(test_tuple, expected_value, skip_jit):
+    '''
+    Tests FairShareTax function
+    '''
+    test_value = calcfunctions.FairShareTax(*test_tuple)
+    assert np.allclose(test_value, expected_value)
+
