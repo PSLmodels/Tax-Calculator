@@ -246,7 +246,7 @@ def test_json_file_contents(tests_path, fname):
     for param in param_list:
         for y in known_years:
             o.set_year(y)
-            if np.isnan(o.__getattribute__(param)).any():
+            if np.isnan(getattr(o, param)).any():
                 msg = 'param:<{}>; not found in year={}'
                 fail = msg.format(param, y)
                 failures += fail + '\n'
