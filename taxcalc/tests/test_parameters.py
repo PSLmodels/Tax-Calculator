@@ -240,7 +240,7 @@ def test_json_file_contents(tests_path, fname):
     elif fname == "growdiff.json":
         o = GrowDiff()
     param_list = []
-    for k, v in o.__dict__.items():
+    for k in o: 
         if k[0].isupper():  # find parameters by case of first letter
             param_list.append(k)
     for param in param_list:
