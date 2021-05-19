@@ -310,3 +310,107 @@ def test_FairShareTax(test_tuple, expected_value, skip_jit):
     '''
     test_value = calcfunctions.FairShareTax(*test_tuple)
     assert np.allclose(test_value, expected_value)
+
+
+II_credit_ARPA = [0, 0, 0, 0, 0]
+II_credit_ps_ARPA = [0, 0, 0, 0, 0]
+II_credit_nr_ARPA = [0, 0, 0, 0, 0]
+II_credit_nr_ps_ARPA = [0, 0, 0, 0, 0]
+RRC_ps_ARPA = [75000, 150000, 75000, 112500, 150000]
+RRC_pe_ARPA = [80000, 160000, 80000, 120000, 160000]
+RRC_c_unit_ARPA = [0, 0, 0, 0, 0]
+II_credit_CARES = [0, 0, 0, 0, 0]
+II_credit_ps_CARES = [0, 0, 0, 0, 0]
+II_credit_nr_CARES = [0, 0, 0, 0, 0]
+II_credit_nr_ps_CARES = [0, 0, 0, 0, 0]
+RRC_ps_CARES = [75000, 150000, 75000, 112500, 75000]
+RRC_pe_CARES = [0, 0, 0, 0, 0]
+RRC_c_unit_CARES = [1200, 2400, 1200, 1200, 1200]
+tuple1 = (1, 50000, 1, 0, II_credit_ARPA, II_credit_ps_ARPA, 0,
+          II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
+          RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
+tuple2 = (1, 76000, 1, 0, II_credit_ARPA, II_credit_ps_ARPA, 0,
+          II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
+          RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
+tuple3 = (1, 90000, 1, 0, II_credit_ARPA, II_credit_ps_ARPA, 0,
+          II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
+          RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
+tuple4 = (2, 50000, 3, 1, II_credit_ARPA, II_credit_ps_ARPA, 0,
+          II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
+          RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
+tuple5 = (2, 155000, 4, 2, II_credit_ARPA, II_credit_ps_ARPA, 0,
+          II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
+          RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
+tuple6 = (2, 170000, 4, 2, II_credit_ARPA, II_credit_ps_ARPA, 0,
+          II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
+          RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
+tuple7 = (4, 50000, 2, 1, II_credit_ARPA, II_credit_ps_ARPA, 0,
+          II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
+          RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
+tuple8 = (4, 117000, 1, 0, II_credit_ARPA, II_credit_ps_ARPA, 0,
+          II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
+          RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
+tuple9 = (4, 130000, 1, 0, II_credit_ARPA, II_credit_ps_ARPA, 0,
+          II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
+          RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
+tuple10 = (1, 50000, 1, 0, II_credit_CARES, II_credit_ps_CARES, 0,
+           II_credit_nr_CARES, II_credit_nr_ps_CARES, 0, 0, RRC_ps_CARES,
+           RRC_pe_CARES, 0.05, 500, RRC_c_unit_CARES, 0, 0, 0)
+tuple11 = (1, 97000, 2, 1, II_credit_CARES, II_credit_ps_CARES, 0,
+           II_credit_nr_CARES, II_credit_nr_ps_CARES, 0, 0, RRC_ps_CARES,
+           RRC_pe_CARES, 0.05, 500, RRC_c_unit_CARES, 0, 0, 0)
+tuple12 = (1, 150000, 2, 1, II_credit_CARES, II_credit_ps_CARES, 0,
+           II_credit_nr_CARES, II_credit_nr_ps_CARES, 0, 0, RRC_ps_CARES,
+           RRC_pe_CARES, 0.05, 500, RRC_c_unit_CARES, 0, 0, 0)
+tuple13 = (2, 50000, 4, 2, II_credit_CARES, II_credit_ps_CARES, 0,
+           II_credit_nr_CARES, II_credit_nr_ps_CARES, 0, 0, RRC_ps_CARES,
+           RRC_pe_CARES, 0.05, 500, RRC_c_unit_CARES, 0, 0, 0)
+tuple14 = (2, 160000, 5, 3, II_credit_CARES, II_credit_ps_CARES, 0,
+           II_credit_nr_CARES, II_credit_nr_ps_CARES, 0, 0, RRC_ps_CARES,
+           RRC_pe_CARES, 0.05, 500, RRC_c_unit_CARES, 0, 0, 0)
+tuple15 = (2, 300000, 2, 0, II_credit_CARES, II_credit_ps_CARES, 0,
+           II_credit_nr_CARES, II_credit_nr_ps_CARES, 0, 0, RRC_ps_CARES,
+           RRC_pe_CARES, 0.05, 500, RRC_c_unit_CARES, 0, 0, 0)
+tuple16 = (4, 50000, 3, 2, II_credit_CARES, II_credit_ps_CARES, 0,
+           II_credit_nr_CARES, II_credit_nr_ps_CARES, 0, 0, RRC_ps_CARES,
+           RRC_pe_CARES, 0.05, 500, RRC_c_unit_CARES, 0, 0, 0)
+tuple17 = (4, 130000, 2, 1, II_credit_CARES, II_credit_ps_CARES, 0,
+           II_credit_nr_CARES, II_credit_nr_ps_CARES, 0, 0, RRC_ps_CARES,
+           RRC_pe_CARES, 0.05, 500, RRC_c_unit_CARES, 0, 0, 0)
+tuple18 = (4, 170000, 3, 2, II_credit_CARES, II_credit_ps_CARES, 0,
+           II_credit_nr_CARES, II_credit_nr_ps_CARES, 0, 0, RRC_ps_CARES,
+           RRC_pe_CARES, 0.05, 500, RRC_c_unit_CARES, 0, 0, 0)
+expected1 = (0, 0, 1400)
+expected2 = (0, 0, 1120)
+expected3 = (0, 0, 0)
+expected4 = (0, 0, 4200)
+expected5 = (0, 0, 2800)
+expected6 = (0, 0, 0)
+expected7 = (0, 0, 2800)
+expected8 = (0, 0, 560)
+expected9 = (0, 0, 0)
+expected10 = (0, 0, 1200)
+expected11 = (0, 0, 600)
+expected12 = (0, 0, 0)
+expected13 = (0, 0, 3400)
+expected14 = (0, 0, 3400)
+expected15 = (0, 0, 0)
+expected16 = (0, 0, 2200)
+expected17 = (0, 0, 825)
+expected18 = (0, 0, 0)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple1, expected1), (tuple2, expected2), (tuple3, expected3),
+        (tuple4, expected4), (tuple5, expected5), (tuple6, expected6),
+        (tuple7, expected7), (tuple8, expected8), (tuple9, expected9),
+        (tuple10, expected10), (tuple11, expected11), (tuple12, expected12),
+        (tuple13, expected13), (tuple14, expected14), (tuple15, expected15),
+        (tuple16, expected16), (tuple17, expected17), (tuple18, expected18)])
+def test_PersonalTaxCredit(test_tuple, expected_value, skip_jit):
+    """
+    Tests the PersonalTaxCredit function
+    """
+    test_value = calcfunctions.PersonalTaxCredit(*test_tuple)
+    assert np.allclose(test_value, expected_value)
