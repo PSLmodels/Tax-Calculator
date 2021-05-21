@@ -27,7 +27,6 @@
     - file: about/roadmap
     - file: about/releases
     - file: about/changes
-    - file: about/upgrading
     - file: about/license
 - part: Contributing
   sections:
