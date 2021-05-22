@@ -3242,7 +3242,8 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     rptc: float
         Refundable Payroll Tax Credit for filing unit
     c09200: float
-        Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied
+        Income tax liabilities (including othertaxes) after non-refundable
+        credits are used, but before refundable credits are applied
     payrolltax: float
         Total (employee + employer) payroll tax liability
     eitc: float
