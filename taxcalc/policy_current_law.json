@@ -14980,6 +14980,46 @@
                 "EIC": "3+kids",
                 "value": 0.2106
             }
+                        {
+                "year": 2021,
+                "EIC": "0kids",
+                "value": 0.153
+            },
+            {
+                "year": 2021,
+                "EIC": "1kid",
+                "value": 0.1598
+            },
+            {
+                "year": 2021,
+                "EIC": "2kids",
+                "value": 0.2106
+            },
+            {
+                "year": 2021,
+                "EIC": "3+kids",
+                "value": 0.2106
+            }
+                        {
+                "year": 2022,
+                "EIC": "0kids",
+                "value": 0.0765
+            },
+            {
+                "year": 2022,
+                "EIC": "1kid",
+                "value": 0.1598
+            },
+            {
+                "year": 2022,
+                "EIC": "2kids",
+                "value": 0.2106
+            },
+            {
+                "year": 2022,
+                "EIC": "3+kids",
+                "value": 0.2106
+            }
         ],
         "validators": {
             "range": {
