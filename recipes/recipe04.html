@@ -589,11 +589,11 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 <span class="g g-Whitespace">   </span><span class="mi">1406</span>         <span class="c1"># Set standard deduction to zero, calculate taxes w/o</span>
 
 <span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_taxinc_to_amt</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1362</span>         <span class="n">TaxInc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1363</span>         <span class="n">SchXYZTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">1364</span>         <span class="n">GainsTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1364</span>         <span class="n">GainsTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
 <span class="g g-Whitespace">   </span><span class="mi">1365</span>         <span class="n">AGIsurtax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1366</span>         <span class="n">NetInvIncTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">1366</span>         <span class="n">NetInvIncTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1367</span>         <span class="n">AMT</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1368</span> 
 
 <span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/decorators.py</span> in <span class="ni">wrapper</span><span class="nt">(*args, **kwargs)</span>
 <span class="g g-Whitespace">    </span><span class="mi">323</span>                  <span class="p">{</span><span class="s2">&quot;applied_f&quot;</span><span class="p">:</span> <span class="n">applied_jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
@@ -603,6 +603,41 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 <span class="g g-Whitespace">    </span><span class="mi">327</span> 
 
 <span class="nn">&lt;string&gt;</span> in <span class="ni">hl_func</span><span class="nt">(pm, pf)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/pandas/core/frame.py</span> in <span class="ni">__init__</span><span class="nt">(self, data, index, columns, dtype, copy)</span>
+<span class="g g-Whitespace">    </span><span class="mi">556</span>                 <span class="n">mgr</span> <span class="o">=</span> <span class="n">init_dict</span><span class="p">({</span><span class="n">data</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">data</span><span class="p">},</span> <span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">557</span>             <span class="k">else</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">558</span>                 <span class="n">mgr</span> <span class="o">=</span> <span class="n">init_ndarray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">559</span> 
+<span class="g g-Whitespace">    </span><span class="mi">560</span>         <span class="c1"># For data is list-like, or Iterable (will consume into list)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/pandas/core/internals/construction.py</span> in <span class="ni">init_ndarray</span><span class="nt">(values, index, columns, dtype, copy)</span>
+<span class="g g-Whitespace">    </span><span class="mi">204</span> 
+<span class="g g-Whitespace">    </span><span class="mi">205</span>     <span class="c1"># _prep_ndarray ensures that values.ndim == 2 at this point</span>
+<span class="ne">--&gt; </span><span class="mi">206</span>     <span class="n">index</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">_get_axes</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">207</span>         <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span>
+<span class="g g-Whitespace">    </span><span class="mi">208</span>     <span class="p">)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/pandas/core/internals/construction.py</span> in <span class="ni">_get_axes</span><span class="nt">(N, K, index, columns)</span>
+<span class="g g-Whitespace">    </span><span class="mi">464</span>         <span class="n">columns</span> <span class="o">=</span> <span class="n">ibase</span><span class="o">.</span><span class="n">default_index</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">465</span>     <span class="k">else</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">466</span>         <span class="n">columns</span> <span class="o">=</span> <span class="n">ensure_index</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">467</span>     <span class="k">return</span> <span class="n">index</span><span class="p">,</span> <span class="n">columns</span>
+<span class="g g-Whitespace">    </span><span class="mi">468</span> 
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/pandas/core/indexes/base.py</span> in <span class="ni">ensure_index</span><span class="nt">(index_like, copy)</span>
+<span class="g g-Whitespace">   </span><span class="mi">5915</span>             <span class="n">index_like</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">index_like</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">5916</span> 
+<span class="ne">-&gt; </span><span class="mi">5917</span>     <span class="k">return</span> <span class="n">Index</span><span class="p">(</span><span class="n">index_like</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">5918</span> 
+<span class="g g-Whitespace">   </span><span class="mi">5919</span> 
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/pandas/core/indexes/base.py</span> in <span class="ni">__new__</span><span class="nt">(cls, data, dtype, copy, name, tupleize_cols, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">252</span>     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Index&quot;</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">253</span> 
+<span class="ne">--&gt; </span><span class="mi">254</span>         <span class="kn">from</span> <span class="nn">pandas.core.indexes.range</span> <span class="kn">import</span> <span class="n">RangeIndex</span>
+<span class="g g-Whitespace">    </span><span class="mi">255</span> 
+<span class="g g-Whitespace">    </span><span class="mi">256</span>         <span class="n">name</span> <span class="o">=</span> <span class="n">maybe_extract_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>

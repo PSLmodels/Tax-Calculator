@@ -2942,10 +2942,10 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">PersonalTaxCredit</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">PersonalTaxCredit</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span>
                       <span class="n">II_credit</span><span class="p">,</span> <span class="n">II_credit_ps</span><span class="p">,</span> <span class="n">II_credit_prt</span><span class="p">,</span>
                       <span class="n">II_credit_nr</span><span class="p">,</span> <span class="n">II_credit_nr_ps</span><span class="p">,</span> <span class="n">II_credit_nr_prt</span><span class="p">,</span>
-                      <span class="n">RRC_c</span><span class="p">,</span> <span class="n">RRC_ps</span><span class="p">,</span> <span class="n">RRC_pe</span><span class="p">,</span>
+                      <span class="n">RRC_c</span><span class="p">,</span> <span class="n">RRC_ps</span><span class="p">,</span> <span class="n">RRC_pe</span><span class="p">,</span> <span class="n">RRC_prt</span><span class="p">,</span> <span class="n">RRC_c_kids</span><span class="p">,</span> <span class="n">RRC_c_unit</span><span class="p">,</span>
                       <span class="n">personal_refundable_credit</span><span class="p">,</span>
                       <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
                       <span class="n">recovery_rebate_credit</span><span class="p">):</span>
@@ -2959,6 +2959,10 @@
 <span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
 <span class="sd">    c00100: float</span>
 <span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    XTOT: int</span>
+<span class="sd">        Total number of exemptions for filing unit</span>
+<span class="sd">    nu18: int</span>
+<span class="sd">        Number of people under 18 years old in the filing unit</span>
 <span class="sd">    II_credit: list</span>
 <span class="sd">        Personal refundable credit maximum amount</span>
 <span class="sd">    II_credit_ps: list</span>
@@ -2971,6 +2975,18 @@
 <span class="sd">        Personal nonrefundable credit phaseout start</span>
 <span class="sd">    II_credit_nr_prt: float</span>
 <span class="sd">        Personal nonrefundable credit phaseout rate</span>
+<span class="sd">    RRC_c: float</span>
+<span class="sd">        Maximum amount of Recovery Rebate Credit</span>
+<span class="sd">    RRC_ps: list</span>
+<span class="sd">        Recovery Rebate Credit phase out start</span>
+<span class="sd">    RRC_pe: list</span>
+<span class="sd">        Recovery Rebate Credit phase out end</span>
+<span class="sd">    RRC_prt: float</span>
+<span class="sd">        Recovery Rebate Credit phase out rate</span>
+<span class="sd">    RRC_c_kids: float</span>
+<span class="sd">        Credit amount per child as part of the Recovery Rebate Credit</span>
+<span class="sd">    RRC_c_unit: list</span>
+<span class="sd">        Maximum credit for filing unit as part of the Recovery Rebate Credit</span>
 <span class="sd">    personal_refundable_credit: float</span>
 <span class="sd">        Personal refundable credit</span>
 <span class="sd">    personal_nonrefundable_credit: float</span>
@@ -2982,6 +2998,8 @@
 <span class="sd">        Personal refundable credit</span>
 <span class="sd">    personal_nonrefundable_credit: float</span>
 <span class="sd">        Personal nonrefundable credit</span>
+<span class="sd">    personal_rebate_credit: float</span>
+<span class="sd">        Personal rebate credit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># calculate personal refundable credit amount with phase-out</span>
     <span class="n">personal_refundable_credit</span> <span class="o">=</span> <span class="n">II_credit</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
@@ -2995,15 +3013,17 @@
         <span class="n">pout</span> <span class="o">=</span> <span class="n">II_credit_nr_prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">II_credit_nr_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">fully_phasedout</span> <span class="o">=</span> <span class="n">personal_nonrefundable_credit</span> <span class="o">-</span> <span class="n">pout</span>
         <span class="n">personal_nonrefundable_credit</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">fully_phasedout</span><span class="p">)</span>
-    <span class="c1"># calculate Recovery Rebate Credit from ARPA 2021</span>
+    <span class="c1"># calculate Recovery Rebate Credit from CARES Act 2020 and/or ARPA 2021</span>
     <span class="k">if</span> <span class="n">c00100</span> <span class="o">&lt;</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
         <span class="n">recovery_rebate_credit</span> <span class="o">=</span> <span class="n">RRC_c</span> <span class="o">*</span> <span class="n">XTOT</span>
-    <span class="k">elif</span> <span class="n">c00100</span> <span class="o">&lt;</span> <span class="n">RRC_pe</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-        <span class="n">prt</span> <span class="o">=</span> <span class="p">((</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">/</span>
+        <span class="n">recovery_rebate_credit</span> <span class="o">+=</span> <span class="n">RRC_c_unit</span><span class="p">[</span><span class="n">MARS</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">RRC_c_kids</span> <span class="o">*</span> <span class="n">nu18</span>
+    <span class="k">elif</span> <span class="n">c00100</span> <span class="o">&lt;</span> <span class="n">RRC_pe</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">prt</span> <span class="o">=</span> <span class="p">((</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span><span class="o">/</span>
                <span class="p">(</span><span class="n">RRC_pe</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
         <span class="n">recovery_rebate_credit</span> <span class="o">=</span> <span class="n">RRC_c</span> <span class="o">*</span> <span class="n">XTOT</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">prt</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">recovery_rebate_credit</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">recovery_rebate_credit</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">RRC_c_unit</span><span class="p">[</span><span class="n">MARS</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">RRC_c_kids</span> <span class="o">*</span>
+                                  <span class="n">nu18</span> <span class="o">-</span> <span class="n">RRC_prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
             <span class="n">recovery_rebate_credit</span><span class="p">)</span>
 
