@@ -141,10 +141,14 @@ def pytest_sessionfinish(session):
     tests_path = os.path.abspath(os.path.dirname(__file__))
 
     new_stats_df = get_session_results_df(session)
+    # move test_id from index into unique column
+    new_stats_df.reset_index(inplace=True)
     old_stats_df = pandas.read_csv(os.path.join(tests_path, 'test_stats_benchmark.csv'))
 
-    merge_df = new_stats_df.merge(old_stats_df, on=['test_id'], how='inner')
+    merge_df = new_stats_df.merge(old_stats_df, on=['test_id'], how='left')
+    # time diff for new tests is set to 0
     merge_df['time_diff'] = merge_df['duration_ms_x'] - merge_df['duration_ms_y']
+    merge_df['time_diff'] = merge_df['time_diff'].fillna(0)
 
     tol = 1.0 # choose tolerance in seconds
     tol *= 1000

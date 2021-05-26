@@ -63,7 +63,7 @@ def test_agg(tests_path, cps_fullsample):
         raise ValueError(msg)
     # create aggregate diagnostic table using unweighted sub-sample of records
     rn_seed = 180  # to ensure sub-sample is always the same
-    subfrac = 0.03  # sub-sample fraction
+    subfrac = 0.07# 0.03  # sub-sample fraction
     subsample = cps_fullsample.sample(frac=subfrac, random_state=rn_seed)
     recs_subsample = Records.cps_constructor(data=subsample)
     calc_subsample = Calculator(policy=baseline_policy, records=recs_subsample)
@@ -71,6 +71,8 @@ def test_agg(tests_path, cps_fullsample):
     adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
+    print('taxes_submsampe = ', taxes_subsample)
+    print('TAXES full sample = ', taxes_fullsample)
     msg = ''
     for cyr in range(calc_start_year, calc_start_year + nyrs):
         if cyr == calc_start_year:
