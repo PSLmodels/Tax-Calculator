@@ -721,7 +721,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `CDCC_ps`  
-_Description:_ For taxpayers with AGI over this amount, the rate of the credit credit is reduced by one percentage point each $2000 of AGI over this amount.  
+_Description:_ For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -738,7 +738,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `CDCC_ps2`  
-_Description:_ For taxpayers with AGI over this amount, the rate of the credit credit is reduced by one percentage point each $2000 of AGI over this amount.  
+_Description:_ For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.  
 _Notes:_ For 2021, the American Rescue Plan Act set this to $400,000. In other years, this phase-out does not apply.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
@@ -791,7 +791,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_prt`  
 _Description:_ The CDCC credit rate is reduced by this many percentage points for each dollary of AGI over the phase-out thresholds.  
-_Notes:_ In the law, the credit rate is reduced by 1 percentage point for every $2000 of AGI over the limit.  
+_Notes:_ In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
