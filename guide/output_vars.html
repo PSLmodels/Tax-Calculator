@@ -782,6 +782,15 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cdcc-refund">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     CDCC_refund
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#c07200">
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -1110,6 +1119,15 @@
    <code class="docutils literal notranslate">
     <span class="pre">
      personal_refundable_credit
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#recovery-rebate-credit">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     recovery_rebate_credit
     </span>
    </code>
   </a>
@@ -1631,7 +1649,15 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 </div>
 <div class="section" id="c07180">
 <h2><code class="docutils literal notranslate"><span class="pre">c07180</span></code><a class="headerlink" href="#c07180" title="Permalink to this headline">¶</a></h2>
-<p><em>Description</em>: Credit for child and dependent care expenses from Form 2441<br />
+<p><em>Description</em>: Nonrefundable credit for child and dependent care expenses from Form 2441<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 48<br />
+2014-2016: 1040 line 49</p>
+</div>
+<div class="section" id="cdcc-refund">
+<h2><code class="docutils literal notranslate"><span class="pre">CDCC_refund</span></code><a class="headerlink" href="#cdcc-refund" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Refundable credit for child and dependent care expenses from Form 2441<br />
 <em>Datatype</em>: float<br />
 <em>IRS Form Location:</em><br />
 2013-2013: 1040 line 48<br />
@@ -1897,6 +1923,13 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <div class="section" id="personal-refundable-credit">
 <h2><code class="docutils literal notranslate"><span class="pre">personal_refundable_credit</span></code><a class="headerlink" href="#personal-refundable-credit" title="Permalink to this headline">¶</a></h2>
 <p><em>Description</em>: Personal refundable credit<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="recovery-rebate-credit">
+<h2><code class="docutils literal notranslate"><span class="pre">recovery_rebate_credit</span></code><a class="headerlink" href="#recovery-rebate-credit" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Recovery Rebate Credit, from American Rescue Plan Act of 2021<br />
 <em>Datatype</em>: float<br />
 <em>IRS Form Location:</em><br />
 2013-20??: calculated variable</p>

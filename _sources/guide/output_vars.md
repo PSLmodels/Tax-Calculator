@@ -272,7 +272,15 @@ _IRS Form Location:_
 
 
 ##  `c07180`  
-_Description_: Credit for child and dependent care expenses from Form 2441  
+_Description_: Nonrefundable credit for child and dependent care expenses from Form 2441  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-2013: 1040 line 48  
+2014-2016: 1040 line 49  
+
+
+##  `CDCC_refund`  
+_Description_: Refundable credit for child and dependent care expenses from Form 2441  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2013: 1040 line 48  
@@ -538,6 +546,13 @@ _IRS Form Location:_
 
 ##  `personal_refundable_credit`  
 _Description_: Personal refundable credit  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `recovery_rebate_credit`  
+_Description_: Recovery Rebate Credit, from American Rescue Plan Act of 2021  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-20??: calculated variable  

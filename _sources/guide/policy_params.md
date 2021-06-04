@@ -153,10 +153,10 @@ _Out-of-Range Action:_ error
 
 ## Social Security Taxability
 
-### Threshold For Social Security Benefit Taxability 1
+### Social Security Benefit Taxability
 
 ####  `SS_thd50`  
-_Description:_ The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.  
+_Description:_ The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to rate 1 of their Social Security benefit will be subject to tax under current law.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -173,10 +173,25 @@ _Valid Range:_ min = 0 and max = SS_thd85
 _Out-of-Range Action:_ error  
 
 
-### Threshold For Social Security Benefit Taxability 2
+####  `SS_percentage1`  
+_Description:_ Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.5  
+2014: 0.5  
+2015: 0.5  
+2016: 0.5  
+2017: 0.5  
+2018: 0.5  
+2019: 0.5  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error  
+
 
 ####  `SS_thd85`  
-_Description:_ The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to 85% of their Social Security benefit will be subject to tax under current law.  
+_Description:_ The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to rate 2 of their Social Security benefit will be subject to tax under current law.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -190,6 +205,23 @@ _Known Values:_
 2018: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]  
 2019: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]  
 _Valid Range:_ min = SS_thd50 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
+####  `SS_percentage2`  
+_Description:_ Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.85  
+2014: 0.85  
+2015: 0.85  
+2016: 0.85  
+2017: 0.85  
+2018: 0.85  
+2019: 0.85  
+_Valid Range:_ min = 0 and max = 1  
 _Out-of-Range Action:_ error  
 
 
@@ -547,7 +579,7 @@ _Known Values:_
 2023: [267454.99, 534909.98, 267454.99, 267454.99, 534909.98]  
 2024: [272616.87, 545233.74, 272616.87, 272616.87, 545233.74]  
 2025: [278069.21, 556138.41, 278069.21, 278069.21, 556138.41]  
-2026: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
+2026: [283535.22, 567070.42, 283535.22, 283535.22, 567070.42]  
 _Valid Range:_ min = 0 and max = 9e+99  
 _Out-of-Range Action:_ error  
 
@@ -629,11 +661,11 @@ _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True
 _Value Type:_ float  
 _Known Values:_  
  for: [single, mjoint, mseparate, headhh, widow]  
-2013: [1500.0, 1200.0, 1200.0, 1500.0, 1500.0]  
-2014: [1550.0, 1200.0, 1200.0, 1550.0, 1550.0]  
-2015: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]  
-2016: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]  
-2017: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]  
+2013: [1500.0, 1200.0, 1200.0, 1500.0, 1200.0]  
+2014: [1550.0, 1200.0, 1200.0, 1550.0, 1200.0]  
+2015: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]  
+2016: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]  
+2017: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]  
 2018: [1600.0, 1300.0, 1300.0, 1600.0, 1300.0]  
 2019: [1650.0, 1300.0, 1300.0, 1650.0, 1300.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
@@ -672,7 +704,7 @@ _Out-of-Range Action:_ error
 ### Child And Dependent Care
 
 ####  `CDCC_c`  
-_Description:_ The maximum amount of credit allowed for each qualifying dependent.  
+_Description:_ The maximum amount of expenses allowed for each qualifying dependent.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -684,12 +716,12 @@ _Known Values:_
 2017: 3000.0  
 2018: 3000.0  
 2019: 3000.0  
-_Valid Range:_ min = 0 and max = 3000  
+_Valid Range:_ min = 0 and max = 9e+99  
 _Out-of-Range Action:_ error  
 
 
 ####  `CDCC_ps`  
-_Description:_ For taxpayers with AGI over this amount, the credit is reduced by one percentage point each $2000 of AGI over this amount.  
+_Description:_ For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -705,8 +737,26 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error  
 
 
+####  `CDCC_ps2`  
+_Description:_ For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.  
+_Notes:_ For 2021, the American Rescue Plan Act set this to $400,000. In other years, this phase-out does not apply.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 9e+99  
+2014: 9e+99  
+2015: 9e+99  
+2016: 9e+99  
+2017: 9e+99  
+2018: 9e+99  
+2019: 9e+99  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
 ####  `CDCC_crt`  
-_Description:_ The maximum percentage rate in the AGI phaseout; this percentage rate decreases as AGI rises above the CDCC_ps level.  
+_Description:_ The maximum percentage rate for the CDCC; this percentage rate decreases as AGI rises above the CDCC_ps level.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -719,6 +769,58 @@ _Known Values:_
 2018: 35.0  
 2019: 35.0  
 _Valid Range:_ min = 0 and max = 100  
+_Out-of-Range Action:_ error  
+
+
+####  `CDCC_frt`  
+_Description:_ The minimum percentage rate for the first AGI phaseout of the CDCC.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 20.0  
+2014: 20.0  
+2015: 20.0  
+2016: 20.0  
+2017: 20.0  
+2018: 20.0  
+2019: 20.0  
+_Valid Range:_ min = 0 and max = 100  
+_Out-of-Range Action:_ error  
+
+
+####  `CDCC_prt`  
+_Description:_ The CDCC credit rate is reduced by this many percentage points for each dollary of AGI over the phase-out thresholds.  
+_Notes:_ In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0005  
+2014: 0.0005  
+2015: 0.0005  
+2016: 0.0005  
+2017: 0.0005  
+2018: 0.0005  
+2019: 0.0005  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error  
+
+
+####  `CDCC_refundable`  
+_Description:_ If true, the CDCC is fully refundable.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ bool  
+_Known Values:_  
+2013: False  
+2014: False  
+2015: False  
+2016: False  
+2017: False  
+2018: False  
+2019: False  
+_Valid Range:_ min = False and max = True  
 _Out-of-Range Action:_ error  
 
 
@@ -1105,6 +1207,41 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error  
 
 
+####  `CTC_include17`  
+_Description:_ If true, children eligible for the child tax credit include those of age 17.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ bool  
+_Known Values:_  
+2013: False  
+2014: False  
+2015: False  
+2016: False  
+2017: False  
+2018: False  
+2019: False  
+_Valid Range:_ min = False and max = True  
+_Out-of-Range Action:_ error  
+
+
+####  `CTC_refundable`  
+_Description:_ If true, the child tax credit is made fully refundable.  
+_Notes:_ If true, the Additional Child Tax Credit is not used.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ bool  
+_Known Values:_  
+2013: False  
+2014: False  
+2015: False  
+2016: False  
+2017: False  
+2018: False  
+2019: False  
+_Valid Range:_ min = False and max = True  
+_Out-of-Range Action:_ error  
+
+
 ####  `CTC_ps`  
 _Description:_ Child tax credit begins to decrease when MAGI is above this level; read descriptions of the dependent credit amounts for how they phase out when MAGI is above this level.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
@@ -1345,14 +1482,14 @@ _Known Values:_
 2017: 0.5  
 2018: 0.6  
 2019: 0.6  
-2020: 0.6  
+2020: 1.0  
 2021: 0.6  
 2022: 0.6  
 2023: 0.6  
 2024: 0.6  
 2025: 0.6  
 2026: 0.5  
-_Valid Range:_ min = 0 and max = 0.6  
+_Valid Range:_ min = 0 and max = 1.0  
 _Out-of-Range Action:_ warn  
 
 
@@ -2923,6 +3060,58 @@ _Valid Range:_ min = 0 and max = 1
 _Out-of-Range Action:_ error  
 
 
+####  `PT_qbid_limit_switch`  
+_Description:_ A value of True imposes wage/capital limitations. Note that neither the PUF nor CPS have data on wage expenses or capital income, and therefore all taxpayers are fully subject to the QBID limitations. A value of False assumes sufficient wage and capital income to avoid QBID limitations.  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ bool  
+_Known Values:_  
+2013: True  
+2014: True  
+2015: True  
+2016: True  
+2017: True  
+2018: True  
+2019: True  
+_Valid Range:_ min = False and max = True  
+_Out-of-Range Action:_ error  
+
+
+####  `PT_qbid_ps`  
+_Description:_ QBID begins to decrease when pre-QBID taxable income is above this level.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
+_Value Type:_ float  
+_Known Values:_  
+ for: [single, mjoint, mseparate, headhh, widow]  
+2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
+2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
+2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
+2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
+2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
+2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
+2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
+####  `PT_qbid_prt`  
+_Description:_ QBID will decrease at this rate for each dollar of taxable income exceeding QBID phaseout start.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0  
+2014: 0.0  
+2015: 0.0  
+2016: 0.0  
+2017: 0.0  
+2018: 0.0  
+2019: 0.0  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
 ### Regular: Non-AMT, Non-Pass-Through
 
 ####  `II_rt1`  
@@ -3763,6 +3952,117 @@ _Valid Range:_ min = 0 and max = 1
 _Out-of-Range Action:_ error  
 
 
+####  `RRC_c`  
+_Description:_ This credit amount is fully refundable and is phased out based on AGI. It is available for each person in the filing unit, except for dependent filers.  
+_Notes:_ Enacted for 2021 as part of the American Rescue Plan Act  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0  
+2014: 0.0  
+2015: 0.0  
+2016: 0.0  
+2017: 0.0  
+2018: 0.0  
+2019: 0.0  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
+####  `RRC_ps`  
+_Description:_ The Recovery Rebate Credit amount will be reduced for taxpayers with AGI higher than this threshold level.  
+_Notes:_ Enacted for 2021 as part of the American Rescue Plan Act  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+ for: [single, mjoint, mseparate, headhh, widow]  
+2013: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2014: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2015: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2016: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2017: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
+####  `RRC_pe`  
+_Description:_ The Recovery Rebate Credit amount will be fully phased out for taxpayers with AGI higher than this threshold level.  
+_Notes:_ Enacted for 2021 as part of the American Rescue Plan Act  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+ for: [single, mjoint, mseparate, headhh, widow]  
+2013: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2014: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2015: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2016: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2017: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
+####  `RRC_prt`  
+_Description:_ The Recovery Rebate Credit will be phased out at this rate for those with income above the phase out start and below the phase out end.  
+_Notes:_ Used in 2020 as part of the CARES Act  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0  
+2014: 0.0  
+2015: 0.0  
+2016: 0.0  
+2017: 0.0  
+2018: 0.0  
+2019: 0.0  
+_Valid Range:_ min = 0.0 and max = 1.0  
+_Out-of-Range Action:_ warn  
+
+
+####  `RRC_c_unit`  
+_Description:_ The maximum credit awarded as part of the Recovery Rebate Credit.  
+_Notes:_ Used in 2020 as part of the CARES Act  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+ for: [single, mjoint, mseparate, headhh, widow]  
+2013: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2014: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2015: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2016: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2017: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
+_Valid Range:_ min = 0.0 and max = 9e+99  
+_Out-of-Range Action:_ warn  
+
+
+####  `RRC_c_kids`  
+_Description:_ The credit awarded for each child in an eligible family as part of the Recovery Rebate Credit.  
+_Notes:_ Used in 2020 as part of the CARES Act  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0  
+2014: 0.0  
+2015: 0.0  
+2016: 0.0  
+2017: 0.0  
+2018: 0.0  
+2019: 0.0  
+_Valid Range:_ min = 0.0 and max = 9e+99  
+_Out-of-Range Action:_ warn  
+
+
 ### Refundable Payroll Tax Credit
 
 ####  `RPTC_c`  
@@ -4181,40 +4481,6 @@ _Out-of-Range Action:_ error
 
 ## Other Parameters (not in Tax-Brain webapp)
 
-####  `SS_percentage1`  
-_Description:_ Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
-_Value Type:_ float  
-_Known Values:_  
-2013: 0.5  
-2014: 0.5  
-2015: 0.5  
-2016: 0.5  
-2017: 0.5  
-2018: 0.5  
-2019: 0.5  
-_Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error  
-
-
-####  `SS_percentage2`  
-_Description:_ Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
-_Value Type:_ float  
-_Known Values:_  
-2013: 0.85  
-2014: 0.85  
-2015: 0.85  
-2016: 0.85  
-2017: 0.85  
-2018: 0.85  
-2019: 0.85  
-_Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error  
-
-
 ####  `II_em_ps`  
 _Description:_ If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
@@ -4251,7 +4517,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `STD_allow_charity_ded_nonitemizers`  
-_Description:_ Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.  
+_Description:_ Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here as well as a max on the dollar amount for total charitable deductions for those taking the standard deduction.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4264,6 +4530,59 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
+_Out-of-Range Action:_ error  
+
+
+####  `STD_charity_ded_nonitemizers_max`  
+_Description:_ Puts a ceiling on the dollar of amount of charitable contributions deductions for taxpayers who take the standard deduction.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0  
+2014: 0.0  
+2015: 0.0  
+2016: 0.0  
+2017: 0.0  
+2018: 0.0  
+2019: 0.0  
+_Valid Range:_ min = 0.0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
+####  `UI_em`  
+_Description:_ The amount of Unemployment Insurance benefits excluded from taxable income.  
+_Notes:_ Enacted retroactively for 2020 by the American Rescue Plan Act of 2021  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0  
+2014: 0.0  
+2015: 0.0  
+2016: 0.0  
+2017: 0.0  
+2018: 0.0  
+2019: 0.0  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
+####  `UI_thd`  
+_Description:_ Unemployment Insurance exemption is eliminated when AGI minus Unemployment Insurance goes beyond this threshold.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+ for: [single, mjoint, mseparate, headhh, widow]  
+2013: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2014: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2015: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2016: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2017: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
+_Valid Range:_ min = 0 and max = 9e+99  
 _Out-of-Range Action:_ error  
 
 

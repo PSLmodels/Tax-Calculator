@@ -49,6 +49,8 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Input variables" href="input_vars.html" />
@@ -559,8 +561,8 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#threshold-for-social-security-benefit-taxability-1">
-     Threshold For Social Security Benefit Taxability 1
+    <a class="reference internal nav-link" href="#social-security-benefit-taxability">
+     Social Security Benefit Taxability
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
@@ -572,18 +574,29 @@
        </code>
       </a>
      </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#threshold-for-social-security-benefit-taxability-2">
-     Threshold For Social Security Benefit Taxability 2
-    </a>
-    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ss-percentage1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SS_percentage1
+        </span>
+       </code>
+      </a>
+     </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#ss-thd85">
        <code class="docutils literal notranslate">
         <span class="pre">
          SS_thd85
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ss-percentage2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SS_percentage2
         </span>
        </code>
       </a>
@@ -905,10 +918,46 @@
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-ps2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_ps2
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#cdcc-crt">
        <code class="docutils literal notranslate">
         <span class="pre">
          CDCC_crt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-frt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_frt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_prt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-refundable">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_refundable
         </span>
        </code>
       </a>
@@ -1124,6 +1173,24 @@
        <code class="docutils literal notranslate">
         <span class="pre">
          CTC_c_under6_bonus
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-include17">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_include17
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-refundable">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_refundable
         </span>
        </code>
       </a>
@@ -2076,6 +2143,33 @@
        </code>
       </a>
      </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-limit-switch">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_limit_switch
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_prt
+        </span>
+       </code>
+      </a>
+     </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -2503,6 +2597,60 @@
        </code>
       </a>
      </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-pe">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_pe
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_prt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-c-unit">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_c_unit
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-c-kids">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_c_kids
+        </span>
+       </code>
+      </a>
+     </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -2790,24 +2938,6 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ss-percentage1">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       SS_percentage1
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ss-percentage2">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       SS_percentage2
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#ii-em-ps">
      <code class="docutils literal notranslate">
       <span class="pre">
@@ -2830,6 +2960,33 @@
      <code class="docutils literal notranslate">
       <span class="pre">
        STD_allow_charity_ded_nonitemizers
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#std-charity-ded-nonitemizers-max">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       STD_charity_ded_nonitemizers_max
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ui-em">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       UI_em
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ui-thd">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       UI_thd
       </span>
      </code>
     </a>
@@ -3086,11 +3243,11 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </div>
 <div class="section" id="social-security-taxability">
 <h2>Social Security Taxability<a class="headerlink" href="#social-security-taxability" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="threshold-for-social-security-benefit-taxability-1">
-<h3>Threshold For Social Security Benefit Taxability 1<a class="headerlink" href="#threshold-for-social-security-benefit-taxability-1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="social-security-benefit-taxability">
+<h3>Social Security Benefit Taxability<a class="headerlink" href="#social-security-benefit-taxability" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="ss-thd50">
 <h4><code class="docutils literal notranslate"><span class="pre">SS_thd50</span></code><a class="headerlink" href="#ss-thd50" title="Permalink to this headline">¶</a></h4>
-<p><em>Description:</em> The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.<br />
+<p><em>Description:</em> The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to rate 1 of their Social Security benefit will be subject to tax under current law.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> float<br />
@@ -3106,12 +3263,26 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Valid Range:</em> min = 0 and max = SS_thd85<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
+<div class="section" id="ss-percentage1">
+<h4><code class="docutils literal notranslate"><span class="pre">SS_percentage1</span></code><a class="headerlink" href="#ss-percentage1" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.5<br />
+2014: 0.5<br />
+2015: 0.5<br />
+2016: 0.5<br />
+2017: 0.5<br />
+2018: 0.5<br />
+2019: 0.5<br />
+<em>Valid Range:</em> min = 0 and max = 1<br />
+<em>Out-of-Range Action:</em> error</p>
 </div>
-<div class="section" id="threshold-for-social-security-benefit-taxability-2">
-<h3>Threshold For Social Security Benefit Taxability 2<a class="headerlink" href="#threshold-for-social-security-benefit-taxability-2" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="ss-thd85">
 <h4><code class="docutils literal notranslate"><span class="pre">SS_thd85</span></code><a class="headerlink" href="#ss-thd85" title="Permalink to this headline">¶</a></h4>
-<p><em>Description:</em> The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to 85% of their Social Security benefit will be subject to tax under current law.<br />
+<p><em>Description:</em> The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to rate 2 of their Social Security benefit will be subject to tax under current law.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> float<br />
@@ -3125,6 +3296,23 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 2018: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]<br />
 2019: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]<br />
 <em>Valid Range:</em> min = SS_thd50 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="ss-percentage2">
+<h4><code class="docutils literal notranslate"><span class="pre">SS_percentage2</span></code><a class="headerlink" href="#ss-percentage2" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.85<br />
+2014: 0.85<br />
+2015: 0.85<br />
+2016: 0.85<br />
+2017: 0.85<br />
+2018: 0.85<br />
+2019: 0.85<br />
+<em>Valid Range:</em> min = 0 and max = 1<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
 </div>
@@ -3486,7 +3674,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 2023: [267454.99, 534909.98, 267454.99, 267454.99, 534909.98]<br />
 2024: [272616.87, 545233.74, 272616.87, 272616.87, 545233.74]<br />
 2025: [278069.21, 556138.41, 278069.21, 278069.21, 556138.41]<br />
-2026: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2026: [283535.22, 567070.42, 283535.22, 283535.22, 567070.42]<br />
 <em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
@@ -3574,11 +3762,11 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Value Type:</em> float<br />
 <em>Known Values:</em><br />
 for: [single, mjoint, mseparate, headhh, widow]<br />
-2013: [1500.0, 1200.0, 1200.0, 1500.0, 1500.0]<br />
-2014: [1550.0, 1200.0, 1200.0, 1550.0, 1550.0]<br />
-2015: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]<br />
-2016: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]<br />
-2017: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]<br />
+2013: [1500.0, 1200.0, 1200.0, 1500.0, 1200.0]<br />
+2014: [1550.0, 1200.0, 1200.0, 1550.0, 1200.0]<br />
+2015: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]<br />
+2016: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]<br />
+2017: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]<br />
 2018: [1600.0, 1300.0, 1300.0, 1600.0, 1300.0]<br />
 2019: [1650.0, 1300.0, 1300.0, 1650.0, 1300.0]<br />
 <em>Valid Range:</em> min = 0 and max = 9e+99<br />
@@ -3620,7 +3808,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <h3>Child And Dependent Care<a class="headerlink" href="#child-and-dependent-care" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="cdcc-c">
 <h4><code class="docutils literal notranslate"><span class="pre">CDCC_c</span></code><a class="headerlink" href="#cdcc-c" title="Permalink to this headline">¶</a></h4>
-<p><em>Description:</em> The maximum amount of credit allowed for each qualifying dependent.<br />
+<p><em>Description:</em> The maximum amount of expenses allowed for each qualifying dependent.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> float<br />
@@ -3632,12 +3820,12 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 2017: 3000.0<br />
 2018: 3000.0<br />
 2019: 3000.0<br />
-<em>Valid Range:</em> min = 0 and max = 3000<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
 <div class="section" id="cdcc-ps">
 <h4><code class="docutils literal notranslate"><span class="pre">CDCC_ps</span></code><a class="headerlink" href="#cdcc-ps" title="Permalink to this headline">¶</a></h4>
-<p><em>Description:</em> For taxpayers with AGI over this amount, the credit is reduced by one percentage point each $2000 of AGI over this amount.<br />
+<p><em>Description:</em> For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> float<br />
@@ -3652,9 +3840,27 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
+<div class="section" id="cdcc-ps2">
+<h4><code class="docutils literal notranslate"><span class="pre">CDCC_ps2</span></code><a class="headerlink" href="#cdcc-ps2" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each <span class="math notranslate nohighlight">\(2,000 of AGI over this amount.  
+_Notes:_ For 2021, the American Rescue Plan Act set this to \)</span>400,000. In other years, this phase-out does not apply.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 9e+99<br />
+2014: 9e+99<br />
+2015: 9e+99<br />
+2016: 9e+99<br />
+2017: 9e+99<br />
+2018: 9e+99<br />
+2019: 9e+99<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
 <div class="section" id="cdcc-crt">
 <h4><code class="docutils literal notranslate"><span class="pre">CDCC_crt</span></code><a class="headerlink" href="#cdcc-crt" title="Permalink to this headline">¶</a></h4>
-<p><em>Description:</em> The maximum percentage rate in the AGI phaseout; this percentage rate decreases as AGI rises above the CDCC_ps level.<br />
+<p><em>Description:</em> The maximum percentage rate for the CDCC; this percentage rate decreases as AGI rises above the CDCC_ps level.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> float<br />
@@ -3667,6 +3873,58 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 2018: 35.0<br />
 2019: 35.0<br />
 <em>Valid Range:</em> min = 0 and max = 100<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="cdcc-frt">
+<h4><code class="docutils literal notranslate"><span class="pre">CDCC_frt</span></code><a class="headerlink" href="#cdcc-frt" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> The minimum percentage rate for the first AGI phaseout of the CDCC.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 20.0<br />
+2014: 20.0<br />
+2015: 20.0<br />
+2016: 20.0<br />
+2017: 20.0<br />
+2018: 20.0<br />
+2019: 20.0<br />
+<em>Valid Range:</em> min = 0 and max = 100<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="cdcc-prt">
+<h4><code class="docutils literal notranslate"><span class="pre">CDCC_prt</span></code><a class="headerlink" href="#cdcc-prt" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> The CDCC credit rate is reduced by this many percentage points for each dollary of AGI over the phase-out thresholds.<br />
+<em>Notes:</em> In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0005<br />
+2014: 0.0005<br />
+2015: 0.0005<br />
+2016: 0.0005<br />
+2017: 0.0005<br />
+2018: 0.0005<br />
+2019: 0.0005<br />
+<em>Valid Range:</em> min = 0 and max = 1<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="cdcc-refundable">
+<h4><code class="docutils literal notranslate"><span class="pre">CDCC_refundable</span></code><a class="headerlink" href="#cdcc-refundable" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> If true, the CDCC is fully refundable.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> bool<br />
+<em>Known Values:</em><br />
+2013: False<br />
+2014: False<br />
+2015: False<br />
+2016: False<br />
+2017: False<br />
+2018: False<br />
+2019: False<br />
+<em>Valid Range:</em> min = False and max = True<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
 </div>
@@ -4057,6 +4315,41 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
+<div class="section" id="ctc-include17">
+<h4><code class="docutils literal notranslate"><span class="pre">CTC_include17</span></code><a class="headerlink" href="#ctc-include17" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> If true, children eligible for the child tax credit include those of age 17.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> bool<br />
+<em>Known Values:</em><br />
+2013: False<br />
+2014: False<br />
+2015: False<br />
+2016: False<br />
+2017: False<br />
+2018: False<br />
+2019: False<br />
+<em>Valid Range:</em> min = False and max = True<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="ctc-refundable">
+<h4><code class="docutils literal notranslate"><span class="pre">CTC_refundable</span></code><a class="headerlink" href="#ctc-refundable" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> If true, the child tax credit is made fully refundable.<br />
+<em>Notes:</em> If true, the Additional Child Tax Credit is not used.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> bool<br />
+<em>Known Values:</em><br />
+2013: False<br />
+2014: False<br />
+2015: False<br />
+2016: False<br />
+2017: False<br />
+2018: False<br />
+2019: False<br />
+<em>Valid Range:</em> min = False and max = True<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
 <div class="section" id="ctc-ps">
 <h4><code class="docutils literal notranslate"><span class="pre">CTC_ps</span></code><a class="headerlink" href="#ctc-ps" title="Permalink to this headline">¶</a></h4>
 <p><em>Description:</em> Child tax credit begins to decrease when MAGI is above this level; read descriptions of the dependent credit amounts for how they phase out when MAGI is above this level.<br />
@@ -4304,14 +4597,14 @@ for: [med, sltx, retx, cas, misc, int, char]<br />
 2017: 0.5<br />
 2018: 0.6<br />
 2019: 0.6<br />
-2020: 0.6<br />
+2020: 1.0<br />
 2021: 0.6<br />
 2022: 0.6<br />
 2023: 0.6<br />
 2024: 0.6<br />
 2025: 0.6<br />
 2026: 0.5<br />
-<em>Valid Range:</em> min = 0 and max = 0.6<br />
+<em>Valid Range:</em> min = 0 and max = 1.0<br />
 <em>Out-of-Range Action:</em> warn</p>
 </div>
 <div class="section" id="id-charity-crt-noncash">
@@ -5896,6 +6189,58 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Valid Range:</em> min = 0 and max = 1<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
+<div class="section" id="pt-qbid-limit-switch">
+<h4><code class="docutils literal notranslate"><span class="pre">PT_qbid_limit_switch</span></code><a class="headerlink" href="#pt-qbid-limit-switch" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> A value of True imposes wage/capital limitations. Note that neither the PUF nor CPS have data on wage expenses or capital income, and therefore all taxpayers are fully subject to the QBID limitations. A value of False assumes sufficient wage and capital income to avoid QBID limitations.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> False <em>CPS data:</em> False<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> bool<br />
+<em>Known Values:</em><br />
+2013: True<br />
+2014: True<br />
+2015: True<br />
+2016: True<br />
+2017: True<br />
+2018: True<br />
+2019: True<br />
+<em>Valid Range:</em> min = False and max = True<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="pt-qbid-ps">
+<h4><code class="docutils literal notranslate"><span class="pre">PT_qbid_ps</span></code><a class="headerlink" href="#pt-qbid-ps" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> QBID begins to decrease when pre-QBID taxable income is above this level.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> True<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+for: [single, mjoint, mseparate, headhh, widow]<br />
+2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="pt-qbid-prt">
+<h4><code class="docutils literal notranslate"><span class="pre">PT_qbid_prt</span></code><a class="headerlink" href="#pt-qbid-prt" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> QBID will decrease at this rate for each dollar of taxable income exceeding QBID phaseout start.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0<br />
+2014: 0.0<br />
+2015: 0.0<br />
+2016: 0.0<br />
+2017: 0.0<br />
+2018: 0.0<br />
+2019: 0.0<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
 </div>
 <div class="section" id="regular-non-amt-non-pass-through">
 <h3>Regular: Non-AMT, Non-Pass-Through<a class="headerlink" href="#regular-non-amt-non-pass-through" title="Permalink to this headline">¶</a></h3>
@@ -6743,6 +7088,117 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Valid Range:</em> min = 0 and max = 1<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
+<div class="section" id="rrc-c">
+<h4><code class="docutils literal notranslate"><span class="pre">RRC_c</span></code><a class="headerlink" href="#rrc-c" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> This credit amount is fully refundable and is phased out based on AGI. It is available for each person in the filing unit, except for dependent filers.<br />
+<em>Notes:</em> Enacted for 2021 as part of the American Rescue Plan Act<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0<br />
+2014: 0.0<br />
+2015: 0.0<br />
+2016: 0.0<br />
+2017: 0.0<br />
+2018: 0.0<br />
+2019: 0.0<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="rrc-ps">
+<h4><code class="docutils literal notranslate"><span class="pre">RRC_ps</span></code><a class="headerlink" href="#rrc-ps" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> The Recovery Rebate Credit amount will be reduced for taxpayers with AGI higher than this threshold level.<br />
+<em>Notes:</em> Enacted for 2021 as part of the American Rescue Plan Act<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+for: [single, mjoint, mseparate, headhh, widow]<br />
+2013: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2014: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2015: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2016: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2017: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2018: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2019: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="rrc-pe">
+<h4><code class="docutils literal notranslate"><span class="pre">RRC_pe</span></code><a class="headerlink" href="#rrc-pe" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> The Recovery Rebate Credit amount will be fully phased out for taxpayers with AGI higher than this threshold level.<br />
+<em>Notes:</em> Enacted for 2021 as part of the American Rescue Plan Act<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+for: [single, mjoint, mseparate, headhh, widow]<br />
+2013: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2014: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2015: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2016: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2017: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2018: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2019: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="rrc-prt">
+<h4><code class="docutils literal notranslate"><span class="pre">RRC_prt</span></code><a class="headerlink" href="#rrc-prt" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> The Recovery Rebate Credit will be phased out at this rate for those with income above the phase out start and below the phase out end.<br />
+<em>Notes:</em> Used in 2020 as part of the CARES Act<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0<br />
+2014: 0.0<br />
+2015: 0.0<br />
+2016: 0.0<br />
+2017: 0.0<br />
+2018: 0.0<br />
+2019: 0.0<br />
+<em>Valid Range:</em> min = 0.0 and max = 1.0<br />
+<em>Out-of-Range Action:</em> warn</p>
+</div>
+<div class="section" id="rrc-c-unit">
+<h4><code class="docutils literal notranslate"><span class="pre">RRC_c_unit</span></code><a class="headerlink" href="#rrc-c-unit" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> The maximum credit awarded as part of the Recovery Rebate Credit.<br />
+<em>Notes:</em> Used in 2020 as part of the CARES Act<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+for: [single, mjoint, mseparate, headhh, widow]<br />
+2013: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2014: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2015: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2016: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2017: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2018: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2019: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+<em>Valid Range:</em> min = 0.0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> warn</p>
+</div>
+<div class="section" id="rrc-c-kids">
+<h4><code class="docutils literal notranslate"><span class="pre">RRC_c_kids</span></code><a class="headerlink" href="#rrc-c-kids" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> The credit awarded for each child in an eligible family as part of the Recovery Rebate Credit.<br />
+<em>Notes:</em> Used in 2020 as part of the CARES Act<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0<br />
+2014: 0.0<br />
+2015: 0.0<br />
+2016: 0.0<br />
+2017: 0.0<br />
+2018: 0.0<br />
+2019: 0.0<br />
+<em>Valid Range:</em> min = 0.0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> warn</p>
+</div>
 </div>
 <div class="section" id="refundable-payroll-tax-credit">
 <h3>Refundable Payroll Tax Credit<a class="headerlink" href="#refundable-payroll-tax-credit" title="Permalink to this headline">¶</a></h3>
@@ -7173,40 +7629,6 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </div>
 <div class="section" id="other-parameters-not-in-tax-brain-webapp">
 <h2>Other Parameters (not in Tax-Brain webapp)<a class="headerlink" href="#other-parameters-not-in-tax-brain-webapp" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="ss-percentage1">
-<h3><code class="docutils literal notranslate"><span class="pre">SS_percentage1</span></code><a class="headerlink" href="#ss-percentage1" title="Permalink to this headline">¶</a></h3>
-<p><em>Description:</em> Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.<br />
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
-<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
-<em>Value Type:</em> float<br />
-<em>Known Values:</em><br />
-2013: 0.5<br />
-2014: 0.5<br />
-2015: 0.5<br />
-2016: 0.5<br />
-2017: 0.5<br />
-2018: 0.5<br />
-2019: 0.5<br />
-<em>Valid Range:</em> min = 0 and max = 1<br />
-<em>Out-of-Range Action:</em> error</p>
-</div>
-<div class="section" id="ss-percentage2">
-<h3><code class="docutils literal notranslate"><span class="pre">SS_percentage2</span></code><a class="headerlink" href="#ss-percentage2" title="Permalink to this headline">¶</a></h3>
-<p><em>Description:</em> Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.<br />
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
-<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
-<em>Value Type:</em> float<br />
-<em>Known Values:</em><br />
-2013: 0.85<br />
-2014: 0.85<br />
-2015: 0.85<br />
-2016: 0.85<br />
-2017: 0.85<br />
-2018: 0.85<br />
-2019: 0.85<br />
-<em>Valid Range:</em> min = 0 and max = 1<br />
-<em>Out-of-Range Action:</em> error</p>
-</div>
 <div class="section" id="ii-em-ps">
 <h3><code class="docutils literal notranslate"><span class="pre">II_em_ps</span></code><a class="headerlink" href="#ii-em-ps" title="Permalink to this headline">¶</a></h3>
 <p><em>Description:</em> If taxpayers’ AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).<br />
@@ -7244,7 +7666,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </div>
 <div class="section" id="std-allow-charity-ded-nonitemizers">
 <h3><code class="docutils literal notranslate"><span class="pre">STD_allow_charity_ded_nonitemizers</span></code><a class="headerlink" href="#std-allow-charity-ded-nonitemizers" title="Permalink to this headline">¶</a></h3>
-<p><em>Description:</em> Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.<br />
+<p><em>Description:</em> Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here as well as a max on the dollar amount for total charitable deductions for those taking the standard deduction.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> bool<br />
@@ -7257,6 +7679,59 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 2018: False<br />
 2019: False<br />
 <em>Valid Range:</em> min = False and max = True<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="std-charity-ded-nonitemizers-max">
+<h3><code class="docutils literal notranslate"><span class="pre">STD_charity_ded_nonitemizers_max</span></code><a class="headerlink" href="#std-charity-ded-nonitemizers-max" title="Permalink to this headline">¶</a></h3>
+<p><em>Description:</em> Puts a ceiling on the dollar of amount of charitable contributions deductions for taxpayers who take the standard deduction.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0<br />
+2014: 0.0<br />
+2015: 0.0<br />
+2016: 0.0<br />
+2017: 0.0<br />
+2018: 0.0<br />
+2019: 0.0<br />
+<em>Valid Range:</em> min = 0.0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="ui-em">
+<h3><code class="docutils literal notranslate"><span class="pre">UI_em</span></code><a class="headerlink" href="#ui-em" title="Permalink to this headline">¶</a></h3>
+<p><em>Description:</em> The amount of Unemployment Insurance benefits excluded from taxable income.<br />
+<em>Notes:</em> Enacted retroactively for 2020 by the American Rescue Plan Act of 2021<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0<br />
+2014: 0.0<br />
+2015: 0.0<br />
+2016: 0.0<br />
+2017: 0.0<br />
+2018: 0.0<br />
+2019: 0.0<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="ui-thd">
+<h3><code class="docutils literal notranslate"><span class="pre">UI_thd</span></code><a class="headerlink" href="#ui-thd" title="Permalink to this headline">¶</a></h3>
+<p><em>Description:</em> Unemployment Insurance exemption is eliminated when AGI minus Unemployment Insurance goes beyond this threshold.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+for: [single, mjoint, mseparate, headhh, widow]<br />
+2013: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2014: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2015: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2016: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2017: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2018: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+2019: [0.0, 0.0, 0.0, 0.0, 0.0]<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
 <div class="section" id="amt-child-em">
