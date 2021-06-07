@@ -653,10 +653,7 @@ def test_section_titles(tests_path):
             'Additional Medicare FICA': 0
         },
         'Social Security Taxability': {
-            'Threshold For Social Security Benefit Taxability 1': 0,
-            # 'Social Security Taxable Income Decimal Fraction 1': 0,
-            'Threshold For Social Security Benefit Taxability 2': 0
-            # 'Social Security Taxable Income Decimal Fraction 2': 0
+            'Social Security Benefit Taxability': 0,
         },
         'Above The Line Deductions': {
             'Misc. Adjustment Haircuts': 0,
