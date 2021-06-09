@@ -320,10 +320,10 @@
     },
     "SS_thd50": {
         "title": "Threshold for Social Security benefit taxability 1",
-        "description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.",
+        "description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to rate 1 of their Social Security benefit will be subject to tax under current law.",
         "notes": "",
         "section_1": "Social Security Taxability",
-        "section_2": "Threshold For Social Security Benefit Taxability 1",
+        "section_2": "Social Security Benefit Taxability",
         "indexable": true,
         "indexed": false,
         "type": "float",
@@ -369,8 +369,8 @@
         "title": "Social Security taxable income decimal fraction 1",
         "description": "Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.",
         "notes": "",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Social Security Taxability",
+        "section_2": "Social Security Benefit Taxability",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -393,10 +393,10 @@
     },
     "SS_thd85": {
         "title": "Threshold for Social Security benefit taxability 2",
-        "description": "The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to 85% of their Social Security benefit will be subject to tax under current law.",
+        "description": "The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to rate 2 of their Social Security benefit will be subject to tax under current law.",
         "notes": "",
         "section_1": "Social Security Taxability",
-        "section_2": "Threshold For Social Security Benefit Taxability 2",
+        "section_2": "Social Security Benefit Taxability",
         "indexable": true,
         "indexed": false,
         "type": "float",
@@ -442,8 +442,8 @@
         "title": "Social Security taxable income decimal fraction 2",
         "description": "Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.",
         "notes": "",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Social Security Taxability",
+        "section_2": "Social Security Benefit Taxability",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -13996,7 +13996,7 @@
     },
     "CDCC_ps": {
         "title": "Child & dependent care credit phaseout start",
-        "description": "For taxpayers with AGI over this amount, the rate of the credit credit is reduced by one percentage point each $2000 of AGI over this amount.",
+        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.",
         "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
@@ -14030,7 +14030,7 @@
     },
     "CDCC_ps2": {
         "title": "Child & dependent care credit second phaseout start",
-        "description": "For taxpayers with AGI over this amount, the rate of the credit credit is reduced by one percentage point each $2000 of AGI over this amount.",
+        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.",
         "notes": "For 2021, the American Rescue Plan Act set this to $400,000. In other years, this phase-out does not apply.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
@@ -14125,7 +14125,7 @@
     "CDCC_prt": {
         "title": "Child & dependent care credit phaseout percentage rate",
         "description": "The CDCC credit rate is reduced by this many percentage points for each dollary of AGI over the phase-out thresholds.",
-        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2000 of AGI over the limit.",
+        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -15170,6 +15170,46 @@
             },
             {
                 "year": 2013,
+                "EIC": "3+kids",
+                "value": 0.2106
+            },
+                        {
+                "year": 2021,
+                "EIC": "0kids",
+                "value": 0.153
+            },
+            {
+                "year": 2021,
+                "EIC": "1kid",
+                "value": 0.1598
+            },
+            {
+                "year": 2021,
+                "EIC": "2kids",
+                "value": 0.2106
+            },
+            {
+                "year": 2021,
+                "EIC": "3+kids",
+                "value": 0.2106
+            },
+                        {
+                "year": 2022,
+                "EIC": "0kids",
+                "value": 0.0765
+            },
+            {
+                "year": 2022,
+                "EIC": "1kid",
+                "value": 0.1598
+            },
+            {
+                "year": 2022,
+                "EIC": "2kids",
+                "value": 0.2106
+            },
+            {
+                "year": 2022,
                 "EIC": "3+kids",
                 "value": 0.2106
             }
