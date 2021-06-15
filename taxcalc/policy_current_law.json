@@ -3127,7 +3127,7 @@
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 75000.00
+                "value": 150000.00
             },
             {
                 "year": 2021,
@@ -3361,27 +3361,27 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 1200.00
+                "value": 1800.00
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 2400.00
+                "value": 3600.00
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 1200.00
+                "value": 1800.00
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 1200.00
+                "value": 1800.00
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 1200.00
+                "value": 1800.00
             },
             {
                 "year": 2021,
@@ -3437,7 +3437,7 @@
             },
             {
                 "year": 2020,
-                "value": 500.00
+                "value": 1100.00
             },
             {
                 "year": 2021,
