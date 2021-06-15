@@ -345,6 +345,66 @@
      Tax-Calculator CalcFunctions
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/calculator.html">
+     Tax-Calculator Calculator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/consumption.html">
+     Tax-Calculator Consumption
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/data.html">
+     Tax-Calculator Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/decorators.html">
+     Tax-Calculator Decorators
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/growdiff.html">
+     Tax-Calculator GrowDiff
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/growfactors.html">
+     Tax-Calculator GrowFactors
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/parameters.html">
+     Tax-Calculator Parameters
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/policy.html">
+     Tax-Calculator Policy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/records.html">
+     Tax-Calculator Records
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/taxcalcio.html">
+     Tax-Calculator IO
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/utils.html">
+     Tax-Calculator Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../api/utilsprvt.html">
+     Tax-Calculator Private Utilities
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -558,11 +618,53 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Response in Charitable Giving by Earnings Group
-Earnings Group    	 Num(#M)	Resp($B)	 Resp(%)
-[-9e+99, 50000)   	 153.673	   0.581	    0.36
-[50000, 9e+99)    	  51.771	   2.808	    1.92
-ALL               	 205.444	   3.390	    1.09
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mf">7e2</span><span class="n">f4954ccea</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">29</span> 
+<span class="g g-Whitespace">     </span><span class="mi">30</span> <span class="c1"># calculate marginal tax rate wrt cash charitable giving</span>
+<span class="ne">---&gt; </span><span class="mi">31</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mtr2</span><span class="p">)</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">32</span>                          <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">33</span> 
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">mtr</span><span class="nt">(self, variable_str, negative_finite_diff, zero_out_calculated_vars, calc_all_already_called, wrt_full_compensation)</span>
+<span class="g g-Whitespace">    </span><span class="mi">672</span>         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__consumption</span><span class="o">.</span><span class="n">has_response</span><span class="p">():</span>
+<span class="g g-Whitespace">    </span><span class="mi">673</span>             <span class="bp">self</span><span class="o">.</span><span class="n">__consumption</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">,</span> <span class="n">finite_diff</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">674</span>         <span class="bp">self</span><span class="o">.</span><span class="n">calc_all</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="n">zero_out_calculated_vars</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">675</span>         <span class="n">payrolltax_chng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;payrolltax&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">676</span>         <span class="n">incometax_chng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">calc_all</span><span class="nt">(self, zero_out_calc_vars)</span>
+<span class="g g-Whitespace">    </span><span class="mi">170</span>         <span class="n">UBI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">171</span>         <span class="n">BenefitPrograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">172</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_calc_one_year</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">173</span>         <span class="n">BenefitSurtax</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">174</span>         <span class="n">BenefitLimitation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_calc_one_year</span><span class="nt">(self, zero_out_calc_vars)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1431</span>         <span class="k">del</span> <span class="n">item_cvar</span>
+<span class="g g-Whitespace">   </span><span class="mi">1432</span>         <span class="c1"># Calculate taxes with optimal itemized deduction</span>
+<span class="ne">-&gt; </span><span class="mi">1433</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_taxinc_to_amt</span><span class="p">()</span>
+<span class="g g-Whitespace">   </span><span class="mi">1434</span>         <span class="n">F2441</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1435</span>         <span class="n">EITC</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_taxinc_to_amt</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1361</span>         <span class="s2">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">   </span><span class="mi">1362</span><span class="s2">         TaxInc(self.__policy, self.__records)</span>
+<span class="ne">-&gt; </span><span class="mi">1363</span><span class="s2">         SchXYZTax(self.__policy, self.__records)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1364</span><span class="s2">         GainsTax(self.__policy, self.__records)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1365</span><span class="s2">         AGIsurtax(self.__policy, self.__records)</span>
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/decorators.py</span> in <span class="ni">wrapper</span><span class="nt">(*args, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">323</span><span class="s2">                  {&quot;applied_f&quot;: applied_jitted_f}, fakeglobals)</span>
+<span class="g g-Whitespace">    </span><span class="mi">324</span><span class="s2">             high_level_fn = fakeglobals[&#39;hl_func&#39;]</span>
+<span class="ne">--&gt; </span><span class="mi">325</span><span class="s2">             ans = high_level_fn(*args, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">326</span><span class="s2">             return ans</span>
+<span class="g g-Whitespace">    </span><span class="mi">327</span><span class="s2"> </span>
+
+<span class="nn">&lt;string&gt;</span> in <span class="ni">hl_func</span><span class="nt">(pm, pf)</span>
+
+<span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
 </div>
 </div>
@@ -607,7 +709,7 @@ ALL               	 205.444	   3.390	    1.09
         
           By Policy Simulation Library<br/>
         
-            &copy; Copyright 2020.<br/>
+            &copy; Copyright 2021.<br/>
       </p>
     </div>
   </footer>
