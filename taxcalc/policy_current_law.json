@@ -320,10 +320,10 @@
     },
     "SS_thd50": {
         "title": "Threshold for Social Security benefit taxability 1",
-        "description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.",
+        "description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to rate 1 of their Social Security benefit will be subject to tax under current law.",
         "notes": "",
         "section_1": "Social Security Taxability",
-        "section_2": "Threshold For Social Security Benefit Taxability 1",
+        "section_2": "Social Security Benefit Taxability",
         "indexable": true,
         "indexed": false,
         "type": "float",
@@ -369,8 +369,8 @@
         "title": "Social Security taxable income decimal fraction 1",
         "description": "Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.",
         "notes": "",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Social Security Taxability",
+        "section_2": "Social Security Benefit Taxability",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -393,10 +393,10 @@
     },
     "SS_thd85": {
         "title": "Threshold for Social Security benefit taxability 2",
-        "description": "The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to 85% of their Social Security benefit will be subject to tax under current law.",
+        "description": "The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to rate 2 of their Social Security benefit will be subject to tax under current law.",
         "notes": "",
         "section_1": "Social Security Taxability",
-        "section_2": "Threshold For Social Security Benefit Taxability 2",
+        "section_2": "Social Security Benefit Taxability",
         "indexable": true,
         "indexed": false,
         "type": "float",
@@ -442,8 +442,8 @@
         "title": "Social Security taxable income decimal fraction 2",
         "description": "Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.",
         "notes": "",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Social Security Taxability",
+        "section_2": "Social Security Benefit Taxability",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -3105,6 +3105,31 @@
                 "value": 0.0
             },
             {
+                "year": 2020,
+                "MARS": "single",
+                "value": 75000.00
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 150000.00
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 75000.00
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 112500.00
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 150000.00
+            },
+            {
                 "year": 2021,
                 "MARS": "single",
                 "value": 75000.00
@@ -3256,6 +3281,174 @@
             "range": {
                 "min": 0,
                 "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "RRC_prt":{
+        "title":"Recovery Rebate Credit phaseout rate",
+        "description":"The Recovery Rebate Credit will be phased out at this rate for those with income above the phase out start and below the phase out end.",
+        "notes": "Used in 2020 as part of the CARES Act",
+        "section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 0.05
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0.0,
+                "max": 1.0,
+                "level": "warn"
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "RRC_c_unit":{
+        "title":"Maximum credit for filing unit",
+        "description":"The maximum credit awarded as part of the Recovery Rebate Credit.",
+        "notes": "Used in 2020 as part of the CARES Act",
+        "section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 1800.00
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 3600.00
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 1800.00
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 1800.00
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 1800.00
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0.0,
+                "max": 9e+99,
+                "level": "warn"
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "RRC_c_kids":{
+        "title":"Recovery Rebate Credit amount per child",
+        "description":"The credit awarded for each child in an eligible family as part of the Recovery Rebate Credit.",
+        "notes": "Used in 2020 as part of the CARES Act",
+        "section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 1100.00
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0.0,
+                "max": 9e+99,
+                "level": "warn"
             }
         },
         "compatible_data": {
@@ -13803,7 +13996,7 @@
     },
     "CDCC_ps": {
         "title": "Child & dependent care credit phaseout start",
-        "description": "For taxpayers with AGI over this amount, the rate of the credit credit is reduced by one percentage point each $2000 of AGI over this amount.",
+        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.",
         "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
@@ -13837,7 +14030,7 @@
     },
     "CDCC_ps2": {
         "title": "Child & dependent care credit second phaseout start",
-        "description": "For taxpayers with AGI over this amount, the rate of the credit credit is reduced by one percentage point each $2000 of AGI over this amount.",
+        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.",
         "notes": "For 2021, the American Rescue Plan Act set this to $400,000. In other years, this phase-out does not apply.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
@@ -13932,7 +14125,7 @@
     "CDCC_prt": {
         "title": "Child & dependent care credit phaseout percentage rate",
         "description": "The CDCC credit rate is reduced by this many percentage points for each dollary of AGI over the phase-out thresholds.",
-        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2000 of AGI over the limit.",
+        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -14977,6 +15170,46 @@
             },
             {
                 "year": 2013,
+                "EIC": "3+kids",
+                "value": 0.2106
+            },
+                        {
+                "year": 2021,
+                "EIC": "0kids",
+                "value": 0.153
+            },
+            {
+                "year": 2021,
+                "EIC": "1kid",
+                "value": 0.1598
+            },
+            {
+                "year": 2021,
+                "EIC": "2kids",
+                "value": 0.2106
+            },
+            {
+                "year": 2021,
+                "EIC": "3+kids",
+                "value": 0.2106
+            },
+                        {
+                "year": 2022,
+                "EIC": "0kids",
+                "value": 0.0765
+            },
+            {
+                "year": 2022,
+                "EIC": "1kid",
+                "value": 0.1598
+            },
+            {
+                "year": 2022,
+                "EIC": "2kids",
+                "value": 0.2106
+            },
+            {
+                "year": 2022,
                 "EIC": "3+kids",
                 "value": 0.2106
             }
