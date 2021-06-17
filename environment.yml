@@ -20,5 +20,5 @@ dependencies:
 - behresp
 - pip
 - pip:
-    - jupyter-book
-    - pytest_harvest
+    - jupyter-book --user
+    - pytest_harvest --user
