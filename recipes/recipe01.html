@@ -222,11 +222,6 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../about/upgrading.html">
-   Upgrading to Tax-Calculator 2.0
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../about/license.html">
    License
   </a>
@@ -511,6 +506,11 @@
         
         
         
+        <a class="colab-button" href="https://colab.research.google.com/github/PSLmodels/Tax-Calculator/blob/master/docs/recipes/recipe01.ipynb"><button type="button" class="btn btn-secondary topbarbtn"
+                title="Launch Colab" data-toggle="tooltip" data-placement="left"><img class="colab-button-logo"
+                    src="../_static/images/logo_colab.png"
+                    alt="Interact on Colab">Colab</button></a>
+        
         
     </div>
 </div>
@@ -541,13 +541,11 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 
 <span class="c1"># read an &quot;old&quot; reform file</span>
 <span class="c1"># (&quot;old&quot; means the reform file is defined relative to pre-TCJA policy)</span>
-<span class="n">REFORMS_PATH</span> <span class="o">=</span> <span class="s1">&#39;../../taxcalc/reforms/&#39;</span>
-
 <span class="c1"># specify reform dictionary for pre-TCJA policy</span>
-<span class="n">reform1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_PATH</span> <span class="o">+</span> <span class="s1">&#39;2017_law.json&#39;</span><span class="p">)</span>
+<span class="n">reform1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:examples@main/psl_examples/taxcalc/2017_law.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># specify reform dictionary for TCJA as passed by Congress in late 2017</span>
-<span class="n">reform2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_PATH</span> <span class="o">+</span> <span class="s1">&#39;TCJA.json&#39;</span><span class="p">)</span>
+<span class="n">reform2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:examples@main/psl_examples/taxcalc/TCJA.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># specify Policy object for pre-TCJA policy</span>
 <span class="n">bpolicy</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>
@@ -600,12 +598,12 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mi">37575</span><span class="n">afcc5a7</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">     </span><span class="mi">33</span> <span class="c1"># calculate for specified CYR</span>
-<span class="g g-Whitespace">     </span><span class="mi">34</span> <span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">35</span> <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">36</span> <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">37</span> <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">e2bafec41239</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">31</span> <span class="c1"># calculate for specified CYR</span>
+<span class="g g-Whitespace">     </span><span class="mi">32</span> <span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">33</span> <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">34</span> <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">35</span> <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
 
 <span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">calc_all</span><span class="nt">(self, zero_out_calc_vars)</span>
 <span class="g g-Whitespace">    </span><span class="mi">170</span>         <span class="n">UBI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
@@ -615,18 +613,11 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 <span class="g g-Whitespace">    </span><span class="mi">174</span>         <span class="n">BenefitLimitation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_calc_one_year</span><span class="nt">(self, zero_out_calc_vars)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1402</span>         <span class="k">for</span> <span class="n">cvname</span> <span class="ow">in</span> <span class="n">item_component_variable_names</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1403</span>             <span class="bp">self</span><span class="o">.</span><span class="n">zeroarray</span><span class="p">(</span><span class="n">cvname</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">1404</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_taxinc_to_amt</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1405</span>         <span class="n">std_taxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c05800&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1406</span>         <span class="c1"># Set standard deduction to zero, calculate taxes w/o</span>
-
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_taxinc_to_amt</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1364</span>         <span class="n">GainsTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1365</span>         <span class="n">AGIsurtax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">1366</span>         <span class="n">NetInvIncTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1367</span>         <span class="n">AMT</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1368</span> 
+<span class="g g-Whitespace">   </span><span class="mi">1383</span>         <span class="n">AGI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1384</span>         <span class="n">ItemDedCap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">1385</span>         <span class="n">ItemDed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1386</span>         <span class="n">AdditionalMedicareTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1387</span>         <span class="n">StdDed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
 
 <span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/decorators.py</span> in <span class="ni">wrapper</span><span class="nt">(*args, **kwargs)</span>
 <span class="g g-Whitespace">    </span><span class="mi">323</span>                  <span class="p">{</span><span class="s2">&quot;applied_f&quot;</span><span class="p">:</span> <span class="n">applied_jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
@@ -729,88 +720,242 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 <span class="g g-Whitespace">    </span><span class="mi">264</span><span class="sd">                 msg = (&quot;CompilerPass implementations should return True/False. &quot;</span>
 
 <span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typed_passes.py</span> in <span class="ni">run_pass</span><span class="nt">(self, state)</span>
-<span class="g g-Whitespace">    </span><span class="mi">461</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">462</span><span class="sd">         # TODO: Pull this out into the pipeline</span>
-<span class="ne">--&gt; </span><span class="mi">463</span><span class="sd">         NativeLowering().run_pass(state)</span>
-<span class="g g-Whitespace">    </span><span class="mi">464</span><span class="sd">         lowered = state[&#39;cr&#39;]</span>
-<span class="g g-Whitespace">    </span><span class="mi">465</span><span class="sd">         signature = typing.signature(state.return_type, *state.args)</span>
+<span class="g g-Whitespace">    </span><span class="mi">102</span><span class="sd">                               % (state.func_id.func_name,)):</span>
+<span class="g g-Whitespace">    </span><span class="mi">103</span><span class="sd">             # Type inference</span>
+<span class="ne">--&gt; </span><span class="mi">104</span><span class="sd">             typemap, return_type, calltypes, errs = type_inference_stage(</span>
+<span class="g g-Whitespace">    </span><span class="mi">105</span><span class="sd">                 state.typingctx,</span>
+<span class="g g-Whitespace">    </span><span class="mi">106</span><span class="sd">                 state.func_ir,</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typed_passes.py</span> in <span class="ni">type_inference_stage</span><span class="nt">(typingctx, interp, args, return_type, locals, raise_errors)</span>
+<span class="g g-Whitespace">     </span><span class="mi">80</span><span class="sd">         infer.build_constraint()</span>
+<span class="g g-Whitespace">     </span><span class="mi">81</span><span class="sd">         # return errors in case of partial typing</span>
+<span class="ne">---&gt; </span><span class="mi">82</span><span class="sd">         errs = infer.propagate(raise_errors=raise_errors)</span>
+<span class="g g-Whitespace">     </span><span class="mi">83</span><span class="sd">         typemap, restype, calltypes = infer.unify(raise_errors=raise_errors)</span>
+<span class="g g-Whitespace">     </span><span class="mi">84</span><span class="sd"> </span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typeinfer.py</span> in <span class="ni">propagate</span><span class="nt">(self, raise_errors)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1061</span><span class="sd">             # Errors can appear when the type set is incomplete; only</span>
+<span class="g g-Whitespace">   </span><span class="mi">1062</span><span class="sd">             # raise them when there is no progress anymore.</span>
+<span class="ne">-&gt; </span><span class="mi">1063</span><span class="sd">             errors = self.constraints.propagate(self)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1064</span><span class="sd">             newtoken = self.get_state_token()</span>
+<span class="g g-Whitespace">   </span><span class="mi">1065</span><span class="sd">             self.debug.propagate_finished()</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typeinfer.py</span> in <span class="ni">propagate</span><span class="nt">(self, typeinfer)</span>
+<span class="g g-Whitespace">    </span><span class="mi">152</span><span class="sd">                                                    lineno=loc.line):</span>
+<span class="g g-Whitespace">    </span><span class="mi">153</span><span class="sd">                 try:</span>
+<span class="ne">--&gt; </span><span class="mi">154</span><span class="sd">                     constraint(typeinfer)</span>
+<span class="g g-Whitespace">    </span><span class="mi">155</span><span class="sd">                 except ForceLiteralArg as e:</span>
+<span class="g g-Whitespace">    </span><span class="mi">156</span><span class="sd">                     errors.append(e)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typeinfer.py</span> in <span class="ni">__call__</span><span class="nt">(self, typeinfer)</span>
+<span class="g g-Whitespace">    </span><span class="mi">564</span><span class="sd">                 fnty = typevars[self.func].getone()</span>
+<span class="g g-Whitespace">    </span><span class="mi">565</span><span class="sd">             with new_error_context(&quot;resolving callee type: {0}&quot;, fnty):</span>
+<span class="ne">--&gt; </span><span class="mi">566</span><span class="sd">                 self.resolve(typeinfer, typevars, fnty)</span>
+<span class="g g-Whitespace">    </span><span class="mi">567</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">568</span><span class="sd">     def resolve(self, typeinfer, typevars, fnty):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typeinfer.py</span> in <span class="ni">resolve</span><span class="nt">(self, typeinfer, typevars, fnty)</span>
+<span class="g g-Whitespace">    </span><span class="mi">584</span><span class="sd">         # Resolve call type</span>
+<span class="g g-Whitespace">    </span><span class="mi">585</span><span class="sd">         try:</span>
+<span class="ne">--&gt; </span><span class="mi">586</span><span class="sd">             sig = typeinfer.resolve_call(fnty, pos_args, kw_args)</span>
+<span class="g g-Whitespace">    </span><span class="mi">587</span><span class="sd">         except ForceLiteralArg as e:</span>
+<span class="g g-Whitespace">    </span><span class="mi">588</span><span class="sd">             # Adjust for bound methods</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typeinfer.py</span> in <span class="ni">resolve_call</span><span class="nt">(self, fnty, pos_args, kw_args)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1536</span><span class="sd">         else:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1537</span><span class="sd">             # Normal non-recursive call</span>
+<span class="ne">-&gt; </span><span class="mi">1538</span><span class="sd">             return self.context.resolve_function_type(fnty, pos_args, kw_args)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1539</span><span class="sd"> </span>
+<span class="g g-Whitespace">   </span><span class="mi">1540</span><span class="sd">     def typeof_global(self, inst, target, gvar):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typing/context.py</span> in <span class="ni">resolve_function_type</span><span class="nt">(self, func, args, kws)</span>
+<span class="g g-Whitespace">    </span><span class="mi">192</span><span class="sd">         # Prefer user definition first</span>
+<span class="g g-Whitespace">    </span><span class="mi">193</span><span class="sd">         try:</span>
+<span class="ne">--&gt; </span><span class="mi">194</span><span class="sd">             res = self._resolve_user_function_type(func, args, kws)</span>
+<span class="g g-Whitespace">    </span><span class="mi">195</span><span class="sd">         except errors.TypingError as e:</span>
+<span class="g g-Whitespace">    </span><span class="mi">196</span><span class="sd">             # Capture any typing error</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typing/context.py</span> in <span class="ni">_resolve_user_function_type</span><span class="nt">(self, func, args, kws, literals)</span>
+<span class="g g-Whitespace">    </span><span class="mi">244</span><span class="sd">         if isinstance(func, types.Callable):</span>
+<span class="g g-Whitespace">    </span><span class="mi">245</span><span class="sd">             # XXX fold this into the __call__ attribute logic?</span>
+<span class="ne">--&gt; </span><span class="mi">246</span><span class="sd">             return func.get_call_type(self, args, kws)</span>
+<span class="g g-Whitespace">    </span><span class="mi">247</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">248</span><span class="sd">     def _get_attribute_templates(self, typ):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/types/functions.py</span> in <span class="ni">get_call_type</span><span class="nt">(self, context, args, kws)</span>
+<span class="g g-Whitespace">    </span><span class="mi">526</span><span class="sd">         &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">527</span>         <span class="n">template</span><span class="p">,</span> <span class="n">pysig</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kws</span> <span class="o">=</span> \
+<span class="ne">--&gt; </span><span class="mi">528</span>             <span class="bp">self</span><span class="o">.</span><span class="n">dispatcher</span><span class="o">.</span><span class="n">get_call_template</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kws</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">529</span>         <span class="n">sig</span> <span class="o">=</span> <span class="n">template</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kws</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">530</span>         <span class="k">if</span> <span class="n">sig</span><span class="p">:</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/dispatcher.py</span> in <span class="ni">get_call_template</span><span class="nt">(self, args, kws)</span>
+<span class="g g-Whitespace">    </span><span class="mi">313</span>         <span class="c1"># Ensure an overload is available</span>
+<span class="g g-Whitespace">    </span><span class="mi">314</span>         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_can_compile</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">315</span>             <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+<span class="g g-Whitespace">    </span><span class="mi">316</span> 
+<span class="g g-Whitespace">    </span><span class="mi">317</span>         <span class="c1"># Create function type for typing</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/dispatcher.py</span> in <span class="ni">compile</span><span class="nt">(self, sig)</span>
+<span class="g g-Whitespace">    </span><span class="mi">907</span>                 <span class="k">with</span> <span class="n">ev</span><span class="o">.</span><span class="n">trigger_event</span><span class="p">(</span><span class="s2">&quot;numba:compile&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ev_details</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">908</span>                     <span class="k">try</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">909</span>                         <span class="n">cres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiler</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">return_type</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">910</span>                     <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">ForceLiteralArg</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">911</span>                         <span class="k">def</span> <span class="nf">folded</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kws</span><span class="p">):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/dispatcher.py</span> in <span class="ni">compile</span><span class="nt">(self, args, return_type)</span>
+<span class="g g-Whitespace">     </span><span class="mi">77</span> 
+<span class="g g-Whitespace">     </span><span class="mi">78</span>     <span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">return_type</span><span class="p">):</span>
+<span class="ne">---&gt; </span><span class="mi">79</span>         <span class="n">status</span><span class="p">,</span> <span class="n">retval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compile_cached</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">return_type</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">80</span>         <span class="k">if</span> <span class="n">status</span><span class="p">:</span>
+<span class="g g-Whitespace">     </span><span class="mi">81</span>             <span class="k">return</span> <span class="n">retval</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/dispatcher.py</span> in <span class="ni">_compile_cached</span><span class="nt">(self, args, return_type)</span>
+<span class="g g-Whitespace">     </span><span class="mi">91</span> 
+<span class="g g-Whitespace">     </span><span class="mi">92</span>         <span class="k">try</span><span class="p">:</span>
+<span class="ne">---&gt; </span><span class="mi">93</span>             <span class="n">retval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compile_core</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">return_type</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">94</span>         <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">TypingError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="g g-Whitespace">     </span><span class="mi">95</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_failed_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/dispatcher.py</span> in <span class="ni">_compile_core</span><span class="nt">(self, args, return_type)</span>
+<span class="g g-Whitespace">    </span><span class="mi">104</span> 
+<span class="g g-Whitespace">    </span><span class="mi">105</span>         <span class="n">impl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_implementation</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="p">{})</span>
+<span class="ne">--&gt; </span><span class="mi">106</span>         <span class="n">cres</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">compile_extra</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targetdescr</span><span class="o">.</span><span class="n">typing_context</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">107</span>                                       <span class="bp">self</span><span class="o">.</span><span class="n">targetdescr</span><span class="o">.</span><span class="n">target_context</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">108</span>                                       <span class="n">impl</span><span class="p">,</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/compiler.py</span> in <span class="ni">compile_extra</span><span class="nt">(typingctx, targetctx, func, args, return_type, flags, locals, library, pipeline_class)</span>
+<span class="g g-Whitespace">    </span><span class="mi">604</span>     <span class="n">pipeline</span> <span class="o">=</span> <span class="n">pipeline_class</span><span class="p">(</span><span class="n">typingctx</span><span class="p">,</span> <span class="n">targetctx</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">605</span>                               <span class="n">args</span><span class="p">,</span> <span class="n">return_type</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="nb">locals</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">606</span>     <span class="k">return</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">compile_extra</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">607</span> 
+<span class="g g-Whitespace">    </span><span class="mi">608</span> 
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/compiler.py</span> in <span class="ni">compile_extra</span><span class="nt">(self, func)</span>
+<span class="g g-Whitespace">    </span><span class="mi">351</span>         <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">lifted</span> <span class="o">=</span> <span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">352</span>         <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">lifted_from</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="ne">--&gt; </span><span class="mi">353</span>         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compile_bytecode</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">354</span> 
+<span class="g g-Whitespace">    </span><span class="mi">355</span>     <span class="k">def</span> <span class="nf">compile_ir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_ir</span><span class="p">,</span> <span class="n">lifted</span><span class="o">=</span><span class="p">(),</span> <span class="n">lifted_from</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/compiler.py</span> in <span class="ni">_compile_bytecode</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">413</span>         <span class="s2">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">414</span><span class="s2">         assert self.state.func_ir is None</span>
+<span class="ne">--&gt; </span><span class="mi">415</span><span class="s2">         return self._compile_core()</span>
+<span class="g g-Whitespace">    </span><span class="mi">416</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">417</span><span class="s2">     def _compile_ir(self):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/compiler.py</span> in <span class="ni">_compile_core</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">384</span><span class="s2">             res = None</span>
+<span class="g g-Whitespace">    </span><span class="mi">385</span><span class="s2">             try:</span>
+<span class="ne">--&gt; </span><span class="mi">386</span><span class="s2">                 pm.run(self.state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">387</span><span class="s2">                 if self.state.cr is not None:</span>
+<span class="g g-Whitespace">    </span><span class="mi">388</span><span class="s2">                     break</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/compiler_machinery.py</span> in <span class="ni">run</span><span class="nt">(self, state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">328</span><span class="s2">                 pass_inst = _pass_registry.get(pss).pass_inst</span>
+<span class="g g-Whitespace">    </span><span class="mi">329</span><span class="s2">                 if isinstance(pass_inst, CompilerPass):</span>
+<span class="ne">--&gt; </span><span class="mi">330</span><span class="s2">                     self._runPass(idx, pass_inst, state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">331</span><span class="s2">                 else:</span>
+<span class="g g-Whitespace">    </span><span class="mi">332</span><span class="s2">                     raise BaseException(&quot;Legacy pass in use&quot;)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/compiler_lock.py</span> in <span class="ni">_acquire_compile_lock</span><span class="nt">(*args, **kwargs)</span>
+<span class="g g-Whitespace">     </span><span class="mi">33</span><span class="s2">         def _acquire_compile_lock(*args, **kwargs):</span>
+<span class="g g-Whitespace">     </span><span class="mi">34</span><span class="s2">             with self:</span>
+<span class="ne">---&gt; </span><span class="mi">35</span><span class="s2">                 return func(*args, **kwargs)</span>
+<span class="g g-Whitespace">     </span><span class="mi">36</span><span class="s2">         return _acquire_compile_lock</span>
+<span class="g g-Whitespace">     </span><span class="mi">37</span><span class="s2"> </span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/compiler_machinery.py</span> in <span class="ni">_runPass</span><span class="nt">(self, index, pss, internal_state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">287</span><span class="s2">             mutated |= check(pss.run_initialization, internal_state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">288</span><span class="s2">         with SimpleTimer() as pass_time:</span>
+<span class="ne">--&gt; </span><span class="mi">289</span><span class="s2">             mutated |= check(pss.run_pass, internal_state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">290</span><span class="s2">         with SimpleTimer() as finalize_time:</span>
+<span class="g g-Whitespace">    </span><span class="mi">291</span><span class="s2">             mutated |= check(pss.run_finalizer, internal_state)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/compiler_machinery.py</span> in <span class="ni">check</span><span class="nt">(func, compiler_state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">260</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">261</span><span class="s2">         def check(func, compiler_state):</span>
+<span class="ne">--&gt; </span><span class="mi">262</span><span class="s2">             mangled = func(compiler_state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">263</span><span class="s2">             if mangled not in (True, False):</span>
+<span class="g g-Whitespace">    </span><span class="mi">264</span><span class="s2">                 msg = (&quot;CompilerPass implementations should return True/False. &quot;</span>
 
 <span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typed_passes.py</span> in <span class="ni">run_pass</span><span class="nt">(self, state)</span>
-<span class="g g-Whitespace">    </span><span class="mi">384</span><span class="sd">                 lower.lower()</span>
-<span class="g g-Whitespace">    </span><span class="mi">385</span><span class="sd">                 if not flags.no_cpython_wrapper:</span>
-<span class="ne">--&gt; </span><span class="mi">386</span><span class="sd">                     lower.create_cpython_wrapper(flags.release_gil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">387</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">388</span><span class="sd">                 if not flags.no_cfunc_wrapper:</span>
+<span class="g g-Whitespace">    </span><span class="mi">461</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">462</span><span class="s2">         # TODO: Pull this out into the pipeline</span>
+<span class="ne">--&gt; </span><span class="mi">463</span><span class="s2">         NativeLowering().run_pass(state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">464</span><span class="s2">         lowered = state[&#39;cr&#39;]</span>
+<span class="g g-Whitespace">    </span><span class="mi">465</span><span class="s2">         signature = typing.signature(state.return_type, *state.args)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">create_cpython_wrapper</span><span class="nt">(self, release_gil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">240</span><span class="sd">                                                 self.env, self.call_helper,</span>
-<span class="g g-Whitespace">    </span><span class="mi">241</span><span class="sd">                                                 release_gil=release_gil)</span>
-<span class="ne">--&gt; </span><span class="mi">242</span><span class="sd">         self.context.create_cpython_wrapper(self.library, self.fndesc,</span>
-<span class="g g-Whitespace">    </span><span class="mi">243</span><span class="sd">                                             self.env, self.call_helper,</span>
-<span class="g g-Whitespace">    </span><span class="mi">244</span><span class="sd">                                             release_gil=release_gil)</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typed_passes.py</span> in <span class="ni">run_pass</span><span class="nt">(self, state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">382</span><span class="s2">                 lower = lowering.Lower(targetctx, library, fndesc, interp,</span>
+<span class="g g-Whitespace">    </span><span class="mi">383</span><span class="s2">                                        metadata=metadata)</span>
+<span class="ne">--&gt; </span><span class="mi">384</span><span class="s2">                 lower.lower()</span>
+<span class="g g-Whitespace">    </span><span class="mi">385</span><span class="s2">                 if not flags.no_cpython_wrapper:</span>
+<span class="g g-Whitespace">    </span><span class="mi">386</span><span class="s2">                     lower.create_cpython_wrapper(flags.release_gil)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/cpu.py</span> in <span class="ni">create_cpython_wrapper</span><span class="nt">(self, library, fndesc, env, call_helper, release_gil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">160</span><span class="sd">                                 fndesc, env, call_helper=call_helper,</span>
-<span class="g g-Whitespace">    </span><span class="mi">161</span><span class="sd">                                 release_gil=release_gil)</span>
-<span class="ne">--&gt; </span><span class="mi">162</span><span class="sd">         builder.build()</span>
-<span class="g g-Whitespace">    </span><span class="mi">163</span><span class="sd">         library.add_ir_module(wrapper_module)</span>
-<span class="g g-Whitespace">    </span><span class="mi">164</span><span class="sd"> </span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">134</span><span class="s2">         if self.generator_info is None:</span>
+<span class="g g-Whitespace">    </span><span class="mi">135</span><span class="s2">             self.genlower = None</span>
+<span class="ne">--&gt; </span><span class="mi">136</span><span class="s2">             self.lower_normal_function(self.fndesc)</span>
+<span class="g g-Whitespace">    </span><span class="mi">137</span><span class="s2">         else:</span>
+<span class="g g-Whitespace">    </span><span class="mi">138</span><span class="s2">             self.genlower = self.GeneratorLower(self)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/callwrapper.py</span> in <span class="ni">build</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">120</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">121</span><span class="sd">         api = self.context.get_python_api(builder)</span>
-<span class="ne">--&gt; </span><span class="mi">122</span><span class="sd">         self.build_wrapper(api, builder, closure, args, kws)</span>
-<span class="g g-Whitespace">    </span><span class="mi">123</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">124</span><span class="sd">         return wrapper, api</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_normal_function</span><span class="nt">(self, fndesc)</span>
+<span class="g g-Whitespace">    </span><span class="mi">188</span><span class="s2">         # Init argument values</span>
+<span class="g g-Whitespace">    </span><span class="mi">189</span><span class="s2">         self.extract_function_arguments()</span>
+<span class="ne">--&gt; </span><span class="mi">190</span><span class="s2">         entry_block_tail = self.lower_function_body()</span>
+<span class="g g-Whitespace">    </span><span class="mi">191</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">192</span><span class="s2">         # Close tail of entry block</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/callwrapper.py</span> in <span class="ni">build_wrapper</span><span class="nt">(self, api, builder, closure, args, kws)</span>
-<span class="g g-Whitespace">    </span><span class="mi">153</span><span class="sd">                 innerargs.append(None)</span>
-<span class="g g-Whitespace">    </span><span class="mi">154</span><span class="sd">             else:</span>
-<span class="ne">--&gt; </span><span class="mi">155</span><span class="sd">                 val = cleanup_manager.add_arg(builder.load(obj), ty)</span>
-<span class="g g-Whitespace">    </span><span class="mi">156</span><span class="sd">                 innerargs.append(val)</span>
-<span class="g g-Whitespace">    </span><span class="mi">157</span><span class="sd"> </span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_function_body</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">214</span><span class="s2">             bb = self.blkmap[offset]</span>
+<span class="g g-Whitespace">    </span><span class="mi">215</span><span class="s2">             self.builder.position_at_end(bb)</span>
+<span class="ne">--&gt; </span><span class="mi">216</span><span class="s2">             self.lower_block(block)</span>
+<span class="g g-Whitespace">    </span><span class="mi">217</span><span class="s2">         self.post_lower()</span>
+<span class="g g-Whitespace">    </span><span class="mi">218</span><span class="s2">         return entry_block_tail</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/callwrapper.py</span> in <span class="ni">add_arg</span><span class="nt">(self, obj, ty)</span>
-<span class="g g-Whitespace">     </span><span class="mi">56</span><span class="sd">             &quot;arg%d.err&quot; % self.arg_count)</span>
-<span class="g g-Whitespace">     </span><span class="mi">57</span><span class="sd">         with self.builder.goto_block(cleanupblk):</span>
-<span class="ne">---&gt; </span><span class="mi">58</span><span class="sd">             cleanup_arg()</span>
-<span class="g g-Whitespace">     </span><span class="mi">59</span><span class="sd">             # Go to next cleanup block</span>
-<span class="g g-Whitespace">     </span><span class="mi">60</span><span class="sd">             self.builder.branch(self.nextblk)</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_block</span><span class="nt">(self, block)</span>
+<span class="g g-Whitespace">    </span><span class="mi">228</span><span class="s2">             with new_error_context(&#39;lowering &quot;</span><span class="si">{inst}</span><span class="s2">&quot; at </span><span class="si">{loc}</span><span class="s2">&#39;, inst=inst,</span>
+<span class="g g-Whitespace">    </span><span class="mi">229</span><span class="s2">                                    loc=self.loc, errcls_=defaulterrcls):</span>
+<span class="ne">--&gt; </span><span class="mi">230</span><span class="s2">                 self.lower_inst(inst)</span>
+<span class="g g-Whitespace">    </span><span class="mi">231</span><span class="s2">         self.post_block(block)</span>
+<span class="g g-Whitespace">    </span><span class="mi">232</span><span class="s2"> </span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/callwrapper.py</span> in <span class="ni">cleanup_arg</span><span class="nt">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">48</span><span class="sd">             #  may need the native value)</span>
-<span class="g g-Whitespace">     </span><span class="mi">49</span><span class="sd">             if self.context.enable_nrt:</span>
-<span class="ne">---&gt; </span><span class="mi">50</span><span class="sd">                 self.context.nrt.decref(self.builder, ty, native.value)</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span><span class="sd"> </span>
-<span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd">         self.cleanups.append(cleanup_arg)</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_inst</span><span class="nt">(self, inst)</span>
+<span class="g g-Whitespace">    </span><span class="mi">325</span><span class="s2">         if isinstance(inst, ir.Assign):</span>
+<span class="g g-Whitespace">    </span><span class="mi">326</span><span class="s2">             ty = self.typeof(inst.target.name)</span>
+<span class="ne">--&gt; </span><span class="mi">327</span><span class="s2">             val = self.lower_assign(ty, inst)</span>
+<span class="g g-Whitespace">    </span><span class="mi">328</span><span class="s2">             self.storevar(val, inst.target.name)</span>
+<span class="g g-Whitespace">    </span><span class="mi">329</span><span class="s2"> </span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/runtime/context.py</span> in <span class="ni">decref</span><span class="nt">(self, builder, typ, value)</span>
-<span class="g g-Whitespace">    </span><span class="mi">222</span><span class="sd">         Recursively decref the given *value* and its members.</span>
-<span class="g g-Whitespace">    </span><span class="mi">223</span><span class="sd">         &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">224</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_call_incref_decref</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;NRT_decref&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">225</span> 
-<span class="g g-Whitespace">    </span><span class="mi">226</span>     <span class="k">def</span> <span class="nf">get_nrt_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_assign</span><span class="nt">(self, ty, inst)</span>
+<span class="g g-Whitespace">    </span><span class="mi">500</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">501</span><span class="s2">         elif isinstance(value, ir.Expr):</span>
+<span class="ne">--&gt; </span><span class="mi">502</span><span class="s2">             return self.lower_expr(ty, value)</span>
+<span class="g g-Whitespace">    </span><span class="mi">503</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">504</span><span class="s2">         elif isinstance(value, ir.Var):</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/runtime/context.py</span> in <span class="ni">_call_incref_decref</span><span class="nt">(self, builder, typ, value, funcname)</span>
-<span class="g g-Whitespace">    </span><span class="mi">202</span>         <span class="kn">from</span> <span class="nn">numba.core.runtime.nrtdynmod</span> <span class="kn">import</span> <span class="n">incref_decref_ty</span>
-<span class="g g-Whitespace">    </span><span class="mi">203</span> 
-<span class="ne">--&gt; </span><span class="mi">204</span>         <span class="n">meminfos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_meminfos</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">205</span>         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">mi</span> <span class="ow">in</span> <span class="n">meminfos</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">206</span>             <span class="n">mod</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">module</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_expr</span><span class="nt">(self, resty, expr)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1156</span><span class="s2">         elif expr.op == &quot;getitem&quot;:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1157</span><span class="s2">             signature = self.fndesc.calltypes[expr]</span>
+<span class="ne">-&gt; </span><span class="mi">1158</span><span class="s2">             return self.lower_getitem(resty, expr, expr.value, expr.index,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1159</span><span class="s2">                                       signature)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1160</span><span class="s2"> </span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/runtime/context.py</span> in <span class="ni">get_meminfos</span><span class="nt">(self, builder, ty, val)</span>
-<span class="g g-Whitespace">    </span><span class="mi">191</span>         <span class="k">for</span> <span class="n">mtyp</span><span class="p">,</span> <span class="n">getter</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">192</span>             <span class="n">field</span> <span class="o">=</span> <span class="n">getter</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">193</span>             <span class="n">inner_meminfos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_meminfos</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">mtyp</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">194</span>             <span class="n">meminfos</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">inner_meminfos</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">195</span>         <span class="k">return</span> <span class="n">meminfos</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_getitem</span><span class="nt">(self, resty, expr, value, index, signature)</span>
+<span class="g g-Whitespace">    </span><span class="mi">636</span><span class="s2">         op = operator.getitem</span>
+<span class="g g-Whitespace">    </span><span class="mi">637</span><span class="s2">         fnop = self.context.typing_context.resolve_value_type(op)</span>
+<span class="ne">--&gt; </span><span class="mi">638</span><span class="s2">         callsig = fnop.get_call_type(</span>
+<span class="g g-Whitespace">    </span><span class="mi">639</span><span class="s2">             self.context.typing_context, signature.args, </span><span class="si">{}</span><span class="s2">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">640</span><span class="s2">         )</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/runtime/context.py</span> in <span class="ni">get_meminfos</span><span class="nt">(self, builder, ty, val)</span>
-<span class="g g-Whitespace">    </span><span class="mi">189</span>             <span class="n">meminfos</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ty</span><span class="p">,</span> <span class="n">mi</span><span class="p">))</span>
-<span class="g g-Whitespace">    </span><span class="mi">190</span> 
-<span class="ne">--&gt; </span><span class="mi">191</span>         <span class="k">for</span> <span class="n">mtyp</span><span class="p">,</span> <span class="n">getter</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">192</span>             <span class="n">field</span> <span class="o">=</span> <span class="n">getter</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">193</span>             <span class="n">inner_meminfos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_meminfos</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">mtyp</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/types/functions.py</span> in <span class="ni">get_call_type</span><span class="nt">(self, context, args, kws)</span>
+<span class="g g-Whitespace">    </span><span class="mi">297</span><span class="s2">                     else:</span>
+<span class="g g-Whitespace">    </span><span class="mi">298</span><span class="s2">                         nolitargs = tuple([_unlit_non_poison(a) for a in args])</span>
+<span class="ne">--&gt; </span><span class="mi">299</span><span class="s2">                         nolitkws = {k: _unlit_non_poison(v)</span>
+<span class="g g-Whitespace">    </span><span class="mi">300</span><span class="s2">                                     for k, v in kws.items()}</span>
+<span class="g g-Whitespace">    </span><span class="mi">301</span><span class="s2">                         sig = temp.apply(nolitargs, nolitkws)</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
@@ -833,22 +978,22 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 (taxfall is count of funits with cut in income tax in reform 2 vs 1)
 (taxrise is count of funits with rise in income tax in reform 2 vs 1)
         funits(#m)  taxfall(#m)  taxrise(#m)  agg_diff($b)  mean_diff($)  aftertax_income_diff(%)
-0-10n         0.05         0.00         0.00         0.006         131.3                      0.0
-0-10z         0.91         0.00         0.00         0.000           0.0                      NaN
-0-10p        15.33         4.86         1.69        -0.655         -42.7                      0.4
-10-20        16.29         9.07         1.87        -1.894        -116.3                      0.5
-20-30        16.29         8.56         1.62        -3.339        -205.0                      0.7
-30-40        16.29         9.70         1.85        -5.138        -315.5                      0.8
-40-50        16.29        10.84         1.75        -6.737        -413.6                      0.9
-50-60        16.29        10.86         2.05        -8.111        -498.1                      0.9
-60-70        16.29        11.94         1.98       -10.640        -653.4                      0.9
-70-80        16.29        13.28         1.75       -15.309        -940.0                      1.1
-80-90        16.29        13.55         2.24       -22.922       -1407.5                      1.2
-90-100       16.29        14.50         1.68       -75.581       -4640.4                      1.9
-ALL         162.86       107.16        18.49      -150.319        -923.0                      1.3
-90-95         8.14         7.13         0.93       -18.071       -2218.8                      1.4
-95-99         6.51         5.95         0.54       -35.267       -5413.7                      2.3
-Top 1%        1.63         1.42         0.20       -22.243      -13655.5                      2.0
+0-10n     0.106585     0.000000     0.000000      0.000000      0.000000                 0.000000
+0-10z     8.200964     0.000000     0.000000      0.000000      0.000000                      NaN
+0-10p    11.685544     0.145729     0.017773     -0.010031     -0.858403                 0.026886
+10-20    19.993379     6.131286     2.879208     -0.737282    -36.876308                 0.307117
+20-30    19.992590     9.819025     2.904122     -1.767789    -88.422187                 0.388099
+30-40    19.995314     8.928170     2.495154     -3.420389   -171.059528                 0.551945
+40-50    19.993436    10.540007     2.490796     -5.754637   -287.826313                 0.746778
+50-60    19.994152    12.663991     2.070555     -8.569910   -428.620835                 0.894647
+60-70    19.992890    13.910415     1.784819    -11.604895   -580.451123                 0.964668
+70-80    19.994268    15.376689     1.552446    -16.537168   -827.095476                 1.080738
+80-90    19.993895    17.040071     1.620336    -26.070610  -1303.928552                 1.277742
+90-100   19.993808    18.220631     1.530360    -97.520960  -4877.557973                 2.180188
+ALL     199.936825   112.776014    19.345569   -171.993672   -860.240085                 1.396031
+90-95     9.996300     9.017015     0.757695    -23.229363  -2323.796032                 1.660532
+95-99     7.997983     7.390026     0.586730    -41.609762  -5202.531695                 2.400130
+Top 1%    1.999525     1.813590     0.185935    -32.681835 -16344.800972                 2.438041
 </pre></div>
 </div>
 </div>

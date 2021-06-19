@@ -222,11 +222,6 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../about/upgrading.html">
-   Upgrading to Tax-Calculator 2.0
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../about/license.html">
    License
   </a>
@@ -511,6 +506,11 @@
         
         
         
+        <a class="colab-button" href="https://colab.research.google.com/github/PSLmodels/Tax-Calculator/blob/master/docs/recipes/recipe02.ipynb"><button type="button" class="btn btn-secondary topbarbtn"
+                title="Launch Colab" data-toggle="tooltip" data-placement="left"><img class="colab-button-logo"
+                    src="../_static/images/logo_colab.png"
+                    alt="Interact on Colab">Colab</button></a>
+        
         
     </div>
 </div>
@@ -552,7 +552,7 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <span class="n">itax_rev1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
 
 <span class="c1"># specify Calculator object for static analysis of reform policy</span>
-<span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;_static/reformA.json&#39;</span><span class="p">))</span>
+<span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformA.json&#39;</span><span class="p">))</span>
 <span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
 
 <span class="c1"># calculate reform income tax liabilities for cyr under static assumptions</span>
@@ -582,75 +582,47 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">c2b69f7d7ea4</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">     </span><span class="mi">31</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">32</span> <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">33</span> <span class="n">_</span><span class="p">,</span> <span class="n">df2br</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span> <span class="n">response_elasticities</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">34</span> 
-<span class="g g-Whitespace">     </span><span class="mi">35</span> <span class="c1"># calculate reform income tax liabilities for CYR with behavioral response</span>
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">e3f4917dd976</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">17</span> 
+<span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="c1"># specify Calculator object for static analysis of reform policy</span>
+<span class="ne">---&gt; </span><span class="mi">19</span> <span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformA.json&#39;</span><span class="p">))</span>
+<span class="g g-Whitespace">     </span><span class="mi">20</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">21</span> 
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/behresp-0.11.0-py3.8.egg/behresp/behavior.py</span> in <span class="ni">response</span><span class="nt">(calc_1, calc_2, elasticities, dump)</span>
-<span class="g g-Whitespace">     </span><span class="mi">94</span> 
-<span class="g g-Whitespace">     </span><span class="mi">95</span>     <span class="c1"># Check function argument types and elasticity values</span>
-<span class="ne">---&gt; </span><span class="mi">96</span>     <span class="n">calc1</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc_1</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">97</span>     <span class="n">calc2</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc_2</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">98</span>     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">)</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/policy.py</span> in <span class="ni">implement_reform</span><span class="nt">(self, reform, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">119</span>         <span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">120</span><span class="sd">         # need to do conversion:</span>
+<span class="ne">--&gt; </span><span class="mi">121</span><span class="sd">         return self._update(reform, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">122</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">123</span><span class="sd">     @staticmethod</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">170</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
-<span class="g g-Whitespace">    </span><span class="mi">171</span>                 <span class="k">else</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">172</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">_reconstruct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">,</span> <span class="o">*</span><span class="n">rv</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span> 
-<span class="g g-Whitespace">    </span><span class="mi">174</span>     <span class="c1"># If is its own copy, don&#39;t memoize.</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py</span> in <span class="ni">_update</span><span class="nt">(self, revision, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">663</span><span class="sd">                     None</span>
+<span class="g g-Whitespace">    </span><span class="mi">664</span><span class="sd">                 )</span>
+<span class="ne">--&gt; </span><span class="mi">665</span><span class="sd">         return self.adjust(</span>
+<span class="g g-Whitespace">    </span><span class="mi">666</span><span class="sd">             new_params,</span>
+<span class="g g-Whitespace">    </span><span class="mi">667</span><span class="sd">             print_warnings=print_warnings,</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_reconstruct</span><span class="nt">(x, memo, func, args, state, listiter, dictiter, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">268</span>     <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">269</span>         <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">270</span>             <span class="n">state</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">271</span>         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;__setstate__&#39;</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">272</span>             <span class="n">y</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py</span> in <span class="ni">adjust</span><span class="nt">(self, params_or_path, print_warnings, raise_errors, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">174</span><span class="sd">             # defer related-parameter validation until all intermediate updates</span>
+<span class="g g-Whitespace">    </span><span class="mi">175</span><span class="sd">             # are complete.</span>
+<span class="ne">--&gt; </span><span class="mi">176</span><span class="sd">             with self.transaction(</span>
+<span class="g g-Whitespace">    </span><span class="mi">177</span><span class="sd">                 defer_validation=True,</span>
+<span class="g g-Whitespace">    </span><span class="mi">178</span><span class="sd">                 raise_errors=True,</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>     <span class="n">copier</span> <span class="o">=</span> <span class="n">_deepcopy_dispatch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>     <span class="k">if</span> <span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">146</span>         <span class="n">y</span> <span class="o">=</span> <span class="n">copier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/contextlib.py</span> in <span class="ni">__enter__</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">111</span><span class="sd">         del self.args, self.kwds, self.func</span>
+<span class="g g-Whitespace">    </span><span class="mi">112</span><span class="sd">         try:</span>
+<span class="ne">--&gt; </span><span class="mi">113</span><span class="sd">             return next(self.gen)</span>
+<span class="g g-Whitespace">    </span><span class="mi">114</span><span class="sd">         except StopIteration:</span>
+<span class="g g-Whitespace">    </span><span class="mi">115</span><span class="sd">             raise RuntimeError(&quot;generator didn&#39;t yield&quot;) from None</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_deepcopy_dict</span><span class="nt">(x, memo, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span>     <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span>     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="ne">--&gt; </span><span class="mi">230</span>         <span class="n">y</span><span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">memo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span>     <span class="k">return</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="n">d</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deepcopy_dict</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">170</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
-<span class="g g-Whitespace">    </span><span class="mi">171</span>                 <span class="k">else</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">172</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">_reconstruct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">,</span> <span class="o">*</span><span class="n">rv</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span> 
-<span class="g g-Whitespace">    </span><span class="mi">174</span>     <span class="c1"># If is its own copy, don&#39;t memoize.</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_reconstruct</span><span class="nt">(x, memo, func, args, state, listiter, dictiter, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">268</span>     <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">269</span>         <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">270</span>             <span class="n">state</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">271</span>         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;__setstate__&#39;</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">272</span>             <span class="n">y</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>     <span class="n">copier</span> <span class="o">=</span> <span class="n">_deepcopy_dispatch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>     <span class="k">if</span> <span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">146</span>         <span class="n">y</span> <span class="o">=</span> <span class="n">copier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_deepcopy_dict</span><span class="nt">(x, memo, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span>     <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span>     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="ne">--&gt; </span><span class="mi">230</span>         <span class="n">y</span><span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">memo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span>     <span class="k">return</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="n">d</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deepcopy_dict</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">transaction</span><span class="nt">(self, defer_validation, raise_errors, ignore_warnings)</span>
+<span class="g g-Whitespace">    </span><span class="mi">420</span><span class="sd">             - `raise_errors`: Either raise errors or simply store the error messages.</span>
+<span class="g g-Whitespace">    </span><span class="mi">421</span><span class="sd">         &quot;&quot;&quot;</span>
+<span class="ne">--&gt; </span><span class="mi">422</span>         <span class="n">_data</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">423</span>         <span class="n">_ops</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">424</span>         <span class="n">_state</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view_state</span><span class="p">())</span>
 
 <span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
 <span class="g g-Whitespace">    </span><span class="mi">170</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
@@ -702,18 +674,11 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <span class="g g-Whitespace">    </span><span class="mi">174</span>     <span class="c1"># If is its own copy, don&#39;t memoize.</span>
 
 <span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_reconstruct</span><span class="nt">(x, memo, func, args, state, listiter, dictiter, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">294</span>             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dictiter</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">295</span>                 <span class="n">key</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">296</span>                 <span class="n">value</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">297</span>                 <span class="n">y</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-<span class="g g-Whitespace">    </span><span class="mi">298</span>         <span class="k">else</span><span class="p">:</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">136</span> 
-<span class="g g-Whitespace">    </span><span class="mi">137</span>     <span class="n">d</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">138</span>     <span class="n">y</span> <span class="o">=</span> <span class="n">memo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">_nil</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">139</span>     <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_nil</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">140</span>         <span class="k">return</span> <span class="n">y</span>
+<span class="g g-Whitespace">    </span><span class="mi">262</span>     <span class="k">if</span> <span class="n">deep</span> <span class="ow">and</span> <span class="n">args</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">263</span>         <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">264</span>     <span class="n">y</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">265</span>     <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">266</span>         <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
@@ -778,39 +743,39 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
   <tbody>
     <tr>
       <th>Returns (#m)</th>
-      <td>167.510</td>
-      <td>169.750</td>
-      <td>171.930</td>
+      <td>205.440</td>
+      <td>208.140</td>
+      <td>210.820</td>
     </tr>
     <tr>
       <th>AGI ($b)</th>
-      <td>12081.707</td>
-      <td>12624.263</td>
-      <td>13145.018</td>
+      <td>11475.571</td>
+      <td>11691.366</td>
+      <td>12219.492</td>
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>33.100</td>
-      <td>33.800</td>
-      <td>34.690</td>
+      <td>30.950</td>
+      <td>29.170</td>
+      <td>30.670</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>935.939</td>
-      <td>967.582</td>
-      <td>1016.742</td>
+      <td>824.019</td>
+      <td>760.366</td>
+      <td>809.757</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>134.410</td>
-      <td>135.950</td>
-      <td>137.240</td>
+      <td>174.490</td>
+      <td>178.960</td>
+      <td>180.140</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>2382.421</td>
-      <td>2463.196</td>
-      <td>2543.217</td>
+      <td>3188.464</td>
+      <td>3289.501</td>
+      <td>3344.937</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
@@ -820,51 +785,51 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>9264.215</td>
-      <td>9713.414</td>
-      <td>10129.576</td>
+      <td>8513.062</td>
+      <td>8731.100</td>
+      <td>9177.528</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1588.955</td>
-      <td>1673.211</td>
-      <td>1752.027</td>
+      <td>1505.162</td>
+      <td>1544.527</td>
+      <td>1635.569</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>11415.741</td>
-      <td>11935.474</td>
-      <td>12417.671</td>
+      <td>10856.448</td>
+      <td>11122.136</td>
+      <td>11611.624</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>1.491</td>
-      <td>1.526</td>
-      <td>1.558</td>
+      <td>0.923</td>
+      <td>0.883</td>
+      <td>0.902</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.680</td>
-      <td>0.690</td>
-      <td>0.690</td>
+      <td>0.420</td>
+      <td>0.440</td>
+      <td>0.440</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1590.446</td>
-      <td>1674.736</td>
-      <td>1753.584</td>
+      <td>1506.085</td>
+      <td>1545.410</td>
+      <td>1636.472</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
-      <td>76.236</td>
-      <td>76.315</td>
-      <td>77.573</td>
+      <td>103.539</td>
+      <td>867.141</td>
+      <td>102.528</td>
     </tr>
     <tr>
       <th>Nonrefundable Credits ($b)</th>
-      <td>94.900</td>
-      <td>96.523</td>
-      <td>97.774</td>
+      <td>94.954</td>
+      <td>3.935</td>
+      <td>98.942</td>
     </tr>
     <tr>
       <th>Reform Surtaxes ($b)</th>
@@ -874,39 +839,57 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Other Taxes ($b)</th>
-      <td>11.433</td>
-      <td>11.964</td>
-      <td>12.526</td>
+      <td>13.895</td>
+      <td>12.309</td>
+      <td>13.109</td>
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>1430.743</td>
-      <td>1513.862</td>
-      <td>1590.763</td>
+      <td>1321.487</td>
+      <td>686.642</td>
+      <td>1448.110</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
-      <td>1325.975</td>
-      <td>1386.091</td>
-      <td>1442.765</td>
+      <td>1186.745</td>
+      <td>1213.929</td>
+      <td>1267.083</td>
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>2756.718</td>
-      <td>2899.953</td>
-      <td>3033.528</td>
+      <td>2508.233</td>
+      <td>1900.571</td>
+      <td>2715.194</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>59.110</td>
-      <td>59.530</td>
-      <td>60.090</td>
+      <td>101.340</td>
+      <td>136.280</td>
+      <td>102.410</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
-      <td>38.760</td>
-      <td>39.420</td>
-      <td>40.260</td>
+      <td>69.360</td>
+      <td>106.330</td>
+      <td>71.670</td>
+    </tr>
+    <tr>
+      <th>UBI Benefits ($b)</th>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>Total Benefits, Consumption Value ($b)</th>
+      <td>3650.123</td>
+      <td>3871.611</td>
+      <td>4112.506</td>
+    </tr>
+    <tr>
+      <th>Total Benefits Cost ($b)</th>
+      <td>3650.123</td>
+      <td>3871.611</td>
+      <td>4112.506</td>
     </tr>
   </tbody>
 </table>
@@ -946,93 +929,93 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
   <tbody>
     <tr>
       <th>Returns (#m)</th>
-      <td>167.510</td>
-      <td>169.750</td>
-      <td>171.930</td>
+      <td>205.440</td>
+      <td>208.140</td>
+      <td>210.820</td>
     </tr>
     <tr>
       <th>AGI ($b)</th>
-      <td>12081.707</td>
-      <td>12624.263</td>
-      <td>13145.018</td>
+      <td>11475.571</td>
+      <td>11691.366</td>
+      <td>12219.492</td>
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>33.030</td>
-      <td>33.730</td>
-      <td>34.610</td>
+      <td>30.860</td>
+      <td>29.100</td>
+      <td>30.580</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>933.241</td>
-      <td>965.027</td>
-      <td>1013.815</td>
+      <td>821.244</td>
+      <td>757.934</td>
+      <td>807.273</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>134.480</td>
-      <td>136.020</td>
-      <td>137.320</td>
+      <td>174.580</td>
+      <td>179.040</td>
+      <td>180.230</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>2383.809</td>
-      <td>2464.550</td>
-      <td>2544.827</td>
+      <td>3190.011</td>
+      <td>3290.859</td>
+      <td>3346.410</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
-      <td>333.334</td>
-      <td>344.504</td>
-      <td>356.215</td>
+      <td>387.209</td>
+      <td>394.699</td>
+      <td>403.152</td>
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>9011.004</td>
-      <td>9451.253</td>
-      <td>9858.636</td>
+      <td>8274.064</td>
+      <td>8486.881</td>
+      <td>8927.069</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1579.369</td>
-      <td>1664.122</td>
-      <td>1743.689</td>
+      <td>1511.260</td>
+      <td>1550.256</td>
+      <td>1643.269</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>11418.092</td>
-      <td>11937.685</td>
-      <td>12420.167</td>
+      <td>10859.047</td>
+      <td>11124.396</td>
+      <td>11613.962</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>1.558</td>
-      <td>1.594</td>
-      <td>1.635</td>
+      <td>0.978</td>
+      <td>0.964</td>
+      <td>0.978</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.710</td>
-      <td>0.720</td>
-      <td>0.720</td>
+      <td>0.450</td>
+      <td>0.450</td>
+      <td>0.460</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1580.927</td>
-      <td>1665.715</td>
-      <td>1745.324</td>
+      <td>1512.239</td>
+      <td>1551.220</td>
+      <td>1644.247</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
-      <td>79.004</td>
-      <td>79.124</td>
-      <td>80.659</td>
+      <td>106.802</td>
+      <td>867.141</td>
+      <td>106.097</td>
     </tr>
     <tr>
       <th>Nonrefundable Credits ($b)</th>
-      <td>89.696</td>
-      <td>91.280</td>
-      <td>92.488</td>
+      <td>89.372</td>
+      <td>3.728</td>
+      <td>93.371</td>
     </tr>
     <tr>
       <th>Reform Surtaxes ($b)</th>
@@ -1042,39 +1025,57 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Other Taxes ($b)</th>
-      <td>11.433</td>
-      <td>11.964</td>
-      <td>12.526</td>
+      <td>13.895</td>
+      <td>12.309</td>
+      <td>13.109</td>
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>1423.661</td>
-      <td>1507.275</td>
-      <td>1584.703</td>
+      <td>1329.959</td>
+      <td>692.660</td>
+      <td>1457.889</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
-      <td>1325.975</td>
-      <td>1386.091</td>
-      <td>1442.765</td>
+      <td>1186.745</td>
+      <td>1213.929</td>
+      <td>1267.083</td>
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>2749.636</td>
-      <td>2893.366</td>
-      <td>3027.468</td>
+      <td>2516.705</td>
+      <td>1906.589</td>
+      <td>2724.972</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>61.310</td>
-      <td>61.710</td>
-      <td>62.370</td>
+      <td>103.730</td>
+      <td>138.010</td>
+      <td>104.890</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
-      <td>39.110</td>
-      <td>39.800</td>
-      <td>40.630</td>
+      <td>69.930</td>
+      <td>107.270</td>
+      <td>72.360</td>
+    </tr>
+    <tr>
+      <th>UBI Benefits ($b)</th>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>Total Benefits, Consumption Value ($b)</th>
+      <td>3650.123</td>
+      <td>3871.611</td>
+      <td>4112.506</td>
+    </tr>
+    <tr>
+      <th>Total Benefits Cost ($b)</th>
+      <td>3650.123</td>
+      <td>3871.611</td>
+      <td>4112.506</td>
     </tr>
   </tbody>
 </table>
@@ -1114,93 +1115,93 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
   <tbody>
     <tr>
       <th>Returns (#m)</th>
-      <td>167.510</td>
-      <td>169.750</td>
-      <td>171.930</td>
+      <td>205.440</td>
+      <td>208.140</td>
+      <td>210.820</td>
     </tr>
     <tr>
       <th>AGI ($b)</th>
-      <td>12059.423</td>
-      <td>12599.813</td>
-      <td>13118.735</td>
+      <td>11445.873</td>
+      <td>11659.522</td>
+      <td>12185.655</td>
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>32.990</td>
-      <td>33.700</td>
-      <td>34.580</td>
+      <td>30.830</td>
+      <td>29.070</td>
+      <td>30.560</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>931.927</td>
-      <td>963.754</td>
-      <td>1012.542</td>
+      <td>819.497</td>
+      <td>756.391</td>
+      <td>805.450</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>134.530</td>
-      <td>136.050</td>
-      <td>137.350</td>
+      <td>174.620</td>
+      <td>179.060</td>
+      <td>180.260</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>2384.573</td>
-      <td>2465.148</td>
-      <td>2545.379</td>
+      <td>3190.774</td>
+      <td>3291.311</td>
+      <td>3347.043</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
-      <td>333.334</td>
-      <td>344.504</td>
-      <td>356.215</td>
+      <td>387.209</td>
+      <td>394.699</td>
+      <td>403.152</td>
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>8988.663</td>
-      <td>9426.789</td>
-      <td>9832.403</td>
+      <td>8245.048</td>
+      <td>8455.598</td>
+      <td>8893.866</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1569.117</td>
-      <td>1653.068</td>
-      <td>1731.937</td>
+      <td>1498.246</td>
+      <td>1536.636</td>
+      <td>1628.637</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>11396.832</td>
-      <td>11914.300</td>
-      <td>12394.970</td>
+      <td>10830.848</td>
+      <td>11093.908</td>
+      <td>11581.700</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>1.628</td>
-      <td>1.675</td>
-      <td>1.710</td>
+      <td>0.990</td>
+      <td>0.984</td>
+      <td>1.007</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.720</td>
-      <td>0.730</td>
-      <td>0.730</td>
+      <td>0.440</td>
+      <td>0.450</td>
+      <td>0.460</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1570.745</td>
-      <td>1654.743</td>
-      <td>1733.647</td>
+      <td>1499.236</td>
+      <td>1537.620</td>
+      <td>1629.644</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
-      <td>78.722</td>
-      <td>78.843</td>
-      <td>80.409</td>
+      <td>106.529</td>
+      <td>867.114</td>
+      <td>105.817</td>
     </tr>
     <tr>
       <th>Nonrefundable Credits ($b)</th>
-      <td>89.942</td>
-      <td>91.531</td>
-      <td>92.729</td>
+      <td>89.619</td>
+      <td>3.744</td>
+      <td>93.623</td>
     </tr>
     <tr>
       <th>Reform Surtaxes ($b)</th>
@@ -1210,39 +1211,57 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Other Taxes ($b)</th>
-      <td>11.212</td>
-      <td>11.730</td>
-      <td>12.286</td>
+      <td>13.579</td>
+      <td>12.004</td>
+      <td>12.784</td>
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>1413.293</td>
-      <td>1496.099</td>
-      <td>1572.796</td>
+      <td>1316.667</td>
+      <td>678.766</td>
+      <td>1442.988</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
-      <td>1325.624</td>
-      <td>1385.648</td>
-      <td>1442.241</td>
+      <td>1185.888</td>
+      <td>1212.854</td>
+      <td>1266.008</td>
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>2738.918</td>
-      <td>2881.747</td>
-      <td>3015.037</td>
+      <td>2502.555</td>
+      <td>1891.620</td>
+      <td>2708.996</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>61.130</td>
-      <td>61.530</td>
-      <td>62.220</td>
+      <td>103.580</td>
+      <td>137.980</td>
+      <td>104.690</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
-      <td>38.980</td>
-      <td>39.660</td>
-      <td>40.530</td>
+      <td>69.730</td>
+      <td>107.250</td>
+      <td>72.170</td>
+    </tr>
+    <tr>
+      <th>UBI Benefits ($b)</th>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>Total Benefits, Consumption Value ($b)</th>
+      <td>3650.123</td>
+      <td>3871.611</td>
+      <td>4112.506</td>
+    </tr>
+    <tr>
+      <th>Total Benefits Cost ($b)</th>
+      <td>3650.123</td>
+      <td>3871.611</td>
+      <td>4112.506</td>
     </tr>
   </tbody>
 </table>
