@@ -720,8 +720,8 @@
     "iitax": {
       "type": "float",
       "desc": "Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output",
-      "form": {"2013-2013": "1040 line 61 minus line 56 minus line 60a",
-               "2014-2016": "1040 line 63 minus line 57 minus line 62a"}
+      "form": {"2013-2013": "1040 line 61 minus lines 56, 60a, 64a, 65, and 66",
+               "2014-2016": "1040 line 63 minus lines 57, 62a, 66a, 67, and 68"}
     },
     "num": {
       "type": "int",
