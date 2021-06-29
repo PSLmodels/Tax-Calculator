@@ -5,6 +5,7 @@ parts:
   chapters:
   - file: usage/starting
   - file: usage/overview
+  - file: usage/data
   - file: guide/index
     sections:
     - file: guide/python_interface
