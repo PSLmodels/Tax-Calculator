@@ -1,7 +1,7 @@
 Data for Tax-Calculator
 =======================
 
-A Tax-Calculator `Records` object is created by passing a Pandas DataFrame or a string that provides teh path to a CSV file with data you'd like to use in Tax-Calculator.
+A Tax-Calculator `Records` object is created by passing a Pandas DataFrame or a string that provides the path to a CSV file with data you'd like to use in Tax-Calculator.
 
 
 ## TaxData
@@ -20,7 +20,7 @@ The `taxdata` package also produces a weights file and growth factors file for u
 
 For users who have purchased their own version of the PUF, the `puf_weights.csv.gz` and `growfactors.csv` files that are included in Tax-Calculator can be used to create a PUF-based dataset suitable for use in Tax-Calculator.
 
-We refer users of the PUF to the IRS limitations on the use of those data and their distribution.  We also refer users of the PUF weights file and grow factors to the [TaxData](https://github.com/PSLmodels/TaxData) documentation for details on how to use these files with the PUF and to see how well the resulting hit aggregate targets published by the IRS.  However, we do note that analysis with a PUF-based datafile tends to be the most accurate and validation of Tax-Calculator with other microsimulation models typically used a PUF-based datafile.
+We refer users of the PUF to the IRS limitations on the use of those data and their distribution.  We also refer users of the PUF weights file and grow factors to the [TaxData](https://github.com/PSLmodels/TaxData) documentation for details on how to use these files with the PUF and to see how well the resulting tax calculations hit aggregate targets published by the IRS.  However, we do note that analysis with a PUF-based datafile tends to be the most accurate and validation of Tax-Calculator with other microsimulation models often uses a PUF-based datafile.
 
 ## Using other data in Tax-Calculator
 
