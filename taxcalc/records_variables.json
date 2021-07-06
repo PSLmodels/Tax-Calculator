@@ -561,7 +561,7 @@
       "type": "float",
       "desc": "Non-imputed benefits",
       "form": {"2014-20??": "determined using government benefit program data"},
-      "availability": "taxdata_puf, taxdata_cps"
+      "availability": "taxdata_cps"
     },
     "p08000": {
       "type": "float",
@@ -598,31 +598,31 @@
       "type": "float",
       "desc": "Imputed SNAP benefits",
       "form": {"2014-20??": "imputed using the C-TAM model"},
-      "availability": "taxdata_puf, taxdata_cps"
+      "availability": "taxdata_cps"
     },
     "housing_ben": {
       "type": "float",
       "desc": "Imputed housing benefits",
       "form": {"2014-20??": "imputed using the C-TAM model"},
-      "availability": "taxdata_puf, taxdata_cps"
+      "availability": "taxdata_cps"
     },
     "ssi_ben": {
       "type": "float",
       "desc": "Imputed SSI benefits",
       "form": {"2014-20??": "imputed using the C-TAM model"},
-      "availability": "taxdata_puf, taxdata_cps"
+      "availability": "taxdata_cps"
     },
     "tanf_ben": {
       "type": "float",
       "desc": "Imputed TANF benefits",
       "form": {"2014-20??": "imputed using the C-TAM model"},
-      "availability": "taxdata_puf, taxdata_cps"
+      "availability": "taxdata_cps"
     },
     "vet_ben": {
       "type": "float",
       "desc": "Imputed Veteran's benefits",
       "form": {"2014-20??": "imputed using the C-TAM model"},
-      "availability": "taxdata_puf, taxdata_cps"
+      "availability": "taxdata_cps"
     },
     "wic_ben": {
       "type": "float",
