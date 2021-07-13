@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Getting started &#8212; Tax-Calculator</title>
+    <title>Data for Tax-Calculator &#8212; Tax-Calculator</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -51,8 +51,8 @@
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Structural overview" href="overview.html" />
-    <link rel="prev" title="Tax-Calculator" href="../index.html" />
+    <link rel="next" title="User guide" href="../guide/index.html" />
+    <link rel="prev" title="Structural overview" href="overview.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -95,8 +95,8 @@
  </span>
 </p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="starting.html">
    Getting started
   </a>
  </li>
@@ -105,8 +105,8 @@
    Structural overview
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="data.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    Data for Tax-Calculator
   </a>
  </li>
@@ -460,7 +460,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/usage/starting.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/usage/data.md"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
@@ -480,10 +480,10 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fusage/starting.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fusage/data.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/usage/starting.md"><button
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/usage/data.md"><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
     </div>
@@ -509,23 +509,25 @@
             <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#install-anaconda-python">
-   Install Anaconda Python
+  <a class="reference internal nav-link" href="#taxdata">
+   TaxData
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#current-population-survey-data">
+     Current Population Survey Data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-irs-public-use-file">
+     The IRS Public Use File
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#download-tax-calculator-package">
-   Download Tax-Calculator package
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#become-a-registered-github-user">
-   Become a registered GitHub user
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#read-tax-calculator-user-guide">
-   Read Tax-Calculator user guide
+  <a class="reference internal nav-link" href="#using-other-data-in-tax-calculator">
+   Using other data in Tax-Calculator
   </a>
  </li>
 </ul>
@@ -539,78 +541,27 @@
         
               <div>
                 
-  <div class="section" id="getting-started">
-<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
-<p>Tax-Calculator packages are available for Windows, Mac, and Linux computers
-that have the free Anaconda Python 3.7, 3.8, or 3.9 distribution installed.
-You can use Tax-Calculator without doing any Python programming, but the
-Anaconda distribution is required for Tax-Calculator to run.
-Take the following four steps to get started.</p>
-<div class="section" id="install-anaconda-python">
-<h2>Install Anaconda Python<a class="headerlink" href="#install-anaconda-python" title="Permalink to this headline">¶</a></h2>
-<p>Download and install the free Anaconda distribution of Python from
-<a class="reference external" href="https://www.anaconda.com/products/individual">Anaconda</a>.
-You must do this even if you already have Python installed on your computer,
-because the Anaconda distribution contains all the additional Python packages
-that Tax-Calculator uses to conduct its calculations
-(many of which are not included in other Python installations).
-You can install the Anaconda distribution without having administrative
-privileges on your computer and the Anaconda distribution will not interfere
-with any Python installation that came as part of your computer’s operating
-system.</p>
+  <div class="section" id="data-for-tax-calculator">
+<h1>Data for Tax-Calculator<a class="headerlink" href="#data-for-tax-calculator" title="Permalink to this headline">¶</a></h1>
+<p>A Tax-Calculator <code class="docutils literal notranslate"><span class="pre">Records</span></code> object is created by passing a Pandas DataFrame or a string that provides the path to a CSV file with data you’d like to use in Tax-Calculator.</p>
+<div class="section" id="taxdata">
+<h2>TaxData<a class="headerlink" href="#taxdata" title="Permalink to this headline">¶</a></h2>
+<p>To make Tax-Calculator more useful out of the box, it ships with two data options for users, both of which are created by the <a class="reference external" href="https://github.com/PSLmodels/TaxData">TaxData</a> project.  We refer users to that project for more specific documentation of these data, but we provide a brief overview of the two data options provided by TaxData that come with a Tax-Calculator installation.</p>
+<div class="section" id="current-population-survey-data">
+<h3>Current Population Survey Data<a class="headerlink" href="#current-population-survey-data" title="Permalink to this headline">¶</a></h3>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">Records.cps_constructor()</span></code> method to create a <code class="docutils literal notranslate"><span class="pre">Records</span></code> class object, Tax-Calculator users will be loading the <code class="docutils literal notranslate"><span class="pre">taxdata</span></code> Current Population Survey (CPS) data file. This file is based on publicly available survey data, which is then weighted via <code class="docutils literal notranslate"><span class="pre">taxdata</span></code> to hit IRS/SOI targets.  The data are then grown out to hit aggregate forecasts through the time horizon available in Tax-Calculator (approximately the next 10 years).</p>
+<p>Tax-Calculator provides unit tests to ensure that certain totals are hit with the CPS-based file.  However, users should note that these tests are simply to ensure <strong>the accuracy of Tax-Calculator’s tax logic</strong> and <strong>not the accuracy of the CPS-based data file produced by <code class="docutils literal notranslate"><span class="pre">taxdata</span></code></strong>.  Please see the <a class="reference external" href="https://github.com/PSLmodels/TaxData">TaxData</a> documentation for any validation of those data.</p>
 </div>
-<div class="section" id="download-tax-calculator-package">
-<h2>Download Tax-Calculator package<a class="headerlink" href="#download-tax-calculator-package" title="Permalink to this headline">¶</a></h2>
-<p>Download a Tax-Calculator <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package for your computer by executing
-this command from the command prompt:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">PSLmodels</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">taxcalc</span>
-</pre></div>
+<div class="section" id="the-irs-public-use-file">
+<h3>The IRS Public Use File<a class="headerlink" href="#the-irs-public-use-file" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">taxdata</span></code> package also produces a weights file and growth factors file for use with the IRS-SOI Public Use File (PUF).  A given <code class="docutils literal notranslate"><span class="pre">taxdata</span></code> version typically produces these files for a specific vintage of the PUF.  As of <code class="docutils literal notranslate"><span class="pre">taxdata</span></code> v 0.3.1, the 2012 PUF is used.</p>
+<p>For users who have purchased their own version of the PUF, the <code class="docutils literal notranslate"><span class="pre">puf_weights.csv.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">growfactors.csv</span></code> files that are included in Tax-Calculator can be used to create a PUF-based dataset suitable for use in Tax-Calculator.</p>
+<p>We refer users of the PUF to the IRS limitations on the use of those data and their distribution.  We also refer users of the PUF weights file and grow factors to the <a class="reference external" href="https://github.com/PSLmodels/TaxData">TaxData</a> documentation for details on how to use these files with the PUF and to see how well the resulting tax calculations hit aggregate targets published by the IRS.  However, we do note that analysis with a PUF-based data file tends to be the most accurate and validation of Tax-Calculator with other microsimulation models often uses a PUF-based data file.</p>
 </div>
-<p>This command will also install all the Python packages required by
-Tax-Calculator.</p>
 </div>
-<div class="section" id="become-a-registered-github-user">
-<h2>Become a registered GitHub user<a class="headerlink" href="#become-a-registered-github-user" title="Permalink to this headline">¶</a></h2>
-<p>Open a free GitHub account so that you can communicate with Tax-Calculator
-developers.
-This is by far the easiest way to ask questions, make suggestions, or report
-bugs.
-Not only does this put you into direct contact with Tax-Calculator developers,
-it allows the community of more experienced users, all of whom are watching the
-Tax-Calculator GitHub repository, to answer your questions.
-You can create an account at the <a class="reference external" href="https://github.com/join">Join GitHub</a>
-webpage.
-And then you can specify how you want to “watch” the Tax-Calculator repository
-by clicking on the <em>Watch</em> button in the upper-right corner of the
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator">Tax-Calculator main page</a>.</p>
-</div>
-<div class="section" id="read-tax-calculator-user-guide">
-<h2>Read Tax-Calculator user guide<a class="headerlink" href="#read-tax-calculator-user-guide" title="Permalink to this headline">¶</a></h2>
-<p>Read the <a class="reference internal" href="../guide/index.html"><span class="doc">User guide</span></a> about how to conduct tax analysis with
-Tax-Calculator two different ways:
-(a) without doing any computer programming, or
-(b) by writing Python programs.
-Then after reading the <a class="reference internal" href="overview.html"><span class="doc">Structural overview</span></a>, you will be in a position to do any of
-the following:</p>
-<ol class="simple">
-<li><p>If you want to <strong>ask a question</strong>,
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/issues">create a new issue</a>
-posing your question about Tax-Calculator as clearly as possible.</p></li>
-<li><p>If you want to <strong>request an enhancement</strong>,
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/issues">create a new issue</a>
-providing details on what you think should be added to Tax-Calculator.</p></li>
-<li><p>If you want to <strong>report a bug</strong>,
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/issues">create a new issue</a>
-providing details on what you think is wrong with Tax-Calculator.
-An ideal bug report demonstrates for a single filing unit that a Tax-Calculator
-result is not the same as what you get when filling out the relevant IRS tax
-form.</p></li>
-<li><p>If you want to <strong>propose code changes</strong>, follow the directions in the
-<a class="reference internal" href="../contributing/contributor_guide.html"><span class="doc">Contributor guide</span></a> on how to fork and clone the
-Tax-Calculator git repository.
-Before developing any code changes, be sure to read completely the contributor
-guide.</p></li>
-</ol>
+<div class="section" id="using-other-data-in-tax-calculator">
+<h2>Using other data in Tax-Calculator<a class="headerlink" href="#using-other-data-in-tax-calculator" title="Permalink to this headline">¶</a></h2>
+<p>Using other data sources in Tax-Calculator is possible.  Users can pass any csv file to the <code class="docutils literal notranslate"><span class="pre">Records</span></code> class and, so long as it has the appropriate <a class="reference external" href="https://taxcalc.pslmodels.org/guide/input_vars.html">input variables</a>, one may be able to obtain results.  Using Tax-Calculator with custom data takes care and significant understanding of the model and data.  Those interested in using their own data in Tax-Calculator might also look to the <a class="reference external" href="https://github.com/PSLmodels/Tax-Cruncher">Tax-Cruncher</a> project, which is built as an interface between Tax-Calculator and custom datasets.</p>
 </div>
 </div>
 
@@ -639,8 +590,8 @@ guide.</p></li>
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="../index.html" title="previous page">Tax-Calculator</a>
-    <a class='right-next' id="next-link" href="overview.html" title="next page">Structural overview</a>
+    <a class='left-prev' id="prev-link" href="overview.html" title="previous page">Structural overview</a>
+    <a class='right-next' id="next-link" href="../guide/index.html" title="next page">User guide</a>
 
         </div>
         
