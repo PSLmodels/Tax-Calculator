@@ -1,4 +1,4 @@
-RELEASING TAX-CALCULATOR CONDA PACKAGES
+RELEASING TAX-CALCULATOR CONDA-FORGE PACKAGES
 =======================================
 
 ```
@@ -10,12 +10,14 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> merge master branch into X-Y-Z branch
 
+# can't get test below to run without error.  Not sure from error message the issue
 --> run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
 
 --> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc subdir]
 
 --> run `make package`  [to make local taxcalc package available]
 
+# ".fix." not a command --didn't work
 --> cd taxcalc/validation ; ./tests.sh ; .fix. ; cd ../..
 
 --> specify release X.Y.Z in index.md
@@ -30,7 +32,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> create release X.Y.Z on GitHub using master branch
 
---> run `pbrelease Tax-Calculator taxcalc X.Y.Z` [to build and upload packages]
+--> Create new package on Conda-Forge for release X.Y.Z
 
 ====> ADD NEW DEPENDENCY OR UPDATE MINIMUM REQUIRED VERSION <====
 
