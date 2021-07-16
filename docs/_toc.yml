@@ -38,6 +38,7 @@ parts:
   - file: contributing/pr_workflow
   - file: contributing/param_naming
   - file: contributing/testing
+  - file: contributing/RELEASING
 - caption: API
   chapters:
   - file: api/public_api
