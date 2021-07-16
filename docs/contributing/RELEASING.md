@@ -34,7 +34,7 @@ Create new `taxcalc` packages
 --> create release X.Y.Z on GitHub using master branch
 
 --> Create new package on Conda-Forge for release X.Y.Z
-    --> open a PR to github.com/conda-forge/taxcalc-feedstock where you change the `recipe/meta.yaml` file by updating (1) the version number to X.Y.Z and (2) the checksum to reflectr the checksum for the tarball for release X.Y.Z in the Tax-Calculator GitHub repo
+    --> open a PR to github.com/conda-forge/taxcalc-feedstock where you change the `recipe/meta.yaml` file by updating (1) the version number to X.Y.Z and (2) the checksum to reflect the checksum for the tarball for release X.Y.Z in the Tax-Calculator GitHub repo
 
 ====> ADD NEW DEPENDENCY OR UPDATE MINIMUM REQUIRED VERSION <====
 
