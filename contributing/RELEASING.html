@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>License &#8212; Tax-Calculator</title>
+    <title>Releasing Tax-Caclculator Packages &#8212; Tax-Calculator</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet" />
   <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -51,8 +51,8 @@
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Contributor guide" href="../contributing/contributor_guide.html" />
-    <link rel="prev" title="Release history" href="releases.html" />
+    <link rel="next" title="Tax-Calculator Python API" href="../api/public_api.html" />
+    <link rel="prev" title="Testing" href="testing.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -210,24 +210,24 @@
   About
  </span>
 </p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="history.html">
+  <a class="reference internal" href="../about/history.html">
    History
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="roadmap.html">
+  <a class="reference internal" href="../about/roadmap.html">
    Roadmap
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="releases.html">
+  <a class="reference internal" href="../about/releases.html">
    Release history
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
    License
   </a>
  </li>
@@ -237,29 +237,29 @@
   Contributing
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/contributor_guide.html">
+  <a class="reference internal" href="contributor_guide.html">
    Contributor guide
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/pr_workflow.html">
+  <a class="reference internal" href="pr_workflow.html">
    Pull request workflow
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/param_naming.html">
+  <a class="reference internal" href="param_naming.html">
    Policy parameter naming and placing conventions
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html">
+  <a class="reference internal" href="testing.html">
    Testing
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/RELEASING.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    Releasing Tax-Caclculator Packages
   </a>
  </li>
@@ -465,7 +465,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/about/license.md"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/contributing/RELEASING.md"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
@@ -485,10 +485,10 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fabout/license.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fcontributing/RELEASING.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/about/license.md"><button
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/contributing/RELEASING.md"><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
     </div>
@@ -513,9 +513,25 @@
             </div>
             <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#cc0-1-0-universal-summary">
-   CC0 1.0 Universal Summary
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Releasing Tax-Caclculator Packages
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#create-new-taxcalc-packages">
+   Create new
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     taxcalc
+    </span>
+   </code>
+   packages
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#creating-a-new-branch-to-fix-a-bug-in-an-old-release">
+   Creating a new branch to fix a bug in an old release
   </a>
  </li>
 </ul>
@@ -529,19 +545,86 @@
         
               <div>
                 
-  <div class="section" id="license">
-<h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
-<p>The Tax-Calculator project is in the public domain within the United States.</p>
-<p>Additionally, we waive copyright and related rights in the work worldwide through the CC0 1.0 Universal public domain dedication.</p>
-<div class="section" id="cc0-1-0-universal-summary">
-<h2>CC0 1.0 Universal Summary<a class="headerlink" href="#cc0-1-0-universal-summary" title="Permalink to this headline">¶</a></h2>
-<p>The text below is a human-readable summary of the <a class="reference external" href="https://creativecommons.org/publicdomain/zero/1.0/legalcode">Legal Code</a>:</p>
-<p><em>No Copyright</em></p>
-<p>The person who associated a work with this deed has dedicated the work to the public domain by waiving all of his or her rights to the work worldwide under copyright law, including all related and neighboring rights, to the extent allowed by law.</p>
-<p>You can copy, modify, distribute and perform the work, even for commercial purposes, all without asking permission.</p>
-<p><em>Other Information</em></p>
-<p>In no way are the patent or trademark rights of any person affected by CC0, nor are the rights that other persons may have in the work or in how the work is used, such as publicity or privacy rights.</p>
-<p>Unless expressly stated otherwise, the person who associated a work with this deed makes no warranties about the work, and disclaims liability for all uses of the work, to the fullest extent permitted by applicable law. When using or citing the work, you should not imply endorsement by the author or the affirmer.</p>
+  <div class="section" id="releasing-tax-caclculator-packages">
+<h1>Releasing Tax-Caclculator Packages<a class="headerlink" href="#releasing-tax-caclculator-packages" title="Permalink to this headline">¶</a></h1>
+<p>The following outlines the process to release Tax-Calculator Packages on Conda-Forge and creating a new branch to fix a bug in a previous release.</p>
+</div>
+<div class="section" id="create-new-taxcalc-packages">
+<h1>Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> packages<a class="headerlink" href="#create-new-taxcalc-packages" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+--&gt; on branch X-Y-Z, edit RELEASES.md to finalize X.Y.Z info
+
+--&gt; specify release X.Y.Z in setup.py and taxcalc/__init__.py
+
+--&gt; merge master branch into X-Y-Z branch
+
+--&gt; run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
+
+--&gt; run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc subdir]
+
+--&gt; run `make package`  [to make local taxcalc package available]
+
+--&gt; cd taxcalc/validation ; ./tests.sh ; .fix. ; cd ../..
+
+--&gt; specify release X.Y.Z in index.md
+
+--&gt; cd .. ; make clean  [to remove taxcalc package]
+
+--&gt; commit X-Y-Z branch and push to origin
+
+--&gt; merge X-Y-Z branch into master branch on GitHub
+
+--&gt; on local master branch, ./gitsync
+
+--&gt; create release X.Y.Z on GitHub using master branch
+
+--&gt; Create new package on Conda-Forge for release X.Y.Z
+    --&gt; open a PR to github.com/conda-forge/taxcalc-feedstock where you change the `recipe/meta.yaml` file by updating (1) the version number to X.Y.Z and (2) the checksum to reflect the checksum for the tarball for release X.Y.Z in the Tax-Calculator GitHub repo
+
+====&gt; ADD NEW DEPENDENCY OR UPDATE MINIMUM REQUIRED VERSION &lt;====
+
+--&gt; add or update `run` list in `requirements` section of `conda.recipe/meta.yaml`
+
+--&gt; add or update package in `environment.yaml`
+    (this may have already been done in the PR that added or updated the
+     dependency.)
+
+--&gt; update `dev_pkgs` list in `test_4package.py:test_for_consistency` and make sure
+    the updated test passes
+
+====&gt; CREATE NEW BEHRESP PACKAGES (if necessary) &lt;====
+
+--&gt; create Behavioral-Responses packages
+
+====&gt; NOTIFY OTHER DEVELOPERS &lt;====
+
+--&gt; email Tax-Calculator user list about the new release and packages
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-a-new-branch-to-fix-a-bug-in-an-old-release">
+<h1>Creating a new branch to fix a bug in an old release<a class="headerlink" href="#creating-a-new-branch-to-fix-a-bug-in-an-old-release" title="Permalink to this headline">¶</a></h1>
+<p>Useful when tip of master branch includes major changes since old release.</p>
+<p>EXAMPLE: fix bug in release 1.4.0 and then release 1.4.1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd ~/work/PSL/Tax-Calculator
+
+$ git checkout master
+
+$ git checkout  -b 1-4-1  1.4.0
+
+--&gt; fix bug on branch 1-4-1, test, commit bug fix
+
+$ git push upstream 1-4-1
+
+--&gt; create release 1.4.1 using GitHub releases GUI citing branch 1-4-1
+
+--&gt; then in order to merge bug-fix into master branch and future releases
+    beginning with 1.5.0, do the following:
+
+$ git checkout master
+
+$ git merge 1-4-1
+</pre></div>
 </div>
 </div>
 
@@ -558,7 +641,7 @@
         },
         kernelOptions: {
             kernelName: "python3",
-            path: "./about"
+            path: "./contributing"
         },
         predefinedOutput: true
     }
@@ -570,8 +653,8 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="releases.html" title="previous page">Release history</a>
-    <a class='right-next' id="next-link" href="../contributing/contributor_guide.html" title="next page">Contributor guide</a>
+    <a class='left-prev' id="prev-link" href="testing.html" title="previous page">Testing</a>
+    <a class='right-next' id="next-link" href="../api/public_api.html" title="next page">Tax-Calculator Python API</a>
 
         </div>
         

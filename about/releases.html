@@ -258,6 +258,11 @@
    Testing
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/RELEASING.html">
+   Releasing Tax-Caclculator Packages
+  </a>
+ </li>
 </ul>
 <p class="caption">
  <span class="caption-text">
@@ -508,6 +513,11 @@
             </div>
             <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-3-2-0">
+   2021-07-17 Release 3.2.0
+  </a>
+ </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#release-3-1-0">
    2021-03-01 Release 3.1.0
@@ -928,6 +938,22 @@
 <h1>Release history<a class="headerlink" href="#release-history" title="Permalink to this headline">¶</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<div class="section" id="release-3-2-0">
+<h2>2021-07-17 Release 3.2.0<a class="headerlink" href="#release-3-2-0" title="Permalink to this headline">¶</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2604">#2604</a>)</p>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Updates the current law baseline to include the CARES Act (#2586), the the Consolidated Appropriations Act of 2021, and the American Rescue Plan Act, (PRs #2573 and #2588), and the Consolidated Appropriations Act of 2021 (PR #2593) as well as updates to EITC parameters (PR #2593). This ends a transition period for users to model these changes as reforms to the former baseline. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2586">#2586</a>, <a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2593">#2593</a>, <a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2573">#2573</a>, <a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2588">#2588</a>, <a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2593">#2593</a> with contributions from Angela Shoulders, Cody Kallen, Matt Jensen, and Jason DeBacker]</p></li>
+<li><p>Updates growfactors and weights for the PUF and CPS data to reflect updates to <code class="docutils literal notranslate"><span class="pre">taxdata</span></code>, including new CBO forecasts. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2599">#2599</a> by Anderson Frailey]</p></li>
+<li><p>Add profiling to testing [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2570">#2570</a>, <a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2577">#2577</a>, <a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2587">#2587</a> by Jacob Chuslo]</p></li>
+<li><p>Allow for non-taxed UI eligibility. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2579">#2579</a> by Max Ghenis]</p></li>
+<li><p>Additional unit tests for <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code>. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2572">#2572</a> by Angela Shoulders]</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+</div>
 <div class="section" id="release-3-1-0">
 <h2>2021-03-01 Release 3.1.0<a class="headerlink" href="#release-3-1-0" title="Permalink to this headline">¶</a></h2>
 <p>(last merged pull request is
