@@ -125,8 +125,7 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     sum_s006_in_syr_plus_one = rec.s006.sum()
     assert sum_s006_in_syr_plus_one > sum_s006_in_syr
     sum_e00300_in_syr_plus_one = rec.e00300.sum()
-    # because growfactor for e00300 was less than one in 2015, assert < below:
-    assert sum_e00300_in_syr_plus_one < sum_e00300_in_syr
+    assert sum_e00300_in_syr_plus_one > sum_e00300_in_syr
     # test private methods
     rec._read_data(data=None)
     rec._read_weights(weights=None)

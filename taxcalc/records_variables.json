@@ -66,13 +66,13 @@
       "type": "int",
       "desc": "1 if taxpayer is blind; otherwise 0",
       "form": {"2013-2016": "1040 line 39a"},
-      "availability": "taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "blind_spouse": {
       "type": "int",
       "desc": "1 if spouse is blind; otherwise 0",
       "form": {"2013-2016": "1040 line 39a"},
-      "availability": "taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "cmbtp": {
       "type": "float",
@@ -471,25 +471,25 @@
       "type": "int",
       "desc": "CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)",
       "form": {"2013-2016": "sample construction info"},
-      "availability": "taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "ffpos": {
       "type": "int",
       "desc": "CPS family identifier within household (not used in tax-calculation logic)",
       "form": {"2013-2016": "sample construction info"},
-      "availability": "taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "fips": {
       "type": "int",
       "desc": "FIPS state code (not used in tax-calculation logic)",
       "form": {"2013-2016": "sample construction info"},
-      "availability": "taxdata_puf, taxdata_cps"
+      "availability": "taxdata_puf, taxdata_puf, taxdata_cps"
     },
     "h_seq": {
       "type": "int",
       "desc": "CPS household sequence number (not used in tax-calculation logic)",
       "form": {"2013-2016": "sample construction info"},
-      "availability": "taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "data_source": {
       "type": "int",
