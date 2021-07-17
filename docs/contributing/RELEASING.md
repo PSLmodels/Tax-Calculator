@@ -1,8 +1,11 @@
-RELEASING TAX-CALCULATOR CONDA PACKAGES
-=======================================
+Releasing Tax-Caclculator Packages
+==================================
 
+The following outlines the process to release Tax-Calculator Packages on Conda-Forge and creating a new branch to fix a bug in a previous release.
+
+Create new `taxcalc` packages
+===========================
 ```
-====> CREATE NEW TAXCALC PACKAGES <====
 
 --> on branch X-Y-Z, edit RELEASES.md to finalize X.Y.Z info
 
@@ -30,7 +33,8 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> create release X.Y.Z on GitHub using master branch
 
---> run `pbrelease Tax-Calculator taxcalc X.Y.Z` [to build and upload packages]
+--> Create new package on Conda-Forge for release X.Y.Z
+    --> open a PR to github.com/conda-forge/taxcalc-feedstock where you change the `recipe/meta.yaml` file by updating (1) the version number to X.Y.Z and (2) the checksum to reflect the checksum for the tarball for release X.Y.Z in the Tax-Calculator GitHub repo
 
 ====> ADD NEW DEPENDENCY OR UPDATE MINIMUM REQUIRED VERSION <====
 
@@ -49,12 +53,12 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 ====> NOTIFY OTHER DEVELOPERS <====
 
---> email policybrain-modelers list about the new release and packages
+--> email Tax-Calculator user list about the new release and packages
 ```
 
 
-CREATING NEW BRANCH TO FIX BUG IN OLD RELEASE
-=============================================
+Creating a new branch to fix a bug in an old release
+====================================================
 
 Useful when tip of master branch includes major changes since old release.
 

@@ -1,8 +1,10 @@
-Metadata-Version: 2.1
+Metadata-Version: 1.1
 Name: taxcalc
-Version: 3.1.0
+Version: 3.2.0
 Summary: taxcalc
 Home-page: https://github.com/PSLmodels/Tax-Calculator
+Author: UNKNOWN
+Author-email: UNKNOWN
 License: CC0 1.0 Universal public domain dedication
 Download-URL: https://github.com/PSLmodels/Tax-Calculator
 Description: [![PSL cataloged](https://img.shields.io/badge/PSL-cataloged-a0a0a0.svg)](https://www.PSLmodels.org)
