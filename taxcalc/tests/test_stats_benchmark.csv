@@ -280,6 +280,7 @@
     surtax
     RECID
     FLPDYR
+<<<<<<< HEAD
     ",False,8.0,-58.04274300010093
 225,taxcalc/tests/test_taxcalcio.py::test_output_options,<function test_output_options at 0x7f8ae0cee160>,passed,24975.595362000036,,,,,,,,,,,,,,,,,,,,,,,,,-180.74580200004493
 226,taxcalc/tests/test_taxcalcio.py::test_write_doc_file,<function test_write_doc_file at 0x7f8ae0cee1f0>,passed,14476.996423999935,,,,,,,,,,,,,,,,,,,,,,,,,10.75067699991996
@@ -310,3 +311,35 @@
 251,taxcalc/tests/test_utils.py::test_create_delete_temp_file,<function test_create_delete_temp_file at 0x7f8ae0e15af0>,passed,0.2865019999944707,,,,,,,,,,,,,,,,,,,,,,,,,0.004598000032274285
 252,taxcalc/tests/test_utils.py::test_bootstrap_se_ci,<function test_bootstrap_se_ci at 0x7f8ae0e15b80>,passed,0.5123049999156137,,,,,,,,,,,,,,,,,,,,,,,,,0.010997999879691633
 253,taxcalc/tests/test_utils.py::test_table_columns_labels,<function test_table_columns_labels at 0x7f8ae0e15c10>,passed,0.13030100001287792,,,,,,,,,,,,,,,,,,,,,,,,,-0.03430100002788089
+=======
+    ",False,8.0,1760.8151539999426
+225,taxcalc/tests/test_taxcalcio.py::test_output_options,<function test_output_options at 0x7f8a5b364280>,passed,33823.07039099999,,,,,,,,,,,,,,,,,,,,,,,,,8666.729226999905
+226,taxcalc/tests/test_taxcalcio.py::test_write_doc_file,<function test_write_doc_file at 0x7f8a5b364310>,passed,19378.226080000102,,,,,,,,,,,,,,,,,,,,,,,,,4911.980333000087
+227,taxcalc/tests/test_taxcalcio.py::test_sqldb_option,<function test_sqldb_option at 0x7f8a5b3643a0>,passed,9671.147456000199,,,,,,,,,,,,,,,,,,,,,,,,,2295.67326900019
+228,taxcalc/tests/test_taxcalcio.py::test_no_tables_or_graphs,<function test_no_tables_or_graphs at 0x7f8a5b364430>,passed,9081.892052000057,,,,,,,,,,,,,,,,,,,,,,,,,2506.662729000026
+229,taxcalc/tests/test_taxcalcio.py::test_tables,<function test_tables at 0x7f8a5b3644c0>,passed,9761.438462999877,,,,,,,,,,,,,,,,,,,,,,,,,2321.713412999884
+230,taxcalc/tests/test_taxcalcio.py::test_graphs,<function test_graphs at 0x7f8a5b364550>,passed,9967.989978000105,,,,,,,,,,,,,,,,,,,,,,,,,2655.528218000086
+231,taxcalc/tests/test_taxcalcio.py::test_analyze_warnings_print,<function test_analyze_warnings_print at 0x7f8a5b364700>,passed,8706.919684000013,,,,,,,,,,,,,,,,,,,,,,,,,2266.5897260000065
+232,taxcalc/tests/test_utils.py::test_validity_of_name_lists,<function test_validity_of_name_lists at 0x7f8a5b2f0790>,passed,1.5903089999937947,,,,,,,,,,,,,,,,,,,,,,,,,0.5435929999748623
+233,taxcalc/tests/test_utils.py::test_create_tables,<function test_create_tables at 0x7f8a5b364d30>,passed,5596.488595999972,,,,,,,,,,,,,,,,,,,,,,,,,1430.9448259999726
+234,taxcalc/tests/test_utils.py::test_diff_count_precision,<function test_diff_count_precision at 0x7f8a5b364dc0>,passed,564.7027889999663,,,,,,,,,,,,,,,,,,,,,,,,,88.16776399999071
+235,taxcalc/tests/test_utils.py::test_weighted_mean,<function test_weighted_mean at 0x7f8a5b2221f0>,passed,3.9188230000490876,,,,,,,,,,,,,,,,,,,,,,,,,0.7533760000342227
+236,taxcalc/tests/test_utils.py::test_wage_weighted,<function test_wage_weighted at 0x7f8a5b222280>,passed,1.5340089998971962,,,,,,,,,,,,,,,,,,,,,,,,,0.4480929998180725
+237,taxcalc/tests/test_utils.py::test_agi_weighted,<function test_agi_weighted at 0x7f8a5b222310>,passed,1.7274100000577164,,,,,,,,,,,,,,,,,,,,,,,,,0.6858950000605546
+238,taxcalc/tests/test_utils.py::test_expanded_income_weighted,<function test_expanded_income_weighted at 0x7f8a5b2223a0>,passed,1.4759089999643038,,,,,,,,,,,,,,,,,,,,,,,,,0.4364940000414208
+239,taxcalc/tests/test_utils.py::test_weighted_sum,<function test_weighted_sum at 0x7f8a5b222430>,passed,3.4688199998527125,,,,,,,,,,,,,,,,,,,,,,,,,1.3339879998284232
+240,taxcalc/tests/test_utils.py::test_add_income_trow_var,<function test_add_income_trow_var at 0x7f8a5b2224c0>,passed,5.749333000039769,,,,,,,,,,,,,,,,,,,,,,,,,2.255481000020154
+241,taxcalc/tests/test_utils.py::test_add_quantile_trow_var,<function test_add_quantile_trow_var at 0x7f8a5b222550>,passed,10.136159000012412,,,,,,,,,,,,,,,,,,,,,,,,,3.7074630000688558
+242,taxcalc/tests/test_utils.py::test_dist_table_sum_row,<function test_dist_table_sum_row at 0x7f8a5b2225e0>,passed,4796.484439000096,,,,,,,,,,,,,,,,,,,,,,,,,1321.6992850000224
+243,taxcalc/tests/test_utils.py::test_diff_table_sum_row,<function test_diff_table_sum_row at 0x7f8a5b222670>,passed,5383.981124999991,,,,,,,,,,,,,,,,,,,,,,,,,1331.804261000002
+244,taxcalc/tests/test_utils.py::test_mtr_graph_data,<function test_mtr_graph_data at 0x7f8a5b222700>,passed,3253.1657590000123,,,,,,,,,,,,,,,,,,,,,,,,,739.9872089999913
+245,taxcalc/tests/test_utils.py::test_atr_graph_data,<function test_atr_graph_data at 0x7f8a5b222790>,passed,3893.3243649998985,,,,,,,,,,,,,,,,,,,,,,,,,1016.6721839999582
+246,taxcalc/tests/test_utils.py::test_xtr_graph_plot,<function test_xtr_graph_plot at 0x7f8a5b222820>,passed,3300.8169950001047,,,,,,,,,,,,,,,,,,,,,,,,,805.9227960000044
+247,taxcalc/tests/test_utils.py::test_write_graph_file,<function test_write_graph_file at 0x7f8a5b222940>,passed,3261.8482820000736,,,,,,,,,,,,,,,,,,,,,,,,,807.0214780001374
+248,taxcalc/tests/test_utils.py::test_ce_aftertax_income,<function test_ce_aftertax_income at 0x7f8a5b2229d0>,passed,5763.14152000009,,,,,,,,,,,,,,,,,,,,,,,,,1316.3569260001395
+249,taxcalc/tests/test_utils.py::test_read_egg_csv,<function test_read_egg_csv at 0x7f8a5b222a60>,passed,0.8936050001011608,,,,,,,,,,,,,,,,,,,,,,,,,0.2046940001037001
+250,taxcalc/tests/test_utils.py::test_read_egg_json,<function test_read_egg_json at 0x7f8a5b222af0>,passed,0.5809029998999904,,,,,,,,,,,,,,,,,,,,,,,,,0.057294999919577094
+251,taxcalc/tests/test_utils.py::test_create_delete_temp_file,<function test_create_delete_temp_file at 0x7f8a5b222b80>,passed,0.39530200001536286,,,,,,,,,,,,,,,,,,,,,,,,,0.11339800005316647
+252,taxcalc/tests/test_utils.py::test_bootstrap_se_ci,<function test_bootstrap_se_ci at 0x7f8a5b222c10>,passed,0.6150040001102752,,,,,,,,,,,,,,,,,,,,,,,,,0.11369700007435313
+253,taxcalc/tests/test_utils.py::test_table_columns_labels,<function test_table_columns_labels at 0x7f8a5b222ca0>,passed,0.2048020000984252,,,,,,,,,,,,,,,,,,,,,,,,,0.040200000057666385
+>>>>>>> ba009ae9679082312cd9e0c5b79aa4ae5eb102b5
