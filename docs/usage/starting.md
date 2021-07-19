@@ -15,18 +15,18 @@ You must do this even if you already have Python installed on your computer,
 because the Anaconda distribution contains all the additional Python packages
 that Tax-Calculator uses to conduct its calculations
 (many of which are not included in other Python installations).
-You can install the Anaconda distribution without having administrative 
+You can install the Anaconda distribution without having administrative
 privileges on your computer and the Anaconda distribution will not interfere
 with any Python installation that came as part of your computer's operating
 system.
 
 ## Download Tax-Calculator package
 
-Download a Tax-Calculator `taxcalc` package for your computer by executing 
+Download a Tax-Calculator `taxcalc` package for your computer by executing
 this command from the command prompt:
 
 ```
-conda install -c PSLmodels -c conda-forge taxcalc
+conda install -c conda-forge taxcalc
 ```
 
 This command will also install all the Python packages required by
