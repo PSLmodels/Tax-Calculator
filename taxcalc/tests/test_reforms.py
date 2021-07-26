@@ -72,7 +72,8 @@ def test_2017_law_reform(tests_path):
             assert act == exp, '{} a={} != e={}'.format(name, act, exp)
 
 
-def test_round_trip_tcja_reform(tests_path):
+@pytest.mark.parametrize('fyear', [2019, 2020, 2021, 2022])
+def test_round_trip_tcja_reform(fyear, tests_path):
     """
     Check that current-law policy has the same policy parameter values in
     a future year as does a compound reform that first implements the
@@ -84,7 +85,6 @@ def test_round_trip_tcja_reform(tests_path):
     and TCJA.json reform files are specified in a consistent manner.
     """
     # pylint: disable=too-many-locals
-    fyear = 2020
     # create clp metadata dictionary for current-law policy in fyear
     pol = Policy()
     pol.set_year(fyear)
