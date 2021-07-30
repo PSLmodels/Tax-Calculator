@@ -72,7 +72,7 @@ def test_2017_law_reform(tests_path):
             assert act == exp, '{} a={} != e={}'.format(name, act, exp)
 
 
-@pytest.mark.parametrize('fyear', [2019, 2020, 2021, 2022])
+@pytest.mark.parametrize('fyear', [2019, 2020, 2021, 2022, 2023])
 def test_round_trip_tcja_reform(fyear, tests_path):
     """
     Check that current-law policy has the same policy parameter values in
@@ -86,78 +86,72 @@ def test_round_trip_tcja_reform(fyear, tests_path):
     """
     # pylint: disable=too-many-locals
     # create clp metadata dictionary for current-law policy in fyear
-    pol = Policy()
-    pol.set_year(fyear)
-    clp_mdata = dict(pol.items())
+    clp_pol = Policy()
+    clp_pol.set_year(fyear)
+    clp_mdata = dict(clp_pol.items())
     # create rtr metadata dictionary for round-trip reform in fyear
-    pol = Policy()
+    rtr_pol = Policy()
     # Revert to 2017 law
     reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
-    pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not pol.parameter_warnings
-    assert not pol.errors
+    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
+    assert not rtr_pol.parameter_warnings
+    assert not rtr_pol.errors
     # Layer on TCJA
     reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
-    pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not pol.parameter_warnings
-    assert not pol.errors
+    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
+    assert not rtr_pol.parameter_warnings
+    assert not rtr_pol.errors
     # Layer on the CARES Act
-    pol.implement_reform({'ID_Charity_crt_all': {2020: 1.0, 2021: 0.6},
-                          'STD_allow_charity_ded_nonitemizers':
-                          {2020: True, 2021: False},
-                          'STD_charity_ded_nonitemizers_max':
-                          {2020: 300.0, 2021: 0.0}})
-    assert not pol.parameter_warnings
-    assert not pol.errors
-    pol.set_year(fyear)
-    rtr_mdata = dict(pol.items())
+    rtr_pol.implement_reform(
+        {'ID_Charity_crt_all': {2020: 1.0, 2021: 0.6},
+         'STD_allow_charity_ded_nonitemizers': {2020: True, 2021: False},
+         'STD_charity_ded_nonitemizers_max': {2020: 300.0, 2021: 0.0}})
+    assert not rtr_pol.parameter_warnings
+    assert not rtr_pol.errors
     # Layer on ARPA
-    pol.implement_reform({'RRC_c': {2021: 1400, 2022: 0},
-                          'RRC_ps': {2021: [75000, 150000, 75000, 112500,
-                                     150000], 2022: [0, 0, 0, 0, 0]},
-                          'RRC_pe': {2021: [80000, 160000, 80000, 120000,
-                                     160000], 2022: [0, 0, 0, 0, 0]},
-                          'UI_em': {2020: 10200, 2021: 0},
-                          'UI_thd': {2020: [150000, 150000, 150000, 150000,
-                                     150000], 2021: [0, 0, 0, 0, 0]},
-                          'CTC_refundable': {2021: True, 2022: False},
-                          'CTC_include17': {2021: True, 2022: False},
-                          'CTC_new_c': {2021: 1000, 2022: 0},
-                          'CTC_new_c_under6_bonus': {2021: 600, 2022: 0},
-                          'CTC_new_for_all': {2021: True, 2022: False},
-                          'CTC_new_ps': {2021: [75000, 150000, 75000, 112500,
-                                         150000], 2022: [0, 0, 0, 0, 0]},
-                          'CTC_new_prt': {2021: 0.05, 2022: 0},
-                          'EITC_c': {2021: [1502.46, 3606.44, 5960.95,
-                                     6706.58], 2022: [546.21, 3640.7, 6017.58,
-                                     6770.29]},
-                          'EITC_rt': {2021: [0.153, 0.34, 0.4, 0.45],
-                                      2022: [0.0765, 0.34, 0.4, 0.45]},
-                          'EITC_ps': {2021: [11610, 19464.12, 19464.12,
-                                      19464.12], 2022: [8931.38, 19649.03,
-                                      19649.03, 19649.03]},
-                          'EITC_MinEligAge': {2021: 19, 2022: 25},
-                          'EITC_MaxEligAge': {2021: 125, 2022: 64},
-                          'EITC_InvestIncome_c': {2021: 10000},
-                          'EITC_sep_filers_elig': {2021: True},
-                          'CDCC_c': {2021: 8000, 2022: 3000},
-                          'CDCC_ps': {2021: 125000, 2022: 15000},
-                          'CDCC_ps2': {2021: 400000, 2022: 9e+99},
-                          'CDCC_crt': {2021: 50.0, 2022: 35.0},
-                          'CDCC_refundable': {2021: True, 2022: False},
-                          'ALD_BusinessLosses_c': {2026: [283535.22, 567070.42,
-                                                   283535.22, 283535.22,
-                                                   567070.42], 2027: [9e+99,
-                                                   9e+99, 9e+99, 9e+99,
-                                                   9e+99]}})
-    assert not pol.parameter_warnings
-    assert not pol.errors
-    pol.set_year(fyear)
-    rtr_mdata = dict(pol.items())
+    rtr_pol.implement_reform(
+        {'RRC_c': {2021: 1400, 2022: 0},
+         'RRC_ps': {2021: [75000, 150000, 75000, 112500,150000],
+                    2022: [0, 0, 0, 0, 0]},
+         'RRC_pe': {2021: [80000, 160000, 80000, 120000, 160000],
+                    2022: [0, 0, 0, 0, 0]},
+         'UI_em': {2020: 10200, 2021: 0},
+         'UI_thd': {2020: [150000, 150000, 150000, 150000, 150000],
+                    2021: [0, 0, 0, 0, 0]},
+         'CTC_refundable': {2021: True, 2022: False},
+         'CTC_include17': {2021: True, 2022: False},
+         'CTC_new_c': {2021: 1000, 2022: 0},
+         'CTC_new_c_under6_bonus': {2021: 600, 2022: 0},
+         'CTC_new_for_all': {2021: True, 2022: False},
+         'CTC_new_ps': {2021: [75000, 150000, 75000, 112500, 150000],
+                        2022: [0, 0, 0, 0, 0]},
+         'CTC_new_prt': {2021: 0.05, 2022: 0},
+         'EITC_c': {2021: [1502.46, 3606.44, 5960.95, 6706.58],
+                    2022: [546.21, 3640.7, 6017.58, 6770.29]},
+         'EITC_rt': {2021: [0.153, 0.34, 0.4, 0.45],
+                     2022: [0.0765, 0.34, 0.4, 0.45]},
+         'EITC_ps': {2021: [11610, 19464.12, 19464.12, 19464.12],
+                     2022: [8931.38, 19649.03, 19649.03, 19649.03]},
+         'EITC_MinEligAge': {2021: 19, 2022: 25},
+         'EITC_MaxEligAge': {2021: 125, 2022: 64},
+         'EITC_InvestIncome_c': {2021: 10000},
+         'EITC_sep_filers_elig': {2021: True},
+         'CDCC_c': {2021: 8000, 2022: 3000},
+         'CDCC_ps': {2021: 125000, 2022: 15000},
+         'CDCC_ps2': {2021: 400000, 2022: 9e+99},
+         'CDCC_crt': {2021: 50.0, 2022: 35.0},
+         'CDCC_refundable': {2021: True, 2022: False},
+         'ALD_BusinessLosses_c': {
+             2026: [283535.22, 567070.42, 283535.22, 283535.22, 567070.42],
+             2027: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]}})
+    assert not rtr_pol.parameter_warnings
+    assert not rtr_pol.errors
+    rtr_pol.set_year(fyear)
+    rtr_mdata = dict(rtr_pol.items())
     # compare fyear policy parameter values
     assert clp_mdata.keys() == rtr_mdata.keys()
     fail_dump = False
