@@ -73,16 +73,19 @@ def test_2017_law_reform(tests_path):
 
 
 @pytest.mark.parametrize('fyear', [2019, 2020, 2021, 2022, 2023])
-def test_round_trip_tcja_reform(fyear, tests_path):
+def test_round_trip_reforms(fyear, tests_path):
     """
     Check that current-law policy has the same policy parameter values in
     a future year as does a compound reform that first implements the
-    reform specified in the 2017_law.json file and then implements the
-    reform specified in the TCJA.json file.  This test checks that the
-    future-year parameter values for current-law policy (which incorporates
-    TCJA) are the same as future-year parameter values for the compound
-    round-trip reform.  Doing this check ensures that the 2017_law.json
-    and TCJA.json reform files are specified in a consistent manner.
+    2017 tax law as specified in the 2017_law.json file and then implements
+    reforms that represents new tax legislation since 2017.
+    This test checks that the future-year parameter values for
+    current-law policy (which incorporates recent legislation such as
+    the TCJA, CARES Act, and ARPA) are the same as future-year
+    parameter values for the compound round-trip reform.
+    Doing this check ensures that the 2017_law.json
+    and subsequent reform files that represent recent legislation are
+    specified in a consistent manner.
     """
     # pylint: disable=too-many-locals
     # create clp metadata dictionary for current-law policy in fyear
