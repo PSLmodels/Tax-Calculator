@@ -7,7 +7,7 @@ for a complete commit history.
 2021-08-02 Release 3.2.1
 ------------------------
 (last merged pull request is
-[#2604](https://github.com/PSLmodels/Tax-Calculator/pull/2604))
+[#2615](https://github.com/PSLmodels/Tax-Calculator/pull/2614))
 
 **This is bug-fix release.**
 
