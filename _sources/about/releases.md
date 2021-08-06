@@ -4,6 +4,21 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2021-08-06 Release 3.2.1
+------------------------
+(last merged pull request is
+[#2615](https://github.com/PSLmodels/Tax-Calculator/pull/2615))
+
+**This is bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+Correct an error in the value of the `CTC_new_c_under6_bonus` for the year 2021. [[#2609](https://github.com/PSLmodels/Tax-Calculator/pull/2609) by Jason DeBacker]
+
+
 2021-07-17 Release 3.2.0
 ------------------------
 (last merged pull request is
