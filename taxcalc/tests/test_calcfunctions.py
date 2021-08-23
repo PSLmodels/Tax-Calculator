@@ -425,7 +425,7 @@ PT_qbid_alt_w2_wages_rt = 0.25
 PT_qbid_alt_property_rt = 0.025
 PT_qbid_ps = [9e99, 9e99, 9e99, 9e99, 9e99]
 PT_qbid_prt = 0.0
-PT_qbid_limit_switch = True  # will want to test with False
+PT_qbid_limit_switch = True  # will want to test with False also
 UI_em = 0.0
 UI_thd = [0.0, 0.0, 0.0, 0.0, 0.0]
 
