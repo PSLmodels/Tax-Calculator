@@ -456,7 +456,7 @@ tuple0 = (
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[0],
     PT_qbid_ps, PT_qbid_prt, qbided[0], PT_qbid_limit_switch,
     UI_em, UI_thd)
-expected0 = (420460.66, 0)
+expected0 = (490860.66, 0)
 tuple1 = (
     c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1], e26270[1],
     e02100[1], e27200[1], e00650[1], c01000[1], e02300[1], PT_SSTB_income[1],
