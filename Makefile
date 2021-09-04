@@ -36,7 +36,7 @@ clean:
 
 .PHONY=package
 package:
-	@pbrelease Tax-Calculator taxcalc 9.9.9 --local
+	@pip install -e .
 
 define pytest-setup
 rm -f taxcalc/tests/reforms_actual_init
@@ -69,7 +69,7 @@ pytest-all:
 define tctest-cleanup
 rm -f test.csv
 rm -f test-18-*
-conda uninstall taxcalc --yes --quiet 2>&1 > /dev/null
+pip uninstall taxcalc --yes --quiet 2>&1 > /dev/null
 endef
 
 .PHONY=tctest

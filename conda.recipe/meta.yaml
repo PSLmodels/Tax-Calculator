@@ -15,6 +15,7 @@ requirements:
     - requests
     - numba
     - "paramtools>=0.18.0"
+    - behresp
     - aiohttp
     - curl
 
@@ -26,6 +27,7 @@ requirements:
     - requests
     - numba
     - "paramtools>=0.18.0"
+    - behresp
     - aiohttp
     - curl
 

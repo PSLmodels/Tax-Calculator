@@ -11,6 +11,12 @@ html:
   use_edit_page_button: true
   use_repository_button: true
   use_issues_button: true
+launch_buttons:
+  colab_url: "https://colab.research.google.com"
+  binderhub_url: "https://mybinder.org"
+  notebook_interface: "classic" # or "jupyterlab"
+execute:
+  timeout: -1
 
   #######################################################################################
 # Advanced and power-user settings

@@ -18,6 +18,7 @@ dependencies:
 - pylint
 - coverage
 - "paramtools>=0.18.0"
+- behresp
 - pip
 - pip:
     - jupyter-book

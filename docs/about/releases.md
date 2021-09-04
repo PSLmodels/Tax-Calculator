@@ -4,6 +4,40 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2021-08-06 Release 3.2.1
+------------------------
+(last merged pull request is
+[#2615](https://github.com/PSLmodels/Tax-Calculator/pull/2615))
+
+**This is bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+Correct an error in the value of the `CTC_new_c_under6_bonus` for the year 2021. [[#2609](https://github.com/PSLmodels/Tax-Calculator/pull/2609) by Jason DeBacker]
+
+
+2021-07-17 Release 3.2.0
+------------------------
+(last merged pull request is
+[#2604](https://github.com/PSLmodels/Tax-Calculator/pull/2604))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Updates the current law baseline to include the CARES Act (#2586), the the Consolidated Appropriations Act of 2021, and the American Rescue Plan Act, (PRs #2573 and #2588), and the Consolidated Appropriations Act of 2021 (PR #2593) as well as updates to EITC parameters (PR #2593). This ends a transition period for users to model these changes as reforms to the former baseline. [[#2586](https://github.com/PSLmodels/tax-calculator/pull/2586), [#2593](https://github.com/PSLmodels/tax-calculator/pull/2593), [#2573](https://github.com/PSLmodels/tax-calculator/pull/2573), [#2588](https://github.com/PSLmodels/tax-calculator/pull/2588), [#2593](https://github.com/PSLmodels/tax-calculator/pull/2593) with contributions from Angela Shoulders, Cody Kallen, Matt Jensen, and Jason DeBacker]
+- Updates growfactors and weights for the PUF and CPS data to reflect updates to `taxdata`, including new CBO forecasts. [[#2599](https://github.com/PSLmodels/tax-calculator/pull/2599) by Anderson Frailey]
+- Add profiling to testing [[#2570](https://github.com/PSLmodels/tax-calculator/pull/2570), [#2577](https://github.com/PSLmodels/tax-calculator/pull/2577), [#2587](https://github.com/PSLmodels/tax-calculator/pull/2587) by Jacob Chuslo]
+- Allow for non-taxed UI eligibility. [[#2579](https://github.com/PSLmodels/tax-calculator/pull/2579) by Max Ghenis]
+- Additional unit tests for `calcfunctions.py`. [[#2572](https://github.com/PSLmodels/tax-calculator/pull/2572) by Angela Shoulders]
+
+**Bug Fixes**
+
+
 2021-03-01 Release 3.1.0
 ------------------------
 (last merged pull request is

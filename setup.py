@@ -1,12 +1,9 @@
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 
 with open('README.md') as f:
     longdesc = f.read()
 
-version = '3.1.0'
+version = '3.2.1'
 
 config = {
     'description': 'Tax Calculator',
