@@ -26,8 +26,24 @@
 //     investment income in cases where a marginal increase in investment
 //     income takes a filing unit above the ceiling.
 
-{
-    "AMT_child_em_c_age": {"2013": 24},
+//  (3) ALD_AlimonyReceived_hc = 1.0 (rather than 0)
+//  TAXSIM32 nonproperty income is mapped into AlimonyRecieved
+//  which had its haircut change from 1.0 to 0.0, a change that
+//  TAXSIM32 has not implemented for good reason given this:
+//      IRS: 'Beginning Jan. 1, 2019, alimony or separate
+//      maintenance payments are not deductible from the
+//      income of the payer spouse, or includable in the
+//      income of the receiving spouse, if made under a
+//      divorce or separation agreement executed after
+//      Dec. 31, 2018.
 
-    "EITC_excess_InvestIncome_rt": {"2013": 1.0}
+// (4) PT_qbid_limit_switch = false implies TAXSIM32-like QBI deduction logic.
+{
+    // "AMT_child_em_c_age": {"2013": 24},
+
+    "EITC_excess_InvestIncome_rt": {"2013": 1.0},
+
+    "ALD_AlimonyReceived_hc": {"2019": 1.0},
+
+    "PT_qbid_limit_switch": {"2018": false}
 }
