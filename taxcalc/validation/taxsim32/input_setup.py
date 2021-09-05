@@ -2,10 +2,9 @@
 Generates TAXSIM-32 `.in` input files, downloads `.in.out-taxsim` output files,
 prepares files for Tax Calculator and zips them
 """
-import pandas as pd
 import os
 import glob
-from zipfile import ZipFile
+
 
 # requires curl
 def get_inputs():
@@ -13,7 +12,7 @@ def get_inputs():
     Runs taxsim_input.py for all combinations of year and assumption sets
     """
     letters = ["a", "b", "c"]
-    years = ["2018", "2019"]
+    years = ["2017", "2018", "2019"]
 
     name_list = [str(y + " " + x) for x in letters for y in years]
 
@@ -28,7 +27,7 @@ def get_ftp_output():
     and save taxsim-32 output files
     """
     letters = ["a", "b", "c"]
-    years = ["18", "19"]
+    years = ["17", "18", "19"]
     file_list = [str(x + y + ".in") for x in letters for y in years]
 
     for f in file_list:
