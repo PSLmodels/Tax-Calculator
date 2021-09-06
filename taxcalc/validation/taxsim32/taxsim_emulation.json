@@ -39,7 +39,7 @@
 
 // (4) PT_qbid_limit_switch = false implies TAXSIM32-like QBI deduction logic.
 {
-    // "AMT_child_em_c_age": {"2013": 24},
+    "AMT_child_em_c_age": {"2013": 24},
 
     "EITC_excess_InvestIncome_rt": {"2013": 1.0},
 
