@@ -117,8 +117,8 @@ def translate(ivar):
     pprofinc = ivar.loc[:, 30]
     sprofinc = ivar.loc[:, 32]
 
-    invar['PT_SSTB_income'] = np.where(pprofinc + sprofinc > 0, 1, 0)
-    invar['PT_SSTB_income'] = np.where(invar['e26270'] > 0, 1, invar['PT_SSTB_income'])
+    invar['PT_SSTB_income'] = 0#np.where(pprofinc + sprofinc > 0, 1, 0)
+    invar['PT_SSTB_income'] = 0#np.where(invar['e26270'] > 0, 1, invar['PT_SSTB_income'])
 
     return invar
 

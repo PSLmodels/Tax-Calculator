@@ -144,9 +144,9 @@ def assumption_set(year, letter):
         adict['max_uiben'] = 10  # TAXSIM ivar 21
         adict['max_scorp_inc'] = 350  # TAXSIM ivar 28
         adict['max_pbus_inc'] = 350  # TAXSIM ivar 29
-        adict['max_pprof_inc'] = 1  # TAXSIM ivar 30
+        adict['max_pprof_inc'] = 0#1  # TAXSIM ivar 30
         adict['max_sbus_inc'] = 350  # TAXSIM ivar 31
-        adict['max_sprof_inc'] = 1  # TAXSIM ivar 32
+        adict['max_sprof_inc'] =0# 1  # TAXSIM ivar 32
     if letter == 'c':  # <=====================================================
         # childcare expense amount:
         adict['max_ccexp'] = 10  # TAXSIM ivar 26
