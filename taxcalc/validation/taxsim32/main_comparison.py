@@ -23,12 +23,11 @@ def main(assump_set, year):
     taxcalc_df = pd.read_csv(
         f"{assump_set}{year}.in.out-taxcalc",
         sep=" ",
-        skipinitialspace=True,
-        index_col=False,
-        header=None,
+        # skipinitialspace=True,
+        index_col=0,
     )
 
-    taxcalc_df.columns = taxsim_df.columns  # rename taxcalc output columns
+    taxsim_df.columns = taxcalc_df.columns  # rename taxsim output columns
 
     diff_dict = {
         "# of differing records": [],

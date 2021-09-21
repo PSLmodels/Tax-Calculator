@@ -67,123 +67,59 @@ def write_taxsim_formatted_output(filename, tcvar):
     Internet-TAXSIM 9.3 output format containing 28 variables.
     """
     assert isinstance(tcvar, pd.DataFrame)
-    with open(filename, 'w') as output_file:
-        for idx in range(0, len(tcvar.index)):
-            odict4idx = extract_output(tcvar.xs(idx))
-            outline = construct_output_line(odict4idx)
-            output_file.write(outline)
-
-
-def extract_output(out):
-    """
-    Extracts output for one filing unit in out and
-    returns extracted output as a dictionary.
-
-    Parameters
-    ----------
-    out: pandas DataFrame row containing tc --dump output for one filing unit
-
-    Returns
-    -------
-    ovar: dictionary of output variables indexed from 1 to 28
-
-    Notes
-    -----
-    The value of each output variable is stored in the ovar dictionary,
-    which is indexed as Internet-TAXSIM output variables are (where the
-    index begins with one).
-    """
-    ovar = {}
-    ovar[1] = int(out['RECID'])  # id for tax filing unit
-    ovar[2] = int(out['FLPDYR'])  # year taxes are calculated
-    ovar[3] = 0  # state code is always zero
-    ovar[4] = out['iitax']  # federal income tax liability
-    ovar[5] = 0.0  # no state income tax calculation
-    ovar[6] = out['payrolltax']  # ee+er for OASDI+HI
-    ovar[7] = out['mtr_inctax']  # marginal federal income tax rate as percent
-    ovar[8] = 0.0  # no state income tax calculation
-    ovar[9] = out['mtr_paytax']  # marginal payroll tax rate as percent
-    ovar[10] = out['c00100']  # federal AGI
-    ovar[11] = out['e02300']  # UI benefits in AGI
-    ovar[12] = out['c02500']  # OASDI benefits in AGI
-    ovar[13] = 0.0  # always set zero-bracket amount to zero
-    pre_phase_out_pe = out['pre_c04600']
-    post_phase_out_pe = out['c04600']
+    # with open(filename, 'w') as output_file:
+    #     for idx in range(0, len(tcvar.index)):
+    #         odict4idx = extract_output(tcvar.xs(idx))
+    #         outline = construct_output_line(odict4idx)
+    #         output_file.write(outline)
+    tcvar['state'] = 0  # state code is always zero
+    tcvar['statetax'] = 0.0  # no state income tax calculation
+    tcvar['mtr_state'] = 0.0  # no state income tax calculation
+    tcvar['zero_bracket_amount'] = 0.0  # always set zero-bracket amount to zero
+    pre_phase_out_pe = tcvar['pre_c04600'].values
+    post_phase_out_pe = tcvar['c04600'].values
     phased_out_pe = pre_phase_out_pe - post_phase_out_pe
-    ovar[14] = post_phase_out_pe  # post-phase-out personal exemption
-    ovar[15] = phased_out_pe  # personal exemption that is phased out
-    # ovar[16] can be positive for non-itemizer:
-    ovar[16] = out['c21040']  # phased out itemized deduction
-    # ovar[17] is zero for non-itemizer:
-    ovar[17] = out['c04470']  # post-phase-out item deduction
-    ovar[18] = out['c04800']  # federal regular taxable income
-    # ovar[19] is regular tax on taxable income
-    ovar[19] = out['taxbc']
-    ovar[20] = 0.0  # always set exemption surtax to zero
-    ovar[21] = 0.0  # always set general tax credit to zero
-    ovar[22] = out['c07220'] + out['odc']  # non-refundable child+odep credit
-    ovar[23] = out['c11070']  # refundable additional child tax credit
-    ovar[24] = out['c07180']  # child care credit
-    ovar[25] = out['eitc']  # federal EITC
-    ovar[26] = out['c62100']  # federal AMT taxable income
-    amt_liability = out['c09600']  # federal AMT liability
-    ovar[27] = amt_liability
-    # ovar[28] is federal income tax before credits; the Tax-Calculator
-    # out['c05800'] is this concept but includes AMT liability
-    # while Internet-TAXSIM ovar[28] explicitly excludes AMT liability, so
+    tcvar['post_phase_out_pe'] = post_phase_out_pe  # post-phase-out personal exemption
+    tcvar['phased_out_pe'] = phased_out_pe  # personal exemption that is phased out
+    tcvar['exemption_surtax'] = 0.0  # always set exemption surtax to zero
+    tcvar['gen_tax_credit'] = 0.0  # always set general tax credit to zero
+    tcvar['non_refundable_child_odep_credit'] = tcvar['c07220'] + tcvar['odc']  # non-refundable child+odep credit
+    tcvar['amt_liability'] = tcvar['c09600']  # federal AMT liability
+    # var28 from TAXSIM-32 is federal income tax before credits; the Tax-Calculator
+    # tcvar['c05800'] is this concept but includes AMT liability
+    # while Internet-TAXSIM tcvar[28] explicitly excludes AMT liability, so
     # we have the following:
-    ovar[28] = out['c05800'] - amt_liability
-    return ovar
-
-
-OVAR_FMT = {1: '{:d}.',  # add decimal point as in TAXSIM-32 output
-            2: ' {:d}',
-            3: ' {:d}',
-            4: ' {:.2f}',
-            5: ' {:.2f}',
-            6: ' {:.2f}',
-            7: ' {:.2f}',
-            8: ' {:.2f}',
-            9: ' {:.2f}',
-            10: ' {:.2f}',
-            11: ' {:.2f}',
-            12: ' {:.2f}',
-            13: ' {:.2f}',
-            14: ' {:.2f}',
-            15: ' {:.2f}',
-            16: ' {:.2f}',
-            17: ' {:.2f}',
-            18: ' {:.2f}',
-            19: ' {:.2f}',
-            20: ' {:.2f}',
-            21: ' {:.2f}',
-            22: ' {:.2f}',
-            23: ' {:.2f}',
-            24: ' {:.2f}',
-            25: ' {:.2f}',
-            26: ' {:.2f}',
-            27: ' {:.2f}',
-            28: ' {:.2f}'}
-
-
-def construct_output_line(odict):
-    """
-    Construct an output line from a single-filing-unit odict dictionary.
-
-    Parameters
-    ----------
-    odict: dictionary of output variables indexed from 1 to len(odict).
-
-    Returns
-    -------
-    output_line: string
-
-    """
-    outline = ''
-    for vnum in range(1, len(odict) + 1):
-        outline += OVAR_FMT[vnum].format(odict[vnum])
-    outline += '\n'
-    return outline
+    tcvar['iitax_before_credits_ex_AMT'] = tcvar['c05800'] - tcvar['amt_liability']
+    tcvar = tcvar[['RECID',
+            'FLPDYR',
+            'state',
+            'iitax',
+            'statetax',
+            'payrolltax',
+            'mtr_inctax',
+            'mtr_state',
+            'mtr_paytax',
+            'c00100',
+            'e02300',
+            'c02500',
+            'zero_bracket_amount',
+            'post_phase_out_pe',
+            'phased_out_pe',
+            'c21040',
+            'c04470',
+            'c04800',
+            'taxbc',
+            'exemption_surtax',
+            'gen_tax_credit',
+            'non_refundable_child_odep_credit',
+            'c11070',
+            'c07180',
+            'eitc',
+            'c62100',
+            'amt_liability',
+            'iitax_before_credits_ex_AMT']]
+    tcvar.round(decimals=2)
+    tcvar.to_csv(filename, sep=" ")
 
 
 if __name__ == '__main__':
