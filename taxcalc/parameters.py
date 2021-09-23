@@ -689,11 +689,11 @@ class Parameters(pt.Parameters):
 
     @property
     def parameter_warnings(self):
-        return self.errors or ""
+        return self.errors or {}
 
     @property
     def parameter_errors(self):
-        return self.errors or ""
+        return self.errors or {}
 
     @staticmethod
     def _read_json_revision(obj, topkey):

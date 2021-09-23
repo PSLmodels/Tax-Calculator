@@ -710,3 +710,42 @@ def fixture_reformfile9():
             os.remove(rfile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.fixture(scope='module', name='regression_reform_file')
+def fixture_regression_reform_file():
+    """
+    Temporary reform file with .json extension.
+
+    Example causing regression reported in issue:
+    https://github.com/PSLmodels/Tax-Calculator/issues/2622
+    """
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    contents = '{ "policy": {"AMEDT_rt": {"2021": 1.8}}}'
+    rfile.write(contents)
+    rfile.close()
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_error_message_parsed_correctly(regression_reform_file):
+    tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
+                     tax_year=2022,
+                     baseline=None,
+                     reform=regression_reform_file.name,
+                     assump=None)
+    assert not tcio.errmsg
+
+    tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
+              tax_year=2022,
+              baseline=None,
+              reform=regression_reform_file.name,
+              assump=None,
+              aging_input_data=False,
+              exact_calculations=False)
+    assert isinstance(tcio.errmsg, str) and tcio.errmsg
+    assert tcio.errmsg == "AMEDT_rt[year=2021] 1.8 > max 1 "
