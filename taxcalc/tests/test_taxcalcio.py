@@ -735,17 +735,21 @@ def fixture_regression_reform_file():
 def test_error_message_parsed_correctly(regression_reform_file):
     tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
                      tax_year=2022,
-                     baseline=None,
+                     baseline=regression_reform_file.name,
                      reform=regression_reform_file.name,
                      assump=None)
     assert not tcio.errmsg
 
     tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
               tax_year=2022,
-              baseline=None,
+              baseline=regression_reform_file.name,
               reform=regression_reform_file.name,
               assump=None,
               aging_input_data=False,
               exact_calculations=False)
     assert isinstance(tcio.errmsg, str) and tcio.errmsg
-    assert tcio.errmsg == "AMEDT_rt[year=2021] 1.8 > max 1 "
+    exp_errmsg = (
+        "AMEDT_rt[year=2021] 1.8 > max 1 \n"
+        "AMEDT_rt[year=2021] 1.8 > max 1 "
+    )
+    assert tcio.errmsg == exp_errmsg

@@ -280,6 +280,8 @@ class TaxCalcIO():
                     pol.implement_reform(poldict,
                                          print_warnings=True,
                                          raise_errors=False)
+                    if self.errmsg:
+                        self.errmsg += "\n"
                     for _, errors in pol.parameter_errors.items():
                         self.errmsg += "\n".join(errors)
                 except paramtools.ValidationError as valerr_msg:
