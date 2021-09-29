@@ -14074,21 +14074,21 @@
         "value": [
             {
                 "year": 2013,
-                "value": 35.0
+                "value": 0.350
             },
             {
                 "year": 2021,
-                "value": 50.0
+                "value": 0.500
             },
             {
                 "year": 2022,
-                "value": 35.0
+                "value": 0.350
             }
         ],
         "validators": {
             "range": {
                 "min": 0,
-                "max": 100
+                "max": 1
             }
         },
         "compatible_data": {
@@ -14108,13 +14108,13 @@
         "value": [
             {
                 "year": 2013,
-                "value": 20.0
+                "value": 0.2
             }
         ],
         "validators": {
             "range": {
                 "min": 0,
-                "max": 100
+                "max": 1
             }
         },
         "compatible_data": {

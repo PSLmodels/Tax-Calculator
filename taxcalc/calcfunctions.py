@@ -2159,7 +2159,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         if c00100 > CDCC_ps2:
             crate = max(0., CDCC_frt -
                         max(((c00100 - CDCC_ps2) * CDCC_prt), 0.))
-    c33200 = c33000 * 0.01 * crate
+    c33200 = c33000 * crate
     # credit is limited by tax liability if not refundable
     if CDCC_refundable:
         c07180 = 0.
