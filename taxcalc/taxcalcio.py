@@ -700,6 +700,7 @@ class TaxCalcIO():
                 odf[varname] = vardata
             else:
                 odf[varname] = vardata.round(2)  # rounded to nearest cent
+            odf = odf.copy()
         # specify mtr values in percentage terms
         if 'mtr_inctax' in varset:
             odf['mtr_inctax'] = (mtr_inctax * 100).round(2)
