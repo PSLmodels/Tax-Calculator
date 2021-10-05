@@ -146,7 +146,7 @@ def test_round_trip_reforms(fyear, tests_path):
          'CDCC_c': {2021: 8000, 2022: 3000},
          'CDCC_ps': {2021: 125000, 2022: 15000},
          'CDCC_ps2': {2021: 400000, 2022: 9e+99},
-         'CDCC_crt': {2021: 50.0, 2022: 35.0},
+         'CDCC_crt': {2021: 0.500, 2022: 0.350},
          'CDCC_refundable': {2021: True, 2022: False},
          'ALD_BusinessLosses_c': {
              2026: [283535.22, 567070.42, 283535.22, 283535.22, 567070.42],
