@@ -2119,15 +2119,23 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     c00100: float
         Adjusted Gross Income (AGI)
     CDCC_ps: float
-        Child/dependent care credit phaseout start
+        Child/dependent care credit first phaseout start
+    CDCC_ps2: float
+        Child/dependent care credit second phaseout start
     CDCC_crt: float
-        Child/dependent care credit phaseout percentage rate ceiling
+        Child/dependent care credit phaseout rate ceiling
+    CDCC_frt: float
+        Child/dependent care credit phaseout rate floor
+    CDCC_prt: float
+        Child/dependent care credit phaseout rate
     c05800: float
         Total (regular + AMT) income tax liability before credits
     e07300: float
         Foreign tax credit from Form 1116
     c07180: float
         Credit for child and dependent care expenses from Form 2441
+    CDCC_refund: bool
+        Indicator for whether CDCC is refundable
 
     Returns
     -------
@@ -2159,7 +2167,8 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         if c00100 > CDCC_ps2:
             crate = max(0., CDCC_frt -
                         max(((c00100 - CDCC_ps2) * CDCC_prt), 0.))
-    c33200 = c33000 * 0.01 * crate
+
+    c33200 = c33000 * crate
     # credit is limited by tax liability if not refundable
     if CDCC_refundable:
         c07180 = 0.

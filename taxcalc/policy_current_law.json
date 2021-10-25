@@ -14063,8 +14063,8 @@
         }
     },
     "CDCC_crt": {
-        "title": "Child & dependent care credit phaseout percentage rate ceiling",
-        "description": "The maximum percentage rate for the CDCC; this percentage rate decreases as AGI rises above the CDCC_ps level.",
+        "title": "Child & dependent care credit phaseout rate ceiling",
+        "description": "The maximum rate for the CDCC; this rate decreases as AGI rises above the CDCC_ps level.",
         "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
@@ -14074,21 +14074,21 @@
         "value": [
             {
                 "year": 2013,
-                "value": 35.0
+                "value": 0.350
             },
             {
                 "year": 2021,
-                "value": 50.0
+                "value": 0.500
             },
             {
                 "year": 2022,
-                "value": 35.0
+                "value": 0.350
             }
         ],
         "validators": {
             "range": {
                 "min": 0,
-                "max": 100
+                "max": 1
             }
         },
         "compatible_data": {
@@ -14097,8 +14097,8 @@
         }
     },
     "CDCC_frt": {
-        "title": "Child & dependent care credit phaseout percentage rate floor",
-        "description": "The minimum percentage rate for the first AGI phaseout of the CDCC.",
+        "title": "Child & dependent care credit phaseout rate floor",
+        "description": "The minimum rate for the first AGI phaseout of the CDCC.",
         "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
@@ -14108,13 +14108,13 @@
         "value": [
             {
                 "year": 2013,
-                "value": 20.0
+                "value": 0.200
             }
         ],
         "validators": {
             "range": {
                 "min": 0,
-                "max": 100
+                "max": 1
             }
         },
         "compatible_data": {
@@ -14123,9 +14123,9 @@
         }
     },
     "CDCC_prt": {
-        "title": "Child & dependent care credit phaseout percentage rate",
-        "description": "The CDCC credit rate is reduced by this many percentage points for each dollary of AGI over the phase-out thresholds.",
-        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.",
+        "title": "Child & dependent care credit phaseout rate",
+        "description": "The CDCC credit rate is reduced by this many percentage points for each dollar of AGI over the phase-out thresholds.",
+        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit. 0.01 / 2000 = 0.000005",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -14134,7 +14134,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": 0.0005
+                "value": 5e-06
             }
         ],
         "validators": {
