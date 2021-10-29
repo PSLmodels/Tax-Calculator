@@ -109,13 +109,12 @@ def test_round_trip_reforms(fyear, tests_path):
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
 
-    # Add TCJA known values
     tcja_known_2017_file = os.path.join(
         tests_path, 'TCJA_known_from_2017.json'
     )
-    with open(tcja_known_2017_file, 'r') as tcja_known_2017_f:
-        tcja_known_2017_text = tcja_known_2017_f.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(tcja_known_2017_text))
+    with open(tcja_known_2017_file, 'r') as tcja_known_f:
+        tcja_extra_text = tcja_known_f.read()
+    rtr_pol.implement_reform(Policy.read_json_reform(tcja_known_2017_file))
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
 
