@@ -108,6 +108,16 @@ def test_round_trip_reforms(fyear, tests_path):
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
+
+    tcja_known_2017_file = os.path.join(
+        tests_path, 'TCJA_known_from_2017.json'
+    )
+    with open(tcja_known_2017_file, 'r') as tcja_known_f:
+        tcja_extra_text = tcja_known_f.read()
+    rtr_pol.implement_reform(Policy.read_json_reform(tcja_known_2017_file))
+    assert not rtr_pol.parameter_warnings
+    assert not rtr_pol.errors
+
     # Layer on the CARES Act
     rtr_pol.implement_reform(
         {'ID_Charity_crt_all': {2020: 1.0, 2021: 0.6},
@@ -118,7 +128,7 @@ def test_round_trip_reforms(fyear, tests_path):
     # Layer on ARPA
     rtr_pol.implement_reform(
         {'RRC_c': {2021: 1400, 2022: 0},
-         'RRC_ps': {2021: [75000, 150000, 75000, 112500,150000],
+         'RRC_ps': {2021: [75000, 150000, 75000, 112500, 150000],
                     2022: [0, 0, 0, 0, 0]},
          'RRC_pe': {2021: [80000, 160000, 80000, 120000, 160000],
                     2022: [0, 0, 0, 0, 0]},
