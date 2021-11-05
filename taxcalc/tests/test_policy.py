@@ -1518,7 +1518,6 @@ class TestAdjust:
         with pytest.raises(pt.ValidationError):
             pol2.adjust({"EITC_c-indexed": 123})
 
-
     def test_cpi_offset_does_not_affect_wage_indexed_params(self):
         """
         Test adjusting parameter_indexing_CPI_offset does not affect unknown
