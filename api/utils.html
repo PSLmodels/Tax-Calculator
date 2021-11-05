@@ -22,8 +22,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -33,17 +33,17 @@
     
   <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
 
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script >
+    <script>
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
         const thebe_selector_output = ".output"
@@ -93,7 +93,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Usage
  </span>
@@ -209,7 +209,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   About
  </span>
@@ -236,7 +236,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Contributing
  </span>
@@ -268,7 +268,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   API
  </span>
@@ -417,7 +417,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Tax-Calculator use cases
  </span>
@@ -540,8 +540,8 @@
 <span id="taxcalc-utils"></span><h2>taxcalc.utils<a class="headerlink" href="#module-taxcalc.utils" title="Permalink to this headline">¶</a></h2>
 <p>PUBLIC low-level utility functions for Tax-Calculator.</p>
 <dl class="py function">
-<dt id="taxcalc.utils.add_income_table_row_variable">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">add_income_table_row_variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_measure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_edges</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#add_income_table_row_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.add_income_table_row_variable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.add_income_table_row_variable">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">add_income_table_row_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_measure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_edges</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#add_income_table_row_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.add_income_table_row_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a variable to specified Pandas DataFrame, dframe, that specifies the
 table row and is called ‘table_row’.  The rows are defined by the
 specified bin_edges function argument.  Note that the bin groupings
@@ -565,8 +565,8 @@ three bin groupings: [1,2), [2,3), [3,4).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.add_quantile_table_row_variable">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">add_quantile_table_row_variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_measure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_quantiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decile_details</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_by_income_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#add_quantile_table_row_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.add_quantile_table_row_variable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.add_quantile_table_row_variable">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">add_quantile_table_row_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_measure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_quantiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decile_details</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_by_income_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#add_quantile_table_row_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.add_quantile_table_row_variable" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Add a variable to specified Pandas DataFrame, dframe, that specifies
 the table row and is called ‘table_row’.</p>
@@ -589,8 +589,8 @@ and the top decile is broken into three subgroups
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.atr_graph_data">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">atr_graph_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ALL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atr_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'combined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#atr_graph_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.atr_graph_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.atr_graph_data">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">atr_graph_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ALL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atr_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'combined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#atr_graph_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.atr_graph_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare average tax rate data needed by xtr_graph_plot utility function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -627,16 +627,16 @@ of people (True) or an equal number of filing units (False)</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.bootstrap_se_ci">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">bootstrap_se_ci</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#bootstrap_se_ci"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.bootstrap_se_ci" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.bootstrap_se_ci">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">bootstrap_se_ci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statistic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#bootstrap_se_ci"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.bootstrap_se_ci" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return bootstrap estimate of standard error of statistic and
 bootstrap estimate of 100*(1-2*alpha)% confidence interval for statistic
 in a dictionary along with specified seed and nun_samples (B) and alpha.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.ce_aftertax_expanded_income">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">ce_aftertax_expanded_income</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_no_agg_tax_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#ce_aftertax_expanded_income"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.ce_aftertax_expanded_income" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.ce_aftertax_expanded_income">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">ce_aftertax_expanded_income</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_no_agg_tax_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#ce_aftertax_expanded_income"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.ce_aftertax_expanded_income" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return dictionary that contains certainty-equivalent of the
 expected utility of after-tax expanded income computed for
 several constant-relative-risk-aversion parameter values
@@ -657,8 +657,8 @@ expected-utility and certainty-equivalent calculations.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.certainty_equivalent">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">certainty_equivalent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exputil</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#certainty_equivalent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.certainty_equivalent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.certainty_equivalent">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">certainty_equivalent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exputil</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#certainty_equivalent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.certainty_equivalent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate and return certainty-equivalent of exputil of consumption
 assuming an isoelastic utility function with crra and cmin as parameters.</p>
 <dl class="field-list simple">
@@ -679,8 +679,8 @@ assuming an isoelastic utility function with crra and cmin as parameters.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.create_diagnostic_table">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">create_diagnostic_table</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#create_diagnostic_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.create_diagnostic_table" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.create_diagnostic_table">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">create_diagnostic_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#create_diagnostic_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.create_diagnostic_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract diagnostic table from list of Pandas DataFrame objects
 returned from a Calculator dataframe(DIST_VARIABLES) call for
 each year in the specified list of years.</p>
@@ -701,8 +701,8 @@ each year in the specified list of years.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.create_difference_table">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">create_difference_table</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vdf1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdf2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tax_to_diff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#create_difference_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.create_difference_table" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.create_difference_table">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">create_difference_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vdf1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdf2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tax_to_diff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#create_difference_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.create_difference_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get results from two different vdf, construct tax difference results,
 and return the difference statistics as a table.</p>
 <dl class="field-list simple">
@@ -744,8 +744,8 @@ specified income_measure.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.create_distribution_table">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">create_distribution_table</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_measure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#create_distribution_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.create_distribution_table" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.create_distribution_table">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">create_distribution_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_measure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#create_distribution_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.create_distribution_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get results from vdf, sort them by expanded_income based on groupby,
 and return them as a table.</p>
 <dl class="field-list simple">
@@ -786,14 +786,14 @@ specified income_measure.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.delete_file">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">delete_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#delete_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.delete_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.delete_file">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">delete_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#delete_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.delete_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove specified file if it exists.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.expected_utility">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">expected_utility</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">consumption</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probability</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#expected_utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.expected_utility" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.expected_utility">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">expected_utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">consumption</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probability</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#expected_utility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.expected_utility" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate and return expected utility of consumption.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -814,8 +814,8 @@ specified income_measure.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.get_sums">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">get_sums</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#get_sums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.get_sums" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.get_sums">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">get_sums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#get_sums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.get_sums" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute unweighted sum of items in each column of Pandas DataFrame, dframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -828,8 +828,8 @@ specified income_measure.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.isoelastic_utility_function">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">isoelastic_utility_function</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">consumption</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#isoelastic_utility_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.isoelastic_utility_function" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.isoelastic_utility_function">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">isoelastic_utility_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">consumption</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#isoelastic_utility_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.isoelastic_utility_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate and return utility of consumption.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -849,8 +849,8 @@ specified income_measure.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.json_to_dict">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">json_to_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#json_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.json_to_dict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.json_to_dict">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">json_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#json_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.json_to_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert specified JSON text into an ordered Python dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -869,8 +869,8 @@ specified income_measure.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.mtr_graph_data">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">mtr_graph_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ALL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'combined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e00200p'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_e00200p_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_wrt_full_compen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'expanded_income'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dollar_weighting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#mtr_graph_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.mtr_graph_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.mtr_graph_data">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">mtr_graph_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ALL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'combined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e00200p'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_e00200p_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_wrt_full_compen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'expanded_income'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dollar_weighting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#mtr_graph_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.mtr_graph_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare marginal tax rate data needed by xtr_graph_plot utility function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -930,8 +930,8 @@ Specifying True produces a graph x axis that shows income_measure
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.pch_graph_data">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">pch_graph_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#pch_graph_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.pch_graph_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.pch_graph_data">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">pch_graph_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#pch_graph_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.pch_graph_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare percentage change in after-tax expanded income data needed by
 pch_graph_plot utility function.</p>
 <dl class="field-list simple">
@@ -953,8 +953,8 @@ of people (True) or an equal number of filing units (False)</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.pch_graph_plot">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">pch_graph_plot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">850</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#pch_graph_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.pch_graph_plot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.pch_graph_plot">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">pch_graph_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">850</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#pch_graph_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.pch_graph_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot percentage change in after-tax expanded income using data returned
 from the pch_graph_data function.</p>
 <dl class="field-list simple">
@@ -980,34 +980,34 @@ from the pch_graph_data function.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.read_egg_csv">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">read_egg_csv</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#read_egg_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.read_egg_csv" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.read_egg_csv">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">read_egg_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#read_egg_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.read_egg_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read from egg the file named fname that contains CSV data and
 return pandas DataFrame containing the data.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.read_egg_json">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">read_egg_json</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#read_egg_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.read_egg_json" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.read_egg_json">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">read_egg_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#read_egg_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.read_egg_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read from egg the file named fname that contains JSON data and
 return dictionary containing the data.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.unweighted_sum">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">unweighted_sum</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#unweighted_sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.unweighted_sum" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.unweighted_sum">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">unweighted_sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#unweighted_sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.unweighted_sum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return unweighted sum of Pandas DataFrame col_name items.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.weighted_sum">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">weighted_sum</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#weighted_sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.weighted_sum" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.weighted_sum">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">weighted_sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#weighted_sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.weighted_sum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return weighted sum of Pandas DataFrame col_name items.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.write_graph_file">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">write_graph_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#write_graph_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.write_graph_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.write_graph_file">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">write_graph_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#write_graph_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.write_graph_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write HTML file named filename containing figure.
 The title is the text displayed in the browser tab.</p>
 <dl class="field-list simple">
@@ -1028,8 +1028,8 @@ The title is the text displayed in the browser tab.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="taxcalc.utils.xtr_graph_plot">
-<code class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></code><code class="sig-name descname"><span class="pre">xtr_graph_plot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">850</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legendloc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bottom_right'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#xtr_graph_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.xtr_graph_plot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="taxcalc.utils.xtr_graph_plot">
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">xtr_graph_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">850</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legendloc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bottom_right'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#xtr_graph_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.xtr_graph_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot marginal/average tax rate graph using data returned from either the
 mtr_graph_data function or the atr_graph_data function.</p>
 <dl class="field-list simple">

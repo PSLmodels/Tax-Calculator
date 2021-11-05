@@ -22,8 +22,8 @@
       
 
     
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
@@ -33,14 +33,14 @@
     
   <link rel="preload" as="script" href="../../_static/js/index.1c5a1a01449ed65a7b51.js">
 
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
-    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -84,7 +84,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Usage
  </span>
@@ -200,7 +200,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   About
  </span>
@@ -227,7 +227,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Contributing
  </span>
@@ -259,7 +259,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   API
  </span>
@@ -408,7 +408,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Tax-Calculator use cases
  </span>
@@ -617,11 +617,6 @@
                 <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">start_year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
             <span class="p">}</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">param</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>
-            <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">param</span> <span class="o">!=</span> <span class="s2">&quot;schema&quot;</span>
-        <span class="p">}</span>
 
 <div class="viewcode-block" id="Parameters.adjust"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.adjust">[docs]</a>    <span class="k">def</span> <span class="nf">adjust</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">params_or_path</span><span class="p">,</span> <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -796,7 +791,6 @@
                 <span class="p">]</span> <span class="o">+=</span> <span class="n">cpi_vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
             <span class="c1"># 1. Delete all unknown values.</span>
             <span class="c1"># 1.a For revision, these are years specified after cpi_min_year.</span>
-            <span class="n">init_vals</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">to_delete</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
                 <span class="k">if</span> <span class="p">(</span>
@@ -807,16 +801,11 @@
                 <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;-indexed&quot;</span><span class="p">):</span>
                     <span class="n">param</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-indexed&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;indexed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-                    <span class="n">init_vals</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span><span class="p">[</span><span class="n">param</span><span class="p">]][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
-                        <span class="o">&lt;=</span> <span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
-                    <span class="p">)</span>
                     <span class="n">to_delete</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
                     <span class="p">)</span>
                     <span class="n">needs_reset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">to_delete</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">init_vals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="c1"># 1.b For all others, these are years after last_known_year.</span>
             <span class="n">last_known_year</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_known_year</span><span class="p">)</span>
@@ -862,7 +851,6 @@
                     <span class="n">needs_reset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">long_param_vals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="n">init_vals</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">to_delete</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
                 <span class="k">if</span> <span class="p">(</span>
@@ -872,15 +860,10 @@
                 <span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;indexed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-                    <span class="n">init_vals</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span><span class="p">[</span><span class="n">param</span><span class="p">]][</span><span class="s1">&#39;year&#39;</span><span class="p">]</span>
-                        <span class="o">&lt;=</span> <span class="n">last_known_year</span>
-                    <span class="p">)</span>
                     <span class="n">to_delete</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;_auto&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span>  <span class="c1"># noqa</span>
                     <span class="n">needs_reset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">to_delete</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">init_vals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">)</span>
 
@@ -1184,11 +1167,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">parameter_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="ow">or</span> <span class="p">{}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">parameter_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="ow">or</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="Parameters._read_json_revision"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters._read_json_revision">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">topkey</span><span class="p">):</span>

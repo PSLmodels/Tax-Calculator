@@ -22,8 +22,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -33,17 +33,17 @@
     
   <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
 
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script >
+    <script>
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
         const thebe_selector_output = ".output"
@@ -93,7 +93,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Usage
  </span>
@@ -209,7 +209,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   About
  </span>
@@ -236,7 +236,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Contributing
  </span>
@@ -268,7 +268,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   API
  </span>
@@ -417,7 +417,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Tax-Calculator use cases
  </span>
@@ -542,7 +542,7 @@
         
               <div>
                 
-  <div class="section" id="recipe-5-redefining-expanded-income">
+  <div class="tex2jax_ignore mathjax_ignore section" id="recipe-5-redefining-expanded-income">
 <h1>Recipe 5: Redefining Expanded Income<a class="headerlink" href="#recipe-5-redefining-expanded-income" title="Permalink to this headline">¶</a></h1>
 <p>This is an advanced recipe that should be followed only after mastering the basic recipe.
 This recipe is almost exactly the same as Directly Comparing Two Reforms, so you might want to read that recipe first.</p>
@@ -699,26 +699,26 @@ methods.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2018_REFORM1_iitax_rev($B)= 1361.859
-2018_REFORM2_iitax_rev($B)= 1196.075
+2018_REFORM2_iitax_rev($B)= 1195.985
 
 Extract of 2018 income-tax difference table by expanded-income decile
 (taxfall is count of funits with cut in income tax in reform 2 vs 1)
 (taxrise is count of funits with rise in income tax in reform 2 vs 1)
             funits(#m) taxfall(#m) taxrise(#m) agg_diff($b)  mean_diff($) aftertax_income_diff(%)
 &lt;$0K          0.129804         0.0         0.0          0.0           0.0                     0.0
-=$0K         28.997572    0.003718    0.001407    -0.000259     -0.008926              -10.459826
-$0-10K       32.861688     2.55197    1.399451    -0.201814     -6.141326                0.158635
-$10-20K       21.68755   12.398236    3.606746    -1.691028    -77.972304                0.550945
-$20-30K      18.705611   14.488926    2.698052    -4.134841   -221.048186                0.970103
-$30-40K      16.861419   13.862656    2.451317    -7.486232   -443.985896                 1.47247
-$40-50K      13.329158   11.319828     1.76968    -8.686528    -651.69367                1.737295
-$50-75K      22.049099   19.613191     2.19565   -19.935975   -904.162779                1.821431
-$75-100K      13.87195   12.584718    1.182932   -16.910393  -1219.035083                 1.77601
-$100-200K    21.813959   19.737734    1.987578   -42.257864  -1937.193691                1.837309
-$200-500K     7.482487    6.937591    0.541638   -41.071826  -5489.061086                2.652879
-$500-1000K    0.967068    0.889137    0.077931   -12.340113 -12760.330566                2.715881
-&gt;$1000K       0.449118    0.372603    0.076515    -11.06684 -24641.257716                  1.9521
-ALL         199.206484  114.760307   17.988898  -165.783714   -832.220471                1.888656
+=$0K         28.997572    0.003718    0.001407    -0.000261     -0.008987              -10.531354
+$0-10K       32.861688     2.55197     1.39647    -0.203015     -6.177864                0.159579
+$10-20K       21.68755   12.408909    3.596073    -1.704862     -78.61015                0.555452
+$20-30K      18.705611   14.490894    2.696083    -4.170187    -222.93776                0.978396
+$30-40K      16.861419   13.861419    2.452554    -7.523556    -446.19947                1.479811
+$40-50K      13.329158   11.319488    1.770021    -8.711659   -653.579075                1.742321
+$50-75K      22.049099   19.613191    2.195443   -19.934369   -904.089937                1.821285
+$75-100K      13.87195     12.5808     1.18685   -16.900786  -1218.342484                1.775001
+$100-200K    21.813959   19.740638    1.984674   -42.246766  -1936.684934                1.836827
+$200-500K     7.482487    6.938538    0.540692   -41.066229  -5488.313043                2.652518
+$500-1000K    0.967068    0.889137    0.077931   -12.343936 -12764.284047                2.716723
+&gt;$1000K       0.449118    0.372603    0.076515   -11.067766 -24643.320157                1.952264
+ALL         199.206484  114.771304   17.974713  -165.873391   -832.670642                1.889677
 </pre></div>
 </div>
 </div>

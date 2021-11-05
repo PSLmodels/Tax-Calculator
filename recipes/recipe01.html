@@ -22,8 +22,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -33,17 +33,17 @@
     
   <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
 
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script >
+    <script>
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
         const thebe_selector_output = ".output"
@@ -93,7 +93,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Usage
  </span>
@@ -209,7 +209,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   About
  </span>
@@ -236,7 +236,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Contributing
  </span>
@@ -268,7 +268,7 @@
   </a>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   API
  </span>
@@ -417,7 +417,7 @@
   </ul>
  </li>
 </ul>
-<p class="caption">
+<p class="caption" role="heading">
  <span class="caption-text">
   Tax-Calculator use cases
  </span>
@@ -542,7 +542,7 @@
         
               <div>
                 
-  <div class="section" id="recipe-1-directly-comparing-two-reforms">
+  <div class="tex2jax_ignore mathjax_ignore section" id="recipe-1-directly-comparing-two-reforms">
 <h1>Recipe 1: Directly Comparing Two Reforms<a class="headerlink" href="#recipe-1-directly-comparing-two-reforms" title="Permalink to this headline">¶</a></h1>
 <p>This is an advanced recipe that should be followed only after mastering the basic recipe.
 This recipe shows how to compare two reforms (instead of comparing a reform to current-law policy)
@@ -611,7 +611,7 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2018_REFORM1_iitax_rev($B)= 1361.859
-2018_REFORM2_iitax_rev($B)= 1196.075
+2018_REFORM2_iitax_rev($B)= 1195.985
 </pre></div>
 </div>
 </div>
@@ -634,20 +634,20 @@ and also shows how to use the reform files available on the Tax-Calculator websi
         funits(#m)  taxfall(#m)  taxrise(#m)  agg_diff($b)  mean_diff($)  aftertax_income_diff(%)
 0-10n     0.099742     0.000000     0.000000      0.000000      0.000000                 0.000000
 0-10z     8.084653     0.000000     0.000000      0.000000      0.000000                      NaN
-0-10p    11.735831     0.169713     0.011669     -0.011923     -1.015920                 0.031151
-10-20    19.920848     6.239705     2.895547     -0.766881    -38.496427                 0.319477
-20-30    19.920146    10.132640     2.387495     -1.866205    -93.684295                 0.412454
-30-40    19.920561     9.239134     2.015874     -3.466169   -173.999549                 0.564827
-40-50    19.919924    11.020788     2.138870     -5.783431   -290.333976                 0.760367
-50-60    19.922029    13.174235     2.061306     -8.655064   -434.446919                 0.912881
-60-70    19.920346    14.126142     1.781818    -11.867154   -595.730290                 0.991809
-70-80    19.917057    15.546695     1.522491    -16.993878   -853.232403                 1.121252
-80-90    19.923101    16.962623     1.655510    -26.056769  -1307.867172                 1.293067
-90-100   19.922247    18.148631     1.518318    -90.316241  -4533.436382                 2.135573
-ALL     199.206484   114.760307    17.988898   -165.783714   -832.220471                 1.381147
-90-95     9.961787     8.956795     0.774215    -22.404568  -2249.051168                 1.647649
-95-99     7.965885     7.392816     0.548547    -37.437716  -4699.756143                 2.282615
-Top 1%    1.994576     1.799021     0.195555    -30.473957 -15278.415215                 2.479132
+0-10p    11.735831     0.169713     0.011669     -0.011944     -1.017723                 0.031206
+10-20    19.920848     6.251255     2.881016     -0.773067    -38.806919                 0.322054
+20-30    19.920146    10.132046     2.388090     -1.883900    -94.572577                 0.416365
+30-40    19.920561     9.240418     2.014589     -3.487296   -175.060155                 0.568270
+40-50    19.919924    11.020755     2.138903     -5.811243   -291.730166                 0.764024
+50-60    19.922029    13.167126     2.068208     -8.677719   -435.584083                 0.915270
+60-70    19.920346    14.128191     1.779769    -11.880010   -596.375656                 0.992884
+70-80    19.917057    15.548090     1.521095    -17.000687   -853.574274                 1.121701
+80-90    19.923101    16.962688     1.655445    -26.051354  -1307.595365                 1.292798
+90-100   19.922247    18.151020     1.515929    -90.296172  -4532.429038                 2.135099
+ALL     199.206484   114.771304    17.974713   -165.873391   -832.670642                 1.381894
+90-95     9.961787     8.958237     0.772773    -22.392938  -2247.883726                 1.646793
+95-99     7.965885     7.393762     0.547601    -37.425665  -4698.243304                 2.281880
+Top 1%    1.994576     1.799021     0.195555    -30.477569 -15280.226295                 2.479426
 </pre></div>
 </div>
 </div>
