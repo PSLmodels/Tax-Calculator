@@ -155,7 +155,8 @@
                        "2019": 0.075},
     "parameter_indexing_CPI_offset": {"2017": -0.0025},
 
-    // extra parameters:
+    // Apply parameters that are affected by the change in index rates
+    // even though they are not directly modified by TCJA.
     "II_em_ps": {"2018": [9e99, 9e99, 9e99, 9e99, 9e99]},
     "STD_Dep": {"2018": 1050, "2019": 1100},
     "STD_Aged": {"2018": [1600, 1300, 1300, 1600, 1300],
@@ -172,7 +173,6 @@
                      "2019": 0},
     "AMT_brk1": {"2018": 191100,
                  "2019": 194800},
-    // Only adding 2018, 2019 values for now. Could add 2020, 2021
     "EITC_c": {"2018": [519, 3461, 5716, 6431],
                "2019": [529, 3526, 5828, 6557]},
     "EITC_ps": {"2018": [8490, 18660, 18660, 18660],
