@@ -3288,9 +3288,9 @@
             "cps": true
         }
     },
-    "RRC_prt":{
-        "title":"Recovery Rebate Credit phaseout rate",
-        "description":"The Recovery Rebate Credit will be phased out at this rate for those with income above the phase out start and below the phase out end.",
+    "RRC_prt": {
+        "title": "Recovery Rebate Credit phaseout rate",
+        "description": "The Recovery Rebate Credit will be phased out at this rate for those with income above the phase out start and below the phase out end.",
         "notes": "Used in 2020 as part of the CARES Act",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
@@ -3323,9 +3323,9 @@
             "cps": true
         }
     },
-    "RRC_c_unit":{
-        "title":"Maximum credit for filing unit",
-        "description":"The maximum credit awarded as part of the Recovery Rebate Credit.",
+    "RRC_c_unit": {
+        "title": "Maximum credit for filing unit",
+        "description": "The maximum credit awarded as part of the Recovery Rebate Credit.",
         "notes": "Used in 2020 as part of the CARES Act",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
@@ -3421,9 +3421,9 @@
             "cps": true
         }
     },
-    "RRC_c_kids":{
-        "title":"Recovery Rebate Credit amount per child",
-        "description":"The credit awarded for each child in an eligible family as part of the Recovery Rebate Credit.",
+    "RRC_c_kids": {
+        "title": "Recovery Rebate Credit amount per child",
+        "description": "The credit awarded for each child in an eligible family as part of the Recovery Rebate Credit.",
         "notes": "Used in 2020 as part of the CARES Act",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
@@ -15173,7 +15173,7 @@
                 "EIC": "3+kids",
                 "value": 0.2106
             },
-                        {
+            {
                 "year": 2021,
                 "EIC": "0kids",
                 "value": 0.153
@@ -15193,7 +15193,7 @@
                 "EIC": "3+kids",
                 "value": 0.2106
             },
-                        {
+            {
                 "year": 2022,
                 "EIC": "0kids",
                 "value": 0.0765
