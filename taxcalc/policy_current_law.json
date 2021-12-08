@@ -1844,6 +1844,31 @@
                 "value": 24400.0
             },
             {
+                "year": 2022,
+                "MARS": "single",
+                "value": 12950.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 25900.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 12950.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 19400.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 25900.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 7355.0
@@ -2114,6 +2139,31 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 1300.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 1750.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 1400.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 1400.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 1750.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 1750.0
             }
         ],
         "validators": {
@@ -7587,6 +7637,31 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 78750.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 41675.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 83350.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 41675.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 55800.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 83350.0
             }
         ],
         "validators": {
@@ -7810,6 +7885,31 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 488850.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 459750.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 517200.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 258600.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 488500.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 517200.0
             }
         ],
         "validators": {
@@ -8414,6 +8514,31 @@
                 "value": 19400.0
             },
             {
+                "year": 2022,
+                "MARS": "single",
+                "value": 10275.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 20550.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 10275.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 14650.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 20550.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 10802.0
@@ -8486,6 +8611,10 @@
             },
             {
                 "year": 2019,
+                "value": 0.12
+            },
+            {
+                "year": 2022,
                 "value": 0.12
             },
             {
@@ -8690,6 +8819,31 @@
                 "value": 78950.0
             },
             {
+                "year": 2022,
+                "MARS": "single",
+                "value": 41775.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 83550.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 41775.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 55900.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 83550.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 43959.0
@@ -8762,6 +8916,10 @@
             },
             {
                 "year": 2019,
+                "value": 0.22
+            },
+            {
+                "year": 2022,
                 "value": 0.22
             },
             {
@@ -8966,6 +9124,31 @@
                 "value": 168400.0
             },
             {
+                "year": 2022,
+                "MARS": "single",
+                "value": 89075.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 178150.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 89075.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 89050.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 178150.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 106452.0
@@ -9038,6 +9221,10 @@
             },
             {
                 "year": 2019,
+                "value": 0.24
+            },
+            {
+                "year": 2022,
                 "value": 0.24
             },
             {
@@ -9242,6 +9429,31 @@
                 "value": 321450.0
             },
             {
+                "year": 2022,
+                "MARS": "single",
+                "value": 170050.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 340100.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 170050.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 170050.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 340100.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 221997.0
@@ -9314,6 +9526,10 @@
             },
             {
                 "year": 2019,
+                "value": 0.32
+            },
+            {
+                "year": 2022,
                 "value": 0.32
             },
             {
@@ -9518,6 +9734,31 @@
                 "value": 408200.0
             },
             {
+                "year": 2022,
+                "MARS": "single",
+                "value": 215950.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 431900.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 215950.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 215950.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 431900.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 482682.0
@@ -9590,6 +9831,10 @@
             },
             {
                 "year": 2019,
+                "value": 0.35
+            },
+            {
+                "year": 2022,
                 "value": 0.35
             },
             {
@@ -9794,6 +10039,31 @@
                 "value": 612350.0
             },
             {
+                "year": 2022,
+                "MARS": "single",
+                "value": 539900.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 647850.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 323925.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 539900.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 647850.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 484651.0
@@ -9866,6 +10136,10 @@
             },
             {
                 "year": 2019,
+                "value": 0.37
+            },
+            {
+                "year": 2022,
                 "value": 0.37
             },
             {
@@ -12434,6 +12708,31 @@
                 "value": 321400.0
             },
             {
+                "year": 2022,
+                "MARS": "single",
+                "value": 170050.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 340100.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 170050.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 170050.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 340100.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 0.0
@@ -13443,6 +13742,32 @@
                 "MARS": "widow",
                 "value": 111700.0
             },
+
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 75900.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 118100.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 59050.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 75900.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 118100.0
+            },
             {
                 "year": 2026,
                 "MARS": "single",
@@ -13690,6 +14015,31 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 1020600.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 539900.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 1079800.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 539900.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 539900.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 1079800.0
             },
             {
                 "year": 2026,
@@ -14982,22 +15332,22 @@
             {
                 "year": 2022,
                 "EIC": "0kids",
-                "value": 546.21
+                "value": 560.00
             },
             {
                 "year": 2022,
                 "EIC": "1kid",
-                "value": 3640.70
+                "value": 3733.00
             },
             {
                 "year": 2022,
                 "EIC": "2kids",
-                "value": 6017.58
+                "value": 6064.00
             },
             {
                 "year": 2022,
                 "EIC": "3+kids",
-                "value": 6770.29
+                "value": 6935.00
             }
         ],
         "validators": {
@@ -15398,22 +15748,22 @@
             {
                 "year": 2022,
                 "EIC": "0kids",
-                "value": 8931.38
+                "value": 9160.00
             },
             {
                 "year": 2022,
                 "EIC": "1kid",
-                "value": 19649.03
+                "value": 20130.00
             },
             {
                 "year": 2022,
                 "EIC": "2kids",
-                "value": 19649.03
+                "value": 20130.00
             },
             {
                 "year": 2022,
                 "EIC": "3+kids",
-                "value": 19649.03
+                "value": 20130.00
             }
         ],
         "validators": {
@@ -15576,6 +15926,26 @@
                 "year": 2019,
                 "EIC": "3+kids",
                 "value": 5790.0
+            },
+            {
+                "year": 2022,
+                "EIC": "0kids",
+                "value": 6130.0
+            },
+            {
+                "year": 2022,
+                "EIC": "1kid",
+                "value": 6130.0
+            },
+            {
+                "year": 2022,
+                "EIC": "2kids",
+                "value": 6130.0
+            },
+            {
+                "year": 2022,
+                "EIC": "3+kids",
+                "value": 6130.0
             }
         ],
         "validators": {
