@@ -17822,6 +17822,10 @@
             {
                 "year": 2021,
                 "value": 125
+            },
+            {
+                "year": 2022,
+                "value": 64
             }
         ],
         "validators": {
