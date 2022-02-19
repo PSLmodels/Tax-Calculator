@@ -1,0 +1,37 @@
+// Title: Coronavirus Aid, Relief, and Economic Security Act
+// Reform_File_Author: Jason DeBacker
+// Reform_Reference: https://www.congress.gov/116/bills/hr748/BILLS-116hr748enr.pdf
+// Reform_Baseline: policy_current_law.json
+// Reform_Description:
+// - Raise ceiling on chartitable deductions for itemizers (1)
+// - Allows an above the line deductions for charitable contributions (2)
+// - Limit charitable deductions for non-itemizers to $300 (3)
+// - Provide recovery rebate credits of $1200 per adult and $500 per child (4)
+// Reform_Parameter_Map:
+// - 1: ID_Charity_crt_all
+// - 2: STD_allow_charity_ded_nonitemizers
+// - 3: STD_charity_ded_nonitemizers_max
+// - 4: RRC_*
+{
+    "ID_Charity_crt_all": {"2020": 1.0, "2021": 0.6},
+    "STD_allow_charity_ded_nonitemizers": {"2020": true, "2021": false},
+    "STD_charity_ded_nonitemizers_max": {"2020": 300.0, "2021": 0.0},
+    "RRC_ps": {"2020": [75000, 150000, 75000, 112500,150000],
+               "2021": [75000, 150000, 75000, 112500,150000]},
+    "RRC_prt": {"2020": 0.05, "2021": 0},
+    "RRC_c_unit": {"2020": [1200, 2400, 1200, 1200, 1200],
+                 "2021": [0, 0, 0, 0, 0]},
+    "RRC_c_kids": {"2020": 500, "2021":0}
+}
+
+// Provisions not modeled
+// - Temporary waiver of required minimum distribution rules for certain retirement plan accounts
+// - Exclusion of certain employer payments of student loans
+// - Employee retention credit for employers subject to closure due to COVID-19
+// - Delay of payment of employer payroll taxes
+// - Modifications of net operating losses
+// - Modification of limitation on losses for taxpayers other than corporations
+// - Modification of credit for prior year minimum tax liability of corporations
+// - Modifications of limitation on business interest
+// - Technical amendmentsregardign qualified improvement property
+// - Temporary exception from excise tax for alcohol used to produce hand sanitizer
