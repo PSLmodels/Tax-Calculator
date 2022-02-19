@@ -114,14 +114,15 @@ def test_round_trip_reforms(fyear, tests_path):
         rtext = rfile.read()
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     # Layer on the Consolidated Appropriations Act of 2021
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'ConsolidatedAppropriationsAct2021.json.json')
+    reform_file = os.path.join(tests_path, '..', 'reforms',
+                               'ConsolidatedAppropriationsAct2021.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
     # Layer on ARPA
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'ARPA.json.json')
+    reform_file = os.path.join(tests_path, '..', 'reforms', 'ARPA.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
