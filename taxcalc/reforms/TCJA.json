@@ -1,5 +1,5 @@
 // Title: Tax Cuts and Jobs Act, final version
-// Reform_File_Author: Cody Kallen (with updates by Martin Holmer)
+// Reform_File_Author: Cody Kallen (with updates by Martin Holme and Bodi Yang)
 // Reform_Reference: 2018 IRS forms and this URL:
 //        http://docs.house.gov/billsthisweek/20171218/CRPT-115HRPT-466.pdf
 // Reform_Baseline: 2017_law.json
@@ -231,7 +231,7 @@
     // Apply parameters that are affected by the change in index rates
     // even though they are not directly modified by TCJA.
     "II_em_ps": {"2018": [9e99, 9e99, 9e99, 9e99, 9e99]},
-    "STD_Dep": {"2018": 1050, "2019": 1100, "2020": 1100, "2021": 1100, "2022": 1150}, 
+    "STD_Dep": {"2018": 1050, "2019": 1100, "2020": 1100, "2021": 1100, "2022": 1150},
     "STD_Aged": {"2018": [1600, 1300, 1300, 1600, 1300],
                  "2019": [1650, 1300, 1300, 1650, 1300],
                  "2020": [1650, 1300, 1300, 1650, 1300],
