@@ -37,17 +37,19 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -477,7 +479,7 @@
                 data-placement="left">.rst</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -513,7 +515,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -533,7 +535,30 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Tax-Calculator Utilities</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-taxcalc.utils">
+   taxcalc.utils
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="section" id="tax-calculator-utilities">
@@ -620,11 +645,8 @@ and the top decile is broken into three subgroups
 of people (True) or an equal number of filing units (False)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dictionary object suitable for passing to xtr_graph_plot utility function</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary object suitable for passing to xtr_graph_plot utility function</p>
 </dd>
 </dl>
 </dd></dl>
@@ -672,11 +694,8 @@ assuming an isoelastic utility function with crra and cmin as parameters.</p>
 <li><p><strong>cmin</strong> (<em>positive float</em>) – consumption level below which marginal utility is assumed to be constant</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>certainty-equivalent of specified expected utility, exputil</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>certainty-equivalent of specified expected utility, exputil</p>
 </dd>
 </dl>
 </dd></dl>
@@ -694,11 +713,8 @@ each year in the specified list of years.</p>
 <li><p><strong>year_list</strong> (<em>list of calendar years corresponding to the dframe_list</em>) – </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Pandas DataFrame object containing the diagnostic table</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Pandas DataFrame object containing the diagnostic table</p>
 </dd>
 </dl>
 </dd></dl>
@@ -807,11 +823,8 @@ specified income_measure.</p></li>
 <li><p><strong>cmin</strong> (<em>positive float</em>) – consumption level below which marginal utility is assumed to be constant</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>expected utility of consumption array</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>expected utility of consumption array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -821,11 +834,8 @@ specified income_measure.</p></li>
 <span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">get_sums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dframe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#get_sums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.get_sums" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute unweighted sum of items in each column of Pandas DataFrame, dframe.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Pandas Series object containing column sums indexed by dframe column names.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Pandas Series object containing column sums indexed by dframe column names.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -842,11 +852,8 @@ specified income_measure.</p></li>
 <li><p><strong>cmin</strong> (<em>positive float</em>) – consumption level below which marginal utility is assumed to be constant</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>utility of consumption</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>utility of consumption</p>
 </dd>
 </dl>
 </dd></dl>
@@ -923,11 +930,8 @@ Specifying True produces a graph x axis that shows income_measure
 (not filing unit) percentiles.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dictionary object suitable for passing to xtr_graph_plot utility function</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary object suitable for passing to xtr_graph_plot utility function</p>
 </dd>
 </dl>
 </dd></dl>
@@ -946,11 +950,8 @@ pch_graph_plot utility function.</p>
 of people (True) or an equal number of filing units (False)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dictionary object suitable for passing to pch_graph_plot utility function</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary object suitable for passing to pch_graph_plot utility function</p>
 </dd>
 </dl>
 </dd></dl>
@@ -971,11 +972,8 @@ from the pch_graph_data function.</p>
 <li><p><strong>title</strong> (<em>string</em>) – graph title; if ‘’, then use title generated by pch_graph_data</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bokeh.plotting figure object containing a raster graphics plot</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bokeh.plotting figure object containing a raster graphics plot</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -1021,11 +1019,8 @@ The title is the text displayed in the browser tab.</p>
 <li><p><strong>title</strong> (<em>string</em>) – text displayed in browser tab when HTML file is displayed in browser</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Nothing</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Nothing</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1048,11 +1043,8 @@ mtr_graph_data function or the atr_graph_data function.</p>
 specifies location of the legend in the plot</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bokeh.plotting figure object containing a raster graphics plot</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bokeh.plotting figure object containing a raster graphics plot</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -1106,8 +1098,8 @@ figure generate a vector graphics file such as an EPS file.</p>
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="taxcalcio.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1124,19 +1116,17 @@ figure generate a vector graphics file such as an EPS file.</p>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Policy Simulation Library<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Policy Simulation Library<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

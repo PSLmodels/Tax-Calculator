@@ -37,20 +37,22 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Input variables" href="input_vars.html" />
@@ -479,7 +481,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -515,7 +517,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -3154,7 +3156,2649 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Policy parameters</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parameter-indexing">
+   Parameter Indexing
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#offsets">
+     Offsets
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#parameter-indexing-cpi-offset">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         parameter_indexing_CPI_offset
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#payroll-taxes">
+   Payroll Taxes
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#additional-medicare-fica">
+     Additional Medicare FICA
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amedt-ec">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMEDT_ec
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amedt-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMEDT_rt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#medicare-fica">
+     Medicare FICA
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#fica-mc-trt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         FICA_mc_trt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#social-security-fica">
+     Social Security FICA
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#fica-ss-trt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         FICA_ss_trt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ss-earnings-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SS_Earnings_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ss-earnings-thd">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SS_Earnings_thd
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#social-security-taxability">
+   Social Security Taxability
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#social-security-benefit-taxability">
+     Social Security Benefit Taxability
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ss-thd50">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SS_thd50
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ss-percentage1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SS_percentage1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ss-thd85">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SS_thd85
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ss-percentage2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         SS_percentage2
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#above-the-line-deductions">
+   Above The Line Deductions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#child-and-elderly-care">
+     Child And Elderly Care
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-dependents-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_Dependents_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-dependents-child-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_Dependents_Child_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-dependents-elder-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_Dependents_Elder_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-dependents-thd">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_Dependents_thd
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#misc-adjustment-haircuts">
+     Misc. Adjustment Haircuts
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-studentloan-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_StudentLoan_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-selfemploymenttax-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_SelfEmploymentTax_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-selfemp-healthins-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_SelfEmp_HealthIns_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-keogh-sep-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_KEOGH_SEP_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-earlywithdraw-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_EarlyWithdraw_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-alimonypaid-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_AlimonyPaid_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-alimonyreceived-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_AlimonyReceived_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-educatorexpenses-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_EducatorExpenses_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-hsadeduction-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_HSADeduction_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-iracontributions-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_IRAContributions_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-domesticproduction-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_DomesticProduction_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-tuition-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_Tuition_hc
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#misc-exclusions">
+     Misc. Exclusions
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-invinc-ec-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_InvInc_ec_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ald-businesslosses-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ALD_BusinessLosses_c
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#personal-exemptions">
+   Personal Exemptions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#personal-and-dependent-exemption-amount">
+     Personal And Dependent Exemption Amount
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-em">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_em
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#personal-exemption-phaseout-rate">
+     Personal Exemption Phaseout Rate
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_prt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#repeal-for-dependents-under-age-18">
+     Repeal for Dependents Under Age 18
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-no-em-nu18">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_no_em_nu18
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#standard-deduction">
+   Standard Deduction
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#additional-standard-deduction-for-blind-and-aged">
+     Additional Standard Deduction For Blind And Aged
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#std-aged">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         STD_Aged
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#standard-deduction-amount">
+     Standard Deduction Amount
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#std">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         STD
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#nonrefundable-credits">
+   Nonrefundable Credits
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#child-and-dependent-care">
+     Child And Dependent Care
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-ps2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_ps2
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-crt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_crt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-frt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_frt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_prt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cdcc-refundable">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CDCC_refundable
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#misc-credit-limits">
+     Misc. Credit Limits
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cr-retirementsavings-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CR_RetirementSavings_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cr-foreigntax-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CR_ForeignTax_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cr-residentialenergy-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CR_ResidentialEnergy_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cr-generalbusiness-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CR_GeneralBusiness_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cr-minimumtax-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CR_MinimumTax_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cr-amopprefundable-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CR_AmOppRefundable_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cr-amoppnonrefundable-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CR_AmOppNonRefundable_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cr-schr-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CR_SchR_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cr-othercredits-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CR_OtherCredits_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cr-education-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CR_Education_hc
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#personal-nonrefundable-credit">
+     Personal Nonrefundable Credit
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-credit-nr">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_credit_nr
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-credit-nr-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_credit_nr_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-credit-nr-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_credit_nr_prt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#child-dependent-credits">
+   Child/Dependent Credits
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#additional-child-tax-credit">
+     Additional Child Tax Credit
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#actc-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ACTC_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#actc-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ACTC_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#actc-rt-bonus-under6family">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ACTC_rt_bonus_under6family
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#actc-income-thd">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ACTC_Income_thd
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#actc-childnum">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ACTC_ChildNum
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#child-tax-credit">
+     Child Tax Credit
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-c-under6-bonus">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_c_under6_bonus
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-include17">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_include17
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-refundable">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_refundable
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_prt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#other-dependent-tax-credit">
+     Other Dependent Tax Credit
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#odc-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ODC_c
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#itemized-deductions">
+   Itemized Deductions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#casualty">
+     Casualty
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-casualty-frt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Casualty_frt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-casualty-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Casualty_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-casualty-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Casualty_c
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ceiling-on-the-amount-of-itemized-deductions-allowed">
+     Ceiling On The Amount Of Itemized Deductions Allowed
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-amountcap-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_AmountCap_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-amountcap-switch">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_AmountCap_Switch
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ceiling-on-the-benefit-of-itemized-deductions-as-a-percent-of-deductible-expenses">
+     Ceiling On The Benefit Of Itemized Deductions As A Percent Of Deductible Expenses
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-benefitcap-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_BenefitCap_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-benefitcap-switch">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_BenefitCap_Switch
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#charity">
+     Charity
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-charity-crt-all">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Charity_crt_all
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-charity-crt-noncash">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Charity_crt_noncash
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-charity-frt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Charity_frt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-charity-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Charity_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-charity-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Charity_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-charity-f">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Charity_f
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#interest-paid">
+     Interest Paid
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-interestpaid-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_InterestPaid_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-interestpaid-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_InterestPaid_c
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#itemized-deduction-limitation">
+     Itemized Deduction Limitation
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_prt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-crt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_crt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#medical-expenses">
+     Medical Expenses
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-medical-frt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Medical_frt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-medical-frt-add4aged">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Medical_frt_add4aged
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-medical-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Medical_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-medical-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Medical_c
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#miscellaneous">
+     Miscellaneous
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-miscellaneous-frt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Miscellaneous_frt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-miscellaneous-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Miscellaneous_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-miscellaneous-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_Miscellaneous_c
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#state-and-local-income-and-sales-taxes">
+     State And Local Income And Sales Taxes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-statelocaltax-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_StateLocalTax_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-statelocaltax-crt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_StateLocalTax_crt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-statelocaltax-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_StateLocalTax_c
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#state-and-local-taxes-and-real-estate-taxes">
+     State And Local Taxes And Real Estate Taxes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-alltaxes-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_AllTaxes_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-alltaxes-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_AllTaxes_c
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#state-local-and-foreign-real-estate-taxes">
+     State, Local, And Foreign Real Estate Taxes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-realestate-hc">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_RealEstate_hc
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-realestate-crt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_RealEstate_crt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-realestate-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_RealEstate_c
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#surtax-on-itemized-deduction-benefits-above-an-agi-threshold">
+     Surtax On Itemized Deduction Benefits Above An AGI Threshold
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-benefitsurtax-trt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_BenefitSurtax_trt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-benefitsurtax-crt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_BenefitSurtax_crt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-benefitsurtax-em">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_BenefitSurtax_em
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id-benefitsurtax-switch">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ID_BenefitSurtax_Switch
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#capital-gains-and-dividends">
+   Capital Gains And Dividends
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#amt-long-term-capital-gains-and-qualified-dividends">
+     AMT - Long Term Capital Gains And Qualified Dividends
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-cg-rt1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_CG_rt1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-cg-brk1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_CG_brk1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-cg-rt2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_CG_rt2
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-cg-brk2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_CG_brk2
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-cg-rt3">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_CG_rt3
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-cg-brk3">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_CG_brk3
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-cg-rt4">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_CG_rt4
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#regular-long-term-capital-gains-and-qualified-dividends">
+     Regular - Long Term Capital Gains And Qualified Dividends
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cg-rt1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CG_rt1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cg-brk1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CG_brk1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cg-rt2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CG_rt2
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cg-brk2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CG_brk2
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cg-rt3">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CG_rt3
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cg-brk3">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CG_brk3
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cg-rt4">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CG_rt4
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#tax-all-capital-gains-and-dividends-the-same-as-regular-taxable-income">
+     Tax All Capital Gains And Dividends The Same As Regular Taxable Income
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cg-nodiff">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CG_nodiff
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cg-ec">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CG_ec
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#cg-reinvest-ec-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CG_reinvest_ec_rt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#personal-income">
+   Personal Income
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#alternative-minimum-tax">
+     Alternative Minimum Tax
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-em">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_em
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_prt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-em-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_em_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-rt1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_rt1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-brk1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_brk1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#amt-rt2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AMT_rt2
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pass-through">
+     Pass-Through
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-rt1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_rt1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-brk1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_brk1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-rt2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_rt2
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-brk2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_brk2
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-rt3">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_rt3
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-brk3">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_brk3
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-rt4">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_rt4
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-brk4">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_brk4
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-rt5">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_rt5
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-brk5">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_brk5
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-rt6">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_rt6
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-brk6">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_brk6
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-rt7">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_rt7
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-brk7">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_brk7
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-rt8">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_rt8
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-eligiblerate-active">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_EligibleRate_active
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-eligiblerate-passive">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_EligibleRate_passive
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-wages-active-income">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_wages_active_income
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-top-stacking">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_top_stacking
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-taxinc-thd">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_taxinc_thd
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-taxinc-gap">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_taxinc_gap
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-w2-wages-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_w2_wages_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-alt-w2-wages-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_alt_w2_wages_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-alt-property-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_alt_property_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-limit-switch">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_limit_switch
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_prt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#regular-non-amt-non-pass-through">
+     Regular: Non-AMT, Non-Pass-Through
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-rt1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_rt1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-brk1">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_brk1
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-rt2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_rt2
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-brk2">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_brk2
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-rt3">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_rt3
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-brk3">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_brk3
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-rt4">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_rt4
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-brk4">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_brk4
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-rt5">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_rt5
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-brk5">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_brk5
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-rt6">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_rt6
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-brk6">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_brk6
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-rt7">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_rt7
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-brk7">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_brk7
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-rt8">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_rt8
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#other-taxes">
+   Other Taxes
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#net-investment-income-tax">
+     Net Investment Income Tax
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#niit-thd">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         NIIT_thd
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#niit-pt-taxed">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         NIIT_PT_taxed
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#niit-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         NIIT_rt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#refundable-credits">
+   Refundable Credits
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#earned-income-tax-credit">
+     Earned Income Tax Credit
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-basic-frac">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_basic_frac
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_prt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-ps-marriedj">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_ps_MarriedJ
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-mineligage">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_MinEligAge
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-maxeligage">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_MaxEligAge
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-investincome-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_InvestIncome_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-excess-investincome-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_excess_InvestIncome_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-indiv">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_indiv
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#eitc-sep-filers-elig">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EITC_sep_filers_elig
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#new-refundable-child-tax-credit">
+     New Refundable Child Tax Credit
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-new-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_new_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-new-c-under6-bonus">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_new_c_under6_bonus
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-new-for-all">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_new_for_all
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-new-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_new_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-new-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_new_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-new-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_new_prt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-new-refund-limited">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_new_refund_limited
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-new-refund-limit-payroll-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_new_refund_limit_payroll_rt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ctc-new-refund-limited-all-payroll">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CTC_new_refund_limited_all_payroll
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#personal-refundable-credit">
+     Personal Refundable Credit
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-credit">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_credit
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-credit-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_credit_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ii-credit-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         II_credit_prt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-pe">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_pe
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_prt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-c-unit">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_c_unit
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rrc-c-kids">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RRC_c_kids
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#refundable-payroll-tax-credit">
+     Refundable Payroll Tax Credit
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rptc-c">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RPTC_c
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#rptc-rt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         RPTC_rt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#surtaxes">
+   Surtaxes
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lump-sum-tax">
+     Lump-Sum Tax
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#lst">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         LST
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#new-agi-surtax">
+     New AGI Surtax
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#agi-surtax-trt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AGI_surtax_trt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#agi-surtax-thd">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         AGI_surtax_thd
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#new-minimum-tax">
+     New Minimum Tax
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#fst-agi-trt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         FST_AGI_trt
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#fst-agi-thd-lo">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         FST_AGI_thd_lo
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#fst-agi-thd-hi">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         FST_AGI_thd_hi
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#universal-basic-income">
+   Universal Basic Income
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ubi-benefits">
+     UBI Benefits
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ubi-u18">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         UBI_u18
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ubi-1820">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         UBI_1820
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ubi-21">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         UBI_21
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ubi-taxability">
+     UBI Taxability
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ubi-ecrt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         UBI_ecrt
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#benefits">
+   Benefits
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#benefit-repeal">
+     Benefit Repeal
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-ssi-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_ssi_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-housing-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_housing_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-snap-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_snap_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-tanf-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_tanf_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-vet-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_vet_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-wic-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_wic_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-mcare-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_mcare_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-mcaid-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_mcaid_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-oasdi-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_oasdi_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-ui-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_ui_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ben-other-repeal">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         BEN_other_repeal
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#other-parameters-not-in-tax-brain-webapp">
+   Other Parameters (not in Tax-Brain webapp)
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ii-em-ps">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       II_em_ps
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#std-dep">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       STD_Dep
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#std-allow-charity-ded-nonitemizers">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       STD_allow_charity_ded_nonitemizers
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#std-charity-ded-nonitemizers-max">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       STD_charity_ded_nonitemizers_max
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ui-em">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       UI_em
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ui-thd">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       UI_thd
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#amt-child-em">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       AMT_child_em
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#amt-child-em-c-age">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       AMT_child_em_c_age
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#amt-em-pe">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       AMT_em_pe
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#llc-expense-c">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       LLC_Expense_c
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#etc-pe-single">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ETC_pe_Single
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#etc-pe-married">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       ETC_pe_Married
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cr-charity-rt">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CR_Charity_rt
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cr-charity-f">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CR_Charity_f
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cr-charity-frt">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       CR_Charity_frt
+      </span>
+     </code>
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="policy-parameters">
@@ -7993,8 +10637,8 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="cli.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -8011,19 +10655,17 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Policy Simulation Library<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Policy Simulation Library<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

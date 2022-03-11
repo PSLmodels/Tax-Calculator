@@ -37,17 +37,19 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -477,7 +479,7 @@
                 data-placement="left">.md</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -513,7 +515,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -1482,7 +1484,979 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Input variables</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dsi">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     DSI
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#eic">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     EIC
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#flpdyr">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     FLPDYR
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mars">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     MARS
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#midr">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     MIDR
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#recid">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     RECID
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#xtot">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     XTOT
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#age-head">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     age_head
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#age-spouse">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     age_spouse
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#agi-bin">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     agi_bin
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#blind-head">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     blind_head
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#blind-spouse">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     blind_spouse
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cmbtp">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     cmbtp
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00200">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00200
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00200p">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00200p
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00200s">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00200s
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pencon-p">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pencon_p
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pencon-s">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pencon_s
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00300">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00300
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00400">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00400
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00600">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00600
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00650">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00650
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00700">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00700
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00800">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00800
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00900">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00900
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00900p">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00900p
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e00900s">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e00900s
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e01100">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e01100
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e01200">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e01200
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e01400">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e01400
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e01500">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e01500
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e01700">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e01700
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e02000">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e02000
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e02100">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e02100
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e02100p">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e02100p
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e02100s">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e02100s
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e02300">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e02300
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e02400">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e02400
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e03150">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e03150
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e03210">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e03210
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e03220">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e03220
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e03230">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e03230
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e03240">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e03240
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e03270">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e03270
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e03290">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e03290
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e03300">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e03300
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e03400">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e03400
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e03500">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e03500
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e07240">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e07240
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e07260">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e07260
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e07300">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e07300
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e07400">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e07400
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e07600">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e07600
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e09700">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e09700
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e09800">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e09800
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e09900">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e09900
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e11200">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e11200
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e17500">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e17500
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e18400">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e18400
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e18500">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e18500
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e19200">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e19200
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e19800">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e19800
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e20100">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e20100
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e20400">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e20400
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#g20500">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     g20500
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e24515">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e24515
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e24518">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e24518
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e26270">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e26270
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e27200">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e27200
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e32800">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e32800
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e58990">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e58990
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e62900">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e62900
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e87530">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e87530
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#elderly-dependents">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     elderly_dependents
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#f2441">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     f2441
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#f6251">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     f6251
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#a-lineno">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     a_lineno
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ffpos">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     ffpos
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#fips">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     fips
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#h-seq">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     h_seq
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#data-source">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     data_source
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#k1bx14p">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     k1bx14p
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#k1bx14s">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     k1bx14s
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mcaid-ben">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     mcaid_ben
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mcare-ben">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     mcare_ben
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#n24">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     n24
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#nu06">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     nu06
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#nu13">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     nu13
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#nu18">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     nu18
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#n1820">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     n1820
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#n21">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     n21
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#other-ben">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     other_ben
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#p08000">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     p08000
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#p22250">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     p22250
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#p23250">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     p23250
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#e87521">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     e87521
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#s006">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     s006
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#snap-ben">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     snap_ben
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#housing-ben">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     housing_ben
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ssi-ben">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     ssi_ben
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#tanf-ben">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     tanf_ben
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#vet-ben">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     vet_ben
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#wic-ben">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     wic_ben
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pt-sstb-income">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     PT_SSTB_income
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pt-binc-w2-wages">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     PT_binc_w2_wages
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pt-ubia-property">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     PT_ubia_property
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="input-variables">
@@ -2375,8 +3349,8 @@ The Availability information indicates which input data files contain the variab
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="policy_params.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -2393,19 +3367,17 @@ The Availability information indicates which input data files contain the variab
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Policy Simulation Library<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Policy Simulation Library<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 

@@ -37,17 +37,19 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -477,7 +479,7 @@
                 data-placement="left">.rst</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -513,7 +515,7 @@
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -533,7 +535,30 @@
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Tax-Calculator Calculator</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#taxcalc-calculator">
+   taxcalc.calculator
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="section" id="tax-calculator-calculator">
@@ -654,11 +679,8 @@ before being used by this method</p></li>
 of people (True) or an equal number of filing units (False)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>graph that is a bokeh.plotting figure object</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>graph that is a bokeh.plotting figure object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -726,11 +748,8 @@ this method leaves the Calculator object unchanged.</p>
 with the Calculator object’s current_year (must be at least
 one and no more than what would exceed Policy end_year)</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Pandas DataFrame object containing the multi-year diagnostic table</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Pandas DataFrame object containing the multi-year diagnostic table</p>
 </dd>
 </dl>
 </dd></dl>
@@ -761,7 +780,7 @@ of people (True) or an equal number of filing units (False)</p></li>
 <li><p><strong>'weighted_deciles'</strong> – </p></li>
 <li><p><strong>'iitax'</strong><strong>)</strong> – </p></li>
 <li><p><strong>object</strong> (<em>(</em><em>where calc1 is a baseline Calculator</em>) – </p></li>
-<li><p><strong>object</strong><strong>)</strong><strong></strong> (<em>and calc2 is a reform Calculator</em>) – </p></li>
+<li><p><strong>object</strong><strong>)</strong><strong>.</strong> (<em>and calc2 is a reform Calculator</em>) – </p></li>
 <li><p><strong>DataFrame</strong> (<em>The returned diff is a difference table as a Pandas</em>) – </p></li>
 <li><p><strong>rows.</strong> (<em>with DIST_TABLE_COLUMNS and groupby</em>) – </p></li>
 <li><p><strong>NOTE</strong> (<em>when groupby is 'weighted_deciles'</em><em>, </em><em>the returned table has three</em>) – extra rows containing top-decile detail consisting of statistics
@@ -813,7 +832,7 @@ that determines whether table entry values are scaled or not</p></li>
 <li><p><strong>calc1.distribution_tables</strong><strong>(</strong><strong>None</strong> (<em>_ =</em>) – </p></li>
 <li><p><strong>'weighted_deciles'</strong><strong>)</strong> – </p></li>
 <li><p><strong>object</strong> (<em>(</em><em>where calc1 is a baseline Calculator</em>) – </p></li>
-<li><p><strong>object</strong><strong>)</strong><strong></strong> (<em>and calc2 is a reform Calculator</em>) – </p></li>
+<li><p><strong>object</strong><strong>)</strong><strong>.</strong> (<em>and calc2 is a reform Calculator</em>) – </p></li>
 <li><p><strong>a</strong> (<em>Each of the dist1 and optional dist2 is a distribution table as</em>) – </p></li>
 <li><p><strong>rows.</strong> (<em>Pandas DataFrame with DIST_TABLE_COLUMNS and groupby</em>) – </p></li>
 <li><p><strong>NOTE</strong> (<em>when groupby is 'weighted_deciles'</em><em>, </em><em>the returned tables have 3</em>) – extra rows containing top-decile detail consisting of statistics
@@ -976,11 +995,8 @@ True produces a graph x axis that shows income_measure
 (not filing unit) percentiles.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>graph that is a bokeh.plotting figure object</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>graph that is a bokeh.plotting figure object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1014,11 +1030,8 @@ before being used by this method</p></li>
 of people (True) or an equal number of filing units (False)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>graph that is a bokeh.plotting figure object</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>graph that is a bokeh.plotting figure object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1156,8 +1169,8 @@ NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()</p>
 
               </div>
               
-        
-            <!-- Previous / next buttons -->
+            
+                <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
     <a class='left-prev' id="prev-link" href="calcfunctions.html" title="previous page">
         <i class="fas fa-angle-left"></i>
@@ -1174,19 +1187,17 @@ NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()</p>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Policy Simulation Library<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Policy Simulation Library<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 
