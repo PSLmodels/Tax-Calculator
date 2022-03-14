@@ -2900,8 +2900,8 @@ const thebe_selector_output = ".output, .cell_output"
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ChildDepTaxCredit</span><span class="p">(</span><span class="n">n24</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span>
-                      <span class="n">e07260</span><span class="p">,</span> <span class="n">CR_ResidentialEnergy_hc</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">ChildDepTaxCredit</span><span class="p">(</span><span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span>
+					  <span class="n">c05800</span><span class="p">,</span> <span class="n">e07260</span><span class="p">,</span> <span class="n">CR_ResidentialEnergy_hc</span><span class="p">,</span>
                       <span class="n">e07300</span><span class="p">,</span> <span class="n">CR_ForeignTax_hc</span><span class="p">,</span>
                       <span class="n">c07180</span><span class="p">,</span>
                       <span class="n">c07230</span><span class="p">,</span>
@@ -2909,7 +2909,7 @@ const thebe_selector_output = ".output, .cell_output"
                       <span class="n">c07200</span><span class="p">,</span>
                       <span class="n">CTC_c</span><span class="p">,</span> <span class="n">CTC_ps</span><span class="p">,</span> <span class="n">CTC_prt</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">ODC_c</span><span class="p">,</span>
                       <span class="n">CTC_c_under6_bonus</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span>
-                      <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span> <span class="n">n21</span><span class="p">,</span> <span class="n">n1820</span><span class="p">,</span>
+                      <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
                       <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">codtc_limited</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes amounts on &quot;Child Tax Credit and Credit for Other Dependents</span>
@@ -2980,7 +2980,9 @@ const thebe_selector_output = ".output, .cell_output"
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Worksheet Part 1</span>
     <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
-        <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">n21</span> <span class="o">-</span> <span class="n">n1820</span> <span class="o">-</span> <span class="n">n24</span> <span class="o">-</span> <span class="n">num</span><span class="p">)</span>
+        <span class="n">tu18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">age_head</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>   <span class="c1"># taxpayer is under age 18</span>
+        <span class="n">su18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>  <span class="c1"># spouse is under age 18</span>
+        <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nu18</span> <span class="o">-</span> <span class="n">tu18</span> <span class="o">-</span> <span class="n">su18</span> <span class="o">-</span> <span class="n">n24</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span>
     <span class="n">line1</span> <span class="o">=</span> <span class="n">CTC_c</span> <span class="o">*</span> <span class="n">childnum</span> <span class="o">+</span> <span class="n">CTC_c_under6_bonus</span> <span class="o">*</span> <span class="n">nu06</span>
