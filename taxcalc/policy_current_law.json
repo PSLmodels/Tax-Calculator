@@ -1329,6 +1329,81 @@
                 "value": 510000.0
             },
             {
+                "year": 2020,
+                "MARS": "single",
+                "value": 259000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 518000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 259000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 259000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 518000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 262000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 524000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 262000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 262000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 524000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 270000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 540000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 270000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 270000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 540000.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 283535.22
@@ -7493,7 +7568,7 @@
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 466050.0
+                "value": 469050.0
             },
             {
                 "year": 2020,
@@ -14311,6 +14386,56 @@
                 "value": 321400.0
             },
             {
+                "year": 2020,
+                "MARS": "single",
+                "value": 163300.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 326600.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 163300.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 163300.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 326600.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 164900.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 329800.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 164900.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 164900.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 329800.0
+            },
+            {
                 "year": 2022,
                 "MARS": "single",
                 "value": 170050.0
@@ -17630,17 +17755,17 @@
             {
                 "year": 2021,
                 "EIC": "1kid",
-                "value": 19464.12
+                "value": 19520.0
             },
             {
                 "year": 2021,
                 "EIC": "2kids",
-                "value": 19464.12
+                "value": 19520.0
             },
             {
                 "year": 2021,
                 "EIC": "3+kids",
-                "value": 19464.12
+                "value": 19520.0
             },
             {
                 "year": 2022,
