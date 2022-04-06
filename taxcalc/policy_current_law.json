@@ -205,6 +205,58 @@
             "cps": true
         }
     },
+    "SECA_Earnings_thd": {
+        "title": "Minimum self-employment earnings before trigger SECA liability",
+        "description": "Individual self-employment earnings below this amount are not subject to SECA taxes.",
+        "notes": "To compute earnings for this threshold, will multiply net self-employment by 1 - SECA_Earnings_hc",
+        "section_1": "Payroll Taxes",
+        "section_2": "Social Security FICA",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 400.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "SECA_Earnings_hc": {
+        "title": "Hair cut to self-employment earnings to determine whether trigger SECA liability",
+        "description": "Hair cut to self-employment earnings to determine whether trigger SECA liability.",
+        "notes": "See instructions for IRS Form 1040, Schedule SE, line 4 (IRS publishes 1 - this hair cut)",
+        "section_1": "Payroll Taxes",
+        "section_2": "Social Security FICA",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0765
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1.0
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "SS_Earnings_thd": {
         "title": "Additional Taxable Earnings Threshold for Social Security",
         "description": "Individual earnings above this threshold are subjected to Social Security (OASDI) payroll tax, in addition to earnings below the maximum taxable earnings threshold.",
