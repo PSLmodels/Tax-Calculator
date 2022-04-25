@@ -148,6 +148,10 @@ def test_params_class(revision, expect, params_json_file):
 
     # test Params class
     prms = Params()
+
+    with pytest.raises(NotImplementedError):
+        prms.set_rates()
+
     if revision == {}:
         assert isinstance(prms, Params)
         assert prms.start_year == 2001

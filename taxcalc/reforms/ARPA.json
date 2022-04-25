@@ -1,0 +1,74 @@
+// Title: American Rescue Plan Act
+// Reform_File_Author:
+// Reform_Reference: https://www.congress.gov/117/bills/hr1319/BILLS-117hr1319enr.pdf
+// Reform_Baseline: policy_current_law.json
+// Reform_Description:
+// - Recovery Rebate Credit (1)
+// - Exclusion for UI benefits from taxable income (2)
+// - Expansion of child tax credit (3)
+// - Expansion of EITC (4)
+// - Expansion of child and dependent care credit (5)
+// - Extension of noncorporate business loss limitation (6)
+// Reform_Parameter_Map:
+// - 1: RRC_*
+// - 2: UI_*
+// - 3: CTC_*
+// - 4: EITC_*
+// - 5: CDCC_*
+// - 6: ALD_BusinessLosses_c
+{
+    "RRC_c": {"2021": 1400,
+              "2022": 0},
+    "RRC_ps": {"2021": [75000, 150000, 75000, 112500, 150000],
+               "2022": [0, 0, 0, 0, 0]},
+    "RRC_pe": {"2021": [80000, 160000, 80000, 120000, 160000],
+               "2022": [0, 0, 0, 0, 0]},
+    "UI_em": {"2020": 10200,
+              "2021": 0},
+    "UI_thd": {"2020": [150000, 150000, 150000, 150000, 150000],
+               "2021": [0, 0, 0, 0, 0]},
+    "CTC_refundable": {"2021": true,
+                       "2022": false},
+    "CTC_include17": {"2021": true,
+                      "2022": false},
+    "CTC_new_c": {"2021": 1000,
+                  "2022": 0},
+    "CTC_new_c_under6_bonus": {"2021": 600,
+                               "2022": 0},
+    "CTC_new_for_all": {"2021": true,
+                        "2022": false},
+    "CTC_new_ps": {"2021": [75000, 150000, 75000, 112500, 150000],
+                   "2022": [0, 0, 0, 0, 0]},
+    "CTC_new_prt": {"2021": 0.05,
+                    "2022": 0},
+    "EITC_c": {"2021": [1502, 3618, 5980, 6728],
+               "2022": [560, 3733,  6064, 6935]},
+    "EITC_rt": {"2021": [0.153, 0.34, 0.4, 0.45],
+                "2022": [0.0765, 0.34, 0.4, 0.45]},
+    "EITC_ps": {"2021": [11610, 19464.12, 19464.12, 19464.12],
+                "2022": [9160, 20130, 20130, 20130]},
+    "EITC_MinEligAge": {"2021": 19,
+                        "2022": 25},
+    "EITC_MaxEligAge": {"2021": 125,
+                        "2022": 64},
+    "EITC_InvestIncome_c": {"2021": 10000, "2022": 10300},
+    "EITC_sep_filers_elig": {"2021": true},
+    "CDCC_c": {"2021": 8000,
+               "2022": 3000},
+    "CDCC_ps": {"2021": 125000,
+                "2022": 15000},
+    "CDCC_ps2": {"2021": 400000,
+                 "2022": 9e+99},
+    "CDCC_crt": {"2021": 50.0,
+                 "2022": 35.0},
+    "CDCC_refundable": {"2021": true,
+                        "2022": false},
+    "ALD_BusinessLosses_c": {"2026": [283535.22, 567070.42, 283535.22, 283535.22, 567070.42],
+                             "2027": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]}
+}
+
+// Provisions not modeled
+// - Federal student loan debt forgiven excluded from AGI for 2021-2025
+// - Temporary credits for sick leave and family leave for self-employed filers
+// - Business and employer provisions
+// - Health insurance premium credit changes
