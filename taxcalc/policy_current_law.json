@@ -17978,42 +17978,42 @@
             {
                 "year": 2020,
                 "EIC": "0kids",
-                "value": 538.0
+                "value": 5980.0
             },
             {
                 "year": 2020,
                 "EIC": "1kid",
-                "value": 3584.0
+                "value": 5980.0
             },
             {
                 "year": 2020,
-                "EIC": "2kids",
-                "value": 5920.0
-            },
-            {
-                "year": 2020,
-                "EIC": "3+kids",
-                "value": 6660.0
-            },
-            {
-                "year": 2021,
-                "EIC": "0kids",
-                "value": 1502.0
-            },
-            {
-                "year": 2021,
-                "EIC": "1kid",
-                "value": 3618.0
-            },
-            {
-                "year": 2021,
                 "EIC": "2kids",
                 "value": 5980.0
             },
             {
+                "year": 2020,
+                "EIC": "3+kids",
+                "value": 6250.0
+            },
+            {
+                "year": 2021,
+                "EIC": "0kids",
+                "value": 5950.0
+            },
+            {
+                "year": 2021,
+                "EIC": "1kid",
+                "value": 5950.0
+            },
+            {
+                "year": 2021,
+                "EIC": "2kids",
+                "value": 5950.0
+            },
+            {
                 "year": 2021,
                 "EIC": "3+kids",
-                "value": 6728.0
+                "value": 5950.0
             },
             {
                 "year": 2022,
