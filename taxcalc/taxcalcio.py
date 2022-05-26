@@ -268,7 +268,8 @@ class TaxCalcIO():
             base.implement_reform(basedict['policy'],
                                   print_warnings=True,
                                   raise_errors=False)
-            self.errmsg += base.parameter_errors
+            for _, errors in base.parameter_errors.items():
+                self.errmsg += "\n".join(errors)
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
         # ... the reform Policy object
@@ -279,7 +280,10 @@ class TaxCalcIO():
                     pol.implement_reform(poldict,
                                          print_warnings=True,
                                          raise_errors=False)
-                    self.errmsg += pol.parameter_errors
+                    if self.errmsg:
+                        self.errmsg += "\n"
+                    for _, errors in pol.parameter_errors.items():
+                        self.errmsg += "\n".join(errors)
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += valerr_msg.__str__()
         else:
@@ -700,6 +704,7 @@ class TaxCalcIO():
                 odf[varname] = vardata
             else:
                 odf[varname] = vardata.round(2)  # rounded to nearest cent
+            odf = odf.copy()
         # specify mtr values in percentage terms
         if 'mtr_inctax' in varset:
             odf['mtr_inctax'] = (mtr_inctax * 100).round(2)

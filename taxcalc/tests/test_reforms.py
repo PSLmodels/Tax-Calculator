@@ -109,48 +109,30 @@ def test_round_trip_reforms(fyear, tests_path):
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
     # Layer on the CARES Act
-    rtr_pol.implement_reform(
-        {'ID_Charity_crt_all': {2020: 1.0, 2021: 0.6},
-         'STD_allow_charity_ded_nonitemizers': {2020: True, 2021: False},
-         'STD_charity_ded_nonitemizers_max': {2020: 300.0, 2021: 0.0}})
+    reform_file = os.path.join(tests_path, '..', 'reforms', 'CARES.json')
+    with open(reform_file, 'r') as rfile:
+        rtext = rfile.read()
+    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
+    # Layer on the Consolidated Appropriations Act of 2021
+    reform_file = os.path.join(tests_path, '..', 'reforms',
+                               'ConsolidatedAppropriationsAct2021.json')
+    with open(reform_file, 'r') as rfile:
+        rtext = rfile.read()
+    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
     # Layer on ARPA
-    rtr_pol.implement_reform(
-        {'RRC_c': {2021: 1400, 2022: 0},
-         'RRC_ps': {2021: [75000, 150000, 75000, 112500,150000],
-                    2022: [0, 0, 0, 0, 0]},
-         'RRC_pe': {2021: [80000, 160000, 80000, 120000, 160000],
-                    2022: [0, 0, 0, 0, 0]},
-         'UI_em': {2020: 10200, 2021: 0},
-         'UI_thd': {2020: [150000, 150000, 150000, 150000, 150000],
-                    2021: [0, 0, 0, 0, 0]},
-         'CTC_refundable': {2021: True, 2022: False},
-         'CTC_include17': {2021: True, 2022: False},
-         'CTC_new_c': {2021: 1000, 2022: 0},
-         'CTC_new_c_under6_bonus': {2021: 600, 2022: 0},
-         'CTC_new_for_all': {2021: True, 2022: False},
-         'CTC_new_ps': {2021: [75000, 150000, 75000, 112500, 150000],
-                        2022: [0, 0, 0, 0, 0]},
-         'CTC_new_prt': {2021: 0.05, 2022: 0},
-         'EITC_c': {2021: [1502.46, 3606.44, 5960.95, 6706.58],
-                    2022: [546.21, 3640.7, 6017.58, 6770.29]},
-         'EITC_rt': {2021: [0.153, 0.34, 0.4, 0.45],
-                     2022: [0.0765, 0.34, 0.4, 0.45]},
-         'EITC_ps': {2021: [11610, 19464.12, 19464.12, 19464.12],
-                     2022: [8931.38, 19649.03, 19649.03, 19649.03]},
-         'EITC_MinEligAge': {2021: 19, 2022: 25},
-         'EITC_MaxEligAge': {2021: 125, 2022: 64},
-         'EITC_InvestIncome_c': {2021: 10000},
-         'EITC_sep_filers_elig': {2021: True},
-         'CDCC_c': {2021: 8000, 2022: 3000},
-         'CDCC_ps': {2021: 125000, 2022: 15000},
-         'CDCC_ps2': {2021: 400000, 2022: 9e+99},
-         'CDCC_crt': {2021: 50.0, 2022: 35.0},
-         'CDCC_refundable': {2021: True, 2022: False},
-         'ALD_BusinessLosses_c': {
-             2026: [283535.22, 567070.42, 283535.22, 283535.22, 567070.42],
-             2027: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]}})
+    reform_file = os.path.join(tests_path, '..', 'reforms', 'ARPA.json')
+    with open(reform_file, 'r') as rfile:
+        rtext = rfile.read()
+    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
+    assert not rtr_pol.parameter_warnings
+    assert not rtr_pol.errors
+    # Layer on 2022 rounding from IRS
+    reform_file = os.path.join(tests_path, '..', 'reforms', 'rounding2022.json')
+    with open(reform_file, 'r') as rfile:
+        rtext = rfile.read()
+    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
     rtr_pol.set_year(fyear)
