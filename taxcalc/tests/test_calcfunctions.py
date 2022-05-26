@@ -223,6 +223,55 @@ def test_StdDed(test_tuple, expected_value, skip_jit):
     assert np.allclose(test_value, expected_value)
 
 
+tuple1 = (120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999,
+          400, 0, 0, 0, 0, 0, 0, None, None, None, None, None, None,
+          None, None, None, None, None)
+tuple2 = (120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999,
+          400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None,
+          None, None, None, None, None, None)
+tuple3 = (120000, 150000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999,
+          400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None,
+          None, None, None, None, None, None)
+tuple4 = (120000, 500000, 15000, 100, 2000, 0.12, 0.03, 0, 400000,
+          400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None,
+          None, None, None, None, None, None)
+tuple5 = (120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999,
+          400, 300, 0, 0, 0, 0, 0, None, None, None, None, None,
+          None, None, None, None, None, None)
+tuple6 = (120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999,
+          400, 0, 0, 0, 0, -40000, 0, None, None, None, None, None,
+          None, None, None, None, None, None)
+expected1 = (0, 4065, 4065, 0, 0, 3252, 25000, 10000, 15000, 10100,
+             17000)
+expected2 = (15000, 6146.25, 4065, 2081.25, 1040.625, 4917, 38959.375,
+             21167.5, 17791.875, 21380, 19820)
+expected3 = (15000, 20966.25, 20550, 416.25, 208.125, 16773, 179791.875,
+             162000, 17791.875, 161380, 19820)
+expected4 = (15000, 20966.25, 20550, 416.25, 208.125, 30138.6,
+             529791.875, 512000, 17791.875, 511380, 19820)
+expected5 = (300, 4106.625, 4065, 41.625, 20.8125, 3285.3, 25279.1875,
+             10279.1875, 15000, 10382, 17000)
+expected6 = (-40000, 4065, 4065, 0, 0, 3252, 0, 0, 15000, 10100, 17000)
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple1, expected1),
+        (tuple2, expected2),
+        (tuple3, expected3),
+        (tuple4, expected4),
+        (tuple5, expected5),
+        (tuple6, expected6)], ids=[
+            'case 1', 'case 2', 'case 3', 'case 4', 'case 5', 'case 6'])
+def test_EI_PayrollTax(test_tuple, expected_value, skip_jit):
+    """
+    Tests the EI_PayrollTax function
+    """
+    test_value = calcfunctions.EI_PayrollTax(*test_tuple)
+    print('Test value = ', test_value)
+
+    assert np.allclose(test_value, expected_value)
+
+
 def test_AfterTaxIncome(skip_jit):
     '''
     Tests the AfterTaxIncome function
