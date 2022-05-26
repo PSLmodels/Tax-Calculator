@@ -236,10 +236,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     setax_mc_s = FICA_mc_trt * max(0., sey_s * sey_frac)
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
-    # adjust sey to get net, after payroll tax, income
-    # 0.5 is the employer's share of payroll taxes
-    sey_adj = 1 - (0.5 * (SECA_Earnings_thd + FICA_mc_trt))
-    if sey * sey_adj > SECA_Earnings_thd:
+    setax = setax_p + setax_s
+    # # no tax if low amount of self-employment income
+    if sey * sey_frac > SECA_Earnings_thd:
         setax = setax_p + setax_s
     else:
         setax = 0.0
