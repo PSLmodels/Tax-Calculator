@@ -1,5 +1,5 @@
 // JSON "reform" file that specifies changes in current-law policy that
-// are required to make Tax-Calculator work like TAXSIM-27.
+// are required to make Tax-Calculator work like TAXSIM-32.
 //
 // (1) AMT_child_em_c_age = 24 (rather than 18)
 //     Whether to set this parameter to 18 or 24 is arbitary because
