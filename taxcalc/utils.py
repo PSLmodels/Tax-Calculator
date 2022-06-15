@@ -584,7 +584,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
         out=np.zeros_like(diff_table['tot_change'].values),
         where=total_change > 0)
     quotient = np.divide(
-        diff_table['atinc2'].values, diff_table['atinc1'],
+        diff_table['atinc2'].values, diff_table['atinc1'].values,
         out=np.zeros_like(diff_table['atinc2'].values),
         where=diff_table['atinc1'] != 0)
     diff_table['pc_aftertaxinc'] = np.where(

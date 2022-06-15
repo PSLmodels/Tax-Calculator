@@ -2383,8 +2383,8 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
 
 
 @iterate_jit(nopython=True)
-def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
-                      e07260, CR_ResidentialEnergy_hc,
+def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
+					  c05800, e07260, CR_ResidentialEnergy_hc,
                       e07300, CR_ForeignTax_hc,
                       c07180,
                       c07230,
@@ -2392,7 +2392,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
                       c07200,
                       CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
                       CTC_c_under6_bonus, nu06,
-                      CTC_refundable, CTC_include17, n21, n1820,
+                      CTC_refundable, CTC_include17,
                       c07220, odc, codtc_limited):
     """
     Computes amounts on "Child Tax Credit and Credit for Other Dependents
@@ -2463,7 +2463,9 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     """
     # Worksheet Part 1
     if CTC_include17:
-        childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+        tu18 = int(age_head < 18)   # taxpayer is under age 18
+        su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
+        childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
     else:
         childnum = n24
     line1 = CTC_c * childnum + CTC_c_under6_bonus * nu06

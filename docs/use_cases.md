@@ -1,6 +1,21 @@
 Recorded use cases
 ==================
 
+\[72\] JORDAN WEISSMANN. It's Time for Democrats to Buck Up and Give Joe Manchin What He Wants. *Slate*.
+December 2021. URL:
+<https://slate.com/business/2021/12/manchin-democrats-bbb-spending.html>
+(visited on 2021-12-17).
+
+\[71\] Jack Landry and Stephen Nunez. Analysis of Full Refundability of the Child Tax Credit Without Expansion.
+December 2021. Jain Family Instuite Report. URL:
+<https://www.jainfamilyinstitute.org/assets/full-refundability-of-child-tax-credit-without-expansion.pdf>
+(visited on 2021-12-17).
+
+\[70\] Cody Kallen and Arparna Mathur. Estimating the Distributional Implications of the Tax Cuts and Jobs Act. *National Tax Journal*.
+September 2021. URL:
+<https://www.journals.uchicago.edu/doi/abs/10.1086/714449>
+(visited on 2021-12-17).
+
 \[69\] Max Gehnis. California's basic income bill still needs work.
 April 2021. URL:
 <https://blog.ubicenter.org/20210403/california-ab65-calubi.html>
