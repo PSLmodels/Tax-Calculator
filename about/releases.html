@@ -4,11 +4,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Release history &#8212; Tax-Calculator</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,20 +20,16 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -39,12 +37,13 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -62,7 +61,21 @@ const thebe_selector_output = ".output, .cell_output"
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -71,9 +84,10 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -91,14 +105,15 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../index.html">
-   Tax-Calculator
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Tax-Calculator
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Usage
  </span>
@@ -436,92 +451,197 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/about/releases.md"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fabout/releases.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/about/releases.md"><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/PSLmodels/Tax-Calculator"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fabout/releases.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/about/releases.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/about/releases.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#release-3-2-1">
    2021-08-06 Release 3.2.1
@@ -939,12 +1059,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1>Release history</h1>
@@ -1378,15 +1497,16 @@ const thebe_selector_output = ".output, .cell_output"
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="release-history">
-<h1>Release history<a class="headerlink" href="#release-history" title="Permalink to this headline">¶</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="release-history">
+<h1>Release history<a class="headerlink" href="#release-history" title="Permalink to this headline">#</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
-<div class="section" id="release-3-2-1">
-<h2>2021-08-06 Release 3.2.1<a class="headerlink" href="#release-3-2-1" title="Permalink to this headline">¶</a></h2>
+<section id="release-3-2-1">
+<h2>2021-08-06 Release 3.2.1<a class="headerlink" href="#release-3-2-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2615">#2615</a>)</p>
 <p><strong>This is bug-fix release.</strong></p>
@@ -1394,9 +1514,9 @@ for a complete commit history.</p>
 <p><strong>New Features</strong></p>
 <p><strong>Bug Fixes</strong>
 Correct an error in the value of the <code class="docutils literal notranslate"><span class="pre">CTC_new_c_under6_bonus</span></code> for the year 2021. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2609">#2609</a> by Jason DeBacker]</p>
-</div>
-<div class="section" id="release-3-2-0">
-<h2>2021-07-17 Release 3.2.0<a class="headerlink" href="#release-3-2-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-3-2-0">
+<h2>2021-07-17 Release 3.2.0<a class="headerlink" href="#release-3-2-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2604">#2604</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1410,9 +1530,9 @@ Correct an error in the value of the <code class="docutils literal notranslate">
 <li><p>Additional unit tests for <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code>. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2572">#2572</a> by Angela Shoulders]</p></li>
 </ul>
 <p><strong>Bug Fixes</strong></p>
-</div>
-<div class="section" id="release-3-1-0">
-<h2>2021-03-01 Release 3.1.0<a class="headerlink" href="#release-3-1-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-3-1-0">
+<h2>2021-03-01 Release 3.1.0<a class="headerlink" href="#release-3-1-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2566">#2566</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1431,9 +1551,9 @@ Correct an error in the value of the <code class="docutils literal notranslate">
 <li><p>Fix stacking of an optional capital gains tax bracket. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2500">#2500</a> by Peter Metz]</p></li>
 <li><p>Fix bug caused by adjusting the indexed status of a parameter while also adjusting the parameter’s value and a related parameter’s value. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2532">#2532</a> by Hank Doupe]</p></li>
 </ul>
-</div>
-<div class="section" id="release-3-0-0">
-<h2>2020-08-24 Release 3.0.0<a class="headerlink" href="#release-3-0-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-3-0-0">
+<h2>2020-08-24 Release 3.0.0<a class="headerlink" href="#release-3-0-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2474">#2474</a>)</p>
 <p><strong>This is a major release with changes that make Tax-Calculator incompatible with earlier releases.</strong></p>
@@ -1459,9 +1579,9 @@ Correct an error in the value of the <code class="docutils literal notranslate">
 <ul class="simple">
 <li><p>Adjustments to the CPI_offset set under current law previously  overwrite the scheduled expiration of TCJA tax cut for parameters that are inflation indexed. The adoption of the new parameter_indexing_CPI_offset fixes this bug. We are unware of any users encountering this issue. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2413">#2413</a> by Peter Metz]</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-9-0">
-<h2>2020-03-18 Release 2.9.0<a class="headerlink" href="#release-2-9-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-9-0">
+<h2>2020-03-18 Release 2.9.0<a class="headerlink" href="#release-2-9-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2405">#2405</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1478,9 +1598,9 @@ Correct an error in the value of the <code class="docutils literal notranslate">
 <li><p>Reinstate personal exemption phaseout (PEP) in 2026 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2402">#2402</a>
 by Peter Metz and identified by Peter Metz]</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-8-0">
-<h2>2020-02-28 Release 2.8.0<a class="headerlink" href="#release-2-8-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-8-0">
+<h2>2020-02-28 Release 2.8.0<a class="headerlink" href="#release-2-8-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2400">#2400</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1496,9 +1616,9 @@ by Peter Metz]</p></li>
 </ul>
 <p><strong>Bug Fixes</strong>
 -None</p>
-</div>
-<div class="section" id="release-2-7-0">
-<h2>2019-12-13 Release 2.7.0<a class="headerlink" href="#release-2-7-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-7-0">
+<h2>2019-12-13 Release 2.7.0<a class="headerlink" href="#release-2-7-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2395">#2395</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1519,9 +1639,9 @@ by Hank Doupe, who also identified the bug]</p></li>
 <li><p>Ceiling on SALT taxes no longer incorrectly indexed for inflation [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2388">#2388</a>
 by Max Ghenis with bug reported by Tyler Evilsizer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-6-0">
-<h2>2019-10-31 Release 2.6.0<a class="headerlink" href="#release-2-6-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-6-0">
+<h2>2019-10-31 Release 2.6.0<a class="headerlink" href="#release-2-6-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2379">#2379</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1538,9 +1658,9 @@ by Max Ghenis]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-5-0">
-<h2>2019-08-06 Release 2.5.0<a class="headerlink" href="#release-2-5-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-5-0">
+<h2>2019-08-06 Release 2.5.0<a class="headerlink" href="#release-2-5-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2370">#2370</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1560,9 +1680,9 @@ by Peter Metz, Matt Jensen and Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2364">#2364</a>
 by Anderson Frailey]</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-4-2">
-<h2>2019-06-28 Release 2.4.2<a class="headerlink" href="#release-2-4-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-4-2">
+<h2>2019-06-28 Release 2.4.2<a class="headerlink" href="#release-2-4-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2352">#2352</a>)</p>
 <p><strong>This is a bug-fix release.</strong></p>
@@ -1580,9 +1700,9 @@ by Anderson Frailey]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2352">#2352</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-4-1">
-<h2>2019-06-26 Release 2.4.1<a class="headerlink" href="#release-2-4-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-4-1">
+<h2>2019-06-26 Release 2.4.1<a class="headerlink" href="#release-2-4-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2348">#2348</a>)</p>
 <p><strong>This is a bug-fix release.</strong></p>
@@ -1600,9 +1720,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2348">#2348</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-4-0">
-<h2>2019-06-25 Release 2.4.0<a class="headerlink" href="#release-2-4-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-4-0">
+<h2>2019-06-25 Release 2.4.0<a class="headerlink" href="#release-2-4-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2345">#2345</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1620,9 +1740,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-3-0">
-<h2>2019-06-08 Release 2.3.0<a class="headerlink" href="#release-2-3-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-3-0">
+<h2>2019-06-08 Release 2.3.0<a class="headerlink" href="#release-2-3-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2337">#2337</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1643,9 +1763,9 @@ by Martin Holmer based on ideas from Cody Kallen]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-2-0">
-<h2>2019-05-20 Release 2.2.0<a class="headerlink" href="#release-2-2-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-2-0">
+<h2>2019-05-20 Release 2.2.0<a class="headerlink" href="#release-2-2-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2327">#2327</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1671,9 +1791,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2319">#2319</a>
 by Anderson Frailey with bug reported by Alan Viard and Erin Melly]</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-1-0">
-<h2>2019-05-09 Release 2.1.0<a class="headerlink" href="#release-2-1-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-1-0">
+<h2>2019-05-09 Release 2.1.0<a class="headerlink" href="#release-2-1-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2316">#2316</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1697,9 +1817,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-0-1">
-<h2>2019-04-17 Release 2.0.1<a class="headerlink" href="#release-2-0-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-0-1">
+<h2>2019-04-17 Release 2.0.1<a class="headerlink" href="#release-2-0-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2306">#2306</a>)</p>
 <p><strong>This is a bug-fix release.</strong></p>
@@ -1717,9 +1837,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2306">#2306</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-2-0-0">
-<h2>2019-04-15 Release 2.0.0<a class="headerlink" href="#release-2-0-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-2-0-0">
+<h2>2019-04-15 Release 2.0.0<a class="headerlink" href="#release-2-0-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2297">#2297</a>)</p>
 <p><strong>This is a major release with changes that make Tax-Calculator incompatible with earlier releases.</strong></p>
@@ -1745,9 +1865,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2280">#2280</a>
 by Martin Holmer with bug reported by Robert Orr and fix tested on Windows by Duncan Hobbs]</p></li>
 </ul>
-</div>
-<div class="section" id="release-1-2-0">
-<h2>2019-03-24 Release 1.2.0<a class="headerlink" href="#release-1-2-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-1-2-0">
+<h2>2019-03-24 Release 1.2.0<a class="headerlink" href="#release-1-2-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2269">#2269</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1770,9 +1890,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2267">#2267</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-1-1-0">
-<h2>2019-03-17 Release 1.1.0<a class="headerlink" href="#release-1-1-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-1-1-0">
+<h2>2019-03-17 Release 1.1.0<a class="headerlink" href="#release-1-1-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2261">#2261</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1796,9 +1916,9 @@ by Martin Holmer based on report by Max Ghenis]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-1-0-1">
-<h2>2019-02-26 Release 1.0.1<a class="headerlink" href="#release-1-0-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-1-0-1">
+<h2>2019-02-26 Release 1.0.1<a class="headerlink" href="#release-1-0-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2243">#2243</a>)</p>
 <p><strong>This is a bug-fix release.</strong></p>
@@ -1816,9 +1936,9 @@ by Martin Holmer based on report by Max Ghenis]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2243">#2243</a>
 by Martin Holmer with bug reported by Erin Melly]</p></li>
 </ul>
-</div>
-<div class="section" id="release-1-0-0">
-<h2>2019-02-22 Release 1.0.0<a class="headerlink" href="#release-1-0-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-1-0-0">
+<h2>2019-02-22 Release 1.0.0<a class="headerlink" href="#release-1-0-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2241">#2241</a>)</p>
 <p><strong>This is a major release with changes that make Tax-Calculator
@@ -1874,9 +1994,9 @@ by Martin Holmer]</p></li>
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2205">#2205</a>
 by Martin Holmer with need pointed out by Peter Metz]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-24-0">
-<h2>2018-12-14 Release 0.24.0<a class="headerlink" href="#release-0-24-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-24-0">
+<h2>2018-12-14 Release 0.24.0<a class="headerlink" href="#release-0-24-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2176">#2176</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -1893,9 +2013,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-23-4">
-<h2>2018-12-13 Release 0.23.4<a class="headerlink" href="#release-0-23-4" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-23-4">
+<h2>2018-12-13 Release 0.23.4<a class="headerlink" href="#release-0-23-4" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2170">#2170</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -1914,9 +2034,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2162">#2162</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-23-3">
-<h2>2018-12-05 Release 0.23.3<a class="headerlink" href="#release-0-23-3" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-23-3">
+<h2>2018-12-05 Release 0.23.3<a class="headerlink" href="#release-0-23-3" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2150">#2150</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -1944,9 +2064,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2141">#2141</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-23-2">
-<h2>2018-11-22 Release 0.23.2<a class="headerlink" href="#release-0-23-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-23-2">
+<h2>2018-11-22 Release 0.23.2<a class="headerlink" href="#release-0-23-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2126">#2126</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -1963,9 +2083,9 @@ by Martin Holmer responding to question from Ernie Tedeschi]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-23-1">
-<h2>2018-11-20 Release 0.23.1<a class="headerlink" href="#release-0-23-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-23-1">
+<h2>2018-11-20 Release 0.23.1<a class="headerlink" href="#release-0-23-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2123">#2123</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -1988,9 +2108,9 @@ by Martin Holmer with bug reported by Anderson Frailey]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2122">#2122</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-23-0">
-<h2>2018-11-13 Release 0.23.0<a class="headerlink" href="#release-0-23-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-23-0">
+<h2>2018-11-13 Release 0.23.0<a class="headerlink" href="#release-0-23-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2111">#2111</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2018,9 +2138,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-22-2">
-<h2>2018-10-26 Release 0.22.2<a class="headerlink" href="#release-0-22-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-22-2">
+<h2>2018-10-26 Release 0.22.2<a class="headerlink" href="#release-0-22-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2094">#2094</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2037,9 +2157,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-22-1">
-<h2>2018-10-25 Release 0.22.1<a class="headerlink" href="#release-0-22-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-22-1">
+<h2>2018-10-25 Release 0.22.1<a class="headerlink" href="#release-0-22-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2091">#2091</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2056,9 +2176,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-22-0">
-<h2>2018-10-24 Release 0.22.0<a class="headerlink" href="#release-0-22-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-22-0">
+<h2>2018-10-24 Release 0.22.0<a class="headerlink" href="#release-0-22-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2087">#2087</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2091,9 +2211,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2087">#2087</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-21-0-first-release-compatible-only-with-python-3-6">
-<h2>2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6<a class="headerlink" href="#release-0-21-0-first-release-compatible-only-with-python-3-6" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-21-0-first-release-compatible-only-with-python-3-6">
+<h2>2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6<a class="headerlink" href="#release-0-21-0-first-release-compatible-only-with-python-3-6" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2058">#2058</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2115,9 +2235,9 @@ by Martin Holmer], which requires new <code class="docutils literal notranslate"
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-20-3-last-release-compatible-with-python-2-7">
-<h2>2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7<a class="headerlink" href="#release-0-20-3-last-release-compatible-with-python-2-7" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-20-3-last-release-compatible-with-python-2-7">
+<h2>2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7<a class="headerlink" href="#release-0-20-3-last-release-compatible-with-python-2-7" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2056">#2056</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2150,9 +2270,9 @@ by Martin Holmer], which requires new <code class="docutils literal notranslate"
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-20-2">
-<h2>2018-08-10 Release 0.20.2<a class="headerlink" href="#release-0-20-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-20-2">
+<h2>2018-08-10 Release 0.20.2<a class="headerlink" href="#release-0-20-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2048">#2048</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2192,9 +2312,9 @@ by Martin Holmer and Anderson Frailey]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2027">#2027</a>
 by Martin Holmer with bug reported by Max Ghenis]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-20-1">
-<h2>2018-05-21 Release 0.20.1<a class="headerlink" href="#release-0-20-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-20-1">
+<h2>2018-05-21 Release 0.20.1<a class="headerlink" href="#release-0-20-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2005">#2005</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2211,9 +2331,9 @@ by Martin Holmer with bug reported by Max Ghenis]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2005">#2005</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-20-0">
-<h2>2018-05-18 Release 0.20.0<a class="headerlink" href="#release-0-20-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-20-0">
+<h2>2018-05-18 Release 0.20.0<a class="headerlink" href="#release-0-20-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2003">#2003</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2263,9 +2383,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1982">#1982</a>
 by Hank Doupe]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-19-0">
-<h2>2018-04-19 Release 0.19.0<a class="headerlink" href="#release-0-19-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-19-0">
+<h2>2018-04-19 Release 0.19.0<a class="headerlink" href="#release-0-19-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1977">#1977</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2300,9 +2420,9 @@ by Martin Holmer as suggested by Hank Doupe]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1977">#1977</a>
 by Martin Holmer based on bug report by Ernie Tedeschi]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-18-0">
-<h2>2018-03-30 Release 0.18.0<a class="headerlink" href="#release-0-18-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-18-0">
+<h2>2018-03-30 Release 0.18.0<a class="headerlink" href="#release-0-18-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1942">#1942</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2323,9 +2443,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1941">#1941</a>
 by Anderson Frailey]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-17-0">
-<h2>2018-03-16 Release 0.17.0<a class="headerlink" href="#release-0-17-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-17-0">
+<h2>2018-03-16 Release 0.17.0<a class="headerlink" href="#release-0-17-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1926">#1926</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2362,9 +2482,9 @@ by Anderson Frailey]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-16-2">
-<h2>2018-03-09 Release 0.16.2<a class="headerlink" href="#release-0-16-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-16-2">
+<h2>2018-03-09 Release 0.16.2<a class="headerlink" href="#release-0-16-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1911">#1911</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2407,9 +2527,9 @@ input file with this information:</p>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1907">#1907</a>
 by Martin Holmer as reported by Max Ghenis]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-16-1">
-<h2>2018-02-16 Release 0.16.1<a class="headerlink" href="#release-0-16-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-16-1">
+<h2>2018-02-16 Release 0.16.1<a class="headerlink" href="#release-0-16-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1886">#1886</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2434,9 +2554,9 @@ by Anderson Frailey]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1886">#1886</a>
 by Anderson Frailey]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-16-0">
-<h2>2018-02-13 Release 0.16.0<a class="headerlink" href="#release-0-16-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-16-0">
+<h2>2018-02-13 Release 0.16.0<a class="headerlink" href="#release-0-16-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1871">#1871</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2468,9 +2588,9 @@ by Anderson Frailey]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1858">#1858</a>
 by Martin Holmer with assistance from Matt Jensen]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-15-2">
-<h2>2018-01-30 Release 0.15.2<a class="headerlink" href="#release-0-15-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-15-2">
+<h2>2018-01-30 Release 0.15.2<a class="headerlink" href="#release-0-15-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1851">#1851</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2498,9 +2618,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1849">#1849</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-15-1">
-<h2>2018-01-20 Release 0.15.1<a class="headerlink" href="#release-0-15-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-15-1">
+<h2>2018-01-20 Release 0.15.1<a class="headerlink" href="#release-0-15-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1838">#1838</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2517,9 +2637,9 @@ by Martin Holmer as requested by Hank Doupe]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-15-0">
-<h2>2018-01-18 Release 0.15.0<a class="headerlink" href="#release-0-15-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-15-0">
+<h2>2018-01-18 Release 0.15.0<a class="headerlink" href="#release-0-15-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1834">#1834</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2561,9 +2681,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1834">#1834</a>
 by Martin Holmer and Hank Doupe]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-14-3">
-<h2>2017-12-24 Release 0.14.3<a class="headerlink" href="#release-0-14-3" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-14-3">
+<h2>2017-12-24 Release 0.14.3<a class="headerlink" href="#release-0-14-3" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1796">#1796</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2589,9 +2709,9 @@ by Martin Holmer with need pointed out by Matt Jensen and Hank Doupe]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-14-2">
-<h2>2017-12-19 Release 0.14.2<a class="headerlink" href="#release-0-14-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-14-2">
+<h2>2017-12-19 Release 0.14.2<a class="headerlink" href="#release-0-14-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1775">#1775</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2613,9 +2733,9 @@ by Max Ghenis]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1775">#1775</a>
 by Martin Holmer, reported by Max Ghenis and diagnosed by Hank Doupe]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-14-1">
-<h2>2017-12-15 Release 0.14.1<a class="headerlink" href="#release-0-14-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-14-1">
+<h2>2017-12-15 Release 0.14.1<a class="headerlink" href="#release-0-14-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1759">#1759</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2638,9 +2758,9 @@ by Cody Kallen with review by Matt Jensen and Sean Wang]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-14-0">
-<h2>2017-12-11 Release 0.14.0<a class="headerlink" href="#release-0-14-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-14-0">
+<h2>2017-12-11 Release 0.14.0<a class="headerlink" href="#release-0-14-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1742">#1742</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2682,9 +2802,9 @@ by Martin Holmer, reported by Richard Evans and Jason DeBacker]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1712">#1712</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-13-2">
-<h2>2017-11-17 Release 0.13.2<a class="headerlink" href="#release-0-13-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-13-2">
+<h2>2017-11-17 Release 0.13.2<a class="headerlink" href="#release-0-13-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1680">#1680</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2718,9 +2838,9 @@ by Martin Holmer, reported by Max Ghenis]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1677">#1677</a>
 by Martin Holmer, reported by Hank Doupe]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-13-1">
-<h2>2017-11-10 Release 0.13.1<a class="headerlink" href="#release-0-13-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-13-1">
+<h2>2017-11-10 Release 0.13.1<a class="headerlink" href="#release-0-13-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1655">#1655</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2751,9 +2871,9 @@ by Anderson Frailey]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1645">#1645</a>
 by Cody Kallen, reported by Richard Evans]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-13-0">
-<h2>2017-11-07 Release 0.13.0<a class="headerlink" href="#release-0-13-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-13-0">
+<h2>2017-11-07 Release 0.13.0<a class="headerlink" href="#release-0-13-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1632">#1632</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2798,9 +2918,9 @@ by Hank Doupe]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1634">#1634</a>
 by Hank Doupe]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-12-0">
-<h2>2017-10-20 Release 0.12.0<a class="headerlink" href="#release-0-12-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-12-0">
+<h2>2017-10-20 Release 0.12.0<a class="headerlink" href="#release-0-12-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1600">#1600</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2857,9 +2977,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1596">#1596</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-11-0">
-<h2>2017-09-21 Release 0.11.0<a class="headerlink" href="#release-0-11-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-11-0">
+<h2>2017-09-21 Release 0.11.0<a class="headerlink" href="#release-0-11-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1555">#1555</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2887,9 +3007,9 @@ by Matt Jensen and Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-10-2">
-<h2>2017-09-13 Release 0.10.2<a class="headerlink" href="#release-0-10-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-10-2">
+<h2>2017-09-13 Release 0.10.2<a class="headerlink" href="#release-0-10-2" title="Permalink to this headline">#</a></h2>
 <p><strong>API Changes</strong></p>
 <ul class="simple">
 <li><p>None</p></li>
@@ -2904,9 +3024,9 @@ by Matt Jensen and Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/commit/34561ffdeb23c632e248d760c0e34417df0b41f3">34561ff</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-10-1">
-<h2>2017-09-08 Release 0.10.1<a class="headerlink" href="#release-0-10-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-10-1">
+<h2>2017-09-08 Release 0.10.1<a class="headerlink" href="#release-0-10-1" title="Permalink to this headline">#</a></h2>
 <p><strong>API Changes</strong></p>
 <ul class="simple">
 <li><p>None</p></li>
@@ -2921,9 +3041,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/commit/5536792538c3f3e687cccc9e38b20949ac68cb9a">5536792</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-10-0">
-<h2>2017-08-28 Release 0.10.0<a class="headerlink" href="#release-0-10-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-10-0">
+<h2>2017-08-28 Release 0.10.0<a class="headerlink" href="#release-0-10-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1531">#1531</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2950,9 +3070,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-9-2">
-<h2>2017-07-26 Release 0.9.2<a class="headerlink" href="#release-0-9-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-9-2">
+<h2>2017-07-26 Release 0.9.2<a class="headerlink" href="#release-0-9-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1490">#1490</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2980,9 +3100,9 @@ by T.J. Alumbaugh]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1473">#1473</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-9-1">
-<h2>2017-07-06 Release 0.9.1<a class="headerlink" href="#release-0-9-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-9-1">
+<h2>2017-07-06 Release 0.9.1<a class="headerlink" href="#release-0-9-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1438">#1438</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3010,9 +3130,9 @@ by Hank Doupe]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1450">#1450</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-9-0">
-<h2>2017-06-14 Release 0.9.0<a class="headerlink" href="#release-0-9-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-9-0">
+<h2>2017-06-14 Release 0.9.0<a class="headerlink" href="#release-0-9-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1431">#1431</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3049,9 +3169,9 @@ Tax-Calculator and into the taxdata repository
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1426">#1426</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-8-5">
-<h2>2017-06-08 Release 0.8.5<a class="headerlink" href="#release-0-8-5" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-8-5">
+<h2>2017-06-08 Release 0.8.5<a class="headerlink" href="#release-0-8-5" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1416">#1416</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3080,9 +3200,9 @@ by Hank Doupe]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1387">#1387</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-8-4">
-<h2>2017-05-12 Release 0.8.4<a class="headerlink" href="#release-0-8-4" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-8-4">
+<h2>2017-05-12 Release 0.8.4<a class="headerlink" href="#release-0-8-4" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1363">#1363</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3106,9 +3226,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-8-3">
-<h2>2017-05-01 Release 0.8.3<a class="headerlink" href="#release-0-8-3" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-8-3">
+<h2>2017-05-01 Release 0.8.3<a class="headerlink" href="#release-0-8-3" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1328">#1328</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3134,9 +3254,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-8-2">
-<h2>2017-04-13 Release 0.8.2<a class="headerlink" href="#release-0-8-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-8-2">
+<h2>2017-04-13 Release 0.8.2<a class="headerlink" href="#release-0-8-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1295">#1295</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3153,9 +3273,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1295">#1295</a>
 by Matt Jensen]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-8-1">
-<h2>2017-04-13 Release 0.8.1<a class="headerlink" href="#release-0-8-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-8-1">
+<h2>2017-04-13 Release 0.8.1<a class="headerlink" href="#release-0-8-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1293">#1293</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3191,9 +3311,9 @@ by Zach Risher]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-8-0">
-<h2>2017-03-24 Release 0.8.0<a class="headerlink" href="#release-0-8-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-8-0">
+<h2>2017-03-24 Release 0.8.0<a class="headerlink" href="#release-0-8-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1260">#1260</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3225,9 +3345,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-7-9">
-<h2>2017-03-08 Release 0.7.9<a class="headerlink" href="#release-0-7-9" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-7-9">
+<h2>2017-03-08 Release 0.7.9<a class="headerlink" href="#release-0-7-9" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1228">#1228</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3250,9 +3370,9 @@ and
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1219">#1219</a>
 by Peter Steinberg]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-7-8">
-<h2>2017-03-01 Release 0.7.8<a class="headerlink" href="#release-0-7-8" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-7-8">
+<h2>2017-03-01 Release 0.7.8<a class="headerlink" href="#release-0-7-8" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1206">#1206</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3276,9 +3396,9 @@ by Cody Kallen]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-7-7">
-<h2>2017-02-16 Release 0.7.7<a class="headerlink" href="#release-0-7-7" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-7-7">
+<h2>2017-02-16 Release 0.7.7<a class="headerlink" href="#release-0-7-7" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1197">#1197</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3295,9 +3415,9 @@ by Cody Kallen]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1197">#1197</a>
 by Anderson Frailey]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-7-6">
-<h2>2017-02-15 Release 0.7.6<a class="headerlink" href="#release-0-7-6" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-7-6">
+<h2>2017-02-15 Release 0.7.6<a class="headerlink" href="#release-0-7-6" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1192">#1192</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3326,9 +3446,9 @@ by Anderson Frailey]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1171">#1171</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-7-5">
-<h2>2017-01-31 Release 0.7.5<a class="headerlink" href="#release-0-7-5" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-7-5">
+<h2>2017-01-31 Release 0.7.5<a class="headerlink" href="#release-0-7-5" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1169">#1169</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3353,9 +3473,9 @@ by Anderson Frailey]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1169">#1169</a>
 by Anderson Frailey]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-7-4">
-<h2>2017-01-24 Release 0.7.4<a class="headerlink" href="#release-0-7-4" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-7-4">
+<h2>2017-01-24 Release 0.7.4<a class="headerlink" href="#release-0-7-4" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1152">#1152</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3377,9 +3497,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1152">#1152</a>
 by Matt Jensen]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-7-3">
-<h2>2017-01-24 Release 0.7.3<a class="headerlink" href="#release-0-7-3" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-7-3">
+<h2>2017-01-24 Release 0.7.3<a class="headerlink" href="#release-0-7-3" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1113">#1113</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3424,9 +3544,9 @@ usage
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1092">#1092</a>
 by Zach Risher]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-7-2">
-<h2>2016-12-05 Release 0.7.2<a class="headerlink" href="#release-0-7-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-7-2">
+<h2>2016-12-05 Release 0.7.2<a class="headerlink" href="#release-0-7-2" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1082">#1082</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3455,9 +3575,9 @@ which requires new <code class="docutils literal notranslate"><span class="pre">
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-7-1">
-<h2>2016-11-15 Release 0.7.1<a class="headerlink" href="#release-0-7-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-7-1">
+<h2>2016-11-15 Release 0.7.1<a class="headerlink" href="#release-0-7-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1060">#1060</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3479,9 +3599,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-7-0">
-<h2>2016-11-09 Release 0.7.0<a class="headerlink" href="#release-0-7-0" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-7-0">
+<h2>2016-11-09 Release 0.7.0<a class="headerlink" href="#release-0-7-0" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1044">#1044</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3500,9 +3620,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1044">#1044</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-6-9">
-<h2>2016-11-09 Release 0.6.9<a class="headerlink" href="#release-0-6-9" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-6-9">
+<h2>2016-11-09 Release 0.6.9<a class="headerlink" href="#release-0-6-9" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1039">#1039</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3548,9 +3668,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1032">#1032</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-6-8">
-<h2>2016-10-07 Release 0.6.8<a class="headerlink" href="#release-0-6-8" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-6-8">
+<h2>2016-10-07 Release 0.6.8<a class="headerlink" href="#release-0-6-8" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/970">#970</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3575,9 +3695,9 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>None</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-6-7">
-<h2>2016-09-29 Release 0.6.7<a class="headerlink" href="#release-0-6-7" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-6-7">
+<h2>2016-09-29 Release 0.6.7<a class="headerlink" href="#release-0-6-7" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/945">#945</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3614,9 +3734,9 @@ by Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/914">#914</a>
 by Martin Holmer]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-6-6">
-<h2>2016-08-13 Release 0.6.6<a class="headerlink" href="#release-0-6-6" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-6-6">
+<h2>2016-08-13 Release 0.6.6<a class="headerlink" href="#release-0-6-6" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/844">#844</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3651,9 +3771,9 @@ AGI (not 10%)
 the same results
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/842">#842</a>]</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-6-5">
-<h2>2016-07-12 Release 0.6.5<a class="headerlink" href="#release-0-6-5" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-6-5">
+<h2>2016-07-12 Release 0.6.5<a class="headerlink" href="#release-0-6-5" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/820">#820</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3671,9 +3791,9 @@ the same results
 <li><p>Fix itemized deduction logic for charity</p></li>
 <li><p>Remove Numba dependency</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-6-4">
-<h2>2016-06-17 Release 0.6.4<a class="headerlink" href="#release-0-6-4" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-6-4">
+<h2>2016-06-17 Release 0.6.4<a class="headerlink" href="#release-0-6-4" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/794">#794</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3694,9 +3814,9 @@ class to <code class="docutils literal notranslate"><span class="pre">puf.csv</s
 <li><p>Update Numpy and Pandas dependencies to latest versions to avoid a
 bug in the Windows conda package for Pandas 0.16.2</p></li>
 </ul>
-</div>
-<div class="section" id="release-0-6-3">
-<h2>2016-05-09 Release 0.6.3<a class="headerlink" href="#release-0-6-3" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="release-0-6-3">
+<h2>2016-05-09 Release 0.6.3<a class="headerlink" href="#release-0-6-3" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/727">#727</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3718,13 +3838,13 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
 <li><p>Fix Child Care Expense logic</p></li>
 <li><p>Exclude dependents from EITC eligibility</p></li>
 </ul>
-</div>
-<div class="section" id="before-release-0-6-2">
-<h2>Before Release 0.6.2<a class="headerlink" href="#before-release-0-6-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="before-release-0-6-2">
+<h2>Before Release 0.6.2<a class="headerlink" href="#before-release-0-6-2" title="Permalink to this headline">#</a></h2>
 <p>See commit history for pull requests before
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/650">#650</a></p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -3748,9 +3868,11 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="roadmap.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -3766,24 +3888,28 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-  <p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Policy Simulation Library<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
     
-      By Policy Simulation Library<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>

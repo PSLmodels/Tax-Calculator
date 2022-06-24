@@ -4,11 +4,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Tax-Calculator Calculator &#8212; Tax-Calculator</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,20 +20,16 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -39,12 +37,13 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -62,7 +61,21 @@ const thebe_selector_output = ".output, .cell_output"
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -71,9 +84,10 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -91,14 +105,15 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../index.html">
-   Tax-Calculator
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Tax-Calculator
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Usage
  </span>
@@ -436,92 +451,197 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/api/calculator.rst"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.rst</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fapi/calculator.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/api/calculator.rst"><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/PSLmodels/Tax-Calculator"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fapi/calculator.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/api/calculator.rst"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/api/calculator.rst"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#taxcalc-calculator">
    taxcalc.calculator
@@ -529,12 +649,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1>Tax-Calculator Calculator</h1>
@@ -558,17 +677,18 @@ const thebe_selector_output = ".output, .cell_output"
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
-  <div class="section" id="tax-calculator-calculator">
-<span id="calculator"></span><h1>Tax-Calculator Calculator<a class="headerlink" href="#tax-calculator-calculator" title="Permalink to this headline">¶</a></h1>
+  <section id="tax-calculator-calculator">
+<span id="calculator"></span><h1>Tax-Calculator Calculator<a class="headerlink" href="#tax-calculator-calculator" title="Permalink to this headline">#</a></h1>
 <p><strong>Tax-Calculator Calculator</strong></p>
-<div class="section" id="taxcalc-calculator">
-<h2>taxcalc.calculator<a class="headerlink" href="#taxcalc-calculator" title="Permalink to this headline">¶</a></h2>
+<section id="taxcalc-calculator">
+<h2>taxcalc.calculator<a class="headerlink" href="#taxcalc-calculator" title="Permalink to this headline">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">taxcalc.calculator.</span></span><span class="sig-name descname"><span class="pre">Calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sync_years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consumption</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">taxcalc.calculator.</span></span><span class="sig-name descname"><span class="pre">Calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sync_years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consumption</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator" title="Permalink to this definition">#</a></dt>
 <dd><p>Constructor for the Calculator class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -612,19 +732,19 @@ calc2 = Calculator(policy=pol, records=rec)  # reform</p>
 Records objects passed to each of the two Calculator constructors.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator._calc_one_year">
-<span class="sig-name descname"><span class="pre">_calc_one_year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zero_out_calc_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator._calc_one_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator._calc_one_year" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_calc_one_year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zero_out_calc_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator._calc_one_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator._calc_one_year" title="Permalink to this definition">#</a></dt>
 <dd><p>Call all the functions except those in the calc_all() method.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator._taxinc_to_amt">
-<span class="sig-name descname"><span class="pre">_taxinc_to_amt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator._taxinc_to_amt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator._taxinc_to_amt" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_taxinc_to_amt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator._taxinc_to_amt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator._taxinc_to_amt" title="Permalink to this definition">#</a></dt>
 <dd><p>Call TaxInc through AMT functions.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.advance_to_year">
-<span class="sig-name descname"><span class="pre">advance_to_year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.advance_to_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.advance_to_year" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">advance_to_year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.advance_to_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.advance_to_year" title="Permalink to this definition">#</a></dt>
 <dd><p>The advance_to_year function gives an optional way of implementing
 increment year functionality by immediately specifying the year
 as input.  New year must be at least the current year.</p>
@@ -632,7 +752,7 @@ as input.  New year must be at least the current year.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.array">
-<span class="sig-name descname"><span class="pre">array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.array" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.array" title="Permalink to this definition">#</a></dt>
 <dd><dl class="simple">
 <dt>If variable_value is None, return numpy ndarray containing the</dt><dd><p>named variable in embedded Records object.</p>
 </dd>
@@ -644,7 +764,7 @@ ignored).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.atr_graph">
-<span class="sig-name descname"><span class="pre">atr_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ALL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atr_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'combined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.atr_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.atr_graph" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">atr_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ALL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atr_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'combined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.atr_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.atr_graph" title="Permalink to this definition">#</a></dt>
 <dd><p>Create average tax rate graph that can be written to an HTML
 file (using the write_graph_file utility function) or shown on
 the screen immediately in an interactive or notebook session
@@ -687,13 +807,13 @@ of people (True) or an equal number of filing units (False)</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.calc_all">
-<span class="sig-name descname"><span class="pre">calc_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zero_out_calc_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.calc_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.calc_all" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">calc_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zero_out_calc_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.calc_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.calc_all" title="Permalink to this definition">#</a></dt>
 <dd><p>Call all tax-calculation functions for the current_year.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.ce_aftertax_income">
-<span class="sig-name descname"><span class="pre">ce_aftertax_income</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_no_agg_tax_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.ce_aftertax_income"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.ce_aftertax_income" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ce_aftertax_income</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_no_agg_tax_change</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.ce_aftertax_income"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.ce_aftertax_income" title="Permalink to this definition">#</a></dt>
 <dd><p>Return dictionary that contains certainty-equivalent of the
 expected utility of after-tax expanded income computed for
 several constant-relative-risk-aversion parameter values
@@ -716,20 +836,20 @@ income in the expected-utility and certainty-equivalent calculations.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.consump_benval_params">
-<span class="sig-name descname"><span class="pre">consump_benval_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.consump_benval_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.consump_benval_params" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">consump_benval_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.consump_benval_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.consump_benval_params" title="Permalink to this definition">#</a></dt>
 <dd><p>Return list of benefit-consumption-value parameter values
 in embedded Consumption object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.consump_param">
-<span class="sig-name descname"><span class="pre">consump_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.consump_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.consump_param" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">consump_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.consump_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.consump_param" title="Permalink to this definition">#</a></dt>
 <dd><p>Return value of named parameter in embedded Consumption object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.dataframe">
-<span class="sig-name descname"><span class="pre">dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.dataframe" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.dataframe" title="Permalink to this definition">#</a></dt>
 <dd><p>Return Pandas DataFrame containing the listed variables from the
 embedded Records object.  If all_vars is True, then the variable_list
 is ignored and all variables used as input to and calculated by the
@@ -739,7 +859,7 @@ rates) are included in the returned Pandas DataFrame.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.diagnostic_table">
-<span class="sig-name descname"><span class="pre">diagnostic_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_years</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.diagnostic_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.diagnostic_table" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">diagnostic_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_years</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.diagnostic_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.diagnostic_table" title="Permalink to this definition">#</a></dt>
 <dd><p>Generate multi-year diagnostic table containing aggregate statistics;
 this method leaves the Calculator object unchanged.</p>
 <dl class="field-list simple">
@@ -756,7 +876,7 @@ one and no more than what would exceed Policy end_year)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.difference_table">
-<span class="sig-name descname"><span class="pre">difference_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tax_to_diff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.difference_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.difference_table" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">difference_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tax_to_diff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.difference_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.difference_table" title="Permalink to this definition">#</a></dt>
 <dd><p>Get results from self and calc, sort them by expanded_income into
 table rows defined by groupby, compute grouped statistics, and
 return tax-difference table as a Pandas dataframe.
@@ -799,7 +919,7 @@ specified income_measure.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.distribution_tables">
-<span class="sig-name descname"><span class="pre">distribution_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.distribution_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.distribution_tables" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">distribution_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.distribution_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.distribution_tables" title="Permalink to this definition">#</a></dt>
 <dd><p>Get results from self and calc, sort them by expanded_income into
 table rows defined by groupby, compute grouped statistics, and
 return tables as a pair of Pandas dataframes.
@@ -851,19 +971,19 @@ specified income_measure.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.incarray">
-<span class="sig-name descname"><span class="pre">incarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_add</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.incarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.incarray" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">incarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable_add</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.incarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.incarray" title="Permalink to this definition">#</a></dt>
 <dd><p>Add variable_add to named variable in embedded Records object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.increment_year">
-<span class="sig-name descname"><span class="pre">increment_year</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.increment_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.increment_year" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">increment_year</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.increment_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.increment_year" title="Permalink to this definition">#</a></dt>
 <dd><p>Advance all embedded objects to next year.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.mtr">
-<span class="sig-name descname"><span class="pre">mtr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e00200p'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_finite_diff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_out_calculated_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_all_already_called</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrt_full_compensation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.mtr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.mtr" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">mtr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e00200p'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_finite_diff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_out_calculated_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_all_already_called</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrt_full_compensation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.mtr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.mtr" title="Permalink to this definition">#</a></dt>
 <dd><p>Calculates the marginal payroll, individual income, and combined
 tax rates for every tax filing unit, leaving the Calculator object
 in exactly the same state as it would be in after a calc_all() call.</p>
@@ -937,7 +1057,7 @@ cannot both be true.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.mtr_graph">
-<span class="sig-name descname"><span class="pre">mtr_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ALL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'combined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e00200p'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_e00200p_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_wrt_full_compen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'expanded_income'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dollar_weighting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.mtr_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.mtr_graph" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">mtr_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ALL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'combined'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e00200p'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_e00200p_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_wrt_full_compen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'expanded_income'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dollar_weighting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.mtr_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.mtr_graph" title="Permalink to this definition">#</a></dt>
 <dd><p>Create marginal tax rate graph that can be written to an HTML
 file (using the write_graph_file utility function) or shown on
 the screen immediately in an interactive or notebook session
@@ -1003,14 +1123,14 @@ True produces a graph x axis that shows income_measure
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.n65">
-<span class="sig-name descname"><span class="pre">n65</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.n65"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.n65" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">n65</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.n65"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.n65" title="Permalink to this definition">#</a></dt>
 <dd><p>Return numpy ndarray containing the number of
 individuals age 65+ in each filing unit.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.pch_graph">
-<span class="sig-name descname"><span class="pre">pch_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.pch_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.pch_graph" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pch_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_quantiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.pch_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.pch_graph" title="Permalink to this definition">#</a></dt>
 <dd><p>Create percentage change in after-tax expanded income graph that
 can be written to an HTML file (using the write_graph_file utility
 function) or shown on the screen immediately in an interactive or
@@ -1038,7 +1158,7 @@ of people (True) or an equal number of filing units (False)</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.policy_param">
-<span class="sig-name descname"><span class="pre">policy_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.policy_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.policy_param" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">policy_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.policy_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.policy_param" title="Permalink to this definition">#</a></dt>
 <dd><dl class="simple">
 <dt>If param_value is None, return named parameter in</dt><dd><p>embedded Policy object.</p>
 </dd>
@@ -1050,7 +1170,7 @@ return None (which can be ignored).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.read_json_param_objects">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_json_param_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assump</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.read_json_param_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.read_json_param_objects" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_json_param_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assump</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.read_json_param_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.read_json_param_objects" title="Permalink to this definition">#</a></dt>
 <dd><p>Read JSON reform and assump objects and
 return a composite dictionary containing four key:dict pairs:
 ‘policy’:dict, ‘consumption’:dict,
@@ -1086,7 +1206,7 @@ suitable as input into the GrowDiff.update_growdiff method.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.reform_documentation">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reform_documentation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy_dicts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.reform_documentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.reform_documentation" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reform_documentation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy_dicts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.reform_documentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.reform_documentation" title="Permalink to this definition">#</a></dt>
 <dd><p>Generate reform documentation versus current-law policy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1110,14 +1230,14 @@ reform characterized in the params[‘policy’] dictionary</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.restore_records">
-<span class="sig-name descname"><span class="pre">restore_records</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.restore_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.restore_records" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">restore_records</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.restore_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.restore_records" title="Permalink to this definition">#</a></dt>
 <dd><p>Set the embedded Records object to the stored Records object
 that was saved in the last call to the store_records() method.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.store_records">
-<span class="sig-name descname"><span class="pre">store_records</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.store_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.store_records" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">store_records</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.store_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.store_records" title="Permalink to this definition">#</a></dt>
 <dd><p>Make internal copy of embedded Records object that can then be
 restored after interim calculations that make temporary changes
 to the embedded Records object.</p>
@@ -1125,27 +1245,27 @@ to the embedded Records object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.total_weight">
-<span class="sig-name descname"><span class="pre">total_weight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.total_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.total_weight" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">total_weight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.total_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.total_weight" title="Permalink to this definition">#</a></dt>
 <dd><p>Return all-filing-unit total of sampling weights.
 NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.weighted_total">
-<span class="sig-name descname"><span class="pre">weighted_total</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.weighted_total"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.weighted_total" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">weighted_total</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.weighted_total"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.weighted_total" title="Permalink to this definition">#</a></dt>
 <dd><p>Return all-filing-unit weighted total of named Records variable.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.zeroarray">
-<span class="sig-name descname"><span class="pre">zeroarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.zeroarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.zeroarray" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">zeroarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.zeroarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.zeroarray" title="Permalink to this definition">#</a></dt>
 <dd><p>Set named variable in embedded Records object to zeros.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1169,9 +1289,11 @@ NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()</p>
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="calcfunctions.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -1187,24 +1309,28 @@ NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()</p>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-  <p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Policy Simulation Library<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
     
-      By Policy Simulation Library<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>

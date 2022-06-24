@@ -4,11 +4,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Command-line interface &#8212; Tax-Calculator</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,20 +20,16 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -39,12 +37,13 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -62,7 +61,21 @@ const thebe_selector_output = ".output, .cell_output"
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -71,9 +84,10 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -91,14 +105,15 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../index.html">
-   Tax-Calculator
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Tax-Calculator
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Usage
  </span>
@@ -436,92 +451,197 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/guide/cli.md"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fguide/cli.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/guide/cli.md"><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/PSLmodels/Tax-Calculator"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fguide/cli.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/guide/cli.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/guide/cli.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#test-tc-cli">
    Test
@@ -560,12 +680,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1>Command-line interface</h1>
@@ -620,16 +739,17 @@ const thebe_selector_output = ".output, .cell_output"
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="command-line-interface">
-<h1>Command-line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="command-line-interface">
+<h1>Command-line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">#</a></h1>
 <p>You can use Tax-Calculator on your own computer via a command-line interface (CLI) called <code class="docutils literal notranslate"><span class="pre">tc</span></code>.
 This approach requires the use of a text editor to prepare simple files that are read by <code class="docutils literal notranslate"><span class="pre">tc</span></code>.
 Computer programming knowledge is not required, but this approach to using Tax-Calculator assumes you are willing to work at the command line (Terminal on Mac or Anaconda Prompt on Windows) and to use a text editor (for example, TextEdit on Mac or Notepad on Windows).</p>
-<div class="section" id="test-tc-cli">
-<h2>Test <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI<a class="headerlink" href="#test-tc-cli" title="Permalink to this headline">¶</a></h2>
+<section id="test-tc-cli">
+<h2>Test <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI<a class="headerlink" href="#test-tc-cli" title="Permalink to this headline">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI is part of the Tax-Calculator <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package you installed on your computer as part of <a class="reference internal" href="../usage/starting.html"><span class="doc">Getting started</span></a>.</p>
 <p>To check your installation of <code class="docutils literal notranslate"><span class="pre">tc</span></code>, enter the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="o">--</span><span class="n">test</span>
@@ -642,20 +762,20 @@ If you get <code class="docutils literal notranslate"><span class="pre">FAILED</
 </pre></div>
 </div>
 <p>The basic idea of <code class="docutils literal notranslate"><span class="pre">tc</span></code> tax analysis is that each tax reform is specified in a text file using a simple method to describe the details of the reform. Read the next part of this section to see how policy reform files are formatted.</p>
-</div>
-<div class="section" id="specify-tax-reform">
-<h2>Specify tax reform<a class="headerlink" href="#specify-tax-reform" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="specify-tax-reform">
+<h2>Specify tax reform<a class="headerlink" href="#specify-tax-reform" title="Permalink to this headline">#</a></h2>
 <p>The details of a tax reform are contained in a text file that you write with a text editor. The reform is expressed by specifying which tax policy parameters are changed from their current-law values by the reform. The current-law values of each policy parameter are documented in <a class="reference external" href="#pol">this section</a> of the guide. The timing and magnitude of these policy parameter changes are written in JSON, a simple and widely-used data-specification language.</p>
 <p>For several examples of reform files and the general rules for writing JSON reform files, go to <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/README.md#policy-reform-files">this page</a>.</p>
-</div>
-<div class="section" id="specify-analysis-assumptions">
-<h2>Specify analysis assumptions<a class="headerlink" href="#specify-analysis-assumptions" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="specify-analysis-assumptions">
+<h2>Specify analysis assumptions<a class="headerlink" href="#specify-analysis-assumptions" title="Permalink to this headline">#</a></h2>
 <p>This part explains how to specify economic assumption files used in static tax analysis. This is an advanced topic, so if you want to start out using the default assumptions (which are documented in <a class="reference external" href="#params">this section</a> of the guide), you can skip this part now and come back to read it whenever you want to change the default assumptions. The <a class="reference external" href="#cli-spec-funits">next part</a> of this section discusses filing-unit input files.</p>
 <p>The details of analysis assumptions are contained in a text file that you write with a text editor. The assumptions are expressed by specifying which parameters are changed from their default values. The timing and magnitude of these parameter changes are written in JSON, a simple and widely-used data-specification language.</p>
 <p>For examples of assumption files and the general rules for writing JSON assumption files, go to <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files">this page</a>.</p>
-</div>
-<div class="section" id="specify-filing-units">
-<h2>Specify filing units<a class="headerlink" href="#specify-filing-units" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="specify-filing-units">
+<h2>Specify filing units<a class="headerlink" href="#specify-filing-units" title="Permalink to this headline">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package containing <code class="docutils literal notranslate"><span class="pre">tc</span></code> does not include an IRS-SOI-PUF-derived microsimulation sample. This is because, unlike Census public-use files, the IRS-SOI Public Use File (PUF) is proprietary. If you or your organization has paid IRS to use the PUF version being by Tax-Calculator, then it may be possible for us to share with you our PUF-derived sample, which we call <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> even though it contains CPS records that represent non-filers. Otherwise, you have two choices.</p>
 <p><strong>First</strong>, you can easily create with a text editor a CSV-formatted file containing several filing units whose experience under your tax reform is of interest to you. Much of the public discussion of tax reforms is of this type: how is this family or that family affected by a reform; how do they fare under different reforms; etc. The test conducted to check the <code class="docutils literal notranslate"><span class="pre">tc</span></code> installation has left one such file. It is called <code class="docutils literal notranslate"><span class="pre">test.csv</span></code> and contains two filing units with only wage and salary income: a lower income family and a higher income family. You can use this <code class="docutils literal notranslate"><span class="pre">test.csv</span></code> file as <code class="docutils literal notranslate"><span class="pre">tc</span></code> input to analyze your tax reforms. Before creating your own input files be sure to read the short set of guidelines that appear after this list of two choices. Some people pursue this approach using a statistical pacakge like R or Stata, in which case the <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI program can be invoked from within the statistical package. There may be a need (especially on Windows) to <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/issues/2273#issuecomment-479572287">add to the system PATH</a> in order to do this.</p>
 <p><strong>Second</strong>, the <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> does include a freely available microsimulation sample containing only filing units derived from several recent March CPS surveys. For several reasons, the results generated by this <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file are substantially different from the results generated by the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file. The <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file contains a sample of the population while the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file contains mostly a sample of income tax filers in which high-income filing units are over represented. Also, the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file has many income variables that are missing (and assumed to be zero by Tax-Calculator), which causes an understating of total incomes, especially for those with high incomes. All these differences mean that the aggregate revenue and distributional results generated when using the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file as input to Tax-Calculator can be substantially different from the results generated when using the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file as input. And this is particularly true when analyzing reforms that change the tax treatment of high-income filers.</p>
@@ -678,9 +798,9 @@ If you get <code class="docutils literal notranslate"><span class="pre">FAILED</
 </div>
 <p>Be sure to read the documentation of the <code class="docutils literal notranslate"><span class="pre">MARS</span></code>, <code class="docutils literal notranslate"><span class="pre">XTOT</span></code>, <code class="docutils literal notranslate"><span class="pre">EIC</span></code>, and <code class="docutils literal notranslate"><span class="pre">n24</span></code> input variables. Also, there may be a need to add other child-age input variables if you want to simulate reforms like a child credit bonus for young children. Also, the universal basic income (UBI) reform is implemented using its own set of three age-group-count input variables.</p>
 <p>The name of your input data file is also relevant to how <code class="docutils literal notranslate"><span class="pre">tc</span></code> will behave. If your file name ends with “puf.csv” or “cps.csv”, <code class="docutils literal notranslate"><span class="pre">tc</span></code> will automatically extrapolate your data from its base year to the year you specify for tax calculations to be calculated using built in growth factors, extrapolated weights, and other adjustment factors. If you are not using the “puf.csv” or “cps.csv” files produced by the TaxData project, it is likely that your data will not be compatible with these extrapolations and you should adopt filenames with alternative endings.</p>
-</div>
-<div class="section" id="initiate-reform-analysis">
-<h2>Initiate reform analysis<a class="headerlink" href="#initiate-reform-analysis" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="initiate-reform-analysis">
+<h2>Initiate reform analysis<a class="headerlink" href="#initiate-reform-analysis" title="Permalink to this headline">#</a></h2>
 <p>Executing <code class="docutils literal notranslate"><span class="pre">tc</span></code> requires only two command-line arguments: the name of an input file containing one or more filing units and the year for which the tax calculations are done. A baseline policy file is optional; specifying no baseline file implies the baseline policy is current-law policy. A policy reform file is optional; specifying no reform file implies calculations are done for the baseline policy. An economic assumption file is also optional; no assumption file implies you want to use the default values of the assumption parameters. The output files written by <code class="docutils literal notranslate"><span class="pre">tc</span></code> are built-up from the name of the input file, tax year, baseline file, reform file, and assumption file using a <code class="docutils literal notranslate"><span class="pre">#</span></code> character if an option is not specified.</p>
 <p>Here we explain how to conduct tax analysis with <code class="docutils literal notranslate"><span class="pre">tc</span></code> by presenting a series of examples and explaining what output is produced in each example. There are several types of output that <code class="docutils literal notranslate"><span class="pre">tc</span></code> can generate so there will be more than a few examples. The examples are numbered in order to make it easier to refer to different examples. All the examples assume that the input file is <code class="docutils literal notranslate"><span class="pre">test.csv</span></code>, which was mentioned earlier in this guide.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">test</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2020</span>
@@ -808,9 +928,9 @@ The easiest way to speed up the execution of many <code class="docutils literal 
 On most modern computers that have four CPU cores and a fast disk drive, executing four runs in different windows will take not much more time than executing a single <code class="docutils literal notranslate"><span class="pre">tc</span></code> run.
 If you have more than one run in each group, put them in a Unix/Mac bash script or a Windows batch file, and execute one script in each command-prompt window.
 If it still takes too long, consider splitting the <code class="docutils literal notranslate"><span class="pre">tc</span></code> runs across more than one computer.</p>
-</div>
-<div class="section" id="tabulate-reform-results">
-<h2>Tabulate reform results<a class="headerlink" href="#tabulate-reform-results" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="tabulate-reform-results">
+<h2>Tabulate reform results<a class="headerlink" href="#tabulate-reform-results" title="Permalink to this headline">#</a></h2>
 <p>Given that <code class="docutils literal notranslate"><span class="pre">tc</span></code> output can be written to either CSV-formatted files or SQLite3 database files, there is an enormous range of software tools that can be used to tabulate the output. You can use SAS or R, Stata or MATLAB, or even import output into a spreadsheet (but this would seem to be the least useful option). If you just want to compare the contents of two output files, you can use your favorite graphical diff program to view the two files <q>side by side</q> with highlighting of numbers that are different. The main point is to use a software tool that is available to you, that is appropriate for the task, and that you have experience using.</p>
 <p>Here we give some examples of using the <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> command-line tool that is part of the Anaconda distribution (so it is always available when using Tax-Calculator). The first step, of course, is to use the <code class="docutils literal notranslate"><span class="pre">--sqldb</span></code> option when running <code class="docutils literal notranslate"><span class="pre">tc</span></code>. Then you can use the <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> tool interactively or use it to execute SQL scripts you have saved in a text file. We’ll provide examples of both those approaches. There are many online tutorials on the SQL select command; if you want to learn more, search the Internet.</p>
 <p>First, we provide a simple example of using <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> interactively.
@@ -912,8 +1032,8 @@ reform, use <code class="docutils literal notranslate"><span class="pre">tc</spa
 (one for current-law policy and the other for your reform)
 and then use the SQLite3 ATTACH command to make both database files available
 in your SQLite tabulation session.</p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -937,9 +1057,11 @@ in your SQLite tabulation session.</p>
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="python_interface.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -955,24 +1077,28 @@ in your SQLite tabulation session.</p>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-  <p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Policy Simulation Library<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
     
-      By Policy Simulation Library<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>
