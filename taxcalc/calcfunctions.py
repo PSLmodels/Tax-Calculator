@@ -101,7 +101,8 @@ def BenefitPrograms(calc):
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
-                  SS_Earnings_thd, e00900p, e00900s, e02100p, e02100s, k1bx14p,
+                  SS_Earnings_thd, SECA_Earnings_thd,
+                  e00900p, e00900s, e02100p, e02100s, k1bx14p,
                   k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s,
                   was_plus_sey_p, was_plus_sey_s):
@@ -134,6 +135,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Additional taxable earnings threshold for Social Security
         Individual earnings above this threshold are subjected to OASDI payroll tax, in addtion to
         earnings below the maximum taxable earnings threshold.
+    SECA_Earnings_thd: float
+        Threshold value for self-employment income below which there is
+        no SECA tax liability
     e00900p: float
         Schedule C business net profit/loss for taxpayer
     e00900s: float
@@ -233,6 +237,11 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
+    # # no tax if low amount of self-employment income
+    if sey * sey_frac > SECA_Earnings_thd:
+        setax = setax_p + setax_s
+    else:
+        setax = 0.0
 
     # compute extra OASDI payroll taxes on the portion of the sum
     # of wage-and-salary income and taxable self employment income
