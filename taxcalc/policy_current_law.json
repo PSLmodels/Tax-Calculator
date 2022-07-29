@@ -205,6 +205,32 @@
             "cps": true
         }
     },
+    "SECA_Earnings_thd": {
+        "title": "Minimum self-employment earnings before trigger SECA liability",
+        "description": "Individual self-employment earnings below this amount are not subject to SECA taxes.",
+        "notes": "To compute earnings for this threshold, will multiply net self-employment by 1 - SECA_Earnings_hc",
+        "section_1": "Payroll Taxes",
+        "section_2": "Social Security FICA",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 400.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "SS_Earnings_thd": {
         "title": "Additional Taxable Earnings Threshold for Social Security",
         "description": "Individual earnings above this threshold are subjected to Social Security (OASDI) payroll tax, in addition to earnings below the maximum taxable earnings threshold.",
