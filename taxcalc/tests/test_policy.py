@@ -385,7 +385,7 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     e2019 = reform['SS_Earnings_c'][2019]
     assert actual[2019] == e2019
     e2020 = wfactor[2019] * actual[2019]  # indexing after 2019
-    assert actual[2020] == e2020
+    assert np.allclose([actual[2020]], [e2020], atol=0.01, rtol=0.0)
     e2021 = wfactor[2020] * actual[2020]
     assert np.allclose([actual[2021]], [e2021], atol=0.01, rtol=0.0)
     e2022 = wfactor[2021] * actual[2021]

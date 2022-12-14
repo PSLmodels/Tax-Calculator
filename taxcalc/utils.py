@@ -1125,7 +1125,7 @@ def xtr_graph_plot(data,
     # pylint: disable=too-many-arguments
     if title == '':
         title = data['title']
-    fig = bp.figure(plot_width=width, plot_height=height, title=title)
+    fig = bp.figure(width=width, height=height, title=title)
     fig.title.text_font_size = '12pt'
     lines = data['lines']
     fig.line(lines.index, lines.base,
@@ -1259,7 +1259,7 @@ def pch_graph_plot(data,
     # pylint: disable=too-many-arguments
     if title == '':
         title = data['title']
-    fig = bp.figure(plot_width=width, plot_height=height, title=title)
+    fig = bp.figure(width=width, height=height, title=title)
     fig.title.text_font_size = '12pt'
     fig.line(data['line'].index, data['line'].pch,
              line_color='blue', line_width=3)
