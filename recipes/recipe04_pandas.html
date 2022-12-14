@@ -21,7 +21,7 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -37,7 +37,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -698,104 +698,104 @@ This recipe shows how to estimate the reform response in charitable giving when 
 It employs the groupby technique used in the Creating a Custom Table recipe, so you might want to read that recipe first.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">behresp</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import taxcalc as tc
+import pandas as pd
+import numpy as np
+import behresp
 
-<span class="c1"># use publicly-available CPS input file</span>
-<span class="n">recs</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
+# use publicly-available CPS input file
+recs = tc.Records.cps_constructor()
 
-<span class="c1"># specify Calculator object for static analysis of current-law policy</span>
-<span class="n">pol</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>
-<span class="n">calc1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+# specify Calculator object for static analysis of current-law policy
+pol = tc.Policy()
+calc1 = tc.Calculator(policy=pol, records=recs)
 
-<span class="n">CYR</span> <span class="o">=</span> <span class="mi">2020</span>
+CYR = 2020
 
-<span class="c1"># calculate current-law tax liabilities for CYR</span>
-<span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
-<span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+# calculate current-law tax liabilities for CYR
+calc1.advance_to_year(CYR)
+calc1.calc_all()
 
-<span class="c1"># calculate marginal tax rate wrt cash charitable giving</span>
-<span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mtr1</span><span class="p">)</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                         <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+# calculate marginal tax rate wrt cash charitable giving
+(_, _, mtr1) = calc1.mtr(&#39;e19800&#39;, calc_all_already_called=True,
+                         wrt_full_compensation=False)
 
-<span class="c1"># specify Calculator object for static analysis of reform policy</span>
-<span class="c1"># TODO: Move this reform online so this can be run non-locally.</span>
-<span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformB.json&#39;</span><span class="p">))</span>
-<span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+# specify Calculator object for static analysis of reform policy
+# TODO: Move this reform online so this can be run non-locally.
+pol.implement_reform(tc.Policy.read_json_reform(&#39;github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformB.json&#39;))
+calc2 = tc.Calculator(policy=pol, records=recs)
 
-<span class="c1"># calculate reform tax liabilities for cyr</span>
-<span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
-<span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+# calculate reform tax liabilities for cyr
+calc2.advance_to_year(CYR)
+calc2.calc_all()
 
-<span class="c1"># calculate marginal tax rate wrt cash charitable giving</span>
-<span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mtr2</span><span class="p">)</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                         <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+# calculate marginal tax rate wrt cash charitable giving
+(_, _, mtr2) = calc2.mtr(&#39;e19800&#39;, calc_all_already_called=True,
+                         wrt_full_compensation=False)
 
-<span class="c1"># extract variables needed for quantity_response function</span>
-<span class="c1"># (note the aftertax price is 1+mtr because mtr wrt charity is non-positive)</span>
-<span class="n">vdf</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">dataframe</span><span class="p">([</span><span class="s1">&#39;s006&#39;</span><span class="p">,</span> <span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="s1">&#39;e00200&#39;</span><span class="p">])</span>
-<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;price1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">mtr1</span>
-<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;price2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">mtr2</span>
-<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;atinc1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;aftertax_income&#39;</span><span class="p">)</span>
-<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;atinc2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;aftertax_income&#39;</span><span class="p">)</span>
+# extract variables needed for quantity_response function
+# (note the aftertax price is 1+mtr because mtr wrt charity is non-positive)
+vdf = calc1.dataframe([&#39;s006&#39;, &#39;e19800&#39;, &#39;e00200&#39;])
+vdf[&#39;price1&#39;] = 1.0 + mtr1
+vdf[&#39;price2&#39;] = 1.0 + mtr2
+vdf[&#39;atinc1&#39;] = calc1.array(&#39;aftertax_income&#39;)
+vdf[&#39;atinc2&#39;] = calc2.array(&#39;aftertax_income&#39;)
 
-<span class="c1"># group filing units into earnings groups with different response elasticities</span>
-<span class="c1"># (note earnings groups are just an example based on no empirical results)</span>
-<span class="n">EARNINGS_BINS</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">9e99</span><span class="p">,</span> <span class="mf">50e3</span><span class="p">,</span> <span class="mf">9e99</span><span class="p">]</span>  <span class="c1"># Two groups: below and above $50,000.</span>
-<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;table_row&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">vdf</span><span class="o">.</span><span class="n">e00200</span><span class="p">,</span> <span class="n">EARNINGS_BINS</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+# group filing units into earnings groups with different response elasticities
+# (note earnings groups are just an example based on no empirical results)
+EARNINGS_BINS = [-9e99, 50e3, 9e99]  # Two groups: below and above $50,000.
+vdf[&#39;table_row&#39;] = pd.cut(vdf.e00200, EARNINGS_BINS, right=False).astype(str)
 
-<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;price_elasticity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">vdf</span><span class="o">.</span><span class="n">e00200</span> <span class="o">&lt;</span> <span class="n">EARNINGS_BINS</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                   <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">)</span>
-<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;income_elasticity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.1</span>
+vdf[&#39;price_elasticity&#39;] = np.where(vdf.e00200 &lt; EARNINGS_BINS[1],
+                                   -0.1, -0.4)
+vdf[&#39;income_elasticity&#39;] = 0.1
 
-<span class="c1"># create copies of vdf and subset by price elasticity</span>
-<span class="n">vdf_1</span> <span class="o">=</span> <span class="n">vdf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">vdf_2</span> <span class="o">=</span> <span class="n">vdf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+# create copies of vdf and subset by price elasticity
+vdf_1 = vdf.copy()
+vdf_2 = vdf.copy()
 
-<span class="n">vdf_1</span> <span class="o">=</span> <span class="n">vdf_1</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vdf_1</span><span class="p">[</span><span class="s1">&#39;price_elasticity&#39;</span><span class="p">]</span><span class="o">==-</span><span class="mf">0.1</span><span class="p">]</span>
-<span class="n">vdf_2</span> <span class="o">=</span> <span class="n">vdf_2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vdf_2</span><span class="p">[</span><span class="s1">&#39;price_elasticity&#39;</span><span class="p">]</span><span class="o">==-</span><span class="mf">0.4</span><span class="p">]</span>
+vdf_1 = vdf_1.loc[vdf_1[&#39;price_elasticity&#39;]==-0.1]
+vdf_2 = vdf_2.loc[vdf_2[&#39;price_elasticity&#39;]==-0.4]
 
-<span class="c1"># Calculate response based on features of each filing unit.</span>
-<span class="c1"># Call quantity_response for each subset (i.e. vdf_1 and vdf_2)</span>
-<span class="n">vdf_1</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">quantity_response</span><span class="p">(</span><span class="n">quantity</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">e19800</span><span class="p">,</span>
-                                              <span class="n">price_elasticity</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span>
-                                              <span class="n">aftertax_price1</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">price1</span><span class="p">,</span>
-                                              <span class="n">aftertax_price2</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">price2</span><span class="p">,</span>
-                                              <span class="n">income_elasticity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                                              <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">atinc1</span><span class="p">,</span>
-                                              <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">atinc2</span><span class="p">)</span>
+# Calculate response based on features of each filing unit.
+# Call quantity_response for each subset (i.e. vdf_1 and vdf_2)
+vdf_1[&#39;response&#39;] = behresp.quantity_response(quantity=vdf_1.e19800,
+                                              price_elasticity=-0.1,
+                                              aftertax_price1=vdf_1.price1,
+                                              aftertax_price2=vdf_1.price2,
+                                              income_elasticity=0.1,
+                                              aftertax_income1=vdf_1.atinc1,
+                                              aftertax_income2=vdf_1.atinc2)
 
-<span class="n">vdf_2</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">quantity_response</span><span class="p">(</span><span class="n">quantity</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">e19800</span><span class="p">,</span>
-                                              <span class="n">price_elasticity</span><span class="o">=-</span><span class="mf">0.4</span><span class="p">,</span>
-                                              <span class="n">aftertax_price1</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">price1</span><span class="p">,</span>
-                                              <span class="n">aftertax_price2</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">price2</span><span class="p">,</span>
-                                              <span class="n">income_elasticity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                                              <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">atinc1</span><span class="p">,</span>
-                                              <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">atinc2</span><span class="p">)</span>
+vdf_2[&#39;response&#39;] = behresp.quantity_response(quantity=vdf_2.e19800,
+                                              price_elasticity=-0.4,
+                                              aftertax_price1=vdf_2.price1,
+                                              aftertax_price2=vdf_2.price2,
+                                              income_elasticity=0.1,
+                                              aftertax_income1=vdf_2.atinc1,
+                                              aftertax_income2=vdf_2.atinc2)
 
-<span class="n">vdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">vdf_1</span><span class="p">,</span> <span class="n">vdf_2</span><span class="p">])</span>
+vdf = pd.concat([vdf_1, vdf_2])
 
-<span class="c1"># Add weighted totals.</span>
-<span class="c1"># Can also use microdf as mdf.add_weighted_totals(vdf, [&#39;response&#39;, &#39;e19800&#39;])</span>
-<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;e19800_b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vdf</span><span class="o">.</span><span class="n">s006</span> <span class="o">*</span> <span class="n">vdf</span><span class="o">.</span><span class="n">e19800</span> <span class="o">/</span> <span class="mf">1e9</span>
-<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;response_b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vdf</span><span class="o">.</span><span class="n">s006</span> <span class="o">*</span> <span class="n">vdf</span><span class="o">.</span><span class="n">response</span> <span class="o">/</span> <span class="mf">1e9</span>
-<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;funits_m&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vdf</span><span class="o">.</span><span class="n">s006</span> <span class="o">/</span> <span class="mf">1e6</span>
+# Add weighted totals.
+# Can also use microdf as mdf.add_weighted_totals(vdf, [&#39;response&#39;, &#39;e19800&#39;])
+vdf[&#39;e19800_b&#39;] = vdf.s006 * vdf.e19800 / 1e9
+vdf[&#39;response_b&#39;] = vdf.s006 * vdf.response / 1e9
+vdf[&#39;funits_m&#39;] = vdf.s006 / 1e6
 
-<span class="n">SUM_VARS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;funits_m&#39;</span><span class="p">,</span> <span class="s1">&#39;e19800_b&#39;</span><span class="p">,</span> <span class="s1">&#39;response_b&#39;</span><span class="p">]</span>
-<span class="c1"># Sum weighted total columns for each income group.</span>
-<span class="n">grouped</span> <span class="o">=</span> <span class="n">vdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;table_row&#39;</span><span class="p">)[</span><span class="n">SUM_VARS</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="c1"># Add a total row and make the index a column for printing.</span>
-<span class="n">grouped</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;TOTAL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="n">grouped</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+SUM_VARS = [&#39;funits_m&#39;, &#39;e19800_b&#39;, &#39;response_b&#39;]
+# Sum weighted total columns for each income group.
+grouped = vdf.groupby(&#39;table_row&#39;)[SUM_VARS].sum()
+# Add a total row and make the index a column for printing.
+grouped.loc[&#39;TOTAL&#39;] = grouped.sum()
+grouped.reset_index(inplace=True)
 
-<span class="c1"># Calculate percent response and drop unnecessary total.</span>
-<span class="n">grouped</span><span class="p">[</span><span class="s1">&#39;pct_response&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">grouped</span><span class="o">.</span><span class="n">response_b</span> <span class="o">/</span> <span class="n">grouped</span><span class="o">.</span><span class="n">e19800_b</span>
-<span class="n">grouped</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;e19800_b&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+# Calculate percent response and drop unnecessary total.
+grouped[&#39;pct_response&#39;] = 100 * grouped.response_b / grouped.e19800_b
+grouped.drop(&#39;e19800_b&#39;, axis=1, inplace=True)
 
-<span class="c1"># Rename columns for printing.</span>
-<span class="n">grouped</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Earnings Group&#39;</span><span class="p">,</span> <span class="s1">&#39;Num(#M)&#39;</span><span class="p">,</span> <span class="s1">&#39;Resp($B)&#39;</span><span class="p">,</span> <span class="s1">&#39;Resp(%)&#39;</span><span class="p">]</span>
+# Rename columns for printing.
+grouped.columns = [&#39;Earnings Group&#39;, &#39;Num(#M)&#39;, &#39;Resp($B)&#39;, &#39;Resp(%)&#39;]
 </pre></div>
 </div>
 </div>
@@ -803,7 +803,7 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 <p>Result: Response in Charitable Giving by Earnings Group</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grouped</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>grouped.round(3)
 </pre></div>
 </div>
 </div>
@@ -836,23 +836,23 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
     <tr>
       <th>0</th>
       <td>[-9e+99, 50000.0)</td>
-      <td>151.836</td>
-      <td>0.659</td>
-      <td>0.398</td>
+      <td>151.460</td>
+      <td>0.655</td>
+      <td>0.399</td>
     </tr>
     <tr>
       <th>1</th>
       <td>[50000.0, 9e+99)</td>
-      <td>52.649</td>
-      <td>3.101</td>
-      <td>2.033</td>
+      <td>53.024</td>
+      <td>3.131</td>
+      <td>2.048</td>
     </tr>
     <tr>
       <th>2</th>
       <td>TOTAL</td>
       <td>204.484</td>
-      <td>3.761</td>
-      <td>1.182</td>
+      <td>3.786</td>
+      <td>1.193</td>
     </tr>
   </tbody>
 </table>

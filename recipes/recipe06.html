@@ -21,7 +21,7 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -37,7 +37,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -714,177 +714,177 @@ call it a pseudo cost-of-living refund to emphasize that it is not meant
 to be an accurate representation of the Cost-of-Living Refund proposal.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+import taxcalc as tc
 
 
-<span class="k">class</span> <span class="nc">Calculator</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Customized Calculator class that inherits all tc.Calculator data and</span>
-<span class="sd">    methods, adding or overriding some to get the desired customization.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">sync_years</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">consumption</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="c1"># above are the tc.Calculator constructor arguments</span>
-                 <span class="c1"># below is new constructor argument used in customization</span>
-                 <span class="n">colr_active</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># call the parent class constructor</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">policy</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">records</span><span class="p">,</span>
-                         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">sync_years</span><span class="o">=</span><span class="n">sync_years</span><span class="p">,</span>
-                         <span class="n">consumption</span><span class="o">=</span><span class="n">consumption</span><span class="p">)</span>
-        <span class="c1"># remember whether pseudo_COLR policy is active or not</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">colr_active</span> <span class="o">=</span> <span class="n">colr_active</span>
-        <span class="c1"># declare colr_param dictionary that will contain pseudo COLR policy</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+class Calculator(tc.Calculator):
+    &quot;&quot;&quot;
+    Customized Calculator class that inherits all tc.Calculator data and
+    methods, adding or overriding some to get the desired customization.
+    &quot;&quot;&quot;
+    def __init__(self, policy=None, records=None, verbose=False,
+                 sync_years=True, consumption=None,
+                 # above are the tc.Calculator constructor arguments
+                 # below is new constructor argument used in customization
+                 colr_active=False):
+        # call the parent class constructor
+        super().__init__(policy=policy, records=records,
+                         verbose=verbose, sync_years=sync_years,
+                         consumption=consumption)
+        # remember whether pseudo_COLR policy is active or not
+        self.colr_active = colr_active
+        # declare colr_param dictionary that will contain pseudo COLR policy
+        self.colr_param = dict()
 
-    <span class="k">def</span> <span class="nf">specify_pseudo_colr_policy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Specify policy parameters for the COLR policy in the current_year.</span>
-<span class="sd">        See use of these parameters below in the pseudo_colr_amount method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># reform implementation year</span>
-        <span class="n">reform_year</span> <span class="o">=</span> <span class="mi">2020</span>
-        <span class="c1"># specify dictionary of parameter names and values for reform_year</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="c1"># credit phase-in rate on earnings</span>
-            <span class="s1">&#39;COLR_rt&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-            <span class="c1"># ceiling on refundable credit varies by filing-unit type, MARS</span>
-            <span class="s1">&#39;COLR_c&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">],</span>
-                               <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
-            <span class="c1"># credit phase-out start AGI level varies by filing-unit type, MARS</span>
-            <span class="s1">&#39;COLR_ps&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">30000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="mi">30000</span><span class="p">],</span>
-                                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
-            <span class="c1"># credit phase-out rate per dollar of AGI above COLR_ps level</span>
-            <span class="s1">&#39;COLR_prt&#39;</span><span class="p">:</span> <span class="mf">0.2</span>
-        <span class="p">}</span>
-        <span class="c1"># set pseudo COLR parameter values for current year</span>
-        <span class="n">this_year</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_year</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_active</span> <span class="ow">and</span> <span class="n">this_year</span> <span class="o">&gt;=</span> <span class="n">reform_year</span><span class="p">:</span>
-            <span class="c1"># set inflation-indexed values of COLR_c and COLR_ps for this year</span>
-            <span class="n">irates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">inflation_rates</span><span class="p">()</span>
-            <span class="n">syr</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
-            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;COLR_c&#39;</span><span class="p">,</span> <span class="s1">&#39;COLR_ps&#39;</span><span class="p">]:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reform_year</span><span class="p">,</span> <span class="n">this_year</span><span class="p">):</span>
-                    <span class="n">value</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">irates</span><span class="p">[</span><span class="n">year</span> <span class="o">-</span> <span class="n">syr</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># to nearest penny</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if policy not active or if this year is before the reform year</span>
-            <span class="c1"># set ceiling to zero</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="s1">&#39;COLR_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-                                                 <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">tracing</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># set to True to see parameter values for this year</span>
-        <span class="k">if</span> <span class="n">tracing</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt; </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">this_year</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-                <span class="p">))</span>
+    def specify_pseudo_colr_policy(self):
+        &quot;&quot;&quot;
+        Specify policy parameters for the COLR policy in the current_year.
+        See use of these parameters below in the pseudo_colr_amount method.
+        &quot;&quot;&quot;
+        # reform implementation year
+        reform_year = 2020
+        # specify dictionary of parameter names and values for reform_year
+        self.colr_param = {
+            # credit phase-in rate on earnings
+            &#39;COLR_rt&#39;: 1.0,
+            # ceiling on refundable credit varies by filing-unit type, MARS
+            &#39;COLR_c&#39;: np.array([4000, 8000, 4000, 4000, 4000],
+                               dtype=np.float64),
+            # credit phase-out start AGI level varies by filing-unit type, MARS
+            &#39;COLR_ps&#39;: np.array([30000, 50000, 30000, 30000, 30000],
+                                dtype=np.float64),
+            # credit phase-out rate per dollar of AGI above COLR_ps level
+            &#39;COLR_prt&#39;: 0.2
+        }
+        # set pseudo COLR parameter values for current year
+        this_year = self.current_year
+        if self.colr_active and this_year &gt;= reform_year:
+            # set inflation-indexed values of COLR_c and COLR_ps for this year
+            irates = self.__policy.inflation_rates()
+            syr = tc.Policy.JSON_START_YEAR
+            for name in [&#39;COLR_c&#39;, &#39;COLR_ps&#39;]:
+                value = self.colr_param[name]
+                for year in range(reform_year, this_year):
+                    value *= (1.0 + irates[year - syr])
+                self.colr_param[name] = np.round(value, 2)  # to nearest penny
+        else:  # if policy not active or if this year is before the reform year
+            # set ceiling to zero
+            self.colr_param[&#39;COLR_c&#39;] = np.array([0.0, 0.0, 0.0, 0.0, 0.0],
+                                                 dtype=np.float64)
+        tracing = False  # set to True to see parameter values for this year
+        if tracing:
+            for name in self.colr_param:
+                print(&#39;&gt; {} {} {}&#39;.format(
+                    this_year, name, self.colr_param[name]
+                ))
 
-    <span class="k">def</span> <span class="nf">pseudo_colr_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate pseudo Cost-of-Living Refund amount.</span>
-<span class="sd">        Note this is simply meant to illustrate a Python programming technique;</span>
-<span class="sd">        this function does NOT calculate an exact Cost-of-Living Refund amount.</span>
-<span class="sd">        See setting of parameters above in specify_pseudo_COLR_policy method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">recs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span>
-        <span class="c1"># create MARS-specific policy parameter arrays</span>
-        <span class="n">mars_indicators</span> <span class="o">=</span> <span class="p">[</span><span class="n">recs</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">recs</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="n">recs</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span>
-                           <span class="n">recs</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">4</span><span class="p">,</span> <span class="n">recs</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">5</span><span class="p">]</span>
-        <span class="n">colr_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">mars_indicators</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="s1">&#39;COLR_c&#39;</span><span class="p">])</span>
-        <span class="n">colr_ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">mars_indicators</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="s1">&#39;COLR_ps&#39;</span><span class="p">])</span>
-        <span class="n">colr_rt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="s1">&#39;COLR_rt&#39;</span><span class="p">]</span>
-        <span class="n">colr_prt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="s1">&#39;COLR_prt&#39;</span><span class="p">]</span>
-        <span class="c1"># compute colr_amt</span>
-        <span class="n">amt_pre_phaseout</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">recs</span><span class="o">.</span><span class="n">e00200</span> <span class="o">*</span> <span class="n">colr_rt</span><span class="p">,</span> <span class="n">colr_c</span><span class="p">)</span>
-        <span class="n">phaseout</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">((</span><span class="n">recs</span><span class="o">.</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">colr_ps</span><span class="p">)</span> <span class="o">*</span> <span class="n">colr_prt</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">colr_amt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">amt_pre_phaseout</span> <span class="o">-</span> <span class="n">phaseout</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">recs</span><span class="p">,</span> <span class="s1">&#39;colr_amount&#39;</span><span class="p">,</span> <span class="n">colr_amt</span><span class="p">)</span>
-        <span class="c1"># reduce income and combined taxes because COLR is a refundable credit</span>
-        <span class="n">recs</span><span class="o">.</span><span class="n">iitax</span> <span class="o">-=</span> <span class="n">colr_amt</span>
-        <span class="n">recs</span><span class="o">.</span><span class="n">combined</span> <span class="o">-=</span> <span class="n">colr_amt</span>
-        <span class="c1"># delete local arrays used only in this method</span>
-        <span class="k">del</span> <span class="n">mars_indicators</span>
-        <span class="k">del</span> <span class="n">colr_c</span>
-        <span class="k">del</span> <span class="n">colr_ps</span>
-        <span class="k">del</span> <span class="n">amt_pre_phaseout</span>
-        <span class="k">del</span> <span class="n">phaseout</span>
-        <span class="k">del</span> <span class="n">colr_amt</span>
+    def pseudo_colr_amount(self):
+        &quot;&quot;&quot;
+        Calculate pseudo Cost-of-Living Refund amount.
+        Note this is simply meant to illustrate a Python programming technique;
+        this function does NOT calculate an exact Cost-of-Living Refund amount.
+        See setting of parameters above in specify_pseudo_COLR_policy method.
+        &quot;&quot;&quot;
+        recs = self.__records
+        # create MARS-specific policy parameter arrays
+        mars_indicators = [recs.MARS == 1, recs.MARS == 2, recs.MARS == 3,
+                           recs.MARS == 4, recs.MARS == 5]
+        colr_c = np.select(mars_indicators, self.colr_param[&#39;COLR_c&#39;])
+        colr_ps = np.select(mars_indicators, self.colr_param[&#39;COLR_ps&#39;])
+        colr_rt = self.colr_param[&#39;COLR_rt&#39;]
+        colr_prt = self.colr_param[&#39;COLR_prt&#39;]
+        # compute colr_amt
+        amt_pre_phaseout = np.minimum(recs.e00200 * colr_rt, colr_c)
+        phaseout = np.maximum((recs.c00100 - colr_ps) * colr_prt, 0.)
+        colr_amt = np.maximum(amt_pre_phaseout - phaseout, 0.)
+        setattr(recs, &#39;colr_amount&#39;, colr_amt)
+        # reduce income and combined taxes because COLR is a refundable credit
+        recs.iitax -= colr_amt
+        recs.combined -= colr_amt
+        # delete local arrays used only in this method
+        del mars_indicators
+        del colr_c
+        del colr_ps
+        del amt_pre_phaseout
+        del phaseout
+        del colr_amt
 
-    <span class="k">def</span> <span class="nf">calc_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Call all tax-calculation functions for the current_year.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tc</span><span class="o">.</span><span class="n">BenefitPrograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_calc_one_year</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="p">)</span>
-        <span class="n">tc</span><span class="o">.</span><span class="n">BenefitSurtax</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">tc</span><span class="o">.</span><span class="n">BenefitLimitation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">tc</span><span class="o">.</span><span class="n">FairShareTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-        <span class="n">tc</span><span class="o">.</span><span class="n">LumpSumTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-        <span class="c1"># specify new method to set pseudo COLR policy parameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">specify_pseudo_colr_policy</span><span class="p">()</span>  <span class="c1"># (see above)</span>
-        <span class="c1"># call new method to calculate pseudo COLR amount</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_colr_amount</span><span class="p">()</span>  <span class="c1"># (see above)</span>
-        <span class="n">tc</span><span class="o">.</span><span class="n">ExpandIncome</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-        <span class="n">tc</span><span class="o">.</span><span class="n">AfterTaxIncome</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+    def calc_all(self, zero_out_calc_vars=False):
+        &quot;&quot;&quot;
+        Call all tax-calculation functions for the current_year.
+        &quot;&quot;&quot;
+        tc.BenefitPrograms(self)
+        self._calc_one_year(zero_out_calc_vars)
+        tc.BenefitSurtax(self)
+        tc.BenefitLimitation(self)
+        tc.FairShareTax(self.__policy, self.__records)
+        tc.LumpSumTax(self.__policy, self.__records)
+        # specify new method to set pseudo COLR policy parameters
+        self.specify_pseudo_colr_policy()  # (see above)
+        # call new method to calculate pseudo COLR amount
+        self.pseudo_colr_amount()  # (see above)
+        tc.ExpandIncome(self.__policy, self.__records)
+        tc.AfterTaxIncome(self.__policy, self.__records)
 
-<span class="c1"># end of customized Calculator class definition</span>
+# end of customized Calculator class definition
 
 
-<span class="c1"># top-level logic of program that uses customized Calculator class</span>
+# top-level logic of program that uses customized Calculator class
 
-<span class="n">policy1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>  <span class="c1"># baseline policy is current-law policy</span>
-<span class="n">policy2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>  <span class="c1"># parametric reform, reformC.json, eliminates EITC</span>
+policy1 = tc.Policy()  # baseline policy is current-law policy
+policy2 = tc.Policy()  # parametric reform, reformC.json, eliminates EITC
 
-<span class="c1"># TODO: Move to the web so this can be done standalone.</span>
-<span class="n">policy2</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformC.json&#39;</span><span class="p">))</span>
+# TODO: Move to the web so this can be done standalone.
+policy2.implement_reform(tc.Policy.read_json_reform(&#39;github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformC.json&#39;))
 
-<span class="c1"># specify customized Calculator objects for baseline and reform:</span>
-<span class="c1">#   baseline calc1 uses policy1 (current-law) and colr_active=False</span>
-<span class="c1">#   reform calc2 uses policy2 (no EITC) and colr_active=True</span>
-<span class="n">cps_records</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
-<span class="n">calc1</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">policy1</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">cps_records</span><span class="p">,</span> <span class="n">colr_active</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">calc2</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">policy2</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">cps_records</span><span class="p">,</span> <span class="n">colr_active</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+# specify customized Calculator objects for baseline and reform:
+#   baseline calc1 uses policy1 (current-law) and colr_active=False
+#   reform calc2 uses policy2 (no EITC) and colr_active=True
+cps_records = tc.Records.cps_constructor()
+calc1 = Calculator(policy=policy1, records=cps_records, colr_active=False)
+calc2 = Calculator(policy=policy2, records=cps_records, colr_active=True)
 
-<span class="c1"># calculate tax liabilities for years around the reform year</span>
-<span class="n">CYR_FIRST</span> <span class="o">=</span> <span class="mi">2019</span>
-<span class="n">CYR_LAST</span> <span class="o">=</span> <span class="mi">2022</span>
-<span class="k">for</span> <span class="n">cyr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">CYR_FIRST</span><span class="p">,</span> <span class="n">CYR_LAST</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-    <span class="c1"># advance to and calculate for specified cyr</span>
-    <span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">cyr</span><span class="p">)</span>
-    <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-    <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">cyr</span><span class="p">)</span>
-    <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-    <span class="c1"># tabulate weighted amounts</span>
-    <span class="n">funits</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">total_weight</span><span class="p">()</span>
-    <span class="n">itax1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
-    <span class="n">itax2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
-    <span class="n">eitc1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;eitc&#39;</span><span class="p">)</span>
-    <span class="n">eitc2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;eitc&#39;</span><span class="p">)</span>
-    <span class="n">colr1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;colr_amount&#39;</span><span class="p">)</span>
-    <span class="n">colr2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;colr_amount&#39;</span><span class="p">)</span>
-    <span class="c1"># print weighted amounts for cyr</span>
-    <span class="k">if</span> <span class="n">cyr</span> <span class="o">==</span> <span class="n">CYR_FIRST</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;YEAR  UNITS   ITAX1   ITAX2  EITC1  EITC2  COLR1  COLR2&#39;</span><span class="p">)</span>
-    <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">  </span><span class="si">{:.1f}</span><span class="s1">  </span><span class="si">{:.1f}</span><span class="s1">  </span><span class="si">{:.1f}</span><span class="s1">  </span><span class="si">{:5.1f}</span><span class="s1">  </span><span class="si">{:5.1f}</span><span class="s1">  </span><span class="si">{:5.1f}</span><span class="s1">  </span><span class="si">{:5.1f}</span><span class="s1">&#39;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cyr</span><span class="p">,</span> <span class="n">funits</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span>
-                      <span class="n">itax1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span> <span class="n">itax2</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
-                      <span class="n">eitc1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span> <span class="n">eitc2</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
-                      <span class="n">colr1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span> <span class="n">colr2</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
+# calculate tax liabilities for years around the reform year
+CYR_FIRST = 2019
+CYR_LAST = 2022
+for cyr in range(CYR_FIRST, CYR_LAST + 1):
+    # advance to and calculate for specified cyr
+    calc1.advance_to_year(cyr)
+    calc1.calc_all()
+    calc2.advance_to_year(cyr)
+    calc2.calc_all()
+    # tabulate weighted amounts
+    funits = calc1.total_weight()
+    itax1 = calc1.weighted_total(&#39;iitax&#39;)
+    itax2 = calc2.weighted_total(&#39;iitax&#39;)
+    eitc1 = calc1.weighted_total(&#39;eitc&#39;)
+    eitc2 = calc2.weighted_total(&#39;eitc&#39;)
+    colr1 = calc1.weighted_total(&#39;colr_amount&#39;)
+    colr2 = calc2.weighted_total(&#39;colr_amount&#39;)
+    # print weighted amounts for cyr
+    if cyr == CYR_FIRST:
+        print(&#39;YEAR  UNITS   ITAX1   ITAX2  EITC1  EITC2  COLR1  COLR2&#39;)
+    line = &#39;{}  {:.1f}  {:.1f}  {:.1f}  {:5.1f}  {:5.1f}  {:5.1f}  {:5.1f}&#39;
+    print(line.format(cyr, funits * 1e-6,
+                      itax1 * 1e-9, itax2 * 1e-9,
+                      eitc1 * 1e-9, eitc2 * 1e-9,
+                      colr1 * 1e-9, colr2 * 1e-9))
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>YEAR  UNITS   ITAX1   ITAX2  EITC1  EITC2  COLR1  COLR2
-2019  201.9  1270.4  1270.4   63.1   63.1    0.0    0.0
+2019  201.9  1258.9  1258.9   63.3   63.3    0.0    0.0
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020  204.5  712.7  419.2   66.1    0.0    0.0  359.6
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020  204.5  748.8  458.3   65.4    0.0    0.0  355.8
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2021  207.1  762.4  494.7   80.4    0.0    0.0  348.1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2021  207.1  890.0  634.3   76.3    0.0    0.0  332.0
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2022  209.7  1434.4  1142.2   66.1    0.0    0.0  358.3
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2022  209.7  1651.7  1363.7   59.7    0.0    0.0  347.7
 </pre></div>
 </div>
 </div>

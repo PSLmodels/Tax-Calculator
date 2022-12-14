@@ -21,7 +21,7 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -37,7 +37,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -697,55 +697,55 @@ title="Print to PDF"
 This recipe shows how to analyze the behavioral responses to a tax reform using the Behavioral-Responses behresp package.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
-<span class="kn">import</span> <span class="nn">behresp</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import taxcalc as tc
+import behresp
 
-<span class="c1"># use publicly-available CPS input file</span>
-<span class="n">recs</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
+# use publicly-available CPS input file
+recs = tc.Records.cps_constructor()
 
-<span class="c1"># specify baseline Calculator object representing current-law policy</span>
-<span class="n">pol</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>
-<span class="n">calc1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+# specify baseline Calculator object representing current-law policy
+pol = tc.Policy()
+calc1 = tc.Calculator(policy=pol, records=recs)
 
-<span class="n">CYR</span> <span class="o">=</span> <span class="mi">2020</span>
+CYR = 2020
 
-<span class="c1"># calculate aggregate current-law income tax liabilities for cyr</span>
-<span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
-<span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-<span class="n">itax_rev1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+# calculate aggregate current-law income tax liabilities for cyr
+calc1.advance_to_year(CYR)
+calc1.calc_all()
+itax_rev1 = calc1.weighted_total(&#39;iitax&#39;)
 
-<span class="c1"># specify Calculator object for static analysis of reform policy</span>
-<span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformA.json&#39;</span><span class="p">))</span>
-<span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+# specify Calculator object for static analysis of reform policy
+pol.implement_reform(tc.Policy.read_json_reform(&#39;github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformA.json&#39;))
+calc2 = tc.Calculator(policy=pol, records=recs)
 
-<span class="c1"># calculate reform income tax liabilities for cyr under static assumptions</span>
-<span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
-<span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-<span class="n">itax_rev2sa</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+# calculate reform income tax liabilities for cyr under static assumptions
+calc2.advance_to_year(CYR)
+calc2.calc_all()
+itax_rev2sa = calc2.weighted_total(&#39;iitax&#39;)
 
-<span class="c1"># specify assumed non-zero response-function substitution elasticity</span>
-<span class="n">response_elasticities</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sub&#39;</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">}</span>
+# specify assumed non-zero response-function substitution elasticity
+response_elasticities = {&#39;sub&#39;: 0.25}
 
-<span class="c1"># specify Calculator object for analysis of reform with behavioral responses</span>
-<span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
-<span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
-<span class="n">_</span><span class="p">,</span> <span class="n">df2br</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span> <span class="n">response_elasticities</span><span class="p">)</span>
+# specify Calculator object for analysis of reform with behavioral responses
+calc2 = tc.Calculator(policy=pol, records=recs)
+calc2.advance_to_year(CYR)
+_, df2br = behresp.response(calc1, calc2, response_elasticities)
 
-<span class="c1"># calculate reform income tax liabilities for CYR with behavioral response</span>
-<span class="n">itax_rev2br</span> <span class="o">=</span> <span class="p">(</span><span class="n">df2br</span><span class="p">[</span><span class="s1">&#39;iitax&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df2br</span><span class="p">[</span><span class="s1">&#39;s006&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+# calculate reform income tax liabilities for CYR with behavioral response
+itax_rev2br = (df2br[&#39;iitax&#39;] * df2br[&#39;s006&#39;]).sum()
 
-<span class="c1"># print total income tax revenue estimates for CYR</span>
-<span class="c1"># (estimates in billons of dollars)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_CURRENT_LAW_P__itax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">itax_rev1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_REFORM_STATIC__itax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">itax_rev2sa</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_REFORM_DYNAMIC_itax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">itax_rev2br</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
+# print total income tax revenue estimates for CYR
+# (estimates in billons of dollars)
+print(&#39;{}_CURRENT_LAW_P__itax_rev($B)= {:.3f}&#39;.format(CYR, itax_rev1 * 1e-9))
+print(&#39;{}_REFORM_STATIC__itax_rev($B)= {:.3f}&#39;.format(CYR, itax_rev2sa * 1e-9))
+print(&#39;{}_REFORM_DYNAMIC_itax_rev($B)= {:.3f}&#39;.format(CYR, itax_rev2br * 1e-9))
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020_CURRENT_LAW_P__itax_rev($B)= 712.667
-2020_REFORM_STATIC__itax_rev($B)= 714.208
-2020_REFORM_DYNAMIC_itax_rev($B)= 702.853
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020_CURRENT_LAW_P__itax_rev($B)= 748.768
+2020_REFORM_STATIC__itax_rev($B)= 750.713
+2020_REFORM_DYNAMIC_itax_rev($B)= 739.128
 </pre></div>
 </div>
 </div>
@@ -758,18 +758,18 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">NUM_YEARS</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># number of diagnostic table years beginning with CYR</span>
-<span class="n">dtable1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">diagnostic_table</span><span class="p">(</span><span class="n">NUM_YEARS</span><span class="p">)</span>
-<span class="n">dtable2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">diagnostic_table</span><span class="p">(</span><span class="n">NUM_YEARS</span><span class="p">)</span>
-<span class="n">dvar_list3</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-<span class="n">year_list3</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">CYR</span> <span class="o">+</span> <span class="n">NUM_YEARS</span><span class="p">):</span>
-    <span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
-    <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">df2br</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span> <span class="n">response_elasticities</span><span class="p">)</span>
-    <span class="n">dvar_list3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df2br</span><span class="p">)</span>
-    <span class="n">year_list3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
-<span class="n">dtable3</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">create_diagnostic_table</span><span class="p">(</span><span class="n">dvar_list3</span><span class="p">,</span> <span class="n">year_list3</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>NUM_YEARS = 3  # number of diagnostic table years beginning with CYR
+dtable1 = calc1.diagnostic_table(NUM_YEARS)
+dtable2 = calc2.diagnostic_table(NUM_YEARS)
+dvar_list3 = list()
+year_list3 = list()
+for year in range(CYR, CYR + NUM_YEARS):
+    calc1.advance_to_year(year)
+    calc2.advance_to_year(year)
+    _, df2br = behresp.response(calc1, calc2, response_elasticities)
+    dvar_list3.append(df2br)
+    year_list3.append(year)
+dtable3 = tc.create_diagnostic_table(dvar_list3, year_list3)
 </pre></div>
 </div>
 </div>
@@ -777,7 +777,7 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <p>Diagnostic table for baseline:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dtable1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dtable1
 </pre></div>
 </div>
 </div>
@@ -814,33 +814,33 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>AGI ($b)</th>
-      <td>11338.160</td>
-      <td>12178.885</td>
-      <td>12493.166</td>
+      <td>11529.507</td>
+      <td>12789.483</td>
+      <td>13581.569</td>
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>27.080</td>
-      <td>28.040</td>
-      <td>26.590</td>
+      <td>27.130</td>
+      <td>31.370</td>
+      <td>30.560</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>733.405</td>
-      <td>760.876</td>
-      <td>728.223</td>
+      <td>734.486</td>
+      <td>861.467</td>
+      <td>860.875</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>177.400</td>
-      <td>179.040</td>
-      <td>183.070</td>
+      <td>177.360</td>
+      <td>175.700</td>
+      <td>179.100</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>3088.310</td>
-      <td>3145.577</td>
-      <td>3324.598</td>
+      <td>3087.473</td>
+      <td>3079.719</td>
+      <td>3243.332</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
@@ -850,51 +850,51 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>8372.949</td>
-      <td>9125.984</td>
-      <td>9363.132</td>
+      <td>8559.022</td>
+      <td>9684.922</td>
+      <td>10375.399</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1457.697</td>
-      <td>1585.908</td>
-      <td>1630.635</td>
+      <td>1491.329</td>
+      <td>1700.814</td>
+      <td>1843.158</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>10791.932</td>
-      <td>11610.784</td>
-      <td>11949.975</td>
+      <td>10982.328</td>
+      <td>12145.126</td>
+      <td>12934.900</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>0.436</td>
-      <td>0.983</td>
-      <td>0.990</td>
+      <td>0.557</td>
+      <td>1.071</td>
+      <td>1.121</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.080</td>
-      <td>0.240</td>
-      <td>0.220</td>
+      <td>0.090</td>
+      <td>0.250</td>
+      <td>0.230</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1458.133</td>
-      <td>1586.891</td>
-      <td>1631.625</td>
+      <td>1491.886</td>
+      <td>1701.885</td>
+      <td>1844.279</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
-      <td>657.660</td>
-      <td>834.182</td>
-      <td>105.901</td>
+      <td>655.173</td>
+      <td>821.476</td>
+      <td>96.978</td>
     </tr>
     <tr>
       <th>Nonrefundable Credits ($b)</th>
-      <td>98.801</td>
-      <td>2.124</td>
-      <td>103.661</td>
+      <td>99.323</td>
+      <td>2.154</td>
+      <td>108.174</td>
     </tr>
     <tr>
       <th>Reform Surtaxes ($b)</th>
@@ -904,39 +904,39 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Other Taxes ($b)</th>
-      <td>10.995</td>
-      <td>11.777</td>
-      <td>12.343</td>
+      <td>11.379</td>
+      <td>11.749</td>
+      <td>12.583</td>
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>712.667</td>
-      <td>762.362</td>
-      <td>1434.405</td>
+      <td>748.768</td>
+      <td>890.003</td>
+      <td>1651.710</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
-      <td>1206.565</td>
-      <td>1268.229</td>
-      <td>1323.010</td>
+      <td>1217.120</td>
+      <td>1325.321</td>
+      <td>1430.921</td>
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>1919.232</td>
-      <td>2030.591</td>
-      <td>2757.416</td>
+      <td>1965.888</td>
+      <td>2215.324</td>
+      <td>3082.631</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>135.980</td>
-      <td>130.830</td>
-      <td>99.840</td>
+      <td>135.340</td>
+      <td>127.810</td>
+      <td>95.960</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
-      <td>98.670</td>
-      <td>100.060</td>
-      <td>69.580</td>
+      <td>98.260</td>
+      <td>97.850</td>
+      <td>67.830</td>
     </tr>
     <tr>
       <th>UBI Benefits ($b)</th>
@@ -948,13 +948,13 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
       <th>Total Benefits, Consumption Value ($b)</th>
       <td>3617.949</td>
       <td>4011.607</td>
-      <td>4064.249</td>
+      <td>4069.558</td>
     </tr>
     <tr>
       <th>Total Benefits Cost ($b)</th>
       <td>3617.949</td>
       <td>4011.607</td>
-      <td>4064.249</td>
+      <td>4069.558</td>
     </tr>
   </tbody>
 </table>
@@ -963,7 +963,7 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <p>Diagnostic table for reform, excluding behavioral responses:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dtable2</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dtable2
 </pre></div>
 </div>
 </div>
@@ -1000,87 +1000,87 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>AGI ($b)</th>
-      <td>11338.160</td>
-      <td>12178.885</td>
-      <td>12493.166</td>
+      <td>11529.507</td>
+      <td>12789.483</td>
+      <td>13581.569</td>
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>27.010</td>
-      <td>27.960</td>
-      <td>26.550</td>
+      <td>27.060</td>
+      <td>31.240</td>
+      <td>30.440</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>730.891</td>
-      <td>758.366</td>
-      <td>726.407</td>
+      <td>732.100</td>
+      <td>857.882</td>
+      <td>857.400</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>177.470</td>
-      <td>179.110</td>
-      <td>183.120</td>
+      <td>177.430</td>
+      <td>175.840</td>
+      <td>179.220</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>3089.620</td>
-      <td>3146.904</td>
-      <td>3325.433</td>
+      <td>3088.674</td>
+      <td>3081.931</td>
+      <td>3245.332</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
       <td>375.177</td>
       <td>383.210</td>
-      <td>394.035</td>
+      <td>404.808</td>
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>8126.319</td>
-      <td>8866.341</td>
-      <td>9101.218</td>
+      <td>8311.506</td>
+      <td>9421.653</td>
+      <td>10099.958</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1456.850</td>
-      <td>1587.260</td>
-      <td>1633.318</td>
+      <td>1490.903</td>
+      <td>1704.251</td>
+      <td>1849.101</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>10794.282</td>
-      <td>11613.154</td>
-      <td>11951.775</td>
+      <td>10984.562</td>
+      <td>12148.452</td>
+      <td>12938.134</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>0.453</td>
-      <td>1.087</td>
-      <td>1.083</td>
+      <td>0.576</td>
+      <td>1.178</td>
+      <td>1.231</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.080</td>
-      <td>0.260</td>
-      <td>0.240</td>
+      <td>0.090</td>
+      <td>0.280</td>
+      <td>0.250</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1457.303</td>
-      <td>1588.346</td>
-      <td>1634.401</td>
+      <td>1491.479</td>
+      <td>1705.429</td>
+      <td>1850.331</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
-      <td>661.001</td>
-      <td>834.182</td>
-      <td>109.581</td>
+      <td>658.503</td>
+      <td>821.476</td>
+      <td>100.668</td>
     </tr>
     <tr>
       <th>Nonrefundable Credits ($b)</th>
-      <td>93.088</td>
-      <td>2.002</td>
-      <td>97.967</td>
+      <td>93.641</td>
+      <td>2.038</td>
+      <td>102.553</td>
     </tr>
     <tr>
       <th>Reform Surtaxes ($b)</th>
@@ -1090,39 +1090,39 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Other Taxes ($b)</th>
-      <td>10.995</td>
-      <td>11.777</td>
-      <td>12.343</td>
+      <td>11.379</td>
+      <td>11.749</td>
+      <td>12.583</td>
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>714.208</td>
-      <td>763.939</td>
-      <td>1439.195</td>
+      <td>750.713</td>
+      <td>893.663</td>
+      <td>1659.693</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
-      <td>1206.565</td>
-      <td>1268.229</td>
-      <td>1323.010</td>
+      <td>1217.120</td>
+      <td>1325.321</td>
+      <td>1430.921</td>
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>1920.773</td>
-      <td>2032.168</td>
-      <td>2762.206</td>
+      <td>1967.833</td>
+      <td>2218.984</td>
+      <td>3090.615</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>138.300</td>
-      <td>133.050</td>
-      <td>102.350</td>
+      <td>137.500</td>
+      <td>130.050</td>
+      <td>98.530</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
-      <td>99.410</td>
-      <td>100.960</td>
-      <td>70.270</td>
+      <td>99.030</td>
+      <td>98.780</td>
+      <td>68.490</td>
     </tr>
     <tr>
       <th>UBI Benefits ($b)</th>
@@ -1134,13 +1134,13 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
       <th>Total Benefits, Consumption Value ($b)</th>
       <td>3617.949</td>
       <td>4011.607</td>
-      <td>4064.249</td>
+      <td>4069.558</td>
     </tr>
     <tr>
       <th>Total Benefits Cost ($b)</th>
       <td>3617.949</td>
       <td>4011.607</td>
-      <td>4064.249</td>
+      <td>4069.558</td>
     </tr>
   </tbody>
 </table>
@@ -1149,7 +1149,7 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <p>Diagnostic table for reform, including behavioral responses:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dtable3</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dtable3
 </pre></div>
 </div>
 </div>
@@ -1186,87 +1186,87 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>AGI ($b)</th>
-      <td>11313.505</td>
-      <td>12149.978</td>
-      <td>12463.380</td>
+      <td>11504.402</td>
+      <td>12757.301</td>
+      <td>13546.110</td>
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>26.980</td>
-      <td>27.930</td>
-      <td>26.530</td>
+      <td>27.030</td>
+      <td>31.210</td>
+      <td>30.430</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>729.487</td>
-      <td>756.878</td>
-      <td>725.086</td>
+      <td>730.740</td>
+      <td>856.443</td>
+      <td>855.914</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>177.500</td>
-      <td>179.150</td>
-      <td>183.140</td>
+      <td>177.460</td>
+      <td>175.860</td>
+      <td>179.240</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>3090.316</td>
-      <td>3147.648</td>
-      <td>3325.834</td>
+      <td>3089.351</td>
+      <td>3082.394</td>
+      <td>3245.690</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
       <td>375.177</td>
       <td>383.210</td>
-      <td>394.035</td>
+      <td>404.808</td>
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>8101.876</td>
-      <td>8837.586</td>
-      <td>9071.803</td>
+      <td>8286.590</td>
+      <td>9389.949</td>
+      <td>10065.116</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1445.701</td>
-      <td>1574.544</td>
-      <td>1620.144</td>
+      <td>1479.527</td>
+      <td>1690.400</td>
+      <td>1833.801</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>10770.764</td>
-      <td>11585.466</td>
-      <td>11923.163</td>
+      <td>10960.546</td>
+      <td>12117.506</td>
+      <td>12904.040</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>0.445</td>
-      <td>1.143</td>
-      <td>1.134</td>
+      <td>0.577</td>
+      <td>1.212</td>
+      <td>1.281</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.080</td>
+      <td>0.090</td>
       <td>0.270</td>
-      <td>0.240</td>
+      <td>0.250</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1446.147</td>
-      <td>1575.687</td>
-      <td>1621.278</td>
+      <td>1480.104</td>
+      <td>1691.612</td>
+      <td>1835.082</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
-      <td>660.699</td>
-      <td>834.152</td>
-      <td>109.300</td>
+      <td>658.208</td>
+      <td>821.441</td>
+      <td>100.411</td>
     </tr>
     <tr>
       <th>Nonrefundable Credits ($b)</th>
-      <td>93.329</td>
-      <td>2.011</td>
-      <td>98.203</td>
+      <td>93.876</td>
+      <td>2.047</td>
+      <td>102.789</td>
     </tr>
     <tr>
       <th>Reform Surtaxes ($b)</th>
@@ -1276,39 +1276,39 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Other Taxes ($b)</th>
-      <td>10.734</td>
-      <td>11.486</td>
-      <td>12.036</td>
+      <td>11.108</td>
+      <td>11.447</td>
+      <td>12.266</td>
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>702.853</td>
-      <td>751.010</td>
-      <td>1425.811</td>
+      <td>739.128</td>
+      <td>879.571</td>
+      <td>1644.149</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
-      <td>1205.934</td>
-      <td>1267.363</td>
-      <td>1322.157</td>
+      <td>1216.467</td>
+      <td>1324.260</td>
+      <td>1429.787</td>
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>1908.787</td>
-      <td>2018.373</td>
-      <td>2747.968</td>
+      <td>1955.595</td>
+      <td>2203.830</td>
+      <td>3073.936</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>138.280</td>
-      <td>133.020</td>
-      <td>102.190</td>
+      <td>137.470</td>
+      <td>130.030</td>
+      <td>98.370</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
-      <td>99.380</td>
-      <td>100.930</td>
-      <td>70.080</td>
+      <td>98.990</td>
+      <td>98.760</td>
+      <td>68.330</td>
     </tr>
     <tr>
       <th>UBI Benefits ($b)</th>
@@ -1320,13 +1320,13 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
       <th>Total Benefits, Consumption Value ($b)</th>
       <td>3617.949</td>
       <td>4011.607</td>
-      <td>4064.249</td>
+      <td>4069.558</td>
     </tr>
     <tr>
       <th>Total Benefits Cost ($b)</th>
       <td>3617.949</td>
       <td>4011.607</td>
-      <td>4064.249</td>
+      <td>4069.558</td>
     </tr>
   </tbody>
 </table>
