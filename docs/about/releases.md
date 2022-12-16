@@ -20,7 +20,7 @@ for a complete commit history.
 - Inflation adjustment of the year 2020, 2021, 2022, for IRS tax forms and tax law inflation adjustments documents [[#2633](https://github.com/PSLmodels/Tax-Calculator/pull/2633) by Bodi Yang]
 
 **Bug Fixes**
-- Fix Parameter error parsing in taxcalcio module [[#2625](https://github.com/PSLmodels/Tax-Calculator/pull/2625/commits) by Hank Doup]
+- Fix Parameter error parsing in taxcalcio module [[#2625](https://github.com/PSLmodels/Tax-Calculator/pull/2625/commits) by Hank Doupe]
 
 2021-08-06 Release 3.2.1
 ------------------------
