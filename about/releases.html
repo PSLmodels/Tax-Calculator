@@ -643,6 +643,11 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-3-3-0">
+   2022-12-16 Release 3.3.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#release-3-2-1">
    2021-08-06 Release 3.2.1
   </a>
@@ -1077,6 +1082,11 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-3-3-0">
+   2022-12-16 Release 3.3.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#release-3-2-1">
    2021-08-06 Release 3.2.1
   </a>
@@ -1505,6 +1515,25 @@ title="Print to PDF"
 <h1>Release history<a class="headerlink" href="#release-history" title="Permalink to this headline">#</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<section id="release-3-3-0">
+<h2>2022-12-16 Release 3.3.0<a class="headerlink" href="#release-3-3-0" title="Permalink to this headline">#</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2662">#2662</a>)</p>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Tax-Calculator baseline update for CBO economic projections, published in May, “The Budget and Economic Outlook: 2022 to 2032” [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2662">#2662</a> by Bodi Yang], with primary work in [<a class="reference external" href="https://github.com/PSLmodels/taxdata/pull/412">TaxData PR #412</a>by Bodi Yang]</p></li>
+<li><p>Add parameters for threshold for self-employment income exempt from SECA taxes [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2659">#2659</a> by Jason Debacker]</p></li>
+<li><p>Update calculation of child number when CTC_include17 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2644">#2644</a> by Matt Jensen]</p></li>
+<li><p>Add Python 3.10 to test matrix [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2646">#2646</a> by Jason Debacker]</p></li>
+<li><p>Inflation adjustment of the year 2020, 2021, 2022, for IRS tax forms and tax law inflation adjustments documents [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2633">#2633</a> by Bodi Yang]</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul class="simple">
+<li><p>Fix Parameter error parsing in taxcalcio module [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2625/commits">#2625</a> by Hank Doupe]</p></li>
+</ul>
+</section>
 <section id="release-3-2-1">
 <h2>2021-08-06 Release 3.2.1<a class="headerlink" href="#release-3-2-1" title="Permalink to this headline">#</a></h2>
 <p>(last merged pull request is
