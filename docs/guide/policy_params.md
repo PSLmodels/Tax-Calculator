@@ -80,38 +80,69 @@ _Out-of-Range Action:_ error
 
 ### Medicare FICA
 
-####  `FICA_mc_trt`  
-_Description:_ Medicare FICA rate, including both employer and employee.  
+####  `FICA_mc_trt_employer`  
+_Description:_ Employer side Medicare FICA rate.
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
-2013: 0.029  
-2014: 0.029  
-2015: 0.029  
-2016: 0.029  
-2017: 0.029  
-2018: 0.029  
-2019: 0.029  
+2013: 0.0145  
+2014: 0.0145  
+2015: 0.0145  
+2016: 0.0145  
+2017: 0.0145  
+2018: 0.0145  
+2019: 0.0145  
 _Valid Range:_ min = 0 and max = 1  
 _Out-of-Range Action:_ error  
 
-
-### Social Security FICA
-
-####  `FICA_ss_trt`  
-_Description:_ Social Security FICA rate, including both employer and employee.  
+####  `FICA_mc_trt_employee`  
+_Description:_ Employee side Medicare FICA rate.
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
-2013: 0.124  
-2014: 0.124  
-2015: 0.124  
-2016: 0.124  
-2017: 0.124  
-2018: 0.124  
-2019: 0.124  
+2013: 0.0145  
+2014: 0.0145  
+2015: 0.0145  
+2016: 0.0145  
+2017: 0.0145  
+2018: 0.0145  
+2019: 0.0145  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error 
+
+### Social Security FICA
+
+####  `FICA_ss_trt_employer`  
+_Description:_ Employer side Social Security FICA rate.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.062  
+2014: 0.062  
+2015: 0.062  
+2016: 0.062  
+2017: 0.062  
+2018: 0.062  
+2019: 0.062  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error  
+
+####  `FICA_ss_trt_employee`  
+_Description:_ Employee side Social Security FICA rate.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.062  
+2014: 0.062  
+2015: 0.062  
+2016: 0.062  
+2017: 0.062  
+2018: 0.062  
+2019: 0.062  
 _Valid Range:_ min = 0 and max = 1  
 _Out-of-Range Action:_ error  
 
