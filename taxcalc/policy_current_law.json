@@ -117,9 +117,9 @@
             "cps": true
         }
     },
-    "FICA_ss_trt": {
-        "title": "Social Security payroll tax rate",
-        "description": "Social Security FICA rate, including both employer and employee.",
+    "FICA_ss_trt_employer": {
+        "title": "Employer side Social Security payroll tax rate",
+        "description": "Employer side Social Security FICA rate, including both employer and employee.",
         "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
@@ -129,13 +129,39 @@
         "value": [
             {
                 "year": 2013,
-                "value": 0.124
+                "value": 0.062
             }
         ],
         "validators": {
             "range": {
                 "min": 0,
-                "max": 1
+                "max": 0.5
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "FICA_ss_trt_employee": {
+        "title": "Employee side Social Security payroll tax rate",
+        "description": "Employee side Social Security FICA rate, including both employer and employee.",
+        "notes": "",
+        "section_1": "Payroll Taxes",
+        "section_2": "Social Security FICA",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.062
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 0.5
             }
         },
         "compatible_data": {
@@ -257,9 +283,9 @@
             "cps": true
         }
     },
-    "FICA_mc_trt": {
-        "title": "Medicare payroll tax rate",
-        "description": "Medicare FICA rate, including both employer and employee.",
+    "FICA_mc_trt_employer": {
+        "title": "Employer side Medicare payroll tax rate",
+        "description": "Employer side Medicare FICA rate, including both employer and employee.",
         "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Medicare FICA",
@@ -269,13 +295,39 @@
         "value": [
             {
                 "year": 2013,
-                "value": 0.029
+                "value": 0.0145
             }
         ],
         "validators": {
             "range": {
                 "min": 0,
-                "max": 1
+                "max": 0.5
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "FICA_mc_trt_employee": {
+        "title": "Employee side Medicare payroll tax rate",
+        "description": "Employee side Medicare FICA rate, including both employer and employee.",
+        "notes": "",
+        "section_1": "Payroll Taxes",
+        "section_2": "Medicare FICA",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0145
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 0.5
             }
         },
         "compatible_data": {
