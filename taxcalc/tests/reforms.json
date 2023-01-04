@@ -2,8 +2,9 @@
   "1": {
       "baseline": "2017_law.json",
       "start_year": 2015,
-      "value": {"FICA_ss_trt": 0.134},
-      "name": "Increase OASDI payroll tax rate by 1 pts",
+      "value": {"FICA_ss_trt_employer": 0.067,
+                "FICA_ss_trt_employee": 0.067},
+      "name": "Increase OASDI payroll tax rate by 1 pts, split evenly on employer and employee sides",
       "output_type": "payrolltax",
       "compare_with": {}
   },
