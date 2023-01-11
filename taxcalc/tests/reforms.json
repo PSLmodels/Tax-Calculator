@@ -21,7 +21,8 @@
   "3": {
       "baseline": "2017_law.json",
       "start_year": 2015,
-      "value": {"FICA_mc_trt": 0.039},
+      "value": {"FICA_mc_trt_employer": 0.0195,
+                "FICA_mc_trt_employee": 0.0195},
       "name": "Increase HI payroll tax rate by 1 pts",
       "output_type": "payrolltax",
       "compare_with": {"Budget Options": [73, 77, 82, 87]}
