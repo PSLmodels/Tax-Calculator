@@ -756,41 +756,41 @@ _Out-of-Range Action:_ error
 
 
 ####  `CDCC_crt`  
-_Description:_ The maximum percentage rate for the CDCC; this percentage rate decreases as AGI rises above the CDCC_ps level.  
+_Description:_ The maximum rate for the CDCC; this rate decreases as AGI rises above the CDCC_ps level.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
-2013: 35.0  
-2014: 35.0  
-2015: 35.0  
-2016: 35.0  
-2017: 35.0  
-2018: 35.0  
-2019: 35.0  
-_Valid Range:_ min = 0 and max = 100  
+2013: 0.35  
+2014: 0.35  
+2015: 0.35  
+2016: 0.35  
+2017: 0.35  
+2018: 0.35  
+2019: 0.35  
+_Valid Range:_ min = 0 and max = 1  
 _Out-of-Range Action:_ error  
 
 
 ####  `CDCC_frt`  
-_Description:_ The minimum percentage rate for the first AGI phaseout of the CDCC.  
+_Description:_ The minimum rate for the first AGI phaseout of the CDCC.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
-2013: 20.0  
-2014: 20.0  
-2015: 20.0  
-2016: 20.0  
-2017: 20.0  
-2018: 20.0  
-2019: 20.0  
-_Valid Range:_ min = 0 and max = 100  
+2013: 0.20  
+2014: 0.20  
+2015: 0.20  
+2016: 0.20  
+2017: 0.20  
+2018: 0.20  
+2019: 0.20  
+_Valid Range:_ min = 0 and max = 1  
 _Out-of-Range Action:_ error  
 
 
 ####  `CDCC_prt`  
-_Description:_ The CDCC credit rate is reduced by this many percentage points for each dollary of AGI over the phase-out thresholds.  
+_Description:_ The CDCC credit rate is reduced by this many percentage points for each dollar of AGI over the phase-out thresholds.  
 _Notes:_ In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
