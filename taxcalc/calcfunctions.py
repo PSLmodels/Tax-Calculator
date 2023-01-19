@@ -101,7 +101,8 @@ def BenefitPrograms(calc):
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
-                  SS_Earnings_thd, e00900p, e00900s, e02100p, e02100s, k1bx14p,
+                  SS_Earnings_thd, SECA_Earnings_thd,
+                  e00900p, e00900s, e02100p, e02100s, k1bx14p,
                   k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s,
                   was_plus_sey_p, was_plus_sey_s):
@@ -134,6 +135,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Additional taxable earnings threshold for Social Security
         Individual earnings above this threshold are subjected to OASDI payroll tax, in addtion to
         earnings below the maximum taxable earnings threshold.
+    SECA_Earnings_thd: float
+        Threshold value for self-employment income below which there is
+        no SECA tax liability
     e00900p: float
         Schedule C business net profit/loss for taxpayer
     e00900s: float
@@ -233,6 +237,11 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
+    # # no tax if low amount of self-employment income
+    if sey * sey_frac > SECA_Earnings_thd:
+        setax = setax_p + setax_s
+    else:
+        setax = 0.0
 
     # compute extra OASDI payroll taxes on the portion of the sum
     # of wage-and-salary income and taxable self employment income
@@ -2392,8 +2401,8 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
 
 
 @iterate_jit(nopython=True)
-def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
-                      e07260, CR_ResidentialEnergy_hc,
+def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
+					  c05800, e07260, CR_ResidentialEnergy_hc,
                       e07300, CR_ForeignTax_hc,
                       c07180,
                       c07230,
@@ -2401,7 +2410,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
                       c07200,
                       CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
                       CTC_c_under6_bonus, nu06,
-                      CTC_refundable, CTC_include17, n21, n1820,
+                      CTC_refundable, CTC_include17,
                       c07220, odc, codtc_limited):
     """
     Computes amounts on "Child Tax Credit and Credit for Other Dependents
@@ -2472,7 +2481,9 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     """
     # Worksheet Part 1
     if CTC_include17:
-        childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+        tu18 = int(age_head < 18)   # taxpayer is under age 18
+        su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
+        childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
     else:
         childnum = n24
     line1 = CTC_c * childnum + CTC_c_under6_bonus * nu06

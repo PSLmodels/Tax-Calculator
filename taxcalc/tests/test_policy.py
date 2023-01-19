@@ -385,7 +385,7 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     e2019 = reform['SS_Earnings_c'][2019]
     assert actual[2019] == e2019
     e2020 = wfactor[2019] * actual[2019]  # indexing after 2019
-    assert actual[2020] == e2020
+    assert np.allclose([actual[2020]], [e2020], atol=0.01, rtol=0.0)
     e2021 = wfactor[2020] * actual[2020]
     assert np.allclose([actual[2021]], [e2021], atol=0.01, rtol=0.0)
     e2022 = wfactor[2021] * actual[2021]
@@ -1517,3 +1517,29 @@ class TestAdjust:
 
         with pytest.raises(pt.ValidationError):
             pol2.adjust({"EITC_c-indexed": 123})
+
+    def test_cpi_offset_does_not_affect_wage_indexed_params(self):
+        """
+        Test adjusting parameter_indexing_CPI_offset does not affect unknown
+        values of wage indexed parameters like SS_Earnings_c.
+        """
+        base_reform = {
+            "parameter_indexing_CPI_offset": {2021: -0.001},
+            "SS_Earnings_c": {2024: 300000},
+        }
+
+        pol0 = Policy()
+        pol0.implement_reform(base_reform)
+
+        pol1 = Policy()
+        pol1.implement_reform(base_reform)
+        pol1.implement_reform(dict(base_reform, SS_Earnings_c={2025: 500000}))
+
+        exp_before_2025 = pol0.to_array(
+            "SS_Earnings_c", year=list(range(2021, 2024 + 1))
+        )
+        act_before_2025 = pol1.to_array(
+            "SS_Earnings_c", year=list(range(2021, 2024 + 1))
+        )
+
+        np.testing.assert_equal(act_before_2025, exp_before_2025)

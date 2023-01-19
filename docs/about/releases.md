@@ -3,6 +3,24 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2022-12-16 Release 3.3.0
+------------------------
+(last merged pull request is
+[#2662](https://github.com/PSLmodels/Tax-Calculator/pull/2662))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Tax-Calculator baseline update for CBO economic projections, published in May, "The Budget and Economic Outlook: 2022 to 2032" [[#2662](https://github.com/PSLmodels/Tax-Calculator/pull/2662) by Bodi Yang], with primary work in [[TaxData PR #412](https://github.com/PSLmodels/taxdata/pull/412)by Bodi Yang]
+- Add parameters for threshold for self-employment income exempt from SECA taxes [[#2659](https://github.com/PSLmodels/Tax-Calculator/pull/2659) by Jason Debacker]
+- Update calculation of child number when CTC_include17 [[#2644](https://github.com/PSLmodels/Tax-Calculator/pull/2644) by Matt Jensen]
+- Add Python 3.10 to test matrix [[#2646](https://github.com/PSLmodels/Tax-Calculator/pull/2646) by Jason Debacker]
+- Inflation adjustment of the year 2020, 2021, 2022, for IRS tax forms and tax law inflation adjustments documents [[#2633](https://github.com/PSLmodels/Tax-Calculator/pull/2633) by Bodi Yang]
+
+**Bug Fixes**
+- Fix Parameter error parsing in taxcalcio module [[#2625](https://github.com/PSLmodels/Tax-Calculator/pull/2625/commits) by Hank Doupe]
 
 2021-08-06 Release 3.2.1
 ------------------------
