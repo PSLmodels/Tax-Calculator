@@ -3,9 +3,8 @@ Name: taxcalc
 Version: 3.3.0
 Summary: taxcalc
 Home-page: https://github.com/PSLmodels/Tax-Calculator
-License: CC0 1.0 Universal public domain dedication
 Download-URL: https://github.com/PSLmodels/Tax-Calculator
-Platform: UNKNOWN
+License: CC0 1.0 Universal public domain dedication
 Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
 Classifier: Natural Language :: English
@@ -35,5 +34,3 @@ contact matt.jensen@aei.org or jump right in.
 
 Complete documentation is available
 [here](https://PSLmodels.github.io/Tax-Calculator/).
-
-

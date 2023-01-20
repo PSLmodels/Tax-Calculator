@@ -694,9 +694,11 @@ class Calculator():
                 variable >= self.policy_param('SS_Earnings_thd')
             )
             adj = np.where(oasdi_taxed,
-                           0.5 * (self.policy_param('FICA_ss_trt') +
-                                  self.policy_param('FICA_mc_trt')),
-                           0.5 * self.policy_param('FICA_mc_trt'))
+                           0.5 * (self.policy_param('FICA_ss_trt_employer') +
+                                  self.policy_param('FICA_ss_trt_employee') +
+                                  self.policy_param('FICA_mc_trt_employer') +
+                                  self.policy_param('FICA_mc_trt_employee')),
+                           0.5 * (self.policy_param('FICA_mc_trt_employer') + self.policy_param('FICA_mc_trt_employee')))
         else:
             adj = 0.0
         # compute marginal tax rates
