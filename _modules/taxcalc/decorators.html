@@ -604,15 +604,15 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="id_wrapper"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.id_wrapper">[docs]</a><span class="k">def</span> <span class="nf">id_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">dec_args</span><span class="p">,</span> <span class="o">**</span><span class="n">dec_kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function wrapper when numba package is not being used during debugging.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">fnc</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        wrap function nested in id_wrapper function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">wrapped_f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            wrapped_f function nested in wrap function.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="n">fnc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -627,11 +627,11 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="GetReturnNode"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.GetReturnNode">[docs]</a><span class="k">class</span> <span class="nc">GetReturnNode</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A NodeVisitor to get the return tuple names from a calc-style function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="GetReturnNode.visit_Return"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.GetReturnNode.visit_Return">[docs]</a>    <span class="k">def</span> <span class="nf">visit_Return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>  <span class="c1"># pylint: disable=invalid-name,no-self-use</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        visit_Return is used by NodeVisitor.visit method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Tuple</span><span class="p">):</span>
@@ -640,7 +640,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="create_apply_function_string"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.create_apply_function_string">[docs]</a><span class="k">def</span> <span class="nf">create_apply_function_string</span><span class="p">(</span><span class="n">sigout</span><span class="p">,</span> <span class="n">sigin</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a string for a function of the form::</span>
 
 <span class="sd">       def ap_fuc(x_0, x_1, x_2, ...):</span>
@@ -683,7 +683,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="create_toplevel_function_string"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.create_toplevel_function_string">[docs]</a><span class="k">def</span> <span class="nf">create_toplevel_function_string</span><span class="p">(</span><span class="n">args_out</span><span class="p">,</span> <span class="n">args_in</span><span class="p">,</span> <span class="n">pm_or_pf</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a string for a function of the form:</span>
 
 <span class="sd">        def hl_func(x_0, x_1, x_2, ...):</span>
@@ -743,7 +743,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="make_apply_function"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.make_apply_function">[docs]</a><span class="k">def</span> <span class="nf">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">out_args</span><span class="p">,</span> <span class="n">in_args</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span>
                         <span class="n">do_jit</span><span class="o">=</span><span class="n">DO_JIT</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes a calc-style function and creates the necessary Python code for</span>
 <span class="sd">    an apply-style function. Will also jit the function if desired.</span>
 
@@ -780,14 +780,14 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="apply_jit"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.apply_jit">[docs]</a><span class="k">def</span> <span class="nf">apply_jit</span><span class="p">(</span><span class="n">dtype_sig_out</span><span class="p">,</span> <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make a decorator that takes in a calc-style function, handle apply step.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters</span><span class="p">:</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">make_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        make_wrapper function nested in apply_jit function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">theargs</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
@@ -795,7 +795,7 @@ title="Open an issue"
                                            <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            wrapper function nested in make_wrapper function.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">in_arrays</span> <span class="o">=</span> <span class="p">[]</span>
@@ -819,7 +819,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="iterate_jit"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.iterate_jit">[docs]</a><span class="k">def</span> <span class="nf">iterate_jit</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Public decorator for a calc-style function (see calcfunctions.py) that</span>
 <span class="sd">    transforms the calc-style function into an apply-style function that</span>
 <span class="sd">    can be called by Calculator class methods (see calculator.py).</span>
@@ -829,7 +829,7 @@ title="Open an issue"
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">make_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        make_wrapper function nested in iterate_jit decorator</span>
 <span class="sd">        wraps specified func using apply_jit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -877,7 +877,7 @@ title="Open an issue"
                                                <span class="o">**</span><span class="n">kwargs_for_jit</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            wrapper function nested in make_wrapper function nested</span>
 <span class="sd">            in iterate_jit decorator.</span>
 <span class="sd">            &quot;&quot;&quot;</span>

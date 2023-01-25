@@ -595,7 +595,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="Records"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records">[docs]</a><span class="k">class</span> <span class="nc">Records</span><span class="p">(</span><span class="n">Data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Records is a subclass of the abstract Data class, and therefore,</span>
 <span class="sd">    inherits its methods (none of which are shown here).</span>
 
@@ -775,7 +775,7 @@ title="Open an issue"
     <span class="k">def</span> <span class="nf">cps_constructor</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">gfactors</span><span class="o">=</span><span class="n">GrowFactors</span><span class="p">(),</span>
                         <span class="n">exact_calculations</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Static method returns a Records object instantiated with CPS</span>
 <span class="sd">        input data.  This works in a analogous way to Records(), which</span>
 <span class="sd">        returns a Records object instantiated with PUF input data.</span>
@@ -800,7 +800,7 @@ title="Open an issue"
                        <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Records.increment_year"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records.increment_year">[docs]</a>    <span class="k">def</span> <span class="nf">increment_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add one to current year, and also does</span>
 <span class="sd">        extrapolation, reweighting, adjusting for new current year.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -811,7 +811,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="Records.read_cps_data"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records.read_cps_data">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read_cps_data</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return data in cps.csv.gz as a Pandas DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Records</span><span class="o">.</span><span class="n">CODE_PATH</span><span class="p">,</span> <span class="s1">&#39;cps.csv.gz&#39;</span><span class="p">)</span>
@@ -824,7 +824,7 @@ title="Open an issue"
     <span class="c1"># ----- begin private methods of Records class -----</span>
 
 <div class="viewcode-block" id="Records._extrapolate"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records._extrapolate">[docs]</a>    <span class="k">def</span> <span class="nf">_extrapolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply to variables the grow factor values for specified calendar year.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=too-many-statements,no-member</span>
@@ -924,7 +924,7 @@ title="Open an issue"
         <span class="k">del</span> <span class="n">gfv</span></div>
 
 <div class="viewcode-block" id="Records._adjust"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records._adjust">[docs]</a>    <span class="k">def</span> <span class="nf">_adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adjust value of income variables to match SOI distributions</span>
 <span class="sd">        Note: adjustment must leave variables as numpy.ndarray type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -934,7 +934,7 @@ title="Open an issue"
             <span class="bp">self</span><span class="o">.</span><span class="n">e00300</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ADJ</span><span class="p">[</span><span class="s1">&#39;INT</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">)][</span><span class="bp">self</span><span class="o">.</span><span class="n">agi_bin</span><span class="p">]</span><span class="o">.</span><span class="n">values</span></div>
 
 <div class="viewcode-block" id="Records._read_ratios"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records._read_ratios">[docs]</a>    <span class="k">def</span> <span class="nf">_read_ratios</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ratios</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read Records adjustment ratios from file or</span>
 <span class="sd">        use specified transposed/no-index DataFrame as ratios or</span>
 <span class="sd">        create empty DataFrame if None</span>

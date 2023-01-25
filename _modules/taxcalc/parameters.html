@@ -595,7 +595,7 @@ title="Open an issue"
 
 
 <span class="k">class</span> <span class="nc">CompatibleDataSchema</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">Schema</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Schema for Compatible data object</span>
 
 <span class="sd">    .. code-block :: json</span>
@@ -617,7 +617,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">(</span><span class="n">pt</span><span class="o">.</span><span class="n">Parameters</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class that wraps ParamTools, providing parameter indexing</span>
 <span class="sd">    for tax policy in the ``adjust`` method and convenience methods</span>
 <span class="sd">    like ``set_year`` for classes inheriting from it. It also provides</span>
@@ -707,7 +707,7 @@ title="Open an issue"
 <div class="viewcode-block" id="Parameters.adjust"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.adjust">[docs]</a>    <span class="k">def</span> <span class="nf">adjust</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">params_or_path</span><span class="p">,</span> <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update parameter values using a ParamTools styled adjustment.</span>
 
 <span class="sd">        Parameters</span>
@@ -777,7 +777,7 @@ title="Open an issue"
             <span class="k">return</span> <span class="n">adjustment</span></div>
 
 <div class="viewcode-block" id="Parameters.adjust_with_indexing"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.adjust_with_indexing">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_with_indexing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params_or_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adjust parameter values with the following indexing logic:</span>
 
 <span class="sd">        1. If &quot;parameter_indexing_CPI_offset&quot; is adjusted, first set</span>
@@ -1067,7 +1067,7 @@ title="Open an issue"
         <span class="k">return</span> <span class="n">adj</span></div>
 
 <div class="viewcode-block" id="Parameters.get_index_rate"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.get_index_rate">[docs]</a>    <span class="k">def</span> <span class="nf">get_index_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">label_to_extend_val</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initalize indexing data and return the indexing rate value</span>
 <span class="sd">        depending on the parameter name and label_to_extend_val, the value of</span>
 <span class="sd">        label_to_extend.</span>
@@ -1081,7 +1081,7 @@ title="Open an issue"
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inflation_rates</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">label_to_extend_val</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Parameters.set_rates"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.set_rates">[docs]</a>    <span class="k">def</span> <span class="nf">set_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method is implemented by classes inheriting</span>
 <span class="sd">        Parameters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1101,7 +1101,7 @@ title="Open an issue"
 <div class="viewcode-block" id="Parameters.initialize"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">num_years</span><span class="p">,</span> <span class="n">last_known_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">removed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">redefined</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wage_indexed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Legacy method for initializing a Parameters instance. Projects</span>
 <span class="sd">        should use the __init__ method in the future.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1114,7 +1114,7 @@ title="Open an issue"
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Parameters._update"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters._update">[docs]</a>    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span> <span class="n">print_warnings</span><span class="p">,</span> <span class="n">raise_errors</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A translation layer on top of ``adjust``. Projects</span>
 <span class="sd">        that have historically used the ``_update`` method with</span>
 <span class="sd">        Tax-Calculator styled adjustments can continue to do so</span>
@@ -1261,7 +1261,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="Parameters._read_json_revision"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters._read_json_revision">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">topkey</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read JSON revision specified by ``obj`` and ``topkey``</span>
 <span class="sd">        returning a single revision dictionary suitable for</span>
 <span class="sd">        use with the ``Parameters._update`` or ``Parameters.adjust`` methods.</span>
@@ -1290,7 +1290,7 @@ title="Open an issue"
 <span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa</span>
         <span class="c1"># embedded function used only in _read_json_revision staticmethod</span>
         <span class="k">def</span> <span class="nf">convert_year_to_int</span><span class="p">(</span><span class="n">syr_dict</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Converts specified syr_dict, which has string years as secondary</span>
 <span class="sd">            keys, into a dictionary with the same structure but having integer</span>
 <span class="sd">            years as secondary keys.</span>
@@ -1329,7 +1329,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="Parameters.years_in_revision"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.years_in_revision">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">years_in_revision</span><span class="p">(</span><span class="n">revision</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of years in specified revision dictionary, which is</span>
 <span class="sd">        assumed to have a param:year:value format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1344,7 +1344,7 @@ title="Open an issue"
         <span class="k">return</span> <span class="n">years</span></div>
 
 <div class="viewcode-block" id="Parameters.__getattr__"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.__getattr__">[docs]</a>    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the value of a parameter over all years by accessing it</span>
 <span class="sd">        with an underscore in front of its name: ``pol._EITC_c`` instead of</span>
 <span class="sd">        ``pol.EITC_c``.</span>
@@ -1365,7 +1365,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="is_paramtools_format"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.is_paramtools_format">[docs]</a><span class="k">def</span> <span class="nf">is_paramtools_format</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TaxcalcReform</span><span class="p">,</span> <span class="n">ParamToolsAdjustment</span><span class="p">]):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check first item in ``params`` to determine if it is using the ParamTools</span>
 <span class="sd">    adjustment or the Tax-Calculator reform format.</span>
 <span class="sd">    If first item is a ``dict``, then it is likely be a Tax-Calculator reform.</span>

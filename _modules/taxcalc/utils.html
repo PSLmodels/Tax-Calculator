@@ -716,14 +716,14 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="unweighted_sum"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.unweighted_sum">[docs]</a><span class="k">def</span> <span class="nf">unweighted_sum</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return unweighted sum of Pandas DataFrame col_name items.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">dframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="weighted_sum"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.weighted_sum">[docs]</a><span class="k">def</span> <span class="nf">weighted_sum</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return weighted sum of Pandas DataFrame col_name items.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">dframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">*</span> <span class="n">dframe</span><span class="p">[</span><span class="s1">&#39;s006&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
@@ -733,7 +733,7 @@ title="Open an issue"
                                     <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                     <span class="n">decile_details</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                     <span class="n">weight_by_income_measure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add a variable to specified Pandas DataFrame, dframe, that specifies</span>
 <span class="sd">    the table row and is called &#39;table_row&#39;.</span>
 
@@ -815,7 +815,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="add_income_table_row_variable"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.add_income_table_row_variable">[docs]</a><span class="k">def</span> <span class="nf">add_income_table_row_variable</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">income_measure</span><span class="p">,</span> <span class="n">bin_edges</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add a variable to specified Pandas DataFrame, dframe, that specifies the</span>
 <span class="sd">    table row and is called &#39;table_row&#39;.  The rows are defined by the</span>
 <span class="sd">    specified bin_edges function argument.  Note that the bin groupings</span>
@@ -846,7 +846,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="get_sums"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.get_sums">[docs]</a><span class="k">def</span> <span class="nf">get_sums</span><span class="p">(</span><span class="n">dframe</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute unweighted sum of items in each column of Pandas DataFrame, dframe.</span>
 
 <span class="sd">    Returns</span>
@@ -862,7 +862,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="create_distribution_table"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.create_distribution_table">[docs]</a><span class="k">def</span> <span class="nf">create_distribution_table</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">income_measure</span><span class="p">,</span>
                               <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get results from vdf, sort them by expanded_income based on groupby,</span>
 <span class="sd">    and return them as a table.</span>
 
@@ -906,7 +906,7 @@ title="Open an issue"
     <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
     <span class="c1"># nested function that returns calculated column statistics as a DataFrame</span>
     <span class="k">def</span> <span class="nf">stat_dataframe</span><span class="p">(</span><span class="n">gdf</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns calculated distribution table column statistics derived from</span>
 <span class="sd">        the specified grouped Dataframe object, gdf.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1003,7 +1003,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="create_difference_table"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.create_difference_table">[docs]</a><span class="k">def</span> <span class="nf">create_difference_table</span><span class="p">(</span><span class="n">vdf1</span><span class="p">,</span> <span class="n">vdf2</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">tax_to_diff</span><span class="p">,</span>
                             <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get results from two different vdf, construct tax difference results,</span>
 <span class="sd">    and return the difference statistics as a table.</span>
 
@@ -1048,17 +1048,17 @@ title="Open an issue"
     <span class="c1"># pylint: disable=too-many-statements,too-many-locals,too-many-branches</span>
     <span class="c1"># nested function that creates dataframe containing additive statistics</span>
     <span class="k">def</span> <span class="nf">additive_stats_dataframe</span><span class="p">(</span><span class="n">gdf</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Nested function that returns additive stats DataFrame derived from gdf</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">count_lt_zero</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=-</span><span class="mf">0.001</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Return count sum of negative Pandas DataFrame col_name items.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="n">dframe</span><span class="p">[</span><span class="n">dframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">tolerance</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
         <span class="k">def</span> <span class="nf">count_gt_zero</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Return count sum of positive Pandas DataFrame col_name items.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="n">dframe</span><span class="p">[</span><span class="n">dframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tolerance</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -1205,7 +1205,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="create_diagnostic_table"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.create_diagnostic_table">[docs]</a><span class="k">def</span> <span class="nf">create_diagnostic_table</span><span class="p">(</span><span class="n">dframe_list</span><span class="p">,</span> <span class="n">year_list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract diagnostic table from list of Pandas DataFrame objects</span>
 <span class="sd">    returned from a Calculator dataframe(DIST_VARIABLES) call for</span>
 <span class="sd">    each year in the specified list of years.</span>
@@ -1222,7 +1222,7 @@ title="Open an issue"
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements</span>
     <span class="k">def</span> <span class="nf">diagnostic_table_odict</span><span class="p">(</span><span class="n">vdf</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Nested function that extracts diagnostic table dictionary from</span>
 <span class="sd">        the specified Pandas DataFrame object, vdf.</span>
 
@@ -1345,7 +1345,7 @@ title="Open an issue"
                    <span class="n">income_measure</span><span class="o">=</span><span class="s1">&#39;expanded_income&#39;</span><span class="p">,</span>
                    <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                    <span class="n">dollar_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prepare marginal tax rate data needed by xtr_graph_plot utility function.</span>
 
 <span class="sd">    Parameters</span>
@@ -1519,7 +1519,7 @@ title="Open an issue"
                    <span class="n">mars</span><span class="o">=</span><span class="s1">&#39;ALL&#39;</span><span class="p">,</span>
                    <span class="n">atr_measure</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span>
                    <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prepare average tax rate data needed by xtr_graph_plot utility function.</span>
 
 <span class="sd">    Parameters</span>
@@ -1644,7 +1644,7 @@ title="Open an issue"
                    <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                    <span class="n">legendloc</span><span class="o">=</span><span class="s1">&#39;bottom_right&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot marginal/average tax rate graph using data returned from either the</span>
 <span class="sd">    mtr_graph_data function or the atr_graph_data function.</span>
 
@@ -1738,7 +1738,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="pch_graph_data"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.pch_graph_data">[docs]</a><span class="k">def</span> <span class="nf">pch_graph_data</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prepare percentage change in after-tax expanded income data needed by</span>
 <span class="sd">    pch_graph_plot utility function.</span>
 
@@ -1806,7 +1806,7 @@ title="Open an issue"
                    <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                    <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot percentage change in after-tax expanded income using data returned</span>
 <span class="sd">    from the pch_graph_data function.</span>
 
@@ -1864,7 +1864,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="write_graph_file"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.write_graph_file">[docs]</a><span class="k">def</span> <span class="nf">write_graph_file</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write HTML file named filename containing figure.</span>
 <span class="sd">    The title is the text displayed in the browser tab.</span>
 
@@ -1888,7 +1888,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="isoelastic_utility_function"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.isoelastic_utility_function">[docs]</a><span class="k">def</span> <span class="nf">isoelastic_utility_function</span><span class="p">(</span><span class="n">consumption</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate and return utility of consumption.</span>
 
 <span class="sd">    Parameters</span>
@@ -1921,7 +1921,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="expected_utility"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.expected_utility">[docs]</a><span class="k">def</span> <span class="nf">expected_utility</span><span class="p">(</span><span class="n">consumption</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate and return expected utility of consumption.</span>
 
 <span class="sd">    Parameters</span>
@@ -1948,7 +1948,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="certainty_equivalent"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.certainty_equivalent">[docs]</a><span class="k">def</span> <span class="nf">certainty_equivalent</span><span class="p">(</span><span class="n">exputil</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate and return certainty-equivalent of exputil of consumption</span>
 <span class="sd">    assuming an isoelastic utility function with crra and cmin as parameters.</span>
 
@@ -1982,7 +1982,7 @@ title="Open an issue"
 <div class="viewcode-block" id="ce_aftertax_expanded_income"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.ce_aftertax_expanded_income">[docs]</a><span class="k">def</span> <span class="nf">ce_aftertax_expanded_income</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span>
                                 <span class="n">custom_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                 <span class="n">require_no_agg_tax_change</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return dictionary that contains certainty-equivalent of the</span>
 <span class="sd">    expected utility of after-tax expanded income computed for</span>
 <span class="sd">    several constant-relative-risk-aversion parameter values</span>
@@ -2058,7 +2058,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="read_egg_csv"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.read_egg_csv">[docs]</a><span class="k">def</span> <span class="nf">read_egg_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read from egg the file named fname that contains CSV data and</span>
 <span class="sd">    return pandas DataFrame containing the data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2077,7 +2077,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="read_egg_json"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.read_egg_json">[docs]</a><span class="k">def</span> <span class="nf">read_egg_json</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read from egg the file named fname that contains JSON data and</span>
 <span class="sd">    return dictionary containing the data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2096,7 +2096,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="delete_file"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.delete_file">[docs]</a><span class="k">def</span> <span class="nf">delete_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Remove specified file if it exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
@@ -2104,7 +2104,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="bootstrap_se_ci"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.bootstrap_se_ci">[docs]</a><span class="k">def</span> <span class="nf">bootstrap_se_ci</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">statistic</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return bootstrap estimate of standard error of statistic and</span>
 <span class="sd">    bootstrap estimate of 100*(1-2*alpha)% confidence interval for statistic</span>
 <span class="sd">    in a dictionary along with specified seed and nun_samples (B) and alpha.</span>
@@ -2131,7 +2131,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="json_to_dict"><a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.json_to_dict">[docs]</a><span class="k">def</span> <span class="nf">json_to_dict</span><span class="p">(</span><span class="n">json_text</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert specified JSON text into an ordered Python dictionary.</span>
 
 <span class="sd">    Parameters</span>

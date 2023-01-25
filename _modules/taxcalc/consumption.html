@@ -593,7 +593,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="Consumption"><a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption">[docs]</a><span class="k">class</span> <span class="nc">Consumption</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Consumption is a subclass of the abstract Parameters class, and</span>
 <span class="sd">    therefore, inherits its methods (none of which are shown here).</span>
 
@@ -620,7 +620,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="Consumption.read_json_update"><a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption.read_json_update">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read_json_update</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a revision dictionary suitable for use with update_consumption</span>
 <span class="sd">        method derived from the specified JSON object, which can be None or</span>
 <span class="sd">        a string containing a local filename, a URL beginning with &#39;http&#39;</span>
@@ -630,7 +630,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="Consumption.update_consumption"><a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption.update_consumption">[docs]</a>    <span class="k">def</span> <span class="nf">update_consumption</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span>
                            <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update consumption default values using specified revision dictionary.</span>
 <span class="sd">        See Parameters._update for argument documentation and details about</span>
 <span class="sd">        the expected structure of the revision dictionary.</span>
@@ -642,7 +642,7 @@ title="Open an issue"
                         <span class="s1">&#39;mcare&#39;</span><span class="p">,</span> <span class="s1">&#39;mcaid&#39;</span><span class="p">,</span> <span class="s1">&#39;other&#39;</span><span class="p">])</span>
 
 <div class="viewcode-block" id="Consumption.has_response"><a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption.has_response">[docs]</a>    <span class="k">def</span> <span class="nf">has_response</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return true if any MPC parameters are positive for current_year or</span>
 <span class="sd">        if any BEN value parameters are less than one for current_year;</span>
 <span class="sd">        return false if all MPC parameters are zero and all BEN value</span>
@@ -657,7 +657,7 @@ title="Open an issue"
         <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Consumption.response"><a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption.response">[docs]</a>    <span class="k">def</span> <span class="nf">response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">,</span> <span class="n">income_change</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Changes consumption-related records variables given income_change</span>
 <span class="sd">        and the current values of the MPC consumption parameters</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -669,7 +669,7 @@ title="Open an issue"
             <span class="n">records_var</span><span class="p">[:]</span> <span class="o">+=</span> <span class="n">mpc_var</span> <span class="o">*</span> <span class="n">income_change</span></div>
 
 <div class="viewcode-block" id="Consumption.benval_params"><a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption.benval_params">[docs]</a>    <span class="k">def</span> <span class="nf">benval_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns list of BEN_*_value parameter values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;BEN_</span><span class="si">{}</span><span class="s1">_value&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>

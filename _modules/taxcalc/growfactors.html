@@ -593,7 +593,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="GrowFactors"><a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors">[docs]</a><span class="k">class</span> <span class="nc">GrowFactors</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Constructor for the GrowFactors class.</span>
 
 <span class="sd">    Parameters</span>
@@ -662,20 +662,20 @@ title="Open an issue"
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">first_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        GrowFactors class first_year property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_year</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">last_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        GrowFactors class last_year property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_year</span>
 
 <div class="viewcode-block" id="GrowFactors.price_inflation_rates"><a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.price_inflation_rates">[docs]</a>    <span class="k">def</span> <span class="nf">price_inflation_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of price inflation rates rounded to four decimal digits.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used</span> <span class="o">=</span> <span class="kc">True</span>
@@ -693,7 +693,7 @@ title="Open an issue"
         <span class="k">return</span> <span class="n">rates</span></div>
 
 <div class="viewcode-block" id="GrowFactors.wage_growth_rates"><a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.wage_growth_rates">[docs]</a>    <span class="k">def</span> <span class="nf">wage_growth_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of wage growth rates rounded to four decimal digits.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used</span> <span class="o">=</span> <span class="kc">True</span>
@@ -711,7 +711,7 @@ title="Open an issue"
         <span class="k">return</span> <span class="n">rates</span></div>
 
 <div class="viewcode-block" id="GrowFactors.factor_value"><a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.factor_value">[docs]</a>    <span class="k">def</span> <span class="nf">factor_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return value of factor with specified name for specified year.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used</span> <span class="o">=</span> <span class="kc">True</span>
@@ -727,7 +727,7 @@ title="Open an issue"
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">year</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="GrowFactors.update"><a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add to self.gfdf[name][year] the specified diff amount.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">used</span><span class="p">:</span>

@@ -594,7 +594,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="Policy"><a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy">[docs]</a><span class="k">class</span> <span class="nc">Policy</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Policy is a subclass of the abstract Parameters class, and</span>
 <span class="sd">    therefore, inherits its methods (none of which are shown here).</span>
 
@@ -684,7 +684,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="Policy.read_json_reform"><a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.read_json_reform">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read_json_reform</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a reform dictionary suitable for use with implement_reform</span>
 <span class="sd">        method generated from the specified JSON object, which can be None or</span>
 <span class="sd">        a string containing a local filename, a URL beginning with &#39;http&#39;</span>
@@ -694,7 +694,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="Policy.implement_reform"><a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.implement_reform">[docs]</a>    <span class="k">def</span> <span class="nf">implement_reform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span>
                          <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implement reform using Tax-Calculator syled reforms/adjustments. Users</span>
 <span class="sd">        may also use the adjust method with ParamTools styled reforms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -703,7 +703,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="Policy.parameter_list"><a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.parameter_list">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parameter_list</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns list of parameter names in the policy_current_law.json file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
@@ -715,7 +715,7 @@ title="Open an issue"
         <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">defaults</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;schema&quot;</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Policy.set_rates"><a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.set_rates">[docs]</a>    <span class="k">def</span> <span class="nf">set_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize taxcalc indexing data.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize taxcalc indexing data.&quot;&quot;&quot;</span>
         <span class="n">cpi_vals</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">for</span>
             <span class="n">vo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>

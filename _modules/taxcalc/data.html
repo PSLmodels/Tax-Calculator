@@ -595,7 +595,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inherit from this class for Records and other collections of</span>
 <span class="sd">    cross-sectional data that need to have growth factors and sample</span>
 <span class="sd">    weights to age the data to years after the start_year.</span>
@@ -697,27 +697,27 @@ title="Open an issue"
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data class original data year property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data_year</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">current_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data class current calendar year property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">array_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Length of arrays in Data class&#39;s DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dim</span>
 
 <div class="viewcode-block" id="Data.increment_year"><a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data.increment_year">[docs]</a>    <span class="k">def</span> <span class="nf">increment_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add one to current year; and also does</span>
 <span class="sd">        extrapolation &amp; reweighting for new current year if aged_data is True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -733,7 +733,7 @@ title="Open an issue"
     <span class="c1"># ----- begin private methods of Data class -----</span>
 
 <div class="viewcode-block" id="Data._read_var_info"><a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._read_var_info">[docs]</a>    <span class="k">def</span> <span class="nf">_read_var_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read Data variables metadata from JSON file and</span>
 <span class="sd">        specifies static variable name sets listed above.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -768,7 +768,7 @@ title="Open an issue"
         <span class="bp">self</span><span class="o">.</span><span class="n">INTEGER_VARS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">INTEGER_READ_VARS</span> <span class="o">|</span> <span class="n">INT_CALCULATED_VARS</span></div>
 
 <div class="viewcode-block" id="Data._read_data"><a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._read_data">[docs]</a>    <span class="k">def</span> <span class="nf">_read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read data from file or use specified DataFrame as data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=too-many-branches</span>
@@ -823,7 +823,7 @@ title="Open an issue"
         <span class="k">del</span> <span class="n">ZEROED_VARS</span></div>
 
 <div class="viewcode-block" id="Data.zero_out_changing_calculated_vars"><a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data.zero_out_changing_calculated_vars">[docs]</a>    <span class="k">def</span> <span class="nf">zero_out_changing_calculated_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set to zero all variables in the self.CHANGING_CALCULATED_VARS set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">varname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">CHANGING_CALCULATED_VARS</span><span class="p">:</span>
@@ -832,7 +832,7 @@ title="Open an issue"
         <span class="k">del</span> <span class="n">var</span></div>
 
 <div class="viewcode-block" id="Data._read_weights"><a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._read_weights">[docs]</a>    <span class="k">def</span> <span class="nf">_read_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read sample weights from file or</span>
 <span class="sd">        use specified DataFrame as weights or</span>
 <span class="sd">        create empty DataFrame if None.</span>
@@ -856,7 +856,7 @@ title="Open an issue"
         <span class="k">del</span> <span class="n">WT</span></div>
 
 <div class="viewcode-block" id="Data._extrapolate"><a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._extrapolate">[docs]</a>    <span class="k">def</span> <span class="nf">_extrapolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply to dats variables the growth factor values for specified year.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div></div>
         <span class="c1"># Override this empty method in subclass</span>

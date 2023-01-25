@@ -605,7 +605,7 @@ title="Open an issue"
 
 
 <div class="viewcode-block" id="TaxCalcIO"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO">[docs]</a><span class="k">class</span> <span class="nc">TaxCalcIO</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Constructor for the Tax-Calculator Input-Output class.</span>
 
 <span class="sd">    TaxCalcIO class constructor call must be followed by init() call.</span>
@@ -789,7 +789,7 @@ title="Open an issue"
 
     <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">tax_year</span><span class="p">,</span> <span class="n">baseline</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span> <span class="n">assump</span><span class="p">,</span>
              <span class="n">aging_input_data</span><span class="p">,</span> <span class="n">exact_calculations</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        TaxCalcIO class post-constructor method that completes initialization.</span>
 
 <span class="sd">        Parameters</span>
@@ -935,7 +935,7 @@ title="Open an issue"
                                     <span class="n">sync_years</span><span class="o">=</span><span class="n">aging_input_data</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TaxCalcIO.custom_dump_variables"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.custom_dump_variables">[docs]</a>    <span class="k">def</span> <span class="nf">custom_dump_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcdumpvars_str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return set of variable names extracted from tcdumpvars_str, which</span>
 <span class="sd">        contains the contents of the tcdumpvars file in the current directory.</span>
 <span class="sd">        Also, builds self.errmsg if any custom variables are not valid.</span>
@@ -965,13 +965,13 @@ title="Open an issue"
         <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">dump_vars_list</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TaxCalcIO.tax_year"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.tax_year">[docs]</a>    <span class="k">def</span> <span class="nf">tax_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return calendar year for which TaxCalcIO calculations are being done.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">current_year</span></div>
 
 <div class="viewcode-block" id="TaxCalcIO.output_filepath"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.output_filepath">[docs]</a>    <span class="k">def</span> <span class="nf">output_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return full path to output file named in TaxCalcIO constructor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dirpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
@@ -983,7 +983,7 @@ title="Open an issue"
                 <span class="n">dump_varset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">output_dump</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">output_sqldb</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Conduct tax analysis.</span>
 
 <span class="sd">        Parameters</span>
@@ -1057,7 +1057,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="TaxCalcIO.write_output_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_output_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_output_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dump</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span>
                           <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write output to CSV-formatted file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">output_dump</span><span class="p">:</span>
@@ -1073,7 +1073,7 @@ title="Open an issue"
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TaxCalcIO.write_doc_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_doc_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_doc_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write reform documentation to text file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy_dicts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -1086,7 +1086,7 @@ title="Open an issue"
             <span class="n">dfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TaxCalcIO.write_sqldb_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_sqldb_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write dump output to SQLite3 database table dump.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_output</span><span class="p">(</span><span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">)</span>
@@ -1099,7 +1099,7 @@ title="Open an issue"
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TaxCalcIO.write_tables_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_tables_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_tables_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write tables to text file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=too-many-locals</span>
@@ -1139,7 +1139,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="TaxCalcIO.write_decile_table"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_decile_table">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">write_decile_table</span><span class="p">(</span><span class="n">dfx</span><span class="p">,</span> <span class="n">tfile</span><span class="p">,</span> <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Totals&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write to tfile the tkind decile table using dfx DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dfx</span> <span class="o">=</span> <span class="n">add_quantile_table_row_variable</span><span class="p">(</span><span class="n">dfx</span><span class="p">,</span> <span class="s1">&#39;expanded_income&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
@@ -1199,7 +1199,7 @@ title="Open an issue"
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TaxCalcIO.write_graph_files"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_graph_files">[docs]</a>    <span class="k">def</span> <span class="nf">write_graph_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write graphs to HTML files.</span>
 <span class="sd">        All graphs contain same number of filing units in each quantile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1242,7 +1242,7 @@ title="Open an issue"
 
 <div class="viewcode-block" id="TaxCalcIO.write_empty_graph_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_empty_graph_file">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">write_empty_graph_file</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write HTML graph file with title but no graph for specified reason.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">txt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;html&gt;</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -1253,7 +1253,7 @@ title="Open an issue"
             <span class="n">gfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TaxCalcIO.minimal_output"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.minimal_output">[docs]</a>    <span class="k">def</span> <span class="nf">minimal_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract minimal output and return it as Pandas DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">varlist</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RECID&#39;</span><span class="p">,</span> <span class="s1">&#39;YEAR&#39;</span><span class="p">,</span> <span class="s1">&#39;WEIGHT&#39;</span><span class="p">,</span> <span class="s1">&#39;INCTAX&#39;</span><span class="p">,</span> <span class="s1">&#39;LSTAX&#39;</span><span class="p">,</span> <span class="s1">&#39;PAYTAX&#39;</span><span class="p">]</span>
@@ -1269,7 +1269,7 @@ title="Open an issue"
         <span class="k">return</span> <span class="n">odf</span></div>
 
 <div class="viewcode-block" id="TaxCalcIO.dump_output"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.dump_output">[docs]</a>    <span class="k">def</span> <span class="nf">dump_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract dump output and return it as Pandas DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">recs_vinfo</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># contains only Records VARINFO</span>
