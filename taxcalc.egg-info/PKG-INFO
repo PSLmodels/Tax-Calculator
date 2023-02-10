@@ -4,11 +4,15 @@ Version: 3.3.0
 Summary: taxcalc
 Home-page: https://github.com/PSLmodels/Tax-Calculator
 Download-URL: https://github.com/PSLmodels/Tax-Calculator
+<<<<<<< HEAD
 License: CC0 1.0 Universal public domain dedication
+=======
+License: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
+>>>>>>> 49c6c3f20f550601a300d5d2c595a59577c8f647
 Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
 Classifier: Natural Language :: English
-Classifier: License :: CC0 1.0 Universal public domain dedication
+Classifier: License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
 Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
@@ -29,8 +33,8 @@ Tax-Calculator
 Tax-Calculator is an open-source microsimulation model for static
 analysis of USA federal income and payroll taxes.
 
-We are seeking contributors and maintainers. If you are interested in joining the project as a contributor or maintainer, 
-contact matt.jensen@aei.org or jump right in. 
+We are seeking contributors and maintainers. If you are interested in joining the project as a contributor or maintainer,
+open a new [issue](https://github.com/PSLmodels/Tax-Calculator/issues) and ping @MattHJensen or @jdebacker -- or just jump right in.
 
 Complete documentation is available
 [here](https://PSLmodels.github.io/Tax-Calculator/).
