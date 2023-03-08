@@ -489,3 +489,55 @@ def test_EITCamount(test_tuple, expected_value, skip_jit):
     '''
     test_value = calcfunctions.EITCamount(*test_tuple)
     assert np.allclose(test_value, expected_value)
+
+
+MARS = 4
+DSI = 0
+EIC = 3
+c00100 = 29530
+e00300 = 0
+e00400 = 0
+e00600 = 0
+c01000 = 0
+e02000 = 0
+e26270 = 0
+age_head = 0
+age_spouse = 0
+earned = 19330
+earned_p = 19330
+earned_s = 0
+EITC_ps = [8790, 19330, 19330, 19330]
+EITC_MinEligAge = 25
+EITC_MaxEligAge = 64
+EITC_ps_MarriedJ = [5980, 5980, 5980, 6250]
+EITC_rt = [0.0765, 0.34, 0.4, 0.45]
+EITC_c = [538, 3584, 5920, 6660]
+EITC_prt = [0.0765, 0.1598, 0.2106, 0.2106]
+EITC_basic_frac = 0.0
+EITC_InvestIncome_c = 3650
+EITC_excess_InvestIncome_rt = 9e+99
+EITC_indiv = False
+EITC_sep_filers_elig = False
+e02300 = 10200
+UI_thd = [150000, 150000, 150000, 150000, 150000]
+UI_em = 10200
+c59660 = 0  # this will be 6660 after the EITC calculation
+tuple1 = (MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
+          e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s,
+          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
+          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
+          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
+          EITC_indiv, EITC_sep_filers_elig, e02300, UI_thd, UI_em,
+          c59660)
+expected1 = 6660
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple1, expected1)])
+def test_EITC(test_tuple, expected_value, skip_jit):
+    '''
+    Tests FairShareTax function
+    '''
+    test_value = calcfunctions.EITC(*test_tuple)
+    assert np.allclose(test_value, expected_value)
