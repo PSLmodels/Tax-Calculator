@@ -53,7 +53,7 @@ def test_agg(tests_path, puf_fullsample):
     assert len(adt.columns.values) == len(edt.columns.values)
     diffs = False
     for icol in adt.columns.values:
-        if not np.allclose(adt[icol], edt[str(icol)]):
+        if not np.allclose(adt[icol].values, edt[str(icol)].values):
             diffs = True
     if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.csv')
