@@ -2190,19 +2190,19 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 
     Parameters
     ----------
-    basic_frac: list
+    basic_frac: float
         Fraction of maximum earned income credit paid at zero earnings
-    phasein_rate: list
+    phasein_rate: float
         Earned income credit phasein rate
     earnings: float
         Earned income for filing unit
-    max_amount: list
+    max_amount: float
         Maximum earned income credit
-    phaseout_start: list
+    phaseout_start: float
         Earned income credit phaseout start AGI
     mod_agi: float
         Modified Adjusted Gross Income (AGI)
-    phaseout_rate: list
+    phaseout_rate: float
         Earned income credit phaseout rate
 
     Returns
