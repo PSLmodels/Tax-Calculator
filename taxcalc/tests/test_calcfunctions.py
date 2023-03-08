@@ -463,3 +463,29 @@ def test_PersonalTaxCredit(test_tuple, expected_value, skip_jit):
     """
     test_value = calcfunctions.PersonalTaxCredit(*test_tuple)
     assert np.allclose(test_value, expected_value)
+
+
+# MARS = 4
+# Kids = 3+
+basic_frac = 0.0
+phasein_rate = 0.45
+earnings = 19330
+max_amount = 6660
+phaseout_start = 19330
+mod_agi = 19330
+phaseout_rate = 0.2106
+tuple1 = (basic_frac, phasein_rate, earnings, max_amount,
+          phaseout_start, mod_agi, phaseout_rate)
+expected1 = 6660
+
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple1, expected1)])
+def test_EITCamount(test_tuple, expected_value, skip_jit):
+    '''
+    Tests FairShareTax function
+    '''
+    test_value = calcfunctions.EITCamount(*test_tuple)
+    assert np.allclose(test_value, expected_value)
