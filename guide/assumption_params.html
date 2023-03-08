@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Assumption parameters &#8212; Tax-Calculator</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,61 +61,93 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'guide/assumption_params';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Recipes" href="../recipes/index.html" />
     <link rel="prev" title="Output variables" href="output_vars.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+      <div class="bd-sidebar-primary bd-sidebar">
         
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+    
+    
       
-      
-      <img src="../_static/PSL.svg" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+    
+    
+    <img src="../_static/PSL.svg" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/PSL.svg" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -113,1266 +156,356 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Usage
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Usage</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../usage/starting.html">
-   Getting started
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../usage/overview.html">
-   Structural overview
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../usage/data.html">
-   Data for Tax-Calculator
-  </a>
- </li>
- <li class="toctree-l1 current active has-children">
-  <a class="reference internal" href="index.html">
-   User guide
-  </a>
-  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul class="current">
-   <li class="toctree-l2">
-    <a class="reference internal" href="python_interface.html">
-     Python interface
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="cli.html">
-     Command-line interface
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="policy_params.html">
-     Policy parameters
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="input_vars.html">
-     Input variables
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="output_vars.html">
-     Output variables
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Assumption parameters
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../recipes/index.html">
-   Recipes
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe00.html">
-     Basic Recipe: Static Analysis of a Simple Reform
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe01.html">
-     Recipe 1: Directly Comparing Two Reforms
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe02.html">
-     Recipe 2: Estimating Behavioral Response to Reform
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe03.html">
-     Recipe 3: Creating a Custom Table
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe04.html">
-     Recipe 4: Estimating Differential Reform Response
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe04_pandas.html">
-     Recipe 4: Estimating Differential Reform Response - pandas version
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe05.html">
-     Recipe 5: Redefining Expanded Income
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe06.html">
-     Recipe 6: Analyzing a Non-Parametric Reform
-    </a>
-   </li>
-  </ul>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/starting.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/overview.html">Structural overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/data.html">Data for Tax-Calculator</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">User guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="python_interface.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policy_params.html">Policy parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input_vars.html">Input variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output_vars.html">Output variables</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Assumption parameters</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  About
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../about/history.html">
-   History
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../about/roadmap.html">
-   Roadmap
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../about/releases.html">
-   Release history
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../about/license.html">
-   License
-  </a>
- </li>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../recipes/index.html">Recipes</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe00.html">Basic Recipe: Static Analysis of a Simple Reform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe01.html">Recipe 1: Directly Comparing Two Reforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe02.html">Recipe 2: Estimating Behavioral Response to Reform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe03.html">Recipe 3: Creating a Custom Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe04.html">Recipe 4: Estimating Differential Reform Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe04_pandas.html">Recipe 4: Estimating Differential Reform Response - pandas version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe05.html">Recipe 5: Redefining Expanded Income</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe06.html">Recipe 6: Analyzing a Non-Parametric Reform</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contributing
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/contributor_guide.html">
-   Contributor guide
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/pr_workflow.html">
-   Pull request workflow
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/param_naming.html">
-   Policy parameter naming and placing conventions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/RELEASING.html">
-   Releasing Tax-Caclculator Packages
-  </a>
- </li>
+</li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  API
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../api/public_api.html">
-   Tax-Calculator Python API
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/calcfunctions.html">
-     Tax-Calculator CalcFunctions
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/calculator.html">
-     Tax-Calculator Calculator
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/consumption.html">
-     Tax-Calculator Consumption
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/data.html">
-     Tax-Calculator Data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/decorators.html">
-     Tax-Calculator Decorators
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/growdiff.html">
-     Tax-Calculator GrowDiff
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/growfactors.html">
-     Tax-Calculator GrowFactors
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/parameters.html">
-     Tax-Calculator Parameters
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/policy.html">
-     Tax-Calculator Policy
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/records.html">
-     Tax-Calculator Records
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/taxcalcio.html">
-     Tax-Calculator IO
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/utils.html">
-     Tax-Calculator Utilities
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/utilsprvt.html">
-     Tax-Calculator Private Utilities
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/calcfunctions.html">
-     Tax-Calculator CalcFunctions
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/calculator.html">
-     Tax-Calculator Calculator
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/consumption.html">
-     Tax-Calculator Consumption
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/data.html">
-     Tax-Calculator Data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/decorators.html">
-     Tax-Calculator Decorators
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/growdiff.html">
-     Tax-Calculator GrowDiff
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/growfactors.html">
-     Tax-Calculator GrowFactors
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/parameters.html">
-     Tax-Calculator Parameters
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/policy.html">
-     Tax-Calculator Policy
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/records.html">
-     Tax-Calculator Records
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/taxcalcio.html">
-     Tax-Calculator IO
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/utils.html">
-     Tax-Calculator Utilities
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/utilsprvt.html">
-     Tax-Calculator Private Utilities
-    </a>
-   </li>
-  </ul>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../about/history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/releases.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Tax-Calculator use cases
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../use_cases.html">
-   Recorded use cases
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributor_guide.html">Contributor guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/pr_workflow.html">Pull request workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/param_naming.html">Policy parameter naming and placing conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/RELEASING.html">Releasing Tax-Caclculator Packages</a></li>
+
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/public_api.html">Tax-Calculator Python API</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data.html">Tax-Calculator Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/decorators.html">Tax-Calculator Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growdiff.html">Tax-Calculator GrowDiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growfactors.html">Tax-Calculator GrowFactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/parameters.html">Tax-Calculator Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/policy.html">Tax-Calculator Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/records.html">Tax-Calculator Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/taxcalcio.html">Tax-Calculator IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Tax-Calculator Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data.html">Tax-Calculator Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/decorators.html">Tax-Calculator Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growdiff.html">Tax-Calculator GrowDiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growfactors.html">Tax-Calculator GrowFactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/parameters.html">Tax-Calculator Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/policy.html">Tax-Calculator Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/records.html">Tax-Calculator Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/taxcalcio.html">Tax-Calculator IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Tax-Calculator Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tax-Calculator use cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../use_cases.html">Recorded use cases</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/guide/assumption_params.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fguide/assumption_params.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
 </div>
 
 
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
 
 
 
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/guide/assumption_params.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
   </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/PSLmodels/Tax-Calculator"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fguide/assumption_params.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/guide/assumption_params.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Edit this page"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-pencil-alt"></i>
-  </span>
-<span class="headerbtn__text-container">suggest edit</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../_sources/guide/assumption_params.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.md</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#growdiff">
-   Growdiff
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abook">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABOOK
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#acgns">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ACGNS
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#acpim">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ACPIM
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#acpiu">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ACPIU
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#adivs">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ADIVS
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aints">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       AINTS
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aipd">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       AIPD
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aschci">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASCHCI
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aschcl">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASCHCL
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aschei">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASCHEI
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aschel">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASCHEL
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aschf">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASCHF
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#asocsec">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASOCSEC
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#atxpy">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ATXPY
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aucomp">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       AUCOMP
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#awage">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       AWAGE
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenother">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENOTHER
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenmcare">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENMCARE
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenmcaid">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENMCAID
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenssi">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENSSI
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abensnap">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENSNAP
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenwic">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENWIC
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenhousing">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENHOUSING
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abentanf">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENTANF
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenvet">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENVET
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#consumption">
-   Consumption
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mpc-e17500">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       MPC_e17500
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mpc-e18400">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       MPC_e18400
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mpc-e19800">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       MPC_e19800
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mpc-e20400">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       MPC_e20400
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-housing-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_housing_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-snap-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_snap_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-tanf-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_tanf_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-vet-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_vet_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-wic-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_wic_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-mcare-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_mcare_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-mcaid-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_mcaid_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-other-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_other_value
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Assumption parameters</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#growdiff">
-   Growdiff
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abook">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABOOK
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#acgns">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ACGNS
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#acpim">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ACPIM
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#acpiu">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ACPIU
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#adivs">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ADIVS
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aints">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       AINTS
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aipd">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       AIPD
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aschci">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASCHCI
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aschcl">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASCHCL
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aschei">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASCHEI
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aschel">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASCHEL
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aschf">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASCHF
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#asocsec">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ASOCSEC
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#atxpy">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ATXPY
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#aucomp">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       AUCOMP
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#awage">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       AWAGE
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenother">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENOTHER
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenmcare">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENMCARE
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenmcaid">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENMCAID
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenssi">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENSSI
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abensnap">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENSNAP
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenwic">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENWIC
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenhousing">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENHOUSING
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abentanf">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENTANF
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abenvet">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       ABENVET
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#consumption">
-   Consumption
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mpc-e17500">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       MPC_e17500
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mpc-e18400">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       MPC_e18400
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mpc-e19800">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       MPC_e19800
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mpc-e20400">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       MPC_e20400
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-housing-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_housing_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-snap-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_snap_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-tanf-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_tanf_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-vet-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_vet_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-wic-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_wic_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-mcare-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_mcare_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-mcaid-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_mcaid_value
-      </span>
-     </code>
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#ben-other-value">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       BEN_other_value
-      </span>
-     </code>
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Assumption parameters</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#growdiff">Growdiff</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abook"><code class="docutils literal notranslate"><span class="pre">ABOOK</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acgns"><code class="docutils literal notranslate"><span class="pre">ACGNS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acpim"><code class="docutils literal notranslate"><span class="pre">ACPIM</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acpiu"><code class="docutils literal notranslate"><span class="pre">ACPIU</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adivs"><code class="docutils literal notranslate"><span class="pre">ADIVS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aints"><code class="docutils literal notranslate"><span class="pre">AINTS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aipd"><code class="docutils literal notranslate"><span class="pre">AIPD</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aschci"><code class="docutils literal notranslate"><span class="pre">ASCHCI</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aschcl"><code class="docutils literal notranslate"><span class="pre">ASCHCL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aschei"><code class="docutils literal notranslate"><span class="pre">ASCHEI</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aschel"><code class="docutils literal notranslate"><span class="pre">ASCHEL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aschf"><code class="docutils literal notranslate"><span class="pre">ASCHF</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asocsec"><code class="docutils literal notranslate"><span class="pre">ASOCSEC</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atxpy"><code class="docutils literal notranslate"><span class="pre">ATXPY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aucomp"><code class="docutils literal notranslate"><span class="pre">AUCOMP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#awage"><code class="docutils literal notranslate"><span class="pre">AWAGE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenother"><code class="docutils literal notranslate"><span class="pre">ABENOTHER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenmcare"><code class="docutils literal notranslate"><span class="pre">ABENMCARE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenmcaid"><code class="docutils literal notranslate"><span class="pre">ABENMCAID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenssi"><code class="docutils literal notranslate"><span class="pre">ABENSSI</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abensnap"><code class="docutils literal notranslate"><span class="pre">ABENSNAP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenwic"><code class="docutils literal notranslate"><span class="pre">ABENWIC</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenhousing"><code class="docutils literal notranslate"><span class="pre">ABENHOUSING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abentanf"><code class="docutils literal notranslate"><span class="pre">ABENTANF</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenvet"><code class="docutils literal notranslate"><span class="pre">ABENVET</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#consumption">Consumption</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mpc-e17500"><code class="docutils literal notranslate"><span class="pre">MPC_e17500</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mpc-e18400"><code class="docutils literal notranslate"><span class="pre">MPC_e18400</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mpc-e19800"><code class="docutils literal notranslate"><span class="pre">MPC_e19800</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mpc-e20400"><code class="docutils literal notranslate"><span class="pre">MPC_e20400</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-housing-value"><code class="docutils literal notranslate"><span class="pre">BEN_housing_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-snap-value"><code class="docutils literal notranslate"><span class="pre">BEN_snap_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-tanf-value"><code class="docutils literal notranslate"><span class="pre">BEN_tanf_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-vet-value"><code class="docutils literal notranslate"><span class="pre">BEN_vet_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-wic-value"><code class="docutils literal notranslate"><span class="pre">BEN_wic_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-mcare-value"><code class="docutils literal notranslate"><span class="pre">BEN_mcare_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-mcaid-value"><code class="docutils literal notranslate"><span class="pre">BEN_mcaid_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-other-value"><code class="docutils literal notranslate"><span class="pre">BEN_other_value</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <section class="tex2jax_ignore mathjax_ignore" id="assumption-parameters">
-<h1>Assumption parameters<a class="headerlink" href="#assumption-parameters" title="Permalink to this headline">#</a></h1>
+<h1>Assumption parameters<a class="headerlink" href="#assumption-parameters" title="Permalink to this heading">#</a></h1>
 <p>This section contains documentation of several sets of parameters that characterize responses to a tax reform. Consumption parameters are used to compute marginal tax rates and to compute the consumption value of in-kind benefits. Growdiff parameters are used to specify baseline differences and/or reform responses in the annual rate of growth in economic variables. (Note that behavior parameters used to compute changes in input variables caused by a tax reform in a partial-equilibrium setting are not part of Tax-Calculator, but can be used via the Behavioral-Response <code class="docutils literal notranslate"><span class="pre">behresp</span></code> package in a Python program.)</p>
 <p>The assumption parameters control advanced features of Tax-Calculator, so understanding the source code that uses them is essential. Default values of many assumption parameters are zero and are projected into the future at that value, which implies no response to the reform. The benefit value consumption parameters have a default value of one, which implies the consumption value of the in-kind benefits is equal to the government cost of providing the benefits.</p>
 <section id="growdiff">
-<h2>Growdiff<a class="headerlink" href="#growdiff" title="Permalink to this headline">#</a></h2>
+<h2>Growdiff<a class="headerlink" href="#growdiff" title="Permalink to this heading">#</a></h2>
 <section id="abook">
-<h3><code class="docutils literal notranslate"><span class="pre">ABOOK</span></code><a class="headerlink" href="#abook" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABOOK</span></code><a class="headerlink" href="#abook" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ABOOK additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABOOK extrapolates input variables: e07300 and e07400.<br />
 <em>Value Type:</em> float<br />
@@ -1381,7 +514,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="acgns">
-<h3><code class="docutils literal notranslate"><span class="pre">ACGNS</span></code><a class="headerlink" href="#acgns" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ACGNS</span></code><a class="headerlink" href="#acgns" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ACGNS additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ACGNS extrapolates input variables: e01200, p22250, p23250, e24515 and e24518.<br />
 <em>Value Type:</em> float<br />
@@ -1390,7 +523,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="acpim">
-<h3><code class="docutils literal notranslate"><span class="pre">ACPIM</span></code><a class="headerlink" href="#acpim" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ACPIM</span></code><a class="headerlink" href="#acpim" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ACPIM additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ACPIM extrapolates input variables: e03270, e03290 and e17500.<br />
 <em>Value Type:</em> float<br />
@@ -1399,7 +532,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="acpiu">
-<h3><code class="docutils literal notranslate"><span class="pre">ACPIU</span></code><a class="headerlink" href="#acpiu" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ACPIU</span></code><a class="headerlink" href="#acpiu" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ACPIU additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used to inflate many policy parameters.  Note that non-zero values of this parameter will not affect historically known values of policy parameters.<br />
 <em>Value Type:</em> float<br />
@@ -1408,7 +541,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="adivs">
-<h3><code class="docutils literal notranslate"><span class="pre">ADIVS</span></code><a class="headerlink" href="#adivs" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ADIVS</span></code><a class="headerlink" href="#adivs" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ADIVS additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ADIVS extrapolates input variables: e00600 and e00650.<br />
 <em>Value Type:</em> float<br />
@@ -1417,7 +550,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aints">
-<h3><code class="docutils literal notranslate"><span class="pre">AINTS</span></code><a class="headerlink" href="#aints" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">AINTS</span></code><a class="headerlink" href="#aints" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> AINTS additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  AINTS extrapolates input variables: e00300 and e00400.<br />
 <em>Value Type:</em> float<br />
@@ -1426,7 +559,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aipd">
-<h3><code class="docutils literal notranslate"><span class="pre">AIPD</span></code><a class="headerlink" href="#aipd" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">AIPD</span></code><a class="headerlink" href="#aipd" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> AIPD additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  AIPD extrapolates input variables: e19200.<br />
 <em>Value Type:</em> float<br />
@@ -1435,7 +568,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aschci">
-<h3><code class="docutils literal notranslate"><span class="pre">ASCHCI</span></code><a class="headerlink" href="#aschci" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASCHCI</span></code><a class="headerlink" href="#aschci" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ASCHCI additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASCHCI extrapolates input variables: e00900, e00900p and e00900s when they are positive.<br />
 <em>Value Type:</em> float<br />
@@ -1444,7 +577,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aschcl">
-<h3><code class="docutils literal notranslate"><span class="pre">ASCHCL</span></code><a class="headerlink" href="#aschcl" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASCHCL</span></code><a class="headerlink" href="#aschcl" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ASCHCL additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASCHCL extrapolates input variables: e00900, e00900p and e00900s when they are negative.<br />
 <em>Value Type:</em> float<br />
@@ -1453,7 +586,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aschei">
-<h3><code class="docutils literal notranslate"><span class="pre">ASCHEI</span></code><a class="headerlink" href="#aschei" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASCHEI</span></code><a class="headerlink" href="#aschei" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ASCHEI additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASCHEI extrapolates input variables: e02000 when positive, and e26270, k1bx14p, k1bx14s and e27200 for all values.<br />
 <em>Value Type:</em> float<br />
@@ -1462,7 +595,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aschel">
-<h3><code class="docutils literal notranslate"><span class="pre">ASCHEL</span></code><a class="headerlink" href="#aschel" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASCHEL</span></code><a class="headerlink" href="#aschel" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ASCHEL additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASCHEL extrapolates input variable: e02000 when negative.<br />
 <em>Value Type:</em> float<br />
@@ -1471,7 +604,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aschf">
-<h3><code class="docutils literal notranslate"><span class="pre">ASCHF</span></code><a class="headerlink" href="#aschf" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASCHF</span></code><a class="headerlink" href="#aschf" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ASCHF additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASCHF extrapolates input variables: e02100, e02100p and e02100s.<br />
 <em>Value Type:</em> float<br />
@@ -1480,7 +613,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="asocsec">
-<h3><code class="docutils literal notranslate"><span class="pre">ASOCSEC</span></code><a class="headerlink" href="#asocsec" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASOCSEC</span></code><a class="headerlink" href="#asocsec" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ASOCSEC additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASOCSEC extrapolates input variable: e02400.<br />
 <em>Value Type:</em> float<br />
@@ -1489,7 +622,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="atxpy">
-<h3><code class="docutils literal notranslate"><span class="pre">ATXPY</span></code><a class="headerlink" href="#atxpy" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ATXPY</span></code><a class="headerlink" href="#atxpy" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ATXPY additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ATXPY extrapolates input variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, g20500, e07600, e32800, e58990, e62900, e87530, e87521 and cmbtp.<br />
 <em>Value Type:</em> float<br />
@@ -1498,7 +631,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aucomp">
-<h3><code class="docutils literal notranslate"><span class="pre">AUCOMP</span></code><a class="headerlink" href="#aucomp" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">AUCOMP</span></code><a class="headerlink" href="#aucomp" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> AUCOMP additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  AUCOMP extrapolates input variable: e02300.<br />
 <em>Value Type:</em> float<br />
@@ -1507,7 +640,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="awage">
-<h3><code class="docutils literal notranslate"><span class="pre">AWAGE</span></code><a class="headerlink" href="#awage" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">AWAGE</span></code><a class="headerlink" href="#awage" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> AWAGE additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.  Note that non-zero values of this parameter will not affect historically known values of _SS_Earnings_c.<br />
 <em>Value Type:</em> float<br />
@@ -1516,7 +649,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenother">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENOTHER</span></code><a class="headerlink" href="#abenother" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENOTHER</span></code><a class="headerlink" href="#abenother" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENOTHER additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENOTHER extrapolates input variable other_ben.<br />
 <em>Value Type:</em> float<br />
@@ -1525,7 +658,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenmcare">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENMCARE</span></code><a class="headerlink" href="#abenmcare" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENMCARE</span></code><a class="headerlink" href="#abenmcare" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENMCARE additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENMCARE extrapolates input variable mcare_ben.<br />
 <em>Value Type:</em> float<br />
@@ -1534,7 +667,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenmcaid">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENMCAID</span></code><a class="headerlink" href="#abenmcaid" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENMCAID</span></code><a class="headerlink" href="#abenmcaid" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENMCAID additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENMCAID extrapolates input variable mcaid_ben.<br />
 <em>Value Type:</em> float<br />
@@ -1543,7 +676,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenssi">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENSSI</span></code><a class="headerlink" href="#abenssi" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENSSI</span></code><a class="headerlink" href="#abenssi" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENSSI additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENSSI extrapolates input variable ssi_ben.<br />
 <em>Value Type:</em> float<br />
@@ -1552,7 +685,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abensnap">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENSNAP</span></code><a class="headerlink" href="#abensnap" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENSNAP</span></code><a class="headerlink" href="#abensnap" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENSNAP additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENSNAP extrapolates input variable snap_ben.<br />
 <em>Value Type:</em> float<br />
@@ -1561,7 +694,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenwic">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENWIC</span></code><a class="headerlink" href="#abenwic" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENWIC</span></code><a class="headerlink" href="#abenwic" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENWIC additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENWIC extrapolates input variable wic_ben.<br />
 <em>Value Type:</em> float<br />
@@ -1570,7 +703,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenhousing">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENHOUSING</span></code><a class="headerlink" href="#abenhousing" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENHOUSING</span></code><a class="headerlink" href="#abenhousing" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENHOUSING additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENHOUSING extrapolates input variable housing_ben.<br />
 <em>Value Type:</em> float<br />
@@ -1579,7 +712,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abentanf">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENTANF</span></code><a class="headerlink" href="#abentanf" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENTANF</span></code><a class="headerlink" href="#abentanf" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENTANF additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENTANF extrapolates input variable tanf_ben.<br />
 <em>Value Type:</em> float<br />
@@ -1588,7 +721,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenvet">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENVET</span></code><a class="headerlink" href="#abenvet" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENVET</span></code><a class="headerlink" href="#abenvet" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENVET additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENVET extrapolates input variable vet_ben.<br />
 <em>Value Type:</em> float<br />
@@ -1598,9 +731,9 @@ title="Print to PDF"
 </section>
 </section>
 <section id="consumption">
-<h2>Consumption<a class="headerlink" href="#consumption" title="Permalink to this headline">#</a></h2>
+<h2>Consumption<a class="headerlink" href="#consumption" title="Permalink to this heading">#</a></h2>
 <section id="mpc-e17500">
-<h3><code class="docutils literal notranslate"><span class="pre">MPC_e17500</span></code><a class="headerlink" href="#mpc-e17500" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">MPC_e17500</span></code><a class="headerlink" href="#mpc-e17500" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Marginal propensity to consume medical expenses<br />
 <em>Description:</em> Defined as dollar change in medical-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.<br />
 <em>Value Type:</em> float<br />
@@ -1609,7 +742,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="mpc-e18400">
-<h3><code class="docutils literal notranslate"><span class="pre">MPC_e18400</span></code><a class="headerlink" href="#mpc-e18400" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">MPC_e18400</span></code><a class="headerlink" href="#mpc-e18400" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Marginal propensity to consume state-and-local taxes<br />
 <em>Description:</em> Defined as dollar change in state-and-local-taxes consumption divided by dollar change in income.  Typical value is in [0,1] range.<br />
 <em>Value Type:</em> float<br />
@@ -1618,7 +751,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="mpc-e19800">
-<h3><code class="docutils literal notranslate"><span class="pre">MPC_e19800</span></code><a class="headerlink" href="#mpc-e19800" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">MPC_e19800</span></code><a class="headerlink" href="#mpc-e19800" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Marginal propensity to consume charity cash contributions<br />
 <em>Description:</em> Defined as dollar change in charity-cash-contribution consumption divided by dollar change in income.  Typical value is in [0,1] range.<br />
 <em>Value Type:</em> float<br />
@@ -1627,7 +760,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="mpc-e20400">
-<h3><code class="docutils literal notranslate"><span class="pre">MPC_e20400</span></code><a class="headerlink" href="#mpc-e20400" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">MPC_e20400</span></code><a class="headerlink" href="#mpc-e20400" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Marginal propensity to consume miscellaneous deduction expenses<br />
 <em>Description:</em> Defined as dollar change in miscellaneous-deduction-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.<br />
 <em>Value Type:</em> float<br />
@@ -1636,7 +769,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-housing-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_housing_value</span></code><a class="headerlink" href="#ben-housing-value" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_housing_value</span></code><a class="headerlink" href="#ben-housing-value" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of housing benefits<br />
 <em>Description:</em> Consumption value per dollar of housing benefits, all of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -1645,7 +778,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-snap-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_snap_value</span></code><a class="headerlink" href="#ben-snap-value" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_snap_value</span></code><a class="headerlink" href="#ben-snap-value" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of SNAP benefits<br />
 <em>Description:</em> Consumption value per dollar of SNAP benefits, all of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -1654,7 +787,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-tanf-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_tanf_value</span></code><a class="headerlink" href="#ben-tanf-value" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_tanf_value</span></code><a class="headerlink" href="#ben-tanf-value" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of TANF benefits<br />
 <em>Description:</em> Consumption value per dollar of TANF benefits, some of which are cash benefits and some of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -1663,7 +796,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-vet-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_vet_value</span></code><a class="headerlink" href="#ben-vet-value" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_vet_value</span></code><a class="headerlink" href="#ben-vet-value" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of veterans benefits<br />
 <em>Description:</em> Consumption value per dollar of veterans benefits, some of which are in-kind benefits (only about 48% are cash benefits).<br />
 <em>Value Type:</em> float<br />
@@ -1672,7 +805,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-wic-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_wic_value</span></code><a class="headerlink" href="#ben-wic-value" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_wic_value</span></code><a class="headerlink" href="#ben-wic-value" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of WIC benefits<br />
 <em>Description:</em> Consumption value per dollar of WIC benefits, all of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -1681,7 +814,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-mcare-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_mcare_value</span></code><a class="headerlink" href="#ben-mcare-value" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_mcare_value</span></code><a class="headerlink" href="#ben-mcare-value" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of Medicare benefits<br />
 <em>Description:</em> Consumption value per dollar of Medicare benefits, all of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -1690,7 +823,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-mcaid-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_mcaid_value</span></code><a class="headerlink" href="#ben-mcaid-value" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_mcaid_value</span></code><a class="headerlink" href="#ben-mcaid-value" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of Medicaid benefits<br />
 <em>Description:</em> Consumption value per dollar of Medicaid benefits, all of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -1699,7 +832,7 @@ title="Print to PDF"
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-other-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_other_value</span></code><a class="headerlink" href="#ben-other-value" title="Permalink to this headline">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_other_value</span></code><a class="headerlink" href="#ben-other-value" title="Permalink to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of other benefits<br />
 <em>Description:</em> Consumption value per dollar of other benefits, some of which are in-kind benefits (somewhere between 52% and 76% are in-kind benefits).<br />
 <em>Value Type:</em> float<br />
@@ -1722,7 +855,7 @@ title="Print to PDF"
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
+            name: "python3",
             path: "./guide"
         },
         predefinedOutput: true
@@ -1730,50 +863,141 @@ title="Print to PDF"
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="output_vars.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Output variables</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="output_vars.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Output variables</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="../recipes/index.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="../recipes/index.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">Recipes</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#growdiff">Growdiff</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abook"><code class="docutils literal notranslate"><span class="pre">ABOOK</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acgns"><code class="docutils literal notranslate"><span class="pre">ACGNS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acpim"><code class="docutils literal notranslate"><span class="pre">ACPIM</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acpiu"><code class="docutils literal notranslate"><span class="pre">ACPIU</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adivs"><code class="docutils literal notranslate"><span class="pre">ADIVS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aints"><code class="docutils literal notranslate"><span class="pre">AINTS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aipd"><code class="docutils literal notranslate"><span class="pre">AIPD</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aschci"><code class="docutils literal notranslate"><span class="pre">ASCHCI</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aschcl"><code class="docutils literal notranslate"><span class="pre">ASCHCL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aschei"><code class="docutils literal notranslate"><span class="pre">ASCHEI</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aschel"><code class="docutils literal notranslate"><span class="pre">ASCHEL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aschf"><code class="docutils literal notranslate"><span class="pre">ASCHF</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asocsec"><code class="docutils literal notranslate"><span class="pre">ASOCSEC</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atxpy"><code class="docutils literal notranslate"><span class="pre">ATXPY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aucomp"><code class="docutils literal notranslate"><span class="pre">AUCOMP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#awage"><code class="docutils literal notranslate"><span class="pre">AWAGE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenother"><code class="docutils literal notranslate"><span class="pre">ABENOTHER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenmcare"><code class="docutils literal notranslate"><span class="pre">ABENMCARE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenmcaid"><code class="docutils literal notranslate"><span class="pre">ABENMCAID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenssi"><code class="docutils literal notranslate"><span class="pre">ABENSSI</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abensnap"><code class="docutils literal notranslate"><span class="pre">ABENSNAP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenwic"><code class="docutils literal notranslate"><span class="pre">ABENWIC</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenhousing"><code class="docutils literal notranslate"><span class="pre">ABENHOUSING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abentanf"><code class="docutils literal notranslate"><span class="pre">ABENTANF</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abenvet"><code class="docutils literal notranslate"><span class="pre">ABENVET</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#consumption">Consumption</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mpc-e17500"><code class="docutils literal notranslate"><span class="pre">MPC_e17500</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mpc-e18400"><code class="docutils literal notranslate"><span class="pre">MPC_e18400</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mpc-e19800"><code class="docutils literal notranslate"><span class="pre">MPC_e19800</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mpc-e20400"><code class="docutils literal notranslate"><span class="pre">MPC_e20400</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-housing-value"><code class="docutils literal notranslate"><span class="pre">BEN_housing_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-snap-value"><code class="docutils literal notranslate"><span class="pre">BEN_snap_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-tanf-value"><code class="docutils literal notranslate"><span class="pre">BEN_tanf_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-vet-value"><code class="docutils literal notranslate"><span class="pre">BEN_vet_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-wic-value"><code class="docutils literal notranslate"><span class="pre">BEN_wic_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-mcare-value"><code class="docutils literal notranslate"><span class="pre">BEN_mcare_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-mcaid-value"><code class="docutils literal notranslate"><span class="pre">BEN_mcaid_value</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ben-other-value"><code class="docutils literal notranslate"><span class="pre">BEN_other_value</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner">
+<div class="bd-footer-content__inner container">
   
-    By Policy Simulation Library<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
+  <div class="footer-item">
     
-</div>
+<p class="component-author">
+By Policy Simulation Library
+</p>
 
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
 
-      </div>
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div></div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

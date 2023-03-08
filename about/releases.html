@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Release history &#8212; Tax-Calculator</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,61 +61,93 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'about/releases';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="License" href="license.html" />
     <link rel="prev" title="Roadmap" href="roadmap.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+      <div class="bd-sidebar-primary bd-sidebar">
         
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+    
+    
       
-      
-      <img src="../_static/PSL.svg" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+    
+    
+    <img src="../_static/PSL.svg" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/PSL.svg" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -113,1410 +156,395 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Usage
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Usage</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../usage/starting.html">
-   Getting started
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../usage/overview.html">
-   Structural overview
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../usage/data.html">
-   Data for Tax-Calculator
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../guide/index.html">
-   User guide
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../guide/python_interface.html">
-     Python interface
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../guide/cli.html">
-     Command-line interface
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../guide/policy_params.html">
-     Policy parameters
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../guide/input_vars.html">
-     Input variables
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../guide/output_vars.html">
-     Output variables
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../guide/assumption_params.html">
-     Assumption parameters
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../recipes/index.html">
-   Recipes
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe00.html">
-     Basic Recipe: Static Analysis of a Simple Reform
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe01.html">
-     Recipe 1: Directly Comparing Two Reforms
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe02.html">
-     Recipe 2: Estimating Behavioral Response to Reform
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe03.html">
-     Recipe 3: Creating a Custom Table
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe04.html">
-     Recipe 4: Estimating Differential Reform Response
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe04_pandas.html">
-     Recipe 4: Estimating Differential Reform Response - pandas version
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe05.html">
-     Recipe 5: Redefining Expanded Income
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../recipes/recipe06.html">
-     Recipe 6: Analyzing a Non-Parametric Reform
-    </a>
-   </li>
-  </ul>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/starting.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/overview.html">Structural overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/data.html">Data for Tax-Calculator</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../guide/index.html">User guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guide/python_interface.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/cli.html">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/policy_params.html">Policy parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/input_vars.html">Input variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/output_vars.html">Output variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/assumption_params.html">Assumption parameters</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  About
- </span>
-</p>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../recipes/index.html">Recipes</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe00.html">Basic Recipe: Static Analysis of a Simple Reform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe01.html">Recipe 1: Directly Comparing Two Reforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe02.html">Recipe 2: Estimating Behavioral Response to Reform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe03.html">Recipe 3: Creating a Custom Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe04.html">Recipe 4: Estimating Differential Reform Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe04_pandas.html">Recipe 4: Estimating Differential Reform Response - pandas version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe05.html">Recipe 5: Redefining Expanded Income</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../recipes/recipe06.html">Recipe 6: Analyzing a Non-Parametric Reform</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="history.html">
-   History
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="roadmap.html">
-   Roadmap
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Release history
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="license.html">
-   License
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contributing
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/contributor_guide.html">
-   Contributor guide
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/pr_workflow.html">
-   Pull request workflow
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/param_naming.html">
-   Policy parameter naming and placing conventions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/RELEASING.html">
-   Releasing Tax-Caclculator Packages
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributor_guide.html">Contributor guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/pr_workflow.html">Pull request workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/param_naming.html">Policy parameter naming and placing conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/RELEASING.html">Releasing Tax-Caclculator Packages</a></li>
+
+
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  API
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../api/public_api.html">
-   Tax-Calculator Python API
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/calcfunctions.html">
-     Tax-Calculator CalcFunctions
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/calculator.html">
-     Tax-Calculator Calculator
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/consumption.html">
-     Tax-Calculator Consumption
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/data.html">
-     Tax-Calculator Data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/decorators.html">
-     Tax-Calculator Decorators
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/growdiff.html">
-     Tax-Calculator GrowDiff
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/growfactors.html">
-     Tax-Calculator GrowFactors
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/parameters.html">
-     Tax-Calculator Parameters
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/policy.html">
-     Tax-Calculator Policy
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/records.html">
-     Tax-Calculator Records
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/taxcalcio.html">
-     Tax-Calculator IO
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/utils.html">
-     Tax-Calculator Utilities
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/utilsprvt.html">
-     Tax-Calculator Private Utilities
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/calcfunctions.html">
-     Tax-Calculator CalcFunctions
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/calculator.html">
-     Tax-Calculator Calculator
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/consumption.html">
-     Tax-Calculator Consumption
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/data.html">
-     Tax-Calculator Data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/decorators.html">
-     Tax-Calculator Decorators
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/growdiff.html">
-     Tax-Calculator GrowDiff
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/growfactors.html">
-     Tax-Calculator GrowFactors
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/parameters.html">
-     Tax-Calculator Parameters
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/policy.html">
-     Tax-Calculator Policy
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/records.html">
-     Tax-Calculator Records
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/taxcalcio.html">
-     Tax-Calculator IO
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/utils.html">
-     Tax-Calculator Utilities
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../api/utilsprvt.html">
-     Tax-Calculator Private Utilities
-    </a>
-   </li>
-  </ul>
- </li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/public_api.html">Tax-Calculator Python API</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data.html">Tax-Calculator Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/decorators.html">Tax-Calculator Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growdiff.html">Tax-Calculator GrowDiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growfactors.html">Tax-Calculator GrowFactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/parameters.html">Tax-Calculator Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/policy.html">Tax-Calculator Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/records.html">Tax-Calculator Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/taxcalcio.html">Tax-Calculator IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Tax-Calculator Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data.html">Tax-Calculator Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/decorators.html">Tax-Calculator Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growdiff.html">Tax-Calculator GrowDiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growfactors.html">Tax-Calculator GrowFactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/parameters.html">Tax-Calculator Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/policy.html">Tax-Calculator Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/records.html">Tax-Calculator Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/taxcalcio.html">Tax-Calculator IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Tax-Calculator Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Tax-Calculator use cases
- </span>
-</p>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tax-Calculator use cases</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../use_cases.html">
-   Recorded use cases
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="../use_cases.html">Recorded use cases</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/about/releases.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fabout/releases.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
 </div>
 
 
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
 
 
 
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/about/releases.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
   </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/PSLmodels/Tax-Calculator"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fabout/releases.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/about/releases.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Edit this page"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-pencil-alt"></i>
-  </span>
-<span class="headerbtn__text-container">suggest edit</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="../_sources/about/releases.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.md</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-3-3-0">
-   2022-12-16 Release 3.3.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-3-2-1">
-   2021-08-06 Release 3.2.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-3-2-0">
-   2021-07-17 Release 3.2.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-3-1-0">
-   2021-03-01 Release 3.1.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-3-0-0">
-   2020-08-24 Release 3.0.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-9-0">
-   2020-03-18 Release 2.9.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-8-0">
-   2020-02-28 Release 2.8.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-7-0">
-   2019-12-13 Release 2.7.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-6-0">
-   2019-10-31 Release 2.6.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-5-0">
-   2019-08-06 Release 2.5.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-4-2">
-   2019-06-28 Release 2.4.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-4-1">
-   2019-06-26 Release 2.4.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-4-0">
-   2019-06-25 Release 2.4.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-3-0">
-   2019-06-08 Release 2.3.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-2-0">
-   2019-05-20 Release 2.2.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-1-0">
-   2019-05-09 Release 2.1.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-0-1">
-   2019-04-17 Release 2.0.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-0-0">
-   2019-04-15 Release 2.0.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-1-2-0">
-   2019-03-24 Release 1.2.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-1-1-0">
-   2019-03-17 Release 1.1.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-1-0-1">
-   2019-02-26 Release 1.0.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-1-0-0">
-   2019-02-22 Release 1.0.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-24-0">
-   2018-12-14 Release 0.24.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-23-4">
-   2018-12-13 Release 0.23.4
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-23-3">
-   2018-12-05 Release 0.23.3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-23-2">
-   2018-11-22 Release 0.23.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-23-1">
-   2018-11-20 Release 0.23.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-23-0">
-   2018-11-13 Release 0.23.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-22-2">
-   2018-10-26 Release 0.22.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-22-1">
-   2018-10-25 Release 0.22.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-22-0">
-   2018-10-24 Release 0.22.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-21-0-first-release-compatible-only-with-python-3-6">
-   2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-20-3-last-release-compatible-with-python-2-7">
-   2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-20-2">
-   2018-08-10 Release 0.20.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-20-1">
-   2018-05-21 Release 0.20.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-20-0">
-   2018-05-18 Release 0.20.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-19-0">
-   2018-04-19 Release 0.19.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-18-0">
-   2018-03-30 Release 0.18.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-17-0">
-   2018-03-16 Release 0.17.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-16-2">
-   2018-03-09 Release 0.16.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-16-1">
-   2018-02-16 Release 0.16.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-16-0">
-   2018-02-13 Release 0.16.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-15-2">
-   2018-01-30 Release 0.15.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-15-1">
-   2018-01-20 Release 0.15.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-15-0">
-   2018-01-18 Release 0.15.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-14-3">
-   2017-12-24 Release 0.14.3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-14-2">
-   2017-12-19 Release 0.14.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-14-1">
-   2017-12-15 Release 0.14.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-14-0">
-   2017-12-11 Release 0.14.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-13-2">
-   2017-11-17 Release 0.13.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-13-1">
-   2017-11-10 Release 0.13.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-13-0">
-   2017-11-07 Release 0.13.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-12-0">
-   2017-10-20 Release 0.12.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-11-0">
-   2017-09-21 Release 0.11.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-10-2">
-   2017-09-13 Release 0.10.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-10-1">
-   2017-09-08 Release 0.10.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-10-0">
-   2017-08-28 Release 0.10.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-9-2">
-   2017-07-26 Release 0.9.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-9-1">
-   2017-07-06 Release 0.9.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-9-0">
-   2017-06-14 Release 0.9.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-5">
-   2017-06-08 Release 0.8.5
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-4">
-   2017-05-12 Release 0.8.4
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-3">
-   2017-05-01 Release 0.8.3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-2">
-   2017-04-13 Release 0.8.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-1">
-   2017-04-13 Release 0.8.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-0">
-   2017-03-24 Release 0.8.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-9">
-   2017-03-08 Release 0.7.9
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-8">
-   2017-03-01 Release 0.7.8
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-7">
-   2017-02-16 Release 0.7.7
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-6">
-   2017-02-15 Release 0.7.6
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-5">
-   2017-01-31 Release 0.7.5
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-4">
-   2017-01-24 Release 0.7.4
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-3">
-   2017-01-24 Release 0.7.3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-2">
-   2016-12-05 Release 0.7.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-1">
-   2016-11-15 Release 0.7.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-0">
-   2016-11-09 Release 0.7.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-9">
-   2016-11-09 Release 0.6.9
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-8">
-   2016-10-07 Release 0.6.8
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-7">
-   2016-09-29 Release 0.6.7
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-6">
-   2016-08-13 Release 0.6.6
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-5">
-   2016-07-12 Release 0.6.5
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-4">
-   2016-06-17 Release 0.6.4
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-3">
-   2016-05-09 Release 0.6.3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#before-release-0-6-2">
-   Before Release 0.6.2
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Release history</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-3-3-0">
-   2022-12-16 Release 3.3.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-3-2-1">
-   2021-08-06 Release 3.2.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-3-2-0">
-   2021-07-17 Release 3.2.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-3-1-0">
-   2021-03-01 Release 3.1.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-3-0-0">
-   2020-08-24 Release 3.0.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-9-0">
-   2020-03-18 Release 2.9.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-8-0">
-   2020-02-28 Release 2.8.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-7-0">
-   2019-12-13 Release 2.7.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-6-0">
-   2019-10-31 Release 2.6.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-5-0">
-   2019-08-06 Release 2.5.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-4-2">
-   2019-06-28 Release 2.4.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-4-1">
-   2019-06-26 Release 2.4.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-4-0">
-   2019-06-25 Release 2.4.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-3-0">
-   2019-06-08 Release 2.3.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-2-0">
-   2019-05-20 Release 2.2.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-1-0">
-   2019-05-09 Release 2.1.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-0-1">
-   2019-04-17 Release 2.0.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-2-0-0">
-   2019-04-15 Release 2.0.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-1-2-0">
-   2019-03-24 Release 1.2.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-1-1-0">
-   2019-03-17 Release 1.1.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-1-0-1">
-   2019-02-26 Release 1.0.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-1-0-0">
-   2019-02-22 Release 1.0.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-24-0">
-   2018-12-14 Release 0.24.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-23-4">
-   2018-12-13 Release 0.23.4
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-23-3">
-   2018-12-05 Release 0.23.3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-23-2">
-   2018-11-22 Release 0.23.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-23-1">
-   2018-11-20 Release 0.23.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-23-0">
-   2018-11-13 Release 0.23.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-22-2">
-   2018-10-26 Release 0.22.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-22-1">
-   2018-10-25 Release 0.22.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-22-0">
-   2018-10-24 Release 0.22.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-21-0-first-release-compatible-only-with-python-3-6">
-   2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-20-3-last-release-compatible-with-python-2-7">
-   2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-20-2">
-   2018-08-10 Release 0.20.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-20-1">
-   2018-05-21 Release 0.20.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-20-0">
-   2018-05-18 Release 0.20.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-19-0">
-   2018-04-19 Release 0.19.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-18-0">
-   2018-03-30 Release 0.18.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-17-0">
-   2018-03-16 Release 0.17.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-16-2">
-   2018-03-09 Release 0.16.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-16-1">
-   2018-02-16 Release 0.16.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-16-0">
-   2018-02-13 Release 0.16.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-15-2">
-   2018-01-30 Release 0.15.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-15-1">
-   2018-01-20 Release 0.15.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-15-0">
-   2018-01-18 Release 0.15.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-14-3">
-   2017-12-24 Release 0.14.3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-14-2">
-   2017-12-19 Release 0.14.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-14-1">
-   2017-12-15 Release 0.14.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-14-0">
-   2017-12-11 Release 0.14.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-13-2">
-   2017-11-17 Release 0.13.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-13-1">
-   2017-11-10 Release 0.13.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-13-0">
-   2017-11-07 Release 0.13.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-12-0">
-   2017-10-20 Release 0.12.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-11-0">
-   2017-09-21 Release 0.11.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-10-2">
-   2017-09-13 Release 0.10.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-10-1">
-   2017-09-08 Release 0.10.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-10-0">
-   2017-08-28 Release 0.10.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-9-2">
-   2017-07-26 Release 0.9.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-9-1">
-   2017-07-06 Release 0.9.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-9-0">
-   2017-06-14 Release 0.9.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-5">
-   2017-06-08 Release 0.8.5
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-4">
-   2017-05-12 Release 0.8.4
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-3">
-   2017-05-01 Release 0.8.3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-2">
-   2017-04-13 Release 0.8.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-1">
-   2017-04-13 Release 0.8.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-8-0">
-   2017-03-24 Release 0.8.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-9">
-   2017-03-08 Release 0.7.9
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-8">
-   2017-03-01 Release 0.7.8
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-7">
-   2017-02-16 Release 0.7.7
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-6">
-   2017-02-15 Release 0.7.6
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-5">
-   2017-01-31 Release 0.7.5
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-4">
-   2017-01-24 Release 0.7.4
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-3">
-   2017-01-24 Release 0.7.3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-2">
-   2016-12-05 Release 0.7.2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-1">
-   2016-11-15 Release 0.7.1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-7-0">
-   2016-11-09 Release 0.7.0
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-9">
-   2016-11-09 Release 0.6.9
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-8">
-   2016-10-07 Release 0.6.8
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-7">
-   2016-09-29 Release 0.6.7
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-6">
-   2016-08-13 Release 0.6.6
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-5">
-   2016-07-12 Release 0.6.5
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-4">
-   2016-06-17 Release 0.6.4
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#release-0-6-3">
-   2016-05-09 Release 0.6.3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#before-release-0-6-2">
-   Before Release 0.6.2
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Release history</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-3-0">2022-12-16 Release 3.3.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-2-1">2021-08-06 Release 3.2.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-2-0">2021-07-17 Release 3.2.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-1-0">2021-03-01 Release 3.1.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-0-0">2020-08-24 Release 3.0.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-9-0">2020-03-18 Release 2.9.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-8-0">2020-02-28 Release 2.8.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-7-0">2019-12-13 Release 2.7.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-6-0">2019-10-31 Release 2.6.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-5-0">2019-08-06 Release 2.5.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-4-2">2019-06-28 Release 2.4.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-4-1">2019-06-26 Release 2.4.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-4-0">2019-06-25 Release 2.4.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-3-0">2019-06-08 Release 2.3.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-2-0">2019-05-20 Release 2.2.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-1-0">2019-05-09 Release 2.1.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-0-1">2019-04-17 Release 2.0.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-0-0">2019-04-15 Release 2.0.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-1-2-0">2019-03-24 Release 1.2.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-1-1-0">2019-03-17 Release 1.1.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-1-0-1">2019-02-26 Release 1.0.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-1-0-0">2019-02-22 Release 1.0.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-24-0">2018-12-14 Release 0.24.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-23-4">2018-12-13 Release 0.23.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-23-3">2018-12-05 Release 0.23.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-23-2">2018-11-22 Release 0.23.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-23-1">2018-11-20 Release 0.23.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-23-0">2018-11-13 Release 0.23.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-22-2">2018-10-26 Release 0.22.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-22-1">2018-10-25 Release 0.22.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-22-0">2018-10-24 Release 0.22.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-21-0-first-release-compatible-only-with-python-3-6">2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-20-3-last-release-compatible-with-python-2-7">2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-20-2">2018-08-10 Release 0.20.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-20-1">2018-05-21 Release 0.20.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-20-0">2018-05-18 Release 0.20.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-19-0">2018-04-19 Release 0.19.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-18-0">2018-03-30 Release 0.18.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-17-0">2018-03-16 Release 0.17.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-16-2">2018-03-09 Release 0.16.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-16-1">2018-02-16 Release 0.16.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-16-0">2018-02-13 Release 0.16.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-15-2">2018-01-30 Release 0.15.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-15-1">2018-01-20 Release 0.15.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-15-0">2018-01-18 Release 0.15.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-14-3">2017-12-24 Release 0.14.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-14-2">2017-12-19 Release 0.14.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-14-1">2017-12-15 Release 0.14.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-14-0">2017-12-11 Release 0.14.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-13-2">2017-11-17 Release 0.13.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-13-1">2017-11-10 Release 0.13.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-13-0">2017-11-07 Release 0.13.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-12-0">2017-10-20 Release 0.12.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-11-0">2017-09-21 Release 0.11.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-10-2">2017-09-13 Release 0.10.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-10-1">2017-09-08 Release 0.10.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-10-0">2017-08-28 Release 0.10.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-9-2">2017-07-26 Release 0.9.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-9-1">2017-07-06 Release 0.9.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-9-0">2017-06-14 Release 0.9.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-5">2017-06-08 Release 0.8.5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-4">2017-05-12 Release 0.8.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-3">2017-05-01 Release 0.8.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-2">2017-04-13 Release 0.8.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-1">2017-04-13 Release 0.8.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-0">2017-03-24 Release 0.8.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-9">2017-03-08 Release 0.7.9</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-8">2017-03-01 Release 0.7.8</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-7">2017-02-16 Release 0.7.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-6">2017-02-15 Release 0.7.6</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-5">2017-01-31 Release 0.7.5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-4">2017-01-24 Release 0.7.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-3">2017-01-24 Release 0.7.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-2">2016-12-05 Release 0.7.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-1">2016-11-15 Release 0.7.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-0">2016-11-09 Release 0.7.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-9">2016-11-09 Release 0.6.9</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-8">2016-10-07 Release 0.6.8</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-7">2016-09-29 Release 0.6.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-6">2016-08-13 Release 0.6.6</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-5">2016-07-12 Release 0.6.5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-4">2016-06-17 Release 0.6.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-3">2016-05-09 Release 0.6.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#before-release-0-6-2">Before Release 0.6.2</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <section class="tex2jax_ignore mathjax_ignore" id="release-history">
-<h1>Release history<a class="headerlink" href="#release-history" title="Permalink to this headline">#</a></h1>
+<h1>Release history<a class="headerlink" href="#release-history" title="Permalink to this heading">#</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
 <section id="release-3-3-0">
-<h2>2022-12-16 Release 3.3.0<a class="headerlink" href="#release-3-3-0" title="Permalink to this headline">#</a></h2>
+<h2>2022-12-16 Release 3.3.0<a class="headerlink" href="#release-3-3-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2662">#2662</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1535,7 +563,7 @@ for a complete commit history.</p>
 </ul>
 </section>
 <section id="release-3-2-1">
-<h2>2021-08-06 Release 3.2.1<a class="headerlink" href="#release-3-2-1" title="Permalink to this headline">#</a></h2>
+<h2>2021-08-06 Release 3.2.1<a class="headerlink" href="#release-3-2-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2615">#2615</a>)</p>
 <p><strong>This is bug-fix release.</strong></p>
@@ -1545,7 +573,7 @@ for a complete commit history.</p>
 Correct an error in the value of the <code class="docutils literal notranslate"><span class="pre">CTC_new_c_under6_bonus</span></code> for the year 2021. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2609">#2609</a> by Jason DeBacker]</p>
 </section>
 <section id="release-3-2-0">
-<h2>2021-07-17 Release 3.2.0<a class="headerlink" href="#release-3-2-0" title="Permalink to this headline">#</a></h2>
+<h2>2021-07-17 Release 3.2.0<a class="headerlink" href="#release-3-2-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2604">#2604</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1561,7 +589,7 @@ Correct an error in the value of the <code class="docutils literal notranslate">
 <p><strong>Bug Fixes</strong></p>
 </section>
 <section id="release-3-1-0">
-<h2>2021-03-01 Release 3.1.0<a class="headerlink" href="#release-3-1-0" title="Permalink to this headline">#</a></h2>
+<h2>2021-03-01 Release 3.1.0<a class="headerlink" href="#release-3-1-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2566">#2566</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1570,7 +598,7 @@ Correct an error in the value of the <code class="docutils literal notranslate">
 <ul class="simple">
 <li><p>Package for Python 3.9. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2522">#2522</a> by Max Ghenis]</p></li>
 <li><p>Parameters for QBI deduction phaseout. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2508">#2508</a> by Peter Metz]</p></li>
-<li><p>Switch for QBI deduction wage and capital limitations. [[#2497(<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2497">https://github.com/PSLmodels/tax-calculator/pull/2497</a>) by Peter Metz]</p></li>
+<li><p>Switch for QBI deduction wage and capital limitations. [[#2497(<a class="github reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2497">PSLmodels/tax-calculator#2497</a>) by Peter Metz]</p></li>
 <li><p>Interaction with <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code> functions and unit tests without <code class="docutils literal notranslate"><span class="pre">&#64;jit</span></code> decorator. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2515">#2515</a> by Jacob Chuslo]</p></li>
 </ul>
 <p><strong>Bug Fixes</strong></p>
@@ -1582,7 +610,7 @@ Correct an error in the value of the <code class="docutils literal notranslate">
 </ul>
 </section>
 <section id="release-3-0-0">
-<h2>2020-08-24 Release 3.0.0<a class="headerlink" href="#release-3-0-0" title="Permalink to this headline">#</a></h2>
+<h2>2020-08-24 Release 3.0.0<a class="headerlink" href="#release-3-0-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2474">#2474</a>)</p>
 <p><strong>This is a major release with changes that make Tax-Calculator incompatible with earlier releases.</strong></p>
@@ -1610,7 +638,7 @@ Correct an error in the value of the <code class="docutils literal notranslate">
 </ul>
 </section>
 <section id="release-2-9-0">
-<h2>2020-03-18 Release 2.9.0<a class="headerlink" href="#release-2-9-0" title="Permalink to this headline">#</a></h2>
+<h2>2020-03-18 Release 2.9.0<a class="headerlink" href="#release-2-9-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2405">#2405</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1629,7 +657,7 @@ by Peter Metz and identified by Peter Metz]</p></li>
 </ul>
 </section>
 <section id="release-2-8-0">
-<h2>2020-02-28 Release 2.8.0<a class="headerlink" href="#release-2-8-0" title="Permalink to this headline">#</a></h2>
+<h2>2020-02-28 Release 2.8.0<a class="headerlink" href="#release-2-8-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2400">#2400</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1647,7 +675,7 @@ by Peter Metz]</p></li>
 -None</p>
 </section>
 <section id="release-2-7-0">
-<h2>2019-12-13 Release 2.7.0<a class="headerlink" href="#release-2-7-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-12-13 Release 2.7.0<a class="headerlink" href="#release-2-7-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2395">#2395</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1670,7 +698,7 @@ by Max Ghenis with bug reported by Tyler Evilsizer]</p></li>
 </ul>
 </section>
 <section id="release-2-6-0">
-<h2>2019-10-31 Release 2.6.0<a class="headerlink" href="#release-2-6-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-10-31 Release 2.6.0<a class="headerlink" href="#release-2-6-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2379">#2379</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1689,7 +717,7 @@ by Max Ghenis]</p></li>
 </ul>
 </section>
 <section id="release-2-5-0">
-<h2>2019-08-06 Release 2.5.0<a class="headerlink" href="#release-2-5-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-08-06 Release 2.5.0<a class="headerlink" href="#release-2-5-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2370">#2370</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1711,7 +739,7 @@ by Anderson Frailey]</p></li>
 </ul>
 </section>
 <section id="release-2-4-2">
-<h2>2019-06-28 Release 2.4.2<a class="headerlink" href="#release-2-4-2" title="Permalink to this headline">#</a></h2>
+<h2>2019-06-28 Release 2.4.2<a class="headerlink" href="#release-2-4-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2352">#2352</a>)</p>
 <p><strong>This is a bug-fix release.</strong></p>
@@ -1731,7 +759,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-2-4-1">
-<h2>2019-06-26 Release 2.4.1<a class="headerlink" href="#release-2-4-1" title="Permalink to this headline">#</a></h2>
+<h2>2019-06-26 Release 2.4.1<a class="headerlink" href="#release-2-4-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2348">#2348</a>)</p>
 <p><strong>This is a bug-fix release.</strong></p>
@@ -1751,7 +779,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-2-4-0">
-<h2>2019-06-25 Release 2.4.0<a class="headerlink" href="#release-2-4-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-06-25 Release 2.4.0<a class="headerlink" href="#release-2-4-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2345">#2345</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1771,7 +799,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-2-3-0">
-<h2>2019-06-08 Release 2.3.0<a class="headerlink" href="#release-2-3-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-06-08 Release 2.3.0<a class="headerlink" href="#release-2-3-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2337">#2337</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1794,7 +822,7 @@ by Martin Holmer based on ideas from Cody Kallen]</p></li>
 </ul>
 </section>
 <section id="release-2-2-0">
-<h2>2019-05-20 Release 2.2.0<a class="headerlink" href="#release-2-2-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-05-20 Release 2.2.0<a class="headerlink" href="#release-2-2-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2327">#2327</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1822,7 +850,7 @@ by Anderson Frailey with bug reported by Alan Viard and Erin Melly]</p></li>
 </ul>
 </section>
 <section id="release-2-1-0">
-<h2>2019-05-09 Release 2.1.0<a class="headerlink" href="#release-2-1-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-05-09 Release 2.1.0<a class="headerlink" href="#release-2-1-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2316">#2316</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1848,7 +876,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-2-0-1">
-<h2>2019-04-17 Release 2.0.1<a class="headerlink" href="#release-2-0-1" title="Permalink to this headline">#</a></h2>
+<h2>2019-04-17 Release 2.0.1<a class="headerlink" href="#release-2-0-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2306">#2306</a>)</p>
 <p><strong>This is a bug-fix release.</strong></p>
@@ -1868,11 +896,11 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-2-0-0">
-<h2>2019-04-15 Release 2.0.0<a class="headerlink" href="#release-2-0-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-04-15 Release 2.0.0<a class="headerlink" href="#release-2-0-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2297">#2297</a>)</p>
 <p><strong>This is a major release with changes that make Tax-Calculator incompatible with earlier releases.</strong></p>
-<p>Read <a class="reference external" href="UPGRADING.md#upgrading-to-tax-calculator-20">this document</a> to understand what you need to do before using Tax-Calculator 2.0.</p>
+<p>Read <span class="xref myst">this document</span> to understand what you need to do before using Tax-Calculator 2.0.</p>
 <p><strong>API Changes</strong></p>
 <ul class="simple">
 <li><p>Simplify and standardize the way that policy reforms (and assumption changes) are specified in both JSON files and Python dictionaies
@@ -1896,7 +924,7 @@ by Martin Holmer with bug reported by Robert Orr and fix tested on Windows by Du
 </ul>
 </section>
 <section id="release-1-2-0">
-<h2>2019-03-24 Release 1.2.0<a class="headerlink" href="#release-1-2-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-03-24 Release 1.2.0<a class="headerlink" href="#release-1-2-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2269">#2269</a>)</p>
 <p><strong>This is an enhancement and bug-fix release.</strong></p>
@@ -1921,7 +949,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-1-1-0">
-<h2>2019-03-17 Release 1.1.0<a class="headerlink" href="#release-1-1-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-03-17 Release 1.1.0<a class="headerlink" href="#release-1-1-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2261">#2261</a>)</p>
 <p><strong>This is an enhancement release.</strong></p>
@@ -1947,7 +975,7 @@ by Martin Holmer based on report by Max Ghenis]</p></li>
 </ul>
 </section>
 <section id="release-1-0-1">
-<h2>2019-02-26 Release 1.0.1<a class="headerlink" href="#release-1-0-1" title="Permalink to this headline">#</a></h2>
+<h2>2019-02-26 Release 1.0.1<a class="headerlink" href="#release-1-0-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2243">#2243</a>)</p>
 <p><strong>This is a bug-fix release.</strong></p>
@@ -1967,7 +995,7 @@ by Martin Holmer with bug reported by Erin Melly]</p></li>
 </ul>
 </section>
 <section id="release-1-0-0">
-<h2>2019-02-22 Release 1.0.0<a class="headerlink" href="#release-1-0-0" title="Permalink to this headline">#</a></h2>
+<h2>2019-02-22 Release 1.0.0<a class="headerlink" href="#release-1-0-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2241">#2241</a>)</p>
 <p><strong>This is a major release with changes that make Tax-Calculator
@@ -2025,7 +1053,7 @@ by Martin Holmer with need pointed out by Peter Metz]</p></li>
 </ul>
 </section>
 <section id="release-0-24-0">
-<h2>2018-12-14 Release 0.24.0<a class="headerlink" href="#release-0-24-0" title="Permalink to this headline">#</a></h2>
+<h2>2018-12-14 Release 0.24.0<a class="headerlink" href="#release-0-24-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2176">#2176</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2044,7 +1072,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-23-4">
-<h2>2018-12-13 Release 0.23.4<a class="headerlink" href="#release-0-23-4" title="Permalink to this headline">#</a></h2>
+<h2>2018-12-13 Release 0.23.4<a class="headerlink" href="#release-0-23-4" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2170">#2170</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2065,7 +1093,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-23-3">
-<h2>2018-12-05 Release 0.23.3<a class="headerlink" href="#release-0-23-3" title="Permalink to this headline">#</a></h2>
+<h2>2018-12-05 Release 0.23.3<a class="headerlink" href="#release-0-23-3" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2150">#2150</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2095,7 +1123,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-23-2">
-<h2>2018-11-22 Release 0.23.2<a class="headerlink" href="#release-0-23-2" title="Permalink to this headline">#</a></h2>
+<h2>2018-11-22 Release 0.23.2<a class="headerlink" href="#release-0-23-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2126">#2126</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2114,7 +1142,7 @@ by Martin Holmer responding to question from Ernie Tedeschi]</p></li>
 </ul>
 </section>
 <section id="release-0-23-1">
-<h2>2018-11-20 Release 0.23.1<a class="headerlink" href="#release-0-23-1" title="Permalink to this headline">#</a></h2>
+<h2>2018-11-20 Release 0.23.1<a class="headerlink" href="#release-0-23-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2123">#2123</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2139,7 +1167,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-23-0">
-<h2>2018-11-13 Release 0.23.0<a class="headerlink" href="#release-0-23-0" title="Permalink to this headline">#</a></h2>
+<h2>2018-11-13 Release 0.23.0<a class="headerlink" href="#release-0-23-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2111">#2111</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2169,7 +1197,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-22-2">
-<h2>2018-10-26 Release 0.22.2<a class="headerlink" href="#release-0-22-2" title="Permalink to this headline">#</a></h2>
+<h2>2018-10-26 Release 0.22.2<a class="headerlink" href="#release-0-22-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2094">#2094</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2188,7 +1216,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-22-1">
-<h2>2018-10-25 Release 0.22.1<a class="headerlink" href="#release-0-22-1" title="Permalink to this headline">#</a></h2>
+<h2>2018-10-25 Release 0.22.1<a class="headerlink" href="#release-0-22-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2091">#2091</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2207,7 +1235,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-22-0">
-<h2>2018-10-24 Release 0.22.0<a class="headerlink" href="#release-0-22-0" title="Permalink to this headline">#</a></h2>
+<h2>2018-10-24 Release 0.22.0<a class="headerlink" href="#release-0-22-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2087">#2087</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2242,7 +1270,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-21-0-first-release-compatible-only-with-python-3-6">
-<h2>2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6<a class="headerlink" href="#release-0-21-0-first-release-compatible-only-with-python-3-6" title="Permalink to this headline">#</a></h2>
+<h2>2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6<a class="headerlink" href="#release-0-21-0-first-release-compatible-only-with-python-3-6" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2058">#2058</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2266,7 +1294,7 @@ by Martin Holmer], which requires new <code class="docutils literal notranslate"
 </ul>
 </section>
 <section id="release-0-20-3-last-release-compatible-with-python-2-7">
-<h2>2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7<a class="headerlink" href="#release-0-20-3-last-release-compatible-with-python-2-7" title="Permalink to this headline">#</a></h2>
+<h2>2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7<a class="headerlink" href="#release-0-20-3-last-release-compatible-with-python-2-7" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2056">#2056</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2301,7 +1329,7 @@ by Martin Holmer], which requires new <code class="docutils literal notranslate"
 </ul>
 </section>
 <section id="release-0-20-2">
-<h2>2018-08-10 Release 0.20.2<a class="headerlink" href="#release-0-20-2" title="Permalink to this headline">#</a></h2>
+<h2>2018-08-10 Release 0.20.2<a class="headerlink" href="#release-0-20-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2048">#2048</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2343,7 +1371,7 @@ by Martin Holmer with bug reported by Max Ghenis]</p></li>
 </ul>
 </section>
 <section id="release-0-20-1">
-<h2>2018-05-21 Release 0.20.1<a class="headerlink" href="#release-0-20-1" title="Permalink to this headline">#</a></h2>
+<h2>2018-05-21 Release 0.20.1<a class="headerlink" href="#release-0-20-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2005">#2005</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2362,7 +1390,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-20-0">
-<h2>2018-05-18 Release 0.20.0<a class="headerlink" href="#release-0-20-0" title="Permalink to this headline">#</a></h2>
+<h2>2018-05-18 Release 0.20.0<a class="headerlink" href="#release-0-20-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2003">#2003</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2414,7 +1442,7 @@ by Hank Doupe]</p></li>
 </ul>
 </section>
 <section id="release-0-19-0">
-<h2>2018-04-19 Release 0.19.0<a class="headerlink" href="#release-0-19-0" title="Permalink to this headline">#</a></h2>
+<h2>2018-04-19 Release 0.19.0<a class="headerlink" href="#release-0-19-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1977">#1977</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2451,7 +1479,7 @@ by Martin Holmer based on bug report by Ernie Tedeschi]</p></li>
 </ul>
 </section>
 <section id="release-0-18-0">
-<h2>2018-03-30 Release 0.18.0<a class="headerlink" href="#release-0-18-0" title="Permalink to this headline">#</a></h2>
+<h2>2018-03-30 Release 0.18.0<a class="headerlink" href="#release-0-18-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1942">#1942</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2474,7 +1502,7 @@ by Anderson Frailey]</p></li>
 </ul>
 </section>
 <section id="release-0-17-0">
-<h2>2018-03-16 Release 0.17.0<a class="headerlink" href="#release-0-17-0" title="Permalink to this headline">#</a></h2>
+<h2>2018-03-16 Release 0.17.0<a class="headerlink" href="#release-0-17-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1926">#1926</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2513,7 +1541,7 @@ by Anderson Frailey]</p></li>
 </ul>
 </section>
 <section id="release-0-16-2">
-<h2>2018-03-09 Release 0.16.2<a class="headerlink" href="#release-0-16-2" title="Permalink to this headline">#</a></h2>
+<h2>2018-03-09 Release 0.16.2<a class="headerlink" href="#release-0-16-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1911">#1911</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2558,7 +1586,7 @@ by Martin Holmer as reported by Max Ghenis]</p></li>
 </ul>
 </section>
 <section id="release-0-16-1">
-<h2>2018-02-16 Release 0.16.1<a class="headerlink" href="#release-0-16-1" title="Permalink to this headline">#</a></h2>
+<h2>2018-02-16 Release 0.16.1<a class="headerlink" href="#release-0-16-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1886">#1886</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2585,7 +1613,7 @@ by Anderson Frailey]</p></li>
 </ul>
 </section>
 <section id="release-0-16-0">
-<h2>2018-02-13 Release 0.16.0<a class="headerlink" href="#release-0-16-0" title="Permalink to this headline">#</a></h2>
+<h2>2018-02-13 Release 0.16.0<a class="headerlink" href="#release-0-16-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1871">#1871</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2619,7 +1647,7 @@ by Martin Holmer with assistance from Matt Jensen]</p></li>
 </ul>
 </section>
 <section id="release-0-15-2">
-<h2>2018-01-30 Release 0.15.2<a class="headerlink" href="#release-0-15-2" title="Permalink to this headline">#</a></h2>
+<h2>2018-01-30 Release 0.15.2<a class="headerlink" href="#release-0-15-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1851">#1851</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2649,7 +1677,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-15-1">
-<h2>2018-01-20 Release 0.15.1<a class="headerlink" href="#release-0-15-1" title="Permalink to this headline">#</a></h2>
+<h2>2018-01-20 Release 0.15.1<a class="headerlink" href="#release-0-15-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1838">#1838</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2668,7 +1696,7 @@ by Martin Holmer as requested by Hank Doupe]</p></li>
 </ul>
 </section>
 <section id="release-0-15-0">
-<h2>2018-01-18 Release 0.15.0<a class="headerlink" href="#release-0-15-0" title="Permalink to this headline">#</a></h2>
+<h2>2018-01-18 Release 0.15.0<a class="headerlink" href="#release-0-15-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1834">#1834</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2712,7 +1740,7 @@ by Martin Holmer and Hank Doupe]</p></li>
 </ul>
 </section>
 <section id="release-0-14-3">
-<h2>2017-12-24 Release 0.14.3<a class="headerlink" href="#release-0-14-3" title="Permalink to this headline">#</a></h2>
+<h2>2017-12-24 Release 0.14.3<a class="headerlink" href="#release-0-14-3" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1796">#1796</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2740,7 +1768,7 @@ by Martin Holmer with need pointed out by Matt Jensen and Hank Doupe]</p></li>
 </ul>
 </section>
 <section id="release-0-14-2">
-<h2>2017-12-19 Release 0.14.2<a class="headerlink" href="#release-0-14-2" title="Permalink to this headline">#</a></h2>
+<h2>2017-12-19 Release 0.14.2<a class="headerlink" href="#release-0-14-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1775">#1775</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2764,7 +1792,7 @@ by Martin Holmer, reported by Max Ghenis and diagnosed by Hank Doupe]</p></li>
 </ul>
 </section>
 <section id="release-0-14-1">
-<h2>2017-12-15 Release 0.14.1<a class="headerlink" href="#release-0-14-1" title="Permalink to this headline">#</a></h2>
+<h2>2017-12-15 Release 0.14.1<a class="headerlink" href="#release-0-14-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1759">#1759</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2789,7 +1817,7 @@ by Cody Kallen with review by Matt Jensen and Sean Wang]</p></li>
 </ul>
 </section>
 <section id="release-0-14-0">
-<h2>2017-12-11 Release 0.14.0<a class="headerlink" href="#release-0-14-0" title="Permalink to this headline">#</a></h2>
+<h2>2017-12-11 Release 0.14.0<a class="headerlink" href="#release-0-14-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1742">#1742</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2833,7 +1861,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-13-2">
-<h2>2017-11-17 Release 0.13.2<a class="headerlink" href="#release-0-13-2" title="Permalink to this headline">#</a></h2>
+<h2>2017-11-17 Release 0.13.2<a class="headerlink" href="#release-0-13-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1680">#1680</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2869,7 +1897,7 @@ by Martin Holmer, reported by Hank Doupe]</p></li>
 </ul>
 </section>
 <section id="release-0-13-1">
-<h2>2017-11-10 Release 0.13.1<a class="headerlink" href="#release-0-13-1" title="Permalink to this headline">#</a></h2>
+<h2>2017-11-10 Release 0.13.1<a class="headerlink" href="#release-0-13-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1655">#1655</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2902,7 +1930,7 @@ by Cody Kallen, reported by Richard Evans]</p></li>
 </ul>
 </section>
 <section id="release-0-13-0">
-<h2>2017-11-07 Release 0.13.0<a class="headerlink" href="#release-0-13-0" title="Permalink to this headline">#</a></h2>
+<h2>2017-11-07 Release 0.13.0<a class="headerlink" href="#release-0-13-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1632">#1632</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -2949,7 +1977,7 @@ by Hank Doupe]</p></li>
 </ul>
 </section>
 <section id="release-0-12-0">
-<h2>2017-10-20 Release 0.12.0<a class="headerlink" href="#release-0-12-0" title="Permalink to this headline">#</a></h2>
+<h2>2017-10-20 Release 0.12.0<a class="headerlink" href="#release-0-12-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1600">#1600</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3008,7 +2036,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-11-0">
-<h2>2017-09-21 Release 0.11.0<a class="headerlink" href="#release-0-11-0" title="Permalink to this headline">#</a></h2>
+<h2>2017-09-21 Release 0.11.0<a class="headerlink" href="#release-0-11-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1555">#1555</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3038,7 +2066,7 @@ by Matt Jensen and Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-10-2">
-<h2>2017-09-13 Release 0.10.2<a class="headerlink" href="#release-0-10-2" title="Permalink to this headline">#</a></h2>
+<h2>2017-09-13 Release 0.10.2<a class="headerlink" href="#release-0-10-2" title="Permalink to this heading">#</a></h2>
 <p><strong>API Changes</strong></p>
 <ul class="simple">
 <li><p>None</p></li>
@@ -3055,7 +2083,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-10-1">
-<h2>2017-09-08 Release 0.10.1<a class="headerlink" href="#release-0-10-1" title="Permalink to this headline">#</a></h2>
+<h2>2017-09-08 Release 0.10.1<a class="headerlink" href="#release-0-10-1" title="Permalink to this heading">#</a></h2>
 <p><strong>API Changes</strong></p>
 <ul class="simple">
 <li><p>None</p></li>
@@ -3072,7 +2100,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-10-0">
-<h2>2017-08-28 Release 0.10.0<a class="headerlink" href="#release-0-10-0" title="Permalink to this headline">#</a></h2>
+<h2>2017-08-28 Release 0.10.0<a class="headerlink" href="#release-0-10-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1531">#1531</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3101,7 +2129,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-9-2">
-<h2>2017-07-26 Release 0.9.2<a class="headerlink" href="#release-0-9-2" title="Permalink to this headline">#</a></h2>
+<h2>2017-07-26 Release 0.9.2<a class="headerlink" href="#release-0-9-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1490">#1490</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3131,7 +2159,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-9-1">
-<h2>2017-07-06 Release 0.9.1<a class="headerlink" href="#release-0-9-1" title="Permalink to this headline">#</a></h2>
+<h2>2017-07-06 Release 0.9.1<a class="headerlink" href="#release-0-9-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1438">#1438</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3161,7 +2189,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-9-0">
-<h2>2017-06-14 Release 0.9.0<a class="headerlink" href="#release-0-9-0" title="Permalink to this headline">#</a></h2>
+<h2>2017-06-14 Release 0.9.0<a class="headerlink" href="#release-0-9-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1431">#1431</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3200,7 +2228,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-8-5">
-<h2>2017-06-08 Release 0.8.5<a class="headerlink" href="#release-0-8-5" title="Permalink to this headline">#</a></h2>
+<h2>2017-06-08 Release 0.8.5<a class="headerlink" href="#release-0-8-5" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1416">#1416</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3231,7 +2259,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-8-4">
-<h2>2017-05-12 Release 0.8.4<a class="headerlink" href="#release-0-8-4" title="Permalink to this headline">#</a></h2>
+<h2>2017-05-12 Release 0.8.4<a class="headerlink" href="#release-0-8-4" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1363">#1363</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3257,7 +2285,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-8-3">
-<h2>2017-05-01 Release 0.8.3<a class="headerlink" href="#release-0-8-3" title="Permalink to this headline">#</a></h2>
+<h2>2017-05-01 Release 0.8.3<a class="headerlink" href="#release-0-8-3" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1328">#1328</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3285,7 +2313,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-8-2">
-<h2>2017-04-13 Release 0.8.2<a class="headerlink" href="#release-0-8-2" title="Permalink to this headline">#</a></h2>
+<h2>2017-04-13 Release 0.8.2<a class="headerlink" href="#release-0-8-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1295">#1295</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3304,7 +2332,7 @@ by Matt Jensen]</p></li>
 </ul>
 </section>
 <section id="release-0-8-1">
-<h2>2017-04-13 Release 0.8.1<a class="headerlink" href="#release-0-8-1" title="Permalink to this headline">#</a></h2>
+<h2>2017-04-13 Release 0.8.1<a class="headerlink" href="#release-0-8-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1293">#1293</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3342,7 +2370,7 @@ by Zach Risher]</p></li>
 </ul>
 </section>
 <section id="release-0-8-0">
-<h2>2017-03-24 Release 0.8.0<a class="headerlink" href="#release-0-8-0" title="Permalink to this headline">#</a></h2>
+<h2>2017-03-24 Release 0.8.0<a class="headerlink" href="#release-0-8-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1260">#1260</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3376,7 +2404,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-7-9">
-<h2>2017-03-08 Release 0.7.9<a class="headerlink" href="#release-0-7-9" title="Permalink to this headline">#</a></h2>
+<h2>2017-03-08 Release 0.7.9<a class="headerlink" href="#release-0-7-9" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1228">#1228</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3401,7 +2429,7 @@ by Peter Steinberg]</p></li>
 </ul>
 </section>
 <section id="release-0-7-8">
-<h2>2017-03-01 Release 0.7.8<a class="headerlink" href="#release-0-7-8" title="Permalink to this headline">#</a></h2>
+<h2>2017-03-01 Release 0.7.8<a class="headerlink" href="#release-0-7-8" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1206">#1206</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3427,7 +2455,7 @@ by Cody Kallen]</p></li>
 </ul>
 </section>
 <section id="release-0-7-7">
-<h2>2017-02-16 Release 0.7.7<a class="headerlink" href="#release-0-7-7" title="Permalink to this headline">#</a></h2>
+<h2>2017-02-16 Release 0.7.7<a class="headerlink" href="#release-0-7-7" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1197">#1197</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3446,7 +2474,7 @@ by Anderson Frailey]</p></li>
 </ul>
 </section>
 <section id="release-0-7-6">
-<h2>2017-02-15 Release 0.7.6<a class="headerlink" href="#release-0-7-6" title="Permalink to this headline">#</a></h2>
+<h2>2017-02-15 Release 0.7.6<a class="headerlink" href="#release-0-7-6" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1192">#1192</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3477,7 +2505,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-7-5">
-<h2>2017-01-31 Release 0.7.5<a class="headerlink" href="#release-0-7-5" title="Permalink to this headline">#</a></h2>
+<h2>2017-01-31 Release 0.7.5<a class="headerlink" href="#release-0-7-5" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1169">#1169</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3504,7 +2532,7 @@ by Anderson Frailey]</p></li>
 </ul>
 </section>
 <section id="release-0-7-4">
-<h2>2017-01-24 Release 0.7.4<a class="headerlink" href="#release-0-7-4" title="Permalink to this headline">#</a></h2>
+<h2>2017-01-24 Release 0.7.4<a class="headerlink" href="#release-0-7-4" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1152">#1152</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3528,7 +2556,7 @@ by Matt Jensen]</p></li>
 </ul>
 </section>
 <section id="release-0-7-3">
-<h2>2017-01-24 Release 0.7.3<a class="headerlink" href="#release-0-7-3" title="Permalink to this headline">#</a></h2>
+<h2>2017-01-24 Release 0.7.3<a class="headerlink" href="#release-0-7-3" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1113">#1113</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3575,7 +2603,7 @@ by Zach Risher]</p></li>
 </ul>
 </section>
 <section id="release-0-7-2">
-<h2>2016-12-05 Release 0.7.2<a class="headerlink" href="#release-0-7-2" title="Permalink to this headline">#</a></h2>
+<h2>2016-12-05 Release 0.7.2<a class="headerlink" href="#release-0-7-2" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1082">#1082</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3606,7 +2634,7 @@ which requires new <code class="docutils literal notranslate"><span class="pre">
 </ul>
 </section>
 <section id="release-0-7-1">
-<h2>2016-11-15 Release 0.7.1<a class="headerlink" href="#release-0-7-1" title="Permalink to this headline">#</a></h2>
+<h2>2016-11-15 Release 0.7.1<a class="headerlink" href="#release-0-7-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1060">#1060</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3630,7 +2658,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-7-0">
-<h2>2016-11-09 Release 0.7.0<a class="headerlink" href="#release-0-7-0" title="Permalink to this headline">#</a></h2>
+<h2>2016-11-09 Release 0.7.0<a class="headerlink" href="#release-0-7-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1044">#1044</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3651,7 +2679,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-6-9">
-<h2>2016-11-09 Release 0.6.9<a class="headerlink" href="#release-0-6-9" title="Permalink to this headline">#</a></h2>
+<h2>2016-11-09 Release 0.6.9<a class="headerlink" href="#release-0-6-9" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1039">#1039</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3699,7 +2727,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-6-8">
-<h2>2016-10-07 Release 0.6.8<a class="headerlink" href="#release-0-6-8" title="Permalink to this headline">#</a></h2>
+<h2>2016-10-07 Release 0.6.8<a class="headerlink" href="#release-0-6-8" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/970">#970</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3726,7 +2754,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-6-7">
-<h2>2016-09-29 Release 0.6.7<a class="headerlink" href="#release-0-6-7" title="Permalink to this headline">#</a></h2>
+<h2>2016-09-29 Release 0.6.7<a class="headerlink" href="#release-0-6-7" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/945">#945</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3765,7 +2793,7 @@ by Martin Holmer]</p></li>
 </ul>
 </section>
 <section id="release-0-6-6">
-<h2>2016-08-13 Release 0.6.6<a class="headerlink" href="#release-0-6-6" title="Permalink to this headline">#</a></h2>
+<h2>2016-08-13 Release 0.6.6<a class="headerlink" href="#release-0-6-6" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/844">#844</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3802,7 +2830,7 @@ the same results
 </ul>
 </section>
 <section id="release-0-6-5">
-<h2>2016-07-12 Release 0.6.5<a class="headerlink" href="#release-0-6-5" title="Permalink to this headline">#</a></h2>
+<h2>2016-07-12 Release 0.6.5<a class="headerlink" href="#release-0-6-5" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/820">#820</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3822,7 +2850,7 @@ the same results
 </ul>
 </section>
 <section id="release-0-6-4">
-<h2>2016-06-17 Release 0.6.4<a class="headerlink" href="#release-0-6-4" title="Permalink to this headline">#</a></h2>
+<h2>2016-06-17 Release 0.6.4<a class="headerlink" href="#release-0-6-4" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/794">#794</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3845,7 +2873,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
 </ul>
 </section>
 <section id="release-0-6-3">
-<h2>2016-05-09 Release 0.6.3<a class="headerlink" href="#release-0-6-3" title="Permalink to this headline">#</a></h2>
+<h2>2016-05-09 Release 0.6.3<a class="headerlink" href="#release-0-6-3" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/727">#727</a>)</p>
 <p><strong>API Changes</strong></p>
@@ -3869,7 +2897,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
 </ul>
 </section>
 <section id="before-release-0-6-2">
-<h2>Before Release 0.6.2<a class="headerlink" href="#before-release-0-6-2" title="Permalink to this headline">#</a></h2>
+<h2>Before Release 0.6.2<a class="headerlink" href="#before-release-0-6-2" title="Permalink to this heading">#</a></h2>
 <p>See commit history for pull requests before
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/650">#650</a></p>
 </section>
@@ -3887,7 +2915,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
+            name: "python3",
             path: "./about"
         },
         predefinedOutput: true
@@ -3895,50 +2923,182 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="roadmap.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Roadmap</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="roadmap.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Roadmap</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="license.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="license.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">License</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-3-0">2022-12-16 Release 3.3.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-2-1">2021-08-06 Release 3.2.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-2-0">2021-07-17 Release 3.2.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-1-0">2021-03-01 Release 3.1.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-0-0">2020-08-24 Release 3.0.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-9-0">2020-03-18 Release 2.9.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-8-0">2020-02-28 Release 2.8.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-7-0">2019-12-13 Release 2.7.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-6-0">2019-10-31 Release 2.6.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-5-0">2019-08-06 Release 2.5.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-4-2">2019-06-28 Release 2.4.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-4-1">2019-06-26 Release 2.4.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-4-0">2019-06-25 Release 2.4.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-3-0">2019-06-08 Release 2.3.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-2-0">2019-05-20 Release 2.2.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-1-0">2019-05-09 Release 2.1.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-0-1">2019-04-17 Release 2.0.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-2-0-0">2019-04-15 Release 2.0.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-1-2-0">2019-03-24 Release 1.2.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-1-1-0">2019-03-17 Release 1.1.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-1-0-1">2019-02-26 Release 1.0.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-1-0-0">2019-02-22 Release 1.0.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-24-0">2018-12-14 Release 0.24.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-23-4">2018-12-13 Release 0.23.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-23-3">2018-12-05 Release 0.23.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-23-2">2018-11-22 Release 0.23.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-23-1">2018-11-20 Release 0.23.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-23-0">2018-11-13 Release 0.23.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-22-2">2018-10-26 Release 0.22.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-22-1">2018-10-25 Release 0.22.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-22-0">2018-10-24 Release 0.22.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-21-0-first-release-compatible-only-with-python-3-6">2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-20-3-last-release-compatible-with-python-2-7">2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-20-2">2018-08-10 Release 0.20.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-20-1">2018-05-21 Release 0.20.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-20-0">2018-05-18 Release 0.20.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-19-0">2018-04-19 Release 0.19.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-18-0">2018-03-30 Release 0.18.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-17-0">2018-03-16 Release 0.17.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-16-2">2018-03-09 Release 0.16.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-16-1">2018-02-16 Release 0.16.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-16-0">2018-02-13 Release 0.16.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-15-2">2018-01-30 Release 0.15.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-15-1">2018-01-20 Release 0.15.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-15-0">2018-01-18 Release 0.15.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-14-3">2017-12-24 Release 0.14.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-14-2">2017-12-19 Release 0.14.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-14-1">2017-12-15 Release 0.14.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-14-0">2017-12-11 Release 0.14.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-13-2">2017-11-17 Release 0.13.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-13-1">2017-11-10 Release 0.13.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-13-0">2017-11-07 Release 0.13.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-12-0">2017-10-20 Release 0.12.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-11-0">2017-09-21 Release 0.11.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-10-2">2017-09-13 Release 0.10.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-10-1">2017-09-08 Release 0.10.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-10-0">2017-08-28 Release 0.10.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-9-2">2017-07-26 Release 0.9.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-9-1">2017-07-06 Release 0.9.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-9-0">2017-06-14 Release 0.9.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-5">2017-06-08 Release 0.8.5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-4">2017-05-12 Release 0.8.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-3">2017-05-01 Release 0.8.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-2">2017-04-13 Release 0.8.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-1">2017-04-13 Release 0.8.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-8-0">2017-03-24 Release 0.8.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-9">2017-03-08 Release 0.7.9</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-8">2017-03-01 Release 0.7.8</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-7">2017-02-16 Release 0.7.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-6">2017-02-15 Release 0.7.6</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-5">2017-01-31 Release 0.7.5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-4">2017-01-24 Release 0.7.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-3">2017-01-24 Release 0.7.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-2">2016-12-05 Release 0.7.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-1">2016-11-15 Release 0.7.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-7-0">2016-11-09 Release 0.7.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-9">2016-11-09 Release 0.6.9</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-8">2016-10-07 Release 0.6.8</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-7">2016-09-29 Release 0.6.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-6">2016-08-13 Release 0.6.6</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-5">2016-07-12 Release 0.6.5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-4">2016-06-17 Release 0.6.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-0-6-3">2016-05-09 Release 0.6.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#before-release-0-6-2">Before Release 0.6.2</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner">
+<div class="bd-footer-content__inner container">
   
-    By Policy Simulation Library<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
+  <div class="footer-item">
     
-</div>
+<p class="component-author">
+By Policy Simulation Library
+</p>
 
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
 
-      </div>
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div></div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>

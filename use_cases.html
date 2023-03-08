@@ -1,48 +1,59 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Recorded use cases &#8212; Tax-Calculator</title>
-    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
-    
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
@@ -50,60 +61,92 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'use_cases';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Tax-Calculator Private Utilities" href="api/utilsprvt.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+      <div class="bd-sidebar-primary bd-sidebar">
         
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+    
+    
       
-      
-      <img src="_static/PSL.svg" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
+    
+    
+    <img src="_static/PSL.svg" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="_static/PSL.svg" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
@@ -112,539 +155,298 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Usage
- </span>
-</p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Usage</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="usage/starting.html">
-   Getting started
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usage/overview.html">
-   Structural overview
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="usage/data.html">
-   Data for Tax-Calculator
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="guide/index.html">
-   User guide
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="guide/python_interface.html">
-     Python interface
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="guide/cli.html">
-     Command-line interface
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="guide/policy_params.html">
-     Policy parameters
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="guide/input_vars.html">
-     Input variables
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="guide/output_vars.html">
-     Output variables
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="guide/assumption_params.html">
-     Assumption parameters
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="recipes/index.html">
-   Recipes
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
-  <label for="toctree-checkbox-2">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="recipes/recipe00.html">
-     Basic Recipe: Static Analysis of a Simple Reform
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="recipes/recipe01.html">
-     Recipe 1: Directly Comparing Two Reforms
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="recipes/recipe02.html">
-     Recipe 2: Estimating Behavioral Response to Reform
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="recipes/recipe03.html">
-     Recipe 3: Creating a Custom Table
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="recipes/recipe04.html">
-     Recipe 4: Estimating Differential Reform Response
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="recipes/recipe04_pandas.html">
-     Recipe 4: Estimating Differential Reform Response - pandas version
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="recipes/recipe05.html">
-     Recipe 5: Redefining Expanded Income
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="recipes/recipe06.html">
-     Recipe 6: Analyzing a Non-Parametric Reform
-    </a>
-   </li>
-  </ul>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="usage/starting.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/overview.html">Structural overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/data.html">Data for Tax-Calculator</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="guide/index.html">User guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/python_interface.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/cli.html">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/policy_params.html">Policy parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/input_vars.html">Input variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/output_vars.html">Output variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/assumption_params.html">Assumption parameters</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  About
- </span>
-</p>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="recipes/index.html">Recipes</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="recipes/recipe00.html">Basic Recipe: Static Analysis of a Simple Reform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes/recipe01.html">Recipe 1: Directly Comparing Two Reforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes/recipe02.html">Recipe 2: Estimating Behavioral Response to Reform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes/recipe03.html">Recipe 3: Creating a Custom Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes/recipe04.html">Recipe 4: Estimating Differential Reform Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes/recipe04_pandas.html">Recipe 4: Estimating Differential Reform Response - pandas version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes/recipe05.html">Recipe 5: Redefining Expanded Income</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes/recipe06.html">Recipe 6: Analyzing a Non-Parametric Reform</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="about/history.html">
-   History
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="about/roadmap.html">
-   Roadmap
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="about/releases.html">
-   Release history
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="about/license.html">
-   License
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="about/history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about/roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about/releases.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about/license.html">License</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Contributing
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="contributing/contributor_guide.html">
-   Contributor guide
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="contributing/pr_workflow.html">
-   Pull request workflow
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="contributing/param_naming.html">
-   Policy parameter naming and placing conventions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="contributing/testing.html">
-   Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="contributing/RELEASING.html">
-   Releasing Tax-Caclculator Packages
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="contributing/contributor_guide.html">Contributor guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing/pr_workflow.html">Pull request workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing/param_naming.html">Policy parameter naming and placing conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing/testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing/RELEASING.html">Releasing Tax-Caclculator Packages</a></li>
+
+
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  API
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="api/public_api.html">
-   Tax-Calculator Python API
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
-  <label for="toctree-checkbox-3">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/calcfunctions.html">
-     Tax-Calculator CalcFunctions
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/calculator.html">
-     Tax-Calculator Calculator
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/consumption.html">
-     Tax-Calculator Consumption
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/data.html">
-     Tax-Calculator Data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/decorators.html">
-     Tax-Calculator Decorators
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/growdiff.html">
-     Tax-Calculator GrowDiff
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/growfactors.html">
-     Tax-Calculator GrowFactors
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/parameters.html">
-     Tax-Calculator Parameters
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/policy.html">
-     Tax-Calculator Policy
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/records.html">
-     Tax-Calculator Records
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/taxcalcio.html">
-     Tax-Calculator IO
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/utils.html">
-     Tax-Calculator Utilities
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/utilsprvt.html">
-     Tax-Calculator Private Utilities
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/calcfunctions.html">
-     Tax-Calculator CalcFunctions
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/calculator.html">
-     Tax-Calculator Calculator
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/consumption.html">
-     Tax-Calculator Consumption
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/data.html">
-     Tax-Calculator Data
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/decorators.html">
-     Tax-Calculator Decorators
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/growdiff.html">
-     Tax-Calculator GrowDiff
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/growfactors.html">
-     Tax-Calculator GrowFactors
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/parameters.html">
-     Tax-Calculator Parameters
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/policy.html">
-     Tax-Calculator Policy
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/records.html">
-     Tax-Calculator Records
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/taxcalcio.html">
-     Tax-Calculator IO
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/utils.html">
-     Tax-Calculator Utilities
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="api/utilsprvt.html">
-     Tax-Calculator Private Utilities
-    </a>
-   </li>
-  </ul>
- </li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/public_api.html">Tax-Calculator Python API</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/calculator.html">Tax-Calculator Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/consumption.html">Tax-Calculator Consumption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/data.html">Tax-Calculator Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/decorators.html">Tax-Calculator Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/growdiff.html">Tax-Calculator GrowDiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/growfactors.html">Tax-Calculator GrowFactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/parameters.html">Tax-Calculator Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/policy.html">Tax-Calculator Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/records.html">Tax-Calculator Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/taxcalcio.html">Tax-Calculator IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/utils.html">Tax-Calculator Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/calculator.html">Tax-Calculator Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/consumption.html">Tax-Calculator Consumption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/data.html">Tax-Calculator Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/decorators.html">Tax-Calculator Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/growdiff.html">Tax-Calculator GrowDiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/growfactors.html">Tax-Calculator GrowFactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/parameters.html">Tax-Calculator Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/policy.html">Tax-Calculator Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/records.html">Tax-Calculator Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/taxcalcio.html">Tax-Calculator IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/utils.html">Tax-Calculator Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Tax-Calculator use cases
- </span>
-</p>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tax-Calculator use cases</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Recorded use cases
-  </a>
- </li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Recorded use cases</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/use_cases.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fuse_cases.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
 </div>
 
 
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
 
 
 
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/use_cases.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
   </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/PSLmodels/Tax-Calculator"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fuse_cases.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/use_cases.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Edit this page"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-pencil-alt"></i>
-  </span>
-<span class="headerbtn__text-container">suggest edit</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/use_cases.md"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.md</span>
-</a>
-
-      </li>
+</div></div>
       
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
+    </div>
   
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
 </div>
+</div>
+              
+              
 
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Recorded use cases</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
     </div>
 </div>
 
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-</div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Recorded use cases</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                    </div>
-                </div>
-            </div>
-            <main id="main-content" role="main">
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <section class="tex2jax_ignore mathjax_ignore" id="recorded-use-cases">
-<h1>Recorded use cases<a class="headerlink" href="#recorded-use-cases" title="Permalink to this headline">#</a></h1>
+<h1>Recorded use cases<a class="headerlink" href="#recorded-use-cases" title="Permalink to this heading">#</a></h1>
 <p>[72] JORDAN WEISSMANN. It’s Time for Democrats to Buck Up and Give Joe Manchin What He Wants. <em>Slate</em>.
 December 2021. URL:
 <a class="reference external" href="https://slate.com/business/2021/12/manchin-democrats-bbb-spending.html">https://slate.com/business/2021/12/manchin-democrats-bbb-spending.html</a>
@@ -714,12 +516,12 @@ current law and Joe Biden’s tax proposal. September 2020. URL:
 2020-11-03).</p>
 <p>[55] Max Ghenis and Nate Silver. Poverty and inequality effects of new
 unemployment benefits, payroll tax cuts, and universal payments. July</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>URL: <a class="reference external" href="https://covid.ubicenter.org/fpuc.html">https://covid.ubicenter.org/fpuc.html</a> (visited on
 2020-11-02).</p></li>
 </ol>
 <p>[54] Kyle Pomerleau. An analysis of Joe Biden’s tax proposals. June</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Section: Economics. URL:
 <a class="reference external" href="https://www.aei.org/research-products/report/an-analysis-of-joe-bidens-tax-proposals/">https://www.aei.org/research-products/report/an-analysis-of-joe-bidens-tax-proposals/</a>
 (visited on 2020-11-02).</p></li>
@@ -775,7 +577,7 @@ December 2019. URL:
 (visited on 2020-06-24), doi:10.17310/ntj.2019.4.03.</p>
 <p>[41] Alan D. Viard and Sita Nataraj Slavov. The Wrong Way to Make
 Social Security and Medicare More Progressive. Tax Notes, September</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>URL:
 <a class="reference external" href="https://www.taxnotes.com/tax-notes-federal/social-welfare-taxation/wrong-way-make-social-security-and-medicare-more-progressive/2019/09/16/29wpk">https://www.taxnotes.com/tax-notes-federal/social-welfare-taxation/wrong-way-make-social-security-and-medicare-more-progressive/2019/09/16/29wpk</a>
 (visited on 2020-06-24).</p></li>
@@ -797,7 +599,7 @@ tax reform \textbar AEI. Bloomberg Tax, March 2019. URL:
 (visited on 2020-06-24).</p>
 <p>[36] Ernie Tedeschi. An Analysis of the Earned Basic Income Tax
 Credit. March 2019. URL:
-<a class="reference external" href="https://drive.google.com/file/d/1Ko0kQXP7FEdzdvGJq4N7MmRbemFNH8Xp/view?mkt_tok=eyJpIjoiWVRRMFpqTXhOVGcwTkRBNSIsInQiOiJzNk5CWkpqOUlzeGc4Z0ZRUXYwSnRXT0ZZSGVwczNwa3A3UVwvUWdKaEVuc2E2TE91NUVUcjVEU1doMEdsSnpcL1BIVzE4U2NzeGZFOENBWmhiUlwvbDhUSUxsQVJ4cXJJTDJYcExsdElUV0xkMFFaRzJoMlRtTGNOZWM3RHZHeDNBUSJ9&amp;amp;usp=embed_facebook">https://drive.google.com/file/d/1Ko0kQXP7FEdzdvGJq4N7MmRbemFNH8Xp/view?mkt_tok=eyJpIjoiWVRRMFpqTXhOVGcwTkRBNSIsInQiOiJzNk5CWkpqOUlzeGc4Z0ZRUXYwSnRXT0ZZSGVwczNwa3A3UVwvUWdKaEVuc2E2TE91NUVUcjVEU1doMEdsSnpcL1BIVzE4U2NzeGZFOENBWmhiUlwvbDhUSUxsQVJ4cXJJTDJYcExsdElUV0xkMFFaRzJoMlRtTGNOZWM3RHZHeDNBUSJ9&amp;amp;usp=embed_facebook</a>
+<a class="reference external" href="https://drive.google.com/file/d/1Ko0kQXP7FEdzdvGJq4N7MmRbemFNH8Xp/view?mkt_tok=eyJpIjoiWVRRMFpqTXhOVGcwTkRBNSIsInQiOiJzNk5CWkpqOUlzeGc4Z0ZRUXYwSnRXT0ZZSGVwczNwa3A3UVwvUWdKaEVuc2E2TE91NUVUcjVEU1doMEdsSnpcL1BIVzE4U2NzeGZFOENBWmhiUlwvbDhUSUxsQVJ4cXJJTDJYcExsdElUV0xkMFFaRzJoMlRtTGNOZWM3RHZHeDNBUSJ9&amp;amp;usp=embed_facebook">https://drive.google.com/file/d/1Ko0kQXP7FEdzdvGJq4N7MmRbemFNH8Xp/view?mkt_tok=eyJpIjoiWVRRMFpqTXhOVGcwTkRBNSIsInQiOiJzNk5CWkpqOUlzeGc4Z0ZRUXYwSnRXT0ZZSGVwczNwa3A3UVwvUWdKaEVuc2E2TE91NUVUcjVEU1doMEdsSnpcL1BIVzE4U2NzeGZFOENBWmhiUlwvbDhUSUxsQVJ4cXJJTDJYcExsdElUV0xkMFFaRzJoMlRtTGNOZWM3RHZHeDNBUSJ9&amp;usp=embed_facebook</a>
 (visited on 2020-06-24).</p>
 <p>[35] Council of Economic Advisors. Economic Report of the President.
 Technical Report PR 45.9, Council of Economic Advisors, March 2019. URL:
@@ -810,7 +612,7 @@ February 2019. URL:
 <p>[33] Jason DeBacker, Richard W. Evans, and Kerk L. Phillips.
 Integrating Microsimulation Models of Tax Policy into a DGE
 Macroeconomic Model. Public Finance Review, 47(2):207–275, February</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>URL: <a class="reference external" href="https://doi.org/10.1177/1091142118816744">https://doi.org/10.1177/1091142118816744</a> (visited on
 2020-06-24), doi:10.1177/1091142118816744.</p></li>
 </ol>
@@ -863,7 +665,7 @@ December 2017. URL:
 (visited on 2020-06-24).</p>
 <p>[20] Quoctrung Bui and Ben Casselman. What the Tax Bill Would Look
 Like for 25,000 Middle-Class Families. The New York Times, November</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>URL:
 <a class="reference external" href="https://www.nytimes.com/interactive/2017/11/28/upshot/what-the-tax-bill-would-look-like-for-25000-middle-class-families.html">https://www.nytimes.com/interactive/2017/11/28/upshot/what-the-tax-bill-would-look-like-for-25000-middle-class-families.html</a>,
 <a class="reference external" href="https://www.nytimes.com/interactive/2017/11/28/upshot/what-the-tax-bill-would-look-like-for-25000-middle-class-families.html">https://www.nytimes.com/interactive/2017/11/28/upshot/what-the-tax-bill-would-look-like-for-25000-middle-class-families.html</a>
@@ -872,7 +674,7 @@ Like for 25,000 Middle-Class Families. The New York Times, November</p>
 <p>[19] Council of Economic Advisors. Evaluating the Anticipated Effects
 of Changes to the Mortgage Interest Deduction. Technical Report, Council
 of Economic Advisors, November 2017. URL:
-<a class="reference external" href="https://www.whitehouse.gov/sites/whitehouse.gov/files/images/Effects%20of%20Changes%20to%20the%20Mortgage%20Interest%20Deduction%20FINAL.pdf">https://www.whitehouse.gov/sites/whitehouse.gov/files/images/Effects%20of%20Changes%20to%20the%20Mortgage%20Interest%20Deduction%20FINAL.pdf</a>.</p>
+<a class="reference external" href="https://www.whitehouse.gov/sites/whitehouse.gov/files/images/Effects%20of%20Changes%20to%20the%20Mortgage%20Interest%20Deduction%20FINAL.pdf">https://www.whitehouse.gov/sites/whitehouse.gov/files/images/Effects of Changes to the Mortgage Interest Deduction FINAL.pdf</a>.</p>
 <p>[18] Ernie Tedeschi. For the Non-Rich, the Child Tax Credit Is the Key
 to Tax Reform. The New York Times, October 2017. URL:
 <a class="reference external" href="https://www.nytimes.com/interactive/2017/10/17/upshot/tax-reform-winners-losers-child-tax-credit.html">https://www.nytimes.com/interactive/2017/10/17/upshot/tax-reform-winners-losers-child-tax-credit.html</a>,
@@ -889,7 +691,7 @@ September 2017. URL:
 <a class="reference external" href="https://www.aei.org/research-products/one-pager/aei-tax-brief-increasing-the-standard-deduction/">https://www.aei.org/research-products/one-pager/aei-tax-brief-increasing-the-standard-deduction/</a>
 (visited on 2020-06-24).</p>
 <p>[14] Alex Brill. AEI Tax Brief: Child Tax Credit Options. September</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>URL:
 <a class="reference external" href="https://www.aei.org/research-products/one-pager/aei-tax-brief-child-tax-credit-options/">https://www.aei.org/research-products/one-pager/aei-tax-brief-child-tax-credit-options/</a>
 (visited on 2020-06-24).</p></li>
@@ -957,7 +759,7 @@ URL:
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
+            name: "python3",
             path: "./."
         },
         predefinedOutput: true
@@ -965,43 +767,76 @@ URL:
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="api/utilsprvt.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Tax-Calculator Private Utilities</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="api/utilsprvt.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Tax-Calculator Private Utilities</p>
+      </div>
     </a>
 </div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner">
+<div class="bd-footer-content__inner container">
   
-    By Policy Simulation Library<br/>
-  
-      &copy; Copyright 2022.<br/>
-</p>
-        </footer>
-    </div>
+  <div class="footer-item">
     
-</div>
+<p class="component-author">
+By Policy Simulation Library
+</p>
 
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
 
-      </div>
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div></div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>
