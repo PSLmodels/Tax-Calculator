@@ -618,12 +618,74 @@ def test_TaxInc(test_tuple, expected_value, skip_jit):
 
 
 
-# @pytest.mark.parametrize(
-#     'test_tuple,expected_value', [
-#         (tuple0, expected0)])
-# def test_AGI(test_tuple, expected_value, skip_jit):
-#     """
-#     Tests the TaxInc function
-#     """
-#     test_value = calcfunctions.AGI(*test_tuple)
-#     assert np.allclose(test_value, expected_value)
+MARS = 4
+DSI = 0
+EIC = 3
+c00100 = 19330
+e00300 = 0
+e00400 = 0
+e00600 = 0
+c01000 = 0
+e02000 = 0
+e26270 = 0
+age_head = 0
+age_spouse = 0
+earned = 19330
+earned_p = 19330
+earned_s = 0
+EITC_ps = [8790, 19330, 19330, 19330]
+EITC_MinEligAge = 25
+EITC_MaxEligAge = 64
+EITC_ps_MarriedJ = [5980, 5980, 5980, 6250]
+EITC_rt = [0.0765, 0.34, 0.4, 0.45]
+EITC_c = [538, 3584, 5920, 6660]
+EITC_prt = [0.0765, 0.1598, 0.2106, 0.2106]
+EITC_basic_frac = 0.0
+EITC_InvestIncome_c = 3650
+EITC_excess_InvestIncome_rt = 9e+99
+EITC_indiv = False
+EITC_sep_filers_elig = False
+e02300 = 10200
+UI_thd = [150000, 150000, 150000, 150000, 150000]
+UI_em = 10200
+
+
+ymod1 = 19330 + 10200
+c02500 = 0
+c02900 = 0
+XTOT = 0
+MARS = 4
+sep = 1
+DSI = 0
+exact = False
+nu18 = 0
+taxable_ubi = 0
+II_em = 0.0
+II_em_ps = [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]
+II_prt = 0.02
+II_no_em_nu18 = False
+e02300 = 10200
+UI_thd = [150000, 150000, 150000, 150000, 150000]
+UI_em = 10200
+c00100 = 0  # calculated in function
+pre_c04600 = 0  # calculated in functio
+c04600 = 0  # calculated in functio
+
+tuple0 = (
+    ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
+    II_em, II_em_ps, II_prt, II_no_em_nu18,
+    e02300, UI_thd, UI_em, c00100, pre_c04600, c04600)
+# returned tuple is (c00100, pre_c04600, c04600)
+expected0 = (19330, 0, 0)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple0, expected0)])
+def test_AGI(test_tuple, expected_value, skip_jit):
+    """
+    Tests the TaxInc function
+    """
+    test_value = calcfunctions.AGI(*test_tuple)
+    print('Returned from agi function: ', test_value)
+    assert np.allclose(test_value, expected_value)
