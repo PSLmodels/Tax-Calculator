@@ -547,3 +547,61 @@ def test_TaxInc(test_tuple, expected_value, skip_jit):
     """
     test_value = calcfunctions.TaxInc(*test_tuple)
     assert np.allclose(test_value, expected_value)
+
+
+# parameterization represents 2021 law
+age_head = 45
+age_spouse = 0
+nu18 = 0
+n24 = 0
+MARS = 4
+c00100 = 1000
+XTOT = 3
+num = 1
+c05800 = 0
+e07260 = 0
+CR_ResidentialEnergy_hc = 0.0
+e07300 = 0
+CR_ForeignTax_hc = 0.0
+c07180 = 0
+c07230 = 0
+e07240 = 0
+CR_RetirementSavings_hc = 0.0
+c07200 = 0
+CTC_c = 2000
+CTC_ps = [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]
+CTC_prt = 0.05
+exact = False
+ODC_c = 500
+CTC_c_under6_bonus = 0.0
+nu06 = 0
+CTC_refundable = True
+CTC_include17 = True
+c07220 = 0  # actual value will be returned from function
+odc = 0  # actual value will be returned from function
+codtc_limited = 0 # actual value will be returned from function
+tuple0 = (
+    age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
+    c05800, e07260, CR_ResidentialEnergy_hc,
+    e07300, CR_ForeignTax_hc,
+    c07180,
+    c07230,
+    e07240, CR_RetirementSavings_hc,
+    c07200,
+    CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
+    CTC_c_under6_bonus, nu06,
+    CTC_refundable, CTC_include17,
+    c07220, odc, codtc_limited)
+# output tuple is : (c07220, odc, codtc_limited)
+expected0 = (0, 1000, 1000)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple0, expected0)])
+def test_ChildDepTaxCredit(test_tuple, expected_value, skip_jit):
+    """
+    Tests the ChildDepTaxCredit function
+    """
+    test_value = calcfunctions.ChildDepTaxCredit(*test_tuple)
+    assert np.allclose(test_value, expected_value)
