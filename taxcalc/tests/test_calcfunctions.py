@@ -493,7 +493,7 @@ def test_EITCamount(test_tuple, expected_value, skip_jit):
 MARS = 4
 DSI = 0
 EIC = 3
-c00100 = 29530
+c00100 = 19330
 e00300 = 0
 e00400 = 0
 e00600 = 0
@@ -539,6 +539,7 @@ def test_EITC(test_tuple, expected_value, skip_jit):
     '''
     test_value = calcfunctions.EITC(*test_tuple)
     assert np.allclose(test_value, expected_value)
+
 
 # Parameter values for tests
 PT_qbid_rt = 0.2
