@@ -659,7 +659,7 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 @iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         II_em, II_em_ps, II_prt, II_no_em_nu18,
-        c00100, pre_c04600, c04600):
+        e02300, UI_thd, UI_em, c00100, pre_c04600, c04600):
     """
     Computes Adjusted Gross Income (AGI), c00100, and
     compute personal exemption amount, c04600.
@@ -694,12 +694,19 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         Personal exemption phaseout rate
     II_no_em_nu18: float
         Repeal personal exemptions for dependents under age 18
+    e02300: float
+        Unemployment compensation
+    UI_thd: list
+        AGI threshold for unemployment compensation exclusion
+    UI_em: float
+        Amount of unemployment compensation excluded from AGI
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
         Personal exemption before phase-out
     c04600: float
         Personal exemptions after phase-out
+
     Returns
     -------
     c00100: float
@@ -711,6 +718,12 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
+    # calculate UI exclusion (e.g., from 2020 AGI due to ARPA)
+    if (c00100 - e02300) <= UI_thd[MARS - 1]:
+        ui_excluded = min(e02300, UI_em)
+    else:
+        ui_excluded = 0.
+    c00100 -= ui_excluded
     # calculate personal exemption amount
     if II_no_em_nu18:  # repeal of personal exemptions for deps. under 18
         pre_c04600 = max(0, XTOT - nu18) * II_em
@@ -1173,12 +1186,11 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
-           e02100, e27200, e00650, c01000, e02300, PT_SSTB_income,
+           e02100, e27200, e00650, c01000, PT_SSTB_income,
            PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
            PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
-           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch,
-           UI_em, UI_thd):
+           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
@@ -1244,11 +1256,6 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     qbided: float
         Qualified Business Income (QBI) deduction
     """
-    # calculate UI excluded from taxable income
-    if (c00100 - e02300) <= UI_thd[MARS - 1]:
-        ui_excluded = min(e02300, UI_em)
-    else:
-        ui_excluded = 0.
     # calculate taxable income before qualified business income deduction
     pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600 -
                           ui_excluded)
@@ -2181,7 +2188,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
 
 @JIT(nopython=True)
 def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
-               phaseout_start, mod_agi, phaseout_rate):
+               phaseout_start, agi, phaseout_rate):
     """
     Returns EITC amount given specified parameters.
     English parameter names are used in this function because the
@@ -2200,8 +2207,8 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
         Maximum earned income credit
     phaseout_start: float
         Earned income credit phaseout start AGI
-    mod_agi: float
-        Modified Adjusted Gross Income (AGI)
+    agi: float
+        Adjusted Gross Income (AGI)
     phaseout_rate: float
         Earned income credit phaseout rate
 
@@ -2213,9 +2220,9 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
     # calculate qualified business income de
     eitc = min((basic_frac * max_amount +
                 (1.0 - basic_frac) * phasein_rate * earnings), max_amount)
-    if earnings > phaseout_start or mod_agi > phaseout_start:
+    if earnings > phaseout_start or agi > phaseout_start:
         eitcx = max(0., (max_amount - phaseout_rate *
-                         max(0., max(earnings, mod_agi) - phaseout_start)))
+                         max(0., max(earnings, agi) - phaseout_start)))
         eitc = min(eitc, eitcx)
     return eitc
 
@@ -2226,8 +2233,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
-         EITC_indiv, EITC_sep_filers_elig, e02300, UI_thd, UI_em,
-         c59660):
+         EITC_indiv, EITC_sep_filers_elig, c59660):
     """
     Computes EITC amount, c59660.
 
@@ -2287,12 +2293,6 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
         EITC is computed for each spouse based in individual earnings
     EITC_sep_filers_elig: bool
         Separate filers are eligible for the EITC
-    e02300: float
-        Unemployment compensation
-    UI_thd: list
-        AGI threshold for unemployment compensation exclusion
-    UI_em: float
-        Amount of unemployment compensation excluded from AGI
     c59660: float
         EITC amount
 
@@ -2302,16 +2302,10 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
         EITC amount
     """
     # pylint: disable=too-many-branches
-    # calculate UI excluded to determine modified AGI
-    if (c00100 - e02300) <= UI_thd[MARS - 1]:
-        ui_excluded = min(e02300, UI_em)
-    else:
-        ui_excluded = 0.
-    mod_agi = c00100 - ui_excluded
     if MARS != 2:
         eitc = EITCamount(EITC_basic_frac,
                           EITC_rt[EIC], earned, EITC_c[EIC],
-                          EITC_ps[EIC], mod_agi, EITC_prt[EIC])
+                          EITC_ps[EIC], c00100, EITC_prt[EIC])
         if EIC == 0:
             # enforce age eligibility rule for those with no EITC-eligible
             # kids assuming that an unknown age_* value implies EITC age
@@ -2330,7 +2324,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             # filing unit EITC rather than individual EITC
             eitc = EITCamount(EITC_basic_frac,
                               EITC_rt[EIC], earned, EITC_c[EIC],
-                              po_start, mod_agi, EITC_prt[EIC])
+                              po_start, c00100, EITC_prt[EIC])
         if EITC_indiv:
             # individual EITC rather than a filing-unit EITC
             eitc_p = EITCamount(EITC_basic_frac,
