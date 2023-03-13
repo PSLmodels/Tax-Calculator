@@ -659,7 +659,7 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 @iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         II_em, II_em_ps, II_prt, II_no_em_nu18,
-        c00100, pre_c04600, c04600):
+        e02300, UI_thd, UI_em, c00100, pre_c04600, c04600):
     """
     Computes Adjusted Gross Income (AGI), c00100, and
     compute personal exemption amount, c04600.
@@ -694,12 +694,19 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         Personal exemption phaseout rate
     II_no_em_nu18: float
         Repeal personal exemptions for dependents under age 18
+    e02300: float
+        Unemployment compensation
+    UI_thd: list
+        AGI threshold for unemployment compensation exclusion
+    UI_em: float
+        Amount of unemployment compensation excluded from AGI
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
         Personal exemption before phase-out
     c04600: float
         Personal exemptions after phase-out
+
     Returns
     -------
     c00100: float
@@ -711,6 +718,12 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
+    # calculate UI exclusion (e.g., from 2020 AGI due to ARPA)
+    if (c00100 - e02300) <= UI_thd[MARS - 1]:
+        ui_excluded = min(e02300, UI_em)
+    else:
+        ui_excluded = 0.
+    c00100 -= ui_excluded
     # calculate personal exemption amount
     if II_no_em_nu18:  # repeal of personal exemptions for deps. under 18
         pre_c04600 = max(0, XTOT - nu18) * II_em
@@ -1173,12 +1186,11 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
-           e02100, e27200, e00650, c01000, e02300, PT_SSTB_income,
+           e02100, e27200, e00650, c01000, PT_SSTB_income,
            PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
            PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
-           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch,
-           UI_em, UI_thd):
+           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
@@ -1244,14 +1256,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     qbided: float
         Qualified Business Income (QBI) deduction
     """
-    # calculate UI excluded from taxable income
-    if (c00100 - e02300) <= UI_thd[MARS - 1]:
-        ui_excluded = min(e02300, UI_em)
-    else:
-        ui_excluded = 0.
     # calculate taxable income before qualified business income deduction
-    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600 -
-                          ui_excluded)
+    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
     # calculate qualified business income deduction
     qbided = 0.
     qbinc = max(0., e00900 + e26270 + e02100 + e27200)
@@ -2190,19 +2196,19 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 
     Parameters
     ----------
-    basic_frac: list
+    basic_frac: float
         Fraction of maximum earned income credit paid at zero earnings
-    phasein_rate: list
+    phasein_rate: float
         Earned income credit phasein rate
     earnings: float
         Earned income for filing unit
-    max_amount: list
+    max_amount: float
         Maximum earned income credit
-    phaseout_start: list
+    phaseout_start: float
         Earned income credit phaseout start AGI
     agi: float
         Adjusted Gross Income (AGI)
-    phaseout_rate: list
+    phaseout_rate: float
         Earned income credit phaseout rate
 
     Returns
@@ -2210,6 +2216,7 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
     eitc: float
         Earned Income Credit
     """
+    # calculate qualified business income de
     eitc = min((basic_frac * max_amount +
                 (1.0 - basic_frac) * phasein_rate * earnings), max_amount)
     if earnings > phaseout_start or agi > phaseout_start:
@@ -2225,8 +2232,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
-         EITC_indiv, EITC_sep_filers_elig,
-         c59660):
+         EITC_indiv, EITC_sep_filers_elig, c59660):
     """
     Computes EITC amount, c59660.
 
