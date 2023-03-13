@@ -1040,7 +1040,7 @@ document.write(`
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">AGI</span><span class="p">(</span><span class="n">ymod1</span><span class="p">,</span> <span class="n">c02500</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span>
         <span class="n">II_em</span><span class="p">,</span> <span class="n">II_em_ps</span><span class="p">,</span> <span class="n">II_prt</span><span class="p">,</span> <span class="n">II_no_em_nu18</span><span class="p">,</span>
-        <span class="n">c00100</span><span class="p">,</span> <span class="n">pre_c04600</span><span class="p">,</span> <span class="n">c04600</span><span class="p">):</span>
+        <span class="n">e02300</span><span class="p">,</span> <span class="n">UI_thd</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">pre_c04600</span><span class="p">,</span> <span class="n">c04600</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Adjusted Gross Income (AGI), c00100, and</span>
 <span class="sd">    compute personal exemption amount, c04600.</span>
@@ -1075,12 +1075,19 @@ document.write(`
 <span class="sd">        Personal exemption phaseout rate</span>
 <span class="sd">    II_no_em_nu18: float</span>
 <span class="sd">        Repeal personal exemptions for dependents under age 18</span>
+<span class="sd">    e02300: float</span>
+<span class="sd">        Unemployment compensation</span>
+<span class="sd">    UI_thd: list</span>
+<span class="sd">        AGI threshold for unemployment compensation exclusion</span>
+<span class="sd">    UI_em: float</span>
+<span class="sd">        Amount of unemployment compensation excluded from AGI</span>
 <span class="sd">    c00100: float</span>
 <span class="sd">        Adjusted Gross Income (AGI)</span>
 <span class="sd">    pre_c04600: float</span>
 <span class="sd">        Personal exemption before phase-out</span>
 <span class="sd">    c04600: float</span>
 <span class="sd">        Personal exemptions after phase-out</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c00100: float</span>
@@ -1092,6 +1099,12 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># calculate AGI assuming no foreign earned income exclusion</span>
     <span class="n">c00100</span> <span class="o">=</span> <span class="n">ymod1</span> <span class="o">+</span> <span class="n">c02500</span> <span class="o">-</span> <span class="n">c02900</span> <span class="o">+</span> <span class="n">taxable_ubi</span>
+    <span class="c1"># calculate UI exclusion (e.g., from 2020 AGI due to ARPA)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">e02300</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">UI_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="n">ui_excluded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e02300</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ui_excluded</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">c00100</span> <span class="o">-=</span> <span class="n">ui_excluded</span>
     <span class="c1"># calculate personal exemption amount</span>
     <span class="k">if</span> <span class="n">II_no_em_nu18</span><span class="p">:</span>  <span class="c1"># repeal of personal exemptions for deps. under 18</span>
         <span class="n">pre_c04600</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">nu18</span><span class="p">)</span> <span class="o">*</span> <span class="n">II_em</span>
@@ -1554,12 +1567,11 @@ document.write(`
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">TaxInc</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c04600</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span>
-           <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">e02300</span><span class="p">,</span> <span class="n">PT_SSTB_income</span><span class="p">,</span>
+           <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">PT_SSTB_income</span><span class="p">,</span>
            <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span> <span class="n">PT_qbid_rt</span><span class="p">,</span>
            <span class="n">PT_qbid_taxinc_thd</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">,</span> <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span>
            <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span> <span class="n">c04800</span><span class="p">,</span>
-           <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span> <span class="n">PT_qbid_limit_switch</span><span class="p">,</span>
-           <span class="n">UI_em</span><span class="p">,</span> <span class="n">UI_thd</span><span class="p">):</span>
+           <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span> <span class="n">PT_qbid_limit_switch</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates taxable income, c04800, and</span>
 <span class="sd">    qualified business income deduction, qbided.</span>
@@ -1625,14 +1637,8 @@ document.write(`
 <span class="sd">    qbided: float</span>
 <span class="sd">        Qualified Business Income (QBI) deduction</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># calculate UI excluded from taxable income</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">e02300</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">UI_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-        <span class="n">ui_excluded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e02300</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ui_excluded</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="c1"># calculate taxable income before qualified business income deduction</span>
-    <span class="n">pre_qbid_taxinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">c04470</span><span class="p">,</span> <span class="n">standard</span><span class="p">)</span> <span class="o">-</span> <span class="n">c04600</span> <span class="o">-</span>
-                          <span class="n">ui_excluded</span><span class="p">)</span>
+    <span class="n">pre_qbid_taxinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">c04470</span><span class="p">,</span> <span class="n">standard</span><span class="p">)</span> <span class="o">-</span> <span class="n">c04600</span><span class="p">)</span>
     <span class="c1"># calculate qualified business income deduction</span>
     <span class="n">qbided</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">qbinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00900</span> <span class="o">+</span> <span class="n">e26270</span> <span class="o">+</span> <span class="n">e02100</span> <span class="o">+</span> <span class="n">e27200</span><span class="p">)</span>
@@ -2571,19 +2577,19 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    basic_frac: list</span>
+<span class="sd">    basic_frac: float</span>
 <span class="sd">        Fraction of maximum earned income credit paid at zero earnings</span>
-<span class="sd">    phasein_rate: list</span>
+<span class="sd">    phasein_rate: float</span>
 <span class="sd">        Earned income credit phasein rate</span>
 <span class="sd">    earnings: float</span>
 <span class="sd">        Earned income for filing unit</span>
-<span class="sd">    max_amount: list</span>
+<span class="sd">    max_amount: float</span>
 <span class="sd">        Maximum earned income credit</span>
-<span class="sd">    phaseout_start: list</span>
+<span class="sd">    phaseout_start: float</span>
 <span class="sd">        Earned income credit phaseout start AGI</span>
 <span class="sd">    agi: float</span>
 <span class="sd">        Adjusted Gross Income (AGI)</span>
-<span class="sd">    phaseout_rate: list</span>
+<span class="sd">    phaseout_rate: float</span>
 <span class="sd">        Earned income credit phaseout rate</span>
 
 <span class="sd">    Returns</span>
@@ -2591,6 +2597,7 @@ document.write(`
 <span class="sd">    eitc: float</span>
 <span class="sd">        Earned Income Credit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># calculate qualified business income de</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">basic_frac</span> <span class="o">*</span> <span class="n">max_amount</span> <span class="o">+</span>
                 <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">basic_frac</span><span class="p">)</span> <span class="o">*</span> <span class="n">phasein_rate</span> <span class="o">*</span> <span class="n">earnings</span><span class="p">),</span> <span class="n">max_amount</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">earnings</span> <span class="o">&gt;</span> <span class="n">phaseout_start</span> <span class="ow">or</span> <span class="n">agi</span> <span class="o">&gt;</span> <span class="n">phaseout_start</span><span class="p">:</span>
@@ -2606,8 +2613,7 @@ document.write(`
          <span class="n">EITC_ps</span><span class="p">,</span> <span class="n">EITC_MinEligAge</span><span class="p">,</span> <span class="n">EITC_MaxEligAge</span><span class="p">,</span> <span class="n">EITC_ps_MarriedJ</span><span class="p">,</span>
          <span class="n">EITC_rt</span><span class="p">,</span> <span class="n">EITC_c</span><span class="p">,</span> <span class="n">EITC_prt</span><span class="p">,</span> <span class="n">EITC_basic_frac</span><span class="p">,</span>
          <span class="n">EITC_InvestIncome_c</span><span class="p">,</span> <span class="n">EITC_excess_InvestIncome_rt</span><span class="p">,</span>
-         <span class="n">EITC_indiv</span><span class="p">,</span> <span class="n">EITC_sep_filers_elig</span><span class="p">,</span>
-         <span class="n">c59660</span><span class="p">):</span>
+         <span class="n">EITC_indiv</span><span class="p">,</span> <span class="n">EITC_sep_filers_elig</span><span class="p">,</span> <span class="n">c59660</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes EITC amount, c59660.</span>
 
