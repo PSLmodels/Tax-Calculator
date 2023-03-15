@@ -223,6 +223,55 @@ def test_StdDed(test_tuple, expected_value, skip_jit):
     assert np.allclose(test_value, expected_value)
 
 
+tuple1 = (120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999,
+          400, 0, 0, 0, 0, 0, 0, None, None, None, None, None, None,
+          None, None, None, None, None)
+tuple2 = (120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999,
+          400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None,
+          None, None, None, None, None, None)
+tuple3 = (120000, 150000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999,
+          400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None,
+          None, None, None, None, None, None)
+tuple4 = (120000, 500000, 15000, 100, 2000, 0.12, 0.03, 0, 400000,
+          400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None,
+          None, None, None, None, None, None)
+tuple5 = (120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999,
+          400, 300, 0, 0, 0, 0, 0, None, None, None, None, None,
+          None, None, None, None, None, None)
+tuple6 = (120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999,
+          400, 0, 0, 0, 0, -40000, 0, None, None, None, None, None,
+          None, None, None, None, None, None)
+expected1 = (0, 4065, 4065, 0, 0, 3252, 25000, 10000, 15000, 10100,
+             17000)
+expected2 = (15000, 6146.25, 4065, 2081.25, 1040.625, 4917, 38959.375,
+             21167.5, 17791.875, 21380, 19820)
+expected3 = (15000, 22202.25, 21453, 749.25, 374.625, 16773, 179625.375,
+             161833.5, 17791.875, 161380, 19820)
+expected4 = (15000, 46067.85, 31953, 749.25, 374.625, 30138.6,
+             529625.375, 511833.5, 17791.875, 511380, 19820)
+expected5 = (300, 4065, 4065, 0, 0, 3285.3, 25300, 10279.1875, 15000,
+             10382, 17000)
+expected6 = (-40000, 4065, 4065, 0, 0, 3252, 0, 0, 15000, 10100, 17000)
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple1, expected1),
+        (tuple2, expected2),
+        (tuple3, expected3),
+        (tuple4, expected4),
+        (tuple5, expected5),
+        (tuple6, expected6)], ids=[
+            'case 1', 'case 2', 'case 3', 'case 4', 'case 5', 'case 6'])
+def test_EI_PayrollTax(test_tuple, expected_value, skip_jit):
+    """
+    Tests the EI_PayrollTax function
+    """
+    test_value = calcfunctions.EI_PayrollTax(*test_tuple)
+    print('Test value = ', test_value)
+
+    assert np.allclose(test_value, expected_value)
+
+
 def test_AfterTaxIncome(skip_jit):
     '''
     Tests the AfterTaxIncome function
@@ -413,4 +462,88 @@ def test_PersonalTaxCredit(test_tuple, expected_value, skip_jit):
     Tests the PersonalTaxCredit function
     """
     test_value = calcfunctions.PersonalTaxCredit(*test_tuple)
+    assert np.allclose(test_value, expected_value)
+
+
+# Parameter values for tests
+PT_qbid_rt = 0.2
+PT_qbid_taxinc_thd = [160700.0, 321400.0, 160725.0, 160700.0, 321400.0]
+PT_qbid_taxinc_gap = [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]
+PT_qbid_w2_wages_rt = 0.5
+PT_qbid_alt_w2_wages_rt = 0.25
+PT_qbid_alt_property_rt = 0.025
+PT_qbid_ps = [9e99, 9e99, 9e99, 9e99, 9e99]
+PT_qbid_prt = 0.0
+PT_qbid_limit_switch = True  # will want to test with False also
+UI_em = 0.0
+UI_thd = [0.0, 0.0, 0.0, 0.0, 0.0]
+
+# Input variable values for tests
+c00100 = [527860.66, 337675.10, 603700.00, 90700.00]
+standard = [0.00, 0.00, 24400.00, 0.00]
+c04470 = [37000.00, 49000.00, 0.00, 32000.00]
+c04600 = [0.00, 0.00, 0.00, 0.00]
+MARS = [2, 2, 2, 4]
+e00900 = [352000.00, 23000.00, 0.00, 0.00]
+e26270 = [0.00, 0.00, 11000.00, 6000.00]
+e02100 = [0.00, 0.00, 0.00, 0.00]
+e27200 = [0.00, 0.00, 0.00, 0.00]
+e00650 = [5000.00, 8000.00, 3000.00, 9000.00]
+c01000 = [7000.00, 4000.00, -3000.00, -3000.00]
+e02300 = [2000.00, 2000.00, 8000.00, 0.00]
+PT_SSTB_income = [0, 1, 1, 1]
+PT_binc_w2_wages = [0.00, 0.00, 0.00, 0.00]
+PT_ubia_property = [0.00, 0.00, 0.00, 0.00]
+c04800 = [0.0, 0.0, 0.0, 0.0]  # unimportant for function
+qbided = [0.0, 0.0, 0.0, 0.0]  # unimportant for function
+
+tuple0 = (
+    c00100[0], standard[0], c04470[0], c04600[0], MARS[0], e00900[0], e26270[0],
+    e02100[0], e27200[0], e00650[0], c01000[0], e02300[0], PT_SSTB_income[0],
+    PT_binc_w2_wages[0], PT_ubia_property[0], PT_qbid_rt,
+    PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
+    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[0],
+    PT_qbid_ps, PT_qbid_prt, qbided[0], PT_qbid_limit_switch,
+    UI_em, UI_thd)
+expected0 = (490860.66, 0)
+tuple1 = (
+    c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1], e26270[1],
+    e02100[1], e27200[1], e00650[1], c01000[1], e02300[1], PT_SSTB_income[1],
+    PT_binc_w2_wages[1], PT_ubia_property[1], PT_qbid_rt,
+    PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
+    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[1],
+    PT_qbid_ps, PT_qbid_prt, qbided[1], PT_qbid_limit_switch,
+    UI_em, UI_thd)
+expected1 = (284075.10, 4600)
+tuple2 = (
+    c00100[2], standard[2], c04470[2], c04600[2], MARS[2], e00900[2], e26270[2],
+    e02100[2], e27200[2], e00650[2], c01000[2], e02300[2], PT_SSTB_income[2],
+    PT_binc_w2_wages[2], PT_ubia_property[2], PT_qbid_rt,
+    PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
+    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[2],
+    PT_qbid_ps, PT_qbid_prt, qbided[2], PT_qbid_limit_switch,
+    UI_em, UI_thd)
+expected2 = (579300.00, 0)
+tuple3 = (
+    c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3], e26270[3],
+    e02100[3], e27200[3], e00650[3], c01000[3], e02300[3], PT_SSTB_income[3],
+    PT_binc_w2_wages[3], PT_ubia_property[3], PT_qbid_rt,
+    PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
+    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[3],
+    PT_qbid_ps, PT_qbid_prt, qbided[3], PT_qbid_limit_switch,
+    UI_em, UI_thd)
+expected3 = (57500.00, 1200)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple0, expected0),
+        (tuple1, expected1),
+        (tuple2, expected2),
+        (tuple3, expected3)])
+def test_TaxInc(test_tuple, expected_value, skip_jit):
+    """
+    Tests the TaxInc function
+    """
+    test_value = calcfunctions.TaxInc(*test_tuple)
     assert np.allclose(test_value, expected_value)
