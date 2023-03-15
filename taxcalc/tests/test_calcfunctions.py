@@ -465,6 +465,82 @@ def test_PersonalTaxCredit(test_tuple, expected_value, skip_jit):
     assert np.allclose(test_value, expected_value)
 
 
+# MARS = 4
+# Kids = 3+
+basic_frac = 0.0
+phasein_rate = 0.45
+earnings = 19330
+max_amount = 6660
+phaseout_start = 19330
+agi = 19330
+phaseout_rate = 0.2106
+tuple1 = (basic_frac, phasein_rate, earnings, max_amount,
+          phaseout_start, agi, phaseout_rate)
+expected1 = 6660
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple1, expected1)])
+def test_EITCamount(test_tuple, expected_value, skip_jit):
+    '''
+    Tests FairShareTax function
+    '''
+    test_value = calcfunctions.EITCamount(*test_tuple)
+    assert np.allclose(test_value, expected_value)
+
+
+MARS = 4
+DSI = 0
+EIC = 3
+c00100 = 19330
+e00300 = 0
+e00400 = 0
+e00600 = 0
+c01000 = 0
+e02000 = 0
+e26270 = 0
+age_head = 0
+age_spouse = 0
+earned = 19330
+earned_p = 19330
+earned_s = 0
+EITC_ps = [8790, 19330, 19330, 19330]
+EITC_MinEligAge = 25
+EITC_MaxEligAge = 64
+EITC_ps_MarriedJ = [5980, 5980, 5980, 6250]
+EITC_rt = [0.0765, 0.34, 0.4, 0.45]
+EITC_c = [538, 3584, 5920, 6660]
+EITC_prt = [0.0765, 0.1598, 0.2106, 0.2106]
+EITC_basic_frac = 0.0
+EITC_InvestIncome_c = 3650
+EITC_excess_InvestIncome_rt = 9e+99
+EITC_indiv = False
+EITC_sep_filers_elig = False
+e02300 = 10200
+UI_thd = [150000, 150000, 150000, 150000, 150000]
+UI_em = 10200
+c59660 = 0  # this will be 6660 after the EITC calculation
+tuple1 = (MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
+          e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s,
+          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
+          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
+          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
+          EITC_indiv, EITC_sep_filers_elig, c59660)
+expected1 = 6660
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple1, expected1)])
+def test_EITC(test_tuple, expected_value, skip_jit):
+    '''
+    Tests FairShareTax function
+    '''
+    test_value = calcfunctions.EITC(*test_tuple)
+    assert np.allclose(test_value, expected_value)
+
+
 # Parameter values for tests
 PT_qbid_rt = 0.2
 PT_qbid_taxinc_thd = [160700.0, 321400.0, 160725.0, 160700.0, 321400.0]
@@ -475,8 +551,6 @@ PT_qbid_alt_property_rt = 0.025
 PT_qbid_ps = [9e99, 9e99, 9e99, 9e99, 9e99]
 PT_qbid_prt = 0.0
 PT_qbid_limit_switch = True  # will want to test with False also
-UI_em = 0.0
-UI_thd = [0.0, 0.0, 0.0, 0.0, 0.0]
 
 # Input variable values for tests
 c00100 = [527860.66, 337675.10, 603700.00, 90700.00]
@@ -490,7 +564,6 @@ e02100 = [0.00, 0.00, 0.00, 0.00]
 e27200 = [0.00, 0.00, 0.00, 0.00]
 e00650 = [5000.00, 8000.00, 3000.00, 9000.00]
 c01000 = [7000.00, 4000.00, -3000.00, -3000.00]
-e02300 = [2000.00, 2000.00, 8000.00, 0.00]
 PT_SSTB_income = [0, 1, 1, 1]
 PT_binc_w2_wages = [0.00, 0.00, 0.00, 0.00]
 PT_ubia_property = [0.00, 0.00, 0.00, 0.00]
@@ -499,41 +572,36 @@ qbided = [0.0, 0.0, 0.0, 0.0]  # unimportant for function
 
 tuple0 = (
     c00100[0], standard[0], c04470[0], c04600[0], MARS[0], e00900[0], e26270[0],
-    e02100[0], e27200[0], e00650[0], c01000[0], e02300[0], PT_SSTB_income[0],
+    e02100[0], e27200[0], e00650[0], c01000[0], PT_SSTB_income[0],
     PT_binc_w2_wages[0], PT_ubia_property[0], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[0],
-    PT_qbid_ps, PT_qbid_prt, qbided[0], PT_qbid_limit_switch,
-    UI_em, UI_thd)
+    PT_qbid_ps, PT_qbid_prt, qbided[0], PT_qbid_limit_switch)
 expected0 = (490860.66, 0)
 tuple1 = (
     c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1], e26270[1],
-    e02100[1], e27200[1], e00650[1], c01000[1], e02300[1], PT_SSTB_income[1],
+    e02100[1], e27200[1], e00650[1], c01000[1], PT_SSTB_income[1],
     PT_binc_w2_wages[1], PT_ubia_property[1], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[1],
-    PT_qbid_ps, PT_qbid_prt, qbided[1], PT_qbid_limit_switch,
-    UI_em, UI_thd)
+    PT_qbid_ps, PT_qbid_prt, qbided[1], PT_qbid_limit_switch)
 expected1 = (284075.10, 4600)
 tuple2 = (
     c00100[2], standard[2], c04470[2], c04600[2], MARS[2], e00900[2], e26270[2],
-    e02100[2], e27200[2], e00650[2], c01000[2], e02300[2], PT_SSTB_income[2],
+    e02100[2], e27200[2], e00650[2], c01000[2], PT_SSTB_income[2],
     PT_binc_w2_wages[2], PT_ubia_property[2], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[2],
-    PT_qbid_ps, PT_qbid_prt, qbided[2], PT_qbid_limit_switch,
-    UI_em, UI_thd)
+    PT_qbid_ps, PT_qbid_prt, qbided[2], PT_qbid_limit_switch)
 expected2 = (579300.00, 0)
 tuple3 = (
     c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3], e26270[3],
-    e02100[3], e27200[3], e00650[3], c01000[3], e02300[3], PT_SSTB_income[3],
+    e02100[3], e27200[3], e00650[3], c01000[3], PT_SSTB_income[3],
     PT_binc_w2_wages[3], PT_ubia_property[3], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[3],
-    PT_qbid_ps, PT_qbid_prt, qbided[3], PT_qbid_limit_switch,
-    UI_em, UI_thd)
+    PT_qbid_ps, PT_qbid_prt, qbided[3], PT_qbid_limit_switch)
 expected3 = (57500.00, 1200)
-
 
 @pytest.mark.parametrize(
     'test_tuple,expected_value', [
@@ -605,3 +673,45 @@ def test_ChildDepTaxCredit(test_tuple, expected_value, skip_jit):
     """
     test_value = calcfunctions.ChildDepTaxCredit(*test_tuple)
     assert np.allclose(test_value, expected_value)
+
+
+ymod1 = 19330 + 10200
+c02500 = 0
+c02900 = 0
+XTOT = 0
+MARS = 4
+sep = 1
+DSI = 0
+exact = False
+nu18 = 0
+taxable_ubi = 0
+II_em = 0.0
+II_em_ps = [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]
+II_prt = 0.02
+II_no_em_nu18 = False
+e02300 = 10200
+UI_thd = [150000, 150000, 150000, 150000, 150000]
+UI_em = 10200
+c00100 = 0  # calculated in function
+pre_c04600 = 0  # calculated in functio
+c04600 = 0  # calculated in functio
+
+tuple0 = (
+    ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
+    II_em, II_em_ps, II_prt, II_no_em_nu18,
+    e02300, UI_thd, UI_em, c00100, pre_c04600, c04600)
+# returned tuple is (c00100, pre_c04600, c04600)
+expected0 = (19330, 0, 0)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple0, expected0)])
+def test_AGI(test_tuple, expected_value, skip_jit):
+    """
+    Tests the TaxInc function
+    """
+    test_value = calcfunctions.AGI(*test_tuple)
+    print('Returned from agi function: ', test_value)
+    assert np.allclose(test_value, expected_value)
+
