@@ -1,5 +1,6 @@
 ,test_id,pytest_obj,status,duration_ms,test_tuple,expected_value,revision,expect,fname,jfname,pfname,good_revision,params,is_paramtools,set_year,csv,fyear,input_data,baseline,reform,assump,outdir,year,base,ref,asm,dumpvar_str,str_valid,num_vars,time_diff
 <<<<<<< HEAD
+<<<<<<< HEAD
 0,taxcalc/tests/test_4package.py::test_for_consistency,<function test_for_consistency at 0x7fb2592560d0>,passed,4.92477699998517,,,,,,,,,,,,,,,,,,,,,,,,,,-0.16126200000599056
 1,taxcalc/tests/test_benefits.py::test_benefits,<function test_benefits at 0x7fb259256280>,passed,5684.167970000033,,,,,,,,,,,,,,,,,,,,,,,,,,-117.77635099997497
 2,taxcalc/tests/test_calcfunctions.py::test_calc_and_used_vars,<function test_calc_and_used_vars at 0x7fb259256af0>,passed,53.02624799998057,,,,,,,,,,,,,,,,,,,,,,,,,,-4.183815000033064
@@ -441,147 +442,314 @@
 149,taxcalc/tests/test_parameters.py::test_expand_2d_already_filled,<function test_expand_2d_already_filled at 0x7f45d4222ee0>,passed,12.078750999990007,,,,,,,,,,,,,,,,,,,,,,,,,,0.5909320000228035
 150,taxcalc/tests/test_parameters.py::test_expand_2d_partial_expand,<function test_expand_2d_partial_expand at 0x7f45d4222f70>,passed,14.18814199996632,,,,,,,,,,,,,,,,,,,,,,,,,,0.26507699999456413
 151,"taxcalc/tests/test_parameters.py::test_read_json_revision[\n{\n    ""consumption"": {""BEN_mcaid_value"": {""2013"": 0.9}}\n}\n]",<function test_read_json_revision at 0x7f45d4201040>,passed,0.4090979999773481,,,,,,,,"
+=======
+0,taxcalc/tests/test_4package.py::test_for_consistency,<function test_for_consistency at 0x7f6d4b0f4f70>,passed,4.700925999998162,,,,,,,,,,,,,,,,,,,,,,,,,,0.18394199997828764
+1,taxcalc/tests/test_benefits.py::test_benefits,<function test_benefits at 0x7f6d4b0f40d0>,passed,5535.497855000017,,,,,,,,,,,,,,,,,,,,,,,,,,988.210085999981
+2,taxcalc/tests/test_calcfunctions.py::test_calc_and_used_vars,<function test_calc_and_used_vars at 0x7f6d4b113820>,passed,48.480167000036545,,,,,,,,,,,,,,,,,,,,,,,,,,-78.74180100003514
+3,taxcalc/tests/test_calcfunctions.py::test_function_args_usage,<function test_function_args_usage at 0x7f6d4b1130d0>,passed,2.7516150000224116,,,,,,,,,,,,,,,,,,,,,,,,,,-0.0025759998720786825
+4,taxcalc/tests/test_calcfunctions.py::test_DependentCare,<function test_DependentCare at 0x7f6d4b113040>,passed,0.3374010000243288,,,,,,,,,,,,,,,,,,,,,,,,,,0.05600200006483652
+5,"taxcalc/tests/test_calcfunctions.py::test_StdDed[Married, young]",<function test_StdDed at 0x7f6d4b128c10>,passed,0.27630199997474847,"(0, 1000, [6000, 12000, 6000, 12000, 12000], 45, 44, [1500, 1200, 1500, 1500, 1500], 1000, 2, 0, 0, 0, 2, 0, False, 0)",12000,,,,,,,,,,,,,,,,,,,,,,,,0.03970299997035917
+6,"taxcalc/tests/test_calcfunctions.py::test_StdDed[Married, allow charity]",<function test_StdDed at 0x7f6d4b128c10>,passed,0.26500100000248494,"(0, 1000, [6000, 12000, 6000, 12000, 12000], 66, 44, [1500, 1200, 1500, 1500, 1500], 1000, 2, 0, 1, 1, 2, 200, True, 300)",15800,,,,,,,,,,,,,,,,,,,,,,,,0.04760199999509496
+7,"taxcalc/tests/test_calcfunctions.py::test_StdDed[Married, allow charity, over limit]",<function test_StdDed at 0x7f6d4b128c10>,passed,0.2659020000237433,"(0, 1000, [6000, 12000, 6000, 12000, 12000], 44, 66, [1500, 1200, 1500, 1500, 1500], 1000, 2, 0, 0, 0, 2, 400, True, 300)",13500,,,,,,,,,,,,,,,,,,,,,,,,0.06010200002037891
+8,"taxcalc/tests/test_calcfunctions.py::test_StdDed[Married, two old]",<function test_StdDed at 0x7f6d4b128c10>,passed,0.26690200002121856,"(0, 1200, [6000, 12000, 6000, 12000, 12000], 66, 67, [1500, 1200, 1500, 1500, 1500], 1000, 2, 0, 0, 0, 2, 0, True, 0)",14400,,,,,,,,,,,,,,,,,,,,,,,,0.06460299994159877
+9,taxcalc/tests/test_calcfunctions.py::test_StdDed[Single 1],<function test_StdDed at 0x7f6d4b128c10>,passed,0.2635010000062721,"(0, 1000, [6000, 12000, 6000, 12000, 12000], 44, 0, [1500, 1200, 1500, 1500, 1500], 1000, 1, 0, 0, 0, 2, 0, True, 0)",6000,,,,,,,,,,,,,,,,,,,,,,,,0.05970199998728279
+10,taxcalc/tests/test_calcfunctions.py::test_StdDed[Single 2],<function test_StdDed at 0x7f6d4b128c10>,passed,0.267701999973724,"(0, 1000, [6000, 12000, 6000, 12000, 12000], 44, 0, [1500, 1200, 1500, 1500, 1500], 1000, 1, 0, 0, 0, 2, 0, True, 0)",6000,,,,,,,,,,,,,,,,,,,,,,,,0.06420199997592141
+11,"taxcalc/tests/test_calcfunctions.py::test_StdDed[Married, Single]",<function test_StdDed at 0x7f6d4b128c10>,passed,0.2654010000355811,"(0, 1000, [6000, 12000, 6000, 12000, 12000], 44, 0, [1500, 1200, 1500, 1500, 1500], 1000, 3, 1, 0, 0, 2, 0, True, 0)",0,,,,,,,,,,,,,,,,,,,,,,,,0.06560200012017958
+12,"taxcalc/tests/test_calcfunctions.py::test_StdDed[Marrid, Single, dep, under earn]",<function test_StdDed at 0x7f6d4b128c10>,passed,0.273601999992934,"(1, 200, [6000, 12000, 6000, 12000, 12000], 44, 0, [1500, 1200, 1500, 1500, 1500], 1000, 3, 0, 0, 0, 2, 0, True, 0)",1000,,,,,,,,,,,,,,,,,,,,,,,,0.069402999997692
+13,"taxcalc/tests/test_calcfunctions.py::test_StdDed[Married, Single, dep, over earn]",<function test_StdDed at 0x7f6d4b128c10>,passed,0.29360199999928227,"(1, 1000, [6000, 12000, 6000, 12000, 12000], 44, 0, [1500, 1200, 1500, 1500, 1500], 1000, 3, 0, 0, 0, 2, 0, True, 0)",1350,,,,,,,,,,,,,,,,,,,,,,,,0.08680199999844268
+14,taxcalc/tests/test_calcfunctions.py::test_EI_PayrollTax[case 1],<function test_EI_PayrollTax at 0x7f6d4b128e50>,passed,0.386001999970631,"(120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999, 400, 0, 0, 0, 0, 0, 0, None, None, None, None, None, None, None, None, None, None, None)","(0, 4065, 4065, 0, 0, 3252, 25000, 10000, 15000, 10100, 17000)",,,,,,,,,,,,,,,,,,,,,,,,0.10880299993232262
+15,taxcalc/tests/test_calcfunctions.py::test_EI_PayrollTax[case 2],<function test_EI_PayrollTax at 0x7f6d4b128e50>,passed,0.33400199998823155,"(120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999, 400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None, None, None, None, None, None, None)","(15000, 6146.25, 4065, 2081.25, 1040.625, 4917, 38959.375, 21167.5, 17791.875, 21380, 19820)",,,,,,,,,,,,,,,,,,,,,,,,0.08250299998735505
+16,taxcalc/tests/test_calcfunctions.py::test_EI_PayrollTax[case 3],<function test_EI_PayrollTax at 0x7f6d4b128e50>,passed,0.3400020000299264,"(120000, 150000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999, 400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None, None, None, None, None, None, None)","(15000, 22202.25, 21453, 749.25, 374.625, 16773, 179625.375, 161833.5, 17791.875, 161380, 19820)",,,,,,,,,,,,,,,,,,,,,,,,0.09130299997650582
+17,taxcalc/tests/test_calcfunctions.py::test_EI_PayrollTax[case 4],<function test_EI_PayrollTax at 0x7f6d4b128e50>,passed,0.3325019999920187,"(120000, 500000, 15000, 100, 2000, 0.12, 0.03, 0, 400000, 400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None, None, None, None, None, None, None)","(15000, 46067.85, 31953, 749.25, 374.625, 30138.6, 529625.375, 511833.5, 17791.875, 511380, 19820)",,,,,,,,,,,,,,,,,,,,,,,,0.08290299990676439
+18,taxcalc/tests/test_calcfunctions.py::test_EI_PayrollTax[case 5],<function test_EI_PayrollTax at 0x7f6d4b128e50>,passed,0.3305019999970682,"(120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999, 400, 300, 0, 0, 0, 0, 0, None, None, None, None, None, None, None, None, None, None, None)","(300, 4065, 4065, 0, 0, 3285.3, 25300, 10279.1875, 15000, 10382, 17000)",,,,,,,,,,,,,,,,,,,,,,,,0.0769029999219129
+19,taxcalc/tests/test_calcfunctions.py::test_EI_PayrollTax[case 6],<function test_EI_PayrollTax at 0x7f6d4b128e50>,passed,0.330702000042038,"(120000, 10000, 15000, 100, 2000, 0.12, 0.03, 0, 99999999999, 400, 0, 0, 0, 0, -40000, 0, None, None, None, None, None, None, None, None, None, None, None)","(-40000, 4065, 4065, 0, 0, 3252, 0, 0, 15000, 10100, 17000)",,,,,,,,,,,,,,,,,,,,,,,,0.07520199994814908
+20,taxcalc/tests/test_calcfunctions.py::test_AfterTaxIncome,<function test_AfterTaxIncome at 0x7f6d4b128dc0>,passed,0.2614009999888367,,,,,,,,,,,,,,,,,,,,,,,,,,0.05930199995418661
+21,taxcalc/tests/test_calcfunctions.py::test_ExpandIncome,<function test_ExpandIncome at 0x7f6d4b107160>,passed,0.26230200001009507,,,,,,,,,,,,,,,,,,,,,,,,,,0.06610299999465497
+22,taxcalc/tests/test_calcfunctions.py::test_LumpSumTax[test_tuple0-expected_value0],<function test_LumpSumTax at 0x7f6d4b1070d0>,passed,0.2825010000151451,"(1, 1, 2, 0, 0, 1000)","(0, 1000)",,,,,,,,,,,,,,,,,,,,,,,,0.0790010000173425
+23,taxcalc/tests/test_calcfunctions.py::test_LumpSumTax[test_tuple1-expected_value1],<function test_LumpSumTax at 0x7f6d4b1070d0>,passed,0.2845010000100956,"(0, 1, 2, 0, 0, 1000)","(0, 1000)",,,,,,,,,,,,,,,,,,,,,,,,0.0759020000486999
+24,taxcalc/tests/test_calcfunctions.py::test_LumpSumTax[test_tuple2-expected_value2],<function test_LumpSumTax at 0x7f6d4b1070d0>,passed,0.2762010000196824,"(1, 1, 2, 100, 0, 1000)","(0, 1000)",,,,,,,,,,,,,,,,,,,,,,,,0.0679020000688979
+25,taxcalc/tests/test_calcfunctions.py::test_LumpSumTax[test_tuple3-expected_value3],<function test_LumpSumTax at 0x7f6d4b1070d0>,passed,0.30730200001016783,"(0, 2, 1, 100, 200, 1000)","(200, 1200)",,,,,,,,,,,,,,,,,,,,,,,,0.10560300006545734
+26,taxcalc/tests/test_calcfunctions.py::test_LumpSumTax[test_tuple4-expected_value4],<function test_LumpSumTax at 0x7f6d4b1070d0>,passed,0.28350200000204495,"(0, 1, 3, 100, 300, 1000)","(300, 1300)",,,,,,,,,,,,,,,,,,,,,,,,0.07880199996179726
+27,taxcalc/tests/test_calcfunctions.py::test_FairShareTax[test_tuple0-expected_value0],<function test_FairShareTax at 0x7f6d4b107670>,passed,0.31370100003869084,"(1100000, 1, 1000, 100, 100, 0.1, [1000000, 1000000, 500000, 1000000, 1000000], [2000000, 2000000, 1000000, 2000000, 2000000], 100, 200, 2000, 300)","(10915, 11115, 12915, 11215)",,,,,,,,,,,,,,,,,,,,,,,,0.10440199997674435
+28,taxcalc/tests/test_calcfunctions.py::test_FairShareTax[test_tuple1-expected_value1],<function test_FairShareTax at 0x7f6d4b107670>,passed,0.281901000050766,"(2100000, 1, 1000, 100, 100, 0.1, [1000000, 1000000, 500000, 1000000, 1000000], [2000000, 2000000, 1000000, 2000000, 2000000], 100, 200, 2000, 300)","(209150, 209350, 211150, 209450)",,,,,,,,,,,,,,,,,,,,,,,,0.062302000003455815
+29,taxcalc/tests/test_calcfunctions.py::test_FairShareTax[test_tuple2-expected_value2],<function test_FairShareTax at 0x7f6d4b107670>,passed,0.27950099996587596,"(1100000, 1, 1000, 100, 100, 0, [1000000, 1000000, 500000, 1000000, 1000000], [2000000, 2000000, 1000000, 2000000, 2000000], 100, 200, 2000, 300)","(0, 200, 2000, 300)",,,,,,,,,,,,,,,,,,,,,,,,0.07570099995746207
+30,taxcalc/tests/test_calcfunctions.py::test_FairShareTax[test_tuple3-expected_value3],<function test_FairShareTax at 0x7f6d4b107670>,passed,0.2844010000444541,"(1100000, 2, 1000, 100, 100, 0.1, [1000000, 1000000, 500000, 1000000, 1000000], [2000000, 2000000, 1000000, 2000000, 2000000], 100, 200, 2000, 300)","(10915, 11115, 12915, 11215)",,,,,,,,,,,,,,,,,,,,,,,,0.07720200005678643
+31,taxcalc/tests/test_calcfunctions.py::test_FairShareTax[test_tuple4-expected_value4],<function test_FairShareTax at 0x7f6d4b107670>,passed,0.2850010000088332,"(2100000, 2, 1000, 100, 100, 0.1, [1000000, 1000000, 500000, 1000000, 1000000], [2000000, 2000000, 1000000, 2000000, 2000000], 100, 200, 2000, 300)","(209150, 209350, 211150, 209450)",,,,,,,,,,,,,,,,,,,,,,,,0.07960200008483301
+32,taxcalc/tests/test_calcfunctions.py::test_FairShareTax[test_tuple5-expected_value5],<function test_FairShareTax at 0x7f6d4b107670>,passed,0.28030099997522484,"(1100000, 2, 1000, 100, 100, 0, [1000000, 1000000, 500000, 1000000, 1000000], [2000000, 2000000, 1000000, 2000000, 2000000], 100, 200, 2000, 300)","(0, 200, 2000, 300)",,,,,,,,,,,,,,,,,,,,,,,,0.07750099996428625
+33,taxcalc/tests/test_calcfunctions.py::test_FairShareTax[test_tuple6-expected_value6],<function test_FairShareTax at 0x7f6d4b107670>,passed,0.2831010000363676,"(510000, 3, 1000, 100, 100, 0.1, [1000000, 1000000, 500000, 1000000, 1000000], [2000000, 2000000, 1000000, 2000000, 2000000], 100, 200, 2000, 300)","(1003, 1203, 3003, 1303)",,,,,,,,,,,,,,,,,,,,,,,,0.07570200000373012
+34,taxcalc/tests/test_calcfunctions.py::test_FairShareTax[test_tuple7-expected_value7],<function test_FairShareTax at 0x7f6d4b107670>,passed,0.2865010000050461,"(1100000, 3, 1000, 100, 100, 0.1, [1000000, 1000000, 500000, 1000000, 1000000], [2000000, 2000000, 1000000, 2000000, 2000000], 100, 200, 2000, 300)","(109150, 109350, 111150, 109450)",,,,,,,,,,,,,,,,,,,,,,,,0.07970199999363109
+35,taxcalc/tests/test_calcfunctions.py::test_FairShareTax[test_tuple8-expected_value8],<function test_FairShareTax at 0x7f6d4b107670>,passed,0.32890199997837044,"(510000, 3, 1000, 100, 100, 0, [1000000, 1000000, 500000, 1000000, 1000000], [2000000, 2000000, 1000000, 2000000, 2000000], 100, 200, 2000, 300)","(0, 200, 2000, 300)",,,,,,,,,,,,,,,,,,,,,,,,0.12640199997804305
+36,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple0-expected_value0],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.28610100002879335,"(1, 50000, 1, 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 1400, [75000, 150000, 75000, 112500, 150000], [80000, 160000, 80000, 120000, 160000], 0, 0, [0, 0, 0, 0, 0], 0, 0, 0)","(0, 0, 1400)",,,,,,,,,,,,,,,,,,,,,,,,0.07790200004365036
+37,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple1-expected_value1],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.3268020000177785,"(1, 76000, 1, 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 1400, [75000, 150000, 75000, 112500, 150000], [80000, 160000, 80000, 120000, 160000], 0, 0, [0, 0, 0, 0, 0], 0, 0, 0)","(0, 0, 1120)",,,,,,,,,,,,,,,,,,,,,,,,0.1221029999669554
+38,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple2-expected_value2],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.4099020000012388,"(1, 90000, 1, 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 1400, [75000, 150000, 75000, 112500, 150000], [80000, 160000, 80000, 120000, 160000], 0, 0, [0, 0, 0, 0, 0], 0, 0, 0)","(0, 0, 0)",,,,,,,,,,,,,,,,,,,,,,,,0.1952029999756633
+39,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple3-expected_value3],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.3079019999745469,"(2, 50000, 3, 1, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 1400, [75000, 150000, 75000, 112500, 150000], [80000, 160000, 80000, 120000, 160000], 0, 0, [0, 0, 0, 0, 0], 0, 0, 0)","(0, 0, 4200)",,,,,,,,,,,,,,,,,,,,,,,,0.07540299992570001
+40,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple4-expected_value4],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.34170200001426565,"(2, 155000, 4, 2, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 1400, [75000, 150000, 75000, 112500, 150000], [80000, 160000, 80000, 120000, 160000], 0, 0, [0, 0, 0, 0, 0], 0, 0, 0)","(0, 0, 2800)",,,,,,,,,,,,,,,,,,,,,,,,0.12670300009176574
+41,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple5-expected_value5],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.3236010000478018,"(2, 170000, 4, 2, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 1400, [75000, 150000, 75000, 112500, 150000], [80000, 160000, 80000, 120000, 160000], 0, 0, [0, 0, 0, 0, 0], 0, 0, 0)","(0, 0, 0)",,,,,,,,,,,,,,,,,,,,,,,,0.11650200013946238
+42,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple6-expected_value6],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.37870200003453647,"(4, 50000, 2, 1, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 1400, [75000, 150000, 75000, 112500, 150000], [80000, 160000, 80000, 120000, 160000], 0, 0, [0, 0, 0, 0, 0], 0, 0, 0)","(0, 0, 2800)",,,,,,,,,,,,,,,,,,,,,,,,0.17590300001302248
+43,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple7-expected_value7],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.3808019999951284,"(4, 117000, 1, 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 1400, [75000, 150000, 75000, 112500, 150000], [80000, 160000, 80000, 120000, 160000], 0, 0, [0, 0, 0, 0, 0], 0, 0, 0)","(0, 0, 560)",,,,,,,,,,,,,,,,,,,,,,,,0.17240299996501562
+44,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple8-expected_value8],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.4269019999583179,"(4, 130000, 1, 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 1400, [75000, 150000, 75000, 112500, 150000], [80000, 160000, 80000, 120000, 160000], 0, 0, [0, 0, 0, 0, 0], 0, 0, 0)","(0, 0, 0)",,,,,,,,,,,,,,,,,,,,,,,,0.2196020000155841
+45,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple9-expected_value9],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.4237019999777658,"(1, 50000, 1, 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 0, [75000, 150000, 75000, 112500, 75000], [0, 0, 0, 0, 0], 0.05, 500, [1200, 2400, 1200, 1200, 1200], 0, 0, 0)","(0, 0, 1200)",,,,,,,,,,,,,,,,,,,,,,,,0.2229030000648891
+46,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple10-expected_value10],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.32890200003521386,"(1, 97000, 2, 1, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 0, [75000, 150000, 75000, 112500, 75000], [0, 0, 0, 0, 0], 0.05, 500, [1200, 2400, 1200, 1200, 1200], 0, 0, 0)","(0, 0, 600)",,,,,,,,,,,,,,,,,,,,,,,,0.11780300002328667
+47,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple11-expected_value11],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.44320199998537646,"(1, 150000, 2, 1, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 0, [75000, 150000, 75000, 112500, 75000], [0, 0, 0, 0, 0], 0.05, 500, [1200, 2400, 1200, 1200, 1200], 0, 0, 0)","(0, 0, 0)",,,,,,,,,,,,,,,,,,,,,,,,0.23070200001029667
+48,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple12-expected_value12],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.3949019999822667,"(2, 50000, 4, 2, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 0, [75000, 150000, 75000, 112500, 75000], [0, 0, 0, 0, 0], 0.05, 500, [1200, 2400, 1200, 1200, 1200], 0, 0, 0)","(0, 0, 3400)",,,,,,,,,,,,,,,,,,,,,,,,0.19250299993700543
+49,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple13-expected_value13],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.30890199997202217,"(2, 160000, 5, 3, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 0, [75000, 150000, 75000, 112500, 75000], [0, 0, 0, 0, 0], 0.05, 500, [1200, 2400, 1200, 1200, 1200], 0, 0, 0)","(0, 0, 3400)",,,,,,,,,,,,,,,,,,,,,,,,0.10000300000001516
+50,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple14-expected_value14],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.4078030000300714,"(2, 300000, 2, 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 0, [75000, 150000, 75000, 112500, 75000], [0, 0, 0, 0, 0], 0.05, 500, [1200, 2400, 1200, 1200, 1200], 0, 0, 0)","(0, 0, 0)",,,,,,,,,,,,,,,,,,,,,,,,0.19930400003431722
+51,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple15-expected_value15],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.3355009999950198,"(4, 50000, 3, 2, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 0, [75000, 150000, 75000, 112500, 75000], [0, 0, 0, 0, 0], 0.05, 500, [1200, 2400, 1200, 1200, 1200], 0, 0, 0)","(0, 0, 2200)",,,,,,,,,,,,,,,,,,,,,,,,0.12660199990932602
+52,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple16-expected_value16],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.3629019999493721,"(4, 130000, 2, 1, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 0, [75000, 150000, 75000, 112500, 75000], [0, 0, 0, 0, 0], 0.05, 500, [1200, 2400, 1200, 1200, 1200], 0, 0, 0)","(0, 0, 825)",,,,,,,,,,,,,,,,,,,,,,,,0.1597019999621807
+53,taxcalc/tests/test_calcfunctions.py::test_PersonalTaxCredit[test_tuple17-expected_value17],<function test_PersonalTaxCredit at 0x7f6d4b107790>,passed,0.30600200000208133,"(4, 170000, 3, 2, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], 0, 0, [75000, 150000, 75000, 112500, 75000], [0, 0, 0, 0, 0], 0.05, 500, [1200, 2400, 1200, 1200, 1200], 0, 0, 0)","(0, 0, 0)",,,,,,,,,,,,,,,,,,,,,,,,0.09770300005129684
+54,taxcalc/tests/test_calcfunctions.py::test_EITCamount[test_tuple0-6660],<function test_EITCamount at 0x7f6d4b107820>,passed,328.8694830000054,"(0.0, 0.45, 19330, 6660, 19330, 19330, 0.2106)",6660,,,,,,,,,,,,,,,,,,,,,,,,0.0
+55,taxcalc/tests/test_calcfunctions.py::test_EITC[test_tuple0-6660],<function test_EITC at 0x7f6d4b1078b0>,passed,0.2909009999711998,"(4, 0, 3, 19330, 0, 0, 0, 0, 0, 0, 0, 0, 19330, 19330, 0, [8790, 19330, 19330, 19330], 25, 64, [5980, 5980, 5980, 6250], [0.0765, 0.34, 0.4, 0.45], [538, 3584, 5920, 6660], [0.0765, 0.1598, 0.2106, 0.2106], 0.0, 3650, 9e+99, False, False, 0)",6660,,,,,,,,,,,,,,,,,,,,,,,,0.0
+56,taxcalc/tests/test_calcfunctions.py::test_TaxInc[test_tuple0-expected_value0],<function test_TaxInc at 0x7f6d4b107940>,passed,0.2979010000103699,"(527860.66, 0.0, 37000.0, 0.0, 2, 352000.0, 0.0, 0.0, 0.0, 5000.0, 7000.0, 0, 0.0, 0.0, 0.2, [160700.0, 321400.0, 160725.0, 160700.0, 321400.0], [50000.0, 100000.0, 50000.0, 50000.0, 100000.0], 0.5, 0.25, 0.025, 0.0, [9e+99, 9e+99, 9e+99, 9e+99, 9e+99], 0.0, 0.0, True)","(490860.66, 0)",,,,,,,,,,,,,,,,,,,,,,,,0.0
+57,taxcalc/tests/test_calcfunctions.py::test_TaxInc[test_tuple1-expected_value1],<function test_TaxInc at 0x7f6d4b107940>,passed,0.2974010000116323,"(337675.1, 0.0, 49000.0, 0.0, 2, 23000.0, 0.0, 0.0, 0.0, 8000.0, 4000.0, 1, 0.0, 0.0, 0.2, [160700.0, 321400.0, 160725.0, 160700.0, 321400.0], [50000.0, 100000.0, 50000.0, 50000.0, 100000.0], 0.5, 0.25, 0.025, 0.0, [9e+99, 9e+99, 9e+99, 9e+99, 9e+99], 0.0, 0.0, True)","(284075.1, 4600)",,,,,,,,,,,,,,,,,,,,,,,,0.0
+58,taxcalc/tests/test_calcfunctions.py::test_TaxInc[test_tuple2-expected_value2],<function test_TaxInc at 0x7f6d4b107940>,passed,0.28350099995577693,"(603700.0, 24400.0, 0.0, 0.0, 2, 0.0, 11000.0, 0.0, 0.0, 3000.0, -3000.0, 1, 0.0, 0.0, 0.2, [160700.0, 321400.0, 160725.0, 160700.0, 321400.0], [50000.0, 100000.0, 50000.0, 50000.0, 100000.0], 0.5, 0.25, 0.025, 0.0, [9e+99, 9e+99, 9e+99, 9e+99, 9e+99], 0.0, 0.0, True)","(579300.0, 0)",,,,,,,,,,,,,,,,,,,,,,,,0.0
+59,taxcalc/tests/test_calcfunctions.py::test_TaxInc[test_tuple3-expected_value3],<function test_TaxInc at 0x7f6d4b107940>,passed,0.30780100001948085,"(90700.0, 0.0, 32000.0, 0.0, 4, 0.0, 6000.0, 0.0, 0.0, 9000.0, -3000.0, 1, 0.0, 0.0, 0.2, [160700.0, 321400.0, 160725.0, 160700.0, 321400.0], [50000.0, 100000.0, 50000.0, 50000.0, 100000.0], 0.5, 0.25, 0.025, 0.0, [9e+99, 9e+99, 9e+99, 9e+99, 9e+99], 0.0, 0.0, True)","(57500.0, 1200)",,,,,,,,,,,,,,,,,,,,,,,,0.0
+60,taxcalc/tests/test_calcfunctions.py::test_AGI[test_tuple0-expected_value0],<function test_AGI at 0x7f6d4b1079d0>,passed,0.3407010000273658,"(29530, 0, 0, 0, 4, 1, 0, False, 0, 0, 0.0, [9e+99, 9e+99, 9e+99, 9e+99, 9e+99], 0.02, False, 10200, [150000, 150000, 150000, 150000, 150000], 10200, 0, 0, 0)","(19330, 0, 0)",,,,,,,,,,,,,,,,,,,,,,,,0.0
+61,taxcalc/tests/test_calculator.py::test_make_calculator,<function test_make_calculator at 0x7f6d4ae61550>,passed,3420.3184469999997,,,,,,,,,,,,,,,,,,,,,,,,,,695.9542109999575
+62,taxcalc/tests/test_calculator.py::test_make_calculator_deepcopy,<function test_make_calculator_deepcopy at 0x7f6d4ae61040>,passed,2882.6208419999944,,,,,,,,,,,,,,,,,,,,,,,,,,446.59912499997745
+63,taxcalc/tests/test_calculator.py::test_make_calculator_with_policy_reform,<function test_make_calculator_with_policy_reform at 0x7f6d4ae61160>,passed,3681.326704000071,,,,,,,,,,,,,,,,,,,,,,,,,,819.4080380001192
+64,taxcalc/tests/test_calculator.py::test_make_calculator_with_multiyear_reform,<function test_make_calculator_with_multiyear_reform at 0x7f6d4ae611f0>,passed,3655.341458999942,,,,,,,,,,,,,,,,,,,,,,,,,,630.4190099999687
+65,taxcalc/tests/test_calculator.py::test_calculator_advance_to_year,<function test_calculator_advance_to_year at 0x7f6d4ae61280>,passed,2836.77145799993,,,,,,,,,,,,,,,,,,,,,,,,,,505.3134359999376
+66,taxcalc/tests/test_calculator.py::test_make_calculator_raises_on_no_policy,<function test_make_calculator_raises_on_no_policy at 0x7f6d4ae61310>,passed,518.1476540000176,,,,,,,,,,,,,,,,,,,,,,,,,,13.329682000062348
+67,taxcalc/tests/test_calculator.py::test_calculator_mtr,<function test_calculator_mtr at 0x7f6d4ae613a0>,passed,24254.098004999945,,,,,,,,,,,,,,,,,,,,,,,,,,3969.4341739999545
+68,taxcalc/tests/test_calculator.py::test_calculator_mtr_when_PT_rates_differ,<function test_calculator_mtr_when_PT_rates_differ at 0x7f6d4ae61430>,passed,4154.267914999991,,,,,,,,,,,,,,,,,,,,,,,,,,839.8190679999971
+69,taxcalc/tests/test_calculator.py::test_make_calculator_increment_years_first,<function test_make_calculator_increment_years_first at 0x7f6d4af90e50>,passed,3671.6831729999058,,,,,,,,,,,,,,,,,,,,,,,,,,690.3541099998165
+70,taxcalc/tests/test_calculator.py::test_ID_HC_vs_BS,<function test_ID_HC_vs_BS at 0x7f6d4af90dc0>,passed,6782.407109000019,,,,,,,,,,,,,,,,,,,,,,,,,,1171.3780149999593
+71,taxcalc/tests/test_calculator.py::test_ID_StateLocal_HC_vs_CRT,<function test_ID_StateLocal_HC_vs_CRT at 0x7f6d4af90c10>,passed,6748.254369000051,,,,,,,,,,,,,,,,,,,,,,,,,,1623.2090339999559
+72,taxcalc/tests/test_calculator.py::test_ID_RealEstate_HC_vs_CRT,<function test_ID_RealEstate_HC_vs_CRT at 0x7f6d4af90ca0>,passed,6705.792486000064,,,,,,,,,,,,,,,,,,,,,,,,,,1473.8819240001249
+73,taxcalc/tests/test_calculator.py::test_calculator_using_nonstd_input,<function test_calculator_using_nonstd_input at 0x7f6d4af90820>,passed,2368.257477000043,,,,,,,,,,,,,,,,,,,,,,,,,,419.05774600002155
+74,taxcalc/tests/test_calculator.py::test_bad_json_names,<function test_bad_json_names at 0x7f6d4af908b0>,passed,125.69745700000112,,,,,,,,,,,,,,,,,,,,,,,,,,-190.65353899998172
+75,taxcalc/tests/test_calculator.py::test_json_assump_url,<function test_json_assump_url at 0x7f6d4af90940>,passed,288.7473260000206,,,,,,,,,,,,,,,,,,,,,,,,,,-382.54728200001864
+76,taxcalc/tests/test_calculator.py::test_read_bad_json_assump_file,<function test_read_bad_json_assump_file at 0x7f6d4af909d0>,passed,0.4985030000170809,,,,,,,,,,,,,,,,,,,,,,,,,,0.12720500001250912
+77,taxcalc/tests/test_calculator.py::test_json_doesnt_exist,<function test_json_doesnt_exist at 0x7f6d4af90a60>,passed,0.34610199998041935,,,,,,,,,,,,,,,,,,,,,,,,,,0.059704000022975434
+78,taxcalc/tests/test_calculator.py::test_calc_all,<function test_calc_all at 0x7f6d4af90790>,passed,2161.7829250000113,,,,,,,,,,,,,,,,,,,,,,,,,,480.6295160000218
+79,taxcalc/tests/test_calculator.py::test_noreform_documentation,<function test_noreform_documentation at 0x7f6d4af90700>,passed,5867.209229000082,,,,,,,,,,,,,,,,,,,,,,,,,,1420.4705080001077
+80,taxcalc/tests/test_calculator.py::test_reform_documentation,<function test_reform_documentation at 0x7f6d4af903a0>,passed,8150.993571999948,,,,,,,,,,,,,,,,,,,,,,,,,,1807.935807999911
+81,taxcalc/tests/test_calculator.py::test_distribution_tables,<function test_distribution_tables at 0x7f6d4af90670>,passed,5379.468556000006,,,,,,,,,,,,,,,,,,,,,,,,,,1219.6730650000518
+82,taxcalc/tests/test_calculator.py::test_difference_table,<function test_difference_table at 0x7f6d4af90550>,passed,3933.3290949999764,,,,,,,,,,,,,,,,,,,,,,,,,,541.1883779999016
+83,taxcalc/tests/test_calculator.py::test_diagnostic_table,<function test_diagnostic_table at 0x7f6d4af905e0>,passed,3359.8058150000725,,,,,,,,,,,,,,,,,,,,,,,,,,549.0933390000237
+84,taxcalc/tests/test_calculator.py::test_mtr_graph,<function test_mtr_graph at 0x7f6d4af901f0>,passed,3294.825719000073,,,,,,,,,,,,,,,,,,,,,,,,,,688.6980740000581
+85,taxcalc/tests/test_calculator.py::test_atr_graph,<function test_atr_graph at 0x7f6d4af90280>,passed,2951.9466010000315,,,,,,,,,,,,,,,,,,,,,,,,,,408.4239129999787
+86,taxcalc/tests/test_calculator.py::test_privacy_of_embedded_objects,<function test_privacy_of_embedded_objects at 0x7f6d4af904c0>,passed,2788.275363000025,,,,,,,,,,,,,,,,,,,,,,,,,,578.7390929999674
+87,taxcalc/tests/test_calculator.py::test_n65,<function test_n65 at 0x7f6d4adab3a0>,passed,2651.566172999992,,,,,,,,,,,,,,,,,,,,,,,,,,430.7796340000318
+88,taxcalc/tests/test_calculator.py::test_ce_aftertax_income,<function test_ce_aftertax_income at 0x7f6d4adab430>,passed,4111.833079000007,,,,,,,,,,,,,,,,,,,,,,,,,,836.3539969999465
+89,taxcalc/tests/test_calculator.py::test_qbid_calculation,<function test_qbid_calculation at 0x7f6d4adab550>,passed,2360.150298999997,,,,,,,,,,,,,,,,,,,,,,,,,,479.05589100003
+90,taxcalc/tests/test_calculator.py::test_qbid_limit_switch,<function test_qbid_limit_switch at 0x7f6d4adab5e0>,passed,5262.082514999975,,,,,,,,,,,,,,,,,,,,,,,,,,1246.0082249999687
+91,taxcalc/tests/test_calculator.py::test_calc_all_benefits_amounts,<function test_calc_all_benefits_amounts at 0x7f6d4adab670>,passed,6618.777578000049,,,,,,,,,,,,,,,,,,,,,,,,,,1168.1089500000326
+92,taxcalc/tests/test_calculator.py::test_cg_top_rate,<function test_cg_top_rate at 0x7f6d4adab700>,passed,6328.747650000082,,,,,,,,,,,,,,,,,,,,,,,,,,1284.501915000078
+93,taxcalc/tests/test_compatible_data.py::test_compatible_data_presence,<function test_compatible_data_presence at 0x7f6d4ad971f0>,passed,0.45880300001499563,,,,,,,,,,,,,,,,,,,,,,,,,,0.024504000066372156
+94,taxcalc/tests/test_consumption.py::test_year_consistency,<function test_year_consistency at 0x7f6d4ad97a60>,passed,0.16579999999066786,,,,,,,,,,,,,,,,,,,,,,,,,,0.03819999994902906
+95,taxcalc/tests/test_consumption.py::test_validity_of_consumption_vars_set,<function test_validity_of_consumption_vars_set at 0x7f6d4ad97940>,passed,0.9196049999218303,,,,,,,,,,,,,,,,,,,,,,,,,,0.048607999929117796
+96,taxcalc/tests/test_consumption.py::test_update_consumption,<function test_update_consumption at 0x7f6d4ad97b80>,passed,419.28535900001407,,,,,,,,,,,,,,,,,,,,,,,,,,342.4026640000193
+97,taxcalc/tests/test_consumption.py::test_incorrect_update_consumption,<function test_incorrect_update_consumption at 0x7f6d4ad97c10>,passed,309.73289500002466,,,,,,,,,,,,,,,,,,,,,,,,,,67.93045200004144
+98,taxcalc/tests/test_consumption.py::test_future_update_consumption,<function test_future_update_consumption at 0x7f6d4ad97ca0>,passed,136.52780299992173,,,,,,,,,,,,,,,,,,,,,,,,,,31.120419999979276
+99,taxcalc/tests/test_consumption.py::test_consumption_default_data,<function test_consumption_default_data at 0x7f6d4ad97d30>,passed,41.375814000048194,,,,,,,,,,,,,,,,,,,,,,,,,,-271.5779469998551
+100,taxcalc/tests/test_consumption.py::test_consumption_response,<function test_consumption_response at 0x7f6d4ad97dc0>,passed,5394.26580099996,,,,,,,,,,,,,,,,,,,,,,,,,,894.1495179999492
+101,taxcalc/tests/test_cpscsv.py::test_agg,<function test_agg at 0x7f6d4adabee0>,passed,16088.450497000053,,,,,,,,,,,,,,,,,,,,,,,,,,3523.0604200000926
+102,taxcalc/tests/test_cpscsv.py::test_cps_availability,<function test_cps_availability at 0x7f6d4ad97f70>,passed,1047.241528000086,,,,,,,,,,,,,,,,,,,,,,,,,,85.7673100001648
+103,taxcalc/tests/test_data.py::test_recs_class,<function test_recs_class at 0x7f6d4ad93280>,passed,527.1948329999532,,,,,,,,,,,,,,,,,,,,,,,,,,13.942404999852442
+104,taxcalc/tests/test_decorators.py::test_create_apply_function_string,<function test_create_apply_function_string at 0x7f6d4ad935e0>,passed,0.2040020000322329,,,,,,,,,,,,,,,,,,,,,,,,,,0.04730300008759519
+105,taxcalc/tests/test_decorators.py::test_create_apply_function_string_with_params,<function test_create_apply_function_string_with_params at 0x7f6d4ad93670>,passed,0.17970099997910438,,,,,,,,,,,,,,,,,,,,,,,,,,0.05250199990314289
+106,taxcalc/tests/test_decorators.py::test_create_toplevel_function_string_mult_outputs,<function test_create_toplevel_function_string_mult_outputs at 0x7f6d4ad93700>,passed,0.1824010000746057,,,,,,,,,,,,,,,,,,,,,,,,,,0.05530100008854788
+107,taxcalc/tests/test_decorators.py::test_create_toplevel_function_string,<function test_create_toplevel_function_string at 0x7f6d4ad93790>,passed,0.1943009999649803,,,,,,,,,,,,,,,,,,,,,,,,,,0.0693009999395145
+108,taxcalc/tests/test_decorators.py::test_make_apply_function,<function test_make_apply_function at 0x7f6d4ad938b0>,passed,0.8179040000868554,,,,,,,,,,,,,,,,,,,,,,,,,,0.0880070001585409
+109,taxcalc/tests/test_decorators.py::test_magic_apply_jit,<function test_magic_apply_jit at 0x7f6d4ad93dc0>,passed,180.71623699995598,,,,,,,,,,,,,,,,,,,,,,,,,,14.444607999848813
+110,taxcalc/tests/test_decorators.py::test_magic_apply_jit_swap,<function test_magic_apply_jit_swap at 0x7f6d4b2668b0>,passed,1.2797059999911653,,,,,,,,,,,,,,,,,,,,,,,,,,0.23300999998809857
+111,taxcalc/tests/test_decorators.py::test_magic_iterate_jit,<function test_magic_iterate_jit at 0x7f6d4b266820>,passed,181.65314200007288,,,,,,,,,,,,,,,,,,,,,,,,,,25.42927200011036
+112,taxcalc/tests/test_decorators.py::test_faux_function_iterate_jit,<function test_faux_function_iterate_jit at 0x7f6d4b266790>,passed,132.34858600003463,,,,,,,,,,,,,,,,,,,,,,,,,,13.395066000043713
+113,taxcalc/tests/test_decorators.py::test_ret_everything_iterate_jit,<function test_ret_everything_iterate_jit at 0x7f6d4b266700>,passed,246.6581789999509,,,,,,,,,,,,,,,,,,,,,,,,,,39.03891699997078
+114,taxcalc/tests/test_decorators.py::test_function_takes_kwarg,<function test_function_takes_kwarg at 0x7f6d4b266670>,passed,184.79275800007144,,,,,,,,,,,,,,,,,,,,,,,,,,29.783583000153158
+115,taxcalc/tests/test_decorators.py::test_function_no_parameters_listed,<function test_function_no_parameters_listed at 0x7f6d4b25b1f0>,passed,189.73128400000405,,,,,,,,,,,,,,,,,,,,,,,,,,35.0980079999772
+116,taxcalc/tests/test_decorators.py::test_function_parameters_optional,<function test_function_parameters_optional at 0x7f6d4b25bc10>,passed,204.01575799996863,,,,,,,,,,,,,,,,,,,,,,,,,,37.13533199993435
+117,taxcalc/tests/test_decorators.py::test_iterate_jit_raises_on_no_return,<function test_iterate_jit_raises_on_no_return at 0x7f6d4b25b790>,passed,6.071031000033145,,,,,,,,,,,,,,,,,,,,,,,,,,0.8036530000481434
+118,taxcalc/tests/test_decorators.py::test_iterate_jit_raises_on_unknown_return_argument,<function test_iterate_jit_raises_on_unknown_return_argument at 0x7f6d4b25b820>,passed,6.3027319999946485,,,,,,,,,,,,,,,,,,,,,,,,,,-217.430864999983
+119,taxcalc/tests/test_decorators.py::test_force_no_jit,<function test_force_no_jit at 0x7f6d4b25b940>,passed,7.701340000039636,,,,,,,,,,,,,,,,,,,,,,,,,,0.7289679999757936
+120,taxcalc/tests/test_growdiff.py::test_year_consistency,<function test_year_consistency at 0x7f6d4adabaf0>,passed,0.1923009999700298,,,,,,,,,,,,,,,,,,,,,,,,,,0.0583019999567114
+121,taxcalc/tests/test_growdiff.py::test_update_and_apply_growdiff,<function test_update_and_apply_growdiff at 0x7f6d4b233040>,passed,620.6092170000375,,,,,,,,,,,,,,,,,,,,,,,,,,195.97553100004455
+122,taxcalc/tests/test_growdiff.py::test_has_any_response,<function test_has_any_response at 0x7f6d4b2330d0>,passed,169.00947599992833,,,,,,,,,,,,,,,,,,,,,,,,,,50.95985299988115
+123,taxcalc/tests/test_growdiff.py::test_description_punctuation,<function test_description_punctuation at 0x7f6d4b233160>,passed,0.430102999985138,,,,,,,,,,,,,,,,,,,,,,,,,,0.04010500003914791
+124,taxcalc/tests/test_growdiff.py::test_boolean_value_infomation,<function test_boolean_value_infomation at 0x7f6d4b2331f0>,passed,0.41530300006797916,,,,,,,,,,,,,,,,,,,,,,,,,,0.07420400004320987
+125,taxcalc/tests/test_growfactors.py::test_improper_usage,<function test_improper_usage at 0x7f6d4b233550>,passed,5.812829999968017,,,,,,,,,,,,,,,,,,,,,,,,,,1.1489479999227115
+126,taxcalc/tests/test_growfactors.py::test_update_after_use,<function test_update_after_use at 0x7f6d4b2335e0>,passed,3.6584189999757655,,,,,,,,,,,,,,,,,,,,,,,,,,0.826229999915995
+127,taxcalc/tests/test_growfactors.py::test_proper_usage,<function test_proper_usage at 0x7f6d4b233670>,passed,3.4758190000729883,,,,,,,,,,,,,,,,,,,,,,,,,,0.7255300000679199
+128,taxcalc/tests/test_growfactors.py::test_growfactors_csv_values,<function test_growfactors_csv_values at 0x7f6d4b233700>,passed,4.157321999969099,,,,,,,,,,,,,,,,,,,,,,,,,,1.086133999933736
+129,taxcalc/tests/test_parameters.py::test_params_class[revision0-],<function test_params_class at 0x7f6d4b255040>,passed,13.387169999987236,,,{},,,,,,,,,,,,,,,,,,,,,,,2.497214000072745
+130,taxcalc/tests/test_parameters.py::test_params_class[revision1-error],<function test_params_class at 0x7f6d4b255040>,passed,15.844581999999718,,,{'real_param': {2004: 1.9}},error,,,,,,,,,,,,,,,,,,,,,,1.3764399999445232
+131,taxcalc/tests/test_parameters.py::test_params_class[revision2-raise],<function test_params_class at 0x7f6d4b255040>,passed,16.645886999981485,,,{'int_param': {2004: [3.6]}},raise,,,,,,,,,,,,,,,,,,,,,,3.050741999913953
+132,taxcalc/tests/test_parameters.py::test_params_class[revision3-raise],<function test_params_class at 0x7f6d4b255040>,passed,17.798191999986557,,,{'int_param': {2004: [3]}},raise,,,,,,,,,,,,,,,,,,,,,,4.32304599996769
+133,taxcalc/tests/test_parameters.py::test_params_class[revision4-noerror],<function test_params_class at 0x7f6d4b255040>,passed,23.268919999964055,,,"{'label_param': {2004: [1, 2]}}",noerror,,,,,,,,,,,,,,,,,,,,,,4.329296000037175
+134,taxcalc/tests/test_parameters.py::test_params_class[revision5-raise],<function test_params_class at 0x7f6d4b255040>,passed,11.588560000063808,,,"{'label_param': {2004: [[1, 2]]}}",raise,,,,,,,,,,,,,,,,,,,,,,2.057598000078542
+135,taxcalc/tests/test_parameters.py::test_params_class[revision6-raise],<function test_params_class at 0x7f6d4b255040>,passed,11.743260999992344,,,"{'label_param': {2004: [1, 2, 3]}}",raise,,,,,,,,,,,,,,,,,,,,,,2.164900000025229
+136,taxcalc/tests/test_parameters.py::test_params_class[revision7-raise],<function test_params_class at 0x7f6d4b255040>,passed,16.525685000033263,,,{'bool_param': {2004: [4.9]}},raise,,,,,,,,,,,,,,,,,,,,,,0.804549000008592
+137,taxcalc/tests/test_parameters.py::test_params_class[revision8-raise],<function test_params_class at 0x7f6d4b255040>,passed,16.627585999913208,,,{'str_param': {2004: [9]}},raise,,,,,,,,,,,,,,,,,,,,,,2.982240999926944
+138,taxcalc/tests/test_parameters.py::test_params_class[revision9-noerror],<function test_params_class at 0x7f6d4b255040>,passed,19.225099999971462,,,{'str_param': {2004: 'nonlinear'}},noerror,,,,,,,,,,,,,,,,,,,,,,4.325659999949494
+139,taxcalc/tests/test_parameters.py::test_params_class[revision10-error],<function test_params_class at 0x7f6d4b255040>,passed,15.777381000020796,,,{'str_param': {2004: 'unknownvalue'}},error,,,,,,,,,,,,,,,,,,,,,,1.9591370000853203
+140,taxcalc/tests/test_parameters.py::test_params_class[revision11-raise],<function test_params_class at 0x7f6d4b255040>,passed,15.312579000010373,,,{'str_param': {2004: ['nonlinear']}},raise,,,,,,,,,,,,,,,,,,,,,,1.444134999928794
+141,taxcalc/tests/test_parameters.py::test_params_class[revision12-raise],<function test_params_class at 0x7f6d4b255040>,passed,15.294779999976527,,,{'real_param': {2004: 'linear'}},raise,,,,,,,,,,,,,,,,,,,,,,1.7091349999418526
+142,taxcalc/tests/test_parameters.py::test_params_class[revision13-raise],<function test_params_class at 0x7f6d4b255040>,passed,15.717981999955555,,,"{'real_param': {2004: [0.2, 0.3]}}",raise,,,,,,,,,,,,,,,,,,,,,,-0.07045400002425595
+143,taxcalc/tests/test_parameters.py::test_params_class[revision14-raise],<function test_params_class at 0x7f6d4b255040>,passed,17.135488999997506,,,{'real_param-indexed': {2004: True}},raise,,,,,,,,,,,,,,,,,,,,,,1.9132499999159336
+144,taxcalc/tests/test_parameters.py::test_params_class[revision15-raise],<function test_params_class at 0x7f6d4b255040>,passed,10.945956999989903,,,{'unknown_param-indexed': {2004: False}},raise,,,,,,,,,,,,,,,,,,,,,,1.2894959999130151
+145,taxcalc/tests/test_parameters.py::test_json_file_contents[consumption.json],<function test_json_file_contents at 0x7f6d4b2550d0>,passed,238.66753699996934,,,,,consumption.json,,,,,,,,,,,,,,,,,,,,,53.822083999989445
+146,taxcalc/tests/test_parameters.py::test_json_file_contents[policy_current_law.json],<function test_json_file_contents at 0x7f6d4b2550d0>,passed,132707.1750360001,,,,,policy_current_law.json,,,,,,,,,,,,,,,,,,,,,29843.96734300017
+147,taxcalc/tests/test_parameters.py::test_json_file_contents[growdiff.json],<function test_json_file_contents at 0x7f6d4b2550d0>,passed,926.9061069999225,,,,,growdiff.json,,,,,,,,,,,,,,,,,,,,,188.51840399997855
+148,taxcalc/tests/test_parameters.py::test_parameters_mentioned[consumption.json-consumption.py],<function test_parameters_mentioned at 0x7f6d4b255160>,passed,0.38000099993951153,,,,,,consumption.json,consumption.py,,,,,,,,,,,,,,,,,,,0.059501999885469614
+149,taxcalc/tests/test_parameters.py::test_parameters_mentioned[policy_current_law.json-calcfunctions.py],<function test_parameters_mentioned at 0x7f6d4b255160>,passed,11.724146999995355,,,,,,policy_current_law.json,calcfunctions.py,,,,,,,,,,,,,,,,,,,-1.3736000000790227
+150,taxcalc/tests/test_parameters.py::test_parameters_mentioned[growdiff.json-growdiff.py],<function test_parameters_mentioned at 0x7f6d4b255160>,passed,0.38440200000877667,,,,,,growdiff.json,growdiff.py,,,,,,,,,,,,,,,,,,,0.04820399999516667
+151,taxcalc/tests/test_parameters.py::test_expand_xd_errors,<function test_expand_xd_errors at 0x7f6d4b2551f0>,passed,7.250928999951611,,,,,,,,,,,,,,,,,,,,,,,,,,1.5701519999993252
+152,taxcalc/tests/test_parameters.py::test_expand_empty,<function test_expand_empty at 0x7f6d4b255430>,passed,8.420134000061807,,,,,,,,,,,,,,,,,,,,,,,,,,1.9497609999916676
+153,taxcalc/tests/test_parameters.py::test_expand_1d_scalar,<function test_expand_1d_scalar at 0x7f6d4b2554c0>,passed,22.747990999960166,,,,,,,,,,,,,,,,,,,,,,,,,,3.23186999992231
+154,taxcalc/tests/test_parameters.py::test_expand_2d_short_array,<function test_expand_2d_short_array at 0x7f6d4b255550>,passed,8.807035000018004,,,,,,,,,,,,,,,,,,,,,,,,,,1.5496639999810213
+155,taxcalc/tests/test_parameters.py::test_expand_2d_variable_rates,<function test_expand_2d_variable_rates at 0x7f6d4b2555e0>,passed,9.422837000101936,,,,,,,,,,,,,,,,,,,,,,,,,,1.518269000143846
+156,taxcalc/tests/test_parameters.py::test_expand_2d_already_filled,<function test_expand_2d_already_filled at 0x7f6d4b255670>,passed,14.085155999964627,,,,,,,,,,,,,,,,,,,,,,,,,,2.0064049999746185
+157,taxcalc/tests/test_parameters.py::test_expand_2d_partial_expand,<function test_expand_2d_partial_expand at 0x7f6d4b255700>,passed,14.48985799993352,,,,,,,,,,,,,,,,,,,,,,,,,,0.30171599996720033
+158,"taxcalc/tests/test_parameters.py::test_read_json_revision[\n{\n    ""consumption"": {""BEN_mcaid_value"": {""2013"": 0.9}}\n}\n]",<function test_read_json_revision at 0x7f6d4b255790>,passed,0.4557009999643924,,,,,,,,"
+>>>>>>> 3fb66e326f7c9d8c48c3d5bae7d018bd7d78c41d
 {
     ""consumption"": {""BEN_mcaid_value"": {""2013"": 0.9}}
 }
-",,,,,,,,,,,,,,,,,,-0.003209999931641505
-152,"taxcalc/tests/test_parameters.py::test_read_json_revision[\n{\n    ""consumption"": {""BEN_mcaid_value"": [{""year"": ""2013"", ""value"": 0.9}]}\n}\n]",<function test_read_json_revision at 0x7f45d4201040>,passed,0.2901990000054866,,,,,,,,"
+",,,,,,,,,,,,,,,,,,0.04660299998704431
+159,"taxcalc/tests/test_parameters.py::test_read_json_revision[\n{\n    ""consumption"": {""BEN_mcaid_value"": [{""year"": ""2013"", ""value"": 0.9}]}\n}\n]",<function test_read_json_revision at 0x7f6d4b255790>,passed,0.4052020000244738,,,,,,,,"
 {
     ""consumption"": {""BEN_mcaid_value"": [{""year"": ""2013"", ""value"": 0.9}]}
 }
-",,,,,,,,,,,,,,,,,,-0.05800799999633449
-153,"taxcalc/tests/test_parameters.py::test_read_json_revision_foramts[\n{\n    ""consumption"": {""BEN_mcaid_value"": {""2013"": 0.9}}\n}\n-False]",<function test_read_json_revision_foramts at 0x7f45d42010d0>,passed,0.1896989999750076,,,,,,,,,"
+",,,,,,,,,,,,,,,,,,0.050397999984852504
+160,"taxcalc/tests/test_parameters.py::test_read_json_revision_foramts[\n{\n    ""consumption"": {""BEN_mcaid_value"": {""2013"": 0.9}}\n}\n-False]",<function test_read_json_revision_foramts at 0x7f6d4b255820>,passed,0.2820010000732509,,,,,,,,,"
 {
     ""consumption"": {""BEN_mcaid_value"": {""2013"": 0.9}}
 }
-",False,,,,,,,,,,,,,,,,-0.02910599994265789
-154,"taxcalc/tests/test_parameters.py::test_read_json_revision_foramts[\n{\n    ""consumption"": {""BEN_mcaid_value"": [{""year"": ""2013"", ""value"": 0.9}]}\n}\n-True]",<function test_read_json_revision_foramts at 0x7f45d42010d0>,passed,0.1947999999174499,,,,,,,,,"
+",False,,,,,,,,,,,,,,,,0.0660990000369566
+161,"taxcalc/tests/test_parameters.py::test_read_json_revision_foramts[\n{\n    ""consumption"": {""BEN_mcaid_value"": [{""year"": ""2013"", ""value"": 0.9}]}\n}\n-True]",<function test_read_json_revision_foramts at 0x7f6d4b255820>,passed,0.2796020000914723,,,,,,,,,"
 {
     ""consumption"": {""BEN_mcaid_value"": [{""year"": ""2013"", ""value"": 0.9}]}
 }
-",True,,,,,,,,,,,,,,,,-0.025504000063847315
-155,"taxcalc/tests/test_parameters.py::test_read_json_revision_foramts[\n{\n    ""consumption"": {""BEN_mcaid_value"": 0.9}\n}\n-True]",<function test_read_json_revision_foramts at 0x7f45d42010d0>,passed,0.23089900003014918,,,,,,,,,"
+",True,,,,,,,,,,,,,,,,0.03219900008843979
+162,"taxcalc/tests/test_parameters.py::test_read_json_revision_foramts[\n{\n    ""consumption"": {""BEN_mcaid_value"": 0.9}\n}\n-True]",<function test_read_json_revision_foramts at 0x7f6d4b255820>,passed,0.2832010000020091,,,,,,,,,"
 {
     ""consumption"": {""BEN_mcaid_value"": 0.9}
 }
-",True,,,,,,,,,,,,,,,,0.006694000035167874
-156,taxcalc/tests/test_policy.py::test_incorrect_class_instantiation,<function test_incorrect_class_instantiation at 0x7f45d42019d0>,passed,0.13910000006944756,,,,,,,,,,,,,,,,,,,,,,,,,,-0.01710299989099434
-157,taxcalc/tests/test_policy.py::test_correct_class_instantiation,<function test_correct_class_instantiation at 0x7f45d4201c10>,passed,2019.815800999936,,,,,,,,,,,,,,,,,,,,,,,,,,-60.92792200001895
-158,taxcalc/tests/test_policy.py::test_json_reform_url,<function test_json_reform_url at 0x7f45d3f83700>,passed,210.98723900001914,,,,,,,,,,,,,,,,,,,,,,,,,,43.87345700001785
-159,taxcalc/tests/test_policy.py::test_read_json_reform_file_and_implement_reform[False],<function test_read_json_reform_file_and_implement_reform at 0x7f45d3f83790>,passed,2185.5324199999586,,,,,,,,,,,False,,,,,,,,,,,,,,,-149.62935999994943
-160,taxcalc/tests/test_policy.py::test_read_json_reform_file_and_implement_reform[True],<function test_read_json_reform_file_and_implement_reform at 0x7f45d3f83790>,passed,2368.0806699999266,,,,,,,,,,,True,,,,,,,,,,,,,,,95.6460379999271
-161,taxcalc/tests/test_policy.py::test_constant_inflation_rate_with_reform,<function test_constant_inflation_rate_with_reform at 0x7f45d3f83820>,passed,1959.5316479999383,,,,,,,,,,,,,,,,,,,,,,,,,,-34.79916800006299
-162,taxcalc/tests/test_policy.py::test_variable_inflation_rate_with_reform,<function test_variable_inflation_rate_with_reform at 0x7f45d3f838b0>,passed,2038.9155569999957,,,,,,,,,,,,,,,,,,,,,,,,,,-13.889876999996886
-163,taxcalc/tests/test_policy.py::test_multi_year_reform,<function test_multi_year_reform at 0x7f45d3f83940>,passed,2173.25409099999,,,,,,,,,,,,,,,,,,,,,,,,,,-142.91901000001417
-164,taxcalc/tests/test_policy.py::test_policy_metadata,<function test_policy_metadata at 0x7f45d3f83c10>,passed,1346.7941410000321,,,,,,,,,,,,,,,,,,,,,,,,,,-84.950780999975
-165,taxcalc/tests/test_policy.py::test_implement_reform_raises_on_no_year,<function test_implement_reform_raises_on_no_year at 0x7f45d3f83ca0>,passed,1411.2753800000064,,,,,,,,,,,,,,,,,,,,,,,,,,169.09147600006236
-166,taxcalc/tests/test_policy.py::test_implement_reform_raises_on_early_year,<function test_implement_reform_raises_on_early_year at 0x7f45d3f83d30>,passed,1375.2593259999912,,,,,,,,,,,,,,,,,,,,,,,,,,-41.182003000017176
-167,taxcalc/tests/test_policy.py::test_reform_with_default_indexed,<function test_reform_with_default_indexed at 0x7f45d3f83dc0>,passed,2185.3594460000068,,,,,,,,,,,,,,,,,,,,,,,,,,-32.2426819999464
-168,taxcalc/tests/test_policy.py::test_reform_makes_no_changes_before_year,<function test_reform_makes_no_changes_before_year at 0x7f45d3f83e50>,passed,2081.7658700000266,,,,,,,,,,,,,,,,,,,,,,,,,,-8.458559999894533
-169,taxcalc/tests/test_policy.py::test_read_json_reform_and_implement_reform[False],<function test_read_json_reform_and_implement_reform at 0x7f45d3f83ee0>,passed,2236.7057420000265,,,,,,,,,,,False,,,,,,,,,,,,,,,20.076297999935377
-170,taxcalc/tests/test_policy.py::test_read_json_reform_and_implement_reform[True],<function test_read_json_reform_and_implement_reform at 0x7f45d3f83ee0>,passed,2280.3965650000464,,,,,,,,,,,True,,,,,,,,,,,,,,,2.8199560000530255
-171,taxcalc/tests/test_policy.py::test_pop_the_cap_reform,<function test_pop_the_cap_reform at 0x7f45d3f83f70>,passed,2100.4134140000588,,,,,,,,,,,,,,,,,,,,,,,,,,-30.838086999892766
-172,taxcalc/tests/test_policy.py::test_order_of_indexing_and_level_reforms,<function test_order_of_indexing_and_level_reforms at 0x7f45d459b040>,passed,4001.300484000012,,,,,,,,,,,,,,,,,,,,,,,,,,-71.59588099989378
-173,taxcalc/tests/test_policy.py::test_misspecified_reform_dictionary,<function test_misspecified_reform_dictionary at 0x7f45d459b0d0>,passed,0.13460000002396555,,,,,,,,,,,,,,,,,,,,,,,,,,-0.013103000014780264
-174,taxcalc/tests/test_policy.py::test_section_titles,<function test_section_titles at 0x7f45d459b160>,passed,11.275455999907535,,,,,,,,,,,,,,,,,,,,,,,,,,-1.517389000127876
-175,taxcalc/tests/test_policy.py::test_description_punctuation,<function test_description_punctuation at 0x7f45d459b1f0>,passed,4.708582000034767,,,,,,,,,,,,,,,,,,,,,,,,,,0.33019900001818225
-176,taxcalc/tests/test_policy.py::test_get_index_rate,<function test_get_index_rate at 0x7f45d459b280>,passed,1409.0616659999569,,,,,,,,,,,,,,,,,,,,,,,,,,-44.005179000009775
-177,taxcalc/tests/test_policy.py::test_reform_with_bad_ctc_levels,<function test_reform_with_bad_ctc_levels at 0x7f45d459b310>,passed,1962.6755940000749,,,,,,,,,,,,,,,,,,,,,,,,,,-15.055841999924269
-178,taxcalc/tests/test_policy.py::test_reform_with_removed_parameter,<function test_reform_with_removed_parameter at 0x7f45d459b3a0>,passed,4135.105072999977,,,,,,,,,,,,,,,,,,,,,,,,,,-91.63868800010277
-179,taxcalc/tests/test_policy.py::test_reform_with_out_of_range_error,<function test_reform_with_out_of_range_error at 0x7f45d459b430>,passed,2087.7806540000847,,,,,,,,,,,,,,,,,,,,,,,,,,5.26926200006983
-180,taxcalc/tests/test_policy.py::test_reform_with_warning,<function test_reform_with_warning at 0x7f45d459b4c0>,passed,2325.779699000009,,,,,,,,,,,,,,,,,,,,,,,,,,-12.79696699998567
-181,taxcalc/tests/test_policy.py::test_reform_with_scalar_vector_errors,<function test_reform_with_scalar_vector_errors at 0x7f45d459b550>,passed,6957.264560999988,,,,,,,,,,,,,,,,,,,,,,,,,,-404.8798160000615
-182,taxcalc/tests/test_policy.py::test_index_offset_reform,<function test_index_offset_reform at 0x7f45d459b5e0>,passed,9019.644384000003,,,,,,,,,,,,,,,,,,,,,,,,,,38.27846000001591
-183,taxcalc/tests/test_policy.py::test_cpi_offset_affect_on_prior_years,<function test_cpi_offset_affect_on_prior_years at 0x7f45d459b670>,passed,6570.146220999959,,,,,,,,,,,,,,,,,,,,,,,,,,86.73003299986703
-184,taxcalc/tests/test_policy.py::test_cpi_offset_on_reverting_params,<function test_cpi_offset_on_reverting_params at 0x7f45d459b700>,passed,9737.567394000052,,,,,,,,,,,,,,,,,,,,,,,,,,-97.30210700001771
-185,taxcalc/tests/test_policy.py::test_raise_errors_regression,<function test_raise_errors_regression at 0x7f45d459b790>,passed,2137.5709430000143,,,,,,,,,,,,,,,,,,,,,,,,,,-22.57654300001377
-186,taxcalc/tests/test_policy.py::TestAdjust::test_simple_adj,<bound method TestAdjust.test_simple_adj of <test_policy.TestAdjust object at 0x7f45d45606a0>>,passed,5749.063243000023,,,,,,,,,,,,,,,,,,,,,,,,,,-283.11955000003763
-187,taxcalc/tests/test_policy.py::TestAdjust::test_adj_without_index_1,<bound method TestAdjust.test_adj_without_index_1 of <test_policy.TestAdjust object at 0x7f45d4560e80>>,passed,6103.001989000063,,,,,,,,,,,,,,,,,,,,,,,,,,81.70060000009016
-188,taxcalc/tests/test_policy.py::TestAdjust::test_adj_without_index_2,<bound method TestAdjust.test_adj_without_index_2 of <test_policy.TestAdjust object at 0x7f45d4560cd0>>,passed,6001.295044000017,,,,,,,,,,,,,,,,,,,,,,,,,,-26.10140500007674
-189,taxcalc/tests/test_policy.py::TestAdjust::test_activate_index,<bound method TestAdjust.test_activate_index of <test_policy.TestAdjust object at 0x7f45d4658130>>,passed,5787.172052999949,,,,,,,,,,,,,,,,,,,,,,,,,,-243.4545280000293
-190,taxcalc/tests/test_policy.py::TestAdjust::test_apply_cpi_offset,<bound method TestAdjust.test_apply_cpi_offset of <test_policy.TestAdjust object at 0x7f45d4658af0>>,passed,10272.070740000003,,,,,,,,,,,,,,,,,,,,,,,,,,7.9047069999651285
-191,taxcalc/tests/test_policy.py::TestAdjust::test_multiple_cpi_swaps,<bound method TestAdjust.test_multiple_cpi_swaps of <test_policy.TestAdjust object at 0x7f45d4658190>>,passed,4593.556368000009,,,,,,,,,,,,,,,,,,,,,,,,,,-103.22910800005047
-192,taxcalc/tests/test_policy.py::TestAdjust::test_multiple_cpi_swaps2,<bound method TestAdjust.test_multiple_cpi_swaps2 of <test_policy.TestAdjust object at 0x7f45d46582b0>>,passed,5572.583333000011,,,,,,,,,,,,,,,,,,,,,,,,,,63.85000600005242
-193,taxcalc/tests/test_policy.py::TestAdjust::test_adj_CPI_offset_and_index_status,<bound method TestAdjust.test_adj_CPI_offset_and_index_status of <test_policy.TestAdjust object at 0x7f45d46588b0>>,passed,10118.37437600002,,,,,,,,,,,,,,,,,,,,,,,,,,-281.3210259999996
-194,taxcalc/tests/test_policy.py::TestAdjust::test_adj_related_parameters_and_index_status,<bound method TestAdjust.test_adj_related_parameters_and_index_status of <test_policy.TestAdjust object at 0x7f45d4658a60>>,passed,3683.478144999981,,,,,,,,,,,,,,,,,,,,,,,,,,-125.94655700002022
-195,taxcalc/tests/test_policy.py::TestAdjust::test_indexed_status_parsing,<bound method TestAdjust.test_indexed_status_parsing of <test_policy.TestAdjust object at 0x7f45d4658d00>>,passed,4490.478515999939,,,,,,,,,,,,,,,,,,,,,,,,,,-114.79571700010638
-196,taxcalc/tests/test_policy.py::TestAdjust::test_cpi_offset_does_not_affect_wage_indexed_params,<bound method TestAdjust.test_cpi_offset_does_not_affect_wage_indexed_params of <test_policy.TestAdjust object at 0x7f45d44290a0>>,passed,8147.3178290000305,,,,,,,,,,,,,,,,,,,,,,,,,,14.705433000017365
-197,taxcalc/tests/test_records.py::test_incorrect_Records_instantiation,<function test_incorrect_Records_instantiation at 0x7f45d4586670>,passed,12.85004300007131,,,,,,,,,,,,,,,,,,,,,,,,,,-0.7477169998537647
-198,taxcalc/tests/test_records.py::test_correct_Records_instantiation,<function test_correct_Records_instantiation at 0x7f45d45868b0>,passed,519.8655919999737,,,,,,,,,,,,,,,,,,,,,,,,,,0.15096899994659907
-199,taxcalc/tests/test_records.py::test_read_cps_data,<function test_read_cps_data at 0x7f45d4410670>,passed,942.3809159999337,,,,,,,,,,,,,,,,,,,,,,,,,,-72.06135300009475
-200,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e00200,e00200p,e00200s\n1,    2,   200000, 200000,   0.03\n]",<function test_read_data at 0x7f45d4410dc0>,passed,566.6815839999799,,,,,,,,,,,,"RECID,MARS,e00200,e00200p,e00200s
+",True,,,,,,,,,,,,,,,,0.060098000062680595
+163,taxcalc/tests/test_policy.py::test_incorrect_class_instantiation,<function test_incorrect_class_instantiation at 0x7f6d4af41160>,passed,0.20420099997409125,,,,,,,,,,,,,,,,,,,,,,,,,,0.051399999961176945
+164,taxcalc/tests/test_policy.py::test_correct_class_instantiation,<function test_correct_class_instantiation at 0x7f6d4af413a0>,passed,2728.0435119999993,,,,,,,,,,,,,,,,,,,,,,,,,,421.28910600001745
+165,taxcalc/tests/test_policy.py::test_json_reform_url,<function test_json_reform_url at 0x7f6d4af41e50>,passed,243.3084740000595,,,,,,,,,,,,,,,,,,,,,,,,,,53.21979999996526
+166,taxcalc/tests/test_policy.py::test_read_json_reform_file_and_implement_reform[False],<function test_read_json_reform_file_and_implement_reform at 0x7f6d4af41ee0>,passed,2840.7335900000135,,,,,,,,,,,False,,,,,,,,,,,,,,,504.87318000000414
+167,taxcalc/tests/test_policy.py::test_read_json_reform_file_and_implement_reform[True],<function test_read_json_reform_file_and_implement_reform at 0x7f6d4af41ee0>,passed,2879.7813150000593,,,,,,,,,,,True,,,,,,,,,,,,,,,498.94339100001116
+168,taxcalc/tests/test_policy.py::test_constant_inflation_rate_with_reform,<function test_constant_inflation_rate_with_reform at 0x7f6d4af41f70>,passed,2459.0878210000255,,,,,,,,,,,,,,,,,,,,,,,,,,195.93912499999533
+169,taxcalc/tests/test_policy.py::test_variable_inflation_rate_with_reform,<function test_variable_inflation_rate_with_reform at 0x7f6d4af74040>,passed,2834.3471670000326,,,,,,,,,,,,,,,,,,,,,,,,,,661.5738269999838
+170,taxcalc/tests/test_policy.py::test_multi_year_reform,<function test_multi_year_reform at 0x7f6d4af740d0>,passed,2688.4212909999405,,,,,,,,,,,,,,,,,,,,,,,,,,387.0180440000008
+171,taxcalc/tests/test_policy.py::test_policy_metadata,<function test_policy_metadata at 0x7f6d4af743a0>,passed,1742.3795670000572,,,,,,,,,,,,,,,,,,,,,,,,,,248.59218000005967
+172,taxcalc/tests/test_policy.py::test_implement_reform_raises_on_no_year,<function test_implement_reform_raises_on_no_year at 0x7f6d4af74430>,passed,1749.1026019999936,,,,,,,,,,,,,,,,,,,,,,,,,,271.8949559999828
+173,taxcalc/tests/test_policy.py::test_implement_reform_raises_on_early_year,<function test_implement_reform_raises_on_early_year at 0x7f6d4af744c0>,passed,1759.8594989999583,,,,,,,,,,,,,,,,,,,,,,,,,,289.70934299991313
+174,taxcalc/tests/test_policy.py::test_reform_with_default_indexed,<function test_reform_with_default_indexed at 0x7f6d4af74550>,passed,2603.839275999917,,,,,,,,,,,,,,,,,,,,,,,,,,452.88827599995284
+175,taxcalc/tests/test_policy.py::test_reform_makes_no_changes_before_year,<function test_reform_makes_no_changes_before_year at 0x7f6d4af745e0>,passed,2557.5552509999397,,,,,,,,,,,,,,,,,,,,,,,,,,198.5464580000098
+176,taxcalc/tests/test_policy.py::test_read_json_reform_and_implement_reform[False],<function test_read_json_reform_and_implement_reform at 0x7f6d4af74670>,passed,2963.6220679999496,,,,,,,,,,,False,,,,,,,,,,,,,,,636.1037689999876
+177,taxcalc/tests/test_policy.py::test_read_json_reform_and_implement_reform[True],<function test_read_json_reform_and_implement_reform at 0x7f6d4af74670>,passed,2899.003967999988,,,,,,,,,,,True,,,,,,,,,,,,,,,514.0996310000219
+178,taxcalc/tests/test_policy.py::test_pop_the_cap_reform,<function test_pop_the_cap_reform at 0x7f6d4af74700>,passed,2543.0700540000544,,,,,,,,,,,,,,,,,,,,,,,,,,279.6169200000804
+179,taxcalc/tests/test_policy.py::test_order_of_indexing_and_level_reforms,<function test_order_of_indexing_and_level_reforms at 0x7f6d4af74790>,passed,5317.0728229999895,,,,,,,,,,,,,,,,,,,,,,,,,,1074.0505859999985
+180,taxcalc/tests/test_policy.py::test_misspecified_reform_dictionary,<function test_misspecified_reform_dictionary at 0x7f6d4af74820>,passed,0.18190100001902465,,,,,,,,,,,,,,,,,,,,,,,,,,0.029799000117236657
+181,taxcalc/tests/test_policy.py::test_section_titles,<function test_section_titles at 0x7f6d4af748b0>,passed,11.812060000011115,,,,,,,,,,,,,,,,,,,,,,,,,,-1.869119999923896
+182,taxcalc/tests/test_policy.py::test_description_punctuation,<function test_description_punctuation at 0x7f6d4af74940>,passed,4.248222000001078,,,,,,,,,,,,,,,,,,,,,,,,,,-0.2001359999894703
+183,taxcalc/tests/test_policy.py::test_get_index_rate,<function test_get_index_rate at 0x7f6d4af749d0>,passed,1851.277845000027,,,,,,,,,,,,,,,,,,,,,,,,,,323.60663099996145
+184,taxcalc/tests/test_policy.py::test_reform_with_bad_ctc_levels,<function test_reform_with_bad_ctc_levels at 0x7f6d4af74a60>,passed,2518.7673340000174,,,,,,,,,,,,,,,,,,,,,,,,,,291.1966510000643
+185,taxcalc/tests/test_policy.py::test_reform_with_removed_parameter,<function test_reform_with_removed_parameter at 0x7f6d4af74af0>,passed,5316.659775000062,,,,,,,,,,,,,,,,,,,,,,,,,,1070.8540920001042
+186,taxcalc/tests/test_policy.py::test_reform_with_out_of_range_error,<function test_reform_with_out_of_range_error at 0x7f6d4af74b80>,passed,2577.956092000022,,,,,,,,,,,,,,,,,,,,,,,,,,368.91437999997834
+187,taxcalc/tests/test_policy.py::test_reform_with_warning,<function test_reform_with_warning at 0x7f6d4af74c10>,passed,2975.1449309999316,,,,,,,,,,,,,,,,,,,,,,,,,,357.23675999997795
+188,taxcalc/tests/test_policy.py::test_reform_with_scalar_vector_errors,<function test_reform_with_scalar_vector_errors at 0x7f6d4af74ca0>,passed,9204.550846999951,,,,,,,,,,,,,,,,,,,,,,,,,,1725.9569139998812
+189,taxcalc/tests/test_policy.py::test_index_offset_reform,<function test_index_offset_reform at 0x7f6d4af74d30>,passed,11180.731192000054,,,,,,,,,,,,,,,,,,,,,,,,,,1594.0418930000542
+190,taxcalc/tests/test_policy.py::test_cpi_offset_affect_on_prior_years,<function test_cpi_offset_affect_on_prior_years at 0x7f6d4af74dc0>,passed,8397.185289000048,,,,,,,,,,,,,,,,,,,,,,,,,,1444.9236860000374
+191,taxcalc/tests/test_policy.py::test_cpi_offset_on_reverting_params,<function test_cpi_offset_on_reverting_params at 0x7f6d4af74e50>,passed,12563.389555999947,,,,,,,,,,,,,,,,,,,,,,,,,,2263.013215999992
+192,taxcalc/tests/test_policy.py::test_raise_errors_regression,<function test_raise_errors_regression at 0x7f6d4af74ee0>,passed,2883.6611399999583,,,,,,,,,,,,,,,,,,,,,,,,,,376.96789899996475
+193,taxcalc/tests/test_policy.py::TestAdjust::test_simple_adj,<bound method TestAdjust.test_simple_adj of <test_policy.TestAdjust object at 0x7f6d4b26d970>>,passed,7397.449810000012,,,,,,,,,,,,,,,,,,,,,,,,,,1196.9480310000336
+194,taxcalc/tests/test_policy.py::TestAdjust::test_adj_without_index_1,<bound method TestAdjust.test_adj_without_index_1 of <test_policy.TestAdjust object at 0x7f6d4b26d7f0>>,passed,7701.677939999968,,,,,,,,,,,,,,,,,,,,,,,,,,1181.9772399999238
+195,taxcalc/tests/test_policy.py::TestAdjust::test_adj_without_index_2,<bound method TestAdjust.test_adj_without_index_2 of <test_policy.TestAdjust object at 0x7f6d4b26dca0>>,passed,7577.055327999915,,,,,,,,,,,,,,,,,,,,,,,,,,1194.2866129999175
+196,taxcalc/tests/test_policy.py::TestAdjust::test_activate_index,<bound method TestAdjust.test_activate_index of <test_policy.TestAdjust object at 0x7f6d4b26de20>>,passed,7604.890817999944,,,,,,,,,,,,,,,,,,,,,,,,,,1207.0482879998963
+197,taxcalc/tests/test_policy.py::TestAdjust::test_apply_cpi_offset,<bound method TestAdjust.test_apply_cpi_offset of <test_policy.TestAdjust object at 0x7f6d4b25af10>>,passed,12829.239626000002,,,,,,,,,,,,,,,,,,,,,,,,,,2060.714163000055
+198,taxcalc/tests/test_policy.py::TestAdjust::test_multiple_cpi_swaps,<bound method TestAdjust.test_multiple_cpi_swaps of <test_policy.TestAdjust object at 0x7f6d4b25ab50>>,passed,6045.349914999974,,,,,,,,,,,,,,,,,,,,,,,,,,904.5210389999738
+199,taxcalc/tests/test_policy.py::TestAdjust::test_multiple_cpi_swaps2,<bound method TestAdjust.test_multiple_cpi_swaps2 of <test_policy.TestAdjust object at 0x7f6d4b25a850>>,passed,6861.7215859999305,,,,,,,,,,,,,,,,,,,,,,,,,,894.2221129998416
+200,taxcalc/tests/test_policy.py::TestAdjust::test_adj_CPI_offset_and_index_status,<bound method TestAdjust.test_adj_CPI_offset_and_index_status of <test_policy.TestAdjust object at 0x7f6d4b25a520>>,passed,13291.752287000008,,,,,,,,,,,,,,,,,,,,,,,,,,2503.9604099999906
+201,taxcalc/tests/test_policy.py::TestAdjust::test_adj_related_parameters_and_index_status,<bound method TestAdjust.test_adj_related_parameters_and_index_status of <test_policy.TestAdjust object at 0x7f6d4b25a250>>,passed,4715.487849999931,,,,,,,,,,,,,,,,,,,,,,,,,,522.8700929999377
+202,taxcalc/tests/test_policy.py::TestAdjust::test_indexed_status_parsing,<bound method TestAdjust.test_indexed_status_parsing of <test_policy.TestAdjust object at 0x7f6d4b25ac40>>,passed,5785.358702999929,,,,,,,,,,,,,,,,,,,,,,,,,,903.2736609999565
+203,taxcalc/tests/test_policy.py::TestAdjust::test_cpi_offset_does_not_affect_wage_indexed_params,<bound method TestAdjust.test_cpi_offset_does_not_affect_wage_indexed_params of <test_policy.TestAdjust object at 0x7f6d4b26df10>>,passed,10565.289437000047,,,,,,,,,,,,,,,,,,,,,,,,,,1852.845632000026
+204,taxcalc/tests/test_records.py::test_incorrect_Records_instantiation,<function test_incorrect_Records_instantiation at 0x7f6d4afaa160>,passed,16.39358699992499,,,,,,,,,,,,,,,,,,,,,,,,,,3.051457999958984
+205,taxcalc/tests/test_records.py::test_correct_Records_instantiation,<function test_correct_Records_instantiation at 0x7f6d4afaa280>,passed,519.3542510000952,,,,,,,,,,,,,,,,,,,,,,,,,,-16.37002399991161
+206,taxcalc/tests/test_records.py::test_read_cps_data,<function test_read_cps_data at 0x7f6d4b1cfdc0>,passed,1076.2908020000168,,,,,,,,,,,,,,,,,,,,,,,,,,64.16686000000038
+207,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e00200,e00200p,e00200s\n1,    2,   200000, 200000,   0.03\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,591.4698330000192,,,,,,,,,,,,"RECID,MARS,e00200,e00200p,e00200s
 1,    2,   200000, 200000,   0.03
-",,,,,,,,,,,,,,15.800865999949565
-201,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e00900,e00900p,e00900s\n1,    2,   200000, 200000,   0.03\n]",<function test_read_data at 0x7f45d4410dc0>,passed,563.5345989999223,,,,,,,,,,,,"RECID,MARS,e00900,e00900p,e00900s
+",,,,,,,,,,,,,,18.78493099991374
+208,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e00900,e00900p,e00900s\n1,    2,   200000, 200000,   0.03\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,571.1145259999739,,,,,,,,,,,,"RECID,MARS,e00900,e00900p,e00900s
 1,    2,   200000, 200000,   0.03
-",,,,,,,,,,,,,,11.421356999903765
-202,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e02100,e02100p,e02100s\n1,    2,   200000, 200000,   0.03\n]",<function test_read_data at 0x7f45d4410dc0>,passed,567.4418810000361,,,,,,,,,,,,"RECID,MARS,e02100,e02100p,e02100s
+",,,,,,,,,,,,,,0.1376400000481226
+209,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e02100,e02100p,e02100s\n1,    2,   200000, 200000,   0.03\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,569.8375189999751,,,,,,,,,,,,"RECID,MARS,e02100,e02100p,e02100s
 1,    2,   200000, 200000,   0.03
-",,,,,,,,,,,,,,16.52456199997232
-203,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e00200,e00200p,e00200s\n1,    4,   200000, 100000, 100000\n]",<function test_read_data at 0x7f45d4410dc0>,passed,565.7653890000347,,,,,,,,,,,,"RECID,MARS,e00200,e00200p,e00200s
+",,,,,,,,,,,,,,2.4931679998871914
+210,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e00200,e00200p,e00200s\n1,    4,   200000, 100000, 100000\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,575.5553489999556,,,,,,,,,,,,"RECID,MARS,e00200,e00200p,e00200s
 1,    4,   200000, 100000, 100000
-",,,,,,,,,,,,,,3.289248999976735
-204,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e00900,e00900p,e00900s\n1,    4,   200000, 100000, 100000\n]",<function test_read_data at 0x7f45d4410dc0>,passed,565.0425920000544,,,,,,,,,,,,"RECID,MARS,e00900,e00900p,e00900s
+",,,,,,,,,,,,,,-2.985810000041056
+211,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e00900,e00900p,e00900s\n1,    4,   200000, 100000, 100000\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,555.9324450000531,,,,,,,,,,,,"RECID,MARS,e00900,e00900p,e00900s
 1,    4,   200000, 100000, 100000
-",,,,,,,,,,,,,,13.663064000070335
-205,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e02100,e02100p,e02100s\n1,    4,   200000, 100000, 100000\n]",<function test_read_data at 0x7f45d4410dc0>,passed,559.5034210000449,,,,,,,,,,,,"RECID,MARS,e02100,e02100p,e02100s
+",,,,,,,,,,,,,,-15.689646999931028
+212,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e02100,e02100p,e02100s\n1,    4,   200000, 100000, 100000\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,556.0233459999608,,,,,,,,,,,,"RECID,MARS,e02100,e02100p,e02100s
 1,    4,   200000, 100000, 100000
-",,,,,,,,,,,,,,7.073079000065263
-206,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,k1bx14s\n1,    4,   0.03\n]",<function test_read_data at 0x7f45d4410dc0>,passed,560.5124779999642,,,,,,,,,,,,"RECID,MARS,k1bx14s
+",,,,,,,,,,,,,,-13.393325000038203
+213,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,k1bx14s\n1,    4,   0.03\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,550.5359170000474,,,,,,,,,,,,"RECID,MARS,k1bx14s
 1,    4,   0.03
-",,,,,,,,,,,,,,8.723649999865302
-207,"taxcalc/tests/test_records.py::test_read_data[RxCID,MARS\n1,    2\n]",<function test_read_data at 0x7f45d4410dc0>,passed,2.309690000060982,,,,,,,,,,,,"RxCID,MARS
+",,,,,,,,,,,,,,-17.960244999926545
+214,"taxcalc/tests/test_records.py::test_read_data[RxCID,MARS\n1,    2\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,2.559514000040508,,,,,,,,,,,,"RxCID,MARS
 1,    2
-",,,,,,,,,,,,,,-0.08845599995765951
-208,"taxcalc/tests/test_records.py::test_read_data[RECID,e00300\n1,    456789\n]",<function test_read_data at 0x7f45d4410dc0>,passed,2.1197910000410047,,,,,,,,,,,,"RECID,e00300
+",,,,,,,,,,,,,,0.18839100005152432
+215,"taxcalc/tests/test_records.py::test_read_data[RECID,e00300\n1,    456789\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,2.5293129999681696,,,,,,,,,,,,"RECID,e00300
 1,    456789
-",,,,,,,,,,,,,,-0.11615099992923206
-209,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS\n1,    6\n]",<function test_read_data at 0x7f45d4410dc0>,passed,561.2962599999491,,,,,,,,,,,,"RECID,MARS
+",,,,,,,,,,,,,,0.34909199996491225
+216,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS\n1,    6\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,554.3082369999865,,,,,,,,,,,,"RECID,MARS
 1,    6
-",,,,,,,,,,,,,,8.018001999971602
-210,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,EIC\n1,    5,   4\n]",<function test_read_data at 0x7f45d4410dc0>,passed,561.0829519999925,,,,,,,,,,,,"RECID,MARS,EIC
+",,,,,,,,,,,,,,-14.893432000008033
+217,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,EIC\n1,    5,   4\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,540.0100289999727,,,,,,,,,,,,"RECID,MARS,EIC
 1,    5,   4
-",,,,,,,,,,,,,,8.953216999998403
-211,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e00600,e00650\n1,    1,        8,     9\n]",<function test_read_data at 0x7f45d4410dc0>,passed,564.256236999995,,,,,,,,,,,,"RECID,MARS,e00600,e00650
+",,,,,,,,,,,,,,-24.374994000027073
+218,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e00600,e00650\n1,    1,        8,     9\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,556.8629900000133,,,,,,,,,,,,"RECID,MARS,e00600,e00650
 1,    1,        8,     9
-",,,,,,,,,,,,,,12.300804999995307
-212,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e01500,e01700\n1,    1,        6,     7\n]",<function test_read_data at 0x7f45d4410dc0>,passed,562.0722480000495,,,,,,,,,,,,"RECID,MARS,e01500,e01700
+",,,,,,,,,,,,,,-20.30795499990745
+219,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,e01500,e01700\n1,    1,        6,     7\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,557.7679950000629,,,,,,,,,,,,"RECID,MARS,e01500,e01700
 1,    1,        6,     7
-",,,,,,,,,,,,,,7.699670000079095
-213,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,PT_SSTB_income\n1,    1,   2\n]",<function test_read_data at 0x7f45d4410dc0>,passed,564.791234999916,,,,,,,,,,,,"RECID,MARS,PT_SSTB_income
+",,,,,,,,,,,,,,-12.77038699993227
+220,"taxcalc/tests/test_records.py::test_read_data[RECID,MARS,PT_SSTB_income\n1,    1,   2\n]",<function test_read_data at 0x7f6d4b1d6550>,passed,538.9092969999183,,,,,,,,,,,,"RECID,MARS,PT_SSTB_income
 1,    1,   2
-",,,,,,,,,,,,,,13.552515999890602
-214,taxcalc/tests/test_records.py::test_for_duplicate_names,<function test_for_duplicate_names at 0x7f45d4410e50>,passed,1.1137949999238117,,,,,,,,,,,,,,,,,,,,,,,,,,-0.043827000126839266
-215,taxcalc/tests/test_records.py::test_records_variables_content,<function test_records_variables_content at 0x7f45d4410ee0>,passed,0.8257960000719322,,,,,,,,,,,,,,,,,,,,,,,,,,-0.06582200001048477
-216,taxcalc/tests/test_records.py::test_csv_input_vars_md_contents,<function test_csv_input_vars_md_contents at 0x7f45d4410f70>,passed,0.8835959999942133,,,,,,,,,,,,,,,,,,,,,,,,,,-0.08322200005750346
-217,taxcalc/tests/test_reforms.py::test_2017_law_reform,<function test_2017_law_reform at 0x7f45d4438940>,passed,4987.147262000008,,,,,,,,,,,,,,,,,,,,,,,,,,-194.74720799996703
-218,taxcalc/tests/test_reforms.py::test_round_trip_reforms[2019],<function test_round_trip_reforms at 0x7f45d44389d0>,passed,13621.923405000074,,,,,,,,,,,,,2019.0,,,,,,,,,,,,,-98.09935199996653
-219,taxcalc/tests/test_reforms.py::test_round_trip_reforms[2020],<function test_round_trip_reforms at 0x7f45d44389d0>,passed,13604.49375099995,,,,,,,,,,,,,2020.0,,,,,,,,,,,,,-121.81918300006873
-220,taxcalc/tests/test_reforms.py::test_round_trip_reforms[2021],<function test_round_trip_reforms at 0x7f45d44389d0>,passed,13659.049608999907,,,,,,,,,,,,,2021.0,,,,,,,,,,,,,-114.8291460000346
-221,taxcalc/tests/test_reforms.py::test_round_trip_reforms[2022],<function test_round_trip_reforms at 0x7f45d44389d0>,passed,13590.281294000079,,,,,,,,,,,,,2022.0,,,,,,,,,,,,,-85.96460399985517
-222,taxcalc/tests/test_reforms.py::test_round_trip_reforms[2023],<function test_round_trip_reforms at 0x7f45d44389d0>,passed,13625.419888000011,,,,,,,,,,,,,2023.0,,,,,,,,,,,,,-98.72689400003583
-223,taxcalc/tests/test_reforms.py::test_reform_json_and_output,<function test_reform_json_and_output at 0x7f45d4438a60>,passed,79534.89382499992,,,,,,,,,,,,,,,,,,,,,,,,,,-2551.805956999946
-224,taxcalc/tests/test_responses.py::test_response_json,<function test_response_json at 0x7f45d460d040>,passed,0.203698999939661,,,,,,,,,,,,,,,,,,,,,,,,,,-0.015706000112913898
-225,taxcalc/tests/test_taxcalcio.py::test_ctor_errors[no-dot-csv-filename-no-dot-json-filename-no-dot-json-filename-no-dot-json-filename-no-output-directory],<function test_ctor_errors at 0x7f45d4614550>,passed,0.18039899987343233,,,,,,,,,,,,,,no-dot-csv-filename,no-dot-json-filename,no-dot-json-filename,no-dot-json-filename,no-output-directory,,,,,,,,-0.02150500017705778
-226,taxcalc/tests/test_taxcalcio.py::test_ctor_errors[input_data1-baseline1-reform1-assump1-outdir1],<function test_ctor_errors at 0x7f45d4614550>,passed,0.12450000008357165,,,,,,,,,,,,,,[],[],[],[],[],,,,,,,,-0.017802999991545138
-227,taxcalc/tests/test_taxcalcio.py::test_ctor_errors[no-exist.csv-no-exist.json-no-exist.json-no-exist.json-.],<function test_ctor_errors at 0x7f45d4614550>,passed,0.2061989998765057,,,,,,,,,,,,,,no-exist.csv,no-exist.json,no-exist.json,no-exist.json,.,,,,,,,,-0.030005000098753898
-228,taxcalc/tests/test_taxcalcio.py::test_init_errors[2000-reformfile0-reformfile0-None],<function test_init_errors at 0x7f45d46145e0>,passed,5185.64255299998,,,,,,,,,,,,,,,,,,,2000.0,reformfile0,reformfile0,,,,,-126.36407100012548
-229,taxcalc/tests/test_taxcalcio.py::test_init_errors[2099-reformfile0-reformfile0-None],<function test_init_errors at 0x7f45d46145e0>,passed,5066.185452000127,,,,,,,,,,,,,,,,,,,2099.0,reformfile0,reformfile0,,,,,-441.5939289999642
-230,taxcalc/tests/test_taxcalcio.py::test_init_errors[2020-reformfile0-reformfile0-errorassumpfile],<function test_init_errors at 0x7f45d46145e0>,passed,5028.007957,,,,,,,,,,,,,,,,,,,2020.0,reformfile0,reformfile0,errorassumpfile,,,,-252.41341500009185
-231,taxcalc/tests/test_taxcalcio.py::test_init_errors[2020-errorreformfile-errorreformfile-None],<function test_init_errors at 0x7f45d46145e0>,passed,3888.226748000079,,,,,,,,,,,,,,,,,,,2020.0,errorreformfile,errorreformfile,,,,,-274.0599869998732
-232,taxcalc/tests/test_taxcalcio.py::test_creation_with_aging,<function test_creation_with_aging at 0x7f45d4614670>,passed,13229.231979999895,,,,,,,,,,,,,,,,,,,,,,,,,,-439.9149660000603
-233,taxcalc/tests/test_taxcalcio.py::test_ctor_init_with_cps_files,<function test_ctor_init_with_cps_files at 0x7f45d4614700>,passed,18357.656445999964,,,,,,,,,,,,,,,,,,,,,,,,,,-373.0259900000892
-234,"taxcalc/tests/test_taxcalcio.py::test_custom_dump_variables[\n    MARS;iitax\tpayrolltax|combined,\n    c00100\n    surtax\n    -True-8]",<function test_custom_dump_variables at 0x7f45d4614790>,passed,5110.808657999996,,,,,,,,,,,,,,,,,,,,,,,"
+",,,,,,,,,,,,,,-32.3674920001622
+221,taxcalc/tests/test_records.py::test_for_duplicate_names,<function test_for_duplicate_names at 0x7f6d4b1d65e0>,passed,1.2870069999735279,,,,,,,,,,,,,,,,,,,,,,,,,,0.13309599989952403
+222,taxcalc/tests/test_records.py::test_records_variables_content,<function test_records_variables_content at 0x7f6d4b1d6670>,passed,0.8629049999626659,,,,,,,,,,,,,,,,,,,,,,,,,,-0.01740400000471709
+223,taxcalc/tests/test_records.py::test_csv_input_vars_md_contents,<function test_csv_input_vars_md_contents at 0x7f6d4b1d6700>,passed,0.9961050000129035,,,,,,,,,,,,,,,,,,,,,,,,,,0.07499599996663164
+224,taxcalc/tests/test_reforms.py::test_2017_law_reform,<function test_2017_law_reform at 0x7f6d4af6b0d0>,passed,6549.355894000087,,,,,,,,,,,,,,,,,,,,,,,,,,1116.6450240000358
+225,taxcalc/tests/test_reforms.py::test_round_trip_reforms[2019],<function test_round_trip_reforms at 0x7f6d4af6b160>,passed,17339.917208999963,,,,,,,,,,,,,2019.0,,,,,,,,,,,,,2779.7985159999134
+226,taxcalc/tests/test_reforms.py::test_round_trip_reforms[2020],<function test_round_trip_reforms at 0x7f6d4af6b160>,passed,17521.590318000108,,,,,,,,,,,,,2020.0,,,,,,,,,,,,,3031.9947270000957
+227,taxcalc/tests/test_reforms.py::test_round_trip_reforms[2021],<function test_round_trip_reforms at 0x7f6d4af6b160>,passed,17455.189419000133,,,,,,,,,,,,,2021.0,,,,,,,,,,,,,2791.378539000105
+228,taxcalc/tests/test_reforms.py::test_round_trip_reforms[2022],<function test_round_trip_reforms at 0x7f6d4af6b160>,passed,17682.546258000002,,,,,,,,,,,,,2022.0,,,,,,,,,,,,,3246.5269070000886
+229,taxcalc/tests/test_reforms.py::test_round_trip_reforms[2023],<function test_round_trip_reforms at 0x7f6d4af6b160>,passed,17372.890923000115,,,,,,,,,,,,,2023.0,,,,,,,,,,,,,2880.072798000132
+230,taxcalc/tests/test_reforms.py::test_reform_json_and_output,<function test_reform_json_and_output at 0x7f6d4af6b1f0>,passed,102505.46232300007,,,,,,,,,,,,,,,,,,,,,,,,,,16010.278147000121
+231,taxcalc/tests/test_responses.py::test_response_json,<function test_response_json at 0x7f6d4af6b790>,passed,0.2624019998620497,,,,,,,,,,,,,,,,,,,,,,,,,,0.04139999987273771
+232,taxcalc/tests/test_taxcalcio.py::test_ctor_errors[no-dot-csv-filename-no-dot-json-filename-no-dot-json-filename-no-dot-json-filename-no-output-directory],<function test_ctor_errors at 0x7f6d4abb0ca0>,passed,0.28970100015612843,,,,,,,,,,,,,,no-dot-csv-filename,no-dot-json-filename,no-dot-json-filename,no-dot-json-filename,no-output-directory,,,,,,,,0.09059900014563033
+233,taxcalc/tests/test_taxcalcio.py::test_ctor_errors[input_data1-baseline1-reform1-assump1-outdir1],<function test_ctor_errors at 0x7f6d4abb0ca0>,passed,0.18990099988513975,,,,,,,,,,,,,,[],[],[],[],[],,,,,,,,0.04639999986011395
+234,taxcalc/tests/test_taxcalcio.py::test_ctor_errors[no-exist.csv-no-exist.json-no-exist.json-no-exist.json-.],<function test_ctor_errors at 0x7f6d4abb0ca0>,passed,0.31720099991616735,,,,,,,,,,,,,,no-exist.csv,no-exist.json,no-exist.json,no-exist.json,.,,,,,,,,0.09459899990815765
+235,taxcalc/tests/test_taxcalcio.py::test_init_errors[2000-reformfile0-reformfile0-None],<function test_init_errors at 0x7f6d4abb0d30>,passed,6672.905059000186,,,,,,,,,,,,,,,,,,,2000.0,reformfile0,reformfile0,,,,,962.8010670002141
+236,taxcalc/tests/test_taxcalcio.py::test_init_errors[2099-reformfile0-reformfile0-None],<function test_init_errors at 0x7f6d4abb0d30>,passed,6673.585373999913,,,,,,,,,,,,,,,,,,,2099.0,reformfile0,reformfile0,,,,,1104.9512109998432
+237,taxcalc/tests/test_taxcalcio.py::test_init_errors[2020-reformfile0-reformfile0-errorassumpfile],<function test_init_errors at 0x7f6d4abb0d30>,passed,6623.418791999939,,,,,,,,,,,,,,,,,,,2020.0,reformfile0,reformfile0,errorassumpfile,,,,923.8064109999868
+238,taxcalc/tests/test_taxcalcio.py::test_init_errors[2020-errorreformfile-errorreformfile-None],<function test_init_errors at 0x7f6d4abb0d30>,passed,5150.80425400015,,,,,,,,,,,,,,,,,,,2020.0,errorreformfile,errorreformfile,,,,,961.0625250002158
+239,taxcalc/tests/test_taxcalcio.py::test_creation_with_aging,<function test_creation_with_aging at 0x7f6d4abb0dc0>,passed,16017.139732000032,,,,,,,,,,,,,,,,,,,,,,,,,,1559.05792700014
+240,taxcalc/tests/test_taxcalcio.py::test_ctor_init_with_cps_files,<function test_ctor_init_with_cps_files at 0x7f6d4abb0e50>,passed,22057.70210599985,,,,,,,,,,,,,,,,,,,,,,,,,,1951.7762359998887
+241,"taxcalc/tests/test_taxcalcio.py::test_custom_dump_variables[\n    MARS;iitax\tpayrolltax|combined,\n    c00100\n    surtax\n    -True-8]",<function test_custom_dump_variables at 0x7f6d4abb0ee0>,passed,6567.827568999974,,,,,,,,,,,,,,,,,,,,,,,"
     MARS;iitax	payrolltax|combined,
     c00100
     surtax
+<<<<<<< HEAD
     ",True,8.0,-352.68322299998545
 235,"taxcalc/tests/test_taxcalcio.py::test_custom_dump_variables[\n    MARS;iitax\tpayrolltax|kombined,c00100\n    surtax\n    RECID\n    FLPDYR\n    -False-8]",<function test_custom_dump_variables at 0x7f45d4614790>,passed,5232.4356300000545,,,,,,,,,,,,,,,,,,,,,,,"
 >>>>>>> 49c6c3f20f550601a300d5d2c595a59577c8f647
+=======
+    ",True,8.0,837.4469870000212
+242,"taxcalc/tests/test_taxcalcio.py::test_custom_dump_variables[\n    MARS;iitax\tpayrolltax|kombined,c00100\n    surtax\n    RECID\n    FLPDYR\n    -False-8]",<function test_custom_dump_variables at 0x7f6d4abb0ee0>,passed,6724.529183999948,,,,,,,,,,,,,,,,,,,,,,,"
+>>>>>>> 3fb66e326f7c9d8c48c3d5bae7d018bd7d78c41d
     MARS;iitax	payrolltax|kombined,c00100
     surtax
     RECID
     FLPDYR
+<<<<<<< HEAD
 <<<<<<< HEAD
     ",False,8.0,-76.21931299991047
 236,taxcalc/tests/test_taxcalcio.py::test_output_options,<function test_output_options at 0x7fb258eac040>,passed,28683.947810000063,,,,,,,,,,,,,,,,,,,,,,,,,,-104.84274999998524
@@ -647,3 +815,36 @@
 264,taxcalc/tests/test_utils.py::test_bootstrap_se_ci,<function test_bootstrap_se_ci at 0x7f45d40d9ca0>,passed,0.4764979998981289,,,,,,,,,,,,,,,,,,,,,,,,,,0.003686999889396303
 265,taxcalc/tests/test_utils.py::test_table_columns_labels,<function test_table_columns_labels at 0x7f45d40d9d30>,passed,0.11749899999813351,,,,,,,,,,,,,,,,,,,,,,,,,,-0.0033029998576238895
 >>>>>>> 49c6c3f20f550601a300d5d2c595a59577c8f647
+=======
+    ",False,8.0,1492.0935539998927
+243,taxcalc/tests/test_taxcalcio.py::test_output_options,<function test_output_options at 0x7f6d4abb0f70>,passed,29661.442523000005,,,,,,,,,,,,,,,,,,,,,,,,,,6680.032831000062
+244,taxcalc/tests/test_taxcalcio.py::test_write_doc_file,<function test_write_doc_file at 0x7f6d4af47040>,passed,17145.71008899998,,,,,,,,,,,,,,,,,,,,,,,,,,3866.2160740000218
+245,taxcalc/tests/test_taxcalcio.py::test_sqldb_option,<function test_sqldb_option at 0x7f6d4af470d0>,passed,8508.417851000104,,,,,,,,,,,,,,,,,,,,,,,,,,2035.8620600002268
+246,taxcalc/tests/test_taxcalcio.py::test_no_tables_or_graphs,<function test_no_tables_or_graphs at 0x7f6d4af47160>,passed,7635.761078000087,,,,,,,,,,,,,,,,,,,,,,,,,,1649.918406000097
+247,taxcalc/tests/test_taxcalcio.py::test_tables,<function test_tables at 0x7f6d4af471f0>,passed,8763.735430999986,,,,,,,,,,,,,,,,,,,,,,,,,,2126.600131000032
+248,taxcalc/tests/test_taxcalcio.py::test_graphs,<function test_graphs at 0x7f6d4af47280>,passed,8724.042273999885,,,,,,,,,,,,,,,,,,,,,,,,,,2078.0034009999326
+249,taxcalc/tests/test_taxcalcio.py::test_analyze_warnings_print,<function test_analyze_warnings_print at 0x7f6d4af47430>,passed,7550.239320999935,,,,,,,,,,,,,,,,,,,,,,,,,,1814.5115139998325
+250,taxcalc/tests/test_taxcalcio.py::test_error_message_parsed_correctly,<function test_error_message_parsed_correctly at 0x7f6d4af47700>,passed,5932.61388499991,,,,,,,,,,,,,,,,,,,,,,,,,,1392.7321379999285
+251,taxcalc/tests/test_utils.py::test_validity_of_name_lists,<function test_validity_of_name_lists at 0x7f6d4af47c10>,passed,1.2579180001921486,,,,,,,,,,,,,,,,,,,,,,,,,,0.23482200003854814
+252,taxcalc/tests/test_utils.py::test_create_tables,<function test_create_tables at 0x7f6d4af47ca0>,passed,4659.789207999893,,,,,,,,,,,,,,,,,,,,,,,,,,1050.761011999839
+253,taxcalc/tests/test_utils.py::test_diff_count_precision,<function test_diff_count_precision at 0x7f6d4af47d30>,passed,542.3931319999156,,,,,,,,,,,,,,,,,,,,,,,,,,-28.478167999992365
+254,taxcalc/tests/test_utils.py::test_weighted_mean,<function test_weighted_mean at 0x7f6d4af019d0>,passed,3.792920000023514,,,,,,,,,,,,,,,,,,,,,,,,,,1.1644319999959412
+255,taxcalc/tests/test_utils.py::test_wage_weighted,<function test_wage_weighted at 0x7f6d4af01a60>,passed,1.2184060001345642,,,,,,,,,,,,,,,,,,,,,,,,,,0.2474099999290046
+256,taxcalc/tests/test_utils.py::test_agi_weighted,<function test_agi_weighted at 0x7f6d4af01af0>,passed,1.1959070000102656,,,,,,,,,,,,,,,,,,,,,,,,,,0.23211099983200245
+257,taxcalc/tests/test_utils.py::test_expanded_income_weighted,<function test_expanded_income_weighted at 0x7f6d4af01b80>,passed,1.160705999836864,,,,,,,,,,,,,,,,,,,,,,,,,,0.25611000000935746
+258,taxcalc/tests/test_utils.py::test_weighted_sum,<function test_weighted_sum at 0x7f6d4af01c10>,passed,2.365713000017422,,,,,,,,,,,,,,,,,,,,,,,,,,0.43912099999943166
+259,taxcalc/tests/test_utils.py::test_add_income_trow_var,<function test_add_income_trow_var at 0x7f6d4af01ca0>,passed,4.039020999925924,,,,,,,,,,,,,,,,,,,,,,,,,,0.8589349999965634
+260,taxcalc/tests/test_utils.py::test_add_quantile_trow_var,<function test_add_quantile_trow_var at 0x7f6d4af01d30>,passed,6.470033999903535,,,,,,,,,,,,,,,,,,,,,,,,,,1.6272549999030161
+261,taxcalc/tests/test_utils.py::test_dist_table_sum_row,<function test_dist_table_sum_row at 0x7f6d4af01dc0>,passed,4080.9142580001208,,,,,,,,,,,,,,,,,,,,,,,,,,872.1070090000467
+262,taxcalc/tests/test_utils.py::test_diff_table_sum_row,<function test_diff_table_sum_row at 0x7f6d4af01e50>,passed,4234.430138000107,,,,,,,,,,,,,,,,,,,,,,,,,,697.5916680000864
+263,taxcalc/tests/test_utils.py::test_mtr_graph_data,<function test_mtr_graph_data at 0x7f6d4af01ee0>,passed,2996.2771010000324,,,,,,,,,,,,,,,,,,,,,,,,,,715.9196820000484
+264,taxcalc/tests/test_utils.py::test_atr_graph_data,<function test_atr_graph_data at 0x7f6d4af01f70>,passed,3165.046717999985,,,,,,,,,,,,,,,,,,,,,,,,,,619.8655680000229
+265,taxcalc/tests/test_utils.py::test_xtr_graph_plot,<function test_xtr_graph_plot at 0x7f6d4af31040>,passed,2997.108014999867,,,,,,,,,,,,,,,,,,,,,,,,,,698.1831609998608
+266,taxcalc/tests/test_utils.py::test_write_graph_file,<function test_write_graph_file at 0x7f6d4af31160>,passed,2866.6939580000417,,,,,,,,,,,,,,,,,,,,,,,,,,420.85875300017506
+267,taxcalc/tests/test_utils.py::test_ce_aftertax_income,<function test_ce_aftertax_income at 0x7f6d4af311f0>,passed,5053.976474999899,,,,,,,,,,,,,,,,,,,,,,,,,,993.5284759999377
+268,taxcalc/tests/test_utils.py::test_read_egg_csv,<function test_read_egg_csv at 0x7f6d4af31280>,passed,1.1453060001258564,,,,,,,,,,,,,,,,,,,,,,,,,,0.5053090001183591
+269,taxcalc/tests/test_utils.py::test_read_egg_json,<function test_read_egg_json at 0x7f6d4af31310>,passed,0.33860200005619845,,,,,,,,,,,,,,,,,,,,,,,,,,-0.14029599992682046
+270,taxcalc/tests/test_utils.py::test_create_delete_temp_file,<function test_create_delete_temp_file at 0x7f6d4af313a0>,passed,0.3575020000425866,,,,,,,,,,,,,,,,,,,,,,,,,,0.060502999986056294
+271,taxcalc/tests/test_utils.py::test_bootstrap_se_ci,<function test_bootstrap_se_ci at 0x7f6d4af31430>,passed,0.5750029999944672,,,,,,,,,,,,,,,,,,,,,,,,,,0.09850500009633834
+272,taxcalc/tests/test_utils.py::test_table_columns_labels,<function test_table_columns_labels at 0x7f6d4af314c0>,passed,0.21690099993065814,,,,,,,,,,,,,,,,,,,,,,,,,,0.09940199993252465
+>>>>>>> 3fb66e326f7c9d8c48c3d5bae7d018bd7d78c41d
