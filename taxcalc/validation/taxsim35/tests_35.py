@@ -11,7 +11,7 @@ if not glob.glob(os.path.join(CUR_PATH, '*in.out-taxsim')):
 
 # run taxcalc/taxsim comparison
 for assump_set in ('a', 'b', 'c'):
-    for year in (17, 18, 19):
+    for year in (17, 18, 19, 20, 21):
         main_comparison.main(assump_set, year)
 
 # clean up taxcalc files
