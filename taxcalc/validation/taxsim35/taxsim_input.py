@@ -1,6 +1,6 @@
 """
 Generates random sample of tax filing units with attributes such that
-generated file can be directly uploaded to Internet TAXSIM version 32.
+generated file can be directly uploaded to Internet TAXSIM version 35.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle taxsim_input.py
@@ -26,10 +26,10 @@ def main():
         usage=usage_str,
         description=('Generates random sample of tax filing units with '
                      'attributes and format such that the file can be '
-                     'directly uploaded to Internet TAXSIM version 32. '
-                     'For details on Internet TAXSIM version 32 INPUT '
+                     'directly uploaded to Internet TAXSIM version 35. '
+                     'For details on Internet TAXSIM version 35 INPUT '
                      'format, go to '
-                     'https://users.nber.org/~taxsim/taxsim32/'))
+                     'https://users.nber.org/~taxsim/taxsim35/'))
     parser.add_argument('YEAR', nargs='?', type=int, default=0,
                         help=('YEAR specifies calendar year assumed in '
                               'generated input data.'))
@@ -245,7 +245,7 @@ def sample_dataframe(assump, year, offset):
     sdict[25] = np.random.randint(0,
                                   assump['max_ided_nopref']+1,
                                   size) * 1000
-    # (26) CHILDCARE (TAXSIM-32 EXPECTS ZERO IF NO QUALIFYING CHILDRED)
+    # (26) CHILDCARE (TAXSIM-35 EXPECTS ZERO IF NO QUALIFYING CHILDRED)
     ccexp = np.random.randint(0, assump['max_ccexp']+1, size) * 1000
     sdict[26] = np.where(dep13 > 0, ccexp, zero)
     # (27) MORTGAGE

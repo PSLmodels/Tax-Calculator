@@ -1,5 +1,5 @@
 """
-Generates TAXSIM-32 `.in` input files, downloads `.in.out-taxsim` output files,
+Generates TAXSIM-35 `.in` input files, downloads `.in.out-taxsim` output files,
 prepares files for Tax Calculator and zips them
 """
 import os
@@ -24,7 +24,7 @@ def get_inputs():
 def get_ftp_output():
     """
     Uses `curl` to upload assumption set input files
-    and save taxsim-32 output files
+    and save taxsim-35 output files
     """
     letters = ["a", "b", "c"]
     years = ["17", "18", "19"]
@@ -35,7 +35,7 @@ def get_ftp_output():
         os.system(f"curl -u taxsim:02138 -T {f} ftp://taxsimftp.nber.org/tmp/userid")
         c_out = str(
             "curl -u taxsim:02138 "
-            + "ftp://taxsimftp.nber.org/tmp/userid.txm32 -o "
+            + "ftp://taxsimftp.nber.org/tmp/userid.txm35 -o "
             + file_out
         )
         os.system(c_out)

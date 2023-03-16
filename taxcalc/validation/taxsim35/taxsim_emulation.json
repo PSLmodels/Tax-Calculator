@@ -1,5 +1,5 @@
 // JSON "reform" file that specifies changes in current-law policy that
-// are required to make Tax-Calculator work like TAXSIM-32.
+// are required to make Tax-Calculator work like TAXSIM-35.
 //
 // (1) AMT_child_em_c_age = 24 (rather than 18)
 //     Whether to set this parameter to 18 or 24 is arbitary because
@@ -27,9 +27,9 @@
 //     income takes a filing unit above the ceiling.
 
 //  (3) ALD_AlimonyReceived_hc = 1.0 (rather than 0)
-//  TAXSIM32 nonproperty income is mapped into AlimonyRecieved
+//  TAXSIM35 nonproperty income is mapped into AlimonyRecieved
 //  which had its haircut change from 1.0 to 0.0, a change that
-//  TAXSIM32 has not implemented for good reason given this:
+//  TAXSIM35 has not implemented for good reason given this:
 //      IRS: 'Beginning Jan. 1, 2019, alimony or separate
 //      maintenance payments are not deductible from the
 //      income of the payer spouse, or includable in the
@@ -37,7 +37,7 @@
 //      divorce or separation agreement executed after
 //      Dec. 31, 2018.
 
-// (4) PT_qbid_limit_switch = false implies TAXSIM32-like QBI deduction logic.
+// (4) PT_qbid_limit_switch = false implies TAXSIM35-like QBI deduction logic.
 {
     "AMT_child_em_c_age": {"2013": 24},
 
