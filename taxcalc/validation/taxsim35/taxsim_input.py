@@ -15,56 +15,42 @@ import pandas as pd
 VALID_LETTERS = ['a', 'b', 'c']
 
 
-def main():
+def generate_datasets(letter, year, offset=0):
     """
-    High-level logic.
+    Generates random sample of tax filing units with attributes and
+    format such that the file can be directly uploaded to Internet
+    TAXSIM version 35. For details on Internet TAXSIM version 35 INPUT
+    format, go to https://users.nber.org/~taxsim/taxsim35/
+
+    Args:
+        letter (character): letter denoting assumption set to generate data
+        year (int): year data will represent
+        offset (int): offset to alter the random number seed
+
+    Returns:
+        None
     """
-    # parse command-line arguments:
-    usage_str = 'python taxsim_input.py YEAR LETTER [OFFSET] [--help]'
-    parser = argparse.ArgumentParser(
-        prog='',
-        usage=usage_str,
-        description=('Generates random sample of tax filing units with '
-                     'attributes and format such that the file can be '
-                     'directly uploaded to Internet TAXSIM version 35. '
-                     'For details on Internet TAXSIM version 35 INPUT '
-                     'format, go to '
-                     'https://users.nber.org/~taxsim/taxsim35/'))
-    parser.add_argument('YEAR', nargs='?', type=int, default=0,
-                        help=('YEAR specifies calendar year assumed in '
-                              'generated input data.'))
-    parser.add_argument('LETTER', nargs='?', default='',
-                        help=('LETTER specifies assumption set '
-                              'used to generate input data.'))
-    parser.add_argument('OFFSET', nargs='?', type=int, default=0,
-                        help=('optional OFFSET alters the '
-                              'random-number seed used to generate '
-                              'sample of filing units.  Default OFFSET '
-                              'value is zero.'))
-    args = parser.parse_args()
-    # check YEAR value
-    if args.YEAR < 2013 or args.YEAR > 2023:
+    # check year value
+    year += 2000
+    if year < 2013 or year > 2023:
         sys.stderr.write('ERROR: YEAR not in [2013,2023] range\n')
-        sys.stderr.write('USAGE: {}\n'.format(usage_str))
-        return 1
+        assert False
     # check LETTER value
-    if args.LETTER == '':
+    if letter == '':
         sys.stderr.write('ERROR: must specify LETTER\n')
-        sys.stderr.write('USAGE: {}\n'.format(usage_str))
-        return 1
-    if args.LETTER not in VALID_LETTERS:
+        assert False
+    if letter not in VALID_LETTERS:
         sys.stderr.write('ERROR: LETTER not in VALID_LETTERS, where\n')
         sys.stderr.write('       VALID_LETTERS={}\n'.format(VALID_LETTERS))
-        sys.stderr.write('USAGE: {}\n'.format(usage_str))
+        assert False
     # check OFFSET value
-    if args.OFFSET < 0 or args.OFFSET > 999:
+    if offset < 0 or offset > 999:
         sys.stderr.write('ERROR: OFFSET not in [0,999] range\n')
-        sys.stderr.write('USAGE: {}\n'.format(usage_str))
-        return 1
+        assert False
     # get dictionary containing assumption set
-    assump = assumption_set(args.YEAR, args.LETTER)
+    assump = assumption_set(letter, year)
     # generate sample as pandas DataFrame
-    sample = sample_dataframe(assump, args.YEAR, args.OFFSET)
+    sample = sample_dataframe(assump, year, offset)
     # write sample to input file
     header_col = ['taxsimid', 'year', 'state', 'mstat', 'page', 'sage',
                   'depx', 'dep13', 'dep17', 'dep18', 'pwages', 'swages',
@@ -74,16 +60,20 @@ def main():
                   'mortgage', 'scorp', 'pbusinc', 'pprofinc', 'sbusinc',
                   'sprofinc', 'idtl'
                   ]
-    filename = '{}{}.in'.format(args.LETTER, args.YEAR % 100)
+    filename = '{}{}.in'.format(letter, year % 100)
     sample.to_csv(filename, sep=' ', header=header_col, index=False)
-    # return no-error exit code
-    return 0
-# end of main function code
 
 
-def assumption_set(year, letter):
+def assumption_set(letter, year):
     """
     Return dictionary containing assumption parameters.
+
+    Args:
+        letter (character): letter denoting assumption set to generate data
+        year (int): year data will represent
+
+    Returns:
+        adict (dict): assumption set dictionary (defined sampling for variables)
     """
     adict = dict()
     if letter in VALID_LETTERS:  # <===========================================
@@ -160,6 +150,14 @@ def assumption_set(year, letter):
 def sample_dataframe(assump, year, offset):
     """
     Construct DataFrame containing sample specified by assump and year+offset.
+
+    Args:
+        assump (dict): assumption set dictionary (defined sampling for variables)
+        year (int): year data will represent
+        offset (int): offset to alter the random number seed
+
+    Returns:
+        smpl (Pandas DataFrame): Random data in TAXSIM format
     """
     # pylint: disable=too-many-locals
     np.random.seed(123456789 + year + offset)
@@ -279,7 +277,3 @@ def sample_dataframe(assump, year, offset):
 
     smpl = pd.DataFrame(sdict)
     return smpl
-
-
-if __name__ == '__main__':
-    sys.exit(main())

@@ -5,14 +5,19 @@ import main_comparison
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
+# define the scope of the tests
+assumption_set = ['a', 'b', 'c']  # datafiles to test
+years = [17, 18, 19, 20, 21]  # years to test
+
+
 # setup input files
 # if not glob.glob(os.path.join(CUR_PATH, '*in.out-taxsim')):
-input_setup.main()
+input_setup.taxsim_io(assumption_set, years)
 
 # run taxcalc/taxsim comparison
-for assump_set in ('a', 'b', 'c'):
-    for year in (17, 18, 19, 20, 21):
-        main_comparison.main(assump_set, year)
+for letter in assumption_set:
+    for year in years:
+        main_comparison.main(letter, year)
 
 # clean up taxcalc files
 # keep taxsim files to avoid download again

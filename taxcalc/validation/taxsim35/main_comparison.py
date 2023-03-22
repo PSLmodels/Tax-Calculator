@@ -5,24 +5,24 @@
 import sys
 import os
 import pandas as pd
+import tc_sims
 
 
-def main(assump_set, year):
+def main(letter, year):
 
     # (1) generate TAXSIM-35-formatted output using Tax-Calculator tc CLI
-    os.system(f"python taxcalc.py {assump_set}{year}.in")
+    tc_sims.io(letter, year)
 
     # (2) generate tax differences
     taxsim_df = pd.read_csv(
-        f"{assump_set}{year}.in.out-taxsim",
+        f"{letter}{year}.in.out-taxsim",
         sep=" ",
         skipinitialspace=True,
         index_col=False,
     )
     taxsim_df = taxsim_df.iloc[:, 0:28]
     taxcalc_df = pd.read_csv(
-        f"{assump_set}{year}.in.out-taxcalc",
-        sep=" ",
+        f"{letter}{year}.in.out-taxcalc",
         # skipinitialspace=True,
         index_col=0,
     )
@@ -62,12 +62,12 @@ def main(assump_set, year):
             diff_dict["max_diff_taxcalc_val"].append("no diff")
 
     actual_df = pd.DataFrame(diff_dict, index=taxsim_df.columns[3:])
-    print(f"Difference in dataframes for assumption set {assump_set} in year {year}")
+    print(f"Difference in dataframes for assumption set {letter} in year {year}")
     print(actual_df)
 
     # (3) check for difference between LYY.taxdiffs-actual and LYY.taxdiffs-expect
-    if os.path.isfile(f"{assump_set}{year}-taxdiffs-expect.csv"):
-        expect_df = pd.read_csv(f"{assump_set}{year}-taxdiffs-expect.csv", index_col=0)
+    if os.path.isfile(f"{letter}{year}-taxdiffs-expect.csv"):
+        expect_df = pd.read_csv(f"{letter}{year}-taxdiffs-expect.csv", index_col=0)
 
         print(actual_df.eq(expect_df))
 
@@ -79,7 +79,7 @@ def main(assump_set, year):
         print("This EXPECT file doesn't exist.")
 
     # (4) Write the created df to *.taxdiffs-actual
-    actual_df.to_csv(f"{assump_set}{year}-taxdiffs-actual.csv")
+    actual_df.to_csv(f"{letter}{year}-taxdiffs-actual.csv")
 
 
 if __name__ == "__main__":

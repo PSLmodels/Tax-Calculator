@@ -1,5 +1,5 @@
 """
-Translates TAXSIM-32 input file to Tax-Calculator tc input file.
+Translates TAXSIM-35 input file to Tax-Calculator tc input file.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle prepare_tc_input.py
@@ -12,53 +12,41 @@ import numpy as np
 import pandas as pd
 
 
-def main():
+def main(file_in_name, file_out_name):
     """
-    High-level logic.
+    Translates TAXSIM-35 input file into a Tax-Calculator CSV-formatted
+    tc input file. Any pre-existing OUTPUT file contents are overwritten.
+    For details on Internet TAXSIM version 32 INPUT format, go to
+    https://users.nber.org/~taxsim/taxsim35/
+
+    Args:
+        file_in_name (string): name of input file to run taxcalc with
+        file_out_name (string): name of file to save taxcalc output to
+
+    Returns:
+        None
     """
-    # parse command-line arguments:
-    usage_str = 'python prepare_tc_input.py INPUT OUTPUT [--help]'
-    parser = argparse.ArgumentParser(
-        prog='',
-        usage=usage_str,
-        description=('Translates TAXSIM-32 input file into a Tax-Calculator '
-                     'CSV-formatted tc input file. '
-                     'Any pre-existing OUTPUT file contents are overwritten. '
-                     'For details on Internet TAXSIM version 32 INPUT '
-                     'format, go to '
-                     'https://users.nber.org/~taxsim/taxsim32/'))
-    parser.add_argument('INPUT', nargs='?', default='',
-                        help=('INPUT is name of file that contains '
-                              'TAXSIM-32 input.'))
-    parser.add_argument('OUTPUT', nargs='?', default='',
-                        help=('OUTPUT is name of file that will contain '
-                              'CSV-formatted Tax-Calculator tc input.'))
-    args = parser.parse_args()
+    print("File in and out names: ", file_in_name, file_out_name)
     # check INPUT filename
-    if args.INPUT == '':
-        sys.stderr.write('ERROR: must specify INPUT file name\n')
-        sys.stderr.write('USAGE: {}\n'.format(usage_str))
-        return 1
-    if not os.path.isfile(args.INPUT):
-        emsg = 'INPUT file named {} does not exist'.format(args.INPUT)
+    if not os.path.isfile(file_in_name):
+        emsg = 'INPUT file named {} does not exist'.format(file_in_name)
         sys.stderr.write('ERROR: {}\n'.format(emsg))
-        return 1
+        assert False
     # check OUTPUT filename
-    if args.OUTPUT == '':
+    if file_out_name == '':
         sys.stderr.write('ERROR: must specify OUTPUT file name\n')
-        sys.stderr.write('USAGE: {}\n'.format(usage_str))
-        return 1
-    if os.path.isfile(args.OUTPUT):
-        os.remove(args.OUTPUT)
-    # read TAXSIM-32 INPUT file into a pandas DataFrame
-    ivar = pd.read_csv(args.INPUT, delim_whitespace=True,
+        assert False
+    if os.path.isfile(file_out_name):
+        os.remove(file_out_name)
+    # read TAXSIM-35 INPUT file into a pandas DataFrame
+    ivar = pd.read_csv(file_in_name, delim_whitespace=True,
                        header=0, index_col=False, names=range(1, 33))
     # Drop 'idtl' – used to generate detailed output
     ivar.drop(columns=32)
     # translate INPUT variables into OUTPUT variables
     invar = translate(ivar)
     # write OUTPUT file containing Tax-Calculator input variables
-    invar.to_csv(args.OUTPUT, index=False)
+    invar.to_csv(file_out_name, index=False)
     # return no-error exit code
     return 0
 # end of main function code
@@ -66,7 +54,7 @@ def main():
 
 def translate(ivar):
     """
-    Translate TAXSIM-32 input variables into Tax-Calculator input variables.
+    Translate TAXSIM-35 input variables into Tax-Calculator input variables.
     Both ivar and returned invar are pandas DataFrame objects.
     """
     assert isinstance(ivar, pd.DataFrame)
