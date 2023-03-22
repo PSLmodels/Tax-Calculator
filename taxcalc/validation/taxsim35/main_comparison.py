@@ -1,6 +1,6 @@
-# DESCRIPTIONS of variable outputs can be found on the TAXSIM-32 website near
+# DESCRIPTIONS of variable outputs can be found on the TAXSIM-35 website near
 # the bottom of the page
-# URL: https://users.nber.org/~taxsim/taxsim32/
+# URL: https://users.nber.org/~taxsim/taxsim35/
 
 import sys
 import os
@@ -9,7 +9,7 @@ import pandas as pd
 
 def main(assump_set, year):
 
-    # (1) generate TAXSIM-32-formatted output using Tax-Calculator tc CLI
+    # (1) generate TAXSIM-35-formatted output using Tax-Calculator tc CLI
     os.system(f"python taxcalc.py {assump_set}{year}.in")
 
     # (2) generate tax differences

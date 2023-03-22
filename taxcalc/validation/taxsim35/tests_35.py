@@ -6,8 +6,8 @@ import main_comparison
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 # setup input files
-if not glob.glob(os.path.join(CUR_PATH, '*in.out-taxsim')):
-    input_setup.main()
+# if not glob.glob(os.path.join(CUR_PATH, '*in.out-taxsim')):
+input_setup.main()
 
 # run taxcalc/taxsim comparison
 for assump_set in ('a', 'b', 'c'):
