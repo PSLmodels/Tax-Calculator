@@ -4,11 +4,7 @@ Version: 3.3.0
 Summary: taxcalc
 Home-page: https://github.com/PSLmodels/Tax-Calculator
 Download-URL: https://github.com/PSLmodels/Tax-Calculator
-<<<<<<< HEAD
-License: CC0 1.0 Universal public domain dedication
-=======
 License: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
->>>>>>> 49c6c3f20f550601a300d5d2c595a59577c8f647
 Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
 Classifier: Natural Language :: English
