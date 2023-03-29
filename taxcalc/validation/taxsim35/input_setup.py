@@ -21,11 +21,7 @@ def get_ftp_output(letter, year):
         None
     """
     f = str(letter + str(year) + ".in")
-    print("input file = ", f)
-
     file_out = f + ".out-taxsim"
-    print("output file = ", file_out)
-    quit()
     os.system(f"curl -u taxsim:02138 -T {f} ftp://taxsimftp.nber.org/tmp/userid")
     c_out = str(
         "curl -u taxsim:02138 "
