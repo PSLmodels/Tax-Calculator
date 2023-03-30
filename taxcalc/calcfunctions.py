@@ -2508,7 +2508,7 @@ def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
         line15 = max(0., line13 - line14)
         if CTC_refundable:
             c07220 = line10 * line1 / line3
-            odc = min(max(0., line10 - c07220), line15)
+            odc = max(0., line10 - c07220)
             codtc_limited = max(0., line10 - c07220 - odc)
         else:
             line16 = min(line10, line15)  # credit is capped by tax liability
@@ -2987,9 +2987,9 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     if not CTC_refundable:
         c07220 = min(c07220, avail)
         avail = avail - c07220
-    # Other dependent credit
-    odc = min(odc, avail)
-    avail = avail - odc
+        # Other dependent credit
+        odc = min(odc, avail)
+        avail = avail - odc
     # Residential energy credit - Form 5695
     c07260 = min(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
     avail = avail - c07260
@@ -3018,7 +3018,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 @iterate_jit(nopython=True)
 def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
                   ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
-                  CTC_refundable, CTC_include17, XTOT, n21, n1820, num,
+                  CTC_refundable, CTC_include17, age_head, age_spouse, MARS, nu18,
                   ptax_was, c03260, e09800, c59660, e11200,
                   c11070):
     """
@@ -3070,7 +3070,9 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
         line4 = 0.
     else:
         if CTC_include17:
-            childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+            tu18 = int(age_head < 18)   # taxpayer is under age 18
+            su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
+            childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
         else:
             childnum = n24
         line4 = ACTC_c * childnum
@@ -3182,7 +3184,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
             CTC_new_refund_limited_all_payroll, payrolltax,
-            n24, nu06, XTOT, n21, n1820, num, c00100, MARS, ptax_oasdi,
+            n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
             c09200, ctc_new):
     """
     Computes new refundable child tax credit using specified parameters.
@@ -3231,7 +3233,9 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         New refundable child tax credit
     """
     if CTC_include17:
-        childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+            tu18 = int(age_head < 18)   # taxpayer is under age 18
+            su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
+            childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
     else:
         childnum = n24
     if childnum > 0:
