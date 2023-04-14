@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -38,8 +38,8 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -651,8 +651,8 @@ methods.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2018_REFORM1_iitax_rev($B)= 1357.983
-2018_REFORM2_iitax_rev($B)= 1191.571
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2018_REFORM1_iitax_rev($B)= 1357.959
+2018_REFORM2_iitax_rev($B)= 1191.548
 
 Extract of 2018 income-tax difference table by expanded-income decile
 (taxfall is count of funits with cut in income tax in reform 2 vs 1)
@@ -660,22 +660,18 @@ Extract of 2018 income-tax difference table by expanded-income decile
             funits(#m) taxfall(#m) taxrise(#m) agg_diff($b)  mean_diff($) aftertax_income_diff(%)
 &lt;$0K          0.129804         0.0         0.0          0.0           0.0                     0.0
 =$0K         28.997572    0.003718    0.001407    -0.000261     -0.008994              -10.526744
-$0-10K       32.922181    2.554743     1.40047    -0.203435     -6.179257                 0.15962
-$10-20K      21.708136   12.425967    3.591809    -1.710808    -78.809536                0.556825
-$20-30K      18.701441   14.515061    2.676056    -4.194508   -224.287941                0.984491
-$30-40K      16.854282   13.888505    2.418122    -7.553291   -448.152642                1.486834
-$40-50K      13.340051   11.341441    1.754578    -8.763634   -656.941564                1.751904
-$50-75K      22.041935   19.660066    2.143487    -20.04172     -909.2541                1.832288
-$75-100K     13.857877   12.602328    1.151749   -16.995853  -1226.439843                1.787551
-$100-200K    21.789028   19.756532    1.942246   -42.498068  -1950.434369                 1.85057
-$200-500K     7.451103    6.918421    0.529425   -41.049227  -5509.147501                2.663115
-$500-1000K    0.967451    0.891342    0.076109   -12.384281 -12800.936453                2.724921
-&gt;$1000K       0.445622    0.372131    0.073491   -11.017752 -24724.454992                1.966889
-ALL         199.206484  114.930254    17.75895  -166.412837   -835.378618                1.899895
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/Tax-Calculator/Tax-Calculator/taxcalc/utils.py:563: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
-  diff_table = diff_table.append(sum_row)
+$0-10K       32.922181    2.554743     1.40047    -0.203435     -6.179258                0.159624
+$10-20K      21.708136   12.425967    3.591809    -1.710808     -78.80952                 0.55683
+$20-30K      18.701441   14.515061    2.676056    -4.194498   -224.287399                0.984496
+$30-40K      16.854735   13.888505    2.418122    -7.553283   -448.140132                1.486787
+$40-50K      13.339599   11.341441    1.754578    -8.763624   -656.963111                1.751975
+$50-75K      22.042293   19.660424    2.143487    -20.04181   -909.243402                1.832268
+$75-100K     13.857519   12.601969    1.151749   -16.995741  -1226.463508                1.787595
+$100-200K    21.789028   19.756532    1.942246    -42.49801  -1950.431685                1.850584
+$200-500K     7.451103    6.918421    0.529425   -41.047952  -5508.976365                2.663093
+$500-1000K    0.967451    0.891342    0.076109   -12.384206  -12800.85902                2.725012
+&gt;$1000K       0.445622    0.372131    0.073491   -11.017856 -24724.688454                1.966994
+ALL         199.206484  114.930254    17.75895  -166.411483   -835.371819                1.899907
 </pre></div>
 </div>
 </div>
@@ -708,7 +704,10 @@ ALL         199.206484  114.930254    17.75895  -166.412837   -835.378618       
               
               
                 <footer class="bd-footer-article">
-                  <!-- Previous / next buttons -->
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="recipe04_pandas.html"
@@ -728,7 +727,10 @@ ALL         199.206484  114.930254    17.75895  -166.412837   -835.378618       
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
+</div></div>
+  
 </div>
+
                 </footer>
               
             </div>
@@ -738,7 +740,7 @@ ALL         199.206484  114.930254    17.75895  -166.412837   -835.378618       
             
           </div>
           <footer class="bd-footer-content">
-            <div class="bd-footer-content__inner">
+            
 <div class="bd-footer-content__inner container">
   
   <div class="footer-item">
@@ -768,7 +770,7 @@ By Policy Simulation Library
     
   </div>
   
-</div></div>
+</div>
           </footer>
         
 
@@ -777,8 +779,8 @@ By Policy Simulation Library
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
   </footer>
