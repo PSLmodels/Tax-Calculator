@@ -617,37 +617,206 @@ def test_TaxInc(test_tuple, expected_value, skip_jit):
     assert np.allclose(test_value, expected_value)
 
 
-
-MARS = 4
-DSI = 0
-EIC = 3
-c00100 = 19330
-e00300 = 0
-e00400 = 0
-e00600 = 0
-c01000 = 0
-e02000 = 0
-e26270 = 0
-age_head = 0
+# parameterization represents 2021 law
+age_head = 45
 age_spouse = 0
-earned = 19330
-earned_p = 19330
-earned_s = 0
-EITC_ps = [8790, 19330, 19330, 19330]
-EITC_MinEligAge = 25
-EITC_MaxEligAge = 64
-EITC_ps_MarriedJ = [5980, 5980, 5980, 6250]
-EITC_rt = [0.0765, 0.34, 0.4, 0.45]
-EITC_c = [538, 3584, 5920, 6660]
-EITC_prt = [0.0765, 0.1598, 0.2106, 0.2106]
-EITC_basic_frac = 0.0
-EITC_InvestIncome_c = 3650
-EITC_excess_InvestIncome_rt = 9e+99
-EITC_indiv = False
-EITC_sep_filers_elig = False
-e02300 = 10200
-UI_thd = [150000, 150000, 150000, 150000, 150000]
-UI_em = 10200
+nu18 = 0
+n24 = 0
+MARS = 4
+c00100 = 1000
+XTOT = 3
+num = 1
+c05800 = 0
+e07260 = 0
+CR_ResidentialEnergy_hc = 0.0
+e07300 = 0
+CR_ForeignTax_hc = 0.0
+c07180 = 0
+c07230 = 0
+e07240 = 0
+CR_RetirementSavings_hc = 0.0
+c07200 = 0
+CTC_c = 2000
+CTC_ps = [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]
+CTC_prt = 0.05
+exact = False
+ODC_c = 500
+CTC_c_under6_bonus = 0.0
+nu06 = 0
+CTC_refundable = True
+CTC_include17 = True
+c07220 = 0  # actual value will be returned from function
+odc = 0  # actual value will be returned from function
+codtc_limited = 0 # actual value will be returned from function
+tuple0 = (
+    age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
+    c05800, e07260, CR_ResidentialEnergy_hc,
+    e07300, CR_ForeignTax_hc,
+    c07180,
+    c07230,
+    e07240, CR_RetirementSavings_hc,
+    c07200,
+    CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
+    CTC_c_under6_bonus, nu06,
+    CTC_refundable, CTC_include17,
+    c07220, odc, codtc_limited)
+# output tuple is : (c07220, odc, codtc_limited)
+expected0 = (0, 1000, 0)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple0, expected0)])
+def test_ChildDepTaxCredit_2021(test_tuple, expected_value, skip_jit):
+    """
+    Tests the ChildDepTaxCredit function
+    """
+    test_value = calcfunctions.ChildDepTaxCredit(*test_tuple)
+    assert np.allclose(test_value, expected_value)
+
+# parameterization represents 2022 law
+age_head = 45
+age_spouse = 0
+nu18 = 0
+n24 = 0
+MARS = 4
+c00100 = 1000
+XTOT = 3
+num = 1
+c05800 = 0
+e07260 = 0
+CR_ResidentialEnergy_hc = 0.0
+e07300 = 0
+CR_ForeignTax_hc = 0.0
+c07180 = 0
+c07230 = 0
+e07240 = 0
+CR_RetirementSavings_hc = 0.0
+c07200 = 0
+CTC_c = 2000
+CTC_ps = [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]
+CTC_prt = 0.05
+exact = False
+ODC_c = 500
+CTC_c_under6_bonus = 0.0
+nu06 = 0
+CTC_refundable = False
+CTC_include17 = False
+c07220 = 0  # actual value will be returned from function
+odc = 0  # actual value will be returned from function
+codtc_limited = 0 # actual value will be returned from function
+tuple0 = (
+    age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
+    c05800, e07260, CR_ResidentialEnergy_hc,
+    e07300, CR_ForeignTax_hc,
+    c07180,
+    c07230,
+    e07240, CR_RetirementSavings_hc,
+    c07200,
+    CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
+    CTC_c_under6_bonus, nu06,
+    CTC_refundable, CTC_include17,
+    c07220, odc, codtc_limited)
+# output tuple is : (c07220, odc, codtc_limited)
+expected0 = (0, 0, 1000)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple0, expected0)])
+def test_ChildDepTaxCredit_2022(test_tuple, expected_value, skip_jit):
+    """
+    Tests the ChildDepTaxCredit function
+    """
+    test_value = calcfunctions.ChildDepTaxCredit(*test_tuple)
+    assert np.allclose(test_value, expected_value)
+
+# parameterization represents 2021 law
+CTC_new_c = 1000
+CTC_new_rt = 0
+CTC_new_c_under6_bonus = 600
+CTC_new_ps = [75000, 150000, 75000, 125000, 150000]
+CTC_new_prt = 0.05
+CTC_new_for_all = True
+CTC_include17 = True
+CTC_new_refund_limited = False
+CTC_new_refund_limit_payroll_rt = 0.0
+CTC_new_refund_limited_all_payroll = False
+payrolltax = 0
+n24 = 0
+nu06 = 0
+age_head = 45
+age_spouse = 0
+nu18 = 0
+num = 1
+c00100 = 1000
+MARS = 4
+ptax_oasdi = 0
+c09200 = 0
+ctc_new = 0 # actual value will be returned from function
+tuple0 = (
+    CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
+    CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
+    CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
+    CTC_new_refund_limited_all_payroll, payrolltax,
+    n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
+    c09200, ctc_new)
+# output tuple is : (ctc_new)
+expected0 = (0)
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple0, expected0)])
+def test_CTCnew_2021(test_tuple, expected_value, skip_jit):
+    """
+    Tests the CTCnew function
+    """
+    test_value = calcfunctions.CTC_new(*test_tuple)
+    assert np.allclose(test_value, expected_value)
+
+# parameterization represents 2022 law
+CTC_new_c = 0
+CTC_new_rt = 0
+CTC_new_c_under6_bonus = 0
+CTC_new_ps = [0, 0, 0, 0, 0]
+CTC_new_prt = 0
+CTC_new_for_all = False
+CTC_include17 = False
+CTC_new_refund_limited = False
+CTC_new_refund_limit_payroll_rt = 0.0
+CTC_new_refund_limited_all_payroll = False
+payrolltax = 0
+n24 = 0
+nu06 = 0
+age_head = 45
+age_spouse = 0
+nu18 = 0
+num = 1
+c00100 = 1000
+MARS = 4
+ptax_oasdi = 0
+c09200 = 0
+ctc_new = 0 # actual value will be returned from function
+tuple0 = (
+    CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
+    CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
+    CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
+    CTC_new_refund_limited_all_payroll, payrolltax,
+    n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
+    c09200, ctc_new)
+# output tuple is : (ctc_new)
+expected0 = (0)
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [
+        (tuple0, expected0)])
+def test_CTCnew_2022(test_tuple, expected_value, skip_jit):
+    """
+    Tests the CTCnew function
+    """
+    test_value = calcfunctions.CTC_new(*test_tuple)
+    assert np.allclose(test_value, expected_value)
+
 
 
 ymod1 = 19330 + 10200
@@ -689,3 +858,4 @@ def test_AGI(test_tuple, expected_value, skip_jit):
     test_value = calcfunctions.AGI(*test_tuple)
     print('Returned from agi function: ', test_value)
     assert np.allclose(test_value, expected_value)
+
