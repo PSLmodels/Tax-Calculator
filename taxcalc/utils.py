@@ -380,7 +380,7 @@ def create_distribution_table(vdf, groupby, income_measure,
         dist_table.iloc[11] = topdec_row
         del topdec_row
     else:
-        dist_table = dist_table.append(sum_row)
+        dist_table.loc["ALL"] = sum_row
     del sum_row
     # ensure dist_table columns are in correct order
     assert dist_table.columns.values.tolist() == DIST_TABLE_COLUMNS
@@ -560,7 +560,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
         diff_table.iloc[11] = topdec_row
         del topdec_row
     else:
-        diff_table = diff_table.append(sum_row)
+        diff_table.loc["ALL"] = sum_row
     # delete intermediate Pandas DataFrame objects
     del gdf
     del dframe
