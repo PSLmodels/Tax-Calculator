@@ -4,7 +4,6 @@ import shutil
 import prepare_taxcalc_input as ptci
 import process_taxcalc_output as ptco
 
-
 CURR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 

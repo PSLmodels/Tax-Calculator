@@ -118,9 +118,9 @@ def assumption_set(letter, year):
         adict["min_age_diff"] = -10  # min spouse age difference
         adict["max_age_diff"] = 10  # max spouse age difference
         adict["max_depx"] = 5  # TAXSIM ivar 7 (total number of dependents)
-        adict["max_dep13"] = 4  # TAXSIM ivar 8 (Child/Dependent Care Credit)
-        adict["max_dep17"] = 4  # TAXSIM ivar 9 (Child Credit)
-        adict["max_dep18"] = 4  # TAXSIM ivar 10 (EITC)
+        adict["max_dep13"] = 4  # TAXSIM ivar 8
+        adict["max_dep17"] = 4  # TAXSIM ivar 9
+        adict["max_dep18"] = 4  # TAXSIM ivar 10
         # labor income:
         adict["max_pwages_yng"] = 500  # TAXSIM ivar 11
         adict["max_pwages_old"] = 30  # TAXSIM ivar 11 (65+ ==> old)

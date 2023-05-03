@@ -19,10 +19,10 @@ TAXSIM_TC_MAP = {
     # 'mstat', # Tax-Calculator MARS differs from TAXSIM mstat
     "page": "age_head",
     "sage": "age_spouse",
-    # 'depx',  # no direct Tax-Calculator use of number dependents
-    "dep13": "f2441",
-    "dep17": "n24",
-    # 'dep18': ' # no direct Tax-Calculator use of number EIC qualified dependents
+    # 'depx': "", # no Tax-Calculator variable for total number of dependents
+    "dep13": "nu13",
+    "dep17": "nu18",
+    # 'dep18': "n24", #"f2441", # no direct Tax-Calculator use of number EIC qualified dependents
     "pwages": "e00200p",
     "swages": "e00200s",
     "psemp": "e00900p",
@@ -99,6 +99,7 @@ def translate(ivar):
     assert isinstance(ivar, pd.DataFrame)
     # Rename variables to be consistent with Tax-Calculator naming conventions
     invar = ivar.rename(TAXSIM_TC_MAP, axis=1)
+    invar["n24"] = ivar["dep17"]
     # Create variables for Tax-Calculator that aren't directly represented in TAXSIM
     mstat = ivar["mstat"]
     assert np.all(np.logical_or(mstat == 1, mstat == 2))
@@ -133,7 +134,7 @@ def translate(ivar):
             "state",
             "mstat",
             "depx",
-            "dep18",
+            # "dep18",
             "transfers",
             "rentpaid",
             "pprofinc",

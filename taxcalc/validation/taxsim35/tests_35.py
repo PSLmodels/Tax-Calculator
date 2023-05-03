@@ -9,7 +9,6 @@ CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 assumption_set = ["a", "b", "c"]  # datafiles to test
 years = [17, 18, 19, 20, 21]  # years to test
 
-
 # setup input files
 # if not glob.glob(os.path.join(CUR_PATH, '*in.out-taxsim')):
 input_setup.taxsim_io(assumption_set, years)
