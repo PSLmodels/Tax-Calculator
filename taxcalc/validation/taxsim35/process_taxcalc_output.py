@@ -28,18 +28,18 @@ def main(input_file_name, output_file_name):
         None
     """
     # check INPUT filename
-    if input_file_name == '':
-        sys.stderr.write('ERROR: must specify INPUT file name\n')
-        sys.stderr.write('USAGE: {}\n'.format(usage_str))
+    if input_file_name == "":
+        sys.stderr.write("ERROR: must specify INPUT file name\n")
+        sys.stderr.write("USAGE: {}\n".format(usage_str))
         assert False
     if not os.path.isfile(input_file_name):
-        emsg = 'INPUT file named {} does not exist'.format(args.INPUT)
-        sys.stderr.write('ERROR: {}\n'.format(emsg))
+        emsg = "INPUT file named {} does not exist".format(args.INPUT)
+        sys.stderr.write("ERROR: {}\n".format(emsg))
         assert False
     # check OUTPUT filename
-    if output_file_name == '':
-        sys.stderr.write('ERROR: must specify OUTPUT file name\n')
-        sys.stderr.write('USAGE: {}\n'.format(usage_str))
+    if output_file_name == "":
+        sys.stderr.write("ERROR: must specify OUTPUT file name\n")
+        sys.stderr.write("USAGE: {}\n".format(usage_str))
         assert False
     if os.path.isfile(output_file_name):
         os.remove(output_file_name)
@@ -49,6 +49,8 @@ def main(input_file_name, output_file_name):
     write_taxsim_formatted_output(output_file_name, tcvar)
     # return no-error exit code
     return 0
+
+
 # end of main function code
 
 
@@ -63,51 +65,58 @@ def write_taxsim_formatted_output(filename, tcvar):
     #         odict4idx = extract_output(tcvar.xs(idx))
     #         outline = construct_output_line(odict4idx)
     #         output_file.write(outline)
-    tcvar['state'] = 0  # state code is always zero
-    tcvar['statetax'] = 0.0  # no state income tax calculation
-    tcvar['mtr_state'] = 0.0  # no state income tax calculation
-    tcvar['zero_bracket_amount'] = 0.0  # always set zero-bracket amount to zero
-    pre_phase_out_pe = tcvar['pre_c04600'].values
-    post_phase_out_pe = tcvar['c04600'].values
+    tcvar["state"] = 0  # state code is always zero
+    tcvar["statetax"] = 0.0  # no state income tax calculation
+    tcvar["mtr_state"] = 0.0  # no state income tax calculation
+    tcvar["zero_bracket_amount"] = 0.0  # always set zero-bracket amount to zero
+    pre_phase_out_pe = tcvar["pre_c04600"].values
+    post_phase_out_pe = tcvar["c04600"].values
     phased_out_pe = pre_phase_out_pe - post_phase_out_pe
-    tcvar['post_phase_out_pe'] = post_phase_out_pe  # post-phase-out personal exemption
-    tcvar['phased_out_pe'] = phased_out_pe  # personal exemption that is phased out
-    tcvar['exemption_surtax'] = 0.0  # always set exemption surtax to zero
-    tcvar['gen_tax_credit'] = 0.0  # always set general tax credit to zero
-    tcvar['non_refundable_child_odep_credit'] = tcvar['c07220'] + tcvar['odc']  # non-refundable child+odep credit
-    tcvar['amt_liability'] = tcvar['c09600']  # federal AMT liability
+    tcvar["post_phase_out_pe"] = post_phase_out_pe  # post-phase-out personal exemption
+    tcvar["phased_out_pe"] = phased_out_pe  # personal exemption that is phased out
+    tcvar["exemption_surtax"] = 0.0  # always set exemption surtax to zero
+    tcvar["gen_tax_credit"] = 0.0  # always set general tax credit to zero
+    tcvar["non_refundable_child_odep_credit"] = (
+        tcvar["c07220"] + tcvar["odc"]
+    )  # non-refundable child+odep credit
+    tcvar["amt_liability"] = tcvar["c09600"]  # federal AMT liability
     # var28 from TAXSIM-35 is federal income tax before credits; the Tax-Calculator
     # tcvar['c05800'] is this concept but includes AMT liability
     # while Internet-TAXSIM tcvar[28] explicitly excludes AMT liability, so
     # we have the following:
-    tcvar['iitax_before_credits_ex_AMT'] = tcvar['c05800'] - tcvar['amt_liability']
-    tcvar = tcvar[['RECID',
-            'FLPDYR',
-            'state',
-            'iitax',
-            'statetax',
-            'payrolltax',
-            'mtr_inctax',
-            'mtr_state',
-            'mtr_paytax',
-            'c00100',
-            'e02300',
-            'c02500',
-            'zero_bracket_amount',
-            'post_phase_out_pe',
-            'phased_out_pe',
-            'c21040',
-            'c04470',
-            'c04800',
-            'taxbc',
-            'exemption_surtax',
-            'gen_tax_credit',
-            'non_refundable_child_odep_credit',
-            'c11070',
-            'c07180',
-            'eitc',
-            'c62100',
-            'amt_liability',
-            'iitax_before_credits_ex_AMT']]
+    tcvar["iitax_before_credits_ex_AMT"] = tcvar["c05800"] - tcvar["amt_liability"]
+    tcvar = tcvar[
+        [
+            "RECID",
+            "FLPDYR",
+            "state",
+            "iitax",
+            "statetax",
+            "payrolltax",
+            "mtr_inctax",
+            "mtr_state",
+            # 'mtr_paytax',
+            "c00100",
+            "e02300",
+            "c02500",
+            # 'zero_bracket_amount',
+            "post_phase_out_pe",
+            "phased_out_pe",
+            "c21040",
+            "c04470",
+            "c04800",
+            "taxbc",
+            "exemption_surtax",
+            "gen_tax_credit",
+            "non_refundable_child_odep_credit",
+            "c11070",
+            "c07180",
+            "eitc",
+            "c62100",
+            "amt_liability",
+            "iitax_before_credits_ex_AMT",
+            "recovery_rebate_credit",
+        ]
+    ]
     tcvar.round(decimals=2)
     tcvar.to_csv(filename)

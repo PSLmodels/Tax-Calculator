@@ -6,7 +6,7 @@ import main_comparison
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 # define the scope of the tests
-assumption_set = ['a', 'b', 'c']  # datafiles to test
+assumption_set = ["a", "b", "c"]  # datafiles to test
 years = [17, 18, 19, 20, 21]  # years to test
 
 
@@ -22,6 +22,6 @@ for letter in assumption_set:
 # clean up taxcalc files
 # keep taxsim files to avoid download again
 for file in CUR_PATH:
-    for file in glob.glob('*.out*') and glob.glob('*.in*'):
-        if file.endswith('taxcalc'):
+    for file in glob.glob("*.out*") and glob.glob("*.in*"):
+        if file.endswith("taxcalc"):
             os.remove(file)
