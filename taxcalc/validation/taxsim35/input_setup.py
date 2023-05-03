@@ -22,10 +22,6 @@ def get_ftp_output(letter, year):
     """
     f = str(letter + str(year) + ".in")
     file_out = f + ".out-taxsim"
-    # The curl method below has issues if f has more than 1000 records
-    # os.system(
-    #     f"curl -F {f}=@{f} 'https://taxsim.nber.org/taxsim35/redirect.cgi' >{file_out}"
-    # )
     os.system(
         f"ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null taxsim35@taxsimssh.nber.org <{f} >{file_out}"
     )
