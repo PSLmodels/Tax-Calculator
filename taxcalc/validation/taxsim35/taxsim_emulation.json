@@ -1,0 +1,49 @@
+// JSON "reform" file that specifies changes in current-law policy that
+// are required to make Tax-Calculator work like TAXSIM-35.
+//
+// (1) AMT_child_em_c_age = 24 (rather than 18)
+//     Whether to set this parameter to 18 or 24 is arbitary because
+//     neither model has enough information to apply correctly the child
+//     AMT exemption rules.  Information on full-time student status and
+//     whether taxpayers provide more than half of their support are required
+//     to apply the rules correctly.  Tax-Calculator makes the arbitrary
+//     assumption that only those under 18 are required to use the child
+//     AMT exemption rules, while TAXSIM-27 makes the arbitrary assumption
+//     that all those under 24 are required to use the child AMT exemption.
+//     (This change was introduced for assumption set b and higher.)
+//
+// (2) EITC_excess_InvestIncome_rt = 1.0 (rather than 9e99)
+//     The rate at which the EITC amount is reduced per dollar of investment
+//     income in excess of the EITC investment income ceiling is infinity under
+//     current law (that is, any investment income in excess of the ceiling
+//     causes EITC ineligibility).  However, TAXSIM-27 assumes it is one, so
+//     that the EITC amount is reduced a dollar for each dollar of excess
+//     investment income.  This difference in the parameter value leads to
+//     many EITC differences in the randomly-generated validation samples,
+//     with some of the differences being in the thousands of dollars.  This
+//     non-current-law assumption in TAXSIM-27 is presumably made to reduce
+//     the magnitude of model-calculated marginal tax rates with respect to
+//     investment income in cases where a marginal increase in investment
+//     income takes a filing unit above the ceiling.
+
+//  (3) ALD_AlimonyReceived_hc = 1.0 (rather than 0)
+//  TAXSIM35 nonproperty income is mapped into AlimonyRecieved
+//  which had its haircut change from 1.0 to 0.0, a change that
+//  TAXSIM35 has not implemented for good reason given this:
+//      IRS: 'Beginning Jan. 1, 2019, alimony or separate
+//      maintenance payments are not deductible from the
+//      income of the payer spouse, or includable in the
+//      income of the receiving spouse, if made under a
+//      divorce or separation agreement executed after
+//      Dec. 31, 2018.
+
+// (4) PT_qbid_limit_switch = false implies TAXSIM35-like QBI deduction logic.
+{
+    "AMT_child_em_c_age": {"2013": 24},
+
+    "EITC_excess_InvestIncome_rt": {"2013": 1.0},
+
+    "ALD_AlimonyReceived_hc": {"2019": 1.0},
+
+    "PT_qbid_limit_switch": {"2018": false}
+}
