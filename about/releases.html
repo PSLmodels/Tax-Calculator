@@ -444,6 +444,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-4-0">2023-05-05 Release 3.4.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-3-0">2022-12-16 Release 3.3.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-2-1">2021-08-06 Release 3.2.1</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-2-0">2021-07-17 Release 3.2.0</a></li>
@@ -543,6 +544,24 @@ document.write(`
 <h1>Release history<a class="headerlink" href="#release-history" title="Permalink to this heading">#</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<section id="release-3-4-0">
+<h2>2023-05-05 Release 3.4.0<a class="headerlink" href="#release-3-4-0" title="Permalink to this heading">#</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2677">#2677</a>)</p>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Tax-Calculator baseline update for CBO economic projections, published in May, “The Budget and Economic Outlook: 2023 to 2033” [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2676">#2676</a> by Bodi Yang], with primary work in [<a class="reference external" href="https://github.com/PSLmodels/taxdata/pull/421">TaxData PR #421</a>by Bodi Yang]</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul class="simple">
+<li><p>Replacement of the deprecated Pandas <code class="docutils literal notranslate"><span class="pre">.append()</span></code> method in the model [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2676">#2676</a> by Bodi Yang]</p></li>
+<li><p>Fix calculaton of 2021 child and other dependent credit [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2677">#2677</a> by Matt Jensen]</p></li>
+<li><p>Fix exemption of UI from AGI for EITC in certain years [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2675">#2675</a> by Jason Debacker]</p></li>
+<li><p>Fix incorrect value for max EITC in 2022 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2673">#2673</a> by Jason Debacker]</p></li>
+</ul>
+</section>
 <section id="release-3-3-0">
 <h2>2022-12-16 Release 3.3.0<a class="headerlink" href="#release-3-3-0" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
@@ -2970,6 +2989,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-4-0">2023-05-05 Release 3.4.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-3-0">2022-12-16 Release 3.3.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-2-1">2021-08-06 Release 3.2.1</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-2-0">2021-07-17 Release 3.2.0</a></li>
