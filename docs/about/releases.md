@@ -3,7 +3,7 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-2023-05-16 Release 3.4.0
+2023-05-05 Release 3.4.0
 ------------------------
 (last merged pull request is
 [#2677](https://github.com/PSLmodels/Tax-Calculator/pull/2677))
@@ -14,13 +14,12 @@ for a complete commit history.
 
 **New Features**
 - Tax-Calculator baseline update for CBO economic projections, published in May, "The Budget and Economic Outlook: 2023 to 2033" [[#2676](https://github.com/PSLmodels/Tax-Calculator/pull/2676) by Bodi Yang], with primary work in [[TaxData PR #421](https://github.com/PSLmodels/taxdata/pull/421)by Bodi Yang]
-- Fix calculaton of 2021 child and other dependent credit [[#2677](https://github.com/PSLmodels/Tax-Calculator/pull/2677) by Matt Jensen]
-- Fix exemption of UI from AGI for EITC in certain years [[#2675](https://github.com/PSLmodels/Tax-Calculator/pull/2675) by Jason Debacker]
-- Fix incorrect value for max EITC in 2022 [[#2673](https://github.com/PSLmodels/Tax-Calculator/pull/2673) by Jason Debacker]
 
 **Bug Fixes**
 - Replacement of the deprecated Pandas `.append()` method in the model [[#2676](https://github.com/PSLmodels/Tax-Calculator/pull/2676) by Bodi Yang]
-
+- Fix calculaton of 2021 child and other dependent credit [[#2677](https://github.com/PSLmodels/Tax-Calculator/pull/2677) by Matt Jensen]
+- Fix exemption of UI from AGI for EITC in certain years [[#2675](https://github.com/PSLmodels/Tax-Calculator/pull/2675) by Jason Debacker]
+- Fix incorrect value for max EITC in 2022 [[#2673](https://github.com/PSLmodels/Tax-Calculator/pull/2673) by Jason Debacker]
 
 2022-12-16 Release 3.3.0
 ------------------------
