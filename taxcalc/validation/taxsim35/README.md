@@ -4,7 +4,7 @@ Validation of Tax-Calculator against Internet TAXSIM-35
 The general cross-model validation process described
 [here](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/README.md#validation-of-tax-calculator-logic)
 is being executed in this directory using
-[TAXSIM-35](https://users.nber.org/~taxsim/taxsim27/).
+[TAXSIM-35](https://taxsim.nber.org/taxsim35/).
 
 We are in the process of comparing Tax-Calculator and TAXSIM-35
 results generated from several assumption sets in the `taxsim_input.py`
