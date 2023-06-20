@@ -8,7 +8,7 @@ for a complete commit history.
 (last merged pull request is
 [#2677](https://github.com/PSLmodels/Tax-Calculator/pull/2677))
 
-**This is a bug-fix release.**
+**This is an enhancement and bug-fix release.**
 
 **API Changes**
 
