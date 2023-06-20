@@ -3,6 +3,24 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2023-06-20 Release 3.5.0
+------------------------
+(last merged pull request is
+[#2677](https://github.com/PSLmodels/Tax-Calculator/pull/2677))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Update documentation of use cases [[#2686](https://github.com/PSLmodels/Tax-Calculator/pull/2686) by Jason Debacker]
+- Update the last budget year to 2033 ~ also extend the projections to 2033 [[#2682](https://github.com/PSLmodels/Tax-Calculator/pull/2682) by Bodi Yang]
+
+**Bug Fixes**
+- Reweight PUF data for the year 2033, to fix the odd PUF weightings, PUF ratios and odd projections [[#2685](https://github.com/PSLmodels/Tax-Calculator/pull/2685) by Bodi Yang], with primary work in [[TaxData PR #429](https://github.com/PSLmodels/taxdata/pull/429)by Bodi Yang]
+- Fix incorrect value for EITC_c in 2020 [[#2684](https://github.com/PSLmodels/Tax-Calculator/pull/2684) by Matt Jensen]
+
+
 2023-05-05 Release 3.4.0
 ------------------------
 (last merged pull request is
