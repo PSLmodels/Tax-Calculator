@@ -50,7 +50,8 @@ def change_delim(letter, year):
         filedata = fin.read()
 
     # Replace the target string
-    filedata = filedata.replace(",", " ")
+    # filedata = filedata.replace(",", " ")
+    filedata = filedata.replace(" ", "")
 
     # Write the file out again
     with open(file_out, "w") as fout:
@@ -62,4 +63,4 @@ def taxsim_io(assump_set, years):
         for year in years:
             taxsim_input.generate_datasets(letter, year)
             get_ftp_output(letter, year)
-            # change_delim(letter, year)
+            change_delim(letter, year)
