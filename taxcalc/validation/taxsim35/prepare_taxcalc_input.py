@@ -101,6 +101,7 @@ def translate(ivar):
     invar = ivar.rename(TAXSIM_TC_MAP, axis=1)
     invar["n24"] = ivar["dep17"]
     # Create variables for Tax-Calculator that aren't directly represented in TAXSIM
+    invar["e02000"] += invar["e26270"]  # add active scorp income to "otherprop" income from taxsim
     mstat = ivar["mstat"]
     assert np.all(np.logical_or(mstat == 1, mstat == 2))
     num_deps = ivar["depx"]
