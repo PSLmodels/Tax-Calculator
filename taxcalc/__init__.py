@@ -14,4 +14,4 @@ from taxcalc.taxcalcio import *
 from taxcalc.utils import *
 from taxcalc.cli import *
 
-__version__ = '3.3.0'
+__version__ = '3.4.1'

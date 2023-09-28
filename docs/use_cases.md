@@ -1,15 +1,50 @@
 Recorded use cases
 ==================
 
-\[72\] JORDAN WEISSMANN. It's Time for Democrats to Buck Up and Give Joe Manchin What He Wants. *Slate*.
+\[79\] Alex Brill, Kyle Pomerleau, and Grant M. Seiter. Flawed Approach: The Working Families Tax Cut Act as a Response to Inflation. American Enterprise Institute.
+June 8, 2023. URL:
+<https://www.aei.org/economics/flawed-approach-the-working-families-tax-cut-act-as-a-response-to-inflation/>
+(visited on 2023-06-16).
+
+\[78\] Kyle Pomerleau. Section 199A and "Tax Parity". American Enterprise Institute.
+September 2022. URL:
+<https://www.aei.org/research-products/report/section-199a-and-tax-parity/>
+(visited on 2023-06-16).
+
+\[77\] Halah Ahmad, Jack Landry, and Stephen Nunez. Revisiting the Child Tax Credit for the Lame Duck Session: Comparing Parameters for Anti-Poverty Impacts.
+November 2022. Jain Family Institute Report. URL:
+<https://jainfamilyinstitute.org/revisiting-the-child-tax-credit-for-the-lame-duck-session-comparing-parameters-for-anti-poverty-impacts/>
+(visited on 2023-06-19).
+
+\[76\] Jack Landry.The Expanded Child Tax Credit and Parental Employment: Tenuous Evidence Points to Work Disincentives.
+February 2022. Jain Family Institute Report. URL:
+<https://jainfamilyinstitute.org/the-expanded-child-tax-credit-and-parental-employment-tenuous-evidence-points-to-work-disincentives/>
+(visited on 2023-06-19).
+
+\[75\] Jordan Weissmann. It's Time for Democrats to Buck Up and Give Joe Manchin What He Wants. *Slate*.
 December 2021. URL:
 <https://slate.com/business/2021/12/manchin-democrats-bbb-spending.html>
 (visited on 2021-12-17).
 
-\[71\] Jack Landry and Stephen Nunez. Analysis of Full Refundability of the Child Tax Credit Without Expansion.
-December 2021. Jain Family Instuite Report. URL:
+\[74\] Jack Landry and Stephen Nunez. Memo: Cost Simulations of a Fully-Refundable Child Tax Credit (CTC) 2022-2031.
+December 2021. Jain Family Institute Report. URL:
+<https://jainfamilyinstitute.org/memo-cost-simulations-of-a-fully-refundable-child-tax-credit-ctc-2022-2031/>
+(visited on 2023-06-19).
+
+\[73\] Jack Landry and Stephen Nunez. Analysis of Full Refundability of the Child Tax Credit Without Expansion.
+December 2021. Jain Family Institute Report. URL:
 <https://www.jainfamilyinstitute.org/assets/full-refundability-of-child-tax-credit-without-expansion.pdf>
 (visited on 2021-12-17).
+
+\[72\] Jack Landry and Stephen Nunez. Reducing Refundability of the Child Tax Credit: Assessing Poverty Impacts and Trade-offs.
+September 2021. Jain Family Institute Report. URL:
+<https://jainfamilyinstitute.org/reducing-refundability-of-the-child-tax-credit-assessing-poverty-impacts-and-trade-offs/>
+(visited on 2023-06-19).
+
+\[71\] Jack Landry and Stephen Nunez. Assessing Non-filer Rates & Poverty Impacts for the American Rescue Plan Act’s Expanded CTC.
+September 2021. Jain Family Institute Report. URL:
+<https://jainfamilyinstitute.org/assessing-non-filer-rates-poverty-impacts-for-the-american-rescue-plan-acts-expanded-ctc/>
+(visited on 2023-06-19).
 
 \[70\] Cody Kallen and Arparna Mathur. Estimating the Distributional Implications of the Tax Cuts and Jobs Act. *National Tax Journal*.
 September 2021. URL:

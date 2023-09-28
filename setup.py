@@ -3,7 +3,7 @@ from setuptools import setup
 with open('README.md') as f:
     longdesc = f.read()
 
-version = '3.3.0'
+version = '3.4.1'
 
 config = {
     'description': 'Tax Calculator',
@@ -16,7 +16,7 @@ config = {
     'packages': ['taxcalc', 'taxcalc.cli'],
     'include_package_data': True,
     'name': 'taxcalc',
-    'install_requires': ['numpy', 'pandas', 'bokeh', 'numba'],
+    'install_requires': ['setuptools', 'numpy', 'pandas', 'bokeh', 'numba'],
     'classifiers': [
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

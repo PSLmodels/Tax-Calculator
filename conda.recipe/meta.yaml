@@ -17,6 +17,7 @@ requirements:
     - "paramtools>=0.18.0"
     - behresp
     - aiohttp
+    - curl
 
   run:
     - python
@@ -28,6 +29,7 @@ requirements:
     - "paramtools>=0.18.0"
     - behresp
     - aiohttp
+    - curl
 
 test:
   commands:
