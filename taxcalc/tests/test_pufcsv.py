@@ -53,7 +53,7 @@ def test_agg(tests_path, puf_fullsample):
     assert len(adt.columns.values) == len(edt.columns.values)
     diffs = False
     for icol in adt.columns.values:
-        if not np.allclose(adt[icol], edt[str(icol)]):
+        if not np.allclose(adt[icol].values, edt[str(icol)].values):
             diffs = True
     if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.csv')
@@ -80,7 +80,7 @@ def test_agg(tests_path, puf_fullsample):
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
     msg = ''
     for cyr in range(calc_start_year, calc_start_year + nyrs):
-        reltol = 0.01  # maximum allowed relative difference in tax liability
+        reltol = 0.031  # maximum allowed relative difference in tax liability
         if not np.allclose(taxes_subsample[cyr], taxes_fullsample[cyr],
                            atol=0.0, rtol=reltol):
             reldiff = (taxes_subsample[cyr] / taxes_fullsample[cyr]) - 1.

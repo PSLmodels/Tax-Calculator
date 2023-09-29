@@ -3,6 +3,94 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2023-06-20 Release 3.4.1
+------------------------
+(last merged pull request is
+[#2686](https://github.com/PSLmodels/Tax-Calculator/pull/2686))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Update documentation of use cases [[#2686](https://github.com/PSLmodels/Tax-Calculator/pull/2686) by Jason Debacker]
+- Update the last budget year to 2033 ~ also extend the projections to 2033 [[#2682](https://github.com/PSLmodels/Tax-Calculator/pull/2682) by Bodi Yang]
+
+**Bug Fixes**
+- Reweight PUF data for the year 2033, to fix the odd PUF weightings, PUF ratios and odd projections [[#2685](https://github.com/PSLmodels/Tax-Calculator/pull/2685) by Bodi Yang], with primary work in [[TaxData PR #429](https://github.com/PSLmodels/taxdata/pull/429)by Bodi Yang]
+- Fix incorrect value for EITC_c in 2020 [[#2684](https://github.com/PSLmodels/Tax-Calculator/pull/2684) by Matt Jensen]
+
+
+2023-05-05 Release 3.4.0
+------------------------
+(last merged pull request is
+[#2677](https://github.com/PSLmodels/Tax-Calculator/pull/2677))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Tax-Calculator baseline update for CBO economic projections, published in May, "The Budget and Economic Outlook: 2023 to 2033" [[#2676](https://github.com/PSLmodels/Tax-Calculator/pull/2676) by Bodi Yang], with primary work in [[TaxData PR #421](https://github.com/PSLmodels/taxdata/pull/421)by Bodi Yang]
+
+**Bug Fixes**
+- Replacement of the deprecated Pandas `.append()` method in the model [[#2676](https://github.com/PSLmodels/Tax-Calculator/pull/2676) by Bodi Yang]
+- Fix calculaton of 2021 child and other dependent credit [[#2677](https://github.com/PSLmodels/Tax-Calculator/pull/2677) by Matt Jensen]
+- Fix exemption of UI from AGI for EITC in certain years [[#2675](https://github.com/PSLmodels/Tax-Calculator/pull/2675) by Jason Debacker]
+- Fix incorrect value for max EITC in 2022 [[#2673](https://github.com/PSLmodels/Tax-Calculator/pull/2673) by Jason Debacker]
+
+2022-12-16 Release 3.3.0
+------------------------
+(last merged pull request is
+[#2662](https://github.com/PSLmodels/Tax-Calculator/pull/2662))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Tax-Calculator baseline update for CBO economic projections, published in May, "The Budget and Economic Outlook: 2022 to 2032" [[#2662](https://github.com/PSLmodels/Tax-Calculator/pull/2662) by Bodi Yang], with primary work in [[TaxData PR #412](https://github.com/PSLmodels/taxdata/pull/412)by Bodi Yang]
+- Add parameters for threshold for self-employment income exempt from SECA taxes [[#2659](https://github.com/PSLmodels/Tax-Calculator/pull/2659) by Jason Debacker]
+- Update calculation of child number when CTC_include17 [[#2644](https://github.com/PSLmodels/Tax-Calculator/pull/2644) by Matt Jensen]
+- Add Python 3.10 to test matrix [[#2646](https://github.com/PSLmodels/Tax-Calculator/pull/2646) by Jason Debacker]
+- Inflation adjustment of the year 2020, 2021, 2022, for IRS tax forms and tax law inflation adjustments documents [[#2633](https://github.com/PSLmodels/Tax-Calculator/pull/2633) by Bodi Yang]
+
+**Bug Fixes**
+- Fix Parameter error parsing in taxcalcio module [[#2625](https://github.com/PSLmodels/Tax-Calculator/pull/2625/commits) by Hank Doupe]
+
+2021-08-06 Release 3.2.1
+------------------------
+(last merged pull request is
+[#2615](https://github.com/PSLmodels/Tax-Calculator/pull/2615))
+
+**This is bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+Correct an error in the value of the `CTC_new_c_under6_bonus` for the year 2021. [[#2609](https://github.com/PSLmodels/Tax-Calculator/pull/2609) by Jason DeBacker]
+
+
+2021-07-17 Release 3.2.0
+------------------------
+(last merged pull request is
+[#2604](https://github.com/PSLmodels/Tax-Calculator/pull/2604))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Updates the current law baseline to include the CARES Act (#2586), the the Consolidated Appropriations Act of 2021, and the American Rescue Plan Act, (PRs #2573 and #2588), and the Consolidated Appropriations Act of 2021 (PR #2593) as well as updates to EITC parameters (PR #2593). This ends a transition period for users to model these changes as reforms to the former baseline. [[#2586](https://github.com/PSLmodels/tax-calculator/pull/2586), [#2593](https://github.com/PSLmodels/tax-calculator/pull/2593), [#2573](https://github.com/PSLmodels/tax-calculator/pull/2573), [#2588](https://github.com/PSLmodels/tax-calculator/pull/2588), [#2593](https://github.com/PSLmodels/tax-calculator/pull/2593) with contributions from Angela Shoulders, Cody Kallen, Matt Jensen, and Jason DeBacker]
+- Updates growfactors and weights for the PUF and CPS data to reflect updates to `taxdata`, including new CBO forecasts. [[#2599](https://github.com/PSLmodels/tax-calculator/pull/2599) by Anderson Frailey]
+- Add profiling to testing [[#2570](https://github.com/PSLmodels/tax-calculator/pull/2570), [#2577](https://github.com/PSLmodels/tax-calculator/pull/2577), [#2587](https://github.com/PSLmodels/tax-calculator/pull/2587) by Jacob Chuslo]
+- Allow for non-taxed UI eligibility. [[#2579](https://github.com/PSLmodels/tax-calculator/pull/2579) by Max Ghenis]
+- Additional unit tests for `calcfunctions.py`. [[#2572](https://github.com/PSLmodels/tax-calculator/pull/2572) by Angela Shoulders]
+
+**Bug Fixes**
+
 
 2021-03-01 Release 3.1.0
 ------------------------

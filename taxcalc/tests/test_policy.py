@@ -385,7 +385,7 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     e2019 = reform['SS_Earnings_c'][2019]
     assert actual[2019] == e2019
     e2020 = wfactor[2019] * actual[2019]  # indexing after 2019
-    assert actual[2020] == e2020
+    assert np.allclose([actual[2020]], [e2020], atol=0.01, rtol=0.0)
     e2021 = wfactor[2020] * actual[2020]
     assert np.allclose([actual[2021]], [e2021], atol=0.01, rtol=0.0)
     e2022 = wfactor[2021] * actual[2021]
@@ -653,10 +653,7 @@ def test_section_titles(tests_path):
             'Additional Medicare FICA': 0
         },
         'Social Security Taxability': {
-            'Threshold For Social Security Benefit Taxability 1': 0,
-            # 'Social Security Taxable Income Decimal Fraction 1': 0,
-            'Threshold For Social Security Benefit Taxability 2': 0
-            # 'Social Security Taxable Income Decimal Fraction 2': 0
+            'Social Security Benefit Taxability': 0,
         },
         'Above The Line Deductions': {
             'Misc. Adjustment Haircuts': 0,
@@ -1262,10 +1259,10 @@ class TestAdjust:
         # make sure values prior to 2021 were not affected.
         cmp_policy_objs(pol0, pol2, year_range=range(pol2.start_year, 2021))
 
-        pol2.set_state(year=[2021, 2022])
+        pol2.set_state(year=[2022, 2023])
         np.testing.assert_equal(
             (pol2.EITC_c[1] / pol2.EITC_c[0] - 1).round(4),
-            pol0.inflation_rates(year=2021) + (-0.001),
+            (pol0.inflation_rates(year=2022) + (-0.001)).round(4),
         )
 
     def test_multiple_cpi_swaps(self):
@@ -1520,3 +1517,29 @@ class TestAdjust:
 
         with pytest.raises(pt.ValidationError):
             pol2.adjust({"EITC_c-indexed": 123})
+
+    def test_cpi_offset_does_not_affect_wage_indexed_params(self):
+        """
+        Test adjusting parameter_indexing_CPI_offset does not affect unknown
+        values of wage indexed parameters like SS_Earnings_c.
+        """
+        base_reform = {
+            "parameter_indexing_CPI_offset": {2021: -0.001},
+            "SS_Earnings_c": {2024: 300000},
+        }
+
+        pol0 = Policy()
+        pol0.implement_reform(base_reform)
+
+        pol1 = Policy()
+        pol1.implement_reform(base_reform)
+        pol1.implement_reform(dict(base_reform, SS_Earnings_c={2025: 500000}))
+
+        exp_before_2025 = pol0.to_array(
+            "SS_Earnings_c", year=list(range(2021, 2024 + 1))
+        )
+        act_before_2025 = pol1.to_array(
+            "SS_Earnings_c", year=list(range(2021, 2024 + 1))
+        )
+
+        np.testing.assert_equal(act_before_2025, exp_before_2025)

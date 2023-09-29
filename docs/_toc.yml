@@ -1,57 +1,61 @@
-- file: index
-- part: Usage
-  sections:
+format: jb-book
+root: index
+parts:
+- caption: Usage
+  chapters:
   - file: usage/starting
   - file: usage/overview
+  - file: usage/data
   - file: guide/index
     sections:
-      - file: guide/python_interface
-      - file: guide/cli
-      - file: guide/policy_params
-      - file: guide/input_vars
-      - file: guide/output_vars
-      - file: guide/assumption_params
+    - file: guide/python_interface
+    - file: guide/cli
+    - file: guide/policy_params
+    - file: guide/input_vars
+    - file: guide/output_vars
+    - file: guide/assumption_params
   - file: recipes/index
     sections:
-      - file: recipes/recipe00
-      - file: recipes/recipe01
-      - file: recipes/recipe02
-      - file: recipes/recipe03
-      - file: recipes/recipe04
-      - file: recipes/recipe04_pandas
-      - file: recipes/recipe05
-      - file: recipes/recipe06
-- part: About
-  sections:
-    - file: about/history
-    - file: about/roadmap
-    - file: about/releases
-    - file: about/changes
-    - file: about/upgrading
-    - file: about/license
-- part: Contributing
-  sections:
-    - file: contributing/contributor_guide
-    - file: contributing/pr_workflow
-    - file: contributing/param_naming
-    - file: contributing/testing
-- part: API
-  sections:
-    - file: api/public_api
-      sections:
-        - file: api/calcfunctions
-        - file: api/calculator
-        - file: api/consumption
-        - file: api/data
-        - file: api/decorators
-        - file: api/growdiff
-        - file: api/growfactors
-        - file: api/parameters
-        - file: api/policy
-        - file: api/records
-        - file: api/taxcalcio
-        - file: api/utils
-        - file: api/utilsprvt
-- part: Tax-Calculator use cases
-  sections:
-    - file: use_cases
+    - file: recipes/recipe00
+    - file: recipes/recipe01
+    - file: recipes/recipe02
+    - file: recipes/recipe03
+    - file: recipes/recipe04
+    - file: recipes/recipe04_pandas
+    - file: recipes/recipe05
+    - file: recipes/recipe06
+- caption: About
+  chapters:
+  - file: about/history
+  - file: about/roadmap
+  - file: about/releases
+  - file: about/changes
+  - file: about/upgrading
+  - file: about/license
+- caption: Contributing
+  chapters:
+  - file: contributing/contributor_guide
+  - file: contributing/pr_workflow
+  - file: contributing/param_naming
+  - file: contributing/testing
+  - file: contributing/RELEASING
+- caption: API
+  chapters:
+  - file: api/public_api
+    sections:
+    - file: api/calcfunctions
+    - file: api/calculator
+    - file: api/consumption
+    - file: api/data
+    - file: api/decorators
+    - file: api/growdiff
+    - file: api/growfactors
+    - file: api/parameters
+    - file: api/policy
+    - file: api/records
+    - file: api/taxcalcio
+    - file: api/utils
+    - file: api/utilsprvt
+- caption: Tax-Calculator use cases
+  chapters:
+  - file: use_cases

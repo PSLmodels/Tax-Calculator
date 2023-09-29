@@ -1,4 +1,4 @@
-name: Build Package and Test Source Code [Python 3.6, 3.7, 3.8, 3.9]
+name: Build Package and Test Source Code [Python 3.7, 3.8, 3.9, 3.10]
 
 on: [push, pull_request]
 
@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9, '3.10']
 
     steps:
       - name: Checkout
@@ -27,20 +27,20 @@ jobs:
       - name: Build
         shell: bash -l {0}
         run: |
-          pip install -e .
-          pip install pytest-cov
-          pip install pytest-pycodestyle
+          pip install -e . --user
+          pip install pytest-cov --user
+          pip install pytest-pycodestyle --user
       - name: Test
         shell: bash -l {0}
         working-directory: ./
         run: |
           pytest -m 'not requires_pufcsv and not pre_release and not local' --cov=./ --cov-report=xml
-      # - name: Upload coverage to Codecov
-      #   uses: codecov/codecov-action@v1
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-      #     file: ./coverage.xml
-      #     flags: unittests
-      #     name: codecov-umbrella
-      #     fail_ci_if_error: true
-      #     verbose: true
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
+          verbose: true

@@ -221,8 +221,8 @@ def _compare_test_output_files():
     Private function that compares expected and actual tc --test output files;
     returns 0 if pass test, otherwise returns 1.
     """
-    explines = open(EXPECTED_TEST_OUTPUT_FILENAME, 'U').readlines()
-    actlines = open(ACTUAL_TEST_OUTPUT_FILENAME, 'U').readlines()
+    explines = open(EXPECTED_TEST_OUTPUT_FILENAME, 'r').readlines()
+    actlines = open(ACTUAL_TEST_OUTPUT_FILENAME, 'r').readlines()
     if ''.join(explines) == ''.join(actlines):
         sys.stdout.write('PASSED TEST\n')
         retcode = 0

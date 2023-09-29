@@ -69,7 +69,7 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     pol.implement_reform(reform)
     # create a Calculator object using this policy reform
     calc = Calculator(policy=pol, records=rec)
-    assert calc.reform_warnings == ''
+    assert calc.reform_warnings == {}
     # check that Policy object embedded in Calculator object is correct
     assert calc.current_year == year
     assert calc.policy_param('II_em') == 4000

@@ -3,12 +3,14 @@ channels:
   - conda-forge
 dependencies:
 - python
+- curl
 - "numpy>=1.14"
 - "pandas>=1.2.0"
-- "bokeh>=1.4.0"
+- "bokeh>=1.4.0, <3.0.0"
 - requests
 - aiohttp
 - numba
+- "fsspec<=0.8.7"
 - pytest
 - pytest-pep8
 - pytest-xdist
@@ -16,6 +18,7 @@ dependencies:
 - pylint
 - coverage
 - "paramtools>=0.18.0"
+- behresp
 - pip
 - pip:
     - jupyter-book

@@ -1,3 +1,6 @@
+# taxcalc python package MUST be installed
+# Headers from each .out-taxsim file MUST be removed
+
 #!/bin/bash
 # Executes validation TESTS by calling test.sh scripts in subdirectories.
 echo "STARTING WITH VALIDATION TESTS : `date`"
