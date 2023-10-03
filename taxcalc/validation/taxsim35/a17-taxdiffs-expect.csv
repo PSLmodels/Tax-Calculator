@@ -1,25 +1,25 @@
 ,# of differing records,max_diff,max_diff_index,max_diff_taxsim_val,max_diff_taxcalc_val
-iitax,2,196.22,904,-196.22,0.0
+iitax,2,0.5099999999999909,787,459.49,460.0
 statetax,0,0.0,no diff,no diff,no diff
 payrolltax,0,0.0,no diff,no diff,no diff
-mtr_inctax,1,-7.65,904,7.65,0.0
+mtr_inctax,1,-7.649999999999999,787,17.65,10.0
 mtr_state,0,0.0,no diff,no diff,no diff
 c00100,0,0.0,no diff,no diff,no diff
 e02300,0,0.0,no diff,no diff,no diff
 c02500,0,0.0,no diff,no diff,no diff
 post_phase_out_pe,0,0.0,no diff,no diff,no diff
-phased_out_pe,0,0.0,no diff,no diff,no diff
+phased_out_pe,57,3.637978807091713e-12,806,16601.76,16601.760000000002
 c21040,0,0.0,no diff,no diff,no diff
 c04470,0,0.0,no diff,no diff,no diff
 c04800,0,0.0,no diff,no diff,no diff
-taxbc,0,0.0,no diff,no diff,no diff
+taxbc,6,-0.010000000009313226,217,93239.71,93239.7
 exemption_surtax,0,0.0,no diff,no diff,no diff
 gen_tax_credit,0,0.0,no diff,no diff,no diff
 non_refundable_child_odep_credit,0,0.0,no diff,no diff,no diff
 c11070,0,0.0,no diff,no diff,no diff
 c07180,0,0.0,no diff,no diff,no diff
-eitc,2,-196.22,904,196.22,0.0
+eitc,1,-0.51,787,0.51,0.0
 c62100,0,0.0,no diff,no diff,no diff
 amt_liability,0,0.0,no diff,no diff,no diff
-iitax_before_credits_ex_AMT,0,0.0,no diff,no diff,no diff
+iitax_before_credits_ex_AMT,1,-1.4551915228366852e-11,362,65620.21,65620.20999999999
 recovery_rebate_credit,0,0.0,no diff,no diff,no diff

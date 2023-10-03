@@ -1,26 +1,25 @@
 ,# of differing records,max_diff,max_diff_index,max_diff_taxsim_val,max_diff_taxcalc_val
-fiitax,49,-0.00999999999999801,12135,-20.98,-20.99
-siitax,0,0.0,no diff,no diff,no diff
-fica,0,0.0,no diff,no diff,no diff
-frate,0,0.0,no diff,no diff,no diff
-srate,0,0.0,no diff,no diff,no diff
-ficar,124,0.8999999999999999,172,2.9,3.8
-v10,0,0.0,no diff,no diff,no diff
-v11,0,0.0,no diff,no diff,no diff
-v12,0,0.0,no diff,no diff,no diff
-v13,100000,-26600.0,12,26600.0,0.0
-v14,0,0.0,no diff,no diff,no diff
-v15,0,0.0,no diff,no diff,no diff
-v16,0,0.0,no diff,no diff,no diff
-v17,0,0.0,no diff,no diff,no diff
-v18,0,0.0,no diff,no diff,no diff
-v19,0,0.0,no diff,no diff,no diff
-v20,0,0.0,no diff,no diff,no diff
-v21,0,0.0,no diff,no diff,no diff
-v22,0,0.0,no diff,no diff,no diff
-v23,0,0.0,no diff,no diff,no diff
-v24,0,0.0,no diff,no diff,no diff
-v25,46,0.00999999999999801,12135,20.98,20.99
-v26,0,0.0,no diff,no diff,no diff
-v27,0,0.0,no diff,no diff,no diff
-v28,0,0.0,no diff,no diff,no diff
+iitax,1,-0.009999999999990905,499,-97.48,-97.49
+statetax,0,0.0,no diff,no diff,no diff
+payrolltax,0,0.0,no diff,no diff,no diff
+mtr_inctax,0,0.0,no diff,no diff,no diff
+mtr_state,0,0.0,no diff,no diff,no diff
+c00100,0,0.0,no diff,no diff,no diff
+e02300,0,0.0,no diff,no diff,no diff
+c02500,0,0.0,no diff,no diff,no diff
+post_phase_out_pe,0,0.0,no diff,no diff,no diff
+phased_out_pe,0,0.0,no diff,no diff,no diff
+c21040,0,0.0,no diff,no diff,no diff
+c04470,0,0.0,no diff,no diff,no diff
+c04800,0,0.0,no diff,no diff,no diff
+taxbc,0,0.0,no diff,no diff,no diff
+exemption_surtax,0,0.0,no diff,no diff,no diff
+gen_tax_credit,0,0.0,no diff,no diff,no diff
+non_refundable_child_odep_credit,0,0.0,no diff,no diff,no diff
+c11070,0,0.0,no diff,no diff,no diff
+c07180,0,0.0,no diff,no diff,no diff
+eitc,1,0.009999999999990905,499,97.48,97.49
+c62100,0,0.0,no diff,no diff,no diff
+amt_liability,0,0.0,no diff,no diff,no diff
+iitax_before_credits_ex_AMT,0,0.0,no diff,no diff,no diff
+recovery_rebate_credit,0,0.0,no diff,no diff,no diff
