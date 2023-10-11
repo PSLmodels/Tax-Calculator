@@ -3,8 +3,11 @@
 This document explains the sources of known differences (that exceed $1) between Tax-Calculator and TAXSIM-35.  Numerical differences are noted in the {letter}{year}-taxdiffs-actual.csv files in this directory.
 
 ## 2017
+* No differences greater than $1 (though one obs with an marginal tax rate differences of 7.65 percent)
 
 ## 2018
+* No differences greater than $1.
+
 
 ## 2019
 * There is one record in the "a" file with a difference in the EITC amount of $196.22.  This record is of a single, 19 year old filer.  This person is below the age of 25 and therefore should receive $0 EITC, which is what Tax-Calculator reports.  TAXSIM-35 does not recognize this age threshold and incorrectly assigns this person $196.22 in EITC.
