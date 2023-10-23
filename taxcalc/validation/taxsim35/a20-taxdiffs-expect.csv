@@ -1,5 +1,5 @@
 ,# of differing records,max_diff,max_diff_index,max_diff_taxsim_val,max_diff_taxcalc_val
-iitax,140,-4000.0,828,25257.0,21257.0
+iitax,135,-4000.0,828,25257.0,21257.0
 statetax,0,0.0,no diff,no diff,no diff
 payrolltax,0,0.0,no diff,no diff,no diff
 mtr_inctax,62,5.0,14,24.0,29.0
@@ -18,7 +18,7 @@ gen_tax_credit,0,0.0,no diff,no diff,no diff
 non_refundable_child_odep_credit,0,0.0,no diff,no diff,no diff
 c11070,0,0.0,no diff,no diff,no diff
 c07180,0,0.0,no diff,no diff,no diff
-eitc,9,75.82000000000062,196,5021.53,5097.35
+eitc,1,0.009999999999990905,292,368.93,368.94
 c62100,0,0.0,no diff,no diff,no diff
 amt_liability,0,0.0,no diff,no diff,no diff
 iitax_before_credits_ex_AMT,0,0.0,no diff,no diff,no diff

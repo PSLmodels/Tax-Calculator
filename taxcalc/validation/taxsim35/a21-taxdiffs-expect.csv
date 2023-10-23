@@ -15,7 +15,7 @@ c04800,0,0.0,no diff,no diff,no diff
 taxbc,0,0.0,no diff,no diff,no diff
 exemption_surtax,0,0.0,no diff,no diff,no diff
 gen_tax_credit,0,0.0,no diff,no diff,no diff
-non_refundable_child_odep_credit,173,-4000.0,60,12500.0,8500.0
+non_refundable_child_odep_credit,0,0.0,no diff,no diff,no diff
 c11070,502,-12500.0,60,12500.0,0.0
 c07180,0,0.0,no diff,no diff,no diff
 eitc,6,1.5300000000000011,136,56.15,57.68
