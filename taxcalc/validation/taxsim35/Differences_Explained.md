@@ -18,3 +18,4 @@ This document explains the sources of known differences (that exceed $1) between
 
 
 ## 2021
+* Child tax credit is categorized as nonrefundable child tax credit. The variable `c11070`, the refunded Child tax credit, is counted as zero in Tax-Calculator. TAXSIM-35 calculates the amount of Child tax credit as non-zero (it does not differentiate refundable vs nonrefundable credit).
