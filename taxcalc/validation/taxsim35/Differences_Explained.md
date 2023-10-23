@@ -18,4 +18,4 @@ This document explains the sources of known differences (that exceed $1) between
 
 
 ## 2021
-* Child tax credit is categorized as nonrefundable child tax credit. The variable `c11070`, the refunded Child tax credit, is counted as zero in Tax-Calculator. TAXSIM-35 calculates the amount of Child tax credit as non-zero (it does not differentiate refundable vs nonrefundable credit).
+* In 2021, the Additional Child Tax Credit (ACTC), which historically was the refundable portion of the CTC, was subsumbed by the refundability of the CTC more broadly with the ARPA. Tax-Calculator and TAXSIM-35 handle this differnetly in their model output.  Tax-Calculator keeps only the ACTC amount in the variable `c11070`, which is $0 for all filers in 2021.  On the other hand, TAXSIM-35 reports the refundable amount of the CTC (whih is equivalent to the ACTC in most years, but not 2021).  Hence, we can expect differences in these two models due to different definitions of output variables in that year.
