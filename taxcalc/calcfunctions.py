@@ -3170,7 +3170,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     # total used nonrefundable credits (as computed in NonrefundableCredits)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 +
               c07220 * (1. - CTC_refundable) + c08000 +
-              c07230 + c07240 + c07260 + odc + charity_credit +
+              c07230 + c07240 + c07260 + odc * (1. - CTC_refundable) + charity_credit +
               personal_nonrefundable_credit)
     # tax after credits (2016 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)
@@ -3265,7 +3265,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
 @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           c09200, payrolltax, CDCC_refund, recovery_rebate_credit,
-          eitc, c07220, CTC_refundable, refund, iitax, combined):
+          eitc, c07220, odc, CTC_refundable, refund, iitax, combined):
     """
     Computes final taxes.
 
@@ -3310,7 +3310,7 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     """
     eitc = c59660
     if CTC_refundable:
-        ctc_refund = c07220
+        ctc_refund = c07220 + odc
     else:
         ctc_refund = 0.
     refund = (eitc + c11070 + c10960 + CDCC_refund + recovery_rebate_credit +
