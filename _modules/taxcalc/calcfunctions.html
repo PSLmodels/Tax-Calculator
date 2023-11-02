@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -143,13 +143,14 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     
     
       
     
     
-    <img src="../../_static/PSL.svg" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../../_static/PSL.svg" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../../_static/PSL.svg" class="logo__image only-light" alt="Tax-Calculator - Home"/>
+    <script>document.write(`<img src="../../_static/PSL.svg" class="logo__image only-dark" alt="Tax-Calculator - Home"/>`);</script>
   
   
 </a></div>
@@ -3499,7 +3500,7 @@ document.write(`
 <span class="k">def</span> <span class="nf">C1040</span><span class="p">(</span><span class="n">c05800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">c07200</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">c07230</span><span class="p">,</span> <span class="n">c07240</span><span class="p">,</span> <span class="n">c07260</span><span class="p">,</span> <span class="n">c07300</span><span class="p">,</span>
           <span class="n">c07400</span><span class="p">,</span> <span class="n">c07600</span><span class="p">,</span> <span class="n">c08000</span><span class="p">,</span> <span class="n">e09700</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">e09900</span><span class="p">,</span> <span class="n">niit</span><span class="p">,</span> <span class="n">othertaxes</span><span class="p">,</span>
           <span class="n">c07100</span><span class="p">,</span> <span class="n">c09200</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">,</span>
-          <span class="n">personal_nonrefundable_credit</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">):</span>
+          <span class="n">personal_nonrefundable_credit</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">ODC_refundable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes total used nonrefundable credits, c07100, othertaxes, and</span>
 <span class="sd">    income tax before refundable credits, c09200.</span>
@@ -3561,7 +3562,7 @@ document.write(`
     <span class="c1"># total used nonrefundable credits (as computed in NonrefundableCredits)</span>
     <span class="n">c07100</span> <span class="o">=</span> <span class="p">(</span><span class="n">c07180</span> <span class="o">+</span> <span class="n">c07200</span> <span class="o">+</span> <span class="n">c07600</span> <span class="o">+</span> <span class="n">c07300</span> <span class="o">+</span> <span class="n">c07400</span> <span class="o">+</span>
               <span class="n">c07220</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CTC_refundable</span><span class="p">)</span> <span class="o">+</span> <span class="n">c08000</span> <span class="o">+</span>
-              <span class="n">c07230</span> <span class="o">+</span> <span class="n">c07240</span> <span class="o">+</span> <span class="n">c07260</span> <span class="o">+</span> <span class="n">odc</span> <span class="o">+</span> <span class="n">charity_credit</span> <span class="o">+</span>
+              <span class="n">c07230</span> <span class="o">+</span> <span class="n">c07240</span> <span class="o">+</span> <span class="n">c07260</span> <span class="o">+</span> <span class="n">odc</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ODC_refundable</span><span class="p">)</span> <span class="o">+</span> <span class="n">charity_credit</span> <span class="o">+</span>
               <span class="n">personal_nonrefundable_credit</span><span class="p">)</span>
     <span class="c1"># tax after credits (2016 Form 1040, line 56)</span>
     <span class="n">tax_net_nonrefundable_credits</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">c07100</span><span class="p">)</span>
@@ -3656,7 +3657,7 @@ document.write(`
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">IITAX</span><span class="p">(</span><span class="n">c59660</span><span class="p">,</span> <span class="n">c11070</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">,</span> <span class="n">rptc</span><span class="p">,</span>
           <span class="n">c09200</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">,</span> <span class="n">recovery_rebate_credit</span><span class="p">,</span>
-          <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
+          <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">ODC_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes final taxes.</span>
 
@@ -3701,11 +3702,15 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="n">c59660</span>
     <span class="k">if</span> <span class="n">CTC_refundable</span><span class="p">:</span>
-        <span class="n">ctc_refund</span> <span class="o">=</span> <span class="n">c07220</span>
+        <span class="n">ctc_refund</span> <span class="o">=</span> <span class="n">c07220</span> 
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ctc_refund</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">ODC_refundable</span><span class="p">:</span>
+        <span class="n">odc_refund</span> <span class="o">=</span> <span class="n">odc</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">odc_refund</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">refund</span> <span class="o">=</span> <span class="p">(</span><span class="n">eitc</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">c10960</span> <span class="o">+</span> <span class="n">CDCC_refund</span> <span class="o">+</span> <span class="n">recovery_rebate_credit</span> <span class="o">+</span>
-              <span class="n">personal_refundable_credit</span> <span class="o">+</span> <span class="n">ctc_new</span> <span class="o">+</span> <span class="n">rptc</span> <span class="o">+</span> <span class="n">ctc_refund</span><span class="p">)</span>
+              <span class="n">personal_refundable_credit</span> <span class="o">+</span> <span class="n">ctc_new</span> <span class="o">+</span> <span class="n">rptc</span> <span class="o">+</span> <span class="n">ctc_refund</span> <span class="o">+</span> <span class="n">odc_refund</span><span class="p">)</span> 
     <span class="n">iitax</span> <span class="o">=</span> <span class="n">c09200</span> <span class="o">-</span> <span class="n">refund</span>
     <span class="n">combined</span> <span class="o">=</span> <span class="n">iitax</span> <span class="o">+</span> <span class="n">payrolltax</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
@@ -4169,8 +4174,8 @@ By Policy Simulation Library
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>
