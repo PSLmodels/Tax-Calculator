@@ -1310,6 +1310,21 @@ _Known Values:_
 _Valid Range:_ min = 0 and max = 9e+99  
 _Out-of-Range Action:_ error  
 
+####  `ODC_refundable`  
+_Description:_ If true, the other dependent tax credit is made fully refundable.    
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ bool  
+_Known Values:_  
+2013: False  
+2014: False  
+2015: False  
+2016: False  
+2017: False  
+2018: False  
+2019: False  
+_Valid Range:_ min = False and max = True  
+_Out-of-Range Action:_ error
 
 ## Itemized Deductions
 

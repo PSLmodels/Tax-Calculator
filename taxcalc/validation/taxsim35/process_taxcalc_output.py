@@ -77,7 +77,7 @@ def write_taxsim_formatted_output(filename, tcvar):
     tcvar["exemption_surtax"] = 0.0  # always set exemption surtax to zero
     tcvar["gen_tax_credit"] = 0.0  # always set general tax credit to zero
     tcvar["non_refundable_child_odep_credit"] = (
-        tcvar["c07220"] + tcvar["odc"]
+        tcvar["c07220"] + tcvar["odc"] + tcvar["ctc_new"]
     )  # non-refundable child+odep credit
     tcvar["amt_liability"] = tcvar["c09600"]  # federal AMT liability
     # var28 from TAXSIM-35 is federal income tax before credits; the Tax-Calculator
@@ -115,7 +115,7 @@ def write_taxsim_formatted_output(filename, tcvar):
             "c62100",
             "amt_liability",
             "iitax_before_credits_ex_AMT",
-            "recovery_rebate_credit",
+            "recovery_rebate_credit"
         ]
     ]
     tcvar.round(decimals=2)
