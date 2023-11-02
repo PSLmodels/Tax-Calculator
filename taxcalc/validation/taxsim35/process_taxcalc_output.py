@@ -115,7 +115,7 @@ def write_taxsim_formatted_output(filename, tcvar):
             "c62100",
             "amt_liability",
             "iitax_before_credits_ex_AMT",
-            "recovery_rebate_credit",
+            "recovery_rebate_credit"
         ]
     ]
     # better mapping of to how TAXSIM-35 handles refundalbe credits in 2021

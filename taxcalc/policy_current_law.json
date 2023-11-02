@@ -16556,6 +16556,40 @@
             "cps": true
         }
     },
+    "ODC_refundable": {
+        "title": "Whether the other dependents tax credit is fully refundable",
+        "description": "If true, the other dependents tax credit is made fully refundable.",
+        "notes": "",
+        "section_1": "Child/Dependent Credits",
+        "section_2": "Other Dependent Tax Credit",
+        "indexable": false,
+        "indexed": false,
+        "type": "bool",
+        "value": [
+            {
+                "year": 2013,
+                "value": false
+            },
+            {
+                "year": 2021,
+                "value": true
+            },
+            {
+                "year": 2022,
+                "value": false
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": false,
+                "max": true
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "CTC_ps": {
         "title": "Child tax credit phaseout MAGI start",
         "description": "Child tax credit begins to decrease when MAGI is above this level; read descriptions of the dependent credit amounts for how they phase out when MAGI is above this level.",
