@@ -18,7 +18,8 @@ requirements:
     - behresp
     - aiohttp
     - curl
-
+    - openpyxl
+    
   run:
     - python
     - "numpy>=1.14"
