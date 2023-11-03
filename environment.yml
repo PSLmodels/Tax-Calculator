@@ -19,6 +19,7 @@ dependencies:
 - coverage
 - "paramtools>=0.18.0"
 - behresp
+- openpyxl
 - pip
 - pip:
     - jupyter-book
