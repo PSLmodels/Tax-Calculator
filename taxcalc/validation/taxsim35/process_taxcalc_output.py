@@ -118,5 +118,7 @@ def write_taxsim_formatted_output(filename, tcvar):
             "recovery_rebate_credit"
         ]
     ]
+    # better mapping of to how TAXSIM-35 handles refundalbe credits in 2021
+    tcvar.loc[tcvar["FLPDYR"] == 2021, "c11070"] = tcvar.loc[tcvar["FLPDYR"] == 2021, "non_refundable_child_odep_credit"]
     tcvar.round(decimals=2)
     tcvar.to_csv(filename)
