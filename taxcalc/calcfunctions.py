@@ -409,7 +409,7 @@ def Adj(e03150, e03210, c03260,
 @iterate_jit(nopython=True)
 def ALD_InvInc_ec_base(p22250, p23250, sep,
                        e00300, e00600, e01100, e01200, MARS,
-                       invinc_ec_base, Capital_loss_limitaion):
+                       invinc_ec_base, Capital_loss_limitation):
     """
     Computes invinc_ec_base.
 
