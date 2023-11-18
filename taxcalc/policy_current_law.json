@@ -7047,9 +7047,9 @@
         "description": "The amount of capital loss deductions is limited to this dollar amount.",
         "notes": "",
         "section_1": "Capital Gains And Dividends",
-        "section_2": "Ceiling On The Amount Of Capital Loss Deductions Allowed",
+        "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": true,
-        "indexed": true,
+        "indexed": false,
         "type": "float",
         "value": [
             {
