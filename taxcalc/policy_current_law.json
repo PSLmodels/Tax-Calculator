@@ -7043,11 +7043,11 @@
         }
     },
     "Capital_loss_limitation": {
-        "title": "Ceiling on the amount of itemized deductions allowed (dollars)",
-        "description": "The amount of itemized deductions is limited to this dollar amount.",
+        "title": "Limitation on the amount of capital losses deductible ",
+        "description": "The amount of capital loss deductions is limited to this dollar amount.",
         "notes": "",
-        "section_1": "Itemized Deductions",
-        "section_2": "Ceiling On The Amount Of Itemized Deductions Allowed",
+        "section_1": "Capital Gains And Dividends",
+        "section_2": "Ceiling On The Amount Of Capital Loss Deductions Allowed",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -7055,27 +7055,27 @@
             {
                 "year": 2013,
                 "MARS": "single",
-                "value": 9e+99
+                "value": 3000
             },
             {
                 "year": 2013,
                 "MARS": "mjoint",
-                "value": 9e+99
+                "value": 3000
             },
             {
                 "year": 2013,
                 "MARS": "mseparate",
-                "value": 9e+99
+                "value": 3000
             },
             {
                 "year": 2013,
                 "MARS": "headhh",
-                "value": 9e+99
+                "value": 3000
             },
             {
                 "year": 2013,
                 "MARS": "widow",
-                "value": 9e+99
+                "value": 3000
             }
         ],
         "validators": {
