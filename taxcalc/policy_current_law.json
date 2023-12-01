@@ -7045,7 +7045,7 @@
     "Capital_loss_limitation": {
         "title": "Limitation on the amount of capital losses deductible ",
         "description": "The amount of capital loss deductions is limited to this dollar amount.",
-        "notes": "",
+        "notes": "Note that some datasets may limit the usefulness of this parameter.  For example the IRS Public Use File (PUF) does not report capital losses in excess of the current law limitation (e.g., $,3000) and therefore setting a higher limit will not affect results.",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": true,
