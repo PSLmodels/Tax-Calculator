@@ -18,9 +18,12 @@ for letter in assumption_set:
     for year in years:
         main_comparison.main(letter, year)
 
-# clean up taxcalc files
-# keep taxsim files to avoid download again
+# clean up files
 for file in CUR_PATH:
     for file in glob.glob("*.out*") and glob.glob("*.in*"):
         if file.endswith("taxcalc"):
             os.remove(file)
+        if file.endswith("taxsim"):
+            os.remove(file)
+    for file in glob.glob("*.in"):
+        os.remove(file)
