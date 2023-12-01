@@ -29,6 +29,7 @@ parts:
   - file: about/history
   - file: about/releases
   - file: about/roadmap
+  - file: about/LICENSE
 - caption: Contributing
   chapters:
   - file: contributing/contributor_guide
