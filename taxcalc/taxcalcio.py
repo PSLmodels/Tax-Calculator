@@ -565,7 +565,7 @@ class TaxCalcIO():
                                               decile_details=False,
                                               pop_quantiles=False,
                                               weight_by_income_measure=False)
-        gdfx = dfx.groupby('table_row', as_index=False)
+        gdfx = dfx.groupby('table_row', as_index=False, observed=True)
         rtns_series = gdfx.apply(unweighted_sum, 's006').values[:, 1]
         xinc_series = gdfx.apply(weighted_sum, 'expanded_income').values[:, 1]
         itax_series = gdfx.apply(weighted_sum, 'iitax').values[:, 1]
