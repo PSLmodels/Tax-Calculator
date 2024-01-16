@@ -356,6 +356,32 @@
             "cps": true
         }
     },
+    "SS_all_in_agi": {
+        "title": "Include all social security benefits in AGI",
+        "description": "All social security benefits will be included in AGI.",
+        "notes": "",
+        "section_1": "Social Security Taxability",
+        "section_2": "Social Security Benefit Taxability",
+        "indexable": false,
+        "indexed": false,
+        "type": "bool",
+        "value": [
+            {
+                "year": 2013,
+                "value": false
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": false,
+                "max": true
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "SS_thd50": {
         "title": "Threshold for Social Security benefit taxability 1",
         "description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to rate 1 of their Social Security benefit will be subject to tax under current law.",
