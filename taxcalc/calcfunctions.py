@@ -3310,7 +3310,7 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     """
     eitc = c59660
     if CTC_refundable:
-        ctc_refund = c07220 
+        ctc_refund = c07220
     else:
         ctc_refund = 0.
     if ODC_refundable:
@@ -3318,7 +3318,7 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     else:
         odc_refund = 0.
     refund = (eitc + c11070 + c10960 + CDCC_refund + recovery_rebate_credit +
-              personal_refundable_credit + ctc_new + rptc + ctc_refund + odc_refund) 
+              personal_refundable_credit + ctc_new + rptc + ctc_refund + odc_refund)
     iitax = c09200 - refund
     combined = iitax + payrolltax
     return (eitc, refund, iitax, combined)
