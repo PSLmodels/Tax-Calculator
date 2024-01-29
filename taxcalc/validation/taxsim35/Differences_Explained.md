@@ -23,12 +23,12 @@ This document explains the sources of known differences (that exceed $1) between
 ## `b` files:
 
 ### All years
-* Differnces in AGI between TAXMSIM and Tax-Calclator have to do with an incorrect calculation of the SECA tax liablility in TAXSIM.  Half of the SECA tax amount is deductible from AGI on individuals' returns.
-* TAXSIM does not correctly calculate payroll tax liability, while Tax-Calculator calculations have been verified manually. Thus, payroll tax liability differs between the two models.
-* The AMT liability is zero in TAXSIM, but correct in Tax-Calculator, thus the AMT liability difference is the AMT liability in Tax-Calculator.
+* Differnces in AGI between TAXMSIM and Tax-Calclator have to do with an incorrect calculation of the SECA tax liablility in TAXSIM-35.  Half of the SECA tax amount is deductible from AGI on individuals' returns.
+* TAXSIM-35 does not correctly calculate payroll tax liability, while Tax-Calculator calculations have been verified manually. Thus, payroll tax liability differs between the two models.
+* The AMT liability is zero in TAXSIM-35, but correct in Tax-Calculator, thus the AMT liability difference is the AMT liability in Tax-Calculator.
 * Other differences (in `c04800`, `taxbc`, `c62100`, and `iitax_before_credits_ex_AMT`) are due to downstream effects of the differences documented above.
 
 ### 2020
 Threes records in the test files with differences in the recorvery rebate credit amount (RRC). The reasons TAXSIM-35 shows different results vary and include: TAXSIM-35 not counting qualifying children (e.g., file "a", id 7);  TAXSIM-35 not differentiating single/head of household filing status (e.g., file "a",id 31); and TAXSIM-35 not counting Economic Impat Payment 2 (e.g., file "a",id 33); TAXSIM-35 counts wrong number of child (e.g., file "a",id 59). Note that some of these are not errors per se, but can be related to different variable inputs in the two models.
 
-There is also a single record with a differences in `e02300`, unemployment insurance benefits, and input to the models.  This variable is zeroed out in TAXSIM, but not in Tax-Calculator.
+There is also a single record with a differences in `e02300`, unemployment insurance benefits, and input to the models.  This variable is zeroed out in TAXSIM-35, but not in Tax-Calculator.
