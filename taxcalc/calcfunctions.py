@@ -408,8 +408,8 @@ def Adj(e03150, e03210, c03260,
 
 @iterate_jit(nopython=True)
 def ALD_InvInc_ec_base(p22250, p23250, sep,
-                       e00300, e00600, e01100, e01200,
-                       invinc_ec_base):
+                       e00300, e00600, e01100, e01200, MARS,
+                       invinc_ec_base, Capital_loss_limitation):
     """
     Computes invinc_ec_base.
 
@@ -429,8 +429,12 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
         Capital gains distributions not reported on Schedule D
     e01200: float
         Other net gain/loss from Form 4797
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     invinc_ec_base: float
         Exclusion of investment income from AGI
+    Capital_loss_limitation: float
+        Limitation on capital losses that are deductible
 
     Returns
     -------
@@ -438,7 +442,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
         Exclusion of investment income from AGI
     """
     # limitation on net short-term and long-term capital losses
-    cgain = max((-3000. / sep), p22250 + p23250)
+    cgain = max((-1 * Capital_loss_limitation[MARS - 1] / sep), p22250 + p23250)
     # compute exclusion of investment income from AGI
     invinc_ec_base = e00300 + e00600 + cgain + e01100 + e01200
     return invinc_ec_base
@@ -448,7 +452,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
 def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              ALD_InvInc_ec_rt, invinc_ec_base,
              e00200, e00300, e00600, e00650, e00700, e00800,
-             CG_nodiff, CG_ec, CG_reinvest_ec_rt,
+             CG_nodiff, CG_ec, CG_reinvest_ec_rt, Capital_loss_limitation,
              ALD_BusinessLosses_c, MARS,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
@@ -488,6 +492,8 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
         Dollar amount of all capital gains and qualified dividends that are excluded from AGI
     CG_reinvest_ec_rt: float
         Fraction of all capital gains and qualified dividends in excess of the dollar exclusion that are excluded from AGI
+    Capital_loss_limitation: float
+        Limitation on capital losses that are deductible
     ALD_BusinessLosses_c: list
         Maximm amount of business losses deductible
     MARS: int
@@ -547,7 +553,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     # net capital gain (long term + short term) before exclusion
     c23650 = p23250 + p22250
     # limitation on capital losses
-    c01000 = max((-3000. / sep), c23650)
+    c01000 = max((-1 * Capital_loss_limitation[MARS - 1] / sep), c23650)
     # compute total investment income
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
     # compute exclusion of investment income from AGI
@@ -3310,7 +3316,7 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     """
     eitc = c59660
     if CTC_refundable:
-        ctc_refund = c07220 
+        ctc_refund = c07220
     else:
         ctc_refund = 0.
     if ODC_refundable:
@@ -3318,7 +3324,7 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     else:
         odc_refund = 0.
     refund = (eitc + c11070 + c10960 + CDCC_refund + recovery_rebate_credit +
-              personal_refundable_credit + ctc_new + rptc + ctc_refund + odc_refund) 
+              personal_refundable_credit + ctc_new + rptc + ctc_refund + odc_refund)
     iitax = c09200 - refund
     combined = iitax + payrolltax
     return (eitc, refund, iitax, combined)
