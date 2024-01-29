@@ -803,8 +803,8 @@ document.write(`
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">ALD_InvInc_ec_base</span><span class="p">(</span><span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span>
-                       <span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span>
-                       <span class="n">invinc_ec_base</span><span class="p">):</span>
+                       <span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
+                       <span class="n">invinc_ec_base</span><span class="p">,</span> <span class="n">Capital_loss_limitation</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes invinc_ec_base.</span>
 
@@ -824,8 +824,12 @@ document.write(`
 <span class="sd">        Capital gains distributions not reported on Schedule D</span>
 <span class="sd">    e01200: float</span>
 <span class="sd">        Other net gain/loss from Form 4797</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
 <span class="sd">    invinc_ec_base: float</span>
 <span class="sd">        Exclusion of investment income from AGI</span>
+<span class="sd">    Capital_loss_limitation: float</span>
+<span class="sd">        Limitation on capital losses that are deductible</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -833,7 +837,7 @@ document.write(`
 <span class="sd">        Exclusion of investment income from AGI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># limitation on net short-term and long-term capital losses</span>
-    <span class="n">cgain</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="o">-</span><span class="mf">3000.</span> <span class="o">/</span> <span class="n">sep</span><span class="p">),</span> <span class="n">p22250</span> <span class="o">+</span> <span class="n">p23250</span><span class="p">)</span>
+    <span class="n">cgain</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">Capital_loss_limitation</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">sep</span><span class="p">),</span> <span class="n">p22250</span> <span class="o">+</span> <span class="n">p23250</span><span class="p">)</span>
     <span class="c1"># compute exclusion of investment income from AGI</span>
     <span class="n">invinc_ec_base</span> <span class="o">=</span> <span class="n">e00300</span> <span class="o">+</span> <span class="n">e00600</span> <span class="o">+</span> <span class="n">cgain</span> <span class="o">+</span> <span class="n">e01100</span> <span class="o">+</span> <span class="n">e01200</span>
     <span class="k">return</span> <span class="n">invinc_ec_base</span>
@@ -843,7 +847,7 @@ document.write(`
 <span class="k">def</span> <span class="nf">CapGains</span><span class="p">(</span><span class="n">p23250</span><span class="p">,</span> <span class="n">p22250</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span>
              <span class="n">ALD_InvInc_ec_rt</span><span class="p">,</span> <span class="n">invinc_ec_base</span><span class="p">,</span>
              <span class="n">e00200</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span>
-             <span class="n">CG_nodiff</span><span class="p">,</span> <span class="n">CG_ec</span><span class="p">,</span> <span class="n">CG_reinvest_ec_rt</span><span class="p">,</span>
+             <span class="n">CG_nodiff</span><span class="p">,</span> <span class="n">CG_ec</span><span class="p">,</span> <span class="n">CG_reinvest_ec_rt</span><span class="p">,</span> <span class="n">Capital_loss_limitation</span><span class="p">,</span>
              <span class="n">ALD_BusinessLosses_c</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
              <span class="n">e00900</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span> <span class="n">e01400</span><span class="p">,</span> <span class="n">e01700</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e02100</span><span class="p">,</span>
              <span class="n">e02300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">e03210</span><span class="p">,</span> <span class="n">e03230</span><span class="p">,</span> <span class="n">e03240</span><span class="p">,</span>
@@ -883,6 +887,8 @@ document.write(`
 <span class="sd">        Dollar amount of all capital gains and qualified dividends that are excluded from AGI</span>
 <span class="sd">    CG_reinvest_ec_rt: float</span>
 <span class="sd">        Fraction of all capital gains and qualified dividends in excess of the dollar exclusion that are excluded from AGI</span>
+<span class="sd">    Capital_loss_limitation: float</span>
+<span class="sd">        Limitation on capital losses that are deductible</span>
 <span class="sd">    ALD_BusinessLosses_c: list</span>
 <span class="sd">        Maximm amount of business losses deductible</span>
 <span class="sd">    MARS: int</span>
@@ -942,7 +948,7 @@ document.write(`
     <span class="c1"># net capital gain (long term + short term) before exclusion</span>
     <span class="n">c23650</span> <span class="o">=</span> <span class="n">p23250</span> <span class="o">+</span> <span class="n">p22250</span>
     <span class="c1"># limitation on capital losses</span>
-    <span class="n">c01000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="o">-</span><span class="mf">3000.</span> <span class="o">/</span> <span class="n">sep</span><span class="p">),</span> <span class="n">c23650</span><span class="p">)</span>
+    <span class="n">c01000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">Capital_loss_limitation</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">sep</span><span class="p">),</span> <span class="n">c23650</span><span class="p">)</span>
     <span class="c1"># compute total investment income</span>
     <span class="n">invinc</span> <span class="o">=</span> <span class="n">e00300</span> <span class="o">+</span> <span class="n">e00600</span> <span class="o">+</span> <span class="n">c01000</span> <span class="o">+</span> <span class="n">e01100</span> <span class="o">+</span> <span class="n">e01200</span>
     <span class="c1"># compute exclusion of investment income from AGI</span>
@@ -3705,7 +3711,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="n">c59660</span>
     <span class="k">if</span> <span class="n">CTC_refundable</span><span class="p">:</span>
-        <span class="n">ctc_refund</span> <span class="o">=</span> <span class="n">c07220</span> 
+        <span class="n">ctc_refund</span> <span class="o">=</span> <span class="n">c07220</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ctc_refund</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">if</span> <span class="n">ODC_refundable</span><span class="p">:</span>
@@ -3713,7 +3719,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="n">odc_refund</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">refund</span> <span class="o">=</span> <span class="p">(</span><span class="n">eitc</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">c10960</span> <span class="o">+</span> <span class="n">CDCC_refund</span> <span class="o">+</span> <span class="n">recovery_rebate_credit</span> <span class="o">+</span>
-              <span class="n">personal_refundable_credit</span> <span class="o">+</span> <span class="n">ctc_new</span> <span class="o">+</span> <span class="n">rptc</span> <span class="o">+</span> <span class="n">ctc_refund</span> <span class="o">+</span> <span class="n">odc_refund</span><span class="p">)</span> 
+              <span class="n">personal_refundable_credit</span> <span class="o">+</span> <span class="n">ctc_new</span> <span class="o">+</span> <span class="n">rptc</span> <span class="o">+</span> <span class="n">ctc_refund</span> <span class="o">+</span> <span class="n">odc_refund</span><span class="p">)</span>
     <span class="n">iitax</span> <span class="o">=</span> <span class="n">c09200</span> <span class="o">-</span> <span class="n">refund</span>
     <span class="n">combined</span> <span class="o">=</span> <span class="n">iitax</span> <span class="o">+</span> <span class="n">payrolltax</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
