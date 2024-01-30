@@ -27,11 +27,9 @@ parts:
 - caption: About
   chapters:
   - file: about/history
-  - file: about/roadmap
   - file: about/releases
-  - file: about/changes
-  - file: about/upgrading
-  - file: about/license
+  - file: about/roadmap
+  - file: about/LICENSE
 - caption: Contributing
   chapters:
   - file: contributing/contributor_guide

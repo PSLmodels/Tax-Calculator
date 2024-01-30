@@ -586,7 +586,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
     quotient = np.divide(
         diff_table['atinc2'].values, diff_table['atinc1'].values,
         out=np.zeros_like(diff_table['atinc2'].values),
-        where=diff_table['atinc1'] != 0)
+        where=diff_table['atinc1'].values != 0)
     diff_table['pc_aftertaxinc'] = np.where(
         diff_table['atinc1'].values == 0., np.nan, 100 * (quotient - 1))
     # delete intermediate Pandas DataFrame objects
