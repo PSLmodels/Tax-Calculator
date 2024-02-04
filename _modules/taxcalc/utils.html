@@ -656,6 +656,7 @@ document.write(`
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bin_edges</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
     <span class="n">dframe</span><span class="p">[</span><span class="s1">&#39;table_row&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">dframe</span><span class="p">[</span><span class="n">income_measure</span><span class="p">],</span>
                                  <span class="n">bin_edges</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">dframe</span></div>
 
 
@@ -934,8 +935,7 @@ document.write(`
             <span class="n">df2</span><span class="p">,</span> <span class="n">baseline_expanded_income</span><span class="p">,</span> <span class="n">SOI_AGI_BINS</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">df2</span>
     <span class="c1"># create grouped Pandas DataFrame</span>
-    <span class="n">gdf</span> <span class="o">=</span> <span class="n">dframe</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;table_row&#39;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">del</span> <span class="n">dframe</span><span class="p">[</span><span class="s1">&#39;table_row&#39;</span><span class="p">]</span>
+    <span class="n">gdf</span> <span class="o">=</span> <span class="n">dframe</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;table_row&#39;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="c1"># create additive difference table statistics from gdf</span>
     <span class="n">diff_table</span> <span class="o">=</span> <span class="n">additive_stats_dataframe</span><span class="p">(</span><span class="n">gdf</span><span class="p">)</span>
     <span class="c1"># calculate additive statistics on sums row</span>
