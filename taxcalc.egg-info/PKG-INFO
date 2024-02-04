@@ -16,6 +16,7 @@ Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Topic :: Software Development :: Libraries :: Python Modules
+License-File: LICENSE.md
 Requires-Dist: setuptools
 Requires-Dist: numpy
 Requires-Dist: pandas
