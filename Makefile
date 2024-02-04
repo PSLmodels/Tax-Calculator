@@ -51,7 +51,7 @@ endef
 .PHONY=pytest-cps
 pytest-cps:
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 -m "not requires_pufcsv and not pre_release"
+	@cd taxcalc ; pytest -n4 --disable-warnings -m "not requires_pufcsv and not pre_release"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
