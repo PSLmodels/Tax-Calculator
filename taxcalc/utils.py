@@ -261,6 +261,7 @@ def add_income_table_row_variable(dframe, income_measure, bin_edges):
     assert isinstance(bin_edges, list)
     dframe['table_row'] = pd.cut(dframe[income_measure],
                                  bin_edges, right=False)
+
     return dframe
 
 
@@ -539,8 +540,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
             df2, baseline_expanded_income, SOI_AGI_BINS)
     del df2
     # create grouped Pandas DataFrame
-    gdf = dframe.groupby('table_row', as_index=False)
-    del dframe['table_row']
+    gdf = dframe.groupby('table_row', as_index=False, observed=False)
     # create additive difference table statistics from gdf
     diff_table = additive_stats_dataframe(gdf)
     # calculate additive statistics on sums row
@@ -586,7 +586,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
     quotient = np.divide(
         diff_table['atinc2'].values, diff_table['atinc1'].values,
         out=np.zeros_like(diff_table['atinc2'].values),
-        where=diff_table['atinc1'] != 0)
+        where=diff_table['atinc1'].values != 0)
     diff_table['pc_aftertaxinc'] = np.where(
         diff_table['atinc1'].values == 0., np.nan, 100 * (quotient - 1))
     # delete intermediate Pandas DataFrame objects

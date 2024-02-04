@@ -7068,6 +7068,53 @@
             "cps": true
         }
     },
+    "Capital_loss_limitation": {
+        "title": "Limitation on the amount of capital losses deductible ",
+        "description": "The amount of capital loss deductions is limited to this dollar amount.",
+        "notes": "Note that some datasets may limit the usefulness of this parameter.  For example the IRS Public Use File (PUF) does not report capital losses in excess of the current law limitation (e.g., $,3000) and therefore setting a higher limit will not affect results.",
+        "section_1": "Capital Gains And Dividends",
+        "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 3000
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 3000
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 3000
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 3000
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 3000
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "CG_rt1": {
         "title": "Long term capital gain and qualified dividends (regular/non-AMT) rate 1",
         "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate.",
