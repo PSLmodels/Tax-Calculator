@@ -972,7 +972,7 @@ document.write(`
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">SSBenefits</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">SS_thd50</span><span class="p">,</span> <span class="n">SS_thd85</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">SSBenefits</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">SS_all_in_agi</span><span class="p">,</span> <span class="n">SS_thd50</span><span class="p">,</span> <span class="n">SS_thd85</span><span class="p">,</span>
                <span class="n">SS_percentage1</span><span class="p">,</span> <span class="n">SS_percentage2</span><span class="p">,</span> <span class="n">c02500</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates OASDI benefits included in AGI, c02500.</span>
@@ -985,6 +985,8 @@ document.write(`
 <span class="sd">        Variable that is used in OASDI benefit taxation logic</span>
 <span class="sd">    e02400: float</span>
 <span class="sd">        Total social security (OASDI) benefits</span>
+<span class="sd">    SS_all_in_agi: bool</span>
+<span class="sd">        Whether all social security benefits are included in AGI</span>
 <span class="sd">    SS_thd50: list</span>
 <span class="sd">        Threshold for social security benefit taxability (1)</span>
 <span class="sd">    SS_thd85: list</span>
@@ -1010,6 +1012,8 @@ document.write(`
                      <span class="n">SS_percentage1</span> <span class="o">*</span>
                      <span class="nb">min</span><span class="p">(</span><span class="n">e02400</span><span class="p">,</span> <span class="n">SS_thd85</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
                          <span class="n">SS_thd50</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">SS_percentage2</span> <span class="o">*</span> <span class="n">e02400</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">SS_all_in_agi</span><span class="p">:</span>
+        <span class="n">c02500</span> <span class="o">=</span> <span class="n">e02400</span>
     <span class="k">return</span> <span class="n">c02500</span>
 
 
@@ -1990,7 +1994,7 @@ document.write(`
              <span class="n">CG_nodiff</span><span class="p">,</span> <span class="n">PT_EligibleRate_active</span><span class="p">,</span> <span class="n">PT_EligibleRate_passive</span><span class="p">,</span>
              <span class="n">PT_wages_active_income</span><span class="p">,</span> <span class="n">PT_top_stacking</span><span class="p">,</span>
              <span class="n">CG_rt1</span><span class="p">,</span> <span class="n">CG_rt2</span><span class="p">,</span> <span class="n">CG_rt3</span><span class="p">,</span> <span class="n">CG_rt4</span><span class="p">,</span> <span class="n">CG_brk1</span><span class="p">,</span> <span class="n">CG_brk2</span><span class="p">,</span> <span class="n">CG_brk3</span><span class="p">,</span>
-             <span class="n">dwks10</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">dwks14</span><span class="p">,</span> <span class="n">dwks19</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">):</span>
+             <span class="n">dwks10</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">dwks14</span><span class="p">,</span> <span class="n">dwks19</span><span class="p">,</span> <span class="n">dwks43</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GainsTax function implements (2015) Schedule D Tax Worksheet logic for</span>
 <span class="sd">    the special taxation of long-term capital gains and qualified dividends</span>
@@ -2120,6 +2124,8 @@ document.write(`
 <span class="sd">        Maximum of 0 and dwks1 - dwks13</span>
 <span class="sd">    dwks19: float</span>
 <span class="sd">        Maximum of dwks17 and dwks16</span>
+<span class="sd">    dwks43: float</span>
+<span class="sd">        separate tax on long-term capital gains and qualified dividends</span>
 <span class="sd">    c05700: float</span>
 <span class="sd">        Lump sum distributions</span>
 <span class="sd">    taxbc: float</span>
@@ -2135,6 +2141,8 @@ document.write(`
 <span class="sd">        Maximum of 0 and dwks1 - dwks13</span>
 <span class="sd">    dwks19: float</span>
 <span class="sd">        Maximum of dwks17 and dwks16</span>
+<span class="sd">    dwks43: float</span>
+<span class="sd">        separate tax on long-term capital gains and qualified dividends</span>
 <span class="sd">    c05700: float</span>
 <span class="sd">        Lump sum distributions</span>
 <span class="sd">    taxbc: float</span>
@@ -2229,12 +2237,13 @@ document.write(`
         <span class="n">dwks13</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">dwks14</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">dwks19</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">dwks43</span> <span class="o">=</span> <span class="mf">0.</span>
 
     <span class="c1"># final calculations done no matter what the value of hasqdivltcg</span>
     <span class="n">c05100</span> <span class="o">=</span> <span class="n">c24580</span>  <span class="c1"># because foreign earned income exclusion is assumed zero</span>
     <span class="n">c05700</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># no Form 4972, Lump Sum Distributions</span>
     <span class="n">taxbc</span> <span class="o">=</span> <span class="n">c05700</span> <span class="o">+</span> <span class="n">c05100</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">dwks10</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">dwks14</span><span class="p">,</span> <span class="n">dwks19</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">dwks10</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">dwks14</span><span class="p">,</span> <span class="n">dwks19</span><span class="p">,</span> <span class="n">dwks43</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">)</span>
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
