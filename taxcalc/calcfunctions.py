@@ -577,7 +577,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
 
 
 @iterate_jit(nopython=True)
-def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
+def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd50, SS_thd85,
                SS_percentage1, SS_percentage2, c02500):
     """
     Calculates OASDI benefits included in AGI, c02500.
@@ -590,6 +590,8 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
         Variable that is used in OASDI benefit taxation logic
     e02400: float
         Total social security (OASDI) benefits
+    SS_all_in_agi: bool
+        Whether all social security benefits are included in AGI
     SS_thd50: list
         Threshold for social security benefit taxability (1)
     SS_thd85: list
@@ -615,6 +617,8 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
                      SS_percentage1 *
                      min(e02400, SS_thd85[MARS - 1] -
                          SS_thd50[MARS - 1]), SS_percentage2 * e02400)
+    if SS_all_in_agi:
+        c02500 = e02400
     return c02500
 
 
@@ -1595,7 +1599,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
              CG_nodiff, PT_EligibleRate_active, PT_EligibleRate_passive,
              PT_wages_active_income, PT_top_stacking,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
-             dwks10, dwks13, dwks14, dwks19, c05700, taxbc):
+             dwks10, dwks13, dwks14, dwks19, dwks43, c05700, taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
@@ -1725,6 +1729,8 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         Maximum of 0 and dwks1 - dwks13
     dwks19: float
         Maximum of dwks17 and dwks16
+    dwks43: float
+        separate tax on long-term capital gains and qualified dividends
     c05700: float
         Lump sum distributions
     taxbc: float
@@ -1740,6 +1746,8 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         Maximum of 0 and dwks1 - dwks13
     dwks19: float
         Maximum of dwks17 and dwks16
+    dwks43: float
+        separate tax on long-term capital gains and qualified dividends
     c05700: float
         Lump sum distributions
     taxbc: float
@@ -1834,12 +1842,13 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         dwks13 = 0.
         dwks14 = 0.
         dwks19 = 0.
+        dwks43 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
     c05100 = c24580  # because foreign earned income exclusion is assumed zero
     c05700 = 0.  # no Form 4972, Lump Sum Distributions
     taxbc = c05700 + c05100
-    return (dwks10, dwks13, dwks14, dwks19, c05700, taxbc)
+    return (dwks10, dwks13, dwks14, dwks19, dwks43, c05700, taxbc)
 
 
 @iterate_jit(nopython=True)
