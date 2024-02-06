@@ -468,9 +468,6 @@ class TaxCalcIO():
             self.write_doc_file()
         # optionally write --sqldb output to SQLite3 database
         if output_sqldb:
-            if not calc_base_calculated:
-                self.calc_base.calc_all()
-                calc_base_calculated = True
             self.write_sqldb_file(
                 dump_varset, mtr_paytax, mtr_inctax,
                 mtr_paytax_base, mtr_inctax_base
