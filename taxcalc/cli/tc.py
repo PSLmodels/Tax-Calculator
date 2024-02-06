@@ -109,7 +109,8 @@ def cli_tc_main():
                         default=None)
     parser.add_argument('--sqldb',
                         help=('optional flag that writes SQLite database '
-                              'with dump table containing same output as '
+                              'with two tables (baseline and reform) each '
+                              'containing same output variables as '
                               'produced by --dump option.'),
                         default=False,
                         action="store_true")
