@@ -523,8 +523,9 @@ and marginal tax rates by income percentile</p></li>
 None implies include all variables in dump and sqldb output</p></li>
 <li><p><strong>output_dump</strong> (<em>boolean</em>) – whether or not to replace standard output with all input and
 calculated variables using their Tax-Calculator names</p></li>
-<li><p><strong>output_sqldb</strong> (<em>boolean</em>) – whether or not to write SQLite3 database with dump table
-containing same output as written by output_dump to a csv file</p></li>
+<li><p><strong>output_sqldb</strong> (<em>boolean</em>) – whether or not to write SQLite3 database with two tables
+(baseline and reform) each containing same output as written
+by output_dump to a csv file</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -543,7 +544,7 @@ Also, builds self.errmsg if any custom variables are not valid.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.dump_output">
-<span class="sig-name descname"><span class="pre">dump_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dump_varset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_inctax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_paytax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.dump_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.dump_output" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">dump_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calcx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_varset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_inctax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_paytax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.dump_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.dump_output" title="Permalink to this definition">#</a></dt>
 <dd><p>Extract dump output and return it as Pandas DataFrame.</p>
 </dd></dl>
 
@@ -598,7 +599,7 @@ All graphs contain same number of filing units in each quantile.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file">
-<span class="sig-name descname"><span class="pre">write_sqldb_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dump_varset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_paytax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_inctax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_sqldb_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">write_sqldb_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dump_varset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_paytax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_inctax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_paytax_base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_inctax_base</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_sqldb_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file" title="Permalink to this definition">#</a></dt>
 <dd><p>Write dump output to SQLite3 database table dump.</p>
 </dd></dl>
 

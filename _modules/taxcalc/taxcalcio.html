@@ -822,8 +822,9 @@ document.write(`
 <span class="sd">           calculated variables using their Tax-Calculator names</span>
 
 <span class="sd">        output_sqldb: boolean</span>
-<span class="sd">           whether or not to write SQLite3 database with dump table</span>
-<span class="sd">           containing same output as written by output_dump to a csv file</span>
+<span class="sd">           whether or not to write SQLite3 database with two tables</span>
+<span class="sd">           (baseline and reform) each containing same output as written</span>
+<span class="sd">           by output_dump to a csv file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -844,10 +845,17 @@ document.write(`
             <span class="p">(</span><span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span>
              <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                 <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+            <span class="n">calc_base_calculated</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="p">(</span><span class="n">mtr_paytax_base</span><span class="p">,</span> <span class="n">mtr_inctax_base</span><span class="p">,</span>
+             <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                     <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># definitely do not need marginal tax rates</span>
             <span class="n">mtr_paytax</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">mtr_inctax</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">mtr_paytax_base</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">mtr_inctax_base</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># extract output if writing_output_file</span>
         <span class="k">if</span> <span class="n">writing_output_file</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_output_file</span><span class="p">(</span><span class="n">output_dump</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span>
@@ -855,7 +863,10 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">write_doc_file</span><span class="p">()</span>
         <span class="c1"># optionally write --sqldb output to SQLite3 database</span>
         <span class="k">if</span> <span class="n">output_sqldb</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_sqldb_file</span><span class="p">(</span><span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_sqldb_file</span><span class="p">(</span>
+                <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span>
+                <span class="n">mtr_paytax_base</span><span class="p">,</span> <span class="n">mtr_inctax_base</span>
+            <span class="p">)</span>
         <span class="c1"># optionally write --tables output to text file</span>
         <span class="k">if</span> <span class="n">output_tables</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">calc_base_calculated</span><span class="p">:</span>
@@ -875,7 +886,9 @@ document.write(`
 <span class="sd">        Write output to CSV-formatted file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">output_dump</span><span class="p">:</span>
-            <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_output</span><span class="p">(</span><span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">)</span>
+            <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_output</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span>
+            <span class="p">)</span>
             <span class="n">column_order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimal_output</span><span class="p">()</span>
@@ -899,15 +912,25 @@ document.write(`
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">doc_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dfile</span><span class="p">:</span>
             <span class="n">dfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TaxCalcIO.write_sqldb_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_sqldb_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">):</span>
+<div class="viewcode-block" id="TaxCalcIO.write_sqldb_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_sqldb_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span>
+                         <span class="n">mtr_paytax_base</span><span class="p">,</span> <span class="n">mtr_inctax_base</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write dump output to SQLite3 database table dump.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_output</span><span class="p">(</span><span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">array_len</span>
         <span class="n">db_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;.db&#39;</span><span class="p">)</span>
         <span class="n">dbcon</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_fname</span><span class="p">)</span>
-        <span class="n">outdf</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;dump&#39;</span><span class="p">,</span> <span class="n">dbcon</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># write baseline table</span>
+        <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_output</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax_base</span><span class="p">,</span> <span class="n">mtr_paytax_base</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">array_len</span>
+        <span class="n">outdf</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;baseline&#39;</span><span class="p">,</span> <span class="n">dbcon</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># write reform table</span>
+        <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_output</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">array_len</span>
+        <span class="n">outdf</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;reform&#39;</span><span class="p">,</span> <span class="n">dbcon</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">dbcon</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">del</span> <span class="n">outdf</span>
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
@@ -1082,7 +1105,7 @@ document.write(`
         <span class="n">odf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">odict</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">varlist</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">odf</span></div>
 
-<div class="viewcode-block" id="TaxCalcIO.dump_output"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.dump_output">[docs]</a>    <span class="k">def</span> <span class="nf">dump_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">):</span>
+<div class="viewcode-block" id="TaxCalcIO.dump_output"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.dump_output">[docs]</a>    <span class="k">def</span> <span class="nf">dump_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calcx</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract dump output and return it as Pandas DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1094,7 +1117,7 @@ document.write(`
         <span class="c1"># create and return dump output DataFrame</span>
         <span class="n">odf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">varname</span> <span class="ow">in</span> <span class="n">varset</span><span class="p">:</span>
-            <span class="n">vardata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">varname</span><span class="p">)</span>
+            <span class="n">vardata</span> <span class="o">=</span> <span class="n">calcx</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">varname</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">varname</span> <span class="ow">in</span> <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">INTEGER_VARS</span><span class="p">:</span>
                 <span class="n">odf</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span> <span class="o">=</span> <span class="n">vardata</span>
             <span class="k">else</span><span class="p">:</span>
