@@ -458,6 +458,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-5-0">2024-02-10 Release 3.5.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-4-1">2023-06-20 Release 3.4.1</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-4-0">2023-05-05 Release 3.4.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-3-0">2022-12-16 Release 3.3.0</a></li>
@@ -559,6 +560,25 @@ document.write(`
 <h1>Release history<a class="headerlink" href="#release-history" title="Permalink to this heading">#</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<section id="release-3-5-0">
+<h2>2024-02-10 Release 3.5.0<a class="headerlink" href="#release-3-5-0" title="Permalink to this heading">#</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2715">#2715</a>)</p>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Add baseline table output to <code class="docutils literal notranslate"><span class="pre">cli</span></code> command [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2714">#2714</a> by Martin Holmer]</p></li>
+<li><p>Additional TAXSIM-35 validation tools, serveral PRS by Bodi Yang and Jason DeBacker</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul class="simple">
+<li><p>Avoid Pandas deprecation warnings[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2785">#2715</a> by Martin Holmer]</p></li>
+<li><p>Correctly account for the <code class="docutils literal notranslate"><span class="pre">odc</span></code> variable as refundable in 2021 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2704">#2703</a> by Bodi Yang]</p></li>
+<li><p>Fix incorrect value for <code class="docutils literal notranslate"><span class="pre">EITC_ps_MarriedJ</span></code> in 2020 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2699">#2699</a> by Bodi Yang]</p></li>
+<li><p>Fix incorrect value for ACTC amount for 2023-2025 to reflect inflation adjustment [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2691">#2691</a> by Jason DeBacker]</p></li>
+</ul>
+</section>
 <section id="release-3-4-1">
 <h2>2023-06-20 Release 3.4.1<a class="headerlink" href="#release-3-4-1" title="Permalink to this heading">#</a></h2>
 <p>(last merged pull request is
@@ -3017,6 +3037,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-5-0">2024-02-10 Release 3.5.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-4-1">2023-06-20 Release 3.4.1</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-4-0">2023-05-05 Release 3.4.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-3-0">2022-12-16 Release 3.3.0</a></li>
