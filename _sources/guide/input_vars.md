@@ -92,7 +92,7 @@ _IRS Form Location:_
 ##  `blind_head`  
 _Description_: 1 if taxpayer is blind; otherwise 0  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps  
+_Availability_: taxdata_cps  
 _IRS Form Location:_  
 2013-2016: 1040 line 39a  
 
@@ -100,7 +100,7 @@ _IRS Form Location:_
 ##  `blind_spouse`  
 _Description_: 1 if spouse is blind; otherwise 0  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps  
+_Availability_: taxdata_cps  
 _IRS Form Location:_  
 2013-2016: 1040 line 39a  
 
@@ -629,7 +629,7 @@ _IRS Form Location:_
 ##  `a_lineno`  
 _Description_: CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps  
+_Availability_: taxdata_cps  
 _IRS Form Location:_  
 2013-2016: sample construction info  
 
@@ -637,7 +637,7 @@ _IRS Form Location:_
 ##  `ffpos`  
 _Description_: CPS family identifier within household (not used in tax-calculation logic)  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps  
+_Availability_: taxdata_cps  
 _IRS Form Location:_  
 2013-2016: sample construction info  
 
@@ -645,7 +645,7 @@ _IRS Form Location:_
 ##  `fips`  
 _Description_: FIPS state code (not used in tax-calculation logic)  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_puf, taxdata_cps  
+_Availability_: taxdata_puf, taxdata_cps  
 _IRS Form Location:_  
 2013-2016: sample construction info  
 
@@ -653,7 +653,7 @@ _IRS Form Location:_
 ##  `h_seq`  
 _Description_: CPS household sequence number (not used in tax-calculation logic)  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps  
+_Availability_: taxdata_cps  
 _IRS Form Location:_  
 2013-2016: sample construction info  
 
