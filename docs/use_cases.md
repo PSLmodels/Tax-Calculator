@@ -1,6 +1,11 @@
 Recorded use cases
 ==================
 
+\[80\] Alex Brill. The Next Tax Fight: SALT. American Enterprise Institute.
+February 13, 2024. URL:
+<https://www.aei.org/economics/the-next-tax-fight-salt/>
+(visited on 2024-02-13).
+
 \[79\] Alex Brill, Kyle Pomerleau, and Grant M. Seiter. Flawed Approach: The Working Families Tax Cut Act as a Response to Inflation. American Enterprise Institute.
 June 8, 2023. URL:
 <https://www.aei.org/economics/flawed-approach-the-working-families-tax-cut-act-as-a-response-to-inflation/>
