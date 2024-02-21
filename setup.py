@@ -24,10 +24,6 @@ config = {
         "numba",
         "requests",
         "paramtools",
-        "behresp",
-        "aiohttp",
-        "curl",
-        "openpyxl",
     ],
     "classifiers": [
         "Development Status :: 4 - Beta",
