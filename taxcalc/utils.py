@@ -361,7 +361,7 @@ def create_distribution_table(vdf, groupby, income_measure,
         dframe = add_income_table_row_variable(vdf, income_measure,
                                                SOI_AGI_BINS)
     # construct grouped DataFrame
-    gdf = dframe.groupby('table_row', as_index=False)
+    gdf = dframe.groupby('table_row', observed=False, as_index=False)
     dist_table = stat_dataframe(gdf)
     del dframe['table_row']
     # compute sum row
@@ -901,7 +901,7 @@ def mtr_graph_data(vdf, year,
         weight_by_income_measure=dollar_weighting
     )
     # split dfx into groups specified by 'table_row' column
-    gdfx = dfx.groupby('table_row', as_index=False)
+    gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
     mtr1_series = gdfx.apply(weighting_function, 'mtr1').values[:, 1]
     mtr2_series = gdfx.apply(weighting_function, 'mtr2').values[:, 1]
@@ -1018,7 +1018,7 @@ def atr_graph_data(vdf, year,
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
     # split dfx into groups specified by 'table_row' column
-    gdfx = dfx.groupby('table_row', as_index=False)
+    gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply weighted_mean function to percentile-grouped values
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income').values[:, 1]
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1').values[:, 1]
@@ -1192,7 +1192,7 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
     # split dfx into groups specified by 'table_row' column
-    gdfx = dfx.groupby('table_row', as_index=False)
+    gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply weighted_mean function to percentile-grouped values
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income').values[:, 1]
     change_series = gdfx.apply(weighted_mean, 'chg_aftinc').values[:, 1]
