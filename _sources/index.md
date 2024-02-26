@@ -9,7 +9,13 @@ You can install it with [Anaconda](https://www.anaconda.com/products/individual)
 via:
 
 ```
-conda install -c conda-forge taxcalc
+conda update taxcalc
+```
+
+or with [PyPI](https://pypi.org/project/taxcalc/) via:
+
+```
+pip install taxcalc
 ```
 
 When using
@@ -56,7 +62,13 @@ The cross-model validation work with NBER's TAXSIM-27 model is described
 If you are already using Tax-Calculator, upgrade using the following command:
 
 ```
-conda update -c conda-forge taxcalc
+conda update conda-forge::taxcalc
+```
+
+or
+
+```
+pip install -U taxcalc
 ```
 
 If you're a new user, read {doc}`usage/starting`.
