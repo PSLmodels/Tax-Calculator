@@ -61,7 +61,7 @@ class Parameters(pt.Parameters):
                 print(name, value)
 
             # parameter_indexing_CPI_offset [0.]
-            # FICA_ss_trt [0.124]
+            # FICA_ss_trt_employer [0.062]
             # SS_Earnings_c [113700.]
 
     Check out the ParamTools
@@ -122,11 +122,6 @@ class Parameters(pt.Parameters):
                 "year": start_year or self.JSON_START_YEAR
             }
         super().__init__(**kwargs)
-        self._init_values = {
-            param: copy.deepcopy(data["value"])
-            for param, data in self.read_params(self.defaults).items()
-            if param != "schema"
-        }
 
     def adjust(
         self, params_or_path, print_warnings=True, raise_errors=True, **kwargs
@@ -301,7 +296,6 @@ class Parameters(pt.Parameters):
                 ] += cpi_vo["value"]
             # 1. Delete all unknown values.
             # 1.a For revision, these are years specified after cpi_min_year.
-            init_vals = {}
             to_delete = {}
             for param in params:
                 if (
@@ -312,16 +306,11 @@ class Parameters(pt.Parameters):
                 if param.endswith("-indexed"):
                     param = param.split("-indexed")[0]
                 if self._data[param].get("indexed", False):
-                    init_vals[param] = (
-                        self.sel[self._init_values[param]]["year"]
-                        <= cpi_min_year["year"]
-                    )
                     to_delete[param] = (
                         self.sel[param]["year"] > cpi_min_year["year"]
                     )
                     needs_reset.append(param)
             self.delete(to_delete, **kwargs)
-            super().adjust(init_vals, **kwargs)
 
             # 1.b For all others, these are years after last_known_year.
             last_known_year = max(cpi_min_year["year"], self._last_known_year)
@@ -367,7 +356,6 @@ class Parameters(pt.Parameters):
                     needs_reset.append(param)
             super().adjust(long_param_vals, **kwargs)
 
-            init_vals = {}
             to_delete = {}
             for param in self._data:
                 if (
@@ -377,15 +365,10 @@ class Parameters(pt.Parameters):
                 ):
                     continue
                 if self._data[param].get("indexed", False):
-                    init_vals[param] = (
-                        self.sel[self._init_values[param]]['year']
-                        <= last_known_year
-                    )
                     to_delete[param] = self.sel[param]["_auto"] == True  # noqa
                     needs_reset.append(param)
 
             self.delete(to_delete, **kwargs)
-            super().adjust(init_vals, **kwargs)
 
             self.extend(label="year")
 

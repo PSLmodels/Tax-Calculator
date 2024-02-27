@@ -100,8 +100,10 @@ def BenefitPrograms(calc):
 
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
-                  FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
-                  SS_Earnings_thd, e00900p, e00900s, e02100p, e02100s, k1bx14p,
+                  FICA_ss_trt_employer, FICA_ss_trt_employee, 
+                  FICA_mc_trt_employer, FICA_mc_trt_employee, 
+                  ALD_SelfEmploymentTax_hc, SS_Earnings_thd, SECA_Earnings_thd,
+                  e00900p, e00900s, e02100p, e02100s, k1bx14p,
                   k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s,
                   was_plus_sey_p, was_plus_sey_s):
@@ -122,10 +124,14 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Contributions to defined-contribution pension plans for taxpayer
     pencon_s: float
         Contributions to defined-contribution pension plans for spouse
-    FICA_ss_trt: float
-        Social security payroll tax rate, including both employer and employee
-    FICA_mc_trt: float
-        Medicare payroll tax rate, including both employer and employee
+    FICA_ss_trt_employer: float
+        Employer side social security payroll tax rate
+    FICA_ss_trt_employee: float
+        Employee side social security payroll tax rate    
+    FICA_mc_trt_employer: float
+        Employer side medicare payroll tax rate
+    FICA_mc_trt_employee: float
+        Employee side medicare payroll tax rate
     ALD_SelfEmploymentTax_hc: float
         Adjustment for self-employment tax haircut
         If greater than zero, reduces the employer equivalent portion of self-employment adjustment
@@ -134,6 +140,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Additional taxable earnings threshold for Social Security
         Individual earnings above this threshold are subjected to OASDI payroll tax, in addtion to
         earnings below the maximum taxable earnings threshold.
+    SECA_Earnings_thd: float
+        Threshold value for self-employment income below which there is
+        no SECA tax liability
     e00900p: float
         Schedule C business net profit/loss for taxpayer
     e00900s: float
@@ -214,36 +223,41 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     txearn_was_s = min(SS_Earnings_c, gross_was_s)
 
     # compute OASDI and HI payroll taxes on wage-and-salary income, FICA
-    ptax_ss_was_p = FICA_ss_trt * txearn_was_p
-    ptax_ss_was_s = FICA_ss_trt * txearn_was_s
-    ptax_mc_was_p = FICA_mc_trt * gross_was_p
-    ptax_mc_was_s = FICA_mc_trt * gross_was_s
+    ptax_ss_was_p = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_was_p
+    ptax_ss_was_s = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_was_s
+    ptax_mc_was_p = (FICA_mc_trt_employer + FICA_mc_trt_employee) * gross_was_p
+    ptax_mc_was_s = (FICA_mc_trt_employer + FICA_mc_trt_employee) * gross_was_s
     ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
 
     # compute taxable self-employment income for OASDI SECA
-    sey_frac = 1.0 - 0.5 * (FICA_ss_trt + FICA_mc_trt)
+    sey_frac = 1.0 - 0.5 * (FICA_ss_trt_employer + FICA_ss_trt_employee + FICA_mc_trt_employer + FICA_mc_trt_employee)
     txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
     txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
     # compute self-employment tax on taxable self-employment income, SECA
-    setax_ss_p = FICA_ss_trt * txearn_sey_p
-    setax_ss_s = FICA_ss_trt * txearn_sey_s
-    setax_mc_p = FICA_mc_trt * max(0., sey_p * sey_frac)
-    setax_mc_s = FICA_mc_trt * max(0., sey_s * sey_frac)
+    setax_ss_p = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_sey_p
+    setax_ss_s = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_sey_s
+    setax_mc_p = (FICA_mc_trt_employer + FICA_mc_trt_employee) * max(0., sey_p * sey_frac)
+    setax_mc_s = (FICA_mc_trt_employer + FICA_mc_trt_employee) * max(0., sey_s * sey_frac)
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
+    # # no tax if low amount of self-employment income
+    if sey * sey_frac > SECA_Earnings_thd:
+        setax = setax_p + setax_s
+    else:
+        setax = 0.0
 
     # compute extra OASDI payroll taxes on the portion of the sum
     # of wage-and-salary income and taxable self employment income
     # that exceeds SS_Earnings_thd
-    sey_frac = 1.0 - 0.5 * FICA_ss_trt
+    sey_frac = 1.0 - 0.5 * (FICA_ss_trt_employer + FICA_ss_trt_employee) 
     was_plus_sey_p = gross_was_p + max(0., sey_p * sey_frac)
     was_plus_sey_s = gross_was_s + max(0., sey_s * sey_frac)
     extra_ss_income_p = max(0., was_plus_sey_p - SS_Earnings_thd)
     extra_ss_income_s = max(0., was_plus_sey_s - SS_Earnings_thd)
-    extra_payrolltax = (extra_ss_income_p * FICA_ss_trt +
-                        extra_ss_income_s * FICA_ss_trt)
+    extra_payrolltax = (extra_ss_income_p * (FICA_ss_trt_employer + FICA_ss_trt_employee)  +
+                        extra_ss_income_s * (FICA_ss_trt_employer + FICA_ss_trt_employee))
 
     # compute part of total payroll taxes for filing unit
     # (the ptax_amc part of total payroll taxes for the filing unit is
@@ -650,7 +664,7 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 @iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         II_em, II_em_ps, II_prt, II_no_em_nu18,
-        c00100, pre_c04600, c04600):
+        e02300, UI_thd, UI_em, c00100, pre_c04600, c04600):
     """
     Computes Adjusted Gross Income (AGI), c00100, and
     compute personal exemption amount, c04600.
@@ -685,12 +699,19 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         Personal exemption phaseout rate
     II_no_em_nu18: float
         Repeal personal exemptions for dependents under age 18
+    e02300: float
+        Unemployment compensation
+    UI_thd: list
+        AGI threshold for unemployment compensation exclusion
+    UI_em: float
+        Amount of unemployment compensation excluded from AGI
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
         Personal exemption before phase-out
     c04600: float
         Personal exemptions after phase-out
+
     Returns
     -------
     c00100: float
@@ -702,6 +723,12 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
+    # calculate UI exclusion (e.g., from 2020 AGI due to ARPA)
+    if (c00100 - e02300) <= UI_thd[MARS - 1]:
+        ui_excluded = min(e02300, UI_em)
+    else:
+        ui_excluded = 0.
+    c00100 -= ui_excluded
     # calculate personal exemption amount
     if II_no_em_nu18:  # repeal of personal exemptions for deps. under 18
         pre_c04600 = max(0, XTOT - nu18) * II_em
@@ -1048,7 +1075,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
 @iterate_jit(nopython=True)
 def AdditionalMedicareTax(e00200, MARS,
                           AMEDT_ec, sey, AMEDT_rt,
-                          FICA_mc_trt, FICA_ss_trt,
+                          FICA_mc_trt_employer, FICA_mc_trt_employee,
+                          FICA_ss_trt_employer, FICA_ss_trt_employee,
                           ptax_amc, payrolltax):
     """
     Computes Additional Medicare Tax (Form 8959) included in payroll taxes.
@@ -1061,10 +1089,14 @@ def AdditionalMedicareTax(e00200, MARS,
         Additional Medicare Tax earnings exclusion
     AMEDT_rt: float
         Additional Medicare Tax rate
-    FICA_ss_trt: float
-        FICA Social Security tax rate
-    FICA_mc_trt: float
-        FICA Medicare tax rate
+    FICA_ss_trt_employer: float
+        Employer side FICA Social Security tax rate
+    FICA_ss_trt_employee: float
+        Employee side FICA Social Security tax rate
+    FICA_mc_trt_employer: float
+        Employer side FICA Medicare tax rate
+    FICA_mc_trt_employee: float
+        Employee side FICA Medicare tax rate        
     e00200: float
         Wages and salaries
     sey: float
@@ -1081,7 +1113,7 @@ def AdditionalMedicareTax(e00200, MARS,
     payrolltax: float
         payroll tax augmented by Additional Medicare Tax
     """
-    line8 = max(0., sey) * (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt))
+    line8 = max(0., sey) * (1. - 0.5 * (FICA_mc_trt_employer + FICA_mc_trt_employee + FICA_ss_trt_employer + FICA_ss_trt_employee))
     line11 = max(0., AMEDT_ec[MARS - 1] - e00200)
     ptax_amc = AMEDT_rt * (max(0., e00200 - AMEDT_ec[MARS - 1]) +
                            max(0., line8 - line11))
@@ -1164,12 +1196,11 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
-           e02100, e27200, e00650, c01000, e02300, PT_SSTB_income,
+           e02100, e27200, e00650, c01000, PT_SSTB_income,
            PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
            PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
-           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch,
-           UI_em, UI_thd):
+           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
@@ -1235,14 +1266,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     qbided: float
         Qualified Business Income (QBI) deduction
     """
-    # calculate UI excluded from taxable income
-    if (c00100 - e02300) <= UI_thd[MARS - 1]:
-        ui_excluded = min(e02300, UI_em)
-    else:
-        ui_excluded = 0.
     # calculate taxable income before qualified business income deduction
-    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600 -
-                          ui_excluded)
+    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
     # calculate qualified business income deduction
     qbided = 0.
     qbinc = max(0., e00900 + e26270 + e02100 + e27200)
@@ -2190,19 +2215,19 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 
     Parameters
     ----------
-    basic_frac: list
+    basic_frac: float
         Fraction of maximum earned income credit paid at zero earnings
-    phasein_rate: list
+    phasein_rate: float
         Earned income credit phasein rate
     earnings: float
         Earned income for filing unit
-    max_amount: list
+    max_amount: float
         Maximum earned income credit
-    phaseout_start: list
+    phaseout_start: float
         Earned income credit phaseout start AGI
     agi: float
         Adjusted Gross Income (AGI)
-    phaseout_rate: list
+    phaseout_rate: float
         Earned income credit phaseout rate
 
     Returns
@@ -2210,6 +2235,7 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
     eitc: float
         Earned Income Credit
     """
+    # calculate qualified business income de
     eitc = min((basic_frac * max_amount +
                 (1.0 - basic_frac) * phasein_rate * earnings), max_amount)
     if earnings > phaseout_start or agi > phaseout_start:
@@ -2225,8 +2251,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
-         EITC_indiv, EITC_sep_filers_elig,
-         c59660):
+         EITC_indiv, EITC_sep_filers_elig, c59660):
     """
     Computes EITC amount, c59660.
 
@@ -2392,8 +2417,8 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
 
 
 @iterate_jit(nopython=True)
-def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
-                      e07260, CR_ResidentialEnergy_hc,
+def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
+					  c05800, e07260, CR_ResidentialEnergy_hc,
                       e07300, CR_ForeignTax_hc,
                       c07180,
                       c07230,
@@ -2401,7 +2426,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
                       c07200,
                       CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
                       CTC_c_under6_bonus, nu06,
-                      CTC_refundable, CTC_include17, n21, n1820,
+                      CTC_refundable, CTC_include17,
                       c07220, odc, codtc_limited):
     """
     Computes amounts on "Child Tax Credit and Credit for Other Dependents
@@ -2472,7 +2497,9 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     """
     # Worksheet Part 1
     if CTC_include17:
-        childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+        tu18 = int(age_head < 18)   # taxpayer is under age 18
+        su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
+        childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
     else:
         childnum = n24
     line1 = CTC_c * childnum + CTC_c_under6_bonus * nu06
@@ -2500,7 +2527,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
         line15 = max(0., line13 - line14)
         if CTC_refundable:
             c07220 = line10 * line1 / line3
-            odc = min(max(0., line10 - c07220), line15)
+            odc = max(0., line10 - c07220)
             codtc_limited = max(0., line10 - c07220 - odc)
         else:
             line16 = min(line10, line15)  # credit is capped by tax liability
@@ -2598,8 +2625,9 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
                (RRC_pe[MARS - 1] - RRC_ps[MARS - 1]))
         recovery_rebate_credit = RRC_c * XTOT * (1 - prt)
     else:
-        recovery_rebate_credit = max(0, RRC_c_unit[MARS-1] + RRC_c_kids *
-                                  nu18 - RRC_prt * (c00100 - RRC_ps[MARS -1]))
+        recovery_rebate_credit = max(
+            0, RRC_c_unit[MARS-1] + RRC_c_kids * nu18 - RRC_prt *
+            (c00100 - RRC_ps[MARS -1]))
     return (personal_refundable_credit, personal_nonrefundable_credit,
             recovery_rebate_credit)
 
@@ -2979,9 +3007,9 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     if not CTC_refundable:
         c07220 = min(c07220, avail)
         avail = avail - c07220
-    # Other dependent credit
-    odc = min(odc, avail)
-    avail = avail - odc
+        # Other dependent credit
+        odc = min(odc, avail)
+        avail = avail - odc
     # Residential energy credit - Form 5695
     c07260 = min(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
     avail = avail - c07260
@@ -3010,7 +3038,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 @iterate_jit(nopython=True)
 def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
                   ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
-                  CTC_refundable, CTC_include17, XTOT, n21, n1820, num,
+                  CTC_refundable, CTC_include17, age_head, age_spouse, MARS, nu18,
                   ptax_was, c03260, e09800, c59660, e11200,
                   c11070):
     """
@@ -3062,7 +3090,9 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
         line4 = 0.
     else:
         if CTC_include17:
-            childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+            tu18 = int(age_head < 18)   # taxpayer is under age 18
+            su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
+            childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
         else:
             childnum = n24
         line4 = ACTC_c * childnum
@@ -3174,7 +3204,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
             CTC_new_refund_limited_all_payroll, payrolltax,
-            n24, nu06, XTOT, n21, n1820, num, c00100, MARS, ptax_oasdi,
+            n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
             c09200, ctc_new):
     """
     Computes new refundable child tax credit using specified parameters.
@@ -3223,7 +3253,9 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         New refundable child tax credit
     """
     if CTC_include17:
-        childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+            tu18 = int(age_head < 18)   # taxpayer is under age 18
+            su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
+            childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
     else:
         childnum = n24
     if childnum > 0:

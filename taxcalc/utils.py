@@ -380,7 +380,7 @@ def create_distribution_table(vdf, groupby, income_measure,
         dist_table.iloc[11] = topdec_row
         del topdec_row
     else:
-        dist_table = dist_table.append(sum_row)
+        dist_table.loc["ALL"] = sum_row
     del sum_row
     # ensure dist_table columns are in correct order
     assert dist_table.columns.values.tolist() == DIST_TABLE_COLUMNS
@@ -560,7 +560,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
         diff_table.iloc[11] = topdec_row
         del topdec_row
     else:
-        diff_table = diff_table.append(sum_row)
+        diff_table.loc["ALL"] = sum_row
     # delete intermediate Pandas DataFrame objects
     del gdf
     del dframe
@@ -584,7 +584,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
         out=np.zeros_like(diff_table['tot_change'].values),
         where=total_change > 0)
     quotient = np.divide(
-        diff_table['atinc2'].values, diff_table['atinc1'],
+        diff_table['atinc2'].values, diff_table['atinc1'].values,
         out=np.zeros_like(diff_table['atinc2'].values),
         where=diff_table['atinc1'] != 0)
     diff_table['pc_aftertaxinc'] = np.where(
@@ -1125,7 +1125,7 @@ def xtr_graph_plot(data,
     # pylint: disable=too-many-arguments
     if title == '':
         title = data['title']
-    fig = bp.figure(plot_width=width, plot_height=height, title=title)
+    fig = bp.figure(width=width, height=height, title=title)
     fig.title.text_font_size = '12pt'
     lines = data['lines']
     fig.line(lines.index, lines.base,
@@ -1259,7 +1259,7 @@ def pch_graph_plot(data,
     # pylint: disable=too-many-arguments
     if title == '':
         title = data['title']
-    fig = bp.figure(plot_width=width, plot_height=height, title=title)
+    fig = bp.figure(width=width, height=height, title=title)
     fig.title.text_font_size = '12pt'
     fig.line(data['line'].index, data['line'].pch,
              line_color='blue', line_width=3)

@@ -1,0 +1,15 @@
+// Title: Consolidated Appropriations ACt, 2021
+// Reform_File_Author: Jason DeBacker
+// Reform_Reference: https://www.congress.gov/116/plaws/publ260/PLAW-116publ260.pdf
+// Reform_Baseline: policy_current_law.json
+// Reform_Description:
+// - Increases recovery rebate credit amount from the CARES Act by $600 for each eligible person (1)
+// Reform_Parameter_Map:
+// - 1: RRC_*
+{
+    "RRC_c_unit": {"2020": [1800, 3600, 1800, 1800, 1800],
+                 "2021": [0, 0, 0, 0, 0]},
+    "RRC_c_kids": {"2020": 1100, "2021":0}
+}
+
+
