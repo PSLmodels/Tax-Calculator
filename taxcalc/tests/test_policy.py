@@ -72,14 +72,22 @@ def test_json_reform_url():
     reform_str = """
     {
         // raise FICA payroll tax rate in 2018 and 2020
-        "FICA_ss_trt": {
-            "2018": 0.130,
-            "2020": 0.140
+        "FICA_ss_trt_employer": {
+            "2018": 0.065,
+            "2020": 0.070
+        },
+        "FICA_ss_trt_employee": {
+            "2018": 0.065,
+            "2020": 0.070
         },
         // raise Medicare payroll tax rate in 2019 and 2021
-        "FICA_mc_trt": {
-            "2019": 0.030,
-            "2021": 0.032
+        "FICA_mc_trt_employer": {
+            "2019": 0.015,
+            "2021": 0.016
+        },
+        "FICA_mc_trt_employee": {
+            "2019": 0.015,
+            "2021": 0.016
         }
     }
     """
