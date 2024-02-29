@@ -79,6 +79,7 @@ def write_taxsim_formatted_output(filename, tcvar):
     tcvar["non_refundable_child_odep_credit"] = (
         tcvar["c07220"] + tcvar["odc"] + tcvar["ctc_new"]
     )  # non-refundable child+odep credit
+    tcvar["refundable_CDCC"] = tcvar["CDCC_refund"] # refundable CDCC
     tcvar["amt_liability"] = tcvar["c09600"]  # federal AMT liability
     # var28 from TAXSIM-35 is federal income tax before credits; the Tax-Calculator
     # tcvar['c05800'] is this concept but includes AMT liability
@@ -111,6 +112,7 @@ def write_taxsim_formatted_output(filename, tcvar):
             "non_refundable_child_odep_credit",
             "c11070",
             "c07180",
+            "refundable_CDCC",
             "eitc",
             "c62100",
             "amt_liability",
@@ -118,7 +120,8 @@ def write_taxsim_formatted_output(filename, tcvar):
             "recovery_rebate_credit"
         ]
     ]
-    # better mapping of to how TAXSIM-35 handles refundalbe credits in 2021
+    # better mapping of to how TAXSIM-35 handles refundable credits in 2021
     tcvar.loc[tcvar["FLPDYR"] == 2021, "c11070"] = tcvar.loc[tcvar["FLPDYR"] == 2021, "non_refundable_child_odep_credit"]
+    tcvar.loc[tcvar["FLPDYR"] == 2021, "c07180"] = tcvar.loc[tcvar["FLPDYR"] == 2021, "refundable_CDCC"]
     tcvar.round(decimals=2)
     tcvar.to_csv(filename)

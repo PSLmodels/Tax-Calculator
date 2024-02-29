@@ -356,6 +356,32 @@
             "cps": true
         }
     },
+    "SS_all_in_agi": {
+        "title": "Include all social security benefits in AGI",
+        "description": "All social security benefits will be included in AGI.",
+        "notes": "",
+        "section_1": "Social Security Taxability",
+        "section_2": "Social Security Benefit Taxability",
+        "indexable": false,
+        "indexed": false,
+        "type": "bool",
+        "value": [
+            {
+                "year": 2013,
+                "value": false
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": false,
+                "max": true
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "SS_thd50": {
         "title": "Threshold for Social Security benefit taxability 1",
         "description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to rate 1 of their Social Security benefit will be subject to tax under current law.",
@@ -7035,6 +7061,53 @@
             "range": {
                 "min": false,
                 "max": true
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "Capital_loss_limitation": {
+        "title": "Limitation on the amount of capital losses deductible ",
+        "description": "The amount of capital loss deductions is limited to this dollar amount.",
+        "notes": "Note that some datasets may limit the usefulness of this parameter.  For example the IRS Public Use File (PUF) does not report capital losses in excess of the current law limitation (e.g., $,3000) and therefore setting a higher limit will not affect results.",
+        "section_1": "Capital Gains And Dividends",
+        "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 3000
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 3000
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 3000
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 3000
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 3000
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
             }
         },
         "compatible_data": {

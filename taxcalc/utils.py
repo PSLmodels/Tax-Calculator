@@ -261,6 +261,7 @@ def add_income_table_row_variable(dframe, income_measure, bin_edges):
     assert isinstance(bin_edges, list)
     dframe['table_row'] = pd.cut(dframe[income_measure],
                                  bin_edges, right=False)
+
     return dframe
 
 
@@ -360,7 +361,7 @@ def create_distribution_table(vdf, groupby, income_measure,
         dframe = add_income_table_row_variable(vdf, income_measure,
                                                SOI_AGI_BINS)
     # construct grouped DataFrame
-    gdf = dframe.groupby('table_row', as_index=False)
+    gdf = dframe.groupby('table_row', observed=False, as_index=False)
     dist_table = stat_dataframe(gdf)
     del dframe['table_row']
     # compute sum row
@@ -539,8 +540,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
             df2, baseline_expanded_income, SOI_AGI_BINS)
     del df2
     # create grouped Pandas DataFrame
-    gdf = dframe.groupby('table_row', as_index=False)
-    del dframe['table_row']
+    gdf = dframe.groupby('table_row', as_index=False, observed=False)
     # create additive difference table statistics from gdf
     diff_table = additive_stats_dataframe(gdf)
     # calculate additive statistics on sums row
@@ -586,7 +586,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
     quotient = np.divide(
         diff_table['atinc2'].values, diff_table['atinc1'].values,
         out=np.zeros_like(diff_table['atinc2'].values),
-        where=diff_table['atinc1'] != 0)
+        where=diff_table['atinc1'].values != 0)
     diff_table['pc_aftertaxinc'] = np.where(
         diff_table['atinc1'].values == 0., np.nan, 100 * (quotient - 1))
     # delete intermediate Pandas DataFrame objects
@@ -901,7 +901,7 @@ def mtr_graph_data(vdf, year,
         weight_by_income_measure=dollar_weighting
     )
     # split dfx into groups specified by 'table_row' column
-    gdfx = dfx.groupby('table_row', as_index=False)
+    gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
     mtr1_series = gdfx.apply(weighting_function, 'mtr1').values[:, 1]
     mtr2_series = gdfx.apply(weighting_function, 'mtr2').values[:, 1]
@@ -1018,7 +1018,7 @@ def atr_graph_data(vdf, year,
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
     # split dfx into groups specified by 'table_row' column
-    gdfx = dfx.groupby('table_row', as_index=False)
+    gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply weighted_mean function to percentile-grouped values
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income').values[:, 1]
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1').values[:, 1]
@@ -1192,7 +1192,7 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
     # split dfx into groups specified by 'table_row' column
-    gdfx = dfx.groupby('table_row', as_index=False)
+    gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply weighted_mean function to percentile-grouped values
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income').values[:, 1]
     change_series = gdfx.apply(weighted_mean, 'chg_aftinc').values[:, 1]

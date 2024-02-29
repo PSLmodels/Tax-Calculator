@@ -32,7 +32,7 @@ help:
 clean:
 	@find . -name *pyc -exec rm {} \;
 	@find . -name *cache -maxdepth 1 -exec rm -r {} \;
-	@conda uninstall taxcalc --yes --quiet 2>&1 > /dev/null
+	@pip uninstall taxcalc --yes --quiet 2>&1 > /dev/null
 
 .PHONY=package
 package:
@@ -51,7 +51,7 @@ endef
 .PHONY=pytest-cps
 pytest-cps:
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 -m "not requires_pufcsv and not pre_release"
+	@cd taxcalc ; pytest -n4 --disable-warnings -m "not requires_pufcsv and not pre_release"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
