@@ -23,14 +23,14 @@ This document explains the sources of known differences (that exceed $1) between
 
 ### 2021
 
-* In 2021, the Additional Child Tax Credit (ACTC), which historically was the refundable portion of the CTC, was subsumed by the refundability of the CTC more broadly with the ARPA. Tax-Calculator and TAXSIM-35 handle this differently in their model output.  Tax-Calculator keeps only the ACTC amount in the variable `c11070`, which is $0 for all filers in 2021.  On the other hand, TAXSIM-35 reports the refundable amount of the CTC (whih is equivalent to the ACTC in most years, but not 2021).  Hence, we can expect differences in these two models due to different definitions of output variables in that year.  The file `process_taxcalc_output.py` makes and adjustment for 2021 to make the output from both models more comparable.
+* In 2021, the Additional Child Tax Credit (ACTC), which historically was the refundable portion of the CTC, was subsumed by the refundability of the CTC more broadly with the ARPA. Tax-Calculator and TAXSIM-35 handle this differently in their model output.  Tax-Calculator keeps only the ACTC amount in the variable `c11070`, which is $0 for all filers in 2021.  On the other hand, TAXSIM-35 reports the refundable amount of the CTC (which is equivalent to the ACTC in most years, but not 2021).  Hence, we can expect differences in these two models due to different definitions of output variables in that year.  The file `process_taxcalc_output.py` makes and adjustment for 2021 to make the output from both models more comparable.
 
 ## `b` files:
 
 ### All years
 
-* Differnces in AGI between TAXMSIM and Tax-Calculator have to do with an incorrect calculation of the SECA tax liability in TAXSIM-35.  Half of the SECA tax amount is deductible from AGI on individuals' returns.
-* TAXSIM-35 does not correctly calculate payroll tax liability, while Tax-Calculator calculations have been verified manually. Thus, payroll tax liability differs between the two models.
+* Differences in AGI between TAXMSIM and Tax-Calculator have to do with an incorrect calculation of the SECA tax liability in TAXSIM-35.  Half of the SECA tax amount is deductible from AGI on individuals' returns.
+* TAXSIM-35 does not correctly calculate payroll tax liability, while Tax-Calculator calculations have been verified manually. Thus, payroll tax liability differs between the two models.  An updated version of TAXSIM (not available publicaly on 2024-02-29) shows not differences in FICA liability with Tax-Calculator.
 * The AMT liability is zero in TAXSIM-35, but correct in Tax-Calculator, thus the AMT liability difference is the AMT liability in Tax-Calculator.
 * Other differences (in `c04800`, `taxbc`, `c62100`, and `iitax_before_credits_ex_AMT`) are due to downstream effects of the differences documented above.
 
