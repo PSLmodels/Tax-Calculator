@@ -109,6 +109,7 @@ def translate(ivar):
     assert np.all(np.logical_or(mars == 1, np.logical_or(mars == 2, mars == 4)))
     invar["MARS"] = mars
     num_eitc_qualified_kids = ivar["dep18"]
+    invar["f2441"] = invar["nu13"]
     invar["EIC"] = np.minimum(num_eitc_qualified_kids, 3)
     num_taxpayers = np.where(mars == 2, 2, 1)
     invar["XTOT"] = num_taxpayers + num_deps

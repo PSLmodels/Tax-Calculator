@@ -350,7 +350,7 @@ class Records(Data):
         # pylint: disable=no-member
         if self.ADJ.size > 0:
             # Interest income
-            self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin].values
+            self.e00300 *= self.ADJ[f'INT{year}'].iloc[self.agi_bin].values
 
     def _read_ratios(self, ratios):
         """

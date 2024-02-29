@@ -23,10 +23,10 @@ def get_ftp_output(letter, year):
     f = str(letter + str(year) + ".in")
     file_out = f + ".out-taxsim"
     os.system(
-    #     f"ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null taxsim35@taxsimssh.nber.org <{f} >{file_out}"
-    # )
-        f' curl -F {f}=@{f} "https://taxsim.nber.org/taxsim35/redirect.cgi" >{file_out}'
+        f"ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null taxsim35@taxsim35.nber.org <{f} >{file_out}"
     )
+
+
 def change_delim(letter, year):
     """ "
     This function changes the delimeter in the taxsim output files from
