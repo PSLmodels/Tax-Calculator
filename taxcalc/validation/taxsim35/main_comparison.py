@@ -14,6 +14,8 @@ if not os.path.isdir(os.path.join(CUR_PATH, "actual_differences")):
 
 
 def main(letter, year):
+
+    test_passed = False  # set boolean to False, change in tests pass
     # (1) generate TAXSIM-35-formatted output using Tax-Calculator tc CLI
     tc_sims.io(letter, year)
 
@@ -141,8 +143,8 @@ def main(letter, year):
     expected_file_name = os.path.join(CUR_PATH, "expected_differences", f"{letter}{year}-taxdiffs-expect.csv")
     if os.path.isfile(expected_file_name):
         expect_df = pd.read_csv(expected_file_name, index_col=0)
-
-        print(actual_df.eq(expect_df))
+        # print(actual_df.eq(expect_df))
+        test_passed = actual_df[["# of differing records", "max_diff"]].equals(expect_df[["# of differing records", "max_diff"]])
 
         print(
             "Above, True values mean the element is the same between the ACTUAL and EXPECT dataframes. "
@@ -154,6 +156,7 @@ def main(letter, year):
     # (4) Write the created df to *.taxdiffs-actual
     actual_df.to_csv(os.path.join(CUR_PATH, "actual_differences", f"{letter}{year}-taxdiffs-actual.csv"))
 
+    return test_passed
 
 if __name__ == "__main__":
     sys.exit(main())
