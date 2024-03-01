@@ -38,3 +38,13 @@ This document explains the sources of known differences (that exceed $1) between
 
 * Three records in the test files with differences in the recovery rebate credit amount (RRC). The reasons TAXSIM-35 shows different results vary and include: TAXSIM-35 not counting qualifying children (e.g., file "a", id 7);  TAXSIM-35 not differentiating single/head of household filing status (e.g., file "a",id 31); and TAXSIM-35 not counting Economic Impact Payment 2 (e.g., file "a",id 33); TAXSIM-35 counts wrong number of child (e.g., file "a",id 59). Note that some of these are not errors per se, but can be related to different variable inputs in the two models.
 * There is also a single record with a differences in `e02300`, unemployment insurance benefits, and input to the models.  This variable is zeroed out in TAXSIM-35, but not in Tax-Calculator.
+
+## `c` files:
+
+### All years
+
+*
+
+### 2020
+
+*

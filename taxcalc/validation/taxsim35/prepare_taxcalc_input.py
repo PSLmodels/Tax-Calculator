@@ -1,6 +1,7 @@
 """
 Translates TAXSIM-35 input file to Tax-Calculator tc input file.
 """
+
 # CODING-STYLE CHECKS:
 # pycodestyle prepare_tc_input.py
 # pylint --disable=locally-disabled prepare_tc_input.py
@@ -101,12 +102,16 @@ def translate(ivar):
     invar = ivar.rename(TAXSIM_TC_MAP, axis=1)
     invar["n24"] = ivar["dep17"]
     # Create variables for Tax-Calculator that aren't directly represented in TAXSIM
-    invar["e02000"] += invar["e26270"]  # add active scorp income to "otherprop" income from taxsim
+    invar["e02000"] += invar[
+        "e26270"
+    ]  # add active scorp income to "otherprop" income from taxsim
     mstat = ivar["mstat"]
     assert np.all(np.logical_or(mstat == 1, mstat == 2))
     num_deps = ivar["depx"]
     mars = np.where(mstat == 1, np.where(num_deps > 0, 4, 1), 2)
-    assert np.all(np.logical_or(mars == 1, np.logical_or(mars == 2, mars == 4)))
+    assert np.all(
+        np.logical_or(mars == 1, np.logical_or(mars == 2, mars == 4))
+    )
     invar["MARS"] = mars
     num_eitc_qualified_kids = ivar["dep18"]
     invar["f2441"] = invar["nu13"]
@@ -123,12 +128,12 @@ def translate(ivar):
     invar["e01500"] = invar["e01700"]
     invar["e02300"] = invar["pui"] + invar["sui"]
     # variables for QBID calculation
-    invar[
-        "PT_SSTB_income"
-    ] = 0  # np.where(invar['pprofinc'] + invar['sprofinc'] > 0, 1, 0)
-    invar[
-        "PT_SSTB_income"
-    ] = 0  # np.where(invar['e26270'] > 0, 1, invar['PT_SSTB_income'])
+    invar["PT_SSTB_income"] = (
+        0  # np.where(invar['pprofinc'] + invar['sprofinc'] > 0, 1, 0)
+    )
+    invar["PT_SSTB_income"] = (
+        0  # np.where(invar['e26270'] > 0, 1, invar['PT_SSTB_income'])
+    )
 
     # Drop TAXSIM variables not used in Tax-Calculator
     invar.drop(

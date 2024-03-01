@@ -104,7 +104,11 @@ def main(letter, year):
         # delim_whitespace=True,
         index_col=False,
     )
-    with pd.ExcelWriter(os.path.join(CUR_PATH, "actual_differences", f"{letter}{year}differences.xlsx")) as writer:
+    with pd.ExcelWriter(
+        os.path.join(
+            CUR_PATH, "actual_differences", f"{letter}{year}differences.xlsx"
+        )
+    ) as writer:
         # use to_excel function and specify the sheet_name and index
         # to store the dataframe in specified sheet
         taxsim_df.to_excel(writer, sheet_name="taxsim", index=False)
@@ -125,7 +129,9 @@ def main(letter, year):
             key=lambda x: x[1],
         )
 
-        diff_dict["max_diff"].append(taxcalc_df.loc[ind, col] - taxsim_df.loc[ind, col])
+        diff_dict["max_diff"].append(
+            taxcalc_df.loc[ind, col] - taxsim_df.loc[ind, col]
+        )
         if max_val != 0:
             diff_dict["max_diff_index"].append(ind)
             diff_dict["max_diff_taxsim_val"].append(taxsim_df.loc[ind, col])
@@ -136,15 +142,21 @@ def main(letter, year):
             diff_dict["max_diff_taxcalc_val"].append("no diff")
 
     actual_df = pd.DataFrame(diff_dict, index=taxsim_df.columns[3:])
-    print(f"Difference in dataframes for assumption set {letter} in year {year}")
+    print(
+        f"Difference in dataframes for assumption set {letter} in year {year}"
+    )
     print(actual_df)
 
     # (3) check for difference between LYY.taxdiffs-actual and LYY.taxdiffs-expect
-    expected_file_name = os.path.join(CUR_PATH, "expected_differences", f"{letter}{year}-taxdiffs-expect.csv")
+    expected_file_name = os.path.join(
+        CUR_PATH, "expected_differences", f"{letter}{year}-taxdiffs-expect.csv"
+    )
     if os.path.isfile(expected_file_name):
         expect_df = pd.read_csv(expected_file_name, index_col=0)
         # print(actual_df.eq(expect_df))
-        test_passed = actual_df[["# of differing records", "max_diff"]].equals(expect_df[["# of differing records", "max_diff"]])
+        test_passed = actual_df[["# of differing records", "max_diff"]].equals(
+            expect_df[["# of differing records", "max_diff"]]
+        )
 
         print(
             "Above, True values mean the element is the same between the ACTUAL and EXPECT dataframes. "
@@ -154,9 +166,16 @@ def main(letter, year):
         print("This EXPECT file doesn't exist.")
 
     # (4) Write the created df to *.taxdiffs-actual
-    actual_df.to_csv(os.path.join(CUR_PATH, "actual_differences", f"{letter}{year}-taxdiffs-actual.csv"))
+    actual_df.to_csv(
+        os.path.join(
+            CUR_PATH,
+            "actual_differences",
+            f"{letter}{year}-taxdiffs-actual.csv",
+        )
+    )
 
     return test_passed
+
 
 if __name__ == "__main__":
     sys.exit(main())
