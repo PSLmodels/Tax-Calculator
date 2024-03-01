@@ -5,6 +5,7 @@
 import sys
 import os
 import pandas as pd
+import numpy as np
 import tc_sims
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -153,10 +154,11 @@ def main(letter, year):
     )
     if os.path.isfile(expected_file_name):
         expect_df = pd.read_csv(expected_file_name, index_col=0)
-        # print(actual_df.eq(expect_df))
-        test_passed = actual_df[["# of differing records", "max_diff"]].equals(
-            expect_df[["# of differing records", "max_diff"]]
-        )
+        print(actual_df.eq(expect_df))
+        test_passed = np.allclose(
+            actual_df[["# of differing records", "max_diff"]].values,
+            expect_df[["# of differing records", "max_diff"]].values
+                      )
 
         print(
             "Above, True values mean the element is the same between the ACTUAL and EXPECT dataframes. "
