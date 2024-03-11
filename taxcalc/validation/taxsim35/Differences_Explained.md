@@ -27,6 +27,8 @@ This document explains the sources of known differences (that exceed $1) between
 
 ## `b` files:
 
+The following are notes that explain differences in addition to those documented above for the `a` files.
+
 ### All years
 
 * Differences in AGI between TAXMSIM and Tax-Calculator have to do with an incorrect calculation of the SECA tax liability in TAXSIM-35.  Half of the SECA tax amount is deductible from AGI on individuals' returns.
@@ -41,10 +43,12 @@ This document explains the sources of known differences (that exceed $1) between
 
 ## `c` files:
 
+The following are notes that explain differences in addition to those documented above for the `b` files.
+
 ### All years
 
-*
+* The `c` file set is the only one that simulates itemized deduction amounts. We have documented differences in `c04470` in all years of the `c` files. In the version of TAXSIM-35 we are using, the itemized deduction is always returned as zero. Hand calculations have confirmed Tax-Calculator's itemized deduction amounts are correct.
 
-### 2020
+### 2017
 
-*
+* There are differences in variable `c21040`, itemized deductions that are phased out.  This only affects the `c` set as itemized deductions are not included in records in the `a` and `b` sets.  Further, tax law only has a phase out of itemized deductions in 2017 and earlier, hence no affect on later years.  The root source of the error is the known differences in the handling of itemized deductions between TAXSIM-35 and Tax-Calculator noted above.
