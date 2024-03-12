@@ -2,6 +2,7 @@
 Generates TAXSIM-35 `.in` input files, downloads `.in.out-taxsim` output files,
 prepares files for Tax Calculator and zips them
 """
+
 import os
 import glob
 import taxsim_input
