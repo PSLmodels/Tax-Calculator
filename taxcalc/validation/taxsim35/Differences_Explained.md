@@ -27,6 +27,8 @@ This document explains the sources of known differences (that exceed $1) between
 
 ## `b` files:
 
+The following are notes that explain differences in addition to those documented above for the `a` files.
+
 ### All years
 
 * Differences in AGI between TAXMSIM and Tax-Calculator have to do with an incorrect calculation of the SECA tax liability in TAXSIM-35.  Half of the SECA tax amount is deductible from AGI on individuals' returns.
@@ -38,3 +40,15 @@ This document explains the sources of known differences (that exceed $1) between
 
 * Three records in the test files with differences in the recovery rebate credit amount (RRC). The reasons TAXSIM-35 shows different results vary and include: TAXSIM-35 not counting qualifying children (e.g., file "a", id 7);  TAXSIM-35 not differentiating single/head of household filing status (e.g., file "a",id 31); and TAXSIM-35 not counting Economic Impact Payment 2 (e.g., file "a",id 33); TAXSIM-35 counts wrong number of child (e.g., file "a",id 59). Note that some of these are not errors per se, but can be related to different variable inputs in the two models.
 * There is also a single record with a differences in `e02300`, unemployment insurance benefits, and input to the models.  This variable is zeroed out in TAXSIM-35, but not in Tax-Calculator.
+
+## `c` files:
+
+The following are notes that explain differences in addition to those documented above for the `b` files.
+
+### All years
+
+* The `c` file set is the only one that simulates itemized deduction amounts. We have documented differences in `c04470` in all years of the `c` files. In the version of TAXSIM-35 we are using, the itemized deduction is always returned as zero. Hand calculations have confirmed Tax-Calculator's itemized deduction amounts are correct.
+
+### 2017
+
+* There are differences in variable `c21040`, itemized deductions that are phased out.  This only affects the `c` set as itemized deductions are not included in records in the `a` and `b` sets.  Further, tax law only has a phase out of itemized deductions in 2017 and earlier, hence no affect on later years.  The root source of the error is the known differences in the handling of itemized deductions between TAXSIM-35 and Tax-Calculator noted above.
