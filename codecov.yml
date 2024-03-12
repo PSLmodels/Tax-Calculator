@@ -21,4 +21,4 @@ comment:
 
 ignore:
   - "setup.py"
-  - "new_json.py"
+  - "ppp.py"
