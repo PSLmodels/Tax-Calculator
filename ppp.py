@@ -7,10 +7,13 @@ when the inflation factor values change in growfactors.csv.
 USAGE:  $ python ppp.py
 
 Note: running this script will write the new 2026 parameter values
-directly to policy_current_law.json.
+directly to policy_current_law.json.  So, if you want to compare
+the new 2026 parameter values with the old 2026 parameter values,
+be sure to copy policy_current_law.json before running this script.
 """
-from taxcalc import *
 import json
+import collections
+from taxcalc import Policy
 
 params = Policy()
 
@@ -27,29 +30,30 @@ long_params = ['II_brk7', 'II_brk6', 'II_brk5', 'II_brk4',
 
 # calculate the inflation factor used to calculate the
 # inflation-adjusted 2026 parameter values
-final_ifactor = 1.0
-pyear = 2017  # prior year before TCJA first implemented
-fyear = 2026  # final year in which parameter values revert to
+FINAL_IFACTOR = 1.0
+PYEAR = 2017  # prior year before TCJA first implemented
+FYEAR = 2026  # final year in which parameter values revert to
 # pre-TCJA values
 # construct final-year inflation factor from prior year
 # NOTE: pvalue[t+1] = pvalue[t] * ( 1 + irate[t] )
-for year in range(pyear, fyear):
-    final_ifactor *= 1 + \
-        params._inflation_rates[year - params.start_year]
+for year in range(PYEAR, FYEAR):
+    yindex = year - params.start_year
+    rate = params._inflation_rates[yindex]  # pylint: disable=protected-access
+    FINAL_IFACTOR *= 1 + rate
 
-long_param_vals = defaultdict(list)
+long_param_vals = collections.defaultdict(list)
 
 for param in long_params:
-    vos = params.select_eq(param, year=pyear)
-    # use final_ifactor to inflate from 2017 to 2026
+    vos = params.select_eq(param, year=PYEAR)
+    # use FINAL_IFACTOR to inflate from 2017 to 2026
     for vo in vos:
         long_param_vals[param].append(
-            # Create new dict to avoid modifying the original
+            # create new dict to avoid modifying the original
             dict(
                 vo,
                 value=min(9e99, round(
-                    vo["value"] * final_ifactor, 0)),
-                year=fyear,
+                    vo["value"] * FINAL_IFACTOR, 0)),
+                year=FYEAR,
             )
         )
 
@@ -60,13 +64,13 @@ param_data = params.specification(
     meta_data=False, serializable=True, use_state=False, _auto=False)
 
 # read existing policy_current_law.json
-with open('taxcalc/policy_current_law.json', 'r') as f:
-    pcl = json.load(f)
+with open('taxcalc/policy_current_law.json', 'r', encoding='utf-8') as pcl_old:
+    pcl = json.load(pcl_old)
 
-# replace 2026 values in policy_current_law.json
+# replace 2026 values in the pcl dictionary
 for param in param_data:
     pcl[param]["value"] = param_data[param]
 
-# write new policy_current_law.json
-with open('taxcalc/policy_current_law.json', 'w') as pcl_old:
-    json.dump(pcl, pcl_old, indent=4)
+# write new pcl dictionary to policy_current_law.json
+with open('taxcalc/policy_current_law.json', 'w', encoding='utf-8') as pcl_new:
+    json.dump(pcl, pcl_new, indent=4)
