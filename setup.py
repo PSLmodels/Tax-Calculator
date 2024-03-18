@@ -10,6 +10,7 @@ config = {
     "url": "https://github.com/PSLmodels/Tax-Calculator",
     "download_url": "https://github.com/PSLmodels/Tax-Calculator",
     "description": "taxcalc",
+    "long_description_content_type": "text/markdown",
     "long_description": longdesc,
     "version": version,
     "license": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
