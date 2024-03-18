@@ -7081,27 +7081,27 @@
             {
                 "year": 2013,
                 "MARS": "single",
-                "value": 3000
+                "value": 3000.0
             },
             {
                 "year": 2013,
                 "MARS": "mjoint",
-                "value": 3000
+                "value": 3000.0
             },
             {
                 "year": 2013,
                 "MARS": "mseparate",
-                "value": 3000
+                "value": 3000.0
             },
             {
                 "year": 2013,
                 "MARS": "headhh",
-                "value": 3000
+                "value": 3000.0
             },
             {
                 "year": 2013,
                 "MARS": "widow",
-                "value": 3000
+                "value": 3000.0
             }
         ],
         "validators": {

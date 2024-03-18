@@ -40,7 +40,11 @@ def calc_tc_output(letter, year):
         sys.exit("ERROR: LYY_FILENAME is not a valid path")
     year = "20" + YY
     command = (
-        "tc " + taxsim_in_csv + " " + year + " --reform taxsim_emulation.json --dump"
+        "tc "
+        + taxsim_in_csv
+        + " "
+        + year
+        + " --reform taxsim_emulation.json --dump"
     )
     os.system(command)
 

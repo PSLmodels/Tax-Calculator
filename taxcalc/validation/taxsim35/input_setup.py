@@ -2,6 +2,7 @@
 Generates TAXSIM-35 `.in` input files, downloads `.in.out-taxsim` output files,
 prepares files for Tax Calculator and zips them
 """
+
 import os
 import glob
 import taxsim_input
@@ -29,7 +30,7 @@ def get_ftp_output(letter, year):
 
 def change_delim(letter, year):
     """ "
-    This function changes the delimter in the taxsim output files from
+    This function changes the delimeter in the taxsim output files from
     a comma to a space
 
     This is necessary because taxsim output seems to vary - for some years

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: taxcalc
-Version: 3.5.0
+Version: 3.5.1
 Summary: taxcalc
 Home-page: https://github.com/PSLmodels/Tax-Calculator
 Download-URL: https://github.com/PSLmodels/Tax-Calculator
@@ -16,6 +16,7 @@ Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
 Classifier: Programming Language :: Python :: 3.11
 Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: setuptools
 Requires-Dist: numpy
