@@ -13,7 +13,7 @@ for a complete commit history.
 **API Changes**
 
 **New Features**
-- Additional TAXSIM-35 validation tools, several PRS by Bodi Yang and Jason DeBacker
+- Complete works of TAXSIM-35 validation, in several PRS by Bodi Yang and Jason DeBacker
 
 **Bug Fixes**
 - Fix bugs in `ppp.py` script  [[#2725](https://github.com/PSLmodels/Tax-Calculator/pull/2725) by Martin Holmer]
