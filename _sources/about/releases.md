@@ -3,6 +3,21 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2024-03-18 Release 3.5.2
+------------------------
+(last merged pull request is
+[#2725](https://github.com/PSLmodels/Tax-Calculator/pull/2725))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Complete works of TAXSIM-35 validation, in several PRS by Bodi Yang and Jason DeBacker
+
+**Bug Fixes**
+- Fix bugs in `ppp.py` script  [[#2725](https://github.com/PSLmodels/Tax-Calculator/pull/2725) by Martin Holmer]
+
 2024-02-27 Release 3.5.1
 ------------------------
 (last merged pull request is
