@@ -8,53 +8,14 @@ msgstr ""
 "Language: ro\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Theme by the"
-msgstr "Tema de"
-
-msgid "Open an issue"
-msgstr "Deschideți o problemă"
-
-msgid "Contents"
-msgstr "Cuprins"
-
-msgid "Download notebook file"
-msgstr "Descărcați fișierul notebook"
-
-msgid "Sphinx Book Theme"
-msgstr "Tema Sphinx Book"
-
-msgid "Fullscreen mode"
-msgstr "Modul ecran întreg"
-
-msgid "Edit this page"
-msgstr "Editați această pagină"
-
-msgid "By"
-msgstr "De"
-
-msgid "Copyright"
-msgstr "Drepturi de autor"
-
-msgid "Source repository"
-msgstr "Depozit sursă"
-
-msgid "previous page"
-msgstr "pagina anterioară"
-
-msgid "next page"
-msgstr "pagina următoare"
-
-msgid "Toggle navigation"
-msgstr "Comutare navigare"
-
-msgid "repository"
-msgstr "repertoriu"
-
 msgid "suggest edit"
 msgstr "sugerează editare"
 
-msgid "open issue"
-msgstr "problema deschisă"
+msgid "Last updated on"
+msgstr "Ultima actualizare la"
+
+msgid "Edit this page"
+msgstr "Editați această pagină"
 
 msgid "Launch"
 msgstr "Lansa"
@@ -62,14 +23,53 @@ msgstr "Lansa"
 msgid "Print to PDF"
 msgstr "Imprimați în PDF"
 
+msgid "open issue"
+msgstr "problema deschisă"
+
+msgid "Download notebook file"
+msgstr "Descărcați fișierul notebook"
+
+msgid "Toggle navigation"
+msgstr "Comutare navigare"
+
+msgid "Source repository"
+msgstr "Depozit sursă"
+
 msgid "By the"
 msgstr "Langa"
 
-msgid "Last updated on"
-msgstr "Ultima actualizare la"
+msgid "next page"
+msgstr "pagina următoare"
+
+msgid "repository"
+msgstr "repertoriu"
+
+msgid "Sphinx Book Theme"
+msgstr "Tema Sphinx Book"
 
 msgid "Download source file"
 msgstr "Descărcați fișierul sursă"
 
+msgid "Contents"
+msgstr "Cuprins"
+
+msgid "By"
+msgstr "De"
+
+msgid "Copyright"
+msgstr "Drepturi de autor"
+
+msgid "Fullscreen mode"
+msgstr "Modul ecran întreg"
+
+msgid "Open an issue"
+msgstr "Deschideți o problemă"
+
+msgid "previous page"
+msgstr "pagina anterioară"
+
 msgid "Download this page"
 msgstr "Descarcă această pagină"
+
+msgid "Theme by the"
+msgstr "Tema de"
