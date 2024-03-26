@@ -11061,7 +11061,7 @@
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 518400.0
+                "value": 311025.0
             },
             {
                 "year": 2020,
@@ -11086,7 +11086,7 @@
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 329850.0
+                "value": 314150.0
             },
             {
                 "year": 2021,
@@ -13280,27 +13280,27 @@
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 215950.0
+                "value": 209425.0
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 431900.0
+                "value": 418850.0
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 215950.0
+                "value": 209425.0
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 215950.0
+                "value": 209400.0
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 431900.0
+                "value": 418850.0
             },
             {
                 "year": 2022,
@@ -13643,27 +13643,27 @@
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 539900.0
+                "value": 523600.0
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 647850.0
+                "value": 628300.0
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 539900.0
+                "value": 314150.0
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 539900.0
+                "value": 523600.0
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 647850.0
+                "value": 628300.0
             },
             {
                 "year": 2022,
