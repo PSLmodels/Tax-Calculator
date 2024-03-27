@@ -409,10 +409,6 @@ PARAM_MAP = {
     },
 }
 PCLFILENAME = './taxcalc/policy_current_law.json'
-DO_PARAM = [  # TODO: TEMP CODE
-    'II_brk1', 'II_brk2', 'II_brk3', 'II_brk4', 'II_brk5', 'II_brk6',
-    'PT_brk1', 'PT_brk2', 'PT_brk3', 'PT_brk4', 'PT_brk5', 'PT_brk6',
-]
 
 
 def rindex(row_number):
@@ -469,13 +465,11 @@ def cbo_reform(cbodf):
     Return adjustment-style "reform" that contains CBO parameter values.
     """
     cboadj = collections.defaultdict(list)
-    last_year = CBO_YEAR['last']['year']-1  # TODO: "-1" UNTIL NEW UPDATE
+    last_year = CBO_YEAR['last']['year']
     for year in range(CBO_YEAR['first']['year'], last_year+1):
         for pname, pdict in PARAM_MAP.items():
             if 'skip_years' in pdict and year in pdict['skip_years']:
                 continue  # skip pname for year
-            if pname not in DO_PARAM:  # TODO: TEMP CODE
-                continue  # TODO: TEMP CODE
             if pdict['pivar'] is None:
                 # handle scalar parameter
                 cname = pdict['cbo']
