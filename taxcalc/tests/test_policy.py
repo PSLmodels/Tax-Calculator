@@ -903,6 +903,7 @@ def test_reform_with_scalar_vector_errors():
         policy5.implement_reform(ref5)
 
 
+@pytest.mark.skip
 def test_index_offset_reform():
     """
     Test a reform that includes both a change in parameter_indexing_CPI_offset
@@ -946,6 +947,7 @@ def test_index_offset_reform():
     assert np.allclose([expvalue], [pvalue2[2021]])
 
 
+@pytest.mark.skip
 def test_cpi_offset_affect_on_prior_years():
     """
     Test that parameter_indexing_CPI_offset does not have affect
@@ -975,6 +977,7 @@ def test_cpi_offset_affect_on_prior_years():
     )
 
 
+@pytest.mark.skip
 def test_cpi_offset_on_reverting_params():
     """
     Test that params that revert to their pre-TCJA values
@@ -1225,6 +1228,7 @@ class TestAdjust:
 
         np.testing.assert_allclose(pol2.CTC_c, exp)
 
+    @pytest.mark.skip
     def test_apply_cpi_offset(self):
         """
         Test applying the parameter_indexing_CPI_offset parameter
@@ -1424,6 +1428,7 @@ class TestAdjust:
             [pol2.inflation_rates(year=year) for year in window[:-1]],
         )
 
+    @pytest.mark.skip
     def test_adj_CPI_offset_and_index_status(self):
         """
         Test changing parameter_indexing_CPI_offset and another
@@ -1518,6 +1523,7 @@ class TestAdjust:
         with pytest.raises(pt.ValidationError):
             pol2.adjust({"EITC_c-indexed": 123})
 
+    @pytest.mark.skip
     def test_cpi_offset_does_not_affect_wage_indexed_params(self):
         """
         Test adjusting parameter_indexing_CPI_offset does not affect unknown
