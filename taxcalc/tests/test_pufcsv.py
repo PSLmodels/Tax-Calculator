@@ -27,6 +27,7 @@ from taxcalc import Policy, Records, Calculator
 START_YEAR = 2017
 
 
+@pytest.mark.pufcsv_agg
 @pytest.mark.requires_pufcsv
 def test_agg(tests_path, puf_fullsample):
     """
