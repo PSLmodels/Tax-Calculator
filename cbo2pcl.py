@@ -312,6 +312,7 @@ PARAM_MAP = {
         'cbo': 'pe_amt',
     },
     'II_em_ps': {
+        'skip_years': [2021, 2022, 2023, 2024, 2025],  # skip faulty CBO values
         'pivar': 'MARS',
         'cbo': {
             'single':    'pe_ps_sng',
