@@ -904,6 +904,7 @@ def test_reform_with_scalar_vector_errors():
 
 
 @pytest.mark.skip
+@pytest.mark.index_offset_reform
 def test_index_offset_reform():
     """
     Test a reform that includes both a change in parameter_indexing_CPI_offset
@@ -912,7 +913,8 @@ def test_index_offset_reform():
     # create policy0 to extract inflation rates before any
     # parameter_indexing_CPI_offset
     policy0 = Policy()
-    policy0.implement_reform({'parameter_indexing_CPI_offset': {2017: 0}})
+    reform0 = {'parameter_indexing_CPI_offset': {2017: 0}}
+    policy0.implement_reform(reform0)  # causes T-C crash in PR#2731 and after
     cpiu_rates = policy0.inflation_rates()
 
     reform1 = {'CTC_c-indexed': {2020: True}}
@@ -923,6 +925,7 @@ def test_index_offset_reform():
                'parameter_indexing_CPI_offset': {2020: offset}}
     policy2 = Policy()
     policy2.implement_reform(reform2)  # caused T-C crash before PR#2364
+
     # extract from policy1 and policy2 the parameter values of CTC_c
     pvalue1 = dict()
     pvalue2 = dict()
@@ -1571,3 +1574,15 @@ def test_two_sets_of_tax_brackets():
                 emsg += f'  PT_brk{bnum} is {pt_val}\n'
     if emsg:
         raise ValueError(emsg)
+
+
+@pytest.mark.skip
+@pytest.mark.change_cpi_offset
+def test_change_cpi_offset():
+    """
+    Test ability to change value of parameter_indexing_CPI_offset parameter.
+    """
+    ryear = 2029
+    reform0 = {'parameter_indexing_CPI_offset': {ryear: 0.0}}
+    policy0 = Policy()
+    policy0.implement_reform(reform0)
