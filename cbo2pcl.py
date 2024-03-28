@@ -115,6 +115,8 @@ CBO_ROWS = {
     'eitc_ps_m1': {'row': 134, 'label': 'Beginning of phaseout (married'},
     'eitc_ps_m2': {'row': 142, 'label': 'Beginning of phaseout (married'},
     'eitc_ps_m3': {'row': 150, 'label': 'Beginning of phaseout (married'},
+    # OASDI maximum taxable earnings ...
+    'oasdi_mte': {'row': 160, 'label': 'Maximum taxable earnings for the Soc'},
 }
 
 
@@ -407,6 +409,11 @@ PARAM_MAP = {
             '2kids':  'eitc_ps_m2-eitc_ps_s2',
             '3+kids': 'eitc_ps_m3-eitc_ps_s3',
         },
+    },
+    # payroll tax params:
+    'SS_Earnings_c': {
+        'pivar': None,
+        'cbo': 'oasdi_mte',
     },
 }
 PCLFILENAME = './taxcalc/policy_current_law.json'
