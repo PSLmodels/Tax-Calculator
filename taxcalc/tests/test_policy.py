@@ -1543,3 +1543,25 @@ class TestAdjust:
         )
 
         np.testing.assert_equal(act_before_2025, exp_before_2025)
+
+
+def test_two_sets_of_tax_brackets():
+    """
+    Test that II_brk? and PT_brk? values are the same under current law.
+    """
+    pol = Policy()
+    brackets = range(1, 7+1)
+    years = range(Policy.JSON_START_YEAR, Policy.LAST_KNOWN_YEAR+1)
+    emsg = ''
+    for year in years:
+        pol.set_year(year)
+        pdata = dict(pol.items())
+        for bnum in brackets:
+            ii_val = pdata[f'II_brk{bnum}']
+            pt_val = pdata[f'PT_brk{bnum}']
+            if not np.allclose(ii_val, pt_val):
+                emsg += f'II_brk{bnum} != PT_brk{bnum} for year {year}\n'
+                emsg += f'  II_brk{bnum} is {ii_val}\n'
+                emsg += f'  PT_brk{bnum} is {pt_val}\n'
+    if emsg:
+        raise ValueError(emsg)

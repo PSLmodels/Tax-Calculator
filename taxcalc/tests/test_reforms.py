@@ -72,6 +72,7 @@ def test_2017_law_reform(tests_path):
             assert act == exp, '{} a={} != e={}'.format(name, act, exp)
 
 
+@pytest.mark.rtr
 @pytest.mark.parametrize('fyear', [2019, 2020, 2021, 2022, 2023])
 def test_round_trip_reforms(fyear, tests_path):
     """
