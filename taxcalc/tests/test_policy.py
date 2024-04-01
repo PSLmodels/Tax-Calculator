@@ -1423,7 +1423,7 @@ class TestAdjust:
             (pol2.II_em[1:] / pol2.II_em[:-1] - 1).round(4),
             [pol2.inflation_rates(year=year) for year in window[:-1]],
         )
-
+        
     def test_adj_CPI_offset_and_index_status(self):
         """
         Test changing parameter_indexing_CPI_offset and another
@@ -1459,7 +1459,7 @@ class TestAdjust:
         pol2.set_state(year=[2021, 2022])
         np.testing.assert_equal(
             (pol2.CTC_c[1] / pol2.CTC_c[0] - 1).round(4),
-            pol0.inflation_rates(year=2021) + (-0.005),
+            round(pol0.inflation_rates(year=2021) + (-0.005), 4),
         )
 
     def test_adj_related_parameters_and_index_status(self):
