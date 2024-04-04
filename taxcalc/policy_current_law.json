@@ -103,7 +103,7 @@
             },
             {
                 "year": 2017,
-                "value": -0.0025
+                "value": 0.0
             }
         ],
         "validators": {
@@ -1532,7 +1532,7 @@
             },
             {
                 "year": 2026,
-                "value": 5290.0
+                "value": 5300.0
             }
         ],
         "validators": {
@@ -1734,27 +1734,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 341572.0
+                "value": 342178.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 409886.0
+                "value": 410613.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 204943.0
+                "value": 205307.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 375729.0
+                "value": 376395.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 409886.0
+                "value": 410613.0
             }
         ],
         "validators": {
@@ -2083,27 +2083,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 8294.0
+                "value": 8309.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 16589.0
+                "value": 16618.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 8294.0
+                "value": 8309.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 12213.0
+                "value": 12235.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 16589.0
+                "value": 16618.0
             }
         ],
         "validators": {
@@ -6245,27 +6245,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 341572.0
+                "value": 342178.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 409886.0
+                "value": 410613.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 204943.0
+                "value": 205307.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 375729.0
+                "value": 376395.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 409886.0
+                "value": 410613.0
             }
         ],
         "validators": {
@@ -9311,27 +9311,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 12180.0
+                "value": 12202.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 24361.0
+                "value": 24404.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 12180.0
+                "value": 12202.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 17438.0
+                "value": 17469.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 24361.0
+                "value": 24404.0
             }
         ],
         "validators": {
@@ -9674,27 +9674,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 49570.0
+                "value": 49658.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 99141.0
+                "value": 99317.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 49570.0
+                "value": 49658.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 66355.0
+                "value": 66473.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 99141.0
+                "value": 99317.0
             }
         ],
         "validators": {
@@ -10037,27 +10037,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 120040.0
+                "value": 120253.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 199979.0
+                "value": 200334.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 99990.0
+                "value": 100167.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 171374.0
+                "value": 171678.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 199979.0
+                "value": 200334.0
             }
         ],
         "validators": {
@@ -10400,27 +10400,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 250333.0
+                "value": 250778.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 304802.0
+                "value": 305343.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 152401.0
+                "value": 152671.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 277568.0
+                "value": 278060.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 304802.0
+                "value": 305343.0
             }
         ],
         "validators": {
@@ -10763,27 +10763,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 544294.0
+                "value": 545260.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 544294.0
+                "value": 545260.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 272147.0
+                "value": 272630.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 544294.0
+                "value": 545260.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 544294.0
+                "value": 545260.0
             }
         ],
         "validators": {
@@ -11126,27 +11126,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 546515.0
+                "value": 547484.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 614829.0
+                "value": 615920.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 307414.0
+                "value": 307960.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 580672.0
+                "value": 581702.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 614829.0
+                "value": 615920.0
             }
         ],
         "validators": {
@@ -11878,27 +11878,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 12180.0
+                "value": 12202.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 24361.0
+                "value": 24404.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 12180.0
+                "value": 12202.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 17438.0
+                "value": 17469.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 24361.0
+                "value": 24404.0
             }
         ],
         "validators": {
@@ -12241,27 +12241,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 49570.0
+                "value": 49658.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 99141.0
+                "value": 99317.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 49570.0
+                "value": 49658.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 66355.0
+                "value": 66473.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 99141.0
+                "value": 99317.0
             }
         ],
         "validators": {
@@ -12604,27 +12604,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 120040.0
+                "value": 120253.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 199979.0
+                "value": 200334.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 99990.0
+                "value": 100167.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 171374.0
+                "value": 171678.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 199979.0
+                "value": 200334.0
             }
         ],
         "validators": {
@@ -12967,27 +12967,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 250333.0
+                "value": 250778.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 304802.0
+                "value": 305343.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 152401.0
+                "value": 152671.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 277568.0
+                "value": 278060.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 304802.0
+                "value": 305343.0
             }
         ],
         "validators": {
@@ -13330,27 +13330,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 544294.0
+                "value": 545260.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 544294.0
+                "value": 545260.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 272147.0
+                "value": 272630.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 544294.0
+                "value": 545260.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 544294.0
+                "value": 545260.0
             }
         ],
         "validators": {
@@ -13693,27 +13693,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 546515.0
+                "value": 547484.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 614829.0
+                "value": 615920.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 307414.0
+                "value": 307960.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 580672.0
+                "value": 581702.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 614829.0
+                "value": 615920.0
             }
         ],
         "validators": {
@@ -15622,27 +15622,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 70927.0
+                "value": 71053.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 110374.0
+                "value": 110570.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 55187.0
+                "value": 55285.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 70927.0
+                "value": 71053.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 110374.0
+                "value": 110570.0
             }
         ],
         "validators": {
@@ -15945,27 +15945,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 157658.0
+                "value": 157938.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 210168.0
+                "value": 210541.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 105084.0
+                "value": 105270.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 157658.0
+                "value": 157938.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 210168.0
+                "value": 210541.0
             }
         ],
         "validators": {
@@ -16233,7 +16233,7 @@
             },
             {
                 "year": 2026,
-                "value": 325832.0
+                "value": 326410.0
             }
         ],
         "validators": {

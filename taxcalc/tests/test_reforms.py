@@ -39,7 +39,7 @@ def test_2017_law_reform(tests_path):
         'SS_thd85': {'relation': '=', 'value': 34000},
         # ... parameters not affected by TCJA and that are indexed
         'STD_Dep': {'relation': '>', 'value': 1050},
-        'CG_brk2': {'relation': '>', 'value': 425800},
+        'CG_brk2': {'relation': '>', 'value': 425400},
         'AMT_CG_brk1': {'relation': '>', 'value': 38600},
         'AMT_brk1': {'relation': '>', 'value': 191100},
         'EITC_c': {'relation': '>', 'value': 519},
