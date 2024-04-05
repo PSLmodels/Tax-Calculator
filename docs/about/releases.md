@@ -3,6 +3,23 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2024-04-04 Release 3.5.3
+------------------------
+(last merged pull request is
+[#2732](https://github.com/PSLmodels/Tax-Calculator/pull/2732))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Updates `growfactors.csv` and PUF and CPS weights files for new `taxdata` reflecting the February 2024 CBO economic projections [[#2729](https://github.com/PSLmodels/Tax-Calculator/pull/2729) by Bodi Yang]
+- Simplification of how tax parameters are indexed [[#2732](https://github.com/PSLmodels/Tax-Calculator/pull/2732) by Martin Holmer]
+
+**Bug Fixes**
+- Correct historical parameter values [[#2730](https://github.com/PSLmodels/Tax-Calculator/pull/2730) by Martin Holmer]
+
+
 2024-03-18 Release 3.5.2
 ------------------------
 (last merged pull request is
