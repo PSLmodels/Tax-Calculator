@@ -18,6 +18,13 @@ Classifier: Programming Language :: Python :: 3.11
 Classifier: Topic :: Software Development :: Libraries :: Python Modules
 Description-Content-Type: text/markdown
 License-File: LICENSE
+Requires-Dist: setuptools
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: bokeh
+Requires-Dist: numba
+Requires-Dist: requests
+Requires-Dist: paramtools
 
 | | |
 | --- | --- |
