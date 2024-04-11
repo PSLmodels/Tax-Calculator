@@ -8,53 +8,14 @@ msgstr ""
 "Language: sl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Theme by the"
-msgstr "Tema avtorja"
-
-msgid "Open an issue"
-msgstr "Odprite številko"
-
-msgid "Contents"
-msgstr "Vsebina"
-
-msgid "Download notebook file"
-msgstr "Prenesite datoteko zvezka"
-
-msgid "Sphinx Book Theme"
-msgstr "Tema knjige Sphinx"
-
-msgid "Fullscreen mode"
-msgstr "Celozaslonski način"
-
-msgid "Edit this page"
-msgstr "Uredite to stran"
-
-msgid "By"
-msgstr "Avtor"
-
-msgid "Copyright"
-msgstr "avtorske pravice"
-
-msgid "Source repository"
-msgstr "Izvorno skladišče"
-
-msgid "previous page"
-msgstr "Prejšnja stran"
-
-msgid "next page"
-msgstr "Naslednja stran"
-
-msgid "Toggle navigation"
-msgstr "Preklopi navigacijo"
-
-msgid "repository"
-msgstr "odlagališče"
-
 msgid "suggest edit"
 msgstr "predlagajte urejanje"
 
-msgid "open issue"
-msgstr "odprto vprašanje"
+msgid "Last updated on"
+msgstr "Nazadnje posodobljeno dne"
+
+msgid "Edit this page"
+msgstr "Uredite to stran"
 
 msgid "Launch"
 msgstr "Kosilo"
@@ -62,14 +23,53 @@ msgstr "Kosilo"
 msgid "Print to PDF"
 msgstr "Natisni v PDF"
 
+msgid "open issue"
+msgstr "odprto vprašanje"
+
+msgid "Download notebook file"
+msgstr "Prenesite datoteko zvezka"
+
+msgid "Toggle navigation"
+msgstr "Preklopi navigacijo"
+
+msgid "Source repository"
+msgstr "Izvorno skladišče"
+
 msgid "By the"
 msgstr "Avtor"
 
-msgid "Last updated on"
-msgstr "Nazadnje posodobljeno dne"
+msgid "next page"
+msgstr "Naslednja stran"
+
+msgid "repository"
+msgstr "odlagališče"
+
+msgid "Sphinx Book Theme"
+msgstr "Tema knjige Sphinx"
 
 msgid "Download source file"
 msgstr "Prenesite izvorno datoteko"
 
+msgid "Contents"
+msgstr "Vsebina"
+
+msgid "By"
+msgstr "Avtor"
+
+msgid "Copyright"
+msgstr "avtorske pravice"
+
+msgid "Fullscreen mode"
+msgstr "Celozaslonski način"
+
+msgid "Open an issue"
+msgstr "Odprite številko"
+
+msgid "previous page"
+msgstr "Prejšnja stran"
+
 msgid "Download this page"
 msgstr "Prenesite to stran"
+
+msgid "Theme by the"
+msgstr "Tema avtorja"

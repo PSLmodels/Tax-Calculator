@@ -8,53 +8,14 @@ msgstr ""
 "Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Theme by the"
-msgstr "Θέμα από το"
-
-msgid "Open an issue"
-msgstr "Ανοίξτε ένα ζήτημα"
-
-msgid "Contents"
-msgstr "Περιεχόμενα"
-
-msgid "Download notebook file"
-msgstr "Λήψη αρχείου σημειωματάριου"
-
-msgid "Sphinx Book Theme"
-msgstr "Θέμα βιβλίου Sphinx"
-
-msgid "Fullscreen mode"
-msgstr "ΛΕΙΤΟΥΡΓΙΑ ΠΛΗΡΟΥΣ ΟΘΟΝΗΣ"
-
-msgid "Edit this page"
-msgstr "Επεξεργαστείτε αυτήν τη σελίδα"
-
-msgid "By"
-msgstr "Με"
-
-msgid "Copyright"
-msgstr "Πνευματική ιδιοκτησία"
-
-msgid "Source repository"
-msgstr "Αποθήκη πηγής"
-
-msgid "previous page"
-msgstr "προηγούμενη σελίδα"
-
-msgid "next page"
-msgstr "επόμενη σελίδα"
-
-msgid "Toggle navigation"
-msgstr "Εναλλαγή πλοήγησης"
-
-msgid "repository"
-msgstr "αποθήκη"
-
 msgid "suggest edit"
 msgstr "προτείνω επεξεργασία"
 
-msgid "open issue"
-msgstr "ανοιχτό ζήτημα"
+msgid "Last updated on"
+msgstr "Τελευταία ενημέρωση στις"
+
+msgid "Edit this page"
+msgstr "Επεξεργαστείτε αυτήν τη σελίδα"
 
 msgid "Launch"
 msgstr "Εκτόξευση"
@@ -62,14 +23,53 @@ msgstr "Εκτόξευση"
 msgid "Print to PDF"
 msgstr "Εκτύπωση σε PDF"
 
+msgid "open issue"
+msgstr "ανοιχτό ζήτημα"
+
+msgid "Download notebook file"
+msgstr "Λήψη αρχείου σημειωματάριου"
+
+msgid "Toggle navigation"
+msgstr "Εναλλαγή πλοήγησης"
+
+msgid "Source repository"
+msgstr "Αποθήκη πηγής"
+
 msgid "By the"
 msgstr "Από το"
 
-msgid "Last updated on"
-msgstr "Τελευταία ενημέρωση στις"
+msgid "next page"
+msgstr "επόμενη σελίδα"
+
+msgid "repository"
+msgstr "αποθήκη"
+
+msgid "Sphinx Book Theme"
+msgstr "Θέμα βιβλίου Sphinx"
 
 msgid "Download source file"
 msgstr "Λήψη αρχείου προέλευσης"
 
+msgid "Contents"
+msgstr "Περιεχόμενα"
+
+msgid "By"
+msgstr "Με"
+
+msgid "Copyright"
+msgstr "Πνευματική ιδιοκτησία"
+
+msgid "Fullscreen mode"
+msgstr "ΛΕΙΤΟΥΡΓΙΑ ΠΛΗΡΟΥΣ ΟΘΟΝΗΣ"
+
+msgid "Open an issue"
+msgstr "Ανοίξτε ένα ζήτημα"
+
+msgid "previous page"
+msgstr "προηγούμενη σελίδα"
+
 msgid "Download this page"
 msgstr "Λήψη αυτής της σελίδας"
+
+msgid "Theme by the"
+msgstr "Θέμα από το"
