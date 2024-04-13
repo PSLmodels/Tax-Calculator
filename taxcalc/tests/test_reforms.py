@@ -349,3 +349,20 @@ def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
     with open(afile_path, 'w') as afile:
         afile.write('rid,res1,res2,res3,res4\n')
         afile.write('{}\n'.format(actual))
+
+
+@pytest.mark.extend_tcja
+def test_ext_reform(tests_path):
+    """
+    Test ext.json reform that extends TCJA beyond 2025.
+    """
+    end = Policy()
+    end.set_year(2026)
+    ext = Policy()
+    reform_file = os.path.join(tests_path, '..', 'reforms', 'ext.json')
+    with open(reform_file, 'r') as rfile:
+        rtext = rfile.read()
+    ext.implement_reform(Policy.read_json_reform(rtext))
+    assert not ext.parameter_warnings
+    ext.set_year(2026)
+    assert ext.II_em < end.II_em

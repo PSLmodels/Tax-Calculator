@@ -50,10 +50,10 @@ with temporary TCJA provisions expiring after 2025) by omitting the
 `--baseline` option.  But if such a reform were to be analyzed
 relative to extending all the temporary TCJA provisions beyond 2025,
 then the `--baseline ext.json` option would need to be used.  The
-[`ext.json`](./ext.json) file contains the 2026 tax policy reform
-provisions that would extend TCJA's temporary provisions beyond 2025.
-Before using this `ext.json` reform file, be sure to read how it is
-generated at the end of this document.
+[`ext.json`](../../taxcalc/reforms/ext.json) file contains the 2026
+tax policy reform provisions that would extend TCJA's temporary
+provisions beyond 2025.  Before using this `ext.json` reform file, be
+sure to read how it is generated at the end of this document.
 
 Here are some concrete examples of using the `tc` tool to analyze a
 reform of interest to you that begins in 2026.  The examples assume
