@@ -22,3 +22,4 @@ comment:
 ignore:
   - "setup.py"
   - "ppp.py"
+  - "extend_tcja.py"
