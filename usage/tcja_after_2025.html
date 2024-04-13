@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Structural overview &#8212; Tax-Calculator</title>
+    <title>TCJA after 2025 &#8212; Tax-Calculator</title>
   
   
   
@@ -62,11 +62,11 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'usage/overview';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'usage/tcja_after_2025';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Data for Tax-Calculator" href="data.html" />
-    <link rel="prev" title="Getting started" href="starting.html" />
+    <link rel="next" title="History" href="../about/history.html" />
+    <link rel="prev" title="Recipe 6: Analyzing a Non-Parametric Reform" href="../recipes/recipe06.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -171,7 +171,7 @@ const thebe_selector_output = ".output, .cell_output"
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Usage</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="starting.html">Getting started</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Structural overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Structural overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data for Tax-Calculator</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../guide/index.html">User guide</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guide/python_interface.html">Python interface</a></li>
@@ -193,7 +193,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../recipes/recipe06.html">Recipe 6: Analyzing a Non-Parametric Reform</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tcja_after_2025.html">TCJA after 2025</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">TCJA after 2025</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
 <ul class="nav bd-sidenav">
@@ -318,7 +318,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/usage/overview.md" target="_blank"
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/usage/tcja_after_2025.md" target="_blank"
    class="btn btn-sm btn-source-edit-button dropdown-item"
    title="Suggest edit"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -335,7 +335,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fusage/overview.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fusage/tcja_after_2025.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -365,7 +365,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="../_sources/usage/overview.md" target="_blank"
+      <li><a href="../_sources/usage/tcja_after_2025.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -436,9 +436,7 @@ document.write(`
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</label>
+
 </div></div>
       
     </div>
@@ -449,24 +447,11 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Structural overview</h1>
+    <h1>TCJA after 2025</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-summary">Quick summary</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-story">Complete story</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#utilities">Utilities</a></li>
-</ul>
-</li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -476,119 +461,114 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="structural-overview">
-<h1>Structural overview<a class="headerlink" href="#structural-overview" title="Permalink to this heading">#</a></h1>
-<p>Tax-Calculator has been designed using <a class="reference external" href="https://www.programiz.com/python-programming/object-oriented-programming">object-oriented programming (OOP)</a>
-principles.
-There are seven classes and a collection of global utility functions,
-but most Python programming involves using only a few methods in three classes.</p>
-<section id="quick-summary">
-<h2>Quick summary<a class="headerlink" href="#quick-summary" title="Permalink to this heading">#</a></h2>
-<p>Typical Tax-Calculator usage involves creating two Calculator class objects:
-both containing the same sample of filing units (that is, Records class object),
-but each containing a different tax policy (that is, Policy class object).
-The idea is to compare the calculated tax liabilities of the sample units under
-the two different tax policies,
-one of which is usually current-law policy and the other is a tax reform of
-interest.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="tcja-after-2025">
+<h1>TCJA after 2025<a class="headerlink" href="#tcja-after-2025" title="Permalink to this heading">#</a></h1>
+<p>Many provisions of the TCJA are temporary and are scheduled to end
+after 2025 under current-law policy.  Tax policy parameters that are
+associated with expiring provisions and that are not inflation indexed
+will revert to their 2017 values in 2026.  Tax policy parameters that
+are associated with expiring provisions and that are inflation indexed
+will revert to their 2017 values indexed to 2026 using a chained CPI-U
+inflation factor.  For a list of the ending TCJA provisions, see this
+Congressional Research Service document: <a class="reference external" href="https://crsreports.congress.gov/product/pdf/R/R47846">Reference Table: Expiring
+Provisions in the “Tax Cuts and Jobs Act” (TCJA, P.L. 115-97)</a>, which is dated
+November 21, 2023.</p>
+<p>This document describes how to use the PSLmodels Tax-Calculator
+command-line interface
+<a class="reference external" href="https://taxcalc.pslmodels.org/guide/cli.html">tc</a> with any compatible
+input dataset to analyze the post-2025 effects of alternatives to
+current-law policy (which calls for all temporary TCJA provisions to
+expire).  Compatible input datasets include:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">rec</span></code> → Records class object.<br />
-Created by <code class="docutils literal notranslate"><span class="pre">Records()</span></code> when containing IRS-SOI-PUF-derived filing-unit data
-or created by <code class="docutils literal notranslate"><span class="pre">Records.cps_constructor()</span></code> when containing CPS-derived
-filing-unit data.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">clp</span></code> → <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class object containing parameters that characterize
-current-law policy.<br />
-Created by <code class="docutils literal notranslate"><span class="pre">Policy()</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ref</span></code> → <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class object containing parameters that characterize a tax
-reform.<br />
-Created using a Python dictionary <code class="docutils literal notranslate"><span class="pre">refdict</span></code> representing the reform by
-using the <code class="docutils literal notranslate"><span class="pre">implement_reform(refdict)</span></code> method on a <code class="docutils literal notranslate"><span class="pre">Policy</span></code> object created
-by <code class="docutils literal notranslate"><span class="pre">Policy()</span></code>.
-Or created using a JSON file <code class="docutils literal notranslate"><span class="pre">filename</span></code> representing the reform by using
-the <code class="docutils literal notranslate"><span class="pre">implement_reform(Policy.read_json_reform(filename))</span></code> method on a
-<code class="docutils literal notranslate"><span class="pre">Policy</span></code> object created by <code class="docutils literal notranslate"><span class="pre">Policy()</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">calc_clp</span></code> → Calculator class object for current-law policy.<br />
-Created by <code class="docutils literal notranslate"><span class="pre">Calculator(records=rec,</span> <span class="pre">policy=clp)</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">calc_ref</span></code> → Calculator class object for reform policy.<br />
-Created by <code class="docutils literal notranslate"><span class="pre">Calculator(records=rec,</span> <span class="pre">policy=ref)</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">calc_all()</span></code> → Calculator class method that computes tax liability
-(and many intermediate variables such as AGI) for each filing-unit.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">itax_clp</span></code> → Variable containing aggregate income tax liability under
-current-law policy.<br />
-Created by <code class="docutils literal notranslate"><span class="pre">weighted_total('iitax')</span></code> method called on <code class="docutils literal notranslate"><span class="pre">calc_clp</span></code> object
-after <code class="docutils literal notranslate"><span class="pre">calc_all()</span></code> called.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">diff_table</span></code> → Pandas DataFrame object containing reform-minus-current-law
-difference table for income tax liability by expanded-income deciles.<br />
-Created by
-<code class="docutils literal notranslate"><span class="pre">calc_clp.difference_table(calc_ref,</span> <span class="pre">'weighted_deciles',</span> <span class="pre">'iitax')</span></code> method
-called after <code class="docutils literal notranslate"><span class="pre">calc_all()</span></code> has been called on both Calculator objects.</p></li>
+<li><p>the older <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file included in the Tax-Calculator package</p></li>
+<li><p>the older <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file generated in the PSLmodels
+<a class="reference external" href="https://github.com/PSLmodels/taxdata">taxdata</a> repository and
+available only to those with access to the 2011 IRS/SOI PUF</p></li>
+<li><p>several newer CSV-formatted input files created in the PSLmodels
+<a class="reference external" href="https://github.com/PSLmodels/tax-microdata-benchmarking">tax-microdata</a>
+repository that are based on the 2015 IRS/SOI PUF and on recent CPS
+data, and are available only to those with access to the 2015
+IRS/SOI PUF</p></li>
 </ul>
-<p>For examples of Python scripts that use these classes and methods, see
-<a class="reference internal" href="../recipes/index.html"><span class="doc">Recipes</span></a>.</p>
-<p>For detailed documentation and source code for these three classes, see:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/records.py">records.py</a>
-for Records class and all its methods.</p></li>
-<li><p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py">policy.py</a>
-for Policy class and all its methods.</p></li>
-<li><p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py">calculator.py</a>
-for Calculator class and all its methods.</p></li>
-</ul>
-</section>
-<section id="complete-story">
-<h2>Complete story<a class="headerlink" href="#complete-story" title="Permalink to this heading">#</a></h2>
-<p>Tax-Calculator contains eight basic classes, and a collection of global utility
-functions, that together provide the full range of Tax-Calculator capabilities.
-Here is a description of their role in Tax-Calculator and a link to each the
-detailed documentation and source code for each class and all its methods.</p>
-<section id="classes">
-<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">#</a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Data</span></code> → Contains basic logic for manipulating cross-sectional data that
-need to have growth factors and sample weights to age the data to years after
-the data start year.<br />
-Documentation and source code are in
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/data.py">data.py</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Records</span></code> → Derived from <code class="docutils literal notranslate"><span class="pre">Data</span></code> and contains attributes of each tax filing
-unit.<br />
-Documentation and source code are in
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/records.py">records.py</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">GrowFactors</span></code> → Contains CBO-derived baseline annual growth factors that
-are used to specify price inflation and wage growth rates in the <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class
-object and to specify annual growth factors that are applied to monetary
-attributes of the filing units in the <code class="docutils literal notranslate"><span class="pre">Records</span></code> class object.<br />
-Documentation and source code are in
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/growfactors.py">growfactors.py</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Parameters</span></code> → Contains basic value extrapolation, revision, and validation
-logic for time-varying parameters that can be any of four types and can be
-either scalar-valued or vector-valued.<br />
-Documentation and source code are in
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/parameters.py">parameters.py</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Policy</span></code> → Derived from <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> and contains tax policy parameters.<br />
-Documentation and source code are in
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py">policy.py</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">GrowDiff</span></code> → Derived from <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> and contains differences from
-CBO-derived baseline growth factors in the <code class="docutils literal notranslate"><span class="pre">GrowFactors</span></code> class object.<br />
-Documentation and source code are in
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/growdiff.py">growdiff.py</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Consumption</span></code> → Derived from <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> and contains parameters related
-to consumption that are used in the <code class="docutils literal notranslate"><span class="pre">Calculator</span></code> class object.<br />
-Documentation and source code are in
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/consumption.py">consumption.py</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Calculator</span></code> → Contains a <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class object, a <code class="docutils literal notranslate"><span class="pre">Records</span></code> class object,
-and a <code class="docutils literal notranslate"><span class="pre">Consumption</span></code> class object, plus functions that contain the logic
-required to calculate income and payroll tax liability for each filing unit.<br />
-Documentation and source code are in
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py">calculator.py</a> and in
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py">calcfunctions.py</a>.</p></li>
-</ul>
-</section>
-<section id="utilities">
-<h3>Utilities<a class="headerlink" href="#utilities" title="Permalink to this heading">#</a></h3>
-<p>Documentation and source code for the global utility functions are in
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py">utils.py</a>.</p>
-</section>
-</section>
+<p>Before reading the rest of this document, be sure you understand how
+to use the Tax-Calculator command-line tool
+<a class="reference external" href="https://taxcalc.pslmodels.org/guide/cli.html">tc</a>, particularly the
+<code class="docutils literal notranslate"><span class="pre">--baseline</span></code> and <code class="docutils literal notranslate"><span class="pre">--reform</span></code> command-line options.  (For complete and
+up-to-date <code class="docutils literal notranslate"><span class="pre">tc</span></code> documentation, enter <code class="docutils literal notranslate"><span class="pre">tc</span> <span class="pre">--help</span></code> at the command
+prompt.)  Omitting the <code class="docutils literal notranslate"><span class="pre">--baseline</span></code> option means the baseline policy
+is current-law policy.  Omitting the <code class="docutils literal notranslate"><span class="pre">--reform</span></code> option means the
+reform policy is current-law policy.  The <code class="docutils literal notranslate"><span class="pre">--tables</span></code> option produces
+tables comparing taxes under the baseline policy to taxes under the
+reform policy by income decile and in aggregate.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--baseline</span></code> option is not commonly used, but it can be very
+helpful in analyzing reforms that take effect beginning in 2026.  Such
+a reform could be analyzed relative to current-law policy (that is,
+with temporary TCJA provisions expiring after 2025) by omitting the
+<code class="docutils literal notranslate"><span class="pre">--baseline</span></code> option.  But if such a reform were to be analyzed
+relative to extending all the temporary TCJA provisions beyond 2025,
+then the <code class="docutils literal notranslate"><span class="pre">--baseline</span> <span class="pre">ext.json</span></code> option would need to be used.  The
+<a class="reference download internal" download="" href="../_downloads/c01a1297a0b308970cb1fc10e777b569/ext.json"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">ext.json</span></code></span></a> file contains the 2026
+tax policy reform provisions that would extend TCJA’s temporary
+provisions beyond 2025.  Before using this <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> reform file, be
+sure to read how it is generated at the end of this document.</p>
+<p>Here are some concrete examples of using the <code class="docutils literal notranslate"><span class="pre">tc</span></code> tool to analyze a
+reform of interest to you that begins in 2026.  The examples assume
+you have named your reform file <code class="docutils literal notranslate"><span class="pre">x.json</span></code> and that you are using one
+of the compatible input datasets describe above.  The examples will
+call the input dataset <code class="docutils literal notranslate"><span class="pre">z.csv</span></code>.</p>
+<p>To analyze your reform relative to current-law policy (which means
+temporary TCJA provisions have expired beginning in 2026), you would
+execute this command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">z</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span> <span class="o">--</span><span class="n">reform</span> <span class="n">x</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<p>The tables would be in the <code class="docutils literal notranslate"><span class="pre">z-26-#-x-#-tab.text</span></code> output file generated
+by this <code class="docutils literal notranslate"><span class="pre">tc</span></code> run.  If you want to do custom tabulations of the micro
+output data, use the <code class="docutils literal notranslate"><span class="pre">--dump</span></code>, <code class="docutils literal notranslate"><span class="pre">--dvars</span></code>, and <code class="docutils literal notranslate"><span class="pre">--sqldb</span></code> options as
+explained by the <code class="docutils literal notranslate"><span class="pre">tc</span> <span class="pre">--help</span></code> documentation.</p>
+<p>To analyze your reform relative to a reform that extends all TCJA
+temporary provisions beyond 2025, you would execute this command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">z</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span> <span class="o">--</span><span class="n">baseline</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">reform</span> <span class="n">x</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<p>The tables would be in the <code class="docutils literal notranslate"><span class="pre">z-26-ext-x-#-tab.text</span></code> output file
+generated by this <code class="docutils literal notranslate"><span class="pre">tc</span></code> run.</p>
+<p>Also, remember that you can simulate a <em>compound reform</em> using the
+following syntax:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">z</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span> <span class="o">--</span><span class="n">baseline</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">reform</span> <span class="n">x</span><span class="o">.</span><span class="n">json</span><span class="o">+</span><span class="n">y</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">y.json</span></code> contains a reform with additional provisions not
+included in your <code class="docutils literal notranslate"><span class="pre">x.json</span></code> reform file.  The resulting table output
+would be in a file named <code class="docutils literal notranslate"><span class="pre">z-26-ext-x+y-#-tab.text</span></code>.</p>
+<p>And finally, you might consider creating a reform file called
+<code class="docutils literal notranslate"><span class="pre">end.json</span></code> that contains just the two characters <code class="docutils literal notranslate"><span class="pre">{}</span></code>.  This is a null
+reform, which is equivalent to current-law policy, that could be used
+as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">z</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span> <span class="o">--</span><span class="n">baseline</span> <span class="n">end</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">reform</span> <span class="n">x</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<p>The resulting table output would be named <code class="docutils literal notranslate"><span class="pre">z-26-end-x-#-tab.text</span></code> and
+have the same tabular output as the <code class="docutils literal notranslate"><span class="pre">z-26-#-x-#-tab.text</span></code> file.  Some
+people may prefer <code class="docutils literal notranslate"><span class="pre">end</span></code> to <code class="docutils literal notranslate"><span class="pre">#</span></code> as a way of naming current-law policy
+in the context of discussing TCJA-related reforms.</p>
+<p><strong>How is the <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file generated?</strong></p>
+<p>The short answer is by using the
+<a class="reference download internal" download="" href="../_downloads/c6b47735a53532490a594c1ee2055ad9/extend_tcja.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code></span></a> script.</p>
+<p>Reading the <code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code> script will provide details on how the
+values in the <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file are generated.</p>
+<p>It is important to bear in mind that the <code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code> script will
+generate a different <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file whenever the CBO economic
+projection (incorporated in the Tax-Calculator <code class="docutils literal notranslate"><span class="pre">growfactors.csv</span></code> file)
+change or whenever new historical values of policy parameters are
+added to the <code class="docutils literal notranslate"><span class="pre">policy_current_law.json</span></code> file thereby changing the
+<code class="docutils literal notranslate"><span class="pre">Policy.LAST_KNOWN_YEAR</span></code>.</p>
+<p>The 3.5.3 version of Tax-Calculator incorporates the February 2024 CBO
+economic projection and contains historical tax policy parameter values
+through 2022.  Future versions of Tax-Calculator that use historical
+policy parameter values for 2023 and 2024 or use the February 2025 CBO
+economic projection will cause the <code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code> script to generate
+somewhat different 2026 parameter values in the <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file.</p>
 </section>
 
     <script type="text/x-thebe-config">
@@ -622,20 +602,20 @@ Documentation and source code are in
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="starting.html"
+       href="../recipes/recipe06.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Getting started</p>
+        <p class="prev-next-title">Recipe 6: Analyzing a Non-Parametric Reform</p>
       </div>
     </a>
     <a class="right-next"
-       href="data.html"
+       href="../about/history.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Data for Tax-Calculator</p>
+        <p class="prev-next-title">History</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -645,25 +625,6 @@ Documentation and source code are in
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-summary">Quick summary</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-story">Complete story</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#utilities">Utilities</a></li>
-</ul>
-</li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>
