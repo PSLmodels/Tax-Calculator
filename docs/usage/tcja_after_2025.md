@@ -28,7 +28,7 @@ expire).  Compatible input datasets include:
 
 * several newer CSV-formatted input files created in the PSLmodels
   [tax-microdata](https://github.com/PSLmodels/tax-microdata-benchmarking)
-  repository that are based on the 2015 IRS/SOI PUF and on recent CPS
+  repository that are based on the 2015 IRS/SOI PUF and on more recent CPS
   data, and are available only to those with access to the 2015
   IRS/SOI PUF
 
@@ -50,7 +50,7 @@ with temporary TCJA provisions expiring after 2025) by omitting the
 `--baseline` option.  But if such a reform were to be analyzed
 relative to extending all the temporary TCJA provisions beyond 2025,
 then the `--baseline ext.json` option would need to be used.  The
-[`ext.json`](../../taxcalc/reforms/ext.json) file contains the 2026
+[`ext.json`](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/ext.json) file contains the 2026
 tax policy reform provisions that would extend TCJA's temporary
 provisions beyond 2025.  Before using this `ext.json` reform file, be
 sure to read how it is generated at the end of this document.
@@ -113,7 +113,7 @@ in the context of discussing TCJA-related reforms.
 **How is the `ext.json` file generated?**
 
 The short answer is by using the
-[`extend_tcja.py`](../../extend_tcja.py) script.
+[`extend_tcja.py`](https://github.com/PSLmodels/Tax-Calculator/blob/master/extend_tcja.py) script.
 
 Reading the `extend_tcja.py` script will provide details on how the
 values in the `ext.json` file are generated.
