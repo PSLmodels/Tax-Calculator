@@ -486,7 +486,7 @@ expire).  Compatible input datasets include:</p>
 available only to those with access to the 2011 IRS/SOI PUF</p></li>
 <li><p>several newer CSV-formatted input files created in the PSLmodels
 <a class="reference external" href="https://github.com/PSLmodels/tax-microdata-benchmarking">tax-microdata</a>
-repository that are based on the 2015 IRS/SOI PUF and on recent CPS
+repository that are based on the 2015 IRS/SOI PUF and on more recent CPS
 data, and are available only to those with access to the 2015
 IRS/SOI PUF</p></li>
 </ul>
@@ -507,7 +507,7 @@ with temporary TCJA provisions expiring after 2025) by omitting the
 <code class="docutils literal notranslate"><span class="pre">--baseline</span></code> option.  But if such a reform were to be analyzed
 relative to extending all the temporary TCJA provisions beyond 2025,
 then the <code class="docutils literal notranslate"><span class="pre">--baseline</span> <span class="pre">ext.json</span></code> option would need to be used.  The
-<a class="reference download internal" download="" href="../_downloads/c01a1297a0b308970cb1fc10e777b569/ext.json"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">ext.json</span></code></span></a> file contains the 2026
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/ext.json"><code class="docutils literal notranslate"><span class="pre">ext.json</span></code></a> file contains the 2026
 tax policy reform provisions that would extend TCJA’s temporary
 provisions beyond 2025.  Before using this <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> reform file, be
 sure to read how it is generated at the end of this document.</p>
@@ -554,7 +554,7 @@ people may prefer <code class="docutils literal notranslate"><span class="pre">e
 in the context of discussing TCJA-related reforms.</p>
 <p><strong>How is the <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file generated?</strong></p>
 <p>The short answer is by using the
-<a class="reference download internal" download="" href="../_downloads/c6b47735a53532490a594c1ee2055ad9/extend_tcja.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code></span></a> script.</p>
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/extend_tcja.py"><code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code></a> script.</p>
 <p>Reading the <code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code> script will provide details on how the
 values in the <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file are generated.</p>
 <p>It is important to bear in mind that the <code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code> script will
