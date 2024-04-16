@@ -121,7 +121,7 @@ values in the `ext.json` file are generated.
 It is important to bear in mind that the `extend_tcja.py` script will
 generate a different `ext.json` file whenever the CBO economic
 projection (incorporated in the Tax-Calculator `growfactors.csv` file)
-change or whenever new historical values of policy parameters are
+changes or whenever new historical values of policy parameters are
 added to the `policy_current_law.json` file thereby changing the
 `Policy.LAST_KNOWN_YEAR`.
 
