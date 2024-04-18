@@ -227,7 +227,7 @@ class Records(Data):
     @staticmethod
     def tmd_constructor(data=None,
                         gfactors=GrowFactors(),
-                        exact_calculations=False):
+                        exact_calculations=False):  # pragma: no cover
         """
         Static method returns a Records object instantiated with TMD
         input data.  This works in a analogous way to Records(), which

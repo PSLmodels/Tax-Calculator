@@ -326,11 +326,11 @@ class TaxCalcIO():
                 recs = Records.tmd_constructor(
                     gfactors=gfactors_ref,
                     exact_calculations=exact_calculations
-                )
+                )  # pragma: no cover
                 recs_base = Records.tmd_constructor(
                     gfactors=gfactors_base,
                     exact_calculations=exact_calculations
-                )
+                )  # pragma: no cover
             else:  # if not {cps|tmd}_input_data but aging_input_data
                 recs = Records(
                     data=input_data,
