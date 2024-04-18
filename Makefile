@@ -51,19 +51,19 @@ endef
 .PHONY=pytest-cps
 pytest-cps:
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --disable-warnings -m "not requires_pufcsv and not pre_release"
+	@cd taxcalc ; pytest -n4 --disable-warnings -m "not requires_pufcsv and not requires_tmdcsv and not pre_release"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
 pytest:
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 -m "not pre_release"
+	@cd taxcalc ; pytest -n4 --disable-warnings -m "not pre_release"
 	@$(pytest-cleanup)
 
 .PHONY=pytest-all
 pytest-all:
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 -m ""
+	@cd taxcalc ; pytest -n4 --disable-warnings -m ""
 	@$(pytest-cleanup)
 
 define tctest-cleanup
@@ -103,7 +103,7 @@ define coverage-cleanup
 rm -f .coverage htmlcov/*
 endef
 
-COVMARK = "not requires_pufcsv and not pre_release"
+COVMARK = "not requires_pufcsv and not requires_tmdcsv and not pre_release"
 
 OS := $(shell uname -s)
 

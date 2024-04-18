@@ -73,6 +73,7 @@ class TaxCalcIO():
         inp = 'x'
         self.puf_input_data = False
         self.cps_input_data = False
+        self.tmd_input_data = False
         if isinstance(input_data, str):
             # remove any leading directory path from INPUT filename
             fname = os.path.basename(input_data)
@@ -85,6 +86,7 @@ class TaxCalcIO():
             # check existence of INPUT file
             self.puf_input_data = input_data.endswith('puf.csv')
             self.cps_input_data = input_data.endswith('cps.csv')
+            self.tmd_input_data = input_data.endswith('tmd.csv')
             if not self.cps_input_data and not os.path.isfile(input_data):
                 msg = 'INPUT file could not be found'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
@@ -320,7 +322,16 @@ class TaxCalcIO():
                     gfactors=gfactors_base,
                     exact_calculations=exact_calculations
                 )
-            else:  # if not cps_input_data but aging_input_data
+            elif self.tmd_input_data:
+                recs = Records.tmd_constructor(
+                    gfactors=gfactors_ref,
+                    exact_calculations=exact_calculations
+                )
+                recs_base = Records.tmd_constructor(
+                    gfactors=gfactors_base,
+                    exact_calculations=exact_calculations
+                )
+            else:  # if not {cps|tmd}_input_data but aging_input_data
                 recs = Records(
                     data=input_data,
                     gfactors=gfactors_ref,
