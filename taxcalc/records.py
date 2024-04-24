@@ -252,6 +252,7 @@ class Records(Data):
         for name in GrowFactors.VALID_NAMES:
             gfv[name] = self.gfactors.factor_value(name, year)
         # apply values to Records variables
+        self.PT_binc_w2_wages *= gfv['AWAGE']
         self.e00200 *= gfv['AWAGE']
         self.e00200p *= gfv['AWAGE']
         self.e00200s *= gfv['AWAGE']
