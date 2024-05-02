@@ -324,10 +324,12 @@ class TaxCalcIO():
                 )
             elif self.tmd_input_data:
                 recs = Records.tmd_constructor(
+                    data=input_data,
                     gfactors=gfactors_ref,
                     exact_calculations=exact_calculations
                 )  # pragma: no cover
                 recs_base = Records.tmd_constructor(
+                    data=input_data,
                     gfactors=gfactors_base,
                     exact_calculations=exact_calculations
                 )  # pragma: no cover
