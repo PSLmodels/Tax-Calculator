@@ -225,7 +225,7 @@ class Records(Data):
                        exact_calculations=exact_calculations)
 
     @staticmethod
-    def tmd_constructor(data=None,
+    def tmd_constructor(data,  # path to tmd.csv file or dataframe
                         gfactors=GrowFactors(),
                         exact_calculations=False):  # pragma: no cover
         """
@@ -238,13 +238,7 @@ class Records(Data):
         eliminate the need to specify all the details of the PUF input
         data.
         """
-        if data is None and os.path.isfile('tmd.csv'):
-            data = 'tmd.csv'
-        if gfactors is None:
-            weights = None
-        else:
-            weights = os.path.join(Records.CODE_PATH,
-                                   Records.TMD_WEIGHTS_FILENAME)
+        weights = os.path.join(Records.CODE_PATH, Records.TMD_WEIGHTS_FILENAME)
         return Records(data=data,
                        start_year=Records.TMDCSV_YEAR,
                        gfactors=gfactors,
