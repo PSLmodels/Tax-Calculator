@@ -8,6 +8,8 @@ import os
 import numpy as np
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
+from taxcalc.policy import Policy
+from taxcalc.records import Records
 
 
 class GrowDiff(Parameters):
@@ -19,15 +21,16 @@ class GrowDiff(Parameters):
 
     Parameters
     ----------
-    none
+    using_tmd: bool
 
     Returns
     -------
     class instance: GrowDiff
     """
 
-    JSON_START_YEAR = 2013  # must be same as Policy.JSON_START_YEAR
-    DEFAULT_NUM_YEARS = 22  # must be same as Policy.DEFAULT_NUM_YEARS
+    JSON_START_YEAR = Policy.JSON_START_YEAR
+    DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
+    TMD_START_YEAR = Records.TMDCSV_YEAR
     DEFAULTS_FILE_NAME = 'growdiff.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -35,6 +38,11 @@ class GrowDiff(Parameters):
         super().__init__()
         self.initialize(GrowDiff.JSON_START_YEAR,
                         GrowDiff.DEFAULT_NUM_YEARS)
+        self.firstyear = GrowDiff.TMD_START_YEAR if using_tmd \
+                         else GrowDiff.JSON_START_YEAR
+        syrdiff = GrowDiff.TMD_START_YEAR - GrowDiff.JSON_START_YEAR
+        self.numbyears = GrowDiff.DEFAULT_NUM_YEARS - syrdiff if using_tmd \
+                         else GrowDiff.DEFAULT_NUM_YEARS
 
     @staticmethod
     def read_json_update(obj, topkey):
@@ -76,7 +84,12 @@ class GrowDiff(Parameters):
         assert isinstance(growfactors, GrowFactors)
         for gfvn in GrowFactors.VALID_NAMES:
             _gfvn = f'_{gfvn}'
-            for i in range(0, self.num_years):
-                cyr = i + self.start_year
+            for i in range(0, self.numbyears):
+                cyr = i + self.firstyear
                 diff_array = getattr(self, _gfvn)
                 growfactors.update(gfvn, cyr, diff_array[i])
+
+    def set_rates(self):
+        """
+        Unimplemented base class method that is not used here.
+        """

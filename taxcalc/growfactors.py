@@ -8,7 +8,6 @@ Tax-Calculator GrowFactors class.
 import os
 import numpy as np
 import pandas as pd
-from taxcalc.utils import read_egg_csv
 
 
 class GrowFactors():
@@ -17,14 +16,7 @@ class GrowFactors():
 
     Parameters
     ----------
-    growfactors_filename: string
-        string is name of CSV file in which grow factors reside;
-        default value is name of file containing baseline grow factors.
-
-    Raises
-    ------
-    ValueError:
-        if growfactors_filename is not a string.
+    using_tmd: bool
 
     Returns
     -------
@@ -33,7 +25,7 @@ class GrowFactors():
     Notes
     -----
     Typical usage is "gfactor = GrowFactors()", which produces an object
-    containing the default growth factors in the GrowFactors.FILE_NAME file.
+    containing growth factors in the GrowFactors.DEFAULT_FILE_NAME file.
     """
 
     DEFAULT_FILE_NAME = 'growfactors.csv'
@@ -52,13 +44,13 @@ class GrowFactors():
     def __init__(self, using_tmd=False):
         # read appropriate grow factors into gfdf
         fname = GrowFactors.TMD_FILE_NAME if using_tmd \
-                else GrowFactors.DEFAULT_FILE_NAME 
+                else GrowFactors.DEFAULT_FILE_NAME
         filename = os.path.join(GrowFactors.FILE_PATH, fname)
         gfdf = pd.read_csv(filename, index_col='YEAR')
         # check validity of gfdf column names
         gfdf_names = set(list(gfdf))
         if gfdf_names != GrowFactors.VALID_NAMES:
-            msg = ('missing names are: {} and invalid names are: {}')
+            msg = 'missing names are: {} and invalid names are: {}'
             missing = GrowFactors.VALID_NAMES - gfdf_names
             invalid = gfdf_names - GrowFactors.VALID_NAMES
             raise ValueError(msg.format(missing, invalid))
