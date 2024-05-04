@@ -24,6 +24,7 @@ taxcalc/puf_weights.csv.gz
 taxcalc/records.py
 taxcalc/records_variables.json
 taxcalc/taxcalcio.py
+taxcalc/tmd_growfactors.csv
 taxcalc/tmd_weights.csv.gz
 taxcalc/utils.py
 taxcalc/utilsprvt.py
