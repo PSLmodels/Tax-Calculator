@@ -245,22 +245,22 @@ class TaxCalcIO():
         self.param_dict = paramdict
         self.policy_dicts = policydicts
         # create gdiff_baseline object
-        gdiff_baseline = GrowDiff()
+        gdiff_baseline = GrowDiff(self.tmd_input_data)
         try:
             gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
         # create GrowFactors base object that incorporates gdiff_baseline
-        gfactors_base = GrowFactors()
+        gfactors_base = GrowFactors(self.tmd_input_data)
         gdiff_baseline.apply_to(gfactors_base)
         # specify gdiff_response object
-        gdiff_response = GrowDiff()
+        gdiff_response = GrowDiff(self.tmd_input_data)
         try:
             gdiff_response.update_growdiff(paramdict['growdiff_response'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
         # create GrowFactors ref object that has all gdiff objects applied
-        gfactors_ref = GrowFactors()
+        gfactors_ref = GrowFactors(self.tmd_input_data)
         gdiff_baseline.apply_to(gfactors_ref)
         gdiff_response.apply_to(gfactors_ref)
         # create Policy objects:
