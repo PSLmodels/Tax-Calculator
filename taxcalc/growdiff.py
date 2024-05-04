@@ -31,7 +31,7 @@ class GrowDiff(Parameters):
     DEFAULTS_FILE_NAME = 'growdiff.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
-    def __init__(self):
+    def __init__(self, using_tmd=False):
         super().__init__()
         self.initialize(GrowDiff.JSON_START_YEAR,
                         GrowDiff.DEFAULT_NUM_YEARS)
@@ -75,7 +75,7 @@ class GrowDiff(Parameters):
         """
         assert isinstance(growfactors, GrowFactors)
         for gfvn in GrowFactors.VALID_NAMES:
-            _gfvn = '_{}'.format(gfvn)
+            _gfvn = f'_{gfvn}'
             for i in range(0, self.num_years):
                 cyr = i + self.start_year
                 diff_array = getattr(self, _gfvn)
