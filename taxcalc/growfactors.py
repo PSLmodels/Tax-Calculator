@@ -36,7 +36,8 @@ class GrowFactors():
     containing the default growth factors in the GrowFactors.FILE_NAME file.
     """
 
-    FILE_NAME = 'growfactors.csv'
+    DEFAULT_FILE_NAME = 'growfactors.csv'
+    TMD_FILE_NAME = 'tmd_growfactors.csv'
     FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     VALID_NAMES = set(['ABOOK', 'ACGNS', 'ACPIM', 'ACPIU',
@@ -48,20 +49,12 @@ class GrowFactors():
                        'ABENSSI', 'ABENSNAP', 'ABENWIC',
                        'ABENHOUSING', 'ABENTANF', 'ABENVET'])
 
-    def __init__(self, growfactors_filename=FILE_NAME):
-        # read grow factors from specified growfactors_filename
-        gfdf = pd.DataFrame()
-        if isinstance(growfactors_filename, str):
-            full_filename = os.path.join(GrowFactors.FILE_PATH,
-                                         growfactors_filename)
-            if os.path.isfile(full_filename):
-                gfdf = pd.read_csv(full_filename, index_col='YEAR')
-            else:  # find file in conda package
-                gfdf = read_egg_csv(os.path.basename(growfactors_filename),
-                                    index_col='YEAR')  # pragma: no cover
-        else:
-            raise ValueError('growfactors_filename is not a string')
-        assert isinstance(gfdf, pd.DataFrame)
+    def __init__(self, using_tmd=False):
+        # read appropriate grow factors into gfdf
+        fname = GrowFactors.TMD_FILE_NAME if using_tmd \
+                else GrowFactors.DEFAULT_FILE_NAME 
+        filename = os.path.join(GrowFactors.FILE_PATH, fname)
+        gfdf = pd.read_csv(filename, index_col='YEAR')
         # check validity of gfdf column names
         gfdf_names = set(list(gfdf))
         if gfdf_names != GrowFactors.VALID_NAMES:
