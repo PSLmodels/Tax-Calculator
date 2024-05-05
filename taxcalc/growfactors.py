@@ -8,6 +8,7 @@ Tax-Calculator GrowFactors class.
 import os
 import numpy as np
 import pandas as pd
+from taxcalc.utils import read_egg_csv
 
 
 class GrowFactors():
@@ -16,7 +17,7 @@ class GrowFactors():
 
     Parameters
     ----------
-    rowfactors_filename: string
+    growfactors_filename: string
         string is name of CSV file in which grow factors reside;
         default value is name of file containing baseline grow factors.
 
@@ -55,7 +56,7 @@ class GrowFactors():
                                          growfactors_filename)
             if os.path.isfile(full_filename):
                 gfdf = pd.read_csv(full_filename, index_col='YEAR')
-            else:  # find file in conda package
+            else:  # find file in package
                 gfdf = read_egg_csv(os.path.basename(growfactors_filename),
                                     index_col='YEAR')  # pragma: no cover
         else:
