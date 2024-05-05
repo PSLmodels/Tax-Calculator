@@ -30,6 +30,10 @@ def test_improper_usage(bad_gf_file):
     """
     Tests of improper usage of GrowFactors object.
     """
+    with pytest.raises(ValueError):
+        gfo = GrowFactors(dict())
+    with pytest.raises(ValueError):
+        gfo = GrowFactors(bad_gf_file.name)
     gfo = GrowFactors()
     fyr = gfo.first_year
     lyr = gfo.last_year
