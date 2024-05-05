@@ -136,7 +136,7 @@ def fixture_test_reforms(tests_path):
 
 def pytest_sessionfinish(session):
     """ Gather all test profiling test results and print to user."""
-
+    """
     tests_path = os.path.abspath(os.path.dirname(__file__))
 
     new_stats_df = get_session_results_df(session)
@@ -173,3 +173,4 @@ def pytest_sessionfinish(session):
     # Save new test stats to disk including time diff
     new_stats_df['time_diff'] = merge_df['time_diff'].values
     new_stats_df.to_csv(os.path.join(tests_path, 'test_stats_current.csv'))
+    """
