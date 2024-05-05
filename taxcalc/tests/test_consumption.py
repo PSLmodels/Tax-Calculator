@@ -65,7 +65,7 @@ def test_incorrect_update_consumption():
     with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption({'MPC_e17500': {2012: 0.2}})
     with pytest.raises(paramtools.ValidationError):
-        Consumption().update_consumption({'MPC_e17500': {2052: 0.2}})
+        Consumption().update_consumption({'MPC_e17500': {2099: 0.2}})
     with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption({'MPC_exxxxx': {2014: 0.2}})
     with pytest.raises(paramtools.ValidationError):
