@@ -177,7 +177,7 @@ def test_puf_var_stats(tests_path, puf_fullsample):
         calculate_mean_stats(calc, table_mean, year)
         if year == 2016:
             calculate_corr_stats(calc, table_corr)
-        if year < 2034
+        if year < 2034:
             calc.increment_year()
     # write tables to new CSV files
     mean_path = os.path.join(tests_path, MEAN_FILENAME + '-new')
