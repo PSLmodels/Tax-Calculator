@@ -1,4 +1,4 @@
-name: Build Package and Test Source Code [Python 3.9, 3.10, 2.11]
+name: Build Package and Test Source Code [Python 3.9, 3.10, 3.11]
 
 on: [push, pull_request]
 
