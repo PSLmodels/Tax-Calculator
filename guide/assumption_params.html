@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Assumption parameters &#8212; Tax-Calculator</title>
   
@@ -19,49 +18,45 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'guide/assumption_params';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -76,10 +71,9 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -120,11 +114,14 @@ const thebe_selector_output = ".output, .cell_output"
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -158,7 +155,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -511,16 +519,16 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="assumption-parameters">
-<h1>Assumption parameters<a class="headerlink" href="#assumption-parameters" title="Permalink to this heading">#</a></h1>
+<h1>Assumption parameters<a class="headerlink" href="#assumption-parameters" title="Link to this heading">#</a></h1>
 <p>This section contains documentation of several sets of parameters that characterize responses to a tax reform. Consumption parameters are used to compute marginal tax rates and to compute the consumption value of in-kind benefits. Growdiff parameters are used to specify baseline differences and/or reform responses in the annual rate of growth in economic variables. (Note that behavior parameters used to compute changes in input variables caused by a tax reform in a partial-equilibrium setting are not part of Tax-Calculator, but can be used via the Behavioral-Response <code class="docutils literal notranslate"><span class="pre">behresp</span></code> package in a Python program.)</p>
 <p>The assumption parameters control advanced features of Tax-Calculator, so understanding the source code that uses them is essential. Default values of many assumption parameters are zero and are projected into the future at that value, which implies no response to the reform. The benefit value consumption parameters have a default value of one, which implies the consumption value of the in-kind benefits is equal to the government cost of providing the benefits.</p>
 <section id="growdiff">
-<h2>Growdiff<a class="headerlink" href="#growdiff" title="Permalink to this heading">#</a></h2>
+<h2>Growdiff<a class="headerlink" href="#growdiff" title="Link to this heading">#</a></h2>
 <section id="abook">
-<h3><code class="docutils literal notranslate"><span class="pre">ABOOK</span></code><a class="headerlink" href="#abook" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABOOK</span></code><a class="headerlink" href="#abook" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ABOOK additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABOOK extrapolates input variables: e07300 and e07400.<br />
 <em>Value Type:</em> float<br />
@@ -529,7 +537,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="acgns">
-<h3><code class="docutils literal notranslate"><span class="pre">ACGNS</span></code><a class="headerlink" href="#acgns" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ACGNS</span></code><a class="headerlink" href="#acgns" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ACGNS additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ACGNS extrapolates input variables: e01200, p22250, p23250, e24515 and e24518.<br />
 <em>Value Type:</em> float<br />
@@ -538,7 +546,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="acpim">
-<h3><code class="docutils literal notranslate"><span class="pre">ACPIM</span></code><a class="headerlink" href="#acpim" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ACPIM</span></code><a class="headerlink" href="#acpim" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ACPIM additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ACPIM extrapolates input variables: e03270, e03290 and e17500.<br />
 <em>Value Type:</em> float<br />
@@ -547,7 +555,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="acpiu">
-<h3><code class="docutils literal notranslate"><span class="pre">ACPIU</span></code><a class="headerlink" href="#acpiu" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ACPIU</span></code><a class="headerlink" href="#acpiu" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ACPIU additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used to inflate many policy parameters.  Note that non-zero values of this parameter will not affect historically known values of policy parameters.<br />
 <em>Value Type:</em> float<br />
@@ -556,7 +564,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="adivs">
-<h3><code class="docutils literal notranslate"><span class="pre">ADIVS</span></code><a class="headerlink" href="#adivs" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ADIVS</span></code><a class="headerlink" href="#adivs" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ADIVS additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ADIVS extrapolates input variables: e00600 and e00650.<br />
 <em>Value Type:</em> float<br />
@@ -565,7 +573,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aints">
-<h3><code class="docutils literal notranslate"><span class="pre">AINTS</span></code><a class="headerlink" href="#aints" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">AINTS</span></code><a class="headerlink" href="#aints" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> AINTS additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  AINTS extrapolates input variables: e00300 and e00400.<br />
 <em>Value Type:</em> float<br />
@@ -574,7 +582,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aipd">
-<h3><code class="docutils literal notranslate"><span class="pre">AIPD</span></code><a class="headerlink" href="#aipd" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">AIPD</span></code><a class="headerlink" href="#aipd" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> AIPD additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  AIPD extrapolates input variables: e19200.<br />
 <em>Value Type:</em> float<br />
@@ -583,7 +591,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aschci">
-<h3><code class="docutils literal notranslate"><span class="pre">ASCHCI</span></code><a class="headerlink" href="#aschci" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASCHCI</span></code><a class="headerlink" href="#aschci" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ASCHCI additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASCHCI extrapolates input variables: e00900, e00900p and e00900s when they are positive.<br />
 <em>Value Type:</em> float<br />
@@ -592,7 +600,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aschcl">
-<h3><code class="docutils literal notranslate"><span class="pre">ASCHCL</span></code><a class="headerlink" href="#aschcl" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASCHCL</span></code><a class="headerlink" href="#aschcl" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ASCHCL additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASCHCL extrapolates input variables: e00900, e00900p and e00900s when they are negative.<br />
 <em>Value Type:</em> float<br />
@@ -601,7 +609,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aschei">
-<h3><code class="docutils literal notranslate"><span class="pre">ASCHEI</span></code><a class="headerlink" href="#aschei" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASCHEI</span></code><a class="headerlink" href="#aschei" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ASCHEI additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASCHEI extrapolates input variables: e02000 when positive, and e26270, k1bx14p, k1bx14s and e27200 for all values.<br />
 <em>Value Type:</em> float<br />
@@ -610,7 +618,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aschel">
-<h3><code class="docutils literal notranslate"><span class="pre">ASCHEL</span></code><a class="headerlink" href="#aschel" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASCHEL</span></code><a class="headerlink" href="#aschel" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ASCHEL additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASCHEL extrapolates input variable: e02000 when negative.<br />
 <em>Value Type:</em> float<br />
@@ -619,7 +627,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aschf">
-<h3><code class="docutils literal notranslate"><span class="pre">ASCHF</span></code><a class="headerlink" href="#aschf" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASCHF</span></code><a class="headerlink" href="#aschf" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ASCHF additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASCHF extrapolates input variables: e02100, e02100p and e02100s.<br />
 <em>Value Type:</em> float<br />
@@ -628,7 +636,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="asocsec">
-<h3><code class="docutils literal notranslate"><span class="pre">ASOCSEC</span></code><a class="headerlink" href="#asocsec" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ASOCSEC</span></code><a class="headerlink" href="#asocsec" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ASOCSEC additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ASOCSEC extrapolates input variable: e02400.<br />
 <em>Value Type:</em> float<br />
@@ -637,7 +645,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="atxpy">
-<h3><code class="docutils literal notranslate"><span class="pre">ATXPY</span></code><a class="headerlink" href="#atxpy" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ATXPY</span></code><a class="headerlink" href="#atxpy" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ATXPY additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ATXPY extrapolates input variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, g20500, e07600, e32800, e58990, e62900, e87530, e87521 and cmbtp.<br />
 <em>Value Type:</em> float<br />
@@ -646,7 +654,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="aucomp">
-<h3><code class="docutils literal notranslate"><span class="pre">AUCOMP</span></code><a class="headerlink" href="#aucomp" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">AUCOMP</span></code><a class="headerlink" href="#aucomp" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> AUCOMP additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  AUCOMP extrapolates input variable: e02300.<br />
 <em>Value Type:</em> float<br />
@@ -655,7 +663,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="awage">
-<h3><code class="docutils literal notranslate"><span class="pre">AWAGE</span></code><a class="headerlink" href="#awage" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">AWAGE</span></code><a class="headerlink" href="#awage" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> AWAGE additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.  Note that non-zero values of this parameter will not affect historically known values of _SS_Earnings_c.<br />
 <em>Value Type:</em> float<br />
@@ -664,7 +672,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenother">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENOTHER</span></code><a class="headerlink" href="#abenother" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENOTHER</span></code><a class="headerlink" href="#abenother" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENOTHER additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENOTHER extrapolates input variable other_ben.<br />
 <em>Value Type:</em> float<br />
@@ -673,7 +681,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenmcare">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENMCARE</span></code><a class="headerlink" href="#abenmcare" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENMCARE</span></code><a class="headerlink" href="#abenmcare" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENMCARE additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENMCARE extrapolates input variable mcare_ben.<br />
 <em>Value Type:</em> float<br />
@@ -682,7 +690,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenmcaid">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENMCAID</span></code><a class="headerlink" href="#abenmcaid" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENMCAID</span></code><a class="headerlink" href="#abenmcaid" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENMCAID additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENMCAID extrapolates input variable mcaid_ben.<br />
 <em>Value Type:</em> float<br />
@@ -691,7 +699,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenssi">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENSSI</span></code><a class="headerlink" href="#abenssi" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENSSI</span></code><a class="headerlink" href="#abenssi" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENSSI additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENSSI extrapolates input variable ssi_ben.<br />
 <em>Value Type:</em> float<br />
@@ -700,7 +708,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abensnap">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENSNAP</span></code><a class="headerlink" href="#abensnap" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENSNAP</span></code><a class="headerlink" href="#abensnap" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENSNAP additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENSNAP extrapolates input variable snap_ben.<br />
 <em>Value Type:</em> float<br />
@@ -709,7 +717,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenwic">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENWIC</span></code><a class="headerlink" href="#abenwic" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENWIC</span></code><a class="headerlink" href="#abenwic" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENWIC additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENWIC extrapolates input variable wic_ben.<br />
 <em>Value Type:</em> float<br />
@@ -718,7 +726,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenhousing">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENHOUSING</span></code><a class="headerlink" href="#abenhousing" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENHOUSING</span></code><a class="headerlink" href="#abenhousing" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENHOUSING additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENHOUSING extrapolates input variable housing_ben.<br />
 <em>Value Type:</em> float<br />
@@ -727,7 +735,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abentanf">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENTANF</span></code><a class="headerlink" href="#abentanf" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENTANF</span></code><a class="headerlink" href="#abentanf" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENTANF additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENTANF extrapolates input variable tanf_ben.<br />
 <em>Value Type:</em> float<br />
@@ -736,7 +744,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="abenvet">
-<h3><code class="docutils literal notranslate"><span class="pre">ABENVET</span></code><a class="headerlink" href="#abenvet" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ABENVET</span></code><a class="headerlink" href="#abenvet" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> ABENVET additive difference from default projection<br />
 <em>Description:</em> Default projection is in growfactors.csv file.  ABENVET extrapolates input variable vet_ben.<br />
 <em>Value Type:</em> float<br />
@@ -746,9 +754,9 @@ document.write(`
 </section>
 </section>
 <section id="consumption">
-<h2>Consumption<a class="headerlink" href="#consumption" title="Permalink to this heading">#</a></h2>
+<h2>Consumption<a class="headerlink" href="#consumption" title="Link to this heading">#</a></h2>
 <section id="mpc-e17500">
-<h3><code class="docutils literal notranslate"><span class="pre">MPC_e17500</span></code><a class="headerlink" href="#mpc-e17500" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">MPC_e17500</span></code><a class="headerlink" href="#mpc-e17500" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Marginal propensity to consume medical expenses<br />
 <em>Description:</em> Defined as dollar change in medical-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.<br />
 <em>Value Type:</em> float<br />
@@ -757,7 +765,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="mpc-e18400">
-<h3><code class="docutils literal notranslate"><span class="pre">MPC_e18400</span></code><a class="headerlink" href="#mpc-e18400" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">MPC_e18400</span></code><a class="headerlink" href="#mpc-e18400" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Marginal propensity to consume state-and-local taxes<br />
 <em>Description:</em> Defined as dollar change in state-and-local-taxes consumption divided by dollar change in income.  Typical value is in [0,1] range.<br />
 <em>Value Type:</em> float<br />
@@ -766,7 +774,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="mpc-e19800">
-<h3><code class="docutils literal notranslate"><span class="pre">MPC_e19800</span></code><a class="headerlink" href="#mpc-e19800" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">MPC_e19800</span></code><a class="headerlink" href="#mpc-e19800" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Marginal propensity to consume charity cash contributions<br />
 <em>Description:</em> Defined as dollar change in charity-cash-contribution consumption divided by dollar change in income.  Typical value is in [0,1] range.<br />
 <em>Value Type:</em> float<br />
@@ -775,7 +783,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="mpc-e20400">
-<h3><code class="docutils literal notranslate"><span class="pre">MPC_e20400</span></code><a class="headerlink" href="#mpc-e20400" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">MPC_e20400</span></code><a class="headerlink" href="#mpc-e20400" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Marginal propensity to consume miscellaneous deduction expenses<br />
 <em>Description:</em> Defined as dollar change in miscellaneous-deduction-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.<br />
 <em>Value Type:</em> float<br />
@@ -784,7 +792,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-housing-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_housing_value</span></code><a class="headerlink" href="#ben-housing-value" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_housing_value</span></code><a class="headerlink" href="#ben-housing-value" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of housing benefits<br />
 <em>Description:</em> Consumption value per dollar of housing benefits, all of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -793,7 +801,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-snap-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_snap_value</span></code><a class="headerlink" href="#ben-snap-value" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_snap_value</span></code><a class="headerlink" href="#ben-snap-value" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of SNAP benefits<br />
 <em>Description:</em> Consumption value per dollar of SNAP benefits, all of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -802,7 +810,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-tanf-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_tanf_value</span></code><a class="headerlink" href="#ben-tanf-value" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_tanf_value</span></code><a class="headerlink" href="#ben-tanf-value" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of TANF benefits<br />
 <em>Description:</em> Consumption value per dollar of TANF benefits, some of which are cash benefits and some of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -811,7 +819,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-vet-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_vet_value</span></code><a class="headerlink" href="#ben-vet-value" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_vet_value</span></code><a class="headerlink" href="#ben-vet-value" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of veterans benefits<br />
 <em>Description:</em> Consumption value per dollar of veterans benefits, some of which are in-kind benefits (only about 48% are cash benefits).<br />
 <em>Value Type:</em> float<br />
@@ -820,7 +828,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-wic-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_wic_value</span></code><a class="headerlink" href="#ben-wic-value" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_wic_value</span></code><a class="headerlink" href="#ben-wic-value" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of WIC benefits<br />
 <em>Description:</em> Consumption value per dollar of WIC benefits, all of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -829,7 +837,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-mcare-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_mcare_value</span></code><a class="headerlink" href="#ben-mcare-value" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_mcare_value</span></code><a class="headerlink" href="#ben-mcare-value" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of Medicare benefits<br />
 <em>Description:</em> Consumption value per dollar of Medicare benefits, all of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -838,7 +846,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-mcaid-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_mcaid_value</span></code><a class="headerlink" href="#ben-mcaid-value" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_mcaid_value</span></code><a class="headerlink" href="#ben-mcaid-value" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of Medicaid benefits<br />
 <em>Description:</em> Consumption value per dollar of Medicaid benefits, all of which are in-kind benefits.<br />
 <em>Value Type:</em> float<br />
@@ -847,7 +855,7 @@ document.write(`
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ben-other-value">
-<h3><code class="docutils literal notranslate"><span class="pre">BEN_other_value</span></code><a class="headerlink" href="#ben-other-value" title="Permalink to this heading">#</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">BEN_other_value</span></code><a class="headerlink" href="#ben-other-value" title="Link to this heading">#</a></h3>
 <p><em>Long Name:</em> Consumption value of other benefits<br />
 <em>Description:</em> Consumption value per dollar of other benefits, some of which are in-kind benefits (somewhere between 52% and 76% are in-kind benefits).<br />
 <em>Value Type:</em> float<br />
@@ -914,6 +922,7 @@ document.write(`
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -988,7 +997,7 @@ By Policy Simulation Library
 
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -1012,8 +1021,8 @@ By Policy Simulation Library
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>

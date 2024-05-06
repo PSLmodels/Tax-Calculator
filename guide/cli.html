@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Command-line interface &#8212; Tax-Calculator</title>
   
@@ -19,49 +18,45 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'guide/cli';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -76,10 +71,9 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -120,11 +114,14 @@ const thebe_selector_output = ".output, .cell_output"
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -158,7 +155,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -474,15 +482,15 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="command-line-interface">
-<h1>Command-line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this heading">#</a></h1>
+<h1>Command-line interface<a class="headerlink" href="#command-line-interface" title="Link to this heading">#</a></h1>
 <p>You can use Tax-Calculator on your own computer via a command-line interface (CLI) called <code class="docutils literal notranslate"><span class="pre">tc</span></code>.
 This approach requires the use of a text editor to prepare simple files that are read by <code class="docutils literal notranslate"><span class="pre">tc</span></code>.
 Computer programming knowledge is not required, but this approach to using Tax-Calculator assumes you are willing to work at the command line (Terminal on Mac or Anaconda Prompt on Windows) and to use a text editor (for example, TextEdit on Mac or Notepad on Windows).</p>
 <section id="test-tc-cli">
-<h2>Test <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI<a class="headerlink" href="#test-tc-cli" title="Permalink to this heading">#</a></h2>
+<h2>Test <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI<a class="headerlink" href="#test-tc-cli" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI is part of the Tax-Calculator <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package you installed on your computer as part of <a class="reference internal" href="../usage/starting.html"><span class="doc">Getting started</span></a>.</p>
 <p>To check your installation of <code class="docutils literal notranslate"><span class="pre">tc</span></code>, enter the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="o">--</span><span class="n">test</span>
@@ -497,23 +505,23 @@ If you get <code class="docutils literal notranslate"><span class="pre">FAILED</
 <p>The basic idea of <code class="docutils literal notranslate"><span class="pre">tc</span></code> tax analysis is that each tax reform is specified in a text file using a simple method to describe the details of the reform. Read the next part of this section to see how policy reform files are formatted.</p>
 </section>
 <section id="specify-tax-reform">
-<h2>Specify tax reform<a class="headerlink" href="#specify-tax-reform" title="Permalink to this heading">#</a></h2>
-<p>The details of a tax reform are contained in a text file that you write with a text editor. The reform is expressed by specifying which tax policy parameters are changed from their current-law values by the reform. The current-law values of each policy parameter are documented in <span class="xref myst">this section</span> of the guide. The timing and magnitude of these policy parameter changes are written in JSON, a simple and widely-used data-specification language.</p>
+<h2>Specify tax reform<a class="headerlink" href="#specify-tax-reform" title="Link to this heading">#</a></h2>
+<p>The details of a tax reform are contained in a text file that you write with a text editor. The reform is expressed by specifying which tax policy parameters are changed from their current-law values by the reform. The current-law values of each policy parameter are documented in <a class="reference internal" href="#pol"><span class="xref myst">this section</span></a> of the guide. The timing and magnitude of these policy parameter changes are written in JSON, a simple and widely-used data-specification language.</p>
 <p>For several examples of reform files and the general rules for writing JSON reform files, go to <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/README.md#policy-reform-files">this page</a>.</p>
 </section>
 <section id="specify-analysis-assumptions">
-<h2>Specify analysis assumptions<a class="headerlink" href="#specify-analysis-assumptions" title="Permalink to this heading">#</a></h2>
-<p>This part explains how to specify economic assumption files used in static tax analysis. This is an advanced topic, so if you want to start out using the default assumptions (which are documented in <span class="xref myst">this section</span> of the guide), you can skip this part now and come back to read it whenever you want to change the default assumptions. The <span class="xref myst">next part</span> of this section discusses filing-unit input files.</p>
+<h2>Specify analysis assumptions<a class="headerlink" href="#specify-analysis-assumptions" title="Link to this heading">#</a></h2>
+<p>This part explains how to specify economic assumption files used in static tax analysis. This is an advanced topic, so if you want to start out using the default assumptions (which are documented in <a class="reference internal" href="#params"><span class="xref myst">this section</span></a> of the guide), you can skip this part now and come back to read it whenever you want to change the default assumptions. The <a class="reference internal" href="#cli-spec-funits"><span class="xref myst">next part</span></a> of this section discusses filing-unit input files.</p>
 <p>The details of analysis assumptions are contained in a text file that you write with a text editor. The assumptions are expressed by specifying which parameters are changed from their default values. The timing and magnitude of these parameter changes are written in JSON, a simple and widely-used data-specification language.</p>
 <p>For examples of assumption files and the general rules for writing JSON assumption files, go to <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files">this page</a>.</p>
 </section>
 <section id="specify-filing-units">
-<h2>Specify filing units<a class="headerlink" href="#specify-filing-units" title="Permalink to this heading">#</a></h2>
+<h2>Specify filing units<a class="headerlink" href="#specify-filing-units" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package containing <code class="docutils literal notranslate"><span class="pre">tc</span></code> does not include an IRS-SOI-PUF-derived microsimulation sample. This is because, unlike Census public-use files, the IRS-SOI Public Use File (PUF) is proprietary. If you or your organization has paid IRS to use the PUF version being by Tax-Calculator, then it may be possible for us to share with you our PUF-derived sample, which we call <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> even though it contains CPS records that represent non-filers. Otherwise, you have two choices.</p>
 <p><strong>First</strong>, you can easily create with a text editor a CSV-formatted file containing several filing units whose experience under your tax reform is of interest to you. Much of the public discussion of tax reforms is of this type: how is this family or that family affected by a reform; how do they fare under different reforms; etc. The test conducted to check the <code class="docutils literal notranslate"><span class="pre">tc</span></code> installation has left one such file. It is called <code class="docutils literal notranslate"><span class="pre">test.csv</span></code> and contains two filing units with only wage and salary income: a lower income family and a higher income family. You can use this <code class="docutils literal notranslate"><span class="pre">test.csv</span></code> file as <code class="docutils literal notranslate"><span class="pre">tc</span></code> input to analyze your tax reforms. Before creating your own input files be sure to read the short set of guidelines that appear after this list of two choices. Some people pursue this approach using a statistical pacakge like R or Stata, in which case the <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI program can be invoked from within the statistical package. There may be a need (especially on Windows) to <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/issues/2273#issuecomment-479572287">add to the system PATH</a> in order to do this.</p>
 <p><strong>Second</strong>, the <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> does include a freely available microsimulation sample containing only filing units derived from several recent March CPS surveys. For several reasons, the results generated by this <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file are substantially different from the results generated by the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file. The <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file contains a sample of the population while the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file contains mostly a sample of income tax filers in which high-income filing units are over represented. Also, the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file has many income variables that are missing (and assumed to be zero by Tax-Calculator), which causes an understating of total incomes, especially for those with high incomes. All these differences mean that the aggregate revenue and distributional results generated when using the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file as input to Tax-Calculator can be substantially different from the results generated when using the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file as input. And this is particularly true when analyzing reforms that change the tax treatment of high-income filers.</p>
 <p><strong>Input-File-Preparation Guidelines</strong></p>
-<p>The <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI to Tax-Calculator is flexible enough to read almost any kind of CSV-formatted input data on filing units as long as the variable names correspond to those expected by Tax-Calculator. The only required input variables are <code class="docutils literal notranslate"><span class="pre">RECID</span></code> (a unique filing-unit record identifier) and <code class="docutils literal notranslate"><span class="pre">MARS</span></code> (a positive-valued filing-status indicator). Other variables in the input file must have variable names that are listed in the <span class="xref myst">Input Variables</span> section for them to affect the tax calculations. Any variable listed in Input Variables that is not in an input file is automatically set to zero for every filing unit. Variables in the input file that are not listed in Input Variables are ignored by Tax-Calculator.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI to Tax-Calculator is flexible enough to read almost any kind of CSV-formatted input data on filing units as long as the variable names correspond to those expected by Tax-Calculator. The only required input variables are <code class="docutils literal notranslate"><span class="pre">RECID</span></code> (a unique filing-unit record identifier) and <code class="docutils literal notranslate"><span class="pre">MARS</span></code> (a positive-valued filing-status indicator). Other variables in the input file must have variable names that are listed in the <a class="reference internal" href="#input"><span class="xref myst">Input Variables</span></a> section for them to affect the tax calculations. Any variable listed in Input Variables that is not in an input file is automatically set to zero for every filing unit. Variables in the input file that are not listed in Input Variables are ignored by Tax-Calculator.</p>
 <p>However, there are important data-preparation issues related to the fact that the payroll tax is a tax on individuals, not on income-tax filing units. Tax-Calculator expects that the filing-unit total for each of several earnings-related variables is split between the taxpayer and the spouse. It is the responsibility of anyone preparing data for Tax-Calculator input to do this earnings splitting. Here are the relationships between the filing-unit variable and the taxpayer (<code class="docutils literal notranslate"><span class="pre">p</span></code>) and spouse (<code class="docutils literal notranslate"><span class="pre">s</span></code>) variables expected by Tax-Calculator:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">e00200</span> <span class="o">=</span> <span class="n">e00200p</span> <span class="o">+</span> <span class="n">e00200s</span>
 <span class="n">e00900</span> <span class="o">=</span> <span class="n">e00900p</span> <span class="o">+</span> <span class="n">e00900s</span>
@@ -533,7 +541,7 @@ If you get <code class="docutils literal notranslate"><span class="pre">FAILED</
 <p>The name of your input data file is also relevant to how <code class="docutils literal notranslate"><span class="pre">tc</span></code> will behave. If your file name ends with “puf.csv” or “cps.csv”, <code class="docutils literal notranslate"><span class="pre">tc</span></code> will automatically extrapolate your data from its base year to the year you specify for tax calculations to be calculated using built in growth factors, extrapolated weights, and other adjustment factors. If you are not using the “puf.csv” or “cps.csv” files produced by the TaxData project, it is likely that your data will not be compatible with these extrapolations and you should adopt filenames with alternative endings.</p>
 </section>
 <section id="initiate-reform-analysis">
-<h2>Initiate reform analysis<a class="headerlink" href="#initiate-reform-analysis" title="Permalink to this heading">#</a></h2>
+<h2>Initiate reform analysis<a class="headerlink" href="#initiate-reform-analysis" title="Link to this heading">#</a></h2>
 <p>Executing <code class="docutils literal notranslate"><span class="pre">tc</span></code> requires only two command-line arguments: the name of an input file containing one or more filing units and the year for which the tax calculations are done. A baseline policy file is optional; specifying no baseline file implies the baseline policy is current-law policy. A policy reform file is optional; specifying no reform file implies calculations are done for the baseline policy. An economic assumption file is also optional; no assumption file implies you want to use the default values of the assumption parameters. The output files written by <code class="docutils literal notranslate"><span class="pre">tc</span></code> are built-up from the name of the input file, tax year, baseline file, reform file, and assumption file using a <code class="docutils literal notranslate"><span class="pre">#</span></code> character if an option is not specified.</p>
 <p>Here we explain how to conduct tax analysis with <code class="docutils literal notranslate"><span class="pre">tc</span></code> by presenting a series of examples and explaining what output is produced in each example. There are several types of output that <code class="docutils literal notranslate"><span class="pre">tc</span></code> can generate so there will be more than a few examples. The examples are numbered in order to make it easier to refer to different examples. All the examples assume that the input file is <code class="docutils literal notranslate"><span class="pre">test.csv</span></code>, which was mentioned earlier in this guide.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">test</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2020</span>
@@ -545,7 +553,7 @@ The variables included in the minimal output file include: <code class="docutils
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">test</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2020</span> <span class="o">--</span><span class="n">dump</span>
 </pre></div>
 </div>
-<p>This produces a much more complete output file with the same name <code class="docutils literal notranslate"><span class="pre">test-20-#-#-#.csv</span></code> as the minimal output file produced in example (1). No other output is generated other than the <code class="docutils literal notranslate"><span class="pre">test-20-#-#-#-doc.text</span></code> file. The <code class="docutils literal notranslate"><span class="pre">--dump</span></code> option causes <strong>all</strong> the input variables (including the ones understood by Tax-Calculator but not included in <code class="docutils literal notranslate"><span class="pre">test.csv</span></code>, which are all zero) and <strong>all</strong> the output variables calculated by Tax-Calculator to be included in the output file. For a complete list of input variables, see the <span class="xref myst">Input Variables</span> section. For a complete list of output variables, see the <span class="xref myst">Output Variables</span> section. Since Tax-Calculator ignores variables in the input file that are not in the Input Variables section, the dump output file in example (2) can be used as an input file and it will produce exactly the same tax liabilities (apart from rounding errors of one or two cents) as in the original dump output.</p>
+<p>This produces a much more complete output file with the same name <code class="docutils literal notranslate"><span class="pre">test-20-#-#-#.csv</span></code> as the minimal output file produced in example (1). No other output is generated other than the <code class="docutils literal notranslate"><span class="pre">test-20-#-#-#-doc.text</span></code> file. The <code class="docutils literal notranslate"><span class="pre">--dump</span></code> option causes <strong>all</strong> the input variables (including the ones understood by Tax-Calculator but not included in <code class="docutils literal notranslate"><span class="pre">test.csv</span></code>, which are all zero) and <strong>all</strong> the output variables calculated by Tax-Calculator to be included in the output file. For a complete list of input variables, see the <a class="reference internal" href="#input"><span class="xref myst">Input Variables</span></a> section. For a complete list of output variables, see the <a class="reference internal" href="#output"><span class="xref myst">Output Variables</span></a> section. Since Tax-Calculator ignores variables in the input file that are not in the Input Variables section, the dump output file in example (2) can be used as an input file and it will produce exactly the same tax liabilities (apart from rounding errors of one or two cents) as in the original dump output.</p>
 <p>This full dump output can be useful for debugging and is small when using just a few filing units as input. But when using large samples as input (for example, the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> input file), the size of the dump output becomes quite large. There is a way to specify a <strong>partial dump</strong> that includes only variables of interest. To have <code class="docutils literal notranslate"><span class="pre">tc</span></code> do a partial dump, create a text file that lists the names of the variables to be included in the partial dump. You can put the varible names on separate lines and/or put several names on one line separated by spaces. Then point to that file using the <code class="docutils literal notranslate"><span class="pre">--dvars</span></code> option. So, for example, if your list of dump variables is in a file named <code class="docutils literal notranslate"><span class="pre">mydumpvars</span></code>, a partial dump file is created this way:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">cps</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2020</span> <span class="o">--</span><span class="n">dump</span> <span class="o">--</span><span class="n">dvars</span> <span class="n">mydumpvars</span>
 </pre></div>
@@ -555,7 +563,7 @@ The variables included in the minimal output file include: <code class="docutils
 </pre></div>
 </div>
 <p>This produces the same dump output as example (2) except that the dump output is written not to a CSV-formatted file, but to the dump table in an SQLite3 database file, which is called <code class="docutils literal notranslate"><span class="pre">test-20-#-#-#.db</span></code> in this example. Because the <code class="docutils literal notranslate"><span class="pre">--dump</span></code> option is not used in example (3), minimal output will be written to the <code class="docutils literal notranslate"><span class="pre">test-20-#-#-#.csv</span></code> file. Note that use of the <code class="docutils literal notranslate"><span class="pre">--dvars</span></code> option causes the contents of the database file to be a partial dump.</p>
-<p>Pros and cons of putting dump output in a CSV file or an SQLite3 database table: The CSV file is almost twice as large as the database, but it can be easily imported into a wide range of statistical packages. The main advantage of the SQLite3 database is that the Anaconda Python distribution includes <a class="reference external" href="https://www.sqlite.org/cli.html">sqlite3</a> (or sqlite3.exe on Windows), a command-line tool that can be used to tabulate dump output using structured query language (SQL). SQL is a language that you use to specify the tabulation you want and the SQL database figures out the procedure for generating your tabulation and then executes that procedure; there is no computer programming involved. We illustrate SQL tabulation of dump output in a <span class="xref myst">subsequent section</span>.</p>
+<p>Pros and cons of putting dump output in a CSV file or an SQLite3 database table: The CSV file is almost twice as large as the database, but it can be easily imported into a wide range of statistical packages. The main advantage of the SQLite3 database is that the Anaconda Python distribution includes <a class="reference external" href="https://www.sqlite.org/cli.html">sqlite3</a> (or sqlite3.exe on Windows), a command-line tool that can be used to tabulate dump output using structured query language (SQL). SQL is a language that you use to specify the tabulation you want and the SQL database figures out the procedure for generating your tabulation and then executes that procedure; there is no computer programming involved. We illustrate SQL tabulation of dump output in a <a class="reference internal" href="#cli-tab-results"><span class="xref myst">subsequent section</span></a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">test</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2020</span> <span class="o">--</span><span class="n">dump</span> <span class="o">--</span><span class="n">sqldb</span>
 </pre></div>
 </div>
@@ -583,7 +591,7 @@ The variables included in the minimal output file include: <code class="docutils
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>The output options illustrated in the following examples generate tables of the post-reform level and the reform-induced change in tax liability by income deciles as well as graphs of marginal and average tax rates and percentage change in aftertax income by income percentiles. These tables and graphs are meant to provide a quick glance at the impact of a reform. Any serious analysis of a reform will involve generating custom tables and graphs using <span class="xref myst">partial dump</span> output. One of many examples of this sort of custom analysis is <a class="reference external" href="https://www.washingtonpost.com/graphics/2017/business/tax-bill-calculator/?">here</a>.</p>
+<p>The output options illustrated in the following examples generate tables of the post-reform level and the reform-induced change in tax liability by income deciles as well as graphs of marginal and average tax rates and percentage change in aftertax income by income percentiles. These tables and graphs are meant to provide a quick glance at the impact of a reform. Any serious analysis of a reform will involve generating custom tables and graphs using <a class="reference internal" href="#partdump"><span class="xref myst">partial dump</span></a> output. One of many examples of this sort of custom analysis is <a class="reference external" href="https://www.washingtonpost.com/graphics/2017/business/tax-bill-calculator/?">here</a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ tc cps.csv 2022 --reform ref3.json --tables
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2022.
@@ -663,7 +671,7 @@ If you have more than one run in each group, put them in a Unix/Mac bash script 
 If it still takes too long, consider splitting the <code class="docutils literal notranslate"><span class="pre">tc</span></code> runs across more than one computer.</p>
 </section>
 <section id="tabulate-reform-results">
-<h2>Tabulate reform results<a class="headerlink" href="#tabulate-reform-results" title="Permalink to this heading">#</a></h2>
+<h2>Tabulate reform results<a class="headerlink" href="#tabulate-reform-results" title="Link to this heading">#</a></h2>
 <p>Given that <code class="docutils literal notranslate"><span class="pre">tc</span></code> output can be written to either CSV-formatted files or SQLite3 database files, there is an enormous range of software tools that can be used to tabulate the output. You can use SAS or R, Stata or MATLAB, or even import output into a spreadsheet (but this would seem to be the least useful option). If you just want to compare the contents of two output files, you can use your favorite graphical diff program to view the two files <q>side by side</q> with highlighting of numbers that are different. The main point is to use a software tool that is available to you, that is appropriate for the task, and that you have experience using.</p>
 <p>Here we give some examples of using the <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> command-line tool that is part of the Anaconda distribution (so it is always available when using Tax-Calculator). The first step, of course, is to use the <code class="docutils literal notranslate"><span class="pre">--sqldb</span></code> option when running <code class="docutils literal notranslate"><span class="pre">tc</span></code>. Then you can use the <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> tool interactively or use it to execute SQL scripts you have saved in a text file. We’ll provide examples of both those approaches. There are many online tutorials on the SQL select command; if you want to learn more, search the Internet.</p>
 <p>First, we provide a simple example of using <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> interactively.
@@ -825,6 +833,7 @@ in your SQLite tabulation session.</p>
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
@@ -861,7 +870,7 @@ By Policy Simulation Library
 
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -885,8 +894,8 @@ By Policy Simulation Library
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>
