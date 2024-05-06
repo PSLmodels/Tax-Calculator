@@ -1,2 +1,0 @@
-,test_id,pytest_obj,status,duration_ms,time_diff
-0,taxcalc/tests/test_benefits.py::test_benefits,<function test_benefits at 0x11e5c9080>,passed,9442.130752955563,5166.521473955583

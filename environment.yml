@@ -13,7 +13,6 @@ dependencies:
 - aiohttp
 - curl
 - pytest
-- pytest-pep8
 - pytest-xdist
 - pycodestyle
 - pylint
@@ -23,4 +22,3 @@ dependencies:
 - pip
 - pip:
     - jupyter-book
-    - pytest_harvest
