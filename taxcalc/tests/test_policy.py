@@ -208,7 +208,7 @@ def test_variable_inflation_rate_with_reform():
     Test indexing of policy parameters involved in a reform.
     """
     pol = Policy()
-    syr = 2034
+    syr = Policy.JSON_START_YEAR
     assert pol._II_em[2013 - syr] == 3900
     # implement reform in 2020 which is two years before the last year, 2022
     reform = {
