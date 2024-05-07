@@ -2,25 +2,23 @@ name: taxcalc-dev
 channels:
   - conda-forge
 dependencies:
-- "python<3.12"
-- curl
-- "numpy>=1.14"
-- "pandas>=1.2.0"
-- "bokeh>=1.4.0, <3.0.0"
+- "python>=3.9, <3.12"
+- "numpy>=1.20, <2.0"
+- "pandas>=2.0, <3.0"
+- "bokeh>=1.4, <3.0"
 - requests
-- aiohttp
 - numba
+- "paramtools>=0.18.0"
 - "fsspec<=0.8.7"
+- aiohttp
+- curl
 - pytest
-- pytest-pep8
 - pytest-xdist
 - pycodestyle
 - pylint
 - coverage
-- "paramtools>=0.18.0"
 - behresp
 - openpyxl
 - pip
 - pip:
     - jupyter-book
-    - pytest_harvest
