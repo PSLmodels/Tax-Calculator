@@ -481,6 +481,7 @@ document.write(`
         <span class="n">inp</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">puf_input_data</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cps_input_data</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># remove any leading directory path from INPUT filename</span>
             <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
@@ -493,6 +494,7 @@ document.write(`
             <span class="c1"># check existence of INPUT file</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">puf_input_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;puf.csv&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cps_input_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;cps.csv&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;tmd.csv&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cps_input_data</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">input_data</span><span class="p">):</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;INPUT file could not be found&#39;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -728,7 +730,18 @@ document.write(`
                     <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_base</span><span class="p">,</span>
                     <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span>
                 <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># if not cps_input_data but aging_input_data</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>
+                <span class="n">recs</span> <span class="o">=</span> <span class="n">Records</span><span class="o">.</span><span class="n">tmd_constructor</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
+                    <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_ref</span><span class="p">,</span>
+                    <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span>
+                <span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+                <span class="n">recs_base</span> <span class="o">=</span> <span class="n">Records</span><span class="o">.</span><span class="n">tmd_constructor</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
+                    <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_base</span><span class="p">,</span>
+                    <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span>
+                <span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># if not {cps|tmd}_input_data but aging_input_data</span>
                 <span class="n">recs</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span>
                     <span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
                     <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_ref</span><span class="p">,</span>

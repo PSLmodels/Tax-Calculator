@@ -413,6 +413,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">taxcalc.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
+<span class="kn">from</span> <span class="nn">taxcalc.policy</span> <span class="kn">import</span> <span class="n">Policy</span>
 <span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
 
 
@@ -434,8 +435,8 @@ document.write(`
 <span class="sd">    class instance: GrowDiff</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">JSON_START_YEAR</span> <span class="o">=</span> <span class="mi">2013</span>  <span class="c1"># must be same as Policy.JSON_START_YEAR</span>
-    <span class="n">DEFAULT_NUM_YEARS</span> <span class="o">=</span> <span class="mi">22</span>  <span class="c1"># must be same as Policy.DEFAULT_NUM_YEARS</span>
+    <span class="n">JSON_START_YEAR</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
+    <span class="n">DEFAULT_NUM_YEARS</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">DEFAULT_NUM_YEARS</span>
     <span class="n">DEFAULTS_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;growdiff.json&#39;</span>
     <span class="n">DEFAULTS_FILE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 
@@ -494,12 +495,17 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors</span><span class="p">,</span> <span class="n">GrowFactors</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">gfvn</span> <span class="ow">in</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span><span class="p">:</span>
-            <span class="n">_gfvn</span> <span class="o">=</span> <span class="s1">&#39;_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gfvn</span><span class="p">)</span>
+            <span class="n">_gfvn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">gfvn</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_years</span><span class="p">):</span>
                 <span class="n">cyr</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span>
                 <span class="n">diff_array</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_gfvn</span><span class="p">)</span>
                 <span class="n">growfactors</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">gfvn</span><span class="p">,</span> <span class="n">cyr</span><span class="p">,</span> <span class="n">diff_array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
-</div>
+
+
+    <span class="k">def</span> <span class="nf">set_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unimplemented base class method that is not used here.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
 </pre></div>
 

@@ -504,7 +504,10 @@ document.write(`
 <span class="sd">    doing when attempting this.</span>
 
 <span class="sd">    Use Records.cps_constructor() to get a Records object instantiated</span>
-<span class="sd">    with CPS input data.</span>
+<span class="sd">    with CPS input data developed in the taxdata repository.</span>
+
+<span class="sd">    Use Records.tmd_constructor() to get a Records object instantiated</span>
+<span class="sd">    with TMD input data developed in the tax-microdata repository.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># suppress pylint warning about constructor having too many arguments:</span>
     <span class="c1"># pylint: disable=too-many-arguments</span>
@@ -515,11 +518,14 @@ document.write(`
 
     <span class="n">PUFCSV_YEAR</span> <span class="o">=</span> <span class="mi">2011</span>
     <span class="n">CPSCSV_YEAR</span> <span class="o">=</span> <span class="mi">2014</span>
+    <span class="n">TMDCSV_YEAR</span> <span class="o">=</span> <span class="mi">2021</span>
 
     <span class="n">PUF_WEIGHTS_FILENAME</span> <span class="o">=</span> <span class="s1">&#39;puf_weights.csv.gz&#39;</span>
     <span class="n">PUF_RATIOS_FILENAME</span> <span class="o">=</span> <span class="s1">&#39;puf_ratios.csv&#39;</span>
     <span class="n">CPS_WEIGHTS_FILENAME</span> <span class="o">=</span> <span class="s1">&#39;cps_weights.csv.gz&#39;</span>
     <span class="n">CPS_RATIOS_FILENAME</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">TMD_WEIGHTS_FILENAME</span> <span class="o">=</span> <span class="s1">&#39;tmd_weights.csv.gz&#39;</span>
+    <span class="n">TMD_RATIOS_FILENAME</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">CODE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
     <span class="n">VARINFO_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;records_variables.json&#39;</span>
     <span class="n">VARINFO_FILE_PATH</span> <span class="o">=</span> <span class="n">CODE_PATH</span>
@@ -629,6 +635,28 @@ document.write(`
                        <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span><span class="p">)</span></div>
 
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">tmd_constructor</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>  <span class="c1"># path to tmd.csv file or dataframe</span>
+                        <span class="n">gfactors</span><span class="o">=</span><span class="n">GrowFactors</span><span class="p">(),</span>
+                        <span class="n">exact_calculations</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Static method returns a Records object instantiated with TMD</span>
+<span class="sd">        input data.  This works in a analogous way to Records(), which</span>
+<span class="sd">        returns a Records object instantiated with PUF input data.</span>
+<span class="sd">        This is a convenience method that eliminates the need to</span>
+<span class="sd">        specify all the details of the TMD input data just as the</span>
+<span class="sd">        default values of the arguments of the Records class constructor</span>
+<span class="sd">        eliminate the need to specify all the details of the PUF input</span>
+<span class="sd">        data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Records</span><span class="o">.</span><span class="n">CODE_PATH</span><span class="p">,</span> <span class="n">Records</span><span class="o">.</span><span class="n">TMD_WEIGHTS_FILENAME</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                       <span class="n">start_year</span><span class="o">=</span><span class="n">Records</span><span class="o">.</span><span class="n">TMDCSV_YEAR</span><span class="p">,</span>
+                       <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors</span><span class="p">,</span>
+                       <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
+                       <span class="n">adjust_ratios</span><span class="o">=</span><span class="n">Records</span><span class="o">.</span><span class="n">TMD_RATIOS_FILENAME</span><span class="p">,</span>
+                       <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span><span class="p">)</span>
+    
 <div class="viewcode-block" id="Records.increment_year">
 <a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records.increment_year">[docs]</a>
     <span class="k">def</span> <span class="nf">increment_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

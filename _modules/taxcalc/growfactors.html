@@ -441,7 +441,7 @@ document.write(`
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    Typical usage is &quot;gfactor = GrowFactors()&quot;, which produces an object</span>
-<span class="sd">    containing the default growth factors in the GrowFactors.FILE_NAME file.</span>
+<span class="sd">    containing growth factors in the GrowFactors.FILE_NAME file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;growfactors.csv&#39;</span>
@@ -464,7 +464,7 @@ document.write(`
                                          <span class="n">growfactors_filename</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">full_filename</span><span class="p">):</span>
                 <span class="n">gfdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">full_filename</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># find file in conda package</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># find file in package</span>
                 <span class="n">gfdf</span> <span class="o">=</span> <span class="n">read_egg_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">),</span>
                                     <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
         <span class="k">else</span><span class="p">:</span>
@@ -473,7 +473,7 @@ document.write(`
         <span class="c1"># check validity of gfdf column names</span>
         <span class="n">gfdf_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">gfdf</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">gfdf_names</span> <span class="o">!=</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;missing names are: </span><span class="si">{}</span><span class="s1"> and invalid names are: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;missing names are: </span><span class="si">{}</span><span class="s1"> and invalid names are: </span><span class="si">{}</span><span class="s1">&#39;</span>
             <span class="n">missing</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span> <span class="o">-</span> <span class="n">gfdf_names</span>
             <span class="n">invalid</span> <span class="o">=</span> <span class="n">gfdf_names</span> <span class="o">-</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing</span><span class="p">,</span> <span class="n">invalid</span><span class="p">))</span>
