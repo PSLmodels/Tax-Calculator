@@ -34,7 +34,7 @@ jobs:
         shell: bash -l {0}
         working-directory: ./
         run: |
-          pytest -m 'not requires_pufcsv and not pre_release and not local' --cov=./ --cov-report=xml
+          pytest -m 'not requires_pufcsv and not requires_tmdcsv and not pre_release and not local' --cov=./ --cov-report=xml
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@v4
