@@ -602,12 +602,24 @@ class TaxCalcIO():
                                               pop_quantiles=False,
                                               weight_by_income_measure=False)
         gdfx = dfx.groupby('table_row', as_index=False, observed=True)
-        rtns_series = gdfx.apply(unweighted_sum, 's006').values[:, 1]
-        xinc_series = gdfx.apply(weighted_sum, 'expanded_income').values[:, 1]
-        itax_series = gdfx.apply(weighted_sum, 'iitax').values[:, 1]
-        ptax_series = gdfx.apply(weighted_sum, 'payrolltax').values[:, 1]
-        htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax').values[:, 1]
-        ctax_series = gdfx.apply(weighted_sum, 'combined').values[:, 1]
+        rtns_series = gdfx.apply(
+            unweighted_sum, 's006', include_groups=False
+        ).values[:, 1]
+        xinc_series = gdfx.apply(
+            weighted_sum, 'expanded_income', include_groups=False
+        ).values[:, 1]
+        itax_series = gdfx.apply(
+            weighted_sum, 'iitax', include_groups=False
+        ).values[:, 1]
+        ptax_series = gdfx.apply(
+            weighted_sum, 'payrolltax', include_groups=False
+        ).values[:, 1]
+        htax_series = gdfx.apply(
+            weighted_sum, 'lumpsum_tax', include_groups=False
+        ).values[:, 1]
+        ctax_series = gdfx.apply(
+            weighted_sum, 'combined', include_groups=False
+        ).values[:, 1]
         # write decile table to text file
         row = 'Weighted Tax {} by Baseline Expanded-Income Decile\n'
         tfile.write(row.format(tkind))
