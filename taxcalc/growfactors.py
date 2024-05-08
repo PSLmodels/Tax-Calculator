@@ -143,11 +143,11 @@ class GrowFactors():
         if year > self.last_year:
             msg = 'year={} > GrowFactors.last_year={}'
             raise ValueError(msg.format(year, self.last_year))
-        return self.gfdf.loc[name,year]
+        return self.gfdf.loc[year,name]
 
     def update(self, name, year, diff):
         """
-        Add to self.gfdf.loc[name,year] the specified diff amount.
+        Add to self.gfdf (for name and year) the specified diff amount.
         """
         if self.used:
             msg = 'cannot update growfactors after they have been used'
@@ -156,4 +156,4 @@ class GrowFactors():
         assert year >= self.first_year
         assert year <= self.last_year
         assert isinstance(diff, float)
-        self.gfdf.loc[name,year] += diff
+        self.gfdf.loc[year,name] += diff
