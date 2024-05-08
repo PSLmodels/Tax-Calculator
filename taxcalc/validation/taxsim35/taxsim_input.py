@@ -2,6 +2,7 @@
 Generates random sample of tax filing units with attributes such that
 generated file can be directly uploaded to Internet TAXSIM version 35.
 """
+
 # CODING-STYLE CHECKS:
 # pycodestyle taxsim_input.py
 # pylint --disable=locally-disabled taxsim_input.py
@@ -212,7 +213,9 @@ def sample_dataframe(assump, year, offset):
     mstat = np.where(urn < assump["joint_frac"], 2, 1)
     sdict[4] = mstat
     # (05) PAGE
-    sdict[5] = np.random.randint(assump["min_age"], assump["max_age"] + 1, size)
+    sdict[5] = np.random.randint(
+        assump["min_age"], assump["max_age"] + 1, size
+    )
     # (06) SAGE
     age_diff = np.random.randint(
         assump["min_age_diff"], assump["max_age_diff"] + 1, size
@@ -255,16 +258,22 @@ def sample_dataframe(assump, year, offset):
     sdict[16] = np.random.randint(0, assump["max_intinc"] + 1, size) * 1000
     # (17) STCG
     sdict[17] = (
-        np.random.randint(assump["min_stcg"], assump["max_stcg"] + 1, size) * 1000
+        np.random.randint(assump["min_stcg"], assump["max_stcg"] + 1, size)
+        * 1000
     )
     # (18) LTCG
     sdict[18] = (
-        np.random.randint(assump["min_ltcg"], assump["max_ltcg"] + 1, size) * 1000
+        np.random.randint(assump["min_ltcg"], assump["max_ltcg"] + 1, size)
+        * 1000
     )
     # (19) OTHERPROP
-    sdict[19] = np.random.randint(0, assump["max_other_prop_inc"] + 1, size) * 1000
+    sdict[19] = (
+        np.random.randint(0, assump["max_other_prop_inc"] + 1, size) * 1000
+    )
     # (20) NONPROP
-    sdict[20] = np.random.randint(0, assump["max_other_nonprop_inc"] + 1, size) * 1000
+    sdict[20] = (
+        np.random.randint(0, assump["max_other_nonprop_inc"] + 1, size) * 1000
+    )
     # (21) PENSIONS
     sdict[21] = np.random.randint(0, assump["max_pnben"] + 1, size) * 1000
     # (22) GSSI
@@ -279,14 +288,20 @@ def sample_dataframe(assump, year, offset):
     # (26) RENTPAID (used only in some state income tax laws)
     sdict[26] = zero
     # (27) PROPTAX
-    sdict[27] = np.random.randint(0, assump["max_ided_proptax"] + 1, size) * 1000
+    sdict[27] = (
+        np.random.randint(0, assump["max_ided_proptax"] + 1, size) * 1000
+    )
     # (28) OTHERITEM
-    sdict[28] = np.random.randint(0, assump["max_ided_nopref"] + 1, size) * 1000
+    sdict[28] = (
+        np.random.randint(0, assump["max_ided_nopref"] + 1, size) * 1000
+    )
     # (29) CHILDCARE (TAXSIM-35 EXPECTS ZERO IF NO QUALIFYING CHILDRED)
     ccexp = np.random.randint(0, assump["max_ccexp"] + 1, size) * 1000
     sdict[29] = np.where(dep13 > 0, ccexp, zero)
     # (30) MORTGAGE
-    sdict[30] = np.random.randint(0, assump["max_ided_mortgage"] + 1, size) * 1000
+    sdict[30] = (
+        np.random.randint(0, assump["max_ided_mortgage"] + 1, size) * 1000
+    )
     # (31) S-Corp income, QBI
     sdict[31] = np.random.randint(0, assump["max_scorp_inc"] + 1, size) * 1000
     # (32) Primary Taxpayer's QBI

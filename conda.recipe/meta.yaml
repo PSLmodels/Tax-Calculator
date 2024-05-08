@@ -8,7 +8,7 @@ build:
 
 requirements:
   build:
-    - python
+    - "python<3.12"
     - "numpy>=1.14"
     - "pandas>=1.2.0"
     - "bokeh>=1.4.0, <3.0.0"
@@ -18,9 +18,10 @@ requirements:
     - behresp
     - aiohttp
     - curl
+    - openpyxl
 
   run:
-    - python
+    - "python<3.12"
     - "numpy>=1.14"
     - "pandas>=1.2.0"
     - "bokeh>=1.4.0, <3.0.0"
@@ -30,6 +31,7 @@ requirements:
     - behresp
     - aiohttp
     - curl
+    - openpyxl
 
 test:
   commands:

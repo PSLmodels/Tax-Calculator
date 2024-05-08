@@ -2,7 +2,7 @@ name: taxcalc-dev
 channels:
   - conda-forge
 dependencies:
-- python
+- "python<3.12"
 - curl
 - "numpy>=1.14"
 - "pandas>=1.2.0"
@@ -19,6 +19,7 @@ dependencies:
 - coverage
 - "paramtools>=0.18.0"
 - behresp
+- openpyxl
 - pip
 - pip:
     - jupyter-book

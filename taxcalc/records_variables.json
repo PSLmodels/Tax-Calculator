@@ -1081,6 +1081,11 @@
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
+    "dwks43": {
+      "type": "float",
+      "desc": "separate tax on long-term capital gains and qualified dividends",
+      "form": {"2013-20??": "calculated variable"}
+    },
     "fstax": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",

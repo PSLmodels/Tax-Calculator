@@ -143,7 +143,7 @@
                             "2026": 0},
     "ID_Medical_frt": {"2017": 0.075,
                        "2019": 0.075},
-    "parameter_indexing_CPI_offset": {"2017": -0.0025},
+    "parameter_indexing_CPI_offset": {"2017": 0.0},
 
     // Apply parameters that are affected by the change in index rates
     // even though they are not directly modified by TCJA.

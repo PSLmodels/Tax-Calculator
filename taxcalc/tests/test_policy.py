@@ -1431,7 +1431,7 @@ class TestAdjust:
             (pol2.II_em[1:] / pol2.II_em[:-1] - 1).round(4),
             [pol2.inflation_rates(year=year) for year in window[:-1]],
         )
-
+        
     def test_adj_CPI_offset_and_index_status(self):
         """
         Test changing parameter_indexing_CPI_offset and another
@@ -1467,7 +1467,7 @@ class TestAdjust:
         pol2.set_state(year=[2021, 2022])
         np.testing.assert_equal(
             (pol2.CTC_c[1] / pol2.CTC_c[0] - 1).round(4),
-            pol0.inflation_rates(year=2021) + (-0.005),
+            round(pol0.inflation_rates(year=2021) + (-0.005), 4),
         )
 
     def test_adj_related_parameters_and_index_status(self):
@@ -1551,3 +1551,25 @@ class TestAdjust:
         )
 
         np.testing.assert_equal(act_before_2025, exp_before_2025)
+
+
+def test_two_sets_of_tax_brackets():
+    """
+    Test that II_brk? and PT_brk? values are the same under current law.
+    """
+    pol = Policy()
+    brackets = range(1, 7+1)
+    years = range(Policy.JSON_START_YEAR, Policy.LAST_KNOWN_YEAR+1)
+    emsg = ''
+    for year in years:
+        pol.set_year(year)
+        pdata = dict(pol.items())
+        for bnum in brackets:
+            ii_val = pdata[f'II_brk{bnum}']
+            pt_val = pdata[f'PT_brk{bnum}']
+            if not np.allclose(ii_val, pt_val):
+                emsg += f'II_brk{bnum} != PT_brk{bnum} for year {year}\n'
+                emsg += f'  II_brk{bnum} is {ii_val}\n'
+                emsg += f'  PT_brk{bnum} is {pt_val}\n'
+    if emsg:
+        raise ValueError(emsg)

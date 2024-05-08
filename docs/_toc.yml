@@ -24,14 +24,13 @@ parts:
     - file: recipes/recipe04_pandas
     - file: recipes/recipe05
     - file: recipes/recipe06
+  - file: usage/tcja_after_2025
 - caption: About
   chapters:
   - file: about/history
-  - file: about/roadmap
   - file: about/releases
-  - file: about/changes
-  - file: about/upgrading
-  - file: about/license
+  - file: about/roadmap
+  - file: about/LICENSE
 - caption: Contributing
   chapters:
   - file: contributing/contributor_guide

@@ -252,6 +252,7 @@ class Records(Data):
         for name in GrowFactors.VALID_NAMES:
             gfv[name] = self.gfactors.factor_value(name, year)
         # apply values to Records variables
+        self.PT_binc_w2_wages *= gfv['AWAGE']
         self.e00200 *= gfv['AWAGE']
         self.e00200p *= gfv['AWAGE']
         self.e00200s *= gfv['AWAGE']
@@ -350,7 +351,7 @@ class Records(Data):
         # pylint: disable=no-member
         if self.ADJ.size > 0:
             # Interest income
-            self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin].values
+            self.e00300 *= self.ADJ[f'INT{year}'].iloc[self.agi_bin].values
 
     def _read_ratios(self, ratios):
         """
