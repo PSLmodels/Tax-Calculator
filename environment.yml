@@ -3,14 +3,11 @@ channels:
   - conda-forge
 dependencies:
 - "python>=3.9, <3.12"
-- "numpy>=1.20, <2.0"
-- "pandas>=2.0, <3.0"
+- "numpy>=1.20"
+- "pandas>=2.0"
 - "bokeh>=1.4, <3.0"
-- requests
-- numba
 - "paramtools>=0.18.0"
-- "fsspec<=0.8.7"
-- aiohttp
+- numba
 - curl
 - pytest
 - pytest-xdist
