@@ -335,9 +335,13 @@ def create_distribution_table(vdf, groupby, income_measure,
         sdf = pd.DataFrame()
         for col in DIST_TABLE_COLUMNS:
             if col in unweighted_columns:
-                sdf[col] = gdf.apply(unweighted_sum, col).values[:, 1]
+                sdf[col] = gdf.apply(
+                    unweighted_sum, col, include_groups=False
+                ).values[:, 1]
             else:
-                sdf[col] = gdf.apply(weighted_sum, col).values[:, 1]
+                sdf[col] = gdf.apply(
+                    weighted_sum, col, include_groups=False
+                ).values[:, 1]
         return sdf
     # main logic of create_distribution_table
     assert isinstance(vdf, pd.DataFrame)
@@ -484,20 +488,33 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
             return dframe[dframe[col_name] > tolerance]['count'].sum()
         # start of additive_stats_dataframe code
         sdf = pd.DataFrame()
-        sdf['count'] = gdf.apply(unweighted_sum, 'count').values[:, 1]
-        sdf['tax_cut'] = gdf.apply(count_lt_zero,
-                                   'tax_diff').values[:, 1]
-        sdf['tax_inc'] = gdf.apply(count_gt_zero,
-                                   'tax_diff').values[:, 1]
-        sdf['tot_change'] = gdf.apply(weighted_sum,
-                                      'tax_diff').values[:, 1]
-        sdf['ubi'] = gdf.apply(weighted_sum, 'ubi').values[:, 1]
+        sdf['count'] = gdf.apply(
+            unweighted_sum, 'count', include_groups=False
+        ).values[:, 1]
+        sdf['tax_cut'] = gdf.apply(
+            count_lt_zero, 'tax_diff', include_groups=False
+        ).values[:, 1]
+        sdf['tax_inc'] = gdf.apply(
+            count_gt_zero, 'tax_diff', include_groups=False
+        ).values[:, 1]
+        sdf['tot_change'] = gdf.apply(
+            weighted_sum, 'tax_diff', include_groups=False
+        ).values[:, 1]
+        sdf['ubi'] = gdf.apply(
+            weighted_sum, 'ubi', include_groups=False
+        ).values[:, 1]
         sdf['benefit_cost_total'] = gdf.apply(
-            weighted_sum, 'benefit_cost_total').values[:, 1]
+            weighted_sum, 'benefit_cost_total', include_groups=False
+        ).values[:, 1]
         sdf['benefit_value_total'] = gdf.apply(
-            weighted_sum, 'benefit_value_total').values[:, 1]
-        sdf['atinc1'] = gdf.apply(weighted_sum, 'atinc1').values[:, 1]
-        sdf['atinc2'] = gdf.apply(weighted_sum, 'atinc2').values[:, 1]
+            weighted_sum, 'benefit_value_total', include_groups=False
+        ).values[:, 1]
+        sdf['atinc1'] = gdf.apply(
+            weighted_sum, 'atinc1', include_groups=False
+        ).values[:, 1]
+        sdf['atinc2'] = gdf.apply(
+            weighted_sum, 'atinc2', include_groups=False
+        ).values[:, 1]
         return sdf
     # main logic of create_difference_table
     assert groupby in ('weighted_deciles',
@@ -903,8 +920,12 @@ def mtr_graph_data(vdf, year,
     # split dfx into groups specified by 'table_row' column
     gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
-    mtr1_series = gdfx.apply(weighting_function, 'mtr1').values[:, 1]
-    mtr2_series = gdfx.apply(weighting_function, 'mtr2').values[:, 1]
+    mtr1_series = gdfx.apply(
+        weighting_function, 'mtr1', include_groups=False
+    ).values[:, 1]
+    mtr2_series = gdfx.apply(
+        weighting_function, 'mtr2', include_groups=False
+    ).values[:, 1]
     # construct DataFrame containing the two mtr?_series
     lines = pd.DataFrame()
     lines['base'] = mtr1_series
@@ -1020,9 +1041,15 @@ def atr_graph_data(vdf, year,
     # split dfx into groups specified by 'table_row' column
     gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply weighted_mean function to percentile-grouped values
-    avginc_series = gdfx.apply(weighted_mean, 'expanded_income').values[:, 1]
-    avgtax1_series = gdfx.apply(weighted_mean, 'tax1').values[:, 1]
-    avgtax2_series = gdfx.apply(weighted_mean, 'tax2').values[:, 1]
+    avginc_series = gdfx.apply(
+        weighted_mean, 'expanded_income', include_groups=False
+    ).values[:, 1]
+    avgtax1_series = gdfx.apply(
+        weighted_mean, 'tax1', include_groups=False
+    ).values[:, 1]
+    avgtax2_series = gdfx.apply(
+        weighted_mean, 'tax2', include_groups=False
+    ).values[:, 1]
     # compute average tax rates for each included income percentile
     atr1_series = np.zeros(avginc_series.shape)
     atr1_series[included] = np.divide(
