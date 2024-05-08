@@ -470,7 +470,7 @@ def test_diff_count_precision():
 def test_weighted_mean():
     dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grouped = dfx.groupby('label')
-    diffs = grouped.apply(weighted_mean, 'tax_diff')
+    diffs = grouped.apply(weighted_mean, 'tax_diff', include_groups=False)
     exp = pd.Series(data=[16.0 / 12.0, 26.0 / 10.0], index=['a', 'b'])
     exp.index.name = 'label'
     pd.testing.assert_series_equal(exp, diffs)
@@ -498,7 +498,7 @@ def test_expanded_income_weighted():
 def test_weighted_sum():
     dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grouped = dfx.groupby('label')
-    diffs = grouped.apply(weighted_sum, 'tax_diff')
+    diffs = grouped.apply(weighted_sum, 'tax_diff', include_groups=False)
     exp = pd.Series(data=[16.0, 26.0], index=['a', 'b'])
     exp.index.name = 'label'
     pd.testing.assert_series_equal(exp, diffs)
@@ -511,7 +511,7 @@ def test_add_income_trow_var():
     dta = np.arange(1, 1e6, 5000)
     vdf = pd.DataFrame(data=dta, columns=['expanded_income'])
     vdf = add_income_table_row_variable(vdf, 'expanded_income', SOI_AGI_BINS)
-    gdf = vdf.groupby('table_row')
+    gdf = vdf.groupby('table_row', observed=False)
     idx = 1
     for name, _ in gdf:
         assert name.closed == 'left'
