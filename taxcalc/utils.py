@@ -12,7 +12,7 @@ import math
 import json
 import copy
 import collections
-import pkg_resources
+import importlib.resources as implibres
 import numpy as np
 import pandas as pd
 import bokeh.io as bio
@@ -1513,15 +1513,11 @@ def read_egg_csv(fname, index_col=None):
     return pandas DataFrame containing the data.
     """
     try:
-        path_in_egg = os.path.join('taxcalc', fname)
-        vdf = pd.read_csv(
-            pkg_resources.resource_stream(
-                pkg_resources.Requirement.parse('taxcalc'),
-                path_in_egg),
-            index_col=index_col
-        )
+        path_in_egg = implibres.files('taxcalc').joinpath(fname)
+        with implibres.as_file(path_in_egg) as rname:
+            vdf = pd.read_csv(rname, index_col=index_col)
     except Exception:
-        raise ValueError('could not read {} data from egg'.format(fname))
+        raise ValueError(f'could not read {fname} data from egg')
     # cannot call read_egg_ function in unit tests
     return vdf  # pragma: no cover
 
@@ -1532,15 +1528,11 @@ def read_egg_json(fname):
     return dictionary containing the data.
     """
     try:
-        path_in_egg = os.path.join('taxcalc', fname)
-        pdict = json.loads(
-            pkg_resources.resource_stream(
-                pkg_resources.Requirement.parse('taxcalc'),
-                path_in_egg).read().decode('utf-8'),
-            object_pairs_hook=collections.OrderedDict
-        )
+        path_in_egg = implibres.files('taxcalc').joinpath(fname)
+        with implibres.as_file(path_in_egg) as rname:
+            vdf = json.loads(rname)
     except Exception:
-        raise ValueError('could not read {} data from egg'.format(fname))
+        raise ValueError(f'could not read {fname} data from egg')
     # cannot call read_egg_ function in unit tests
     return pdict  # pragma: no cover
 
