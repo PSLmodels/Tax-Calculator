@@ -1194,8 +1194,12 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
     # split dfx into groups specified by 'table_row' column
     gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply weighted_mean function to percentile-grouped values
-    avginc_series = gdfx.apply(weighted_mean, 'expanded_income').values[:, 1]
-    change_series = gdfx.apply(weighted_mean, 'chg_aftinc').values[:, 1]
+    avginc_series = gdfx.apply(
+        weighted_mean, 'expanded_income', include_groups=False
+    ).values[:, 1]
+    change_series = gdfx.apply(
+        weighted_mean, 'chg_aftinc', include_groups=False
+    ).values[:, 1]
     # compute percentage change statistic each included income percentile
     pch_series = np.zeros(avginc_series.shape)
     pch_series[included] = np.divide(
