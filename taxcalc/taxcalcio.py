@@ -602,12 +602,24 @@ class TaxCalcIO():
                                               pop_quantiles=False,
                                               weight_by_income_measure=False)
         gdfx = dfx.groupby('table_row', as_index=False, observed=True)
-        rtns_series = gdfx.apply(unweighted_sum, 's006').values[:, 1]
-        xinc_series = gdfx.apply(weighted_sum, 'expanded_income').values[:, 1]
-        itax_series = gdfx.apply(weighted_sum, 'iitax').values[:, 1]
-        ptax_series = gdfx.apply(weighted_sum, 'payrolltax').values[:, 1]
-        htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax').values[:, 1]
-        ctax_series = gdfx.apply(weighted_sum, 'combined').values[:, 1]
+        rtns_series = gdfx.apply(
+            unweighted_sum, 's006', include_groups=False
+        ).values[:, 1]
+        xinc_series = gdfx.apply(
+            weighted_sum, 'expanded_income', include_groups=False
+        ).values[:, 1]
+        itax_series = gdfx.apply(
+            weighted_sum, 'iitax', include_groups=False
+        ).values[:, 1]
+        ptax_series = gdfx.apply(
+            weighted_sum, 'payrolltax', include_groups=False
+        ).values[:, 1]
+        htax_series = gdfx.apply(
+            weighted_sum, 'lumpsum_tax', include_groups=False
+        ).values[:, 1]
+        ctax_series = gdfx.apply(
+            weighted_sum, 'combined', include_groups=False
+        ).values[:, 1]
         # write decile table to text file
         row = 'Weighted Tax {} by Baseline Expanded-Income Decile\n'
         tfile.write(row.format(tkind))
@@ -660,6 +672,15 @@ class TaxCalcIO():
         """
         pos_wght_sum = self.calc.total_weight() > 0.0
         fig = None
+        # percentage-aftertax-income-change graph
+        pch_fname = self._output_filename.replace('.csv', '-pch.html')
+        pch_title = 'PCH by Income Percentile'
+        if pos_wght_sum:
+            fig = self.calc_base.pch_graph(self.calc, pop_quantiles=False)
+            write_graph_file(fig, pch_fname, pch_title)
+        else:
+            reason = 'No graph because sum of weights is not positive'
+            TaxCalcIO.write_empty_graph_file(pch_fname, pch_title, reason)
         # average-tax-rate graph
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
@@ -682,15 +703,6 @@ class TaxCalcIO():
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(mtr_fname, mtr_title, reason)
-        # percentage-aftertax-income-change graph
-        pch_fname = self._output_filename.replace('.csv', '-pch.html')
-        pch_title = 'PCH by Income Percentile'
-        if pos_wght_sum:
-            fig = self.calc_base.pch_graph(self.calc, pop_quantiles=False)
-            write_graph_file(fig, pch_fname, pch_title)
-        else:
-            reason = 'No graph because sum of weights is not positive'
-            TaxCalcIO.write_empty_graph_file(pch_fname, pch_title, reason)
         if fig:
             del fig
             gc.collect()
