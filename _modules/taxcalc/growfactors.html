@@ -559,14 +559,14 @@ document.write(`
         <span class="k">if</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;year=</span><span class="si">{}</span><span class="s1"> &gt; GrowFactors.last_year=</span><span class="si">{}</span><span class="s1">&#39;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">year</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">year</span><span class="p">,</span><span class="n">name</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="GrowFactors.update">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.update">[docs]</a>
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add to self.gfdf[name][year] the specified diff amount.</span>
+<span class="sd">        Add to self.gfdf (for name and year) the specified diff amount.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">used</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;cannot update growfactors after they have been used&#39;</span>
@@ -575,7 +575,7 @@ document.write(`
         <span class="k">assert</span> <span class="n">year</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span>
         <span class="k">assert</span> <span class="n">year</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">year</span><span class="p">]</span> <span class="o">+=</span> <span class="n">diff</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">year</span><span class="p">,</span><span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="n">diff</span></div>
 </div>
 
 </pre></div>

@@ -418,10 +418,9 @@ document.write(`
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">importlib.resources</span> <span class="k">as</span> <span class="nn">implibres</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">bokeh.io</span> <span class="k">as</span> <span class="nn">bio</span>
 <span class="kn">import</span> <span class="nn">bokeh.plotting</span> <span class="k">as</span> <span class="nn">bp</span>
 <span class="kn">from</span> <span class="nn">bokeh.models</span> <span class="kn">import</span> <span class="n">PrintfTickFormatter</span>
 <span class="kn">from</span> <span class="nn">taxcalc.utilsprvt</span> <span class="kn">import</span> <span class="p">(</span><span class="n">weighted_mean</span><span class="p">,</span>
@@ -758,9 +757,13 @@ document.write(`
         <span class="n">sdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">DIST_TABLE_COLUMNS</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">unweighted_columns</span><span class="p">:</span>
-                <span class="n">sdf</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">unweighted_sum</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">sdf</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                    <span class="n">unweighted_sum</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">sdf</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_sum</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">sdf</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                    <span class="n">weighted_sum</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">sdf</span>
     <span class="c1"># main logic of create_distribution_table</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
@@ -910,20 +913,33 @@ document.write(`
             <span class="k">return</span> <span class="n">dframe</span><span class="p">[</span><span class="n">dframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tolerance</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="c1"># start of additive_stats_dataframe code</span>
         <span class="n">sdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">unweighted_sum</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;tax_cut&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">count_lt_zero</span><span class="p">,</span>
-                                   <span class="s1">&#39;tax_diff&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;tax_inc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">count_gt_zero</span><span class="p">,</span>
-                                   <span class="s1">&#39;tax_diff&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;tot_change&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_sum</span><span class="p">,</span>
-                                      <span class="s1">&#39;tax_diff&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;ubi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;ubi&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">unweighted_sum</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;tax_cut&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">count_lt_zero</span><span class="p">,</span> <span class="s1">&#39;tax_diff&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;tax_inc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">count_gt_zero</span><span class="p">,</span> <span class="s1">&#39;tax_diff&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;tot_change&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;tax_diff&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;ubi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;ubi&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;benefit_cost_total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-            <span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;benefit_cost_total&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;benefit_cost_total&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;benefit_value_total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-            <span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;benefit_value_total&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;atinc1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;atinc1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;atinc2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;atinc2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;benefit_value_total&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;atinc1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;atinc1&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;atinc2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;atinc2&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">sdf</span>
     <span class="c1"># main logic of create_difference_table</span>
     <span class="k">assert</span> <span class="n">groupby</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;weighted_deciles&#39;</span><span class="p">,</span>
@@ -1335,8 +1351,12 @@ document.write(`
     <span class="c1"># split dfx into groups specified by &#39;table_row&#39; column</span>
     <span class="n">gdfx</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;table_row&#39;</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="c1"># apply the weighting_function to percentile-grouped mtr values</span>
-    <span class="n">mtr1_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighting_function</span><span class="p">,</span> <span class="s1">&#39;mtr1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">mtr2_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighting_function</span><span class="p">,</span> <span class="s1">&#39;mtr2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">mtr1_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">weighting_function</span><span class="p">,</span> <span class="s1">&#39;mtr1&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">mtr2_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">weighting_function</span><span class="p">,</span> <span class="s1">&#39;mtr2&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="c1"># construct DataFrame containing the two mtr?_series</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
     <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mtr1_series</span>
@@ -1455,9 +1475,15 @@ document.write(`
     <span class="c1"># split dfx into groups specified by &#39;table_row&#39; column</span>
     <span class="n">gdfx</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;table_row&#39;</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="c1"># apply weighted_mean function to percentile-grouped values</span>
-    <span class="n">avginc_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_mean</span><span class="p">,</span> <span class="s1">&#39;expanded_income&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">avgtax1_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_mean</span><span class="p">,</span> <span class="s1">&#39;tax1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">avgtax2_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_mean</span><span class="p">,</span> <span class="s1">&#39;tax2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">avginc_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">weighted_mean</span><span class="p">,</span> <span class="s1">&#39;expanded_income&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">avgtax1_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">weighted_mean</span><span class="p">,</span> <span class="s1">&#39;tax1&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">avgtax2_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">weighted_mean</span><span class="p">,</span> <span class="s1">&#39;tax2&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="c1"># compute average tax rates for each included income percentile</span>
     <span class="n">atr1_series</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">avginc_series</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="n">atr1_series</span><span class="p">[</span><span class="n">included</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span>
@@ -1545,8 +1571,8 @@ document.write(`
 
 <span class="sd">    OR when executing script using Python command-line interpreter::</span>
 
-<span class="sd">      bio.output_file(&#39;graph-name.html&#39;, title=&#39;?TR by Income Percentile&#39;)</span>
-<span class="sd">      bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]</span>
+<span class="sd">      bp.output_file(&#39;graph-name.html&#39;, title=&#39;?TR by Income Percentile&#39;)</span>
+<span class="sd">      bp.show(gplot)  [OR bp.save(gplot) WILL JUST WRITE FILE TO DISK]</span>
 
 <span class="sd">    WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE</span>
 
@@ -1635,8 +1661,12 @@ document.write(`
     <span class="c1"># split dfx into groups specified by &#39;table_row&#39; column</span>
     <span class="n">gdfx</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;table_row&#39;</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="c1"># apply weighted_mean function to percentile-grouped values</span>
-    <span class="n">avginc_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_mean</span><span class="p">,</span> <span class="s1">&#39;expanded_income&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">change_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_mean</span><span class="p">,</span> <span class="s1">&#39;chg_aftinc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">avginc_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">weighted_mean</span><span class="p">,</span> <span class="s1">&#39;expanded_income&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">change_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="n">weighted_mean</span><span class="p">,</span> <span class="s1">&#39;chg_aftinc&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="c1"># compute percentage change statistic each included income percentile</span>
     <span class="n">pch_series</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">avginc_series</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="n">pch_series</span><span class="p">[</span><span class="n">included</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span>
@@ -1705,8 +1735,8 @@ document.write(`
         <span class="n">title</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">text_font_size</span> <span class="o">=</span> <span class="s1">&#39;12pt&#39;</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;line&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;line&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pch</span><span class="p">,</span>
-             <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;line&#39;</span><span class="p">]</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">pch</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># force zero to be included on y axis</span>
     <span class="n">zero_grid_line_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
     <span class="n">zero_grid_line_height</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">zero_grid_line_range</span><span class="p">)</span>
@@ -1722,8 +1752,9 @@ document.write(`
     <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label</span> <span class="o">=</span> <span class="n">ylabel</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label_text_font_size</span> <span class="o">=</span> <span class="s1">&#39;12pt&#39;</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label_text_font_style</span> <span class="o">=</span> <span class="s1">&#39;normal&#39;</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">PrintfTickFormatter</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%+.1f%%</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">fig</span></div>
+    <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">PrintfTickFormatter</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.1f</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># return fig  # bokeh 3.4.1 cannot save this figure for some unknown reason</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
 
 
 
@@ -1748,9 +1779,10 @@ document.write(`
 <span class="sd">    -------</span>
 <span class="sd">    Nothing</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">delete_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>  <span class="c1"># work around annoying &#39;already exists&#39; bokeh msg</span>
-    <span class="n">bio</span><span class="o">.</span><span class="n">output_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
-    <span class="n">bio</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">figure</span><span class="p">)</span></div>
+    <span class="n">delete_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">figure</span><span class="p">:</span>
+        <span class="n">bp</span><span class="o">.</span><span class="n">output_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+        <span class="n">bp</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">figure</span><span class="p">)</span></div>
 
 
 
@@ -1944,15 +1976,11 @@ document.write(`
 <span class="sd">    return pandas DataFrame containing the data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">path_in_egg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;taxcalc&#39;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
-        <span class="n">vdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
-            <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
-                <span class="n">pkg_resources</span><span class="o">.</span><span class="n">Requirement</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;taxcalc&#39;</span><span class="p">),</span>
-                <span class="n">path_in_egg</span><span class="p">),</span>
-            <span class="n">index_col</span><span class="o">=</span><span class="n">index_col</span>
-        <span class="p">)</span>
+        <span class="n">path_in_egg</span> <span class="o">=</span> <span class="n">implibres</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s1">&#39;taxcalc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">implibres</span><span class="o">.</span><span class="n">as_file</span><span class="p">(</span><span class="n">path_in_egg</span><span class="p">)</span> <span class="k">as</span> <span class="n">rname</span><span class="p">:</span>
+            <span class="n">vdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">rname</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="n">index_col</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;could not read </span><span class="si">{}</span><span class="s1"> data from egg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;could not read </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1"> data from egg&#39;</span><span class="p">)</span>
     <span class="c1"># cannot call read_egg_ function in unit tests</span>
     <span class="k">return</span> <span class="n">vdf</span>  <span class="c1"># pragma: no cover</span></div>
 
@@ -1966,15 +1994,11 @@ document.write(`
 <span class="sd">    return dictionary containing the data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">path_in_egg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;taxcalc&#39;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
-        <span class="n">pdict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
-            <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span>
-                <span class="n">pkg_resources</span><span class="o">.</span><span class="n">Requirement</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;taxcalc&#39;</span><span class="p">),</span>
-                <span class="n">path_in_egg</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">),</span>
-            <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span>
-        <span class="p">)</span>
+        <span class="n">path_in_egg</span> <span class="o">=</span> <span class="n">implibres</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s1">&#39;taxcalc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">implibres</span><span class="o">.</span><span class="n">as_file</span><span class="p">(</span><span class="n">path_in_egg</span><span class="p">)</span> <span class="k">as</span> <span class="n">rname</span><span class="p">:</span>
+            <span class="n">vdf</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">rname</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;could not read </span><span class="si">{}</span><span class="s1"> data from egg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;could not read </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1"> data from egg&#39;</span><span class="p">)</span>
     <span class="c1"># cannot call read_egg_ function in unit tests</span>
     <span class="k">return</span> <span class="n">pdict</span>  <span class="c1"># pragma: no cover</span></div>
 
