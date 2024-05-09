@@ -15,7 +15,6 @@ import collections
 import importlib.resources as implibres
 import numpy as np
 import pandas as pd
-import bokeh.io as bio
 import bokeh.plotting as bp
 from bokeh.models import PrintfTickFormatter
 from taxcalc.utilsprvt import (weighted_mean,
@@ -1134,8 +1133,8 @@ def xtr_graph_plot(data,
 
     OR when executing script using Python command-line interpreter::
 
-      bio.output_file('graph-name.html', title='?TR by Income Percentile')
-      bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
+      bp.output_file('graph-name.html', title='?TR by Income Percentile')
+      bp.show(gplot)  [OR bp.save(gplot) WILL JUST WRITE FILE TO DISK]
 
     WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
 
@@ -1333,8 +1332,8 @@ def write_graph_file(figure, filename, title):
     Nothing
     """
     delete_file(filename)  # work around annoying 'already exists' bokeh msg
-    bio.output_file(filename=filename, title=title)
-    bio.save(figure)
+    bp.output_file(filename=filename, title=title)
+    bp.save(figure)
 
 
 def isoelastic_utility_function(consumption, crra, cmin):
