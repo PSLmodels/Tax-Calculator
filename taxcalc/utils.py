@@ -1291,8 +1291,8 @@ def pch_graph_plot(data,
         title = data['title']
     fig = bp.figure(width=width, height=height, title=title)
     fig.title.text_font_size = '12pt'
-    fig.line(data['line'].index, data['line'].pch,
-             line_color='blue', line_width=3)
+    line = data['line']
+    fig.line(line.index, line.pch, line_color='blue', line_width=3)
     fig.circle(0, 0, visible=False)  # force zero to be included on y axis
     zero_grid_line_range = range(0, 101)
     zero_grid_line_height = [0] * len(zero_grid_line_range)
@@ -1308,8 +1308,9 @@ def pch_graph_plot(data,
     fig.yaxis.axis_label = ylabel
     fig.yaxis.axis_label_text_font_size = '12pt'
     fig.yaxis.axis_label_text_font_style = 'normal'
-    fig.yaxis[0].formatter = PrintfTickFormatter(format='%+.1f%')
-    return fig
+    fig.yaxis[0].formatter = PrintfTickFormatter(format='%.1f')
+    # return fig  # bokeh 3.4.1 cannot save this figure for some unknown reason
+    return None
 
 
 def write_graph_file(figure, filename, title):
@@ -1331,9 +1332,10 @@ def write_graph_file(figure, filename, title):
     -------
     Nothing
     """
-    delete_file(filename)  # work around annoying 'already exists' bokeh msg
-    bp.output_file(filename=filename, title=title)
-    bp.save(figure)
+    delete_file(filename)
+    if figure:
+        bp.output_file(filename=filename, title=title)
+        bp.save(figure)
 
 
 def isoelastic_utility_function(consumption, crra, cmin):
