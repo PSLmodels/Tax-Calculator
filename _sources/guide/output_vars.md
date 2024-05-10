@@ -103,8 +103,8 @@ _IRS Form Location:_
 _Description_: Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output  
 _Datatype_: float  
 _IRS Form Location:_  
-2013-2013: 1040 line 61 minus line 56 minus line 60a  
-2014-2016: 1040 line 63 minus line 57 minus line 62a  
+2013-2013: 1040 line 61 minus lines 56, 60a, 64a, 65, and 66  
+2014-2016: 1040 line 63 minus lines 57, 62a, 66a, 67, and 68  
 
 
 ##  `num`  
@@ -595,6 +595,13 @@ _IRS Form Location:_
 
 ##  `dwks19`  
 _Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `dwks43`  
+_Description_: separate tax on long-term capital gains and qualified dividends  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-20??: calculated variable  
