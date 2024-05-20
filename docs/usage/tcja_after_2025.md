@@ -26,7 +26,7 @@ expire).  Compatible input datasets include:
   [taxdata](https://github.com/PSLmodels/taxdata) repository and
   available only to those with access to the 2011 IRS/SOI PUF
 
-* several newer CSV-formatted input files created in the PSLmodels
+* the newer `tmd.csv` file generated in the PSLmodels
   [tax-microdata](https://github.com/PSLmodels/tax-microdata-benchmarking)
   repository that are based on the 2015 IRS/SOI PUF and on more recent CPS
   data, and are available only to those with access to the 2015

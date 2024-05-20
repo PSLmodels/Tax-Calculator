@@ -276,6 +276,6 @@ class Data():
 
     def _extrapolate(self, year):
         """
-        Apply to dats variables the growth factor values for specified year.
+        Apply to data variables the growth factor values for specified year.
         """
         # Override this empty method in subclass

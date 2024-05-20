@@ -23,7 +23,7 @@ from taxcalc import Policy, Records, Calculator
 @pytest.mark.benefits
 def test_benefits(tests_path, cps_fullsample):
     """
-    Test CPS benefits.
+    Test CPS benefits from 2015 thru 2034.
     """
     # pylint: disable=too-many-locals
     benefit_names = ['ssi', 'mcare', 'mcaid', 'snap', 'wic',
@@ -38,7 +38,7 @@ def test_benefits(tests_path, cps_fullsample):
     benamt_list = list()
     bencnt_list = list()
     benavg_list = list()
-    for year in range(start_year, Policy.LAST_BUDGET_YEAR + 1):
+    for year in range(start_year, 2034 + 1):
         calc.advance_to_year(year)
         size = calc.array('XTOT')
         wght = calc.array('s006')

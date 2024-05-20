@@ -96,7 +96,10 @@ class Records(Data):
     doing when attempting this.
 
     Use Records.cps_constructor() to get a Records object instantiated
-    with CPS input data.
+    with CPS input data developed in the taxdata repository.
+
+    Use Records.tmd_constructor() to get a Records object instantiated
+    with TMD input data developed in the tax-microdata repository.
     """
     # suppress pylint warning about constructor having too many arguments:
     # pylint: disable=too-many-arguments
@@ -107,11 +110,14 @@ class Records(Data):
 
     PUFCSV_YEAR = 2011
     CPSCSV_YEAR = 2014
+    TMDCSV_YEAR = 2021
 
     PUF_WEIGHTS_FILENAME = 'puf_weights.csv.gz'
     PUF_RATIOS_FILENAME = 'puf_ratios.csv'
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
+    TMD_WEIGHTS_FILENAME = 'tmd_weights.csv.gz'
+    TMD_RATIOS_FILENAME = None
     CODE_PATH = os.path.abspath(os.path.dirname(__file__))
     VARINFO_FILE_NAME = 'records_variables.json'
     VARINFO_FILE_PATH = CODE_PATH
@@ -218,6 +224,28 @@ class Records(Data):
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
                        exact_calculations=exact_calculations)
 
+    @staticmethod
+    def tmd_constructor(data,  # path to tmd.csv file or dataframe
+                        gfactors=GrowFactors(),
+                        exact_calculations=False):  # pragma: no cover
+        """
+        Static method returns a Records object instantiated with TMD
+        input data.  This works in a analogous way to Records(), which
+        returns a Records object instantiated with PUF input data.
+        This is a convenience method that eliminates the need to
+        specify all the details of the TMD input data just as the
+        default values of the arguments of the Records class constructor
+        eliminate the need to specify all the details of the PUF input
+        data.
+        """
+        weights = os.path.join(Records.CODE_PATH, Records.TMD_WEIGHTS_FILENAME)
+        return Records(data=data,
+                       start_year=Records.TMDCSV_YEAR,
+                       gfactors=gfactors,
+                       weights=weights,
+                       adjust_ratios=Records.TMD_RATIOS_FILENAME,
+                       exact_calculations=exact_calculations)
+    
     def increment_year(self):
         """
         Add one to current year, and also does

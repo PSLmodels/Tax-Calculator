@@ -3,6 +3,19 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2024-05-10 Release 3.6.0
+------------------------
+(last merged pull request is
+[#2743](https://github.com/PSLmodels/Tax-Calculator/pull/2743))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Adds capabilites to handle `tmd*` files from the tax-microdata repository [[#2740](https://github.com/PSLmodels/Tax-Calculator/pull/2740) by Martin Holmer]
+- Minor updates to documentation, testing, and environment by Martin Holmer and Jason DeBacker in various PRs
+
 2024-04-04 Release 3.5.3
 ------------------------
 (last merged pull request is

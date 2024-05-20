@@ -191,7 +191,7 @@ def test_constant_inflation_rate_with_reform():
     """
     pol = Policy()
     # implement reform in year before final year
-    fyr = Policy.LAST_BUDGET_YEAR
+    fyr = 2034
     ryr = fyr - 1
     reform = {
         'II_em': {(ryr - 3): 1000,  # to avoid divide-by-zero under TCJA

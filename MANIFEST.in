@@ -7,4 +7,4 @@ include taxcalc/policy_current_law.json
 include taxcalc/puf_weights.csv.gz
 include taxcalc/puf_ratios.csv
 include taxcalc/records_variables.json
-
+include taxcalc/tmd_weights.csv.gz
