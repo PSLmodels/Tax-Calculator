@@ -33,7 +33,7 @@ class GrowFactors():
     Notes
     -----
     Typical usage is "gfactor = GrowFactors()", which produces an object
-    containing the default growth factors in the GrowFactors.FILE_NAME file.
+    containing growth factors in the GrowFactors.FILE_NAME file.
     """
 
     FILE_NAME = 'growfactors.csv'
@@ -56,7 +56,7 @@ class GrowFactors():
                                          growfactors_filename)
             if os.path.isfile(full_filename):
                 gfdf = pd.read_csv(full_filename, index_col='YEAR')
-            else:  # find file in conda package
+            else:  # find file in package
                 gfdf = read_egg_csv(os.path.basename(growfactors_filename),
                                     index_col='YEAR')  # pragma: no cover
         else:
@@ -65,7 +65,7 @@ class GrowFactors():
         # check validity of gfdf column names
         gfdf_names = set(list(gfdf))
         if gfdf_names != GrowFactors.VALID_NAMES:
-            msg = ('missing names are: {} and invalid names are: {}')
+            msg = 'missing names are: {} and invalid names are: {}'
             missing = GrowFactors.VALID_NAMES - gfdf_names
             invalid = gfdf_names - GrowFactors.VALID_NAMES
             raise ValueError(msg.format(missing, invalid))
@@ -143,11 +143,11 @@ class GrowFactors():
         if year > self.last_year:
             msg = 'year={} > GrowFactors.last_year={}'
             raise ValueError(msg.format(year, self.last_year))
-        return self.gfdf[name][year]
+        return self.gfdf.loc[year,name]
 
     def update(self, name, year, diff):
         """
-        Add to self.gfdf[name][year] the specified diff amount.
+        Add to self.gfdf (for name and year) the specified diff amount.
         """
         if self.used:
             msg = 'cannot update growfactors after they have been used'
@@ -156,4 +156,4 @@ class GrowFactors():
         assert year >= self.first_year
         assert year <= self.last_year
         assert isinstance(diff, float)
-        self.gfdf[name][year] += diff
+        self.gfdf.loc[year,name] += diff
