@@ -12,10 +12,9 @@ import math
 import json
 import copy
 import collections
-import pkg_resources
+import importlib.resources as implibres
 import numpy as np
 import pandas as pd
-import bokeh.io as bio
 import bokeh.plotting as bp
 from bokeh.models import PrintfTickFormatter
 from taxcalc.utilsprvt import (weighted_mean,
@@ -261,6 +260,7 @@ def add_income_table_row_variable(dframe, income_measure, bin_edges):
     assert isinstance(bin_edges, list)
     dframe['table_row'] = pd.cut(dframe[income_measure],
                                  bin_edges, right=False)
+
     return dframe
 
 
@@ -334,9 +334,13 @@ def create_distribution_table(vdf, groupby, income_measure,
         sdf = pd.DataFrame()
         for col in DIST_TABLE_COLUMNS:
             if col in unweighted_columns:
-                sdf[col] = gdf.apply(unweighted_sum, col).values[:, 1]
+                sdf[col] = gdf.apply(
+                    unweighted_sum, col, include_groups=False
+                ).values[:, 1]
             else:
-                sdf[col] = gdf.apply(weighted_sum, col).values[:, 1]
+                sdf[col] = gdf.apply(
+                    weighted_sum, col, include_groups=False
+                ).values[:, 1]
         return sdf
     # main logic of create_distribution_table
     assert isinstance(vdf, pd.DataFrame)
@@ -360,7 +364,7 @@ def create_distribution_table(vdf, groupby, income_measure,
         dframe = add_income_table_row_variable(vdf, income_measure,
                                                SOI_AGI_BINS)
     # construct grouped DataFrame
-    gdf = dframe.groupby('table_row', as_index=False)
+    gdf = dframe.groupby('table_row', observed=False, as_index=False)
     dist_table = stat_dataframe(gdf)
     del dframe['table_row']
     # compute sum row
@@ -483,20 +487,33 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
             return dframe[dframe[col_name] > tolerance]['count'].sum()
         # start of additive_stats_dataframe code
         sdf = pd.DataFrame()
-        sdf['count'] = gdf.apply(unweighted_sum, 'count').values[:, 1]
-        sdf['tax_cut'] = gdf.apply(count_lt_zero,
-                                   'tax_diff').values[:, 1]
-        sdf['tax_inc'] = gdf.apply(count_gt_zero,
-                                   'tax_diff').values[:, 1]
-        sdf['tot_change'] = gdf.apply(weighted_sum,
-                                      'tax_diff').values[:, 1]
-        sdf['ubi'] = gdf.apply(weighted_sum, 'ubi').values[:, 1]
+        sdf['count'] = gdf.apply(
+            unweighted_sum, 'count', include_groups=False
+        ).values[:, 1]
+        sdf['tax_cut'] = gdf.apply(
+            count_lt_zero, 'tax_diff', include_groups=False
+        ).values[:, 1]
+        sdf['tax_inc'] = gdf.apply(
+            count_gt_zero, 'tax_diff', include_groups=False
+        ).values[:, 1]
+        sdf['tot_change'] = gdf.apply(
+            weighted_sum, 'tax_diff', include_groups=False
+        ).values[:, 1]
+        sdf['ubi'] = gdf.apply(
+            weighted_sum, 'ubi', include_groups=False
+        ).values[:, 1]
         sdf['benefit_cost_total'] = gdf.apply(
-            weighted_sum, 'benefit_cost_total').values[:, 1]
+            weighted_sum, 'benefit_cost_total', include_groups=False
+        ).values[:, 1]
         sdf['benefit_value_total'] = gdf.apply(
-            weighted_sum, 'benefit_value_total').values[:, 1]
-        sdf['atinc1'] = gdf.apply(weighted_sum, 'atinc1').values[:, 1]
-        sdf['atinc2'] = gdf.apply(weighted_sum, 'atinc2').values[:, 1]
+            weighted_sum, 'benefit_value_total', include_groups=False
+        ).values[:, 1]
+        sdf['atinc1'] = gdf.apply(
+            weighted_sum, 'atinc1', include_groups=False
+        ).values[:, 1]
+        sdf['atinc2'] = gdf.apply(
+            weighted_sum, 'atinc2', include_groups=False
+        ).values[:, 1]
         return sdf
     # main logic of create_difference_table
     assert groupby in ('weighted_deciles',
@@ -539,8 +556,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
             df2, baseline_expanded_income, SOI_AGI_BINS)
     del df2
     # create grouped Pandas DataFrame
-    gdf = dframe.groupby('table_row', as_index=False)
-    del dframe['table_row']
+    gdf = dframe.groupby('table_row', as_index=False, observed=False)
     # create additive difference table statistics from gdf
     diff_table = additive_stats_dataframe(gdf)
     # calculate additive statistics on sums row
@@ -586,7 +602,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
     quotient = np.divide(
         diff_table['atinc2'].values, diff_table['atinc1'].values,
         out=np.zeros_like(diff_table['atinc2'].values),
-        where=diff_table['atinc1'] != 0)
+        where=diff_table['atinc1'].values != 0)
     diff_table['pc_aftertaxinc'] = np.where(
         diff_table['atinc1'].values == 0., np.nan, 100 * (quotient - 1))
     # delete intermediate Pandas DataFrame objects
@@ -901,10 +917,14 @@ def mtr_graph_data(vdf, year,
         weight_by_income_measure=dollar_weighting
     )
     # split dfx into groups specified by 'table_row' column
-    gdfx = dfx.groupby('table_row', as_index=False)
+    gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
-    mtr1_series = gdfx.apply(weighting_function, 'mtr1').values[:, 1]
-    mtr2_series = gdfx.apply(weighting_function, 'mtr2').values[:, 1]
+    mtr1_series = gdfx.apply(
+        weighting_function, 'mtr1', include_groups=False
+    ).values[:, 1]
+    mtr2_series = gdfx.apply(
+        weighting_function, 'mtr2', include_groups=False
+    ).values[:, 1]
     # construct DataFrame containing the two mtr?_series
     lines = pd.DataFrame()
     lines['base'] = mtr1_series
@@ -1018,11 +1038,17 @@ def atr_graph_data(vdf, year,
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
     # split dfx into groups specified by 'table_row' column
-    gdfx = dfx.groupby('table_row', as_index=False)
+    gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply weighted_mean function to percentile-grouped values
-    avginc_series = gdfx.apply(weighted_mean, 'expanded_income').values[:, 1]
-    avgtax1_series = gdfx.apply(weighted_mean, 'tax1').values[:, 1]
-    avgtax2_series = gdfx.apply(weighted_mean, 'tax2').values[:, 1]
+    avginc_series = gdfx.apply(
+        weighted_mean, 'expanded_income', include_groups=False
+    ).values[:, 1]
+    avgtax1_series = gdfx.apply(
+        weighted_mean, 'tax1', include_groups=False
+    ).values[:, 1]
+    avgtax2_series = gdfx.apply(
+        weighted_mean, 'tax2', include_groups=False
+    ).values[:, 1]
     # compute average tax rates for each included income percentile
     atr1_series = np.zeros(avginc_series.shape)
     atr1_series[included] = np.divide(
@@ -1107,8 +1133,8 @@ def xtr_graph_plot(data,
 
     OR when executing script using Python command-line interpreter::
 
-      bio.output_file('graph-name.html', title='?TR by Income Percentile')
-      bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
+      bp.output_file('graph-name.html', title='?TR by Income Percentile')
+      bp.show(gplot)  [OR bp.save(gplot) WILL JUST WRITE FILE TO DISK]
 
     WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
 
@@ -1192,10 +1218,14 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
     # split dfx into groups specified by 'table_row' column
-    gdfx = dfx.groupby('table_row', as_index=False)
+    gdfx = dfx.groupby('table_row', observed=False, as_index=False)
     # apply weighted_mean function to percentile-grouped values
-    avginc_series = gdfx.apply(weighted_mean, 'expanded_income').values[:, 1]
-    change_series = gdfx.apply(weighted_mean, 'chg_aftinc').values[:, 1]
+    avginc_series = gdfx.apply(
+        weighted_mean, 'expanded_income', include_groups=False
+    ).values[:, 1]
+    change_series = gdfx.apply(
+        weighted_mean, 'chg_aftinc', include_groups=False
+    ).values[:, 1]
     # compute percentage change statistic each included income percentile
     pch_series = np.zeros(avginc_series.shape)
     pch_series[included] = np.divide(
@@ -1261,8 +1291,8 @@ def pch_graph_plot(data,
         title = data['title']
     fig = bp.figure(width=width, height=height, title=title)
     fig.title.text_font_size = '12pt'
-    fig.line(data['line'].index, data['line'].pch,
-             line_color='blue', line_width=3)
+    line = data['line']
+    fig.line(line.index, line.pch, line_color='blue', line_width=3)
     fig.circle(0, 0, visible=False)  # force zero to be included on y axis
     zero_grid_line_range = range(0, 101)
     zero_grid_line_height = [0] * len(zero_grid_line_range)
@@ -1278,8 +1308,9 @@ def pch_graph_plot(data,
     fig.yaxis.axis_label = ylabel
     fig.yaxis.axis_label_text_font_size = '12pt'
     fig.yaxis.axis_label_text_font_style = 'normal'
-    fig.yaxis[0].formatter = PrintfTickFormatter(format='%+.1f%%')
-    return fig
+    fig.yaxis[0].formatter = PrintfTickFormatter(format='%.1f')
+    # return fig  # bokeh 3.4.1 cannot save this figure for some unknown reason
+    return None
 
 
 def write_graph_file(figure, filename, title):
@@ -1301,9 +1332,10 @@ def write_graph_file(figure, filename, title):
     -------
     Nothing
     """
-    delete_file(filename)  # work around annoying 'already exists' bokeh msg
-    bio.output_file(filename=filename, title=title)
-    bio.save(figure)
+    delete_file(filename)
+    if figure:
+        bp.output_file(filename=filename, title=title)
+        bp.save(figure)
 
 
 def isoelastic_utility_function(consumption, crra, cmin):
@@ -1482,15 +1514,11 @@ def read_egg_csv(fname, index_col=None):
     return pandas DataFrame containing the data.
     """
     try:
-        path_in_egg = os.path.join('taxcalc', fname)
-        vdf = pd.read_csv(
-            pkg_resources.resource_stream(
-                pkg_resources.Requirement.parse('taxcalc'),
-                path_in_egg),
-            index_col=index_col
-        )
+        path_in_egg = implibres.files('taxcalc').joinpath(fname)
+        with implibres.as_file(path_in_egg) as rname:
+            vdf = pd.read_csv(rname, index_col=index_col)
     except Exception:
-        raise ValueError('could not read {} data from egg'.format(fname))
+        raise ValueError(f'could not read {fname} data from egg')
     # cannot call read_egg_ function in unit tests
     return vdf  # pragma: no cover
 
@@ -1501,15 +1529,11 @@ def read_egg_json(fname):
     return dictionary containing the data.
     """
     try:
-        path_in_egg = os.path.join('taxcalc', fname)
-        pdict = json.loads(
-            pkg_resources.resource_stream(
-                pkg_resources.Requirement.parse('taxcalc'),
-                path_in_egg).read().decode('utf-8'),
-            object_pairs_hook=collections.OrderedDict
-        )
+        path_in_egg = implibres.files('taxcalc').joinpath(fname)
+        with implibres.as_file(path_in_egg) as rname:
+            vdf = json.loads(rname)
     except Exception:
-        raise ValueError('could not read {} data from egg'.format(fname))
+        raise ValueError(f'could not read {fname} data from egg')
     # cannot call read_egg_ function in unit tests
     return pdict  # pragma: no cover
 

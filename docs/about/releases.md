@@ -3,6 +3,89 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2024-05-10 Release 3.6.0
+------------------------
+(last merged pull request is
+[#2743](https://github.com/PSLmodels/Tax-Calculator/pull/2743))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Adds capabilites to handle `tmd*` files from the tax-microdata repository [[#2740](https://github.com/PSLmodels/Tax-Calculator/pull/2740) by Martin Holmer]
+- Minor updates to documentation, testing, and environment by Martin Holmer and Jason DeBacker in various PRs
+
+2024-04-04 Release 3.5.3
+------------------------
+(last merged pull request is
+[#2732](https://github.com/PSLmodels/Tax-Calculator/pull/2732))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Updates `growfactors.csv` and PUF and CPS weights files for new `taxdata` reflecting the February 2024 CBO economic projections [[#2729](https://github.com/PSLmodels/Tax-Calculator/pull/2729) by Bodi Yang]
+- Simplification of how tax parameters are indexed [[#2732](https://github.com/PSLmodels/Tax-Calculator/pull/2732) by Martin Holmer]
+
+**Bug Fixes**
+- Correct historical parameter values [[#2730](https://github.com/PSLmodels/Tax-Calculator/pull/2730) by Martin Holmer]
+
+
+2024-03-18 Release 3.5.2
+------------------------
+(last merged pull request is
+[#2725](https://github.com/PSLmodels/Tax-Calculator/pull/2725))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Complete works of TAXSIM-35 validation, in several PRS by Bodi Yang and Jason DeBacker
+
+**Bug Fixes**
+- Fix bugs in `ppp.py` script  [[#2725](https://github.com/PSLmodels/Tax-Calculator/pull/2725) by Martin Holmer]
+
+2024-02-27 Release 3.5.1
+------------------------
+(last merged pull request is
+[#2722](https://github.com/PSLmodels/Tax-Calculator/pull/2722))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+
+**Bug Fixes**
+- Includes `paramtools` in required packages for installation [[#2721](https://github.com/PSLmodels/Tax-Calculator/pull/2721) by Jason DeBacker]
+
+
+
+2024-02-10 Release 3.5.0
+------------------------
+(last merged pull request is
+[#2715](https://github.com/PSLmodels/Tax-Calculator/pull/2715))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Add baseline table output to `cli` command [[#2714](https://github.com/PSLmodels/Tax-Calculator/pull/2714) by Martin Holmer]
+- Additional TAXSIM-35 validation tools, several PRS by Bodi Yang and Jason DeBacker
+
+**Bug Fixes**
+- Avoid Pandas deprecation warnings[[#2715](https://github.com/PSLmodels/Tax-Calculator/pull/2785) by Martin Holmer]
+- Correctly account for the `odc` variable as refundable in 2021 [[#2703](https://github.com/PSLmodels/Tax-Calculator/pull/2704) by Bodi Yang]
+- Fix incorrect value for `EITC_ps_MarriedJ` in 2020 [[#2699](https://github.com/PSLmodels/Tax-Calculator/pull/2699) by Bodi Yang]
+- Fix incorrect value for ACTC amount for 2023-2025 to reflect inflation adjustment [[#2691](https://github.com/PSLmodels/Tax-Calculator/pull/2691) by Jason DeBacker]
+
+
+
 2023-06-20 Release 3.4.1
 ------------------------
 (last merged pull request is

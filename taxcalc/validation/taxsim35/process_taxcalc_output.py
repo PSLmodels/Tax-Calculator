@@ -1,6 +1,7 @@
 """
 Translates tc --dump output file into file formatted like TAXSIM-35 output.
 """
+
 # CODING-STYLE CHECKS:
 # pycodestyle process_tc_output.py
 # pylint --disable=locally-disabled process_tc_output.py
@@ -68,23 +69,32 @@ def write_taxsim_formatted_output(filename, tcvar):
     tcvar["state"] = 0  # state code is always zero
     tcvar["statetax"] = 0.0  # no state income tax calculation
     tcvar["mtr_state"] = 0.0  # no state income tax calculation
-    tcvar["zero_bracket_amount"] = 0.0  # always set zero-bracket amount to zero
+    tcvar["zero_bracket_amount"] = (
+        0.0  # always set zero-bracket amount to zero
+    )
     pre_phase_out_pe = tcvar["pre_c04600"].values
     post_phase_out_pe = tcvar["c04600"].values
     phased_out_pe = pre_phase_out_pe - post_phase_out_pe
-    tcvar["post_phase_out_pe"] = post_phase_out_pe  # post-phase-out personal exemption
-    tcvar["phased_out_pe"] = phased_out_pe  # personal exemption that is phased out
+    tcvar["post_phase_out_pe"] = (
+        post_phase_out_pe  # post-phase-out personal exemption
+    )
+    tcvar["phased_out_pe"] = (
+        phased_out_pe  # personal exemption that is phased out
+    )
     tcvar["exemption_surtax"] = 0.0  # always set exemption surtax to zero
     tcvar["gen_tax_credit"] = 0.0  # always set general tax credit to zero
     tcvar["non_refundable_child_odep_credit"] = (
-        tcvar["c07220"] + tcvar["odc"]
+        tcvar["c07220"] + tcvar["odc"] + tcvar["ctc_new"]
     )  # non-refundable child+odep credit
+    tcvar["refundable_CDCC"] = tcvar["CDCC_refund"]  # refundable CDCC
     tcvar["amt_liability"] = tcvar["c09600"]  # federal AMT liability
     # var28 from TAXSIM-35 is federal income tax before credits; the Tax-Calculator
     # tcvar['c05800'] is this concept but includes AMT liability
     # while Internet-TAXSIM tcvar[28] explicitly excludes AMT liability, so
     # we have the following:
-    tcvar["iitax_before_credits_ex_AMT"] = tcvar["c05800"] - tcvar["amt_liability"]
+    tcvar["iitax_before_credits_ex_AMT"] = (
+        tcvar["c05800"] - tcvar["amt_liability"]
+    )
     tcvar = tcvar[
         [
             "RECID",
@@ -111,12 +121,20 @@ def write_taxsim_formatted_output(filename, tcvar):
             "non_refundable_child_odep_credit",
             "c11070",
             "c07180",
+            "refundable_CDCC",
             "eitc",
             "c62100",
             "amt_liability",
             "iitax_before_credits_ex_AMT",
             "recovery_rebate_credit",
         ]
+    ]
+    # better mapping of to how TAXSIM-35 handles refundable credits in 2021
+    tcvar.loc[tcvar["FLPDYR"] == 2021, "c11070"] = tcvar.loc[
+        tcvar["FLPDYR"] == 2021, "non_refundable_child_odep_credit"
+    ]
+    tcvar.loc[tcvar["FLPDYR"] == 2021, "c07180"] = tcvar.loc[
+        tcvar["FLPDYR"] == 2021, "refundable_CDCC"
     ]
     tcvar.round(decimals=2)
     tcvar.to_csv(filename)

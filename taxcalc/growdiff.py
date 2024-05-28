@@ -7,6 +7,7 @@ Tax-Calculator GrowDiff class that is used to modify GrowFactors.
 import os
 import numpy as np
 from taxcalc.parameters import Parameters
+from taxcalc.policy import Policy
 from taxcalc.growfactors import GrowFactors
 
 
@@ -26,8 +27,8 @@ class GrowDiff(Parameters):
     class instance: GrowDiff
     """
 
-    JSON_START_YEAR = 2013  # must be same as Policy.JSON_START_YEAR
-    DEFAULT_NUM_YEARS = 21  # must be same as Policy.DEFAULT_NUM_YEARS
+    JSON_START_YEAR = Policy.JSON_START_YEAR
+    DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
     DEFAULTS_FILE_NAME = 'growdiff.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -75,8 +76,13 @@ class GrowDiff(Parameters):
         """
         assert isinstance(growfactors, GrowFactors)
         for gfvn in GrowFactors.VALID_NAMES:
-            _gfvn = '_{}'.format(gfvn)
+            _gfvn = f'_{gfvn}'
             for i in range(0, self.num_years):
                 cyr = i + self.start_year
                 diff_array = getattr(self, _gfvn)
                 growfactors.update(gfvn, cyr, diff_array[i])
+
+    def set_rates(self):
+        """
+        Unimplemented base class method that is not used here.
+        """

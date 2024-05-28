@@ -109,7 +109,8 @@ def cli_tc_main():
                         default=None)
     parser.add_argument('--sqldb',
                         help=('optional flag that writes SQLite database '
-                              'with dump table containing same output as '
+                              'with two tables (baseline and reform) each '
+                              'containing same output variables as '
                               'produced by --dump option.'),
                         default=False,
                         action="store_true")
@@ -152,7 +153,11 @@ def cli_tc_main():
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1
-    aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv')
+    aging = (
+        inputfn.endswith('puf.csv') or
+        inputfn.endswith('cps.csv') or
+        inputfn.endswith('tmd.csv')
+    )
     tcio.init(input_data=inputfn, tax_year=taxyear,
               baseline=args.baseline,
               reform=args.reform, assump=args.assump,

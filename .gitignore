@@ -15,9 +15,13 @@ read-the-docs/_build/
 
 # IRS-SOI PUF data file
 puf.csv
+tmd.csv
 
 # Jupyter notebook checkpoints
 *.ipynb_checkpoints*
 
 # Built documentation
 docs/_build/
+
+# Validation files
+taxcalc/validation/taxsim35/actual_differences/

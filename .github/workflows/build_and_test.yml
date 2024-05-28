@@ -1,4 +1,4 @@
-name: Build Package and Test Source Code [Python 3.7, 3.8, 3.9, 3.10]
+name: Build Package and Test Source Code [Python 3.9, 3.10, 3.11]
 
 on: [push, pull_request]
 
@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: [3.7, 3.8, 3.9, '3.10']
+        python-version: [3.9, '3.10', '3.11']
 
     steps:
       - name: Checkout
@@ -34,9 +34,10 @@ jobs:
         shell: bash -l {0}
         working-directory: ./
         run: |
-          pytest -m 'not requires_pufcsv and not pre_release and not local' --cov=./ --cov-report=xml
+          pytest -m 'not requires_pufcsv and not requires_tmdcsv and not pre_release and not local' --cov=./ --cov-report=xml
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           file: ./coverage.xml

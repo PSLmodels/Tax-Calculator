@@ -413,8 +413,8 @@ def Adj(e03150, e03210, c03260,
 
 @iterate_jit(nopython=True)
 def ALD_InvInc_ec_base(p22250, p23250, sep,
-                       e00300, e00600, e01100, e01200,
-                       invinc_ec_base):
+                       e00300, e00600, e01100, e01200, MARS,
+                       invinc_ec_base, Capital_loss_limitation):
     """
     Computes invinc_ec_base.
 
@@ -434,8 +434,12 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
         Capital gains distributions not reported on Schedule D
     e01200: float
         Other net gain/loss from Form 4797
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     invinc_ec_base: float
         Exclusion of investment income from AGI
+    Capital_loss_limitation: float
+        Limitation on capital losses that are deductible
 
     Returns
     -------
@@ -443,7 +447,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
         Exclusion of investment income from AGI
     """
     # limitation on net short-term and long-term capital losses
-    cgain = max((-3000. / sep), p22250 + p23250)
+    cgain = max((-1 * Capital_loss_limitation[MARS - 1] / sep), p22250 + p23250)
     # compute exclusion of investment income from AGI
     invinc_ec_base = e00300 + e00600 + cgain + e01100 + e01200
     return invinc_ec_base
@@ -453,7 +457,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
 def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              ALD_InvInc_ec_rt, invinc_ec_base,
              e00200, e00300, e00600, e00650, e00700, e00800,
-             CG_nodiff, CG_ec, CG_reinvest_ec_rt,
+             CG_nodiff, CG_ec, CG_reinvest_ec_rt, Capital_loss_limitation,
              ALD_BusinessLosses_c, MARS,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
@@ -493,6 +497,8 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
         Dollar amount of all capital gains and qualified dividends that are excluded from AGI
     CG_reinvest_ec_rt: float
         Fraction of all capital gains and qualified dividends in excess of the dollar exclusion that are excluded from AGI
+    Capital_loss_limitation: float
+        Limitation on capital losses that are deductible
     ALD_BusinessLosses_c: list
         Maximm amount of business losses deductible
     MARS: int
@@ -552,7 +558,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     # net capital gain (long term + short term) before exclusion
     c23650 = p23250 + p22250
     # limitation on capital losses
-    c01000 = max((-3000. / sep), c23650)
+    c01000 = max((-1 * Capital_loss_limitation[MARS - 1] / sep), c23650)
     # compute total investment income
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
     # compute exclusion of investment income from AGI
@@ -576,7 +582,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
 
 
 @iterate_jit(nopython=True)
-def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
+def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd50, SS_thd85,
                SS_percentage1, SS_percentage2, c02500):
     """
     Calculates OASDI benefits included in AGI, c02500.
@@ -589,6 +595,8 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
         Variable that is used in OASDI benefit taxation logic
     e02400: float
         Total social security (OASDI) benefits
+    SS_all_in_agi: bool
+        Whether all social security benefits are included in AGI
     SS_thd50: list
         Threshold for social security benefit taxability (1)
     SS_thd85: list
@@ -614,6 +622,8 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
                      SS_percentage1 *
                      min(e02400, SS_thd85[MARS - 1] -
                          SS_thd50[MARS - 1]), SS_percentage2 * e02400)
+    if SS_all_in_agi:
+        c02500 = e02400
     return c02500
 
 
@@ -1599,7 +1609,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
              CG_nodiff, PT_EligibleRate_active, PT_EligibleRate_passive,
              PT_wages_active_income, PT_top_stacking,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
-             dwks10, dwks13, dwks14, dwks19, c05700, taxbc):
+             dwks10, dwks13, dwks14, dwks19, dwks43, c05700, taxbc):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
@@ -1729,6 +1739,8 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         Maximum of 0 and dwks1 - dwks13
     dwks19: float
         Maximum of dwks17 and dwks16
+    dwks43: float
+        separate tax on long-term capital gains and qualified dividends
     c05700: float
         Lump sum distributions
     taxbc: float
@@ -1744,6 +1756,8 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         Maximum of 0 and dwks1 - dwks13
     dwks19: float
         Maximum of dwks17 and dwks16
+    dwks43: float
+        separate tax on long-term capital gains and qualified dividends
     c05700: float
         Lump sum distributions
     taxbc: float
@@ -1838,12 +1852,13 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         dwks13 = 0.
         dwks14 = 0.
         dwks19 = 0.
+        dwks43 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
     c05100 = c24580  # because foreign earned income exclusion is assumed zero
     c05700 = 0.  # no Form 4972, Lump Sum Distributions
     taxbc = c05700 + c05100
-    return (dwks10, dwks13, dwks14, dwks19, c05700, taxbc)
+    return (dwks10, dwks13, dwks14, dwks19, dwks43, c05700, taxbc)
 
 
 @iterate_jit(nopython=True)
@@ -3127,7 +3142,7 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
           c07100, c09200, odc, charity_credit,
-          personal_nonrefundable_credit, CTC_refundable):
+          personal_nonrefundable_credit, CTC_refundable, ODC_refundable):
     """
     Computes total used nonrefundable credits, c07100, othertaxes, and
     income tax before refundable credits, c09200.
@@ -3189,7 +3204,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     # total used nonrefundable credits (as computed in NonrefundableCredits)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 +
               c07220 * (1. - CTC_refundable) + c08000 +
-              c07230 + c07240 + c07260 + odc + charity_credit +
+              c07230 + c07240 + c07260 + odc * (1. - ODC_refundable) + charity_credit +
               personal_nonrefundable_credit)
     # tax after credits (2016 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)
@@ -3284,7 +3299,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
 @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           c09200, payrolltax, CDCC_refund, recovery_rebate_credit,
-          eitc, c07220, CTC_refundable, refund, iitax, combined):
+          eitc, c07220, odc, CTC_refundable, ODC_refundable, refund, iitax, combined):
     """
     Computes final taxes.
 
@@ -3332,8 +3347,12 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         ctc_refund = c07220
     else:
         ctc_refund = 0.
+    if ODC_refundable:
+        odc_refund = odc
+    else:
+        odc_refund = 0.
     refund = (eitc + c11070 + c10960 + CDCC_refund + recovery_rebate_credit +
-              personal_refundable_credit + ctc_new + rptc + ctc_refund)
+              personal_refundable_credit + ctc_new + rptc + ctc_refund + odc_refund)
     iitax = c09200 - refund
     combined = iitax + payrolltax
     return (eitc, refund, iitax, combined)
