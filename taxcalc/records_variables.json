@@ -491,6 +491,12 @@
       "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_puf, taxdata_cps"
     },
+    "s006_original": {
+      "type": "float",
+      "desc": "Sample weight before reweighting (not used in tax-calculation logic)",
+      "form": {"2013-2016": "sample construction info"},
+      "availability": "tax-microdata_tmd"
+    },
     "data_source": {
       "type": "int",
       "desc": "1 if unit is created primarily from IRS-SOI PUF data; 0 if created primarily from CPS data (not used in tax-calculation logic)",
