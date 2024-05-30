@@ -3,6 +3,20 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2024-06-01 Release 4.0.0
+------------------------
+(last merged pull request is
+[#2749](https://github.com/PSLmodels/Tax-Calculator/pull/2749))
+
+**This is a major release with changes that make Tax-Calculator incompatible with earlier releases.**
+
+**API Changes**
+- Reframewrok of the payroll tax policy parameters: Payroll tax parameters are split into the employer side and employee side ~ `FICA_mc_trt`, `FICA_ss_trt` are replaced by `FICA_mc_trt_employer`, `FICA_mc_trt_employee`, `FICA_ss_trt_employer` and `FICA_ss_trt_employee`. [[#2669](https://github.com/PSLmodels/Tax-Calculator/pull/2669) by Bodi Yang]
+- CDCC rate scale (`CDCC_crt`, `CDCC_frt`) changed from 0~1 to 0~100. [[#2628](https://github.com/PSLmodels/Tax-Calculator/pull/2628) by Duncan Hobbs and [#2671](https://github.com/PSLmodels/Tax-Calculator/pull/2671) by Jason DeBacker]
+
+**New Features**
+- Tax-Calculator 4.0.0 starts to incorporate with new [Taxcalc-Payroll](https://github.com/bodiyang/Taxcalc-Payroll) model, micro-simulation model focusing on payroll tax analysis. New features include (1) payroll tax reform simulation upon either employer side or employee side; (2) employer side payroll tax offset. [[Taxcalc-Payroll](https://github.com/bodiyang/Taxcalc-Payroll) developed by Bodi Yang]
+
 2024-05-10 Release 3.6.0
 ------------------------
 (last merged pull request is
