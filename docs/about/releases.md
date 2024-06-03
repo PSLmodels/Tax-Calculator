@@ -11,7 +11,7 @@ for a complete commit history.
 **This is a major release with changes that make Tax-Calculator incompatible with earlier releases.**
 
 **API Changes**
-- Reframewrok of the payroll tax policy parameters: Payroll tax parameters are split into the employer side and employee side ~ `FICA_mc_trt`, `FICA_ss_trt` are replaced by `FICA_mc_trt_employer`, `FICA_mc_trt_employee`, `FICA_ss_trt_employer` and `FICA_ss_trt_employee`. [[#2669](https://github.com/PSLmodels/Tax-Calculator/pull/2669) by Bodi Yang]
+- Apply a new framework for the payroll tax policy parameters: Payroll tax parameters are split into the employer side and employee side ~ `FICA_mc_trt`, `FICA_ss_trt` are replaced by `FICA_mc_trt_employer`, `FICA_mc_trt_employee`, `FICA_ss_trt_employer` and `FICA_ss_trt_employee`. [[#2669](https://github.com/PSLmodels/Tax-Calculator/pull/2669) by Bodi Yang]
 - CDCC rate scale (`CDCC_crt`, `CDCC_frt`) changed from 0~1 to 0~100. [[#2628](https://github.com/PSLmodels/Tax-Calculator/pull/2628) by Duncan Hobbs and [#2671](https://github.com/PSLmodels/Tax-Calculator/pull/2671) by Jason DeBacker]
 
 **New Features**
