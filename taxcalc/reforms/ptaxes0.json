@@ -11,7 +11,6 @@
 // - 3: FICA_mc_trt_employer
 // - 4: FICA_mc_trt_employee
 // NOTE: this reform produces the following rates by year:
-//       below are the total tax rates, from both employer and employee side
 //       2017: FICA_ss_trt_employer 0.062 FICA_ss_trt_employee 0.062 FICA_mc_trt_employer 0.0145 FICA_mc_trt_employee 0.0145
 //       2018: FICA_ss_trt_employer 0.065 FICA_ss_trt_employee 0.065 FICA_mc_trt_employer 0.0145 FICA_mc_trt_employee 0.0145
 //       2019: FICA_ss_trt_employer 0.065 FICA_ss_trt_employee 0.065 FICA_mc_trt_employer 0.015 FICA_mc_trt_employee 0.015
