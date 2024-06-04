@@ -6,22 +6,32 @@
 // -  raise OASDI payroll tax rate in 2018 and 2020 (1)
 // -  raise HI payroll tax rate in 2019 and 2021 (2)
 // Reform_Parameter_Map:
-// - 1: FICA_ss_trt
-// - 2: FICA_mc_trt
+// - 1: FICA_ss_trt_employer
+// - 2: FICA_ss_trt_employee
+// - 3: FICA_mc_trt_employer
+// - 4: FICA_mc_trt_employee
 // NOTE: this reform produces the following rates by year:
-//       2017:  0.124  0.029
-//       2018:  0.130  0.029
-//       2019:  0.130  0.030
-//       2020:  0.140  0.030
-//       2021:  0.140  0.032
-//       2022:  0.140  0.032
+//       2017: FICA_ss_trt_employer 0.062 FICA_ss_trt_employee 0.062 FICA_mc_trt_employer 0.0145 FICA_mc_trt_employee 0.0145
+//       2018: FICA_ss_trt_employer 0.065 FICA_ss_trt_employee 0.065 FICA_mc_trt_employer 0.0145 FICA_mc_trt_employee 0.0145
+//       2019: FICA_ss_trt_employer 0.065 FICA_ss_trt_employee 0.065 FICA_mc_trt_employer 0.015 FICA_mc_trt_employee 0.015
+//       2020: FICA_ss_trt_employer 0.070 FICA_ss_trt_employee 0.070 FICA_mc_trt_employer 0.015 FICA_mc_trt_employee 0.015
+//       2021: FICA_ss_trt_employer 0.070 FICA_ss_trt_employee 0.070 FICA_mc_trt_employer 0.016 FICA_mc_trt_employee 0.016
+//       2022: FICA_ss_trt_employer 0.070 FICA_ss_trt_employee 0.070 FICA_mc_trt_employer 0.016 FICA_mc_trt_employee 0.016
 {
-    "FICA_ss_trt": {
-        "2018": 0.130,
-        "2020": 0.140
+    "FICA_ss_trt_employer": {
+        "2018": 0.065,
+        "2020": 0.070
     },
-    "FICA_mc_trt": {
-        "2019": 0.030,
-        "2021": 0.032
-    }        
+    "FICA_ss_trt_employee": {
+        "2018": 0.065,
+        "2020": 0.070
+    },
+    "FICA_mc_trt_employer": {
+        "2019": 0.015,
+        "2021": 0.016
+    },
+    "FICA_mc_trt_employee": {
+        "2019": 0.015,
+        "2021": 0.016
+    }       
 }
