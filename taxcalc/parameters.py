@@ -61,7 +61,7 @@ class Parameters(pt.Parameters):
                 print(name, value)
 
             # parameter_indexing_CPI_offset [0.]
-            # FICA_ss_trt [0.124]
+            # FICA_ss_trt_employer [0.062]
             # SS_Earnings_c [113700.]
 
     Check out the ParamTools
