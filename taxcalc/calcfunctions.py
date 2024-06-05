@@ -100,8 +100,9 @@ def BenefitPrograms(calc):
 
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
-                  FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
-                  SS_Earnings_thd, SECA_Earnings_thd,
+                  FICA_ss_trt_employer, FICA_ss_trt_employee, 
+                  FICA_mc_trt_employer, FICA_mc_trt_employee, 
+                  ALD_SelfEmploymentTax_hc, SS_Earnings_thd, SECA_Earnings_thd,
                   e00900p, e00900s, e02100p, e02100s, k1bx14p,
                   k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s,
@@ -123,10 +124,14 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Contributions to defined-contribution pension plans for taxpayer
     pencon_s: float
         Contributions to defined-contribution pension plans for spouse
-    FICA_ss_trt: float
-        Social security payroll tax rate, including both employer and employee
-    FICA_mc_trt: float
-        Medicare payroll tax rate, including both employer and employee
+    FICA_ss_trt_employer: float
+        Employer side social security payroll tax rate
+    FICA_ss_trt_employee: float
+        Employee side social security payroll tax rate    
+    FICA_mc_trt_employer: float
+        Employer side medicare payroll tax rate
+    FICA_mc_trt_employee: float
+        Employee side medicare payroll tax rate
     ALD_SelfEmploymentTax_hc: float
         Adjustment for self-employment tax haircut
         If greater than zero, reduces the employer equivalent portion of self-employment adjustment
@@ -218,22 +223,22 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     txearn_was_s = min(SS_Earnings_c, gross_was_s)
 
     # compute OASDI and HI payroll taxes on wage-and-salary income, FICA
-    ptax_ss_was_p = FICA_ss_trt * txearn_was_p
-    ptax_ss_was_s = FICA_ss_trt * txearn_was_s
-    ptax_mc_was_p = FICA_mc_trt * gross_was_p
-    ptax_mc_was_s = FICA_mc_trt * gross_was_s
+    ptax_ss_was_p = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_was_p
+    ptax_ss_was_s = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_was_s
+    ptax_mc_was_p = (FICA_mc_trt_employer + FICA_mc_trt_employee) * gross_was_p
+    ptax_mc_was_s = (FICA_mc_trt_employer + FICA_mc_trt_employee) * gross_was_s
     ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
 
     # compute taxable self-employment income for OASDI SECA
-    sey_frac = 1.0 - 0.5 * (FICA_ss_trt + FICA_mc_trt)
+    sey_frac = 1.0 - 0.5 * (FICA_ss_trt_employer + FICA_ss_trt_employee + FICA_mc_trt_employer + FICA_mc_trt_employee)
     txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
     txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
     # compute self-employment tax on taxable self-employment income, SECA
-    setax_ss_p = FICA_ss_trt * txearn_sey_p
-    setax_ss_s = FICA_ss_trt * txearn_sey_s
-    setax_mc_p = FICA_mc_trt * max(0., sey_p * sey_frac)
-    setax_mc_s = FICA_mc_trt * max(0., sey_s * sey_frac)
+    setax_ss_p = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_sey_p
+    setax_ss_s = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_sey_s
+    setax_mc_p = (FICA_mc_trt_employer + FICA_mc_trt_employee) * max(0., sey_p * sey_frac)
+    setax_mc_s = (FICA_mc_trt_employer + FICA_mc_trt_employee) * max(0., sey_s * sey_frac)
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
@@ -246,13 +251,13 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     # compute extra OASDI payroll taxes on the portion of the sum
     # of wage-and-salary income and taxable self employment income
     # that exceeds SS_Earnings_thd
-    sey_frac = 1.0 - 0.5 * FICA_ss_trt
+    sey_frac = 1.0 - 0.5 * (FICA_ss_trt_employer + FICA_ss_trt_employee) 
     was_plus_sey_p = gross_was_p + max(0., sey_p * sey_frac)
     was_plus_sey_s = gross_was_s + max(0., sey_s * sey_frac)
     extra_ss_income_p = max(0., was_plus_sey_p - SS_Earnings_thd)
     extra_ss_income_s = max(0., was_plus_sey_s - SS_Earnings_thd)
-    extra_payrolltax = (extra_ss_income_p * FICA_ss_trt +
-                        extra_ss_income_s * FICA_ss_trt)
+    extra_payrolltax = (extra_ss_income_p * (FICA_ss_trt_employer + FICA_ss_trt_employee)  +
+                        extra_ss_income_s * (FICA_ss_trt_employer + FICA_ss_trt_employee))
 
     # compute part of total payroll taxes for filing unit
     # (the ptax_amc part of total payroll taxes for the filing unit is
@@ -1080,7 +1085,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
 @iterate_jit(nopython=True)
 def AdditionalMedicareTax(e00200, MARS,
                           AMEDT_ec, sey, AMEDT_rt,
-                          FICA_mc_trt, FICA_ss_trt,
+                          FICA_mc_trt_employer, FICA_mc_trt_employee,
+                          FICA_ss_trt_employer, FICA_ss_trt_employee,
                           ptax_amc, payrolltax):
     """
     Computes Additional Medicare Tax (Form 8959) included in payroll taxes.
@@ -1093,10 +1099,14 @@ def AdditionalMedicareTax(e00200, MARS,
         Additional Medicare Tax earnings exclusion
     AMEDT_rt: float
         Additional Medicare Tax rate
-    FICA_ss_trt: float
-        FICA Social Security tax rate
-    FICA_mc_trt: float
-        FICA Medicare tax rate
+    FICA_ss_trt_employer: float
+        Employer side FICA Social Security tax rate
+    FICA_ss_trt_employee: float
+        Employee side FICA Social Security tax rate
+    FICA_mc_trt_employer: float
+        Employer side FICA Medicare tax rate
+    FICA_mc_trt_employee: float
+        Employee side FICA Medicare tax rate        
     e00200: float
         Wages and salaries
     sey: float
@@ -1113,7 +1123,7 @@ def AdditionalMedicareTax(e00200, MARS,
     payrolltax: float
         payroll tax augmented by Additional Medicare Tax
     """
-    line8 = max(0., sey) * (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt))
+    line8 = max(0., sey) * (1. - 0.5 * (FICA_mc_trt_employer + FICA_mc_trt_employee + FICA_ss_trt_employer + FICA_ss_trt_employee))
     line11 = max(0., AMEDT_ec[MARS - 1] - e00200)
     ptax_amc = AMEDT_rt * (max(0., e00200 - AMEDT_ec[MARS - 1]) +
                            max(0., line8 - line11))
@@ -2149,15 +2159,23 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     c00100: float
         Adjusted Gross Income (AGI)
     CDCC_ps: float
-        Child/dependent care credit phaseout start
+        Child/dependent care credit first phaseout start
+    CDCC_ps2: float
+        Child/dependent care credit second phaseout start
     CDCC_crt: float
-        Child/dependent care credit phaseout percentage rate ceiling
+        Child/dependent care credit phaseout rate ceiling
+    CDCC_frt: float
+        Child/dependent care credit phaseout rate floor
+    CDCC_prt: float
+        Child/dependent care credit phaseout rate
     c05800: float
         Total (regular + AMT) income tax liability before credits
     e07300: float
         Foreign tax credit from Form 1116
     c07180: float
         Credit for child and dependent care expenses from Form 2441
+    CDCC_refund: bool
+        Indicator for whether CDCC is refundable
 
     Returns
     -------
@@ -2189,7 +2207,8 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         if c00100 > CDCC_ps2:
             crate = max(0., CDCC_frt -
                         max(((c00100 - CDCC_ps2) * CDCC_prt), 0.))
-    c33200 = c33000 * 0.01 * crate
+
+    c33200 = c33000 * crate
     # credit is limited by tax liability if not refundable
     if CDCC_refundable:
         c07180 = 0.
