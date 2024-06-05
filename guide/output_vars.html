@@ -550,6 +550,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks13"><code class="docutils literal notranslate"><span class="pre">dwks13</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks14"><code class="docutils literal notranslate"><span class="pre">dwks14</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks19"><code class="docutils literal notranslate"><span class="pre">dwks19</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks43"><code class="docutils literal notranslate"><span class="pre">dwks43</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fstax"><code class="docutils literal notranslate"><span class="pre">fstax</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#invinc-agi-ec"><code class="docutils literal notranslate"><span class="pre">invinc_agi_ec</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#invinc-ec-base"><code class="docutils literal notranslate"><span class="pre">invinc_ec_base</span></code></a></li>
@@ -684,8 +685,8 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <p><em>Description</em>: Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output<br />
 <em>Datatype</em>: float<br />
 <em>IRS Form Location:</em><br />
-2013-2013: 1040 line 61 minus line 56 minus line 60a<br />
-2014-2016: 1040 line 63 minus line 57 minus line 62a</p>
+2013-2013: 1040 line 61 minus lines 56, 60a, 64a, 65, and 66<br />
+2014-2016: 1040 line 63 minus lines 57, 62a, 66a, 67, and 68</p>
 </section>
 <section id="num">
 <h2><code class="docutils literal notranslate"><span class="pre">num</span></code><a class="headerlink" href="#num" title="Link to this heading">#</a></h2>
@@ -1180,6 +1181,13 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <em>IRS Form Location:</em><br />
 2013-20??: calculated variable</p>
 </section>
+<section id="dwks43">
+<h2><code class="docutils literal notranslate"><span class="pre">dwks43</span></code><a class="headerlink" href="#dwks43" title="Link to this heading">#</a></h2>
+<p><em>Description</em>: separate tax on long-term capital gains and qualified dividends<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</section>
 <section id="fstax">
 <h2><code class="docutils literal notranslate"><span class="pre">fstax</span></code><a class="headerlink" href="#fstax" title="Link to this heading">#</a></h2>
 <p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
@@ -1472,6 +1480,7 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks13"><code class="docutils literal notranslate"><span class="pre">dwks13</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks14"><code class="docutils literal notranslate"><span class="pre">dwks14</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks19"><code class="docutils literal notranslate"><span class="pre">dwks19</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks43"><code class="docutils literal notranslate"><span class="pre">dwks43</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fstax"><code class="docutils literal notranslate"><span class="pre">fstax</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#invinc-agi-ec"><code class="docutils literal notranslate"><span class="pre">invinc_agi_ec</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#invinc-ec-base"><code class="docutils literal notranslate"><span class="pre">invinc_ec_base</span></code></a></li>
