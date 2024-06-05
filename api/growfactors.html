@@ -496,15 +496,16 @@ document.write(`
 <h2>taxcalc.growfactors<a class="headerlink" href="#taxcalc-growfactors" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="taxcalc.growfactors.GrowFactors">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">taxcalc.growfactors.</span></span><span class="sig-name descname"><span class="pre">GrowFactors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">growfactors_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'growfactors.csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">taxcalc.growfactors.</span></span><span class="sig-name descname"><span class="pre">GrowFactors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">growfactors_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors" title="Link to this definition">#</a></dt>
 <dd><p>Constructor for the GrowFactors class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>growfactors_filename</strong> (<em>string</em>) – string is name of CSV file in which grow factors reside;
-default value is name of file containing baseline grow factors.</p>
+<dd class="field-odd"><p><strong>growfactors_filename</strong> (<em>None</em><em> or </em><em>string</em>) – string is path to the CSV file in which grow factors reside;
+default value of None uses file containing baseline grow factors.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError:</strong> – if growfactors_filename is not a string.</p>
+<dd class="field-even"><p><strong>ValueError:</strong> – if growfactors_filename is neither None or a string.
+    if growfactors_filename string points to a non-existent file.</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>class instance</strong></p>
@@ -515,7 +516,7 @@ default value is name of file containing baseline grow factors.</p>
 </dl>
 <p class="rubric">Notes</p>
 <p>Typical usage is “gfactor = GrowFactors()”, which produces an object
-containing growth factors in the GrowFactors.FILE_NAME file.</p>
+containing baseline growth factors in the GrowFactors.FILE_NAME file.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.growfactors.GrowFactors.factor_value">
 <span class="sig-name descname"><span class="pre">factor_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.factor_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.factor_value" title="Link to this definition">#</a></dt>

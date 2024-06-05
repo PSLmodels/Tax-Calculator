@@ -426,14 +426,15 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    growfactors_filename: string</span>
-<span class="sd">        string is name of CSV file in which grow factors reside;</span>
-<span class="sd">        default value is name of file containing baseline grow factors.</span>
+<span class="sd">    growfactors_filename: None or string</span>
+<span class="sd">        string is path to the CSV file in which grow factors reside;</span>
+<span class="sd">        default value of None uses file containing baseline grow factors.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError:</span>
-<span class="sd">        if growfactors_filename is not a string.</span>
+<span class="sd">        if growfactors_filename is neither None or a string.</span>
+<span class="sd">        if growfactors_filename string points to a non-existent file.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -442,7 +443,7 @@ document.write(`
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    Typical usage is &quot;gfactor = GrowFactors()&quot;, which produces an object</span>
-<span class="sd">    containing growth factors in the GrowFactors.FILE_NAME file.</span>
+<span class="sd">    containing baseline growth factors in the GrowFactors.FILE_NAME file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;growfactors.csv&#39;</span>
@@ -457,17 +458,19 @@ document.write(`
                        <span class="s1">&#39;ABENSSI&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENSNAP&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENWIC&#39;</span><span class="p">,</span>
                        <span class="s1">&#39;ABENHOUSING&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENTANF&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENVET&#39;</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">growfactors_filename</span><span class="o">=</span><span class="n">FILE_NAME</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">growfactors_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># read grow factors from specified growfactors_filename</span>
         <span class="n">gfdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">full_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">GrowFactors</span><span class="o">.</span><span class="n">FILE_PATH</span><span class="p">,</span>
-                                         <span class="n">growfactors_filename</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">full_filename</span><span class="p">):</span>
-                <span class="n">gfdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">full_filename</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># find file in package</span>
-                <span class="n">gfdf</span> <span class="o">=</span> <span class="n">read_egg_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">),</span>
-                                    <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">if</span> <span class="n">growfactors_filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># read baseline growfactor from package</span>
+            <span class="n">gfdf</span> <span class="o">=</span> <span class="n">read_egg_csv</span><span class="p">(</span><span class="n">GrowFactors</span><span class="o">.</span><span class="n">FILE_NAME</span><span class="p">,</span>
+                                <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">):</span>
+                <span class="n">gfdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># file does not exist</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;growfactors file </span><span class="si">{</span><span class="n">growfactors_filename</span><span class="si">}</span><span class="s1"> does not exist&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;growfactors_filename is not a string&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gfdf</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
@@ -560,7 +563,7 @@ document.write(`
         <span class="k">if</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;year=</span><span class="si">{}</span><span class="s1"> &gt; GrowFactors.last_year=</span><span class="si">{}</span><span class="s1">&#39;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">year</span><span class="p">,</span><span class="n">name</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">year</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="GrowFactors.update">
@@ -576,7 +579,7 @@ document.write(`
         <span class="k">assert</span> <span class="n">year</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span>
         <span class="k">assert</span> <span class="n">year</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">year</span><span class="p">,</span><span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="n">diff</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">year</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="n">diff</span></div>
 </div>
 
 </pre></div>

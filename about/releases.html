@@ -468,6 +468,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-0-0">2024-06-01 Release 4.0.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-6-0">2024-05-10 Release 3.6.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-5-3">2024-04-04 Release 3.5.3</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-5-2">2024-03-18 Release 3.5.2</a></li>
@@ -574,6 +575,21 @@ document.write(`
 <h1>Release history<a class="headerlink" href="#release-history" title="Link to this heading">#</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<section id="release-4-0-0">
+<h2>2024-06-01 Release 4.0.0<a class="headerlink" href="#release-4-0-0" title="Link to this heading">#</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2752">#2752</a>)</p>
+<p><strong>This is a major release with changes that make Tax-Calculator incompatible with earlier releases.</strong></p>
+<p><strong>API Changes</strong></p>
+<ul class="simple">
+<li><p>Apply a new framework for the payroll tax policy parameters: Payroll tax parameters are split into the employer side and employee side ~ <code class="docutils literal notranslate"><span class="pre">FICA_mc_trt</span></code>, <code class="docutils literal notranslate"><span class="pre">FICA_ss_trt</span></code> are replaced by <code class="docutils literal notranslate"><span class="pre">FICA_mc_trt_employer</span></code>, <code class="docutils literal notranslate"><span class="pre">FICA_mc_trt_employee</span></code>, <code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employer</span></code> and <code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employee</span></code>. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2669">#2669</a> by Bodi Yang]</p></li>
+<li><p>CDCC rate scale (<code class="docutils literal notranslate"><span class="pre">CDCC_crt</span></code>, <code class="docutils literal notranslate"><span class="pre">CDCC_frt</span></code>) changed from 0~1 to 0~100. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2628">#2628</a> by Duncan Hobbs and <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2671">#2671</a> by Jason DeBacker]</p></li>
+</ul>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Ablility to perform payroll tax reform upon either employer side or employee side. [by Bodi Yang]</p></li>
+</ul>
+</section>
 <section id="release-3-6-0">
 <h2>2024-05-10 Release 3.6.0<a class="headerlink" href="#release-3-6-0" title="Link to this heading">#</a></h2>
 <p>(last merged pull request is
@@ -3107,6 +3123,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-0-0">2024-06-01 Release 4.0.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-6-0">2024-05-10 Release 3.6.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-5-3">2024-04-04 Release 3.5.3</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-5-2">2024-03-18 Release 3.5.2</a></li>

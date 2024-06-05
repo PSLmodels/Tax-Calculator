@@ -510,8 +510,9 @@ document.write(`
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">EI_PayrollTax</span><span class="p">(</span><span class="n">SS_Earnings_c</span><span class="p">,</span> <span class="n">e00200p</span><span class="p">,</span> <span class="n">e00200s</span><span class="p">,</span> <span class="n">pencon_p</span><span class="p">,</span> <span class="n">pencon_s</span><span class="p">,</span>
-                  <span class="n">FICA_ss_trt</span><span class="p">,</span> <span class="n">FICA_mc_trt</span><span class="p">,</span> <span class="n">ALD_SelfEmploymentTax_hc</span><span class="p">,</span>
-                  <span class="n">SS_Earnings_thd</span><span class="p">,</span> <span class="n">SECA_Earnings_thd</span><span class="p">,</span>
+                  <span class="n">FICA_ss_trt_employer</span><span class="p">,</span> <span class="n">FICA_ss_trt_employee</span><span class="p">,</span> 
+                  <span class="n">FICA_mc_trt_employer</span><span class="p">,</span> <span class="n">FICA_mc_trt_employee</span><span class="p">,</span> 
+                  <span class="n">ALD_SelfEmploymentTax_hc</span><span class="p">,</span> <span class="n">SS_Earnings_thd</span><span class="p">,</span> <span class="n">SECA_Earnings_thd</span><span class="p">,</span>
                   <span class="n">e00900p</span><span class="p">,</span> <span class="n">e00900s</span><span class="p">,</span> <span class="n">e02100p</span><span class="p">,</span> <span class="n">e02100s</span><span class="p">,</span> <span class="n">k1bx14p</span><span class="p">,</span>
                   <span class="n">k1bx14s</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span>
                   <span class="n">sey</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span>
@@ -533,10 +534,14 @@ document.write(`
 <span class="sd">        Contributions to defined-contribution pension plans for taxpayer</span>
 <span class="sd">    pencon_s: float</span>
 <span class="sd">        Contributions to defined-contribution pension plans for spouse</span>
-<span class="sd">    FICA_ss_trt: float</span>
-<span class="sd">        Social security payroll tax rate, including both employer and employee</span>
-<span class="sd">    FICA_mc_trt: float</span>
-<span class="sd">        Medicare payroll tax rate, including both employer and employee</span>
+<span class="sd">    FICA_ss_trt_employer: float</span>
+<span class="sd">        Employer side social security payroll tax rate</span>
+<span class="sd">    FICA_ss_trt_employee: float</span>
+<span class="sd">        Employee side social security payroll tax rate    </span>
+<span class="sd">    FICA_mc_trt_employer: float</span>
+<span class="sd">        Employer side medicare payroll tax rate</span>
+<span class="sd">    FICA_mc_trt_employee: float</span>
+<span class="sd">        Employee side medicare payroll tax rate</span>
 <span class="sd">    ALD_SelfEmploymentTax_hc: float</span>
 <span class="sd">        Adjustment for self-employment tax haircut</span>
 <span class="sd">        If greater than zero, reduces the employer equivalent portion of self-employment adjustment</span>
@@ -628,22 +633,22 @@ document.write(`
     <span class="n">txearn_was_s</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">SS_Earnings_c</span><span class="p">,</span> <span class="n">gross_was_s</span><span class="p">)</span>
 
     <span class="c1"># compute OASDI and HI payroll taxes on wage-and-salary income, FICA</span>
-    <span class="n">ptax_ss_was_p</span> <span class="o">=</span> <span class="n">FICA_ss_trt</span> <span class="o">*</span> <span class="n">txearn_was_p</span>
-    <span class="n">ptax_ss_was_s</span> <span class="o">=</span> <span class="n">FICA_ss_trt</span> <span class="o">*</span> <span class="n">txearn_was_s</span>
-    <span class="n">ptax_mc_was_p</span> <span class="o">=</span> <span class="n">FICA_mc_trt</span> <span class="o">*</span> <span class="n">gross_was_p</span>
-    <span class="n">ptax_mc_was_s</span> <span class="o">=</span> <span class="n">FICA_mc_trt</span> <span class="o">*</span> <span class="n">gross_was_s</span>
+    <span class="n">ptax_ss_was_p</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">txearn_was_p</span>
+    <span class="n">ptax_ss_was_s</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">txearn_was_s</span>
+    <span class="n">ptax_mc_was_p</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">gross_was_p</span>
+    <span class="n">ptax_mc_was_s</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">gross_was_s</span>
     <span class="n">ptax_was</span> <span class="o">=</span> <span class="n">ptax_ss_was_p</span> <span class="o">+</span> <span class="n">ptax_ss_was_s</span> <span class="o">+</span> <span class="n">ptax_mc_was_p</span> <span class="o">+</span> <span class="n">ptax_mc_was_s</span>
 
     <span class="c1"># compute taxable self-employment income for OASDI SECA</span>
-    <span class="n">sey_frac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_ss_trt</span> <span class="o">+</span> <span class="n">FICA_mc_trt</span><span class="p">)</span>
+    <span class="n">sey_frac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span>
     <span class="n">txearn_sey_p</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">),</span> <span class="n">SS_Earnings_c</span> <span class="o">-</span> <span class="n">txearn_was_p</span><span class="p">)</span>
     <span class="n">txearn_sey_s</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">),</span> <span class="n">SS_Earnings_c</span> <span class="o">-</span> <span class="n">txearn_was_s</span><span class="p">)</span>
 
     <span class="c1"># compute self-employment tax on taxable self-employment income, SECA</span>
-    <span class="n">setax_ss_p</span> <span class="o">=</span> <span class="n">FICA_ss_trt</span> <span class="o">*</span> <span class="n">txearn_sey_p</span>
-    <span class="n">setax_ss_s</span> <span class="o">=</span> <span class="n">FICA_ss_trt</span> <span class="o">*</span> <span class="n">txearn_sey_s</span>
-    <span class="n">setax_mc_p</span> <span class="o">=</span> <span class="n">FICA_mc_trt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">)</span>
-    <span class="n">setax_mc_s</span> <span class="o">=</span> <span class="n">FICA_mc_trt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">)</span>
+    <span class="n">setax_ss_p</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">txearn_sey_p</span>
+    <span class="n">setax_ss_s</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">txearn_sey_s</span>
+    <span class="n">setax_mc_p</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">)</span>
+    <span class="n">setax_mc_s</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">)</span>
     <span class="n">setax_p</span> <span class="o">=</span> <span class="n">setax_ss_p</span> <span class="o">+</span> <span class="n">setax_mc_p</span>
     <span class="n">setax_s</span> <span class="o">=</span> <span class="n">setax_ss_s</span> <span class="o">+</span> <span class="n">setax_mc_s</span>
     <span class="n">setax</span> <span class="o">=</span> <span class="n">setax_p</span> <span class="o">+</span> <span class="n">setax_s</span>
@@ -656,13 +661,13 @@ document.write(`
     <span class="c1"># compute extra OASDI payroll taxes on the portion of the sum</span>
     <span class="c1"># of wage-and-salary income and taxable self employment income</span>
     <span class="c1"># that exceeds SS_Earnings_thd</span>
-    <span class="n">sey_frac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">FICA_ss_trt</span>
+    <span class="n">sey_frac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span> 
     <span class="n">was_plus_sey_p</span> <span class="o">=</span> <span class="n">gross_was_p</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">)</span>
     <span class="n">was_plus_sey_s</span> <span class="o">=</span> <span class="n">gross_was_s</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">)</span>
     <span class="n">extra_ss_income_p</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">was_plus_sey_p</span> <span class="o">-</span> <span class="n">SS_Earnings_thd</span><span class="p">)</span>
     <span class="n">extra_ss_income_s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">was_plus_sey_s</span> <span class="o">-</span> <span class="n">SS_Earnings_thd</span><span class="p">)</span>
-    <span class="n">extra_payrolltax</span> <span class="o">=</span> <span class="p">(</span><span class="n">extra_ss_income_p</span> <span class="o">*</span> <span class="n">FICA_ss_trt</span> <span class="o">+</span>
-                        <span class="n">extra_ss_income_s</span> <span class="o">*</span> <span class="n">FICA_ss_trt</span><span class="p">)</span>
+    <span class="n">extra_payrolltax</span> <span class="o">=</span> <span class="p">(</span><span class="n">extra_ss_income_p</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span>  <span class="o">+</span>
+                        <span class="n">extra_ss_income_s</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">))</span>
 
     <span class="c1"># compute part of total payroll taxes for filing unit</span>
     <span class="c1"># (the ptax_amc part of total payroll taxes for the filing unit is</span>
@@ -1490,7 +1495,8 @@ document.write(`
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">AdditionalMedicareTax</span><span class="p">(</span><span class="n">e00200</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
                           <span class="n">AMEDT_ec</span><span class="p">,</span> <span class="n">sey</span><span class="p">,</span> <span class="n">AMEDT_rt</span><span class="p">,</span>
-                          <span class="n">FICA_mc_trt</span><span class="p">,</span> <span class="n">FICA_ss_trt</span><span class="p">,</span>
+                          <span class="n">FICA_mc_trt_employer</span><span class="p">,</span> <span class="n">FICA_mc_trt_employee</span><span class="p">,</span>
+                          <span class="n">FICA_ss_trt_employer</span><span class="p">,</span> <span class="n">FICA_ss_trt_employee</span><span class="p">,</span>
                           <span class="n">ptax_amc</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Additional Medicare Tax (Form 8959) included in payroll taxes.</span>
@@ -1503,10 +1509,14 @@ document.write(`
 <span class="sd">        Additional Medicare Tax earnings exclusion</span>
 <span class="sd">    AMEDT_rt: float</span>
 <span class="sd">        Additional Medicare Tax rate</span>
-<span class="sd">    FICA_ss_trt: float</span>
-<span class="sd">        FICA Social Security tax rate</span>
-<span class="sd">    FICA_mc_trt: float</span>
-<span class="sd">        FICA Medicare tax rate</span>
+<span class="sd">    FICA_ss_trt_employer: float</span>
+<span class="sd">        Employer side FICA Social Security tax rate</span>
+<span class="sd">    FICA_ss_trt_employee: float</span>
+<span class="sd">        Employee side FICA Social Security tax rate</span>
+<span class="sd">    FICA_mc_trt_employer: float</span>
+<span class="sd">        Employer side FICA Medicare tax rate</span>
+<span class="sd">    FICA_mc_trt_employee: float</span>
+<span class="sd">        Employee side FICA Medicare tax rate        </span>
 <span class="sd">    e00200: float</span>
 <span class="sd">        Wages and salaries</span>
 <span class="sd">    sey: float</span>
@@ -1523,7 +1533,7 @@ document.write(`
 <span class="sd">    payrolltax: float</span>
 <span class="sd">        payroll tax augmented by Additional Medicare Tax</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">line8</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_mc_trt</span> <span class="o">+</span> <span class="n">FICA_ss_trt</span><span class="p">))</span>
+    <span class="n">line8</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">))</span>
     <span class="n">line11</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMEDT_ec</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e00200</span><span class="p">)</span>
     <span class="n">ptax_amc</span> <span class="o">=</span> <span class="n">AMEDT_rt</span> <span class="o">*</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00200</span> <span class="o">-</span> <span class="n">AMEDT_ec</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span>
                            <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line8</span> <span class="o">-</span> <span class="n">line11</span><span class="p">))</span>
@@ -2562,15 +2572,23 @@ document.write(`
 <span class="sd">    c00100: float</span>
 <span class="sd">        Adjusted Gross Income (AGI)</span>
 <span class="sd">    CDCC_ps: float</span>
-<span class="sd">        Child/dependent care credit phaseout start</span>
+<span class="sd">        Child/dependent care credit first phaseout start</span>
+<span class="sd">    CDCC_ps2: float</span>
+<span class="sd">        Child/dependent care credit second phaseout start</span>
 <span class="sd">    CDCC_crt: float</span>
-<span class="sd">        Child/dependent care credit phaseout percentage rate ceiling</span>
+<span class="sd">        Child/dependent care credit phaseout rate ceiling</span>
+<span class="sd">    CDCC_frt: float</span>
+<span class="sd">        Child/dependent care credit phaseout rate floor</span>
+<span class="sd">    CDCC_prt: float</span>
+<span class="sd">        Child/dependent care credit phaseout rate</span>
 <span class="sd">    c05800: float</span>
 <span class="sd">        Total (regular + AMT) income tax liability before credits</span>
 <span class="sd">    e07300: float</span>
 <span class="sd">        Foreign tax credit from Form 1116</span>
 <span class="sd">    c07180: float</span>
 <span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">    CDCC_refund: bool</span>
+<span class="sd">        Indicator for whether CDCC is refundable</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -2602,7 +2620,8 @@ document.write(`
         <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">CDCC_ps2</span><span class="p">:</span>
             <span class="n">crate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">CDCC_frt</span> <span class="o">-</span>
                         <span class="nb">max</span><span class="p">(((</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps2</span><span class="p">)</span> <span class="o">*</span> <span class="n">CDCC_prt</span><span class="p">),</span> <span class="mf">0.</span><span class="p">))</span>
-    <span class="n">c33200</span> <span class="o">=</span> <span class="n">c33000</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">crate</span>
+
+    <span class="n">c33200</span> <span class="o">=</span> <span class="n">c33000</span> <span class="o">*</span> <span class="n">crate</span>
     <span class="c1"># credit is limited by tax liability if not refundable</span>
     <span class="k">if</span> <span class="n">CDCC_refundable</span><span class="p">:</span>
         <span class="n">c07180</span> <span class="o">=</span> <span class="mf">0.</span>

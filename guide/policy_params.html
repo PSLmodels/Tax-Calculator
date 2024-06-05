@@ -484,11 +484,13 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#medicare-fica">Medicare FICA</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-mc-trt"><code class="docutils literal notranslate"><span class="pre">FICA_mc_trt</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-mc-trt-employer"><code class="docutils literal notranslate"><span class="pre">FICA_mc_trt_employer</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-mc-trt-employee"><code class="docutils literal notranslate"><span class="pre">FICA_mc_trt_employee</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#social-security-fica">Social Security FICA</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-ss-trt"><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-ss-trt-employer"><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employer</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-ss-trt-employee"><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employee</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ss-earnings-c"><code class="docutils literal notranslate"><span class="pre">SS_Earnings_c</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ss-earnings-thd"><code class="docutils literal notranslate"><span class="pre">SS_Earnings_thd</span></code></a></li>
 </ul>
@@ -1001,76 +1003,110 @@ for: [single, mjoint, mseparate, headhh, widow]
 </section>
 <section id="medicare-fica">
 <h3>Medicare FICA<a class="headerlink" href="#medicare-fica" title="Link to this heading">#</a></h3>
-<section id="fica-mc-trt">
-<h4><code class="docutils literal notranslate"><span class="pre">FICA_mc_trt</span></code><a class="headerlink" href="#fica-mc-trt" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> Medicare FICA rate, including both employer and employee.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> float
-<em>Known Values:</em>
-2013: 0.029
-2014: 0.029
-2015: 0.029
-2016: 0.029
-2017: 0.029
-2018: 0.029
-2019: 0.029
-<em>Valid Range:</em> min = 0 and max = 1
+<section id="fica-mc-trt-employer">
+<h4><code class="docutils literal notranslate"><span class="pre">FICA_mc_trt_employer</span></code><a class="headerlink" href="#fica-mc-trt-employer" title="Link to this heading">#</a></h4>
+<p><em>Description:</em> Employer side Medicare FICA rate.
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0145<br />
+2014: 0.0145<br />
+2015: 0.0145<br />
+2016: 0.0145<br />
+2017: 0.0145<br />
+2018: 0.0145<br />
+2019: 0.0145<br />
+<em>Valid Range:</em> min = 0 and max = 1<br />
+<em>Out-of-Range Action:</em> error</p>
+</section>
+<section id="fica-mc-trt-employee">
+<h4><code class="docutils literal notranslate"><span class="pre">FICA_mc_trt_employee</span></code><a class="headerlink" href="#fica-mc-trt-employee" title="Link to this heading">#</a></h4>
+<p><em>Description:</em> Employee side Medicare FICA rate.
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0145<br />
+2014: 0.0145<br />
+2015: 0.0145<br />
+2016: 0.0145<br />
+2017: 0.0145<br />
+2018: 0.0145<br />
+2019: 0.0145<br />
+<em>Valid Range:</em> min = 0 and max = 1<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 </section>
 <section id="social-security-fica">
 <h3>Social Security FICA<a class="headerlink" href="#social-security-fica" title="Link to this heading">#</a></h3>
-<section id="fica-ss-trt">
-<h4><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt</span></code><a class="headerlink" href="#fica-ss-trt" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> Social Security FICA rate, including both employer and employee.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> float
-<em>Known Values:</em>
-2013: 0.124
-2014: 0.124
-2015: 0.124
-2016: 0.124
-2017: 0.124
-2018: 0.124
-2019: 0.124
-<em>Valid Range:</em> min = 0 and max = 1
+<section id="fica-ss-trt-employer">
+<h4><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employer</span></code><a class="headerlink" href="#fica-ss-trt-employer" title="Link to this heading">#</a></h4>
+<p><em>Description:</em> Employer side Social Security FICA rate.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.062<br />
+2014: 0.062<br />
+2015: 0.062<br />
+2016: 0.062<br />
+2017: 0.062<br />
+2018: 0.062<br />
+2019: 0.062<br />
+<em>Valid Range:</em> min = 0 and max = 1<br />
+<em>Out-of-Range Action:</em> error</p>
+</section>
+<section id="fica-ss-trt-employee">
+<h4><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employee</span></code><a class="headerlink" href="#fica-ss-trt-employee" title="Link to this heading">#</a></h4>
+<p><em>Description:</em> Employee side Social Security FICA rate.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.062<br />
+2014: 0.062<br />
+2015: 0.062<br />
+2016: 0.062<br />
+2017: 0.062<br />
+2018: 0.062<br />
+2019: 0.062<br />
+<em>Valid Range:</em> min = 0 and max = 1<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ss-earnings-c">
 <h4><code class="docutils literal notranslate"><span class="pre">SS_Earnings_c</span></code><a class="headerlink" href="#ss-earnings-c" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> Individual earnings below this amount are subjected to Social Security (OASDI) payroll tax.
-<em>Notes:</em> This parameter is indexed by the rate of growth in average wages, not by the price inflation rate.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> True
-<em>Value Type:</em> float
-<em>Known Values:</em>
-2013: 113700.0
-2014: 117000.0
-2015: 118500.0
-2016: 118500.0
-2017: 127200.0
-2018: 128400.0
-2019: 132900.0
-<em>Valid Range:</em> min = 0 and max = 9e+99
+<p><em>Description:</em> Individual earnings below this amount are subjected to Social Security (OASDI) payroll tax.<br />
+<em>Notes:</em> This parameter is indexed by the rate of growth in average wages, not by the price inflation rate.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> True<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 113700.0<br />
+2014: 117000.0<br />
+2015: 118500.0<br />
+2016: 118500.0<br />
+2017: 127200.0<br />
+2018: 128400.0<br />
+2019: 132900.0<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="ss-earnings-thd">
 <h4><code class="docutils literal notranslate"><span class="pre">SS_Earnings_thd</span></code><a class="headerlink" href="#ss-earnings-thd" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> Individual earnings above this threshold are subjected to Social Security (OASDI) payroll tax, in addition to earnings below the maximum taxable earnings threshold.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> float
-<em>Known Values:</em>
-2013: 9e+99
-2014: 9e+99
-2015: 9e+99
-2016: 9e+99
-2017: 9e+99
-2018: 9e+99
-2019: 9e+99
-<em>Valid Range:</em> min = 0 and max = 9e+99
+<p><em>Description:</em> Individual earnings above this threshold are subjected to Social Security (OASDI) payroll tax, in addition to earnings below the maximum taxable earnings threshold.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 9e+99<br />
+2014: 9e+99<br />
+2015: 9e+99<br />
+2016: 9e+99<br />
+2017: 9e+99<br />
+2018: 9e+99<br />
+2019: 9e+99<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 </section>
@@ -1642,123 +1678,123 @@ for: [single, mjoint, mseparate, headhh, widow]
 <h3>Child And Dependent Care<a class="headerlink" href="#child-and-dependent-care" title="Link to this heading">#</a></h3>
 <section id="cdcc-c">
 <h4><code class="docutils literal notranslate"><span class="pre">CDCC_c</span></code><a class="headerlink" href="#cdcc-c" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The maximum amount of expenses allowed for each qualifying dependent.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> float
-<em>Known Values:</em>
-2013: 3000.0
-2014: 3000.0
-2015: 3000.0
-2016: 3000.0
-2017: 3000.0
-2018: 3000.0
-2019: 3000.0
-<em>Valid Range:</em> min = 0 and max = 9e+99
+<p><em>Description:</em> The maximum amount of expenses allowed for each qualifying dependent.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 3000.0<br />
+2014: 3000.0<br />
+2015: 3000.0<br />
+2016: 3000.0<br />
+2017: 3000.0<br />
+2018: 3000.0<br />
+2019: 3000.0<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="cdcc-ps">
 <h4><code class="docutils literal notranslate"><span class="pre">CDCC_ps</span></code><a class="headerlink" href="#cdcc-ps" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> float
-<em>Known Values:</em>
-2013: 15000.0
-2014: 15000.0
-2015: 15000.0
-2016: 15000.0
-2017: 15000.0
-2018: 15000.0
-2019: 15000.0
-<em>Valid Range:</em> min = 0 and max = 9e+99
+<p><em>Description:</em> For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 15000.0<br />
+2014: 15000.0<br />
+2015: 15000.0<br />
+2016: 15000.0<br />
+2017: 15000.0<br />
+2018: 15000.0<br />
+2019: 15000.0<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="cdcc-ps2">
 <h4><code class="docutils literal notranslate"><span class="pre">CDCC_ps2</span></code><a class="headerlink" href="#cdcc-ps2" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each <span class="math notranslate nohighlight">\(2,000 of AGI over this amount.
-_Notes:_ For 2021, the American Rescue Plan Act set this to \)</span>400,000. In other years, this phase-out does not apply.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> float
-<em>Known Values:</em>
-2013: 9e+99
-2014: 9e+99
-2015: 9e+99
-2016: 9e+99
-2017: 9e+99
-2018: 9e+99
-2019: 9e+99
-<em>Valid Range:</em> min = 0 and max = 9e+99
+<p><em>Description:</em> For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each <span class="math notranslate nohighlight">\(2,000 of AGI over this amount.  
+_Notes:_ For 2021, the American Rescue Plan Act set this to \)</span>400,000. In other years, this phase-out does not apply.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 9e+99<br />
+2014: 9e+99<br />
+2015: 9e+99<br />
+2016: 9e+99<br />
+2017: 9e+99<br />
+2018: 9e+99<br />
+2019: 9e+99<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="cdcc-crt">
 <h4><code class="docutils literal notranslate"><span class="pre">CDCC_crt</span></code><a class="headerlink" href="#cdcc-crt" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The maximum percentage rate for the CDCC; this percentage rate decreases as AGI rises above the CDCC_ps level.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> float
-<em>Known Values:</em>
-2013: 35.0
-2014: 35.0
-2015: 35.0
-2016: 35.0
-2017: 35.0
-2018: 35.0
-2019: 35.0
-<em>Valid Range:</em> min = 0 and max = 100
+<p><em>Description:</em> The maximum rate for the CDCC; this rate decreases as AGI rises above the CDCC_ps level.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.35<br />
+2014: 0.35<br />
+2015: 0.35<br />
+2016: 0.35<br />
+2017: 0.35<br />
+2018: 0.35<br />
+2019: 0.35<br />
+<em>Valid Range:</em> min = 0 and max = 1<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="cdcc-frt">
 <h4><code class="docutils literal notranslate"><span class="pre">CDCC_frt</span></code><a class="headerlink" href="#cdcc-frt" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The minimum percentage rate for the first AGI phaseout of the CDCC.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> float
-<em>Known Values:</em>
-2013: 20.0
-2014: 20.0
-2015: 20.0
-2016: 20.0
-2017: 20.0
-2018: 20.0
-2019: 20.0
-<em>Valid Range:</em> min = 0 and max = 100
+<p><em>Description:</em> The minimum rate for the first AGI phaseout of the CDCC.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.20<br />
+2014: 0.20<br />
+2015: 0.20<br />
+2016: 0.20<br />
+2017: 0.20<br />
+2018: 0.20<br />
+2019: 0.20<br />
+<em>Valid Range:</em> min = 0 and max = 1<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="cdcc-prt">
 <h4><code class="docutils literal notranslate"><span class="pre">CDCC_prt</span></code><a class="headerlink" href="#cdcc-prt" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The CDCC credit rate is reduced by this many percentage points for each dollary of AGI over the phase-out thresholds.
-<em>Notes:</em> In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> float
-<em>Known Values:</em>
-2013: 0.0005
-2014: 0.0005
-2015: 0.0005
-2016: 0.0005
-2017: 0.0005
-2018: 0.0005
-2019: 0.0005
-<em>Valid Range:</em> min = 0 and max = 1
+<p><em>Description:</em> The CDCC credit rate is reduced by this many percentage points for each dollar of AGI over the phase-out thresholds.<br />
+<em>Notes:</em> In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0005<br />
+2014: 0.0005<br />
+2015: 0.0005<br />
+2016: 0.0005<br />
+2017: 0.0005<br />
+2018: 0.0005<br />
+2019: 0.0005<br />
+<em>Valid Range:</em> min = 0 and max = 1<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="cdcc-refundable">
 <h4><code class="docutils literal notranslate"><span class="pre">CDCC_refundable</span></code><a class="headerlink" href="#cdcc-refundable" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> If true, the CDCC is fully refundable.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
-<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> bool
-<em>Known Values:</em>
-2013: False
-2014: False
-2015: False
-2016: False
-2017: False
-2018: False
-2019: False
-<em>Valid Range:</em> min = False and max = True
+<p><em>Description:</em> If true, the CDCC is fully refundable.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> bool<br />
+<em>Known Values:</em><br />
+2013: False<br />
+2014: False<br />
+2015: False<br />
+2016: False<br />
+2017: False<br />
+2018: False<br />
+2019: False<br />
+<em>Valid Range:</em> min = False and max = True<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
 </section>
@@ -5845,11 +5881,13 @@ for: [single, mjoint, mseparate, headhh, widow]
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#medicare-fica">Medicare FICA</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-mc-trt"><code class="docutils literal notranslate"><span class="pre">FICA_mc_trt</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-mc-trt-employer"><code class="docutils literal notranslate"><span class="pre">FICA_mc_trt_employer</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-mc-trt-employee"><code class="docutils literal notranslate"><span class="pre">FICA_mc_trt_employee</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#social-security-fica">Social Security FICA</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-ss-trt"><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-ss-trt-employer"><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employer</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-ss-trt-employee"><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employee</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ss-earnings-c"><code class="docutils literal notranslate"><span class="pre">SS_Earnings_c</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ss-earnings-thd"><code class="docutils literal notranslate"><span class="pre">SS_Earnings_thd</span></code></a></li>
 </ul>
