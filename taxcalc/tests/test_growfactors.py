@@ -33,6 +33,8 @@ def test_improper_usage(bad_gf_file):
     with pytest.raises(ValueError):
         gfo = GrowFactors(dict())
     with pytest.raises(ValueError):
+        gfo = GrowFactors('non_existent_file.csv')
+    with pytest.raises(ValueError):
         gfo = GrowFactors(bad_gf_file.name)
     gfo = GrowFactors()
     fyr = gfo.first_year

@@ -80,75 +80,106 @@ _Out-of-Range Action:_ error
 
 ### Medicare FICA
 
-####  `FICA_mc_trt`
-_Description:_ Medicare FICA rate, including both employer and employee.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False
-_Value Type:_ float
-_Known Values:_
-2013: 0.029
-2014: 0.029
-2015: 0.029
-2016: 0.029
-2017: 0.029
-2018: 0.029
-2019: 0.029
-_Valid Range:_ min = 0 and max = 1
-_Out-of-Range Action:_ error
+####  `FICA_mc_trt_employer`  
+_Description:_ Employer side Medicare FICA rate.
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0145  
+2014: 0.0145  
+2015: 0.0145  
+2016: 0.0145  
+2017: 0.0145  
+2018: 0.0145  
+2019: 0.0145  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error  
 
+####  `FICA_mc_trt_employee`  
+_Description:_ Employee side Medicare FICA rate.
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0145  
+2014: 0.0145  
+2015: 0.0145  
+2016: 0.0145  
+2017: 0.0145  
+2018: 0.0145  
+2019: 0.0145  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error 
 
 ### Social Security FICA
 
-####  `FICA_ss_trt`
-_Description:_ Social Security FICA rate, including both employer and employee.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False
-_Value Type:_ float
-_Known Values:_
-2013: 0.124
-2014: 0.124
-2015: 0.124
-2016: 0.124
-2017: 0.124
-2018: 0.124
-2019: 0.124
-_Valid Range:_ min = 0 and max = 1
-_Out-of-Range Action:_ error
+####  `FICA_ss_trt_employer`  
+_Description:_ Employer side Social Security FICA rate.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.062  
+2014: 0.062  
+2015: 0.062  
+2016: 0.062  
+2017: 0.062  
+2018: 0.062  
+2019: 0.062  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error  
+
+####  `FICA_ss_trt_employee`  
+_Description:_ Employee side Social Security FICA rate.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.062  
+2014: 0.062  
+2015: 0.062  
+2016: 0.062  
+2017: 0.062  
+2018: 0.062  
+2019: 0.062  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error  
 
 
-####  `SS_Earnings_c`
-_Description:_ Individual earnings below this amount are subjected to Social Security (OASDI) payroll tax.
-_Notes:_ This parameter is indexed by the rate of growth in average wages, not by the price inflation rate.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True
-_Value Type:_ float
-_Known Values:_
-2013: 113700.0
-2014: 117000.0
-2015: 118500.0
-2016: 118500.0
-2017: 127200.0
-2018: 128400.0
-2019: 132900.0
-_Valid Range:_ min = 0 and max = 9e+99
-_Out-of-Range Action:_ error
+####  `SS_Earnings_c`  
+_Description:_ Individual earnings below this amount are subjected to Social Security (OASDI) payroll tax.  
+_Notes:_ This parameter is indexed by the rate of growth in average wages, not by the price inflation rate.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
+_Value Type:_ float  
+_Known Values:_  
+2013: 113700.0  
+2014: 117000.0  
+2015: 118500.0  
+2016: 118500.0  
+2017: 127200.0  
+2018: 128400.0  
+2019: 132900.0  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
 
 
-####  `SS_Earnings_thd`
-_Description:_ Individual earnings above this threshold are subjected to Social Security (OASDI) payroll tax, in addition to earnings below the maximum taxable earnings threshold.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False
-_Value Type:_ float
-_Known Values:_
-2013: 9e+99
-2014: 9e+99
-2015: 9e+99
-2016: 9e+99
-2017: 9e+99
-2018: 9e+99
-2019: 9e+99
-_Valid Range:_ min = 0 and max = 9e+99
-_Out-of-Range Action:_ error
+####  `SS_Earnings_thd`  
+_Description:_ Individual earnings above this threshold are subjected to Social Security (OASDI) payroll tax, in addition to earnings below the maximum taxable earnings threshold.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 9e+99  
+2014: 9e+99  
+2015: 9e+99  
+2016: 9e+99  
+2017: 9e+99  
+2018: 9e+99  
+2019: 9e+99  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
 
 
 ## Social Security Taxability
@@ -703,125 +734,125 @@ _Out-of-Range Action:_ error
 
 ### Child And Dependent Care
 
-####  `CDCC_c`
-_Description:_ The maximum amount of expenses allowed for each qualifying dependent.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False
-_Value Type:_ float
-_Known Values:_
-2013: 3000.0
-2014: 3000.0
-2015: 3000.0
-2016: 3000.0
-2017: 3000.0
-2018: 3000.0
-2019: 3000.0
-_Valid Range:_ min = 0 and max = 9e+99
-_Out-of-Range Action:_ error
+####  `CDCC_c`  
+_Description:_ The maximum amount of expenses allowed for each qualifying dependent.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 3000.0  
+2014: 3000.0  
+2015: 3000.0  
+2016: 3000.0  
+2017: 3000.0  
+2018: 3000.0  
+2019: 3000.0  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
 
 
-####  `CDCC_ps`
-_Description:_ For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False
-_Value Type:_ float
-_Known Values:_
-2013: 15000.0
-2014: 15000.0
-2015: 15000.0
-2016: 15000.0
-2017: 15000.0
-2018: 15000.0
-2019: 15000.0
-_Valid Range:_ min = 0 and max = 9e+99
-_Out-of-Range Action:_ error
+####  `CDCC_ps`  
+_Description:_ For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 15000.0  
+2014: 15000.0  
+2015: 15000.0  
+2016: 15000.0  
+2017: 15000.0  
+2018: 15000.0  
+2019: 15000.0  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
 
 
-####  `CDCC_ps2`
-_Description:_ For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.
-_Notes:_ For 2021, the American Rescue Plan Act set this to $400,000. In other years, this phase-out does not apply.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False
-_Value Type:_ float
-_Known Values:_
-2013: 9e+99
-2014: 9e+99
-2015: 9e+99
-2016: 9e+99
-2017: 9e+99
-2018: 9e+99
-2019: 9e+99
-_Valid Range:_ min = 0 and max = 9e+99
-_Out-of-Range Action:_ error
+####  `CDCC_ps2`  
+_Description:_ For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.  
+_Notes:_ For 2021, the American Rescue Plan Act set this to $400,000. In other years, this phase-out does not apply.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 9e+99  
+2014: 9e+99  
+2015: 9e+99  
+2016: 9e+99  
+2017: 9e+99  
+2018: 9e+99  
+2019: 9e+99  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
 
 
-####  `CDCC_crt`
-_Description:_ The maximum percentage rate for the CDCC; this percentage rate decreases as AGI rises above the CDCC_ps level.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False
-_Value Type:_ float
-_Known Values:_
-2013: 35.0
-2014: 35.0
-2015: 35.0
-2016: 35.0
-2017: 35.0
-2018: 35.0
-2019: 35.0
-_Valid Range:_ min = 0 and max = 100
-_Out-of-Range Action:_ error
+####  `CDCC_crt`  
+_Description:_ The maximum rate for the CDCC; this rate decreases as AGI rises above the CDCC_ps level.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.35  
+2014: 0.35  
+2015: 0.35  
+2016: 0.35  
+2017: 0.35  
+2018: 0.35  
+2019: 0.35  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error  
 
 
-####  `CDCC_frt`
-_Description:_ The minimum percentage rate for the first AGI phaseout of the CDCC.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False
-_Value Type:_ float
-_Known Values:_
-2013: 20.0
-2014: 20.0
-2015: 20.0
-2016: 20.0
-2017: 20.0
-2018: 20.0
-2019: 20.0
-_Valid Range:_ min = 0 and max = 100
-_Out-of-Range Action:_ error
+####  `CDCC_frt`  
+_Description:_ The minimum rate for the first AGI phaseout of the CDCC.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.20  
+2014: 0.20  
+2015: 0.20  
+2016: 0.20  
+2017: 0.20  
+2018: 0.20  
+2019: 0.20  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error  
 
 
-####  `CDCC_prt`
-_Description:_ The CDCC credit rate is reduced by this many percentage points for each dollary of AGI over the phase-out thresholds.
-_Notes:_ In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False
-_Value Type:_ float
-_Known Values:_
-2013: 0.0005
-2014: 0.0005
-2015: 0.0005
-2016: 0.0005
-2017: 0.0005
-2018: 0.0005
-2019: 0.0005
-_Valid Range:_ min = 0 and max = 1
-_Out-of-Range Action:_ error
+####  `CDCC_prt`  
+_Description:_ The CDCC credit rate is reduced by this many percentage points for each dollar of AGI over the phase-out thresholds.  
+_Notes:_ In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0005  
+2014: 0.0005  
+2015: 0.0005  
+2016: 0.0005  
+2017: 0.0005  
+2018: 0.0005  
+2019: 0.0005  
+_Valid Range:_ min = 0 and max = 1  
+_Out-of-Range Action:_ error  
 
 
-####  `CDCC_refundable`
-_Description:_ If true, the CDCC is fully refundable.
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False
-_Value Type:_ bool
-_Known Values:_
-2013: False
-2014: False
-2015: False
-2016: False
-2017: False
-2018: False
-2019: False
-_Valid Range:_ min = False and max = True
-_Out-of-Range Action:_ error
+####  `CDCC_refundable`  
+_Description:_ If true, the CDCC is fully refundable.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ bool  
+_Known Values:_  
+2013: False  
+2014: False  
+2015: False  
+2016: False  
+2017: False  
+2018: False  
+2019: False  
+_Valid Range:_ min = False and max = True  
+_Out-of-Range Action:_ error  
 
 
 ### Misc. Credit Limits
