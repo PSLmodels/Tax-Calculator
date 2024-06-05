@@ -17,14 +17,15 @@ class GrowFactors():
 
     Parameters
     ----------
-    growfactors_filename: string
-        string is name of CSV file in which grow factors reside;
-        default value is name of file containing baseline grow factors.
+    growfactors_filename: None or string
+        string is path to the CSV file in which grow factors reside;
+        default value of None uses file containing baseline grow factors.
 
     Raises
     ------
     ValueError:
-        if growfactors_filename is not a string.
+        if growfactors_filename is neither None or a string.
+        if growfactors_filename string points to a non-existent file.
 
     Returns
     -------
@@ -33,7 +34,7 @@ class GrowFactors():
     Notes
     -----
     Typical usage is "gfactor = GrowFactors()", which produces an object
-    containing growth factors in the GrowFactors.FILE_NAME file.
+    containing baseline growth factors in the GrowFactors.FILE_NAME file.
     """
 
     FILE_NAME = 'growfactors.csv'
@@ -48,17 +49,19 @@ class GrowFactors():
                        'ABENSSI', 'ABENSNAP', 'ABENWIC',
                        'ABENHOUSING', 'ABENTANF', 'ABENVET'])
 
-    def __init__(self, growfactors_filename=FILE_NAME):
+    def __init__(self, growfactors_filename=None):
         # read grow factors from specified growfactors_filename
         gfdf = pd.DataFrame()
-        if isinstance(growfactors_filename, str):
-            full_filename = os.path.join(GrowFactors.FILE_PATH,
-                                         growfactors_filename)
-            if os.path.isfile(full_filename):
-                gfdf = pd.read_csv(full_filename, index_col='YEAR')
-            else:  # find file in package
-                gfdf = read_egg_csv(os.path.basename(growfactors_filename),
-                                    index_col='YEAR')  # pragma: no cover
+        if growfactors_filename is None:
+            # read baseline growfactor from package
+            gfdf = read_egg_csv(GrowFactors.FILE_NAME,
+                                index_col='YEAR')  # pragma: no cover
+        elif isinstance(growfactors_filename, str):
+            if os.path.isfile(growfactors_filename):
+                gfdf = pd.read_csv(growfactors_filename, index_col='YEAR')
+            else:  # file does not exist
+                msg = f'growfactors file {growfactors_filename} does not exist'
+                raise ValueError(msg)
         else:
             raise ValueError('growfactors_filename is not a string')
         assert isinstance(gfdf, pd.DataFrame)
@@ -143,7 +146,7 @@ class GrowFactors():
         if year > self.last_year:
             msg = 'year={} > GrowFactors.last_year={}'
             raise ValueError(msg.format(year, self.last_year))
-        return self.gfdf.loc[year,name]
+        return self.gfdf.loc[year, name]
 
     def update(self, name, year, diff):
         """
@@ -156,4 +159,4 @@ class GrowFactors():
         assert year >= self.first_year
         assert year <= self.last_year
         assert isinstance(diff, float)
-        self.gfdf.loc[year,name] += diff
+        self.gfdf.loc[year, name] += diff
