@@ -15,7 +15,8 @@ for a complete commit history.
 - CDCC rate scale (`CDCC_crt`, `CDCC_frt`) changed from 0~1 to 0~100. [[#2628](https://github.com/PSLmodels/Tax-Calculator/pull/2628) by Duncan Hobbs and [#2671](https://github.com/PSLmodels/Tax-Calculator/pull/2671) by Jason DeBacker]
 
 **New Features**
-- Tax-Calculator 4.0.0 starts to incorporate with new [Taxcalc-Payroll](https://github.com/bodiyang/Taxcalc-Payroll) model, micro-simulation model focusing on payroll tax analysis. New features include (1) payroll tax reform simulation upon either employer side or employee side; (2) employer side payroll tax offset. [[Taxcalc-Payroll](https://github.com/bodiyang/Taxcalc-Payroll) developed by Bodi Yang]
+- Ablility to perform payroll tax reform upon either employer side or employee side. [by Bodi Yang]
+
 
 2024-05-10 Release 3.6.0
 ------------------------
