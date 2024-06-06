@@ -53,6 +53,16 @@ def puf_subsample(puf_fullsample):
     return puf_fullsample.sample(frac=0.05, random_state=2222)
 
 
+@pytest.fixture(scope='session')
+def tmd_path(tests_path):
+    return os.path.join(tests_path, '..', '..', 'tmd.csv')
+
+
+@pytest.fixture(scope='session')
+def tmd_fullsample(tmd_path):
+    return pandas.read_csv(tmd_path)
+
+
 @pytest.fixture(scope='session', name='test_reforms_init')
 def fixture_test_reforms(tests_path):
     """
