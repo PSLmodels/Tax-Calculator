@@ -548,7 +548,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ffpos"><code class="docutils literal notranslate"><span class="pre">ffpos</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fips"><code class="docutils literal notranslate"><span class="pre">fips</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#h-seq"><code class="docutils literal notranslate"><span class="pre">h_seq</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#s006-original"><code class="docutils literal notranslate"><span class="pre">s006_original</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-source"><code class="docutils literal notranslate"><span class="pre">data_source</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k1bx14p"><code class="docutils literal notranslate"><span class="pre">k1bx14p</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k1bx14s"><code class="docutils literal notranslate"><span class="pre">k1bx14s</span></code></a></li>
@@ -678,7 +677,7 @@ The Availability information indicates which input data files contain the variab
 <h2><code class="docutils literal notranslate"><span class="pre">blind_head</span></code><a class="headerlink" href="#blind-head" title="Link to this heading">#</a></h2>
 <p><em>Description</em>: 1 if taxpayer is blind; otherwise 0<br />
 <em>Datatype</em>: int<br />
-<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>Availability</em>: taxdata_cps<br />
 <em>IRS Form Location:</em><br />
 2013-2016: 1040 line 39a</p>
 </section>
@@ -686,7 +685,7 @@ The Availability information indicates which input data files contain the variab
 <h2><code class="docutils literal notranslate"><span class="pre">blind_spouse</span></code><a class="headerlink" href="#blind-spouse" title="Link to this heading">#</a></h2>
 <p><em>Description</em>: 1 if spouse is blind; otherwise 0<br />
 <em>Datatype</em>: int<br />
-<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>Availability</em>: taxdata_cps<br />
 <em>IRS Form Location:</em><br />
 2013-2016: 1040 line 39a</p>
 </section>
@@ -1215,7 +1214,7 @@ The Availability information indicates which input data files contain the variab
 <h2><code class="docutils literal notranslate"><span class="pre">a_lineno</span></code><a class="headerlink" href="#a-lineno" title="Link to this heading">#</a></h2>
 <p><em>Description</em>: CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)<br />
 <em>Datatype</em>: int<br />
-<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>Availability</em>: taxdata_cps<br />
 <em>IRS Form Location:</em><br />
 2013-2016: sample construction info</p>
 </section>
@@ -1223,7 +1222,7 @@ The Availability information indicates which input data files contain the variab
 <h2><code class="docutils literal notranslate"><span class="pre">ffpos</span></code><a class="headerlink" href="#ffpos" title="Link to this heading">#</a></h2>
 <p><em>Description</em>: CPS family identifier within household (not used in tax-calculation logic)<br />
 <em>Datatype</em>: int<br />
-<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>Availability</em>: taxdata_cps<br />
 <em>IRS Form Location:</em><br />
 2013-2016: sample construction info</p>
 </section>
@@ -1231,7 +1230,7 @@ The Availability information indicates which input data files contain the variab
 <h2><code class="docutils literal notranslate"><span class="pre">fips</span></code><a class="headerlink" href="#fips" title="Link to this heading">#</a></h2>
 <p><em>Description</em>: FIPS state code (not used in tax-calculation logic)<br />
 <em>Datatype</em>: int<br />
-<em>Availability</em>: taxdata_puf, taxdata_puf, taxdata_cps<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
 <em>IRS Form Location:</em><br />
 2013-2016: sample construction info</p>
 </section>
@@ -1239,15 +1238,7 @@ The Availability information indicates which input data files contain the variab
 <h2><code class="docutils literal notranslate"><span class="pre">h_seq</span></code><a class="headerlink" href="#h-seq" title="Link to this heading">#</a></h2>
 <p><em>Description</em>: CPS household sequence number (not used in tax-calculation logic)<br />
 <em>Datatype</em>: int<br />
-<em>Availability</em>: taxdata_puf, taxdata_cps<br />
-<em>IRS Form Location:</em><br />
-2013-2016: sample construction info</p>
-</section>
-<section id="s006-original">
-<h2><code class="docutils literal notranslate"><span class="pre">s006_original</span></code><a class="headerlink" href="#s006-original" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: Sample weight before reweighting (not used in tax-calculation logic)<br />
-<em>Datatype</em>: float<br />
-<em>Availability</em>: tax-microdata_tmd<br />
+<em>Availability</em>: taxdata_cps<br />
 <em>IRS Form Location:</em><br />
 2013-2016: sample construction info</p>
 </section>
@@ -1606,7 +1597,6 @@ The Availability information indicates which input data files contain the variab
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ffpos"><code class="docutils literal notranslate"><span class="pre">ffpos</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fips"><code class="docutils literal notranslate"><span class="pre">fips</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#h-seq"><code class="docutils literal notranslate"><span class="pre">h_seq</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#s006-original"><code class="docutils literal notranslate"><span class="pre">s006_original</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-source"><code class="docutils literal notranslate"><span class="pre">data_source</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k1bx14p"><code class="docutils literal notranslate"><span class="pre">k1bx14p</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#k1bx14s"><code class="docutils literal notranslate"><span class="pre">k1bx14s</span></code></a></li>
