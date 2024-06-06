@@ -13,7 +13,7 @@ help:
 	@echo "clean      : remove .pyc files and local taxcalc package"
 	@echo "package    : build and install local package"
 	@echo "pytest-cps : generate report for and cleanup after"
-	@echo "             pytest -m 'not requires_pufcsv and not pre_release'"
+	@echo "             pytest -m 'not requires_pufcsv and not requires_tmdcsv and not pre_release'"
 	@echo "pytest     : generate report for and cleanup after"
 	@echo "             pytest -m 'not pre_release'"
 	@echo "pytest-all : generate report for and cleanup after"
