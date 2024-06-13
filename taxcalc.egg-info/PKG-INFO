@@ -24,7 +24,7 @@ Requires-Dist: pandas
 Requires-Dist: bokeh
 Requires-Dist: numba
 Requires-Dist: requests
-Requires-Dist: paramtools>=0.18.2
+Requires-Dist: paramtools
 
 | | |
 | --- | --- |

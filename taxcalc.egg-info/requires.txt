@@ -4,4 +4,4 @@ pandas
 bokeh
 numba
 requests
-paramtools>=0.18.2
+paramtools

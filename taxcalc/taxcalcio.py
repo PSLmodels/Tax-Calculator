@@ -252,7 +252,9 @@ class TaxCalcIO():
             self.errmsg += valerr_msg.__str__()
         # create GrowFactors base object that incorporates gdiff_baseline
         if self.tmd_input_data:
-            gfactors_base = GrowFactors(Records.TMD_GROWFACTORS_FILENAME)
+            gfactors_base = GrowFactors(  # pragma: no cover
+                Records.TMD_GROWFACTORS_FILENAME
+            )
         else:
             gfactors_base = GrowFactors()
         gdiff_baseline.apply_to(gfactors_base)
@@ -264,7 +266,9 @@ class TaxCalcIO():
             self.errmsg += valerr_msg.__str__()
         # create GrowFactors ref object that has all gdiff objects applied
         if self.tmd_input_data:
-            gfactors_ref = GrowFactors(Records.TMD_GROWFACTORS_FILENAME)
+            gfactors_ref = GrowFactors(  # pragma: no cover
+                Records.TMD_GROWFACTORS_FILENAME
+            )
         else:
             gfactors_ref = GrowFactors()
         gdiff_baseline.apply_to(gfactors_ref)
