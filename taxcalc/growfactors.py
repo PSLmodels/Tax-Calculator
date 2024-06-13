@@ -19,7 +19,7 @@ class GrowFactors():
     ----------
     growfactors_filename: None or string
         string is path to the CSV file in which grow factors reside;
-        default value of None uses file containing baseline grow factors.
+        default value of None uses file containing puf/cps grow factors.
 
     Raises
     ------
@@ -34,10 +34,11 @@ class GrowFactors():
     Notes
     -----
     Typical usage is "gfactor = GrowFactors()", which produces an object
-    containing baseline growth factors in the GrowFactors.FILE_NAME file.
+    containing baseline growth factors in the GrowFactors.FILE_NAME file,
+    which is for use with puf and cps data from the taxdata repository.
     """
 
-    FILE_NAME = 'growfactors.csv'
+    PACKAGE_FILE_NAMES = ['growfactors.csv', 'tmd_growfactors.csv']
     FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     VALID_NAMES = set(['ABOOK', 'ACGNS', 'ACPIM', 'ACPIU',
@@ -53,15 +54,23 @@ class GrowFactors():
         # read grow factors from specified growfactors_filename
         gfdf = pd.DataFrame()
         if growfactors_filename is None:
-            # read baseline growfactor from package
-            gfdf = read_egg_csv(GrowFactors.FILE_NAME,
+            # read baseline growfactors from package
+            gfdf = read_egg_csv(GrowFactors.PACKAGE_FILE_NAMES[0],
                                 index_col='YEAR')  # pragma: no cover
         elif isinstance(growfactors_filename, str):
-            if os.path.isfile(growfactors_filename):
-                gfdf = pd.read_csv(growfactors_filename, index_col='YEAR')
-            else:  # file does not exist
-                msg = f'growfactors file {growfactors_filename} does not exist'
-                raise ValueError(msg)
+            if growfactors_filename in GrowFactors.PACKAGE_FILE_NAMES:
+                # read growfactors from package
+                gfdf = read_egg_csv(growfactors_filename,
+                                    index_col='YEAR')  # pragma: no cover
+            else:
+                if os.path.isfile(growfactors_filename):
+                    gfdf = pd.read_csv(growfactors_filename, index_col='YEAR')
+                else:  # file does not exist
+                    msg = (
+                        f'growfactors file {growfactors_filename} '
+                        'does not exist'
+                    )
+                    raise ValueError(msg)
         else:
             raise ValueError('growfactors_filename is not a string')
         assert isinstance(gfdf, pd.DataFrame)
