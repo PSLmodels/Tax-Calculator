@@ -130,9 +130,11 @@ class Calculator():
             while self.__records.current_year < self.__policy.current_year:
                 self.__records.increment_year()
             if verbose and extrapolating:
-                print('Tax-Calculator startup automatically ' +
-                      'extrapolated your data to ' +
-                      str(self.__records.current_year) + '.')
+                print(  # pragma: no cover
+                    'Tax-Calculator startup automatically ' +
+                    'extrapolated your data to ' +
+                    str(self.__records.current_year) + '.'
+                )
         else:
             if verbose:
                 print('Tax-Calculator startup did not ' +
