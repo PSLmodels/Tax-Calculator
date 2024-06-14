@@ -120,21 +120,17 @@ class Calculator():
                     print('  ' +
                           var)
         current_year_is_data_year = (
-            self.__records.current_year == self.__records.data_year
-        )
-        extrapolating = self.__records.current_year > self.__records.data_year
+            self.__records.current_year == self.__records.data_year)
         if sync_years and current_year_is_data_year:
             if verbose:
                 print('You loaded data for ' +
                       str(self.__records.data_year) + '.')
             while self.__records.current_year < self.__policy.current_year:
                 self.__records.increment_year()
-            if verbose and extrapolating:
-                print(  # pragma: no cover
-                    'Tax-Calculator startup automatically ' +
-                    'extrapolated your data to ' +
-                    str(self.__records.current_year) + '.'
-                )
+            if verbose:
+                print('Tax-Calculator startup automatically ' +
+                      'extrapolated your data to ' +
+                      str(self.__records.current_year) + '.')
         else:
             if verbose:
                 print('Tax-Calculator startup did not ' +

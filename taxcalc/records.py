@@ -227,6 +227,7 @@ class Records(Data):
 
     @staticmethod
     def tmd_constructor(data,  # path to tmd.csv file or dataframe
+                        gfactors=TMD_GROWFACTORS_FILENAME,
                         exact_calculations=False):  # pragma: no cover
         """
         Static method returns a Records object instantiated with TMD
@@ -241,7 +242,7 @@ class Records(Data):
         weights = os.path.join(Records.CODE_PATH, Records.TMD_WEIGHTS_FILENAME)
         return Records(data=data,
                        start_year=Records.TMDCSV_YEAR,
-                       gfactors=Records.TMD_GROWFACTORS_FILENAME,
+                       gfactors=gfactors,
                        weights=weights,
                        adjust_ratios=Records.TMD_RATIOS_FILENAME,
                        exact_calculations=exact_calculations)
