@@ -54,7 +54,7 @@ class GrowFactors():
         # read grow factors from specified growfactors_filename
         gfdf = pd.DataFrame()
         if growfactors_filename is None:
-            # read baseline growfactors from package
+            # read puf/cps growfactors from package
             gfdf = read_egg_csv(GrowFactors.PACKAGE_FILE_NAMES[0],
                                 index_col='YEAR')  # pragma: no cover
         elif isinstance(growfactors_filename, str):
