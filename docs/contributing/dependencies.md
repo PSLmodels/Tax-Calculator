@@ -2,8 +2,8 @@
 
 ## Python
 
-Tax-Calculator currently runs on Python 3.9, 3.10, and 3.11.
-We generally support the three latest major Python releases.
+Tax-Calculator currently runs on Python 3.9, 3.10, 3.11, and 3.12.
+We generally support at least three of the latest major Python releases.
 
 Updating the Python version requires modifying the following files:
 * `.github/workflows/*.yml`
