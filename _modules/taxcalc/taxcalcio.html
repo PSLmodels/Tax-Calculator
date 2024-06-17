@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -45,7 +45,7 @@
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -284,9 +284,9 @@
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -660,7 +660,12 @@ document.write(`
         <span class="k">except</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">valerr_msg</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">valerr_msg</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
         <span class="c1"># create GrowFactors base object that incorporates gdiff_baseline</span>
-        <span class="n">gfactors_base</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>
+            <span class="n">gfactors_base</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                <span class="n">Records</span><span class="o">.</span><span class="n">TMD_GROWFACTORS_FILENAME</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gfactors_base</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
         <span class="n">gdiff_baseline</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_base</span><span class="p">)</span>
         <span class="c1"># specify gdiff_response object</span>
         <span class="n">gdiff_response</span> <span class="o">=</span> <span class="n">GrowDiff</span><span class="p">()</span>
@@ -669,7 +674,12 @@ document.write(`
         <span class="k">except</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">valerr_msg</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">valerr_msg</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
         <span class="c1"># create GrowFactors ref object that has all gdiff objects applied</span>
-        <span class="n">gfactors_ref</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>
+            <span class="n">gfactors_ref</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                <span class="n">Records</span><span class="o">.</span><span class="n">TMD_GROWFACTORS_FILENAME</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gfactors_ref</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
         <span class="n">gdiff_baseline</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_ref</span><span class="p">)</span>
         <span class="n">gdiff_response</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_ref</span><span class="p">)</span>
         <span class="c1"># create Policy objects:</span>
