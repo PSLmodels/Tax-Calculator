@@ -1,4 +1,4 @@
-name: Build Package and Test Source Code [Python 3.9, 3.10, 3.11]
+name: Build Package and Test Source Code [Python 3.9, 3.10, 3.11, 3.12]
 
 on: [push, pull_request]
 
@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: [3.9, '3.10', '3.11']
+        python-version: [3.9, '3.10', '3.11', '3.12']
 
     steps:
       - name: Checkout

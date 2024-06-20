@@ -117,6 +117,7 @@ class Records(Data):
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
     TMD_WEIGHTS_FILENAME = 'tmd_weights.csv.gz'
+    TMD_GROWFACTORS_FILENAME = 'tmd_growfactors.csv'
     TMD_RATIOS_FILENAME = None
     CODE_PATH = os.path.abspath(os.path.dirname(__file__))
     VARINFO_FILE_NAME = 'records_variables.json'
@@ -226,7 +227,7 @@ class Records(Data):
 
     @staticmethod
     def tmd_constructor(data,  # path to tmd.csv file or dataframe
-                        gfactors=GrowFactors(),
+                        gfactors=TMD_GROWFACTORS_FILENAME,
                         exact_calculations=False):  # pragma: no cover
         """
         Static method returns a Records object instantiated with TMD
