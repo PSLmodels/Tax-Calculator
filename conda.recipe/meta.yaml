@@ -11,7 +11,6 @@ requirements:
     - "python>=3.9, <3.12"
     - "numpy>=1.20"
     - "pandas>=2.2"
-    - "fsspec>=2022.11.0"
     - "bokeh>=2.4"
     - "paramtools>=0.18.0"
     - numba
@@ -23,7 +22,6 @@ requirements:
     - "python>=3.9, <3.12"
     - "numpy>=1.20"
     - "pandas>=2.2"
-    - "fsspec>=2022.11.0"
     - "bokeh>=2.4"
     - "paramtools>=0.18.0"
     - numba
