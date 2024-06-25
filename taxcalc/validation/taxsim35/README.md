@@ -135,5 +135,5 @@ These differences are summarized and explained in the [`Differences_Explained`](
 Differences are generally small, although we note larger differences due to how Tax-Calculator and TAXSIM-35 handle the following items:
 * The computation of SECA taxes
 * The 2020 Recovery Rebate Credit and Economic Impact Payments
-* The 2021 Advanced Child Tax Credit
+* The 2021 Child Tax Credit
 * Itemized deductions
