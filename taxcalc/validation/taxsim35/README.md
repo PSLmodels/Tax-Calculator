@@ -60,7 +60,7 @@ and run `pip install -e .` This will install the current source code into the `t
 CLI.
 
 
-Validation Results
+Description of Randomly Generated Assumption Sets
 ------------------
 
 **a18 ASSUMPTION SET**:
@@ -69,8 +69,6 @@ Validation Results
 input variables, which include demographic variables and labor income,
 but sets to zero all the TAXSIM-35 input variables numbered from 13
 through 27.
-
-Validation results using the then current-version of TAXSIM-35 on these dates:
 
 **b18 ASSUMPTION SET**:
 
@@ -85,14 +83,12 @@ does not affect federal income tax liability. Three of the remaining
 four input variables are itemized expense amounts and the fourth is
 child-care expenses.
 
-Validation results using the then current-version of TAXSIM-35 on these dates:
 
 **c18 ASSUMPTION SET**:
 
 2018 INPUT file that specifies all the non-state TAXSIM-35 input
 variables to be randomly generated values.
 
-Validation results using the then current-version of TAXSIM-35 on these dates:
 
 **a19 ASSUMPTION SET**:
 
@@ -103,7 +99,6 @@ through 27. (This is the same logic as used to generate the **a17**
 sample except that a different stream of random numbers is used so that
 the 100,000 filing units are completely different.)
 
-Validation results using the then current-version of TAXSIM-35 on these dates:
 
 **b19 ASSUMPTION SET**:
 
@@ -120,7 +115,6 @@ child-care expenses. (This is the same logic as used to generate the
 **b17** sample except that a different stream of random numbers is
 used so that the 1,000 filing units are completely different.)
 
-Validation results using the then current-version of TAXSIM-35 on these dates:
 
 **c19 ASSUMPTION SET**:
 
@@ -130,4 +124,16 @@ used to generate the **c17** sample except that a different stream of
 random numbers is used so that the 100,000 filing units are completely
 different.)
 
-Validation results using the then current-version of TAXSIM-35 on these dates:
+
+Validation Results
+------------------
+
+The latest expected differences between Tax-Calculator and TAXSIM-35 can be found in the `expected_differences` folder in this directory.
+
+These differences are summarized and explained in the [`Differences_Explained`](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim35/Differences_Explained.md) markdown file.
+
+Differences are generally small, although we note larger differences due to how Tax-Calculator and TAXSIM-35 handle the following items:
+* The computation of SECA taxes
+* The 2020 Recovery Rebate Credit and Economic Impact Payments
+* The 2021 Child Tax Credit
+* Itemized deductions
