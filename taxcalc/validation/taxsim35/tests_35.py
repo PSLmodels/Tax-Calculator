@@ -1,4 +1,5 @@
 import os
+import shutil
 import glob
 import input_setup
 import main_comparison
@@ -76,4 +77,4 @@ for letter in assumption_set:
                 + "**************************************************"
             )
 if not any_fail:  # if none fail, remove the actual_differences directory
-    os.rmdir(os.path.join(CUR_PATH, "actual_differences"))
+    shutil.rmtree(os.path.join(CUR_PATH, "actual_differences"))
