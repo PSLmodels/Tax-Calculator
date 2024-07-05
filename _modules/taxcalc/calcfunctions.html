@@ -3717,7 +3717,8 @@ document.write(`
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">IITAX</span><span class="p">(</span><span class="n">c59660</span><span class="p">,</span> <span class="n">c11070</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">,</span> <span class="n">rptc</span><span class="p">,</span>
           <span class="n">c09200</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">,</span> <span class="n">recovery_rebate_credit</span><span class="p">,</span>
-          <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">ODC_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
+          <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">ODC_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span>
+          <span class="n">ctc_total</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes final taxes.</span>
 
@@ -3744,6 +3745,8 @@ document.write(`
 <span class="sd">        Earned Income Credit</span>
 <span class="sd">    refund: float</span>
 <span class="sd">        Total refundable income tax credits</span>
+<span class="sd">    ctc_total: float</span>
+<span class="sd">        Total CTC amount (c07220 + c11070 + odc + ctc_new)</span>
 <span class="sd">    iitax: float</span>
 <span class="sd">        Total federal individual income tax liability</span>
 <span class="sd">    combined: float</span>
@@ -3755,6 +3758,8 @@ document.write(`
 <span class="sd">        Earned Income Credit</span>
 <span class="sd">    refund: float</span>
 <span class="sd">        Total refundable income tax credits</span>
+<span class="sd">    ctc_total: float</span>
+<span class="sd">        Total CTC amount (c07220 + c11070 + odc + ctc_new)</span>
 <span class="sd">    iitax: float</span>
 <span class="sd">        Total federal individual income tax liability</span>
 <span class="sd">    combined: float</span>
@@ -3770,10 +3775,12 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="n">odc_refund</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">refund</span> <span class="o">=</span> <span class="p">(</span><span class="n">eitc</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">c10960</span> <span class="o">+</span> <span class="n">CDCC_refund</span> <span class="o">+</span> <span class="n">recovery_rebate_credit</span> <span class="o">+</span>
-              <span class="n">personal_refundable_credit</span> <span class="o">+</span> <span class="n">ctc_new</span> <span class="o">+</span> <span class="n">rptc</span> <span class="o">+</span> <span class="n">ctc_refund</span> <span class="o">+</span> <span class="n">odc_refund</span><span class="p">)</span>
+              <span class="n">personal_refundable_credit</span> <span class="o">+</span> <span class="n">ctc_new</span> <span class="o">+</span> <span class="n">rptc</span> <span class="o">+</span> <span class="n">ctc_refund</span> <span class="o">+</span>
+              <span class="n">odc_refund</span><span class="p">)</span>
+    <span class="n">ctc_total</span> <span class="o">=</span> <span class="n">c07220</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">odc</span> <span class="o">+</span> <span class="n">ctc_new</span>
     <span class="n">iitax</span> <span class="o">=</span> <span class="n">c09200</span> <span class="o">-</span> <span class="n">refund</span>
     <span class="n">combined</span> <span class="o">=</span> <span class="n">iitax</span> <span class="o">+</span> <span class="n">payrolltax</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">ctc_total</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Taxes">
