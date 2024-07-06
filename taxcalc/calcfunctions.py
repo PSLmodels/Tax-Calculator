@@ -3300,7 +3300,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           c09200, payrolltax, CDCC_refund, recovery_rebate_credit,
           eitc, c07220, odc, CTC_refundable, ODC_refundable, refund,
-          ctc_total, iitax, combined):
+          ctc_total, ctc_refundable, iitax, combined):
     """
     Computes final taxes.
 
@@ -3329,6 +3329,8 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         Total refundable income tax credits
     ctc_total: float
         Total CTC amount (c07220 + c11070 + odc + ctc_new)
+    ctc_refundable: float
+        Portion of total CTC amount that is refundable
     iitax: float
         Total federal individual income tax liability
     combined: float
@@ -3342,6 +3344,8 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         Total refundable income tax credits
     ctc_total: float
         Total CTC amount (c07220 + c11070 + odc + ctc_new)
+    ctc_refundable: float
+        Portion of total CTC amount that is refundable
     iitax: float
         Total federal individual income tax liability
     combined: float
@@ -3360,9 +3364,10 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
               personal_refundable_credit + ctc_new + rptc + ctc_refund +
               odc_refund)
     ctc_total = c07220 + c11070 + odc + ctc_new
+    ctc_refundable = ctc_refund + c11070 + odc_refund + ctc_new
     iitax = c09200 - refund
     combined = iitax + payrolltax
-    return (eitc, refund, ctc_total, iitax, combined)
+    return (eitc, refund, ctc_total, ctc_refundable, iitax, combined)
 
 
 @JIT(nopython=True)
