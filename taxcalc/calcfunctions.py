@@ -3218,7 +3218,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
-            CTC_new_refund_limited_all_payroll, payrolltax,
+            CTC_new_refund_limited_all_payroll, payrolltax, exact,
             n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
             c09200, ctc_new):
     """
@@ -3246,6 +3246,8 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         New child tax credit refund limit applies to all FICA taxes, not just OASDI
     payrolltax: float
         Total (employee + employer) payroll tax liability
+    exact: int
+        Whether or not exact phase-out calculation is being done
     n24: int
         Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17
     nu06: int
@@ -3280,8 +3282,12 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             ctc_new = min(CTC_new_rt * posagi, ctc_new)
         ymax = CTC_new_ps[MARS - 1]
         if posagi > ymax:
-            ctc_new_reduced = max(0.,
-                                  ctc_new - CTC_new_prt * (posagi - ymax))
+            over = posagi - ymax
+            if exact == 1:  # exact calculation as on tax form
+                excess = math.ceil(over / 1000.) * 1000.
+            else:  # smoothed calculation
+                excess = over
+            ctc_new_reduced = max(0., ctc_new - CTC_new_prt * excess)
             ctc_new = min(ctc_new, ctc_new_reduced)
         if ctc_new > 0. and CTC_new_refund_limited:
             refund_new = max(0., ctc_new - c09200)
