@@ -641,7 +641,7 @@ document.write(`
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">tmd_constructor</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>  <span class="c1"># path to tmd.csv file or dataframe</span>
-                        <span class="n">gfactors</span><span class="o">=</span><span class="n">TMD_GROWFACTORS_FILENAME</span><span class="p">,</span>
+                        <span class="n">gfactors</span><span class="o">=</span><span class="n">GrowFactors</span><span class="p">(</span><span class="n">TMD_GROWFACTORS_FILENAME</span><span class="p">),</span>
                         <span class="n">exact_calculations</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Static method returns a Records object instantiated with TMD</span>
