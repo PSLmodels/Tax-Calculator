@@ -3636,7 +3636,7 @@ document.write(`
 <span class="k">def</span> <span class="nf">CTC_new</span><span class="p">(</span><span class="n">CTC_new_c</span><span class="p">,</span> <span class="n">CTC_new_rt</span><span class="p">,</span> <span class="n">CTC_new_c_under6_bonus</span><span class="p">,</span>
             <span class="n">CTC_new_ps</span><span class="p">,</span> <span class="n">CTC_new_prt</span><span class="p">,</span> <span class="n">CTC_new_for_all</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
             <span class="n">CTC_new_refund_limited</span><span class="p">,</span> <span class="n">CTC_new_refund_limit_payroll_rt</span><span class="p">,</span>
-            <span class="n">CTC_new_refund_limited_all_payroll</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span>
+            <span class="n">CTC_new_refund_limited_all_payroll</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span>
             <span class="n">n24</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span>
             <span class="n">c09200</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3664,6 +3664,8 @@ document.write(`
 <span class="sd">        New child tax credit refund limit applies to all FICA taxes, not just OASDI</span>
 <span class="sd">    payrolltax: float</span>
 <span class="sd">        Total (employee + employer) payroll tax liability</span>
+<span class="sd">    exact: int</span>
+<span class="sd">        Whether or not exact phase-out calculation is being done</span>
 <span class="sd">    n24: int</span>
 <span class="sd">        Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17</span>
 <span class="sd">    nu06: int</span>
@@ -3698,8 +3700,12 @@ document.write(`
             <span class="n">ctc_new</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">CTC_new_rt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">)</span>
         <span class="n">ymax</span> <span class="o">=</span> <span class="n">CTC_new_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">posagi</span> <span class="o">&gt;</span> <span class="n">ymax</span><span class="p">:</span>
-            <span class="n">ctc_new_reduced</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span>
-                                  <span class="n">ctc_new</span> <span class="o">-</span> <span class="n">CTC_new_prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">posagi</span> <span class="o">-</span> <span class="n">ymax</span><span class="p">))</span>
+            <span class="n">over</span> <span class="o">=</span> <span class="n">posagi</span> <span class="o">-</span> <span class="n">ymax</span>
+            <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax form</span>
+                <span class="n">excess</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">over</span> <span class="o">/</span> <span class="mf">1000.</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1000.</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation</span>
+                <span class="n">excess</span> <span class="o">=</span> <span class="n">over</span>
+            <span class="n">ctc_new_reduced</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ctc_new</span> <span class="o">-</span> <span class="n">CTC_new_prt</span> <span class="o">*</span> <span class="n">excess</span><span class="p">)</span>
             <span class="n">ctc_new</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ctc_new</span><span class="p">,</span> <span class="n">ctc_new_reduced</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ctc_new</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CTC_new_refund_limited</span><span class="p">:</span>
             <span class="n">refund_new</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ctc_new</span> <span class="o">-</span> <span class="n">c09200</span><span class="p">)</span>
