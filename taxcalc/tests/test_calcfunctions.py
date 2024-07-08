@@ -743,6 +743,7 @@ CTC_new_refund_limited = False
 CTC_new_refund_limit_payroll_rt = 0.0
 CTC_new_refund_limited_all_payroll = False
 payrolltax = 0
+exact = 0
 n24 = 0
 nu06 = 0
 age_head = 45
@@ -758,7 +759,7 @@ tuple0 = (
     CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
     CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
     CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
-    CTC_new_refund_limited_all_payroll, payrolltax,
+    CTC_new_refund_limited_all_payroll, payrolltax, exact,
     n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
     c09200, ctc_new)
 # output tuple is : (ctc_new)
@@ -786,6 +787,7 @@ CTC_new_refund_limited = False
 CTC_new_refund_limit_payroll_rt = 0.0
 CTC_new_refund_limited_all_payroll = False
 payrolltax = 0
+exact = 0
 n24 = 0
 nu06 = 0
 age_head = 45
@@ -801,7 +803,7 @@ tuple0 = (
     CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
     CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
     CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
-    CTC_new_refund_limited_all_payroll, payrolltax,
+    CTC_new_refund_limited_all_payroll, payrolltax, exact,
     n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
     c09200, ctc_new)
 # output tuple is : (ctc_new)
