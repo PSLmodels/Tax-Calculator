@@ -125,7 +125,7 @@ changes or whenever new historical values of policy parameters are
 added to the `policy_current_law.json` file thereby changing the
 `Policy.LAST_KNOWN_YEAR`.
 
-The 3.5.3 version of Tax-Calculator incorporates the February 2024 CBO
+The 4.0.0 version of Tax-Calculator incorporates the February 2024 CBO
 economic projection and contains historical tax policy parameter values
 through 2022.  Future versions of Tax-Calculator that use historical
 policy parameter values for 2023 and 2024 or use the February 2025 CBO
