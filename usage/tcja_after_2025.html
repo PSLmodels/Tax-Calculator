@@ -501,6 +501,13 @@ repository that are based on the 2015 IRS/SOI PUF and on more recent CPS
 data, and are available only to those with access to the 2015
 IRS/SOI PUF</p></li>
 </ul>
+<p>Note that if you are using the Python API to Tax-Calculator (as
+described in the
+<a class="reference external" href="https://taxcalc.pslmodels.org/recipes/index.html">Recipes</a>) to
+analyze the TCJA after 2025 and need to specify custom GrowFactors
+after 2025, you can use the old additive-differences <code class="docutils literal notranslate"><span class="pre">growdiffs</span></code>
+approach or you can specify a custom <code class="docutils literal notranslate"><span class="pre">growfactors</span></code> file as described
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2757#issuecomment-2218662804">here</a>.</p>
 <p>Before reading the rest of this document, be sure you understand how
 to use the Tax-Calculator command-line tool
 <a class="reference external" href="https://taxcalc.pslmodels.org/guide/cli.html">tc</a>, particularly the
@@ -574,7 +581,7 @@ projection (incorporated in the Tax-Calculator <code class="docutils literal not
 changes or whenever new historical values of policy parameters are
 added to the <code class="docutils literal notranslate"><span class="pre">policy_current_law.json</span></code> file thereby changing the
 <code class="docutils literal notranslate"><span class="pre">Policy.LAST_KNOWN_YEAR</span></code>.</p>
-<p>The 3.5.3 version of Tax-Calculator incorporates the February 2024 CBO
+<p>The 4.0.0 version of Tax-Calculator incorporates the February 2024 CBO
 economic projection and contains historical tax policy parameter values
 through 2022.  Future versions of Tax-Calculator that use historical
 policy parameter values for 2023 and 2024 or use the February 2025 CBO
