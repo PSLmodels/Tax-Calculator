@@ -492,7 +492,7 @@ document.write(`
 <section class="tex2jax_ignore mathjax_ignore" id="create-new-taxcalc-packages">
 <h1>Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> packages<a class="headerlink" href="#create-new-taxcalc-packages" title="Link to this heading">#</a></h1>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
---&gt; on branch X-Y-Z, edit RELEASES.md to finalize X.Y.Z info
+--&gt; on branch X-Y-Z, edit docs/about/releases.md to finalize X.Y.Z info
 
 --&gt; specify release X.Y.Z in setup.py and taxcalc/__init__.py
 
@@ -504,11 +504,11 @@ document.write(`
 
 --&gt; run `make package`  [to make local taxcalc package available]
 
---&gt; cd taxcalc/validation ; ./tests.sh ; .fix. ; cd ../..
+--&gt; cd taxcalc/validation ; ./tests_35.sh ; .fix. ; cd ../..
 
---&gt; specify release X.Y.Z in index.md
+--&gt; specify release X.Y.Z in docs/index.md
 
---&gt; cd .. ; make clean  [to remove taxcalc package]
+--&gt; make clean  [to remove taxcalc package]
 
 --&gt; commit X-Y-Z branch and push to origin
 

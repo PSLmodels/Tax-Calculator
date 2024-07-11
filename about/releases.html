@@ -470,6 +470,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-1-0">2024-07-11 Release 4.1.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-0-0">2024-06-01 Release 4.0.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-6-0">2024-05-10 Release 3.6.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-5-3">2024-04-04 Release 3.5.3</a></li>
@@ -577,6 +578,25 @@ document.write(`
 <h1>Release history<a class="headerlink" href="#release-history" title="Link to this heading">#</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<section id="release-4-1-0">
+<h2>2024-07-11 Release 4.1.0<a class="headerlink" href="#release-4-1-0" title="Link to this heading">#</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2772">#2772</a>)</p>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Add ability to use from the Python API custom growfactors files [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2757">#2757</a> and <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2771">#2771</a> by Martin Holmer]</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">tmd_growfactors.csv</span></code> file for use with the tmd.csv input file [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2758">#2758</a> by Martin Holmer]</p></li>
+<li><p>Add ability to run Tax-Calculator under Python 3.12 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2763">#2763</a> by Martin Holmer]</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">ctc_total</span></code> and <code class="docutils literal notranslate"><span class="pre">ctc_refundable</span></code> output variables [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2765">#2765</a> and <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2766">#2766</a> by Martin Holmer]</p></li>
+<li><p>Add exact calculation logic to the <code class="docutils literal notranslate"><span class="pre">CTC_new</span></code> function [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2769">#2769</a> by Martin Holmer]</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul class="simple">
+<li><p>Fix 2018 and 2021 EITC phase-out start parameter values [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2768">#2768</a> and <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2770">#2770</a> by Martin Holmer]</p></li>
+</ul>
+</section>
 <section id="release-4-0-0">
 <h2>2024-06-01 Release 4.0.0<a class="headerlink" href="#release-4-0-0" title="Link to this heading">#</a></h2>
 <p>(last merged pull request is
@@ -600,7 +620,7 @@ for a complete commit history.</p>
 <p><strong>API Changes</strong></p>
 <p><strong>New Features</strong></p>
 <ul class="simple">
-<li><p>Adds capabilites to handle <code class="docutils literal notranslate"><span class="pre">tmd*</span></code> files from the tax-microdata repository [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2740">#2740</a> by Martin Holmer]</p></li>
+<li><p>Add capabilites to handle <code class="docutils literal notranslate"><span class="pre">tmd*</span></code> files from the tax-microdata repository [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2740">#2740</a> by Martin Holmer]</p></li>
 <li><p>Minor updates to documentation, testing, and environment by Martin Holmer and Jason DeBacker in various PRs</p></li>
 </ul>
 </section>
@@ -3125,6 +3145,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-1-0">2024-07-11 Release 4.1.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-0-0">2024-06-01 Release 4.0.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-6-0">2024-05-10 Release 3.6.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-3-5-3">2024-04-04 Release 3.5.3</a></li>

@@ -699,7 +699,7 @@ concern about side effects from Calculator method calls on calc1.</p>
     </style>
     <div>
         <a href="https://bokeh.org" target="_blank" class="bk-notebook-logo"></a>
-        <span id="f7720089-ccc5-419d-bec3-2b9ad67b98d2">Loading BokehJS ...</span>
+        <span id="f0992184-eb7a-4898-8e46-a8eca86e5d4d">Loading BokehJS ...</span>
     </div>
 </div><script type="application/javascript">'use strict';
 (function(root) {
@@ -864,7 +864,7 @@ const JS_MIME_TYPE = 'application/javascript';
      "</div>"}};
 
   function display_loaded(error = null) {
-    const el = document.getElementById("f7720089-ccc5-419d-bec3-2b9ad67b98d2");
+    const el = document.getElementById("f0992184-eb7a-4898-8e46-a8eca86e5d4d");
     if (el != null) {
       const html = (() => {
         if (typeof root.Bokeh === "undefined") {
@@ -972,7 +972,7 @@ const JS_MIME_TYPE = 'application/javascript';
     document.body.appendChild(element);
   }
 
-  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.4.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.4.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.4.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.4.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.4.2.min.js"];
+  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.5.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.5.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.5.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.5.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.5.0.min.js"];
   const css_urls = [];
 
   const inline_js = [    function(Bokeh) {
@@ -998,7 +998,7 @@ function(Bokeh) {
       console.log("Bokeh: BokehJS failed to load within specified timeout.");
       root._bokeh_failed_load = true;
     } else if (force !== true) {
-      const cell = $(document.getElementById("f7720089-ccc5-419d-bec3-2b9ad67b98d2")).parents('.cell').data().cell;
+      const cell = $(document.getElementById("f0992184-eb7a-4898-8e46-a8eca86e5d4d")).parents('.cell').data().cell;
       cell.output_area.append_execute_result(NB_LOAD_WARNING)
     }
   }
@@ -1019,10 +1019,10 @@ function(Bokeh) {
 <span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">output_notebook</span><span class="p">()</span>
 <span class="ne">----&gt; </span><span class="mi">3</span> <span class="n">show</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/bokeh/io/showing.py:160,</span> in <span class="ni">show</span><span class="nt">(obj, browser, new, notebook_handle, notebook_url, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">157</span>     <span class="k">assert</span> <span class="n">state</span><span class="o">.</span><span class="n">notebook_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<span class="g g-Whitespace">    </span><span class="mi">158</span>     <span class="k">return</span> <span class="n">run_notebook_hook</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">notebook_type</span><span class="p">,</span> <span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">notebook_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">160</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_BAD_SHOW_MSG</span><span class="p">)</span>
+<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/bokeh/io/showing.py:158,</span> in <span class="ni">show</span><span class="nt">(obj, browser, new, notebook_handle, notebook_url, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">155</span>     <span class="k">assert</span> <span class="n">state</span><span class="o">.</span><span class="n">notebook_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="g g-Whitespace">    </span><span class="mi">156</span>     <span class="k">return</span> <span class="n">run_notebook_hook</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">notebook_type</span><span class="p">,</span> <span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">notebook_url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">158</span> <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_BAD_SHOW_MSG</span><span class="p">)</span>
 
 <span class="ne">ValueError</span>: Invalid object to show. The object to passed to show must be one of:
 
