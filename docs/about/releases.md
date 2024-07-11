@@ -3,6 +3,27 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+
+2024-07-11 Release 4.1.0
+------------------------
+(last merged pull request is
+[#2772](https://github.com/PSLmodels/Tax-Calculator/pull/2772))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Add ability to use from the Python API custom growfactors files [[#2757](https://github.com/PSLmodels/Tax-Calculator/pull/2757) and [#2771](https://github.com/PSLmodels/Tax-Calculator/pull/2771) by Martin Holmer]
+- Add `tmd_growfactors.csv` file for use with the tmd.csv input file [[#2758](https://github.com/PSLmodels/Tax-Calculator/pull/2758) by Martin Holmer]
+- Add ability to run Tax-Calculator under Python 3.12 [[#2763](https://github.com/PSLmodels/Tax-Calculator/pull/2763) by Martin Holmer]
+- Add `ctc_total` and `ctc_refundable` output variables [[#2765](https://github.com/PSLmodels/Tax-Calculator/pull/2765) and [#2766](https://github.com/PSLmodels/Tax-Calculator/pull/2766) by Martin Holmer]
+- Add exact calculation logic to the `CTC_new` function [[#2769](https://github.com/PSLmodels/Tax-Calculator/pull/2769) by Martin Holmer]
+
+**Bug Fixes**
+- Fix 2018 and 2021 EITC phase-out start parameter values [[#2768](https://github.com/PSLmodels/Tax-Calculator/pull/2768) and [#2770](https://github.com/PSLmodels/Tax-Calculator/pull/2770) by Martin Holmer]
+
+
 2024-06-01 Release 4.0.0
 ------------------------
 (last merged pull request is
@@ -28,7 +49,7 @@ for a complete commit history.
 **API Changes**
 
 **New Features**
-- Adds capabilites to handle `tmd*` files from the tax-microdata repository [[#2740](https://github.com/PSLmodels/Tax-Calculator/pull/2740) by Martin Holmer]
+- Add capabilites to handle `tmd*` files from the tax-microdata repository [[#2740](https://github.com/PSLmodels/Tax-Calculator/pull/2740) by Martin Holmer]
 - Minor updates to documentation, testing, and environment by Martin Holmer and Jason DeBacker in various PRs
 
 2024-04-04 Release 3.5.3
