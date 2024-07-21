@@ -227,7 +227,7 @@ class Records(Data):
 
     @staticmethod
     def tmd_constructor(data,  # path to tmd.csv file or dataframe
-                        gfactors=TMD_GROWFACTORS_FILENAME,
+                        gfactors=GrowFactors(TMD_GROWFACTORS_FILENAME),
                         exact_calculations=False):  # pragma: no cover
         """
         Static method returns a Records object instantiated with TMD

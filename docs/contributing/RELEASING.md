@@ -7,7 +7,7 @@ Create new `taxcalc` packages
 ===========================
 ```
 
---> on branch X-Y-Z, edit RELEASES.md to finalize X.Y.Z info
+--> on branch X-Y-Z, edit docs/about/releases.md to finalize X.Y.Z info
 
 --> specify release X.Y.Z in setup.py and taxcalc/__init__.py
 
@@ -19,11 +19,11 @@ Create new `taxcalc` packages
 
 --> run `make package`  [to make local taxcalc package available]
 
---> cd taxcalc/validation ; ./tests.sh ; .fix. ; cd ../..
+--> cd taxcalc/validation ; ./tests_35.sh ; .fix. ; cd ../..
 
---> specify release X.Y.Z in index.md
+--> specify release X.Y.Z in docs/index.md
 
---> cd .. ; make clean  [to remove taxcalc package]
+--> make clean  [to remove taxcalc package]
 
 --> commit X-Y-Z branch and push to origin
 
