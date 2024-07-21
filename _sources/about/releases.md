@@ -4,6 +4,20 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2024-07-21 Release 4.2.0
+------------------------
+(last merged pull request is
+[#2774](https://github.com/PSLmodels/Tax-Calculator/pull/2774))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Add final Phase3 version of tmd input files [[#2774](https://github.com/PSLmodels/Tax-Calculator/pull/2774) by Martin Holmer]
+- Update the `thru74` branch to include final Phase3 tmd input files [[#2755](https://github.com/PSLmodels/Tax-Calculator/pull/2755) by Martin Holmer]
+
+
 2024-07-11 Release 4.1.0
 ------------------------
 (last merged pull request is
