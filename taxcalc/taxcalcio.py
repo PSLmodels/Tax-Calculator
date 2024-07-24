@@ -518,6 +518,9 @@ class TaxCalcIO():
                 self.calc, dump_varset, mtr_inctax, mtr_paytax
             )
             column_order = sorted(outdf.columns)
+            # place RECID at start of column_order list
+            column_order.remove('RECID')
+            column_order.insert(0, 'RECID')
         else:
             outdf = self.minimal_output()
             column_order = outdf.columns
