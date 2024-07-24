@@ -436,7 +436,7 @@ def test_output_options(reformfile1, assumpfile1):
     # --dump output with partial dump
     try:
         tcio.analyze(writing_output_file=True,
-                     dump_varset=set(['RECID', 'combined']),
+                     dump_varset=set(['combined']),
                      output_dump=True)
     except Exception:  # pylint: disable=broad-except
         if os.path.isfile(outfilepath):
