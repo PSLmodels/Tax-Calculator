@@ -519,7 +519,8 @@ class TaxCalcIO():
             )
             column_order = sorted(outdf.columns)
             # place RECID at start of column_order list
-            column_order.remove('RECID')
+            if 'RECID' in column_order:
+                column_order.remove('RECID')
             column_order.insert(0, 'RECID')
         else:
             outdf = self.minimal_output()
