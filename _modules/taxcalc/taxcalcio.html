@@ -943,6 +943,10 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span>
             <span class="p">)</span>
             <span class="n">column_order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+            <span class="c1"># place RECID at start of column_order list</span>
+            <span class="k">assert</span> <span class="s1">&#39;RECID&#39;</span> <span class="ow">in</span> <span class="n">column_order</span><span class="p">,</span> <span class="s1">&#39;RECID not in dump output list&#39;</span>
+            <span class="n">column_order</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;RECID&#39;</span><span class="p">)</span>
+            <span class="n">column_order</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;RECID&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimal_output</span><span class="p">()</span>
             <span class="n">column_order</span> <span class="o">=</span> <span class="n">outdf</span><span class="o">.</span><span class="n">columns</span>
