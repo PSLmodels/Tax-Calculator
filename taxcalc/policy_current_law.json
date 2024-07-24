@@ -16461,10 +16461,36 @@
             "cps": true
         }
     },
-    "CDCC_prt": {
-        "title": "Child & dependent care credit phaseout rate",
-        "description": "The CDCC credit rate is reduced by this many percentage points for each dollar of AGI over the phase-out thresholds.",
-        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit. 0.01 / 2000 = 0.000005",
+    "CDCC_po_step_size": {
+        "title": "Child & dependent care credit phaseout step size",
+        "description": "The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the phase-out start thresholds.",
+        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the phase-out start thresholds",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child And Dependent Care",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 2000
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CDCC_po_rate_per_step": {
+        "title": "Child & dependent care credit phaseout rate per step",
+        "description": "The CDCC credit rate is reduced by this rate for for each step (including fractional steps) above the phase-out start thresholds.",
+        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the phase-out start thresholds",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -16473,7 +16499,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": 5e-06
+                "value": 0.01
             }
         ],
         "validators": {
