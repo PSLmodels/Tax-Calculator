@@ -781,7 +781,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     e19800: float
         Itemizable charitable giving: cash/check contributions
     e20100: float
-        Itemizable charitalb giving: other than cash/check contributions
+        Itemizable charitable giving: other than cash/check contributions
     e20400: float
         Itemizable gross (before 10% AGI disregard) casualty or theft loss
     g20500: float
@@ -887,7 +887,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
             c17000, c18300, c19200, c19700, c20500, c20800,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
-            ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
+            ID_Miscellaneous_hc, ID_Charity_crt_cash, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
@@ -957,8 +957,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
         Floor (as decimal fraction of AGI) for deductible miscellaneous expenses
     ID_Miscellaneous_hc: float
         Miscellaneous expense deduction haircut
-    ID_Charity_crt_all: float
-        Ceiling (as decimal fraction of AGI) for all charitable contribution deductions
+    ID_Charity_crt_cash: float
+        Ceiling (as decimal fraction of AGI) for cash charitable contribution deductions
     ID_Charity_crt_noncash: float
         Ceiling (as decimal fraction of AGI) for noncash charitable contribution deductions
     ID_prt: float
@@ -1047,8 +1047,9 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
     # Charity
-    lim30 = min(ID_Charity_crt_noncash * posagi, e20100_capped)
-    c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800_capped)
+    charity_ded_cash = min(ID_Charity_crt_cash * posagi, e19800_capped)
+    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, e20100_capped)
+    c19700 = charity_ded_cash + charity_ded_noncash
     # charity floor is zero in present law
     charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
@@ -1134,7 +1135,7 @@ def AdditionalMedicareTax(e00200, MARS,
 @iterate_jit(nopython=True)
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            MARS, MIDR, blind_head, blind_spouse, standard,
-           STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_all,
+           STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_cash,
            c00100, STD_charity_ded_nonitemizers_max):
     """
     Calculates standard deduction, including standard deduction for
@@ -1170,7 +1171,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         Allow standard deduction filers to take the charitable contributions deduction
     e19800: float
         Schedule A: cash charitable contributions
-    ID_Charity_crt_all: float
+    ID_Charity_crt_cash: float
         Fraction of AGI cap on cash charitable deductions
     c00100: float
         Federal AGI
@@ -1205,7 +1206,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         standard = 0.
     # calculate CARES cash charity deduction for nonitemizers
     if STD_allow_charity_ded_nonitemizers:
-        capped_ded = min(e19800, ID_Charity_crt_all * c00100)
+        capped_ded = min(e19800, ID_Charity_crt_cash * c00100)
         standard += min(capped_ded, STD_charity_ded_nonitemizers_max[MARS - 1])
     return standard
 

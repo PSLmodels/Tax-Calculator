@@ -5231,9 +5231,9 @@
             "cps": true
         }
     },
-    "ID_Charity_crt_all": {
-        "title": "Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions",
-        "description": "The total deduction for charity is capped at this fraction of AGI.",
+    "ID_Charity_crt_cash": {
+        "title": "Ceiling (as a decimal fraction of AGI) for cash charitable contribution deductions",
+        "description": "The cash deduction for charity is capped at this fraction of AGI.",
         "notes": "When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
@@ -5246,35 +5246,11 @@
                 "value": 0.5
             },
             {
-                "year": 2014,
-                "value": 0.5
-            },
-            {
-                "year": 2015,
-                "value": 0.5
-            },
-            {
-                "year": 2016,
-                "value": 0.5
-            },
-            {
-                "year": 2017,
-                "value": 0.5
-            },
-            {
                 "year": 2018,
                 "value": 0.6
             },
             {
-                "year": 2019,
-                "value": 0.6
-            },
-            {
                 "year": 2020,
-                "value": 1.0
-            },
-            {
-                "year": 2021,
                 "value": 1.0
             },
             {
