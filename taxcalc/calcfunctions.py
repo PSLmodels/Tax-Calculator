@@ -1133,9 +1133,9 @@ def AdditionalMedicareTax(e00200, MARS,
 
 @iterate_jit(nopython=True)
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
-           MARS, MIDR, blind_head, blind_spouse, standard, c19700,
-           STD_allow_charity_ded_nonitemizers,
-           STD_charity_ded_nonitemizers_max):
+           MARS, MIDR, blind_head, blind_spouse, standard,
+           STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_all,
+           c00100, STD_charity_ded_nonitemizers_max):
     """
     Calculates standard deduction, including standard deduction for
     dependents, aged and bind.
@@ -1166,12 +1166,16 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         1 if spouse is blind, 0 otherwise
     standard: float
         Standard deduction (zero for itemizers)
-    c19700: float
-        Schedule A: charity contributions deducted
     STD_allow_charity_ded_nonitemizers: bool
         Allow standard deduction filers to take the charitable contributions deduction
+    e19800: float
+        Schedule A: cash charitable contributions
+    ID_Charity_crt_all: float
+        Fraction of AGI cap on cash charitable deductions
+    c00100: float
+        Federal AGI
     STD_charity_ded_nonitemizers_max: float
-        Ceiling amount (in dollars) for charitable deductions for non-itemizers
+        Ceiling amount (in dollars) for charitable deductions for nonitemizers
 
     Returns
     -------
@@ -1199,8 +1203,10 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     standard = basic_stded + extra_stded
     if MARS == 3 and MIDR == 1:
         standard = 0.
+    # calculate CARES cash charity deduction for nonitemizers
     if STD_allow_charity_ded_nonitemizers:
-        standard += min(c19700, STD_charity_ded_nonitemizers_max)
+        capped_ded = min(e19800, ID_Charity_crt_all * c00100)
+        standard += min(capped_ded, STD_charity_ded_nonitemizers_max[MARS - 1])
     return standard
 
 
