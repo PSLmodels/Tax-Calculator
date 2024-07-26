@@ -1193,7 +1193,7 @@ document.write(`
 <span class="sd">    e19800: float</span>
 <span class="sd">        Itemizable charitable giving: cash/check contributions</span>
 <span class="sd">    e20100: float</span>
-<span class="sd">        Itemizable charitalb giving: other than cash/check contributions</span>
+<span class="sd">        Itemizable charitable giving: other than cash/check contributions</span>
 <span class="sd">    e20400: float</span>
 <span class="sd">        Itemizable gross (before 10% AGI disregard) casualty or theft loss</span>
 <span class="sd">    g20500: float</span>
@@ -1299,7 +1299,7 @@ document.write(`
             <span class="n">c17000</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">c19200</span><span class="p">,</span> <span class="n">c19700</span><span class="p">,</span> <span class="n">c20500</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span>
             <span class="n">ID_ps</span><span class="p">,</span> <span class="n">ID_Medical_frt</span><span class="p">,</span> <span class="n">ID_Medical_frt_add4aged</span><span class="p">,</span> <span class="n">ID_Medical_hc</span><span class="p">,</span>
             <span class="n">ID_Casualty_frt</span><span class="p">,</span> <span class="n">ID_Casualty_hc</span><span class="p">,</span> <span class="n">ID_Miscellaneous_frt</span><span class="p">,</span>
-            <span class="n">ID_Miscellaneous_hc</span><span class="p">,</span> <span class="n">ID_Charity_crt_all</span><span class="p">,</span> <span class="n">ID_Charity_crt_noncash</span><span class="p">,</span>
+            <span class="n">ID_Miscellaneous_hc</span><span class="p">,</span> <span class="n">ID_Charity_crt_cash</span><span class="p">,</span> <span class="n">ID_Charity_crt_noncash</span><span class="p">,</span>
             <span class="n">ID_prt</span><span class="p">,</span> <span class="n">ID_crt</span><span class="p">,</span> <span class="n">ID_c</span><span class="p">,</span> <span class="n">ID_StateLocalTax_hc</span><span class="p">,</span> <span class="n">ID_Charity_frt</span><span class="p">,</span>
             <span class="n">ID_Charity_hc</span><span class="p">,</span> <span class="n">ID_InterestPaid_hc</span><span class="p">,</span> <span class="n">ID_RealEstate_hc</span><span class="p">,</span>
             <span class="n">ID_Medical_c</span><span class="p">,</span> <span class="n">ID_StateLocalTax_c</span><span class="p">,</span> <span class="n">ID_RealEstate_c</span><span class="p">,</span>
@@ -1369,8 +1369,8 @@ document.write(`
 <span class="sd">        Floor (as decimal fraction of AGI) for deductible miscellaneous expenses</span>
 <span class="sd">    ID_Miscellaneous_hc: float</span>
 <span class="sd">        Miscellaneous expense deduction haircut</span>
-<span class="sd">    ID_Charity_crt_all: float</span>
-<span class="sd">        Ceiling (as decimal fraction of AGI) for all charitable contribution deductions</span>
+<span class="sd">    ID_Charity_crt_cash: float</span>
+<span class="sd">        Ceiling (as decimal fraction of AGI) for cash charitable contribution deductions</span>
 <span class="sd">    ID_Charity_crt_noncash: float</span>
 <span class="sd">        Ceiling (as decimal fraction of AGI) for noncash charitable contribution deductions</span>
 <span class="sd">    ID_prt: float</span>
@@ -1459,8 +1459,9 @@ document.write(`
     <span class="n">c19200</span> <span class="o">=</span> <span class="n">e19200_capped</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_InterestPaid_hc</span><span class="p">)</span>
     <span class="n">c19200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19200</span><span class="p">,</span> <span class="n">ID_InterestPaid_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="c1"># Charity</span>
-    <span class="n">lim30</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_noncash</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">e20100_capped</span><span class="p">)</span>
-    <span class="n">c19700</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_all</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">lim30</span> <span class="o">+</span> <span class="n">e19800_capped</span><span class="p">)</span>
+    <span class="n">charity_ded_cash</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_cash</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">e19800_capped</span><span class="p">)</span>
+    <span class="n">charity_ded_noncash</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_noncash</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">e20100_capped</span><span class="p">)</span>
+    <span class="n">c19700</span> <span class="o">=</span> <span class="n">charity_ded_cash</span> <span class="o">+</span> <span class="n">charity_ded_noncash</span>
     <span class="c1"># charity floor is zero in present law</span>
     <span class="n">charity_floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ID_Charity_frt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">c19700</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c19700</span> <span class="o">-</span> <span class="n">charity_floor</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Charity_hc</span><span class="p">)</span>
@@ -1545,9 +1546,9 @@ document.write(`
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">StdDed</span><span class="p">(</span><span class="n">DSI</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">STD</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">STD_Aged</span><span class="p">,</span> <span class="n">STD_Dep</span><span class="p">,</span>
-           <span class="n">MARS</span><span class="p">,</span> <span class="n">MIDR</span><span class="p">,</span> <span class="n">blind_head</span><span class="p">,</span> <span class="n">blind_spouse</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">c19700</span><span class="p">,</span>
-           <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">,</span>
-           <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">):</span>
+           <span class="n">MARS</span><span class="p">,</span> <span class="n">MIDR</span><span class="p">,</span> <span class="n">blind_head</span><span class="p">,</span> <span class="n">blind_spouse</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span>
+           <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">,</span> <span class="n">e19800</span><span class="p">,</span> <span class="n">ID_Charity_crt_cash</span><span class="p">,</span>
+           <span class="n">c00100</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates standard deduction, including standard deduction for</span>
 <span class="sd">    dependents, aged and bind.</span>
@@ -1578,12 +1579,16 @@ document.write(`
 <span class="sd">        1 if spouse is blind, 0 otherwise</span>
 <span class="sd">    standard: float</span>
 <span class="sd">        Standard deduction (zero for itemizers)</span>
-<span class="sd">    c19700: float</span>
-<span class="sd">        Schedule A: charity contributions deducted</span>
 <span class="sd">    STD_allow_charity_ded_nonitemizers: bool</span>
 <span class="sd">        Allow standard deduction filers to take the charitable contributions deduction</span>
+<span class="sd">    e19800: float</span>
+<span class="sd">        Schedule A: cash charitable contributions</span>
+<span class="sd">    ID_Charity_crt_cash: float</span>
+<span class="sd">        Fraction of AGI cap on cash charitable deductions</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Federal AGI</span>
 <span class="sd">    STD_charity_ded_nonitemizers_max: float</span>
-<span class="sd">        Ceiling amount (in dollars) for charitable deductions for non-itemizers</span>
+<span class="sd">        Ceiling amount (in dollars) for charitable deductions for nonitemizers</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1611,8 +1616,10 @@ document.write(`
     <span class="n">standard</span> <span class="o">=</span> <span class="n">basic_stded</span> <span class="o">+</span> <span class="n">extra_stded</span>
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">MIDR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">standard</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="c1"># calculate CARES cash charity deduction for nonitemizers</span>
     <span class="k">if</span> <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">:</span>
-        <span class="n">standard</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19700</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">)</span>
+        <span class="n">capped_ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e19800</span><span class="p">,</span> <span class="n">ID_Charity_crt_cash</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">)</span>
+        <span class="n">standard</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">capped_ded</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">standard</span>
 
 

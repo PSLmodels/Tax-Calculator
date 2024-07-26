@@ -640,8 +640,8 @@ concern about side effects from Calculator method calls on calc1.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020_CLP_itax_rev($B)= 764.231
-2020_REF_itax_rev($B)= 766.915
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020_CLP_itax_rev($B)= 763.712
+2020_REF_itax_rev($B)= 766.413
 </pre></div>
 </div>
 </div>
@@ -699,7 +699,7 @@ concern about side effects from Calculator method calls on calc1.</p>
     </style>
     <div>
         <a href="https://bokeh.org" target="_blank" class="bk-notebook-logo"></a>
-        <span id="ea24b90a-6cb1-414e-a6c3-2871d054674f">Loading BokehJS ...</span>
+        <span id="a7a34710-c7fa-4f5c-a56f-bdd4c100992d">Loading BokehJS ...</span>
     </div>
 </div><script type="application/javascript">'use strict';
 (function(root) {
@@ -864,7 +864,7 @@ const JS_MIME_TYPE = 'application/javascript';
      "</div>"}};
 
   function display_loaded(error = null) {
-    const el = document.getElementById("ea24b90a-6cb1-414e-a6c3-2871d054674f");
+    const el = document.getElementById("a7a34710-c7fa-4f5c-a56f-bdd4c100992d");
     if (el != null) {
       const html = (() => {
         if (typeof root.Bokeh === "undefined") {
@@ -972,7 +972,7 @@ const JS_MIME_TYPE = 'application/javascript';
     document.body.appendChild(element);
   }
 
-  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.5.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.5.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.5.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.5.0.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.5.0.min.js"];
+  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.5.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.5.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.5.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.5.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.5.1.min.js"];
   const css_urls = [];
 
   const inline_js = [    function(Bokeh) {
@@ -998,7 +998,7 @@ function(Bokeh) {
       console.log("Bokeh: BokehJS failed to load within specified timeout.");
       root._bokeh_failed_load = true;
     } else if (force !== true) {
-      const cell = $(document.getElementById("ea24b90a-6cb1-414e-a6c3-2871d054674f")).parents('.cell').data().cell;
+      const cell = $(document.getElementById("a7a34710-c7fa-4f5c-a56f-bdd4c100992d")).parents('.cell').data().cell;
       cell.output_area.append_execute_result(NB_LOAD_WARNING)
     }
   }
