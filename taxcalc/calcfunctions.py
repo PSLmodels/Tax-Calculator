@@ -1906,7 +1906,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
 def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
-        earned, cmbtp,
+        earned, cmbtp, qbided,
         AMT_child_em_c_age, AMT_brk1,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_child_em, AMT_em_ps, AMT_em_pe,
@@ -1943,7 +1943,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     c20800: float
         Schedule A: net limited miscellaneous deductions deducted
     c21040: float
-        Itemized deductiosn that are phased out
+        Itemized deductions that are phased out
     e24515: float
         Schedule D: Un-Recaptured Section 1250 Gain
     MARS: int
@@ -1970,6 +1970,8 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         Earned income for filing unit
     cmbtp: float
         Estimate of income on (AMT) Form 6251 but not in AGI
+    qbided: float
+        Qualified business income deduction
     AMT_child_em_c_age: float
         Age ceiling for special AMT exemption
     AMT_brk1: float
@@ -2021,11 +2023,11 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     # pylint: disable=too-many-statements,too-many-branches
     # Form 6251, Part I
     if standard == 0.0:
-        c62100 = (c00100 - e00700 - c04470 +
+        c62100 = (c00100 - e00700 - qbided - c04470 +
                   max(0., min(c17000, 0.025 * c00100)) +
                   c18300 + c20800 - c21040)
     if standard > 0.0:
-        c62100 = c00100 - e00700
+        c62100 = c00100 - e00700 - qbided
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
     if MARS == 3:
         amtsepadd = max(0.,
