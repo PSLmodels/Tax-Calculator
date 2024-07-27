@@ -823,7 +823,7 @@
     },
     "c05200": {
       "type": "float",
-      "desc": "Tax amount from Sch X,Y,X tables",
+      "desc": "Tax amount from Sch X,Y,Z tables",
       "form": {"2013-20??": "calculated variable"}
     },
     "c05700": {
