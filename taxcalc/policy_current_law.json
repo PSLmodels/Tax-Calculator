@@ -14702,106 +14702,6 @@
                 "value": 1.0
             },
             {
-                "year": 2014,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
                 "year": 2018,
                 "MARS": "single",
                 "value": 50000.0
@@ -14823,31 +14723,6 @@
             },
             {
                 "year": 2018,
-                "MARS": "widow",
-                "value": 100000.0
-            },
-            {
-                "year": 2019,
-                "MARS": "single",
-                "value": 50000.0
-            },
-            {
-                "year": 2019,
-                "MARS": "mjoint",
-                "value": 100000.0
-            },
-            {
-                "year": 2019,
-                "MARS": "mseparate",
-                "value": 50000.0
-            },
-            {
-                "year": 2019,
-                "MARS": "headhh",
-                "value": 50000.0
-            },
-            {
-                "year": 2019,
                 "MARS": "widow",
                 "value": 100000.0
             },
