@@ -181,27 +181,29 @@ def test_DependentCare(skip_jit):
 
 STD_in = [6000, 12000, 6000, 12000, 12000]
 STD_Aged_in = [1500, 1200, 1500, 1500, 1500]
-tuple1 = (0, 1000, STD_in, 45, 44, STD_Aged_in, 1000, 2, 0, 0, 0, 2, 0,
-          False, 0)
+Charity_max_in = [300, 600, 300, 300, 300]
+tuple1 = (0, 1000, STD_in, 45, 44, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
+          False, 0, 0, 0, Charity_max_in)
 tuple2 = (0, 1000, STD_in, 66, 44, STD_Aged_in, 1000, 2, 0, 1, 1, 2,
-          200, True, 300)
+          True, 200, 100000, 1, Charity_max_in)
 tuple3 = (0, 1000, STD_in, 44, 66, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
-          400, True, 300)
-tuple4 = (0, 1200, STD_in, 66, 67, STD_Aged_in, 1000, 2, 0, 0, 0, 2, 0,
-          True, 0)
-tuple5 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2, 0,
-          True, 0)
-tuple6 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2, 0,
-          True, 0)
-tuple7 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 1, 0, 0, 2, 0,
-          True, 0)
-tuple8 = (1, 200, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2, 0,
-          True, 0)
-tuple9 = (1, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2, 0,
-          True, 0)
-expected = [12000, 15800, 13500, 14400, 6000, 6000, 0, 1000, 1350]
+          True, 700, 100000, 1, Charity_max_in)
+tuple4 = (0, 1200, STD_in, 66, 67, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
+          True, 0, 100000, 1, Charity_max_in)
+tuple5 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2,
+          True, 0, 100000, 1, Charity_max_in)
+tuple6 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2,
+          True, 0, 100000, 1, Charity_max_in)
+tuple7 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 1, 0, 0, 2,
+          True, 0, 100000, 1, Charity_max_in)
+tuple8 = (1, 200, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2,
+          True, 0, 100000, 1, Charity_max_in)
+tuple9 = (1, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2,
+          True, 0,100000, 1, Charity_max_in)
+expected = [12000, 15800, 13800, 14400, 6000, 6000, 0, 1000, 1350]
 
 
+@pytest.mark.stded
 @pytest.mark.parametrize(
     'test_tuple,expected_value', [
         (tuple1, expected[0]), (tuple2, expected[1]),
@@ -218,9 +220,8 @@ def test_StdDed(test_tuple, expected_value, skip_jit):
     """
     Tests the StdDed function
     """
-    test_value = calcfunctions.StdDed(*test_tuple)
-
-    assert np.allclose(test_value, expected_value)
+    avalue = calcfunctions.StdDed(*test_tuple)
+    assert np.allclose(avalue, expected_value), f"{avalue} != {expected_value}"
 
 
 tuple1 = (120000, 10000, 15000, 100, 2000, 0.06, 0.06, 0.015, 0.015, 0, 99999999999, 

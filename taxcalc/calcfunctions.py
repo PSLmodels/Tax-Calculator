@@ -781,7 +781,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     e19800: float
         Itemizable charitable giving: cash/check contributions
     e20100: float
-        Itemizable charitalb giving: other than cash/check contributions
+        Itemizable charitable giving: other than cash/check contributions
     e20400: float
         Itemizable gross (before 10% AGI disregard) casualty or theft loss
     g20500: float
@@ -887,7 +887,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
             c17000, c18300, c19200, c19700, c20500, c20800,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
-            ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
+            ID_Miscellaneous_hc, ID_Charity_crt_cash, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
@@ -957,8 +957,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
         Floor (as decimal fraction of AGI) for deductible miscellaneous expenses
     ID_Miscellaneous_hc: float
         Miscellaneous expense deduction haircut
-    ID_Charity_crt_all: float
-        Ceiling (as decimal fraction of AGI) for all charitable contribution deductions
+    ID_Charity_crt_cash: float
+        Ceiling (as decimal fraction of AGI) for cash charitable contribution deductions
     ID_Charity_crt_noncash: float
         Ceiling (as decimal fraction of AGI) for noncash charitable contribution deductions
     ID_prt: float
@@ -1047,8 +1047,9 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
     # Charity
-    lim30 = min(ID_Charity_crt_noncash * posagi, e20100_capped)
-    c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800_capped)
+    charity_ded_cash = min(ID_Charity_crt_cash * posagi, e19800_capped)
+    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, e20100_capped)
+    c19700 = charity_ded_cash + charity_ded_noncash
     # charity floor is zero in present law
     charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
@@ -1133,9 +1134,9 @@ def AdditionalMedicareTax(e00200, MARS,
 
 @iterate_jit(nopython=True)
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
-           MARS, MIDR, blind_head, blind_spouse, standard, c19700,
-           STD_allow_charity_ded_nonitemizers,
-           STD_charity_ded_nonitemizers_max):
+           MARS, MIDR, blind_head, blind_spouse, standard,
+           STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_cash,
+           c00100, STD_charity_ded_nonitemizers_max):
     """
     Calculates standard deduction, including standard deduction for
     dependents, aged and bind.
@@ -1166,12 +1167,16 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         1 if spouse is blind, 0 otherwise
     standard: float
         Standard deduction (zero for itemizers)
-    c19700: float
-        Schedule A: charity contributions deducted
     STD_allow_charity_ded_nonitemizers: bool
         Allow standard deduction filers to take the charitable contributions deduction
+    e19800: float
+        Schedule A: cash charitable contributions
+    ID_Charity_crt_cash: float
+        Fraction of AGI cap on cash charitable deductions
+    c00100: float
+        Federal AGI
     STD_charity_ded_nonitemizers_max: float
-        Ceiling amount (in dollars) for charitable deductions for non-itemizers
+        Ceiling amount (in dollars) for charitable deductions for nonitemizers
 
     Returns
     -------
@@ -1199,8 +1204,10 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     standard = basic_stded + extra_stded
     if MARS == 3 and MIDR == 1:
         standard = 0.
+    # calculate CARES cash charity deduction for nonitemizers
     if STD_allow_charity_ded_nonitemizers:
-        standard += min(c19700, STD_charity_ded_nonitemizers_max)
+        capped_ded = min(e19800, ID_Charity_crt_cash * c00100)
+        standard += min(capped_ded, STD_charity_ded_nonitemizers_max[MARS - 1])
     return standard
 
 
@@ -2136,7 +2143,8 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
 @iterate_jit(nopython=True)
 def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
           exact, c00100, CDCC_ps, CDCC_ps2, CDCC_crt, CDCC_frt,
-          CDCC_prt, CDCC_refundable, c05800, e07300, c07180, CDCC_refund):
+          CDCC_po_step_size, CDCC_po_rate_per_step, CDCC_refundable,
+          c05800, e07300, c07180, CDCC_refund):
     """
     Calculates Form 2441 child and dependent care expense credit, c07180.
 
@@ -2166,16 +2174,18 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         Child/dependent care credit phaseout rate ceiling
     CDCC_frt: float
         Child/dependent care credit phaseout rate floor
-    CDCC_prt: float
-        Child/dependent care credit phaseout rate
+    CDCC_po_step_size: float
+        Child/dependent care credit phaseout AGI step size
+    CDCC_po_rate_per_step: float
+        Child/dependent care credit phaseout rate per step size
+    CDCC_refund: bool
+        Indicator for whether CDCC is refundable
     c05800: float
         Total (regular + AMT) income tax liability before credits
     e07300: float
         Foreign tax credit from Form 1116
     c07180: float
         Credit for child and dependent care expenses from Form 2441
-    CDCC_refund: bool
-        Indicator for whether CDCC is refundable
 
     Returns
     -------
@@ -2192,22 +2202,22 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     else:
         c32890 = earned_p
     c33000 = max(0., min(c32800, min(c32880, c32890)))
-    # credit is limited by AGI-related fraction
+    # credit rate is limited at high AGI
+    # ... first phase-down from CDCC_crt to CDCC_frt
+    steps_fractional = max(0., c00100 - CDCC_ps) / CDCC_po_step_size
     if exact == 1:  # exact calculation as on tax forms
-        # first phase-down from 35 to 20 percent
-        tratio1 = math.ceil(max(((c00100 - CDCC_ps) * CDCC_prt), 0.))
-        crate = max(CDCC_frt, CDCC_crt - min(CDCC_crt - CDCC_frt, tratio1))
-        # second phase-down from 20 percent to zero
-        if c00100 > CDCC_ps2:
-            tratio2 = math.ceil(max(((c00100 - CDCC_ps2) * CDCC_prt), 0.))
-            crate = max(0., CDCC_frt - min(CDCC_frt, tratio2))
+        steps = math.ceil(steps_fractional)
     else:
-        crate = max(CDCC_frt, CDCC_crt -
-                    max(((c00100 - CDCC_ps) * CDCC_prt), 0.))
-        if c00100 > CDCC_ps2:
-            crate = max(0., CDCC_frt -
-                        max(((c00100 - CDCC_ps2) * CDCC_prt), 0.))
-
+        steps = steps_fractional
+    crate = max(CDCC_frt, CDCC_crt - steps * CDCC_po_rate_per_step)
+    # ... second phase-down from CDCC_frt to zero
+    if c00100 > CDCC_ps2:
+        steps_fractional = (c00100 - CDCC_ps2) / CDCC_po_step_size
+        if exact == 1:  # exact calculation as on tax forms
+            steps = math.ceil(steps_fractional)
+        else:
+            steps = steps_fractional
+        crate = max(0., CDCC_frt - steps * CDCC_po_rate_per_step)
     c33200 = c33000 * crate
     # credit is limited by tax liability if not refundable
     if CDCC_refundable:
