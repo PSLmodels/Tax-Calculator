@@ -2321,7 +2321,7 @@ document.write(`
 <span class="k">def</span> <span class="nf">AMT</span><span class="p">(</span><span class="n">e07300</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">f6251</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span>
         <span class="n">c04470</span><span class="p">,</span> <span class="n">c17000</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">e24515</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">dwks19</span><span class="p">,</span>
         <span class="n">dwks14</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">e62900</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">dwks10</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span>
-        <span class="n">earned</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span>
+        <span class="n">earned</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span>
         <span class="n">AMT_child_em_c_age</span><span class="p">,</span> <span class="n">AMT_brk1</span><span class="p">,</span>
         <span class="n">AMT_em</span><span class="p">,</span> <span class="n">AMT_prt</span><span class="p">,</span> <span class="n">AMT_rt1</span><span class="p">,</span> <span class="n">AMT_rt2</span><span class="p">,</span>
         <span class="n">AMT_child_em</span><span class="p">,</span> <span class="n">AMT_em_ps</span><span class="p">,</span> <span class="n">AMT_em_pe</span><span class="p">,</span>
@@ -2358,7 +2358,7 @@ document.write(`
 <span class="sd">    c20800: float</span>
 <span class="sd">        Schedule A: net limited miscellaneous deductions deducted</span>
 <span class="sd">    c21040: float</span>
-<span class="sd">        Itemized deductiosn that are phased out</span>
+<span class="sd">        Itemized deductions that are phased out</span>
 <span class="sd">    e24515: float</span>
 <span class="sd">        Schedule D: Un-Recaptured Section 1250 Gain</span>
 <span class="sd">    MARS: int</span>
@@ -2385,6 +2385,8 @@ document.write(`
 <span class="sd">        Earned income for filing unit</span>
 <span class="sd">    cmbtp: float</span>
 <span class="sd">        Estimate of income on (AMT) Form 6251 but not in AGI</span>
+<span class="sd">    qbided: float</span>
+<span class="sd">        Qualified business income deduction</span>
 <span class="sd">    AMT_child_em_c_age: float</span>
 <span class="sd">        Age ceiling for special AMT exemption</span>
 <span class="sd">    AMT_brk1: float</span>
@@ -2436,11 +2438,11 @@ document.write(`
     <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
     <span class="c1"># Form 6251, Part I</span>
     <span class="k">if</span> <span class="n">standard</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">c62100</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">c04470</span> <span class="o">+</span>
+        <span class="n">c62100</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">c04470</span> <span class="o">+</span>
                   <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="mf">0.025</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">))</span> <span class="o">+</span>
                   <span class="n">c18300</span> <span class="o">+</span> <span class="n">c20800</span> <span class="o">-</span> <span class="n">c21040</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">standard</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">c62100</span> <span class="o">=</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span>
+        <span class="n">c62100</span> <span class="o">=</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span>
     <span class="n">c62100</span> <span class="o">+=</span> <span class="n">cmbtp</span>  <span class="c1"># add income not in AGI but considered income for AMT</span>
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">amtsepadd</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span>
