@@ -491,12 +491,6 @@
       "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_puf, taxdata_cps"
     },
-    "s006_original": {
-      "type": "float",
-      "desc": "Sample weight before reweighting (not used in tax-calculation logic)",
-      "form": {"2013-2016": "sample construction info"},
-      "availability": "tax-microdata_tmd"
-    },
     "data_source": {
       "type": "int",
       "desc": "1 if unit is created primarily from IRS-SOI PUF data; 0 if created primarily from CPS data (not used in tax-calculation logic)",
@@ -829,7 +823,7 @@
     },
     "c05200": {
       "type": "float",
-      "desc": "Tax amount from Sch X,Y,X tables",
+      "desc": "Tax amount from Sch X,Y,Z tables",
       "form": {"2013-20??": "calculated variable"}
     },
     "c05700": {
@@ -1045,6 +1039,16 @@
     "odc": {
       "type": "float",
       "desc": "Other Dependent Credit",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "ctc_total": {
+      "type": "float",
+      "desc": "Total CTC amount (c07220 + c11070 + odc + ctc_new)",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "ctc_refundable": {
+      "type": "float",
+      "desc": "Portion of total CTC amount that is refundable",
       "form": {"2013-20??": "calculated variable"}
     },
     "personal_refundable_credit": {

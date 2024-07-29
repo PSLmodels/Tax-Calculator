@@ -32,6 +32,14 @@ expire).  Compatible input datasets include:
   data, and are available only to those with access to the 2015
   IRS/SOI PUF
 
+Note that if you are using the Python API to Tax-Calculator (as
+described in the
+[Recipes](https://taxcalc.pslmodels.org/recipes/index.html)) to
+analyze the TCJA after 2025 and need to specify custom GrowFactors
+after 2025, you can use the old additive-differences `growdiffs`
+approach or you can specify a custom `growfactors` file as described
+[here](https://github.com/PSLmodels/Tax-Calculator/pull/2757#issuecomment-2218662804).
+
 Before reading the rest of this document, be sure you understand how
 to use the Tax-Calculator command-line tool
 [tc](https://taxcalc.pslmodels.org/guide/cli.html), particularly the
@@ -125,7 +133,7 @@ changes or whenever new historical values of policy parameters are
 added to the `policy_current_law.json` file thereby changing the
 `Policy.LAST_KNOWN_YEAR`.
 
-The 3.5.3 version of Tax-Calculator incorporates the February 2024 CBO
+The 4.0.0 version of Tax-Calculator incorporates the February 2024 CBO
 economic projection and contains historical tax policy parameter values
 through 2022.  Future versions of Tax-Calculator that use historical
 policy parameter values for 2023 and 2024 or use the February 2025 CBO

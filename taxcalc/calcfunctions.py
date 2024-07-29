@@ -781,7 +781,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     e19800: float
         Itemizable charitable giving: cash/check contributions
     e20100: float
-        Itemizable charitalb giving: other than cash/check contributions
+        Itemizable charitable giving: other than cash/check contributions
     e20400: float
         Itemizable gross (before 10% AGI disregard) casualty or theft loss
     g20500: float
@@ -887,7 +887,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
             c17000, c18300, c19200, c19700, c20500, c20800,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
-            ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
+            ID_Miscellaneous_hc, ID_Charity_crt_cash, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
@@ -957,8 +957,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
         Floor (as decimal fraction of AGI) for deductible miscellaneous expenses
     ID_Miscellaneous_hc: float
         Miscellaneous expense deduction haircut
-    ID_Charity_crt_all: float
-        Ceiling (as decimal fraction of AGI) for all charitable contribution deductions
+    ID_Charity_crt_cash: float
+        Ceiling (as decimal fraction of AGI) for cash charitable contribution deductions
     ID_Charity_crt_noncash: float
         Ceiling (as decimal fraction of AGI) for noncash charitable contribution deductions
     ID_prt: float
@@ -1047,8 +1047,9 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
     # Charity
-    lim30 = min(ID_Charity_crt_noncash * posagi, e20100_capped)
-    c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800_capped)
+    charity_ded_cash = min(ID_Charity_crt_cash * posagi, e19800_capped)
+    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, e20100_capped)
+    c19700 = charity_ded_cash + charity_ded_noncash
     # charity floor is zero in present law
     charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
@@ -1133,9 +1134,9 @@ def AdditionalMedicareTax(e00200, MARS,
 
 @iterate_jit(nopython=True)
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
-           MARS, MIDR, blind_head, blind_spouse, standard, c19700,
-           STD_allow_charity_ded_nonitemizers,
-           STD_charity_ded_nonitemizers_max):
+           MARS, MIDR, blind_head, blind_spouse, standard,
+           STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_cash,
+           c00100, STD_charity_ded_nonitemizers_max):
     """
     Calculates standard deduction, including standard deduction for
     dependents, aged and bind.
@@ -1166,12 +1167,16 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         1 if spouse is blind, 0 otherwise
     standard: float
         Standard deduction (zero for itemizers)
-    c19700: float
-        Schedule A: charity contributions deducted
     STD_allow_charity_ded_nonitemizers: bool
         Allow standard deduction filers to take the charitable contributions deduction
+    e19800: float
+        Schedule A: cash charitable contributions
+    ID_Charity_crt_cash: float
+        Fraction of AGI cap on cash charitable deductions
+    c00100: float
+        Federal AGI
     STD_charity_ded_nonitemizers_max: float
-        Ceiling amount (in dollars) for charitable deductions for non-itemizers
+        Ceiling amount (in dollars) for charitable deductions for nonitemizers
 
     Returns
     -------
@@ -1199,13 +1204,15 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     standard = basic_stded + extra_stded
     if MARS == 3 and MIDR == 1:
         standard = 0.
+    # calculate CARES cash charity deduction for nonitemizers
     if STD_allow_charity_ded_nonitemizers:
-        standard += min(c19700, STD_charity_ded_nonitemizers_max)
+        capped_ded = min(e19800, ID_Charity_crt_cash * c00100)
+        standard += min(capped_ded, STD_charity_ded_nonitemizers_max[MARS - 1])
     return standard
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
+def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
            e02100, e27200, e00650, c01000, PT_SSTB_income,
            PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
@@ -1229,6 +1236,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
         Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     e00900: float
         Schedule C business net profit/loss for filing unit
+    c03260: float
+        Self-employment (SECA) tax above-the-line deduction
     e26270: float
         Schedule E: combined partnership and S-corporation net income/loss
     e02100: float
@@ -1280,7 +1289,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
     # calculate qualified business income deduction
     qbided = 0.
-    qbinc = max(0., e00900 + e26270 + e02100 + e27200)
+    qbinc = max(0., e00900 - c03260 + e26270 + e02100 + e27200)
     if qbinc > 0. and PT_qbid_rt > 0.:
         qbid_before_limits = qbinc * PT_qbid_rt
         lower_thd = PT_qbid_taxinc_thd[MARS - 1]
@@ -1899,7 +1908,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
 def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
-        earned, cmbtp,
+        earned, cmbtp, qbided,
         AMT_child_em_c_age, AMT_brk1,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_child_em, AMT_em_ps, AMT_em_pe,
@@ -1936,7 +1945,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     c20800: float
         Schedule A: net limited miscellaneous deductions deducted
     c21040: float
-        Itemized deductiosn that are phased out
+        Itemized deductions that are phased out
     e24515: float
         Schedule D: Un-Recaptured Section 1250 Gain
     MARS: int
@@ -1963,6 +1972,8 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         Earned income for filing unit
     cmbtp: float
         Estimate of income on (AMT) Form 6251 but not in AGI
+    qbided: float
+        Qualified business income deduction
     AMT_child_em_c_age: float
         Age ceiling for special AMT exemption
     AMT_brk1: float
@@ -2014,11 +2025,11 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     # pylint: disable=too-many-statements,too-many-branches
     # Form 6251, Part I
     if standard == 0.0:
-        c62100 = (c00100 - e00700 - c04470 +
+        c62100 = (c00100 - e00700 - qbided - c04470 +
                   max(0., min(c17000, 0.025 * c00100)) +
                   c18300 + c20800 - c21040)
     if standard > 0.0:
-        c62100 = c00100 - e00700
+        c62100 = c00100 - e00700 - qbided
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
     if MARS == 3:
         amtsepadd = max(0.,
@@ -2136,7 +2147,8 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
 @iterate_jit(nopython=True)
 def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
           exact, c00100, CDCC_ps, CDCC_ps2, CDCC_crt, CDCC_frt,
-          CDCC_prt, CDCC_refundable, c05800, e07300, c07180, CDCC_refund):
+          CDCC_po_step_size, CDCC_po_rate_per_step, CDCC_refundable,
+          c05800, e07300, c07180, CDCC_refund):
     """
     Calculates Form 2441 child and dependent care expense credit, c07180.
 
@@ -2166,16 +2178,18 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         Child/dependent care credit phaseout rate ceiling
     CDCC_frt: float
         Child/dependent care credit phaseout rate floor
-    CDCC_prt: float
-        Child/dependent care credit phaseout rate
+    CDCC_po_step_size: float
+        Child/dependent care credit phaseout AGI step size
+    CDCC_po_rate_per_step: float
+        Child/dependent care credit phaseout rate per step size
+    CDCC_refund: bool
+        Indicator for whether CDCC is refundable
     c05800: float
         Total (regular + AMT) income tax liability before credits
     e07300: float
         Foreign tax credit from Form 1116
     c07180: float
         Credit for child and dependent care expenses from Form 2441
-    CDCC_refund: bool
-        Indicator for whether CDCC is refundable
 
     Returns
     -------
@@ -2192,22 +2206,22 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     else:
         c32890 = earned_p
     c33000 = max(0., min(c32800, min(c32880, c32890)))
-    # credit is limited by AGI-related fraction
+    # credit rate is limited at high AGI
+    # ... first phase-down from CDCC_crt to CDCC_frt
+    steps_fractional = max(0., c00100 - CDCC_ps) / CDCC_po_step_size
     if exact == 1:  # exact calculation as on tax forms
-        # first phase-down from 35 to 20 percent
-        tratio1 = math.ceil(max(((c00100 - CDCC_ps) * CDCC_prt), 0.))
-        crate = max(CDCC_frt, CDCC_crt - min(CDCC_crt - CDCC_frt, tratio1))
-        # second phase-down from 20 percent to zero
-        if c00100 > CDCC_ps2:
-            tratio2 = math.ceil(max(((c00100 - CDCC_ps2) * CDCC_prt), 0.))
-            crate = max(0., CDCC_frt - min(CDCC_frt, tratio2))
+        steps = math.ceil(steps_fractional)
     else:
-        crate = max(CDCC_frt, CDCC_crt -
-                    max(((c00100 - CDCC_ps) * CDCC_prt), 0.))
-        if c00100 > CDCC_ps2:
-            crate = max(0., CDCC_frt -
-                        max(((c00100 - CDCC_ps2) * CDCC_prt), 0.))
-
+        steps = steps_fractional
+    crate = max(CDCC_frt, CDCC_crt - steps * CDCC_po_rate_per_step)
+    # ... second phase-down from CDCC_frt to zero
+    if c00100 > CDCC_ps2:
+        steps_fractional = (c00100 - CDCC_ps2) / CDCC_po_step_size
+        if exact == 1:  # exact calculation as on tax forms
+            steps = math.ceil(steps_fractional)
+        else:
+            steps = steps_fractional
+        crate = max(0., CDCC_frt - steps * CDCC_po_rate_per_step)
     c33200 = c33000 * crate
     # credit is limited by tax liability if not refundable
     if CDCC_refundable:
@@ -3218,7 +3232,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
-            CTC_new_refund_limited_all_payroll, payrolltax,
+            CTC_new_refund_limited_all_payroll, payrolltax, exact,
             n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
             c09200, ctc_new):
     """
@@ -3246,6 +3260,8 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         New child tax credit refund limit applies to all FICA taxes, not just OASDI
     payrolltax: float
         Total (employee + employer) payroll tax liability
+    exact: int
+        Whether or not exact phase-out calculation is being done
     n24: int
         Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17
     nu06: int
@@ -3280,8 +3296,12 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             ctc_new = min(CTC_new_rt * posagi, ctc_new)
         ymax = CTC_new_ps[MARS - 1]
         if posagi > ymax:
-            ctc_new_reduced = max(0.,
-                                  ctc_new - CTC_new_prt * (posagi - ymax))
+            over = posagi - ymax
+            if exact == 1:  # exact calculation as on tax form
+                excess = math.ceil(over / 1000.) * 1000.
+            else:  # smoothed calculation
+                excess = over
+            ctc_new_reduced = max(0., ctc_new - CTC_new_prt * excess)
             ctc_new = min(ctc_new, ctc_new_reduced)
         if ctc_new > 0. and CTC_new_refund_limited:
             refund_new = max(0., ctc_new - c09200)
@@ -3299,7 +3319,8 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
 @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           c09200, payrolltax, CDCC_refund, recovery_rebate_credit,
-          eitc, c07220, odc, CTC_refundable, ODC_refundable, refund, iitax, combined):
+          eitc, c07220, odc, CTC_refundable, ODC_refundable, refund,
+          ctc_total, ctc_refundable, iitax, combined):
     """
     Computes final taxes.
 
@@ -3326,6 +3347,10 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         Earned Income Credit
     refund: float
         Total refundable income tax credits
+    ctc_total: float
+        Total CTC amount (c07220 + c11070 + odc + ctc_new)
+    ctc_refundable: float
+        Portion of total CTC amount that is refundable
     iitax: float
         Total federal individual income tax liability
     combined: float
@@ -3337,6 +3362,10 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         Earned Income Credit
     refund: float
         Total refundable income tax credits
+    ctc_total: float
+        Total CTC amount (c07220 + c11070 + odc + ctc_new)
+    ctc_refundable: float
+        Portion of total CTC amount that is refundable
     iitax: float
         Total federal individual income tax liability
     combined: float
@@ -3352,10 +3381,13 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     else:
         odc_refund = 0.
     refund = (eitc + c11070 + c10960 + CDCC_refund + recovery_rebate_credit +
-              personal_refundable_credit + ctc_new + rptc + ctc_refund + odc_refund)
+              personal_refundable_credit + ctc_new + rptc + ctc_refund +
+              odc_refund)
+    ctc_total = c07220 + c11070 + odc + ctc_new
+    ctc_refundable = ctc_refund + c11070 + odc_refund + ctc_new
     iitax = c09200 - refund
     combined = iitax + payrolltax
-    return (eitc, refund, iitax, combined)
+    return (eitc, refund, ctc_total, ctc_refundable, iitax, combined)
 
 
 @JIT(nopython=True)

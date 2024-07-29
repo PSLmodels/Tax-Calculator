@@ -2505,7 +2505,7 @@
     },
     "STD_allow_charity_ded_nonitemizers": {
         "title": "Allow standard deduction filers to take the charitable contributions deduction",
-        "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here as well as a max on the dollar amount for total charitable deductions for those taking the standard deduction.",
+        "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction and make cash donations.  The same percent-of-AGI cap applied to itemized deduction for charitable contributions also apply here, as well as a max on the dollar amount for cash charitable deductions for those taking the standard deduction.",
         "notes": "",
         "section_1": "",
         "section_2": "",
@@ -2518,12 +2518,12 @@
                 "value": false
             },
             {
-                "year": 2021,
-                "value": false
-            },
-            {
                 "year": 2020,
                 "value": true
+            },
+            {
+                "year": 2022,
+                "value": false
             }
         ],
         "validators": {
@@ -2538,8 +2538,8 @@
         }
     },
     "STD_charity_ded_nonitemizers_max": {
-        "title": "Ceiling amount (in dollars) for charitable deductions for non-itemizers",
-        "description": "Puts a ceiling on the dollar of amount of charitable contributions deductions for taxpayers who take the standard deduction.",
+        "title": "Ceiling amount (in dollars) for cash charitable deductions for nonitemizers",
+        "description": "Puts a ceiling on the dollar of amount of cash charitable contributions deductions for taxpayers who take the standard deduction.",
         "notes": "",
         "section_1": "",
         "section_2": "",
@@ -2549,15 +2549,78 @@
         "value": [
             {
                 "year": 2013,
+                "MARS": "single",
                 "value": 0.0
             },
             {
-                "year": 2021,
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
                 "value": 0.0
             },
             {
                 "year": 2020,
+                "MARS": "single",
                 "value": 300.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 600.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 300.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 300.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 300.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 0.0
             }
         ],
         "validators": {
@@ -5168,9 +5231,9 @@
             "cps": true
         }
     },
-    "ID_Charity_crt_all": {
-        "title": "Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions",
-        "description": "The total deduction for charity is capped at this fraction of AGI.",
+    "ID_Charity_crt_cash": {
+        "title": "Ceiling (as a decimal fraction of AGI) for cash charitable contribution deductions",
+        "description": "The cash deduction for charity is capped at this fraction of AGI.",
         "notes": "When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
@@ -5183,27 +5246,7 @@
                 "value": 0.5
             },
             {
-                "year": 2014,
-                "value": 0.5
-            },
-            {
-                "year": 2015,
-                "value": 0.5
-            },
-            {
-                "year": 2016,
-                "value": 0.5
-            },
-            {
-                "year": 2017,
-                "value": 0.5
-            },
-            {
                 "year": 2018,
-                "value": 0.6
-            },
-            {
-                "year": 2019,
                 "value": 0.6
             },
             {
@@ -5211,7 +5254,7 @@
                 "value": 1.0
             },
             {
-                "year": 2021,
+                "year": 2022,
                 "value": 0.6
             },
             {
@@ -12004,7 +12047,7 @@
             },
             {
                 "year": 2020,
-                "value": 0.15
+                "value": 0.12
             },
             {
                 "year": 2021,
@@ -12367,7 +12410,7 @@
             },
             {
                 "year": 2020,
-                "value": 0.25
+                "value": 0.22
             },
             {
                 "year": 2021,
@@ -12730,7 +12773,7 @@
             },
             {
                 "year": 2020,
-                "value": 0.28
+                "value": 0.24
             },
             {
                 "year": 2021,
@@ -13819,7 +13862,7 @@
             },
             {
                 "year": 2020,
-                "value": 0.396
+                "value": 0.37
             },
             {
                 "year": 2021,
@@ -14659,106 +14702,6 @@
                 "value": 1.0
             },
             {
-                "year": 2014,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
                 "year": 2018,
                 "MARS": "single",
                 "value": 50000.0
@@ -14780,31 +14723,6 @@
             },
             {
                 "year": 2018,
-                "MARS": "widow",
-                "value": 100000.0
-            },
-            {
-                "year": 2019,
-                "MARS": "single",
-                "value": 50000.0
-            },
-            {
-                "year": 2019,
-                "MARS": "mjoint",
-                "value": 100000.0
-            },
-            {
-                "year": 2019,
-                "MARS": "mseparate",
-                "value": 50000.0
-            },
-            {
-                "year": 2019,
-                "MARS": "headhh",
-                "value": 50000.0
-            },
-            {
-                "year": 2019,
                 "MARS": "widow",
                 "value": 100000.0
             },
@@ -16461,10 +16379,36 @@
             "cps": true
         }
     },
-    "CDCC_prt": {
-        "title": "Child & dependent care credit phaseout rate",
-        "description": "The CDCC credit rate is reduced by this many percentage points for each dollar of AGI over the phase-out thresholds.",
-        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the limit. 0.01 / 2000 = 0.000005",
+    "CDCC_po_step_size": {
+        "title": "Child & dependent care credit phaseout step size",
+        "description": "The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the phase-out start thresholds.",
+        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the phase-out start thresholds",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child And Dependent Care",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 2000
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CDCC_po_rate_per_step": {
+        "title": "Child & dependent care credit phaseout rate per step",
+        "description": "The CDCC credit rate is reduced by this rate for for each step (including fractional steps) above the phase-out start thresholds.",
+        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the phase-out start thresholds",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -16473,7 +16417,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": 5e-06
+                "value": 0.01
             }
         ],
         "validators": {
@@ -17850,22 +17794,22 @@
             {
                 "year": 2018,
                 "EIC": "0kids",
-                "value": 8490.0
+                "value": 8510.0
             },
             {
                 "year": 2018,
                 "EIC": "1kid",
-                "value": 18660.0
+                "value": 18700.0
             },
             {
                 "year": 2018,
                 "EIC": "2kids",
-                "value": 18660.0
+                "value": 18700.0
             },
             {
                 "year": 2018,
                 "EIC": "3+kids",
-                "value": 18660.0
+                "value": 18700.0
             },
             {
                 "year": 2019,
@@ -18072,22 +18016,22 @@
             {
                 "year": 2018,
                 "EIC": "0kids",
-                "value": 5680.0
+                "value": 5690.0
             },
             {
                 "year": 2018,
                 "EIC": "1kid",
-                "value": 5690.0
+                "value": 5700.0
             },
             {
                 "year": 2018,
                 "EIC": "2kids",
-                "value": 5690.0
+                "value": 5700.0
             },
             {
                 "year": 2018,
                 "EIC": "3+kids",
-                "value": 5690.0
+                "value": 5700.0
             },
             {
                 "year": 2019,
@@ -18132,7 +18076,7 @@
             {
                 "year": 2021,
                 "EIC": "0kids",
-                "value": 5950.0
+                "value": 5940.0
             },
             {
                 "year": 2021,
