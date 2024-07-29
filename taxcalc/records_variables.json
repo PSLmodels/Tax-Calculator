@@ -1046,6 +1046,11 @@
       "desc": "Total CTC amount (c07220 + c11070 + odc + ctc_new)",
       "form": {"2013-20??": "calculated variable"}
     },
+    "ctc_nonrefundable": {
+      "type": "float",
+      "desc": "Portion of total CTC amount that is nonrefundable",
+      "form": {"2013-20??": "calculated variable"}
+    },
     "ctc_refundable": {
       "type": "float",
       "desc": "Portion of total CTC amount that is refundable",
