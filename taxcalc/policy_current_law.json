@@ -16591,7 +16591,7 @@
             "cps": true
         }
     },
-    "CTC_refundable": {
+    "CTC_is_refundable": {
         "title": "Whether the child tax credit is fully refundable",
         "description": "If true, the child tax credit is made fully refundable.",
         "notes": "If true, the Additional Child Tax Credit is not used.",
@@ -16625,7 +16625,7 @@
             "cps": true
         }
     },
-    "ODC_refundable": {
+    "ODC_is_refundable": {
         "title": "Whether the other dependents tax credit is fully refundable",
         "description": "If true, the other dependents tax credit is made fully refundable.",
         "notes": "",
