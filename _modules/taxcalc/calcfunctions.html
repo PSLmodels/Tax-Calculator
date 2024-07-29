@@ -2873,7 +2873,7 @@ document.write(`
                       <span class="n">c07200</span><span class="p">,</span>
                       <span class="n">CTC_c</span><span class="p">,</span> <span class="n">CTC_ps</span><span class="p">,</span> <span class="n">CTC_prt</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">ODC_c</span><span class="p">,</span>
                       <span class="n">CTC_c_under6_bonus</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span>
-                      <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
+                      <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
                       <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">codtc_limited</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes amounts on &quot;Child Tax Credit and Credit for Other Dependents</span>
@@ -2972,7 +2972,7 @@ document.write(`
         <span class="n">line13</span> <span class="o">=</span> <span class="n">line11</span> <span class="o">-</span> <span class="n">line12</span>
         <span class="n">line14</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">line15</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line13</span> <span class="o">-</span> <span class="n">line14</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">CTC_refundable</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>
             <span class="n">c07220</span> <span class="o">=</span> <span class="n">line10</span> <span class="o">*</span> <span class="n">line1</span> <span class="o">/</span> <span class="n">line3</span>
             <span class="n">odc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line10</span> <span class="o">-</span> <span class="n">c07220</span><span class="p">)</span>
             <span class="n">codtc_limited</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line10</span> <span class="o">-</span> <span class="n">c07220</span> <span class="o">-</span> <span class="n">odc</span><span class="p">)</span>
@@ -3342,7 +3342,7 @@ document.write(`
 <span class="k">def</span> <span class="nf">NonrefundableCredits</span><span class="p">(</span><span class="n">c05800</span><span class="p">,</span> <span class="n">e07240</span><span class="p">,</span> <span class="n">e07260</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">e07400</span><span class="p">,</span>
                          <span class="n">e07600</span><span class="p">,</span> <span class="n">p08000</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span>
                          <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
-                         <span class="n">CTC_refundable</span><span class="p">,</span>
+                         <span class="n">CTC_is_refundable</span><span class="p">,</span>
                          <span class="n">CR_RetirementSavings_hc</span><span class="p">,</span> <span class="n">CR_ForeignTax_hc</span><span class="p">,</span>
                          <span class="n">CR_ResidentialEnergy_hc</span><span class="p">,</span> <span class="n">CR_GeneralBusiness_hc</span><span class="p">,</span>
                          <span class="n">CR_MinimumTax_hc</span><span class="p">,</span> <span class="n">CR_OtherCredits_hc</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">,</span>
@@ -3371,7 +3371,7 @@ document.write(`
 <span class="sd">        Other Dependent Credit</span>
 <span class="sd">    personal_nonrefundable_credit: float</span>
 <span class="sd">        Personal nonrefundable credit</span>
-<span class="sd">    CTC_refundable: bool</span>
+<span class="sd">    CTC_is_refundable: bool</span>
 <span class="sd">        Whether the child tax credit is fully refundable</span>
 <span class="sd">    CR_RetirementSavings_hc: float</span>
 <span class="sd">        Credit for retirement savings haircut</span>
@@ -3451,7 +3451,7 @@ document.write(`
     <span class="n">c07240</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07240</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_RetirementSavings_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07240</span>
     <span class="c1"># Child tax credit</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">CTC_refundable</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>
         <span class="n">c07220</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07220</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
         <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07220</span>
         <span class="c1"># Other dependent credit</span>
@@ -3485,7 +3485,8 @@ document.write(`
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">AdditionalCTC</span><span class="p">(</span><span class="n">codtc_limited</span><span class="p">,</span> <span class="n">ACTC_c</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">ACTC_Income_thd</span><span class="p">,</span>
                   <span class="n">ACTC_rt</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">ACTC_rt_bonus_under6family</span><span class="p">,</span> <span class="n">ACTC_ChildNum</span><span class="p">,</span>
-                  <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span>
+                  <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
+                  <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span>
                   <span class="n">ptax_was</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">c59660</span><span class="p">,</span> <span class="n">e11200</span><span class="p">,</span>
                   <span class="n">c11070</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3533,7 +3534,7 @@ document.write(`
     <span class="c1"># Part I</span>
     <span class="n">line3</span> <span class="o">=</span> <span class="n">codtc_limited</span>
 
-    <span class="k">if</span> <span class="n">CTC_refundable</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>
         <span class="n">line4</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
@@ -3574,7 +3575,8 @@ document.write(`
 <span class="k">def</span> <span class="nf">C1040</span><span class="p">(</span><span class="n">c05800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">c07200</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">c07230</span><span class="p">,</span> <span class="n">c07240</span><span class="p">,</span> <span class="n">c07260</span><span class="p">,</span> <span class="n">c07300</span><span class="p">,</span>
           <span class="n">c07400</span><span class="p">,</span> <span class="n">c07600</span><span class="p">,</span> <span class="n">c08000</span><span class="p">,</span> <span class="n">e09700</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">e09900</span><span class="p">,</span> <span class="n">niit</span><span class="p">,</span> <span class="n">othertaxes</span><span class="p">,</span>
           <span class="n">c07100</span><span class="p">,</span> <span class="n">c09200</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">,</span>
-          <span class="n">personal_nonrefundable_credit</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">ODC_refundable</span><span class="p">):</span>
+          <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
+          <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">ODC_is_refundable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes total used nonrefundable credits, c07100, othertaxes, and</span>
 <span class="sd">    income tax before refundable credits, c09200.</span>
@@ -3635,8 +3637,9 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># total used nonrefundable credits (as computed in NonrefundableCredits)</span>
     <span class="n">c07100</span> <span class="o">=</span> <span class="p">(</span><span class="n">c07180</span> <span class="o">+</span> <span class="n">c07200</span> <span class="o">+</span> <span class="n">c07600</span> <span class="o">+</span> <span class="n">c07300</span> <span class="o">+</span> <span class="n">c07400</span> <span class="o">+</span>
-              <span class="n">c07220</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CTC_refundable</span><span class="p">)</span> <span class="o">+</span> <span class="n">c08000</span> <span class="o">+</span>
-              <span class="n">c07230</span> <span class="o">+</span> <span class="n">c07240</span> <span class="o">+</span> <span class="n">c07260</span> <span class="o">+</span> <span class="n">odc</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ODC_refundable</span><span class="p">)</span> <span class="o">+</span> <span class="n">charity_credit</span> <span class="o">+</span>
+              <span class="n">c07220</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CTC_is_refundable</span><span class="p">)</span> <span class="o">+</span> <span class="n">c08000</span> <span class="o">+</span>
+              <span class="n">c07230</span> <span class="o">+</span> <span class="n">c07240</span> <span class="o">+</span> <span class="n">c07260</span> <span class="o">+</span>
+              <span class="n">odc</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ODC_is_refundable</span><span class="p">)</span> <span class="o">+</span> <span class="n">charity_credit</span> <span class="o">+</span>
               <span class="n">personal_nonrefundable_credit</span><span class="p">)</span>
     <span class="c1"># tax after credits (2016 Form 1040, line 56)</span>
     <span class="n">tax_net_nonrefundable_credits</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">c07100</span><span class="p">)</span>
@@ -3737,8 +3740,8 @@ document.write(`
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">IITAX</span><span class="p">(</span><span class="n">c59660</span><span class="p">,</span> <span class="n">c11070</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">,</span> <span class="n">rptc</span><span class="p">,</span>
           <span class="n">c09200</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">,</span> <span class="n">recovery_rebate_credit</span><span class="p">,</span>
-          <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">ODC_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span>
-          <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
+          <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">ODC_is_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span>
+          <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes final taxes.</span>
 
@@ -3784,17 +3787,19 @@ document.write(`
 <span class="sd">        Total CTC amount (c07220 + c11070 + odc + ctc_new)</span>
 <span class="sd">    ctc_refundable: float</span>
 <span class="sd">        Portion of total CTC amount that is refundable</span>
+<span class="sd">    ctc_nonrefundable: float</span>
+<span class="sd">        Portion of total CTC amount that is nonrefundable</span>
 <span class="sd">    iitax: float</span>
 <span class="sd">        Total federal individual income tax liability</span>
 <span class="sd">    combined: float</span>
 <span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="n">c59660</span>
-    <span class="k">if</span> <span class="n">CTC_refundable</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>
         <span class="n">ctc_refund</span> <span class="o">=</span> <span class="n">c07220</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ctc_refund</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">ODC_refundable</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">ODC_is_refundable</span><span class="p">:</span>
         <span class="n">odc_refund</span> <span class="o">=</span> <span class="n">odc</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">odc_refund</span> <span class="o">=</span> <span class="mf">0.</span>
@@ -3803,9 +3808,11 @@ document.write(`
               <span class="n">odc_refund</span><span class="p">)</span>
     <span class="n">ctc_total</span> <span class="o">=</span> <span class="n">c07220</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">odc</span> <span class="o">+</span> <span class="n">ctc_new</span>
     <span class="n">ctc_refundable</span> <span class="o">=</span> <span class="n">ctc_refund</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">odc_refund</span> <span class="o">+</span> <span class="n">ctc_new</span>
+    <span class="n">ctc_nonrefundable</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ctc_total</span> <span class="o">-</span> <span class="n">ctc_refundable</span><span class="p">)</span>
     <span class="n">iitax</span> <span class="o">=</span> <span class="n">c09200</span> <span class="o">-</span> <span class="n">refund</span>
     <span class="n">combined</span> <span class="o">=</span> <span class="n">iitax</span> <span class="o">+</span> <span class="n">payrolltax</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span>
+            <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Taxes">
