@@ -4,6 +4,27 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2024-07-30 Release 4.2.1
+------------------------
+(last merged pull request is
+[#2786](https://github.com/PSLmodels/Tax-Calculator/pull/2786))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+- Add custom `reforms/growfactors_ext.json` file to use in dynamic analysis of the `reforms/ext.json` extend-TCJA-beyond-2025 reform [[#2770](https://github.com/PSLmodels/Tax-Calculator/pull/2777) by Jason DeBacker]
+- Fix CDCC phase-out calculations [[#2779](https://github.com/PSLmodels/Tax-Calculator/pull/2779) by Martin Holmer]
+- Fix CARES charity deduction for nonitemizers [[#2781](https://github.com/PSLmodels/Tax-Calculator/pull/2781) by Martin Holmer]
+- Fix four 2020 PT_rt? parameter values [[#2783](https://github.com/PSLmodels/Tax-Calculator/pull/2783) by Martin Holmer]
+- Correct AMT taxable income calculation to handle QBID correctly [[#2784](https://github.com/PSLmodels/Tax-Calculator/pull/2784) by Martin Holmer]
+- Fix qualified business income calculation [[#2785](https://github.com/PSLmodels/Tax-Calculator/pull/2785) by Martin Holmer]
+- Add `ctc_nonrefundable` variable [[#2786](https://github.com/PSLmodels/Tax-Calculator/pull/2786) by Martin Holmer]
+
+
 2024-07-21 Release 4.2.0
 ------------------------
 (last merged pull request is
