@@ -102,6 +102,14 @@ class Parameters(pt.Parameters):
                 self.DEFAULTS_FILE_NAME
             )
 
+        # def get_defaults(self):
+        """
+        Method to allow for the defaults to be modified.
+        """
+        label = self.default["schema"]["labels"]["year"]
+        label["validators"]["range"]["max"] = 2074#year_to_extend
+        return self.defaults
+
         if last_known_year is None:
             self._last_known_year = start_year
         else:

@@ -39,7 +39,7 @@ class Policy(Parameters):
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
     LAST_KNOWN_YEAR = 2022  # last year for which indexed param vals are known
     # should increase LAST_KNOWN_YEAR by one every calendar year
-    LAST_BUDGET_YEAR = 2034  # last extrapolation year
+    LAST_BUDGET_YEAR = 2074  # last extrapolation year
     # should increase LAST_BUDGET_YEAR by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
@@ -83,6 +83,8 @@ class Policy(Parameters):
     def __init__(self, gfactors=None, only_reading_defaults=False, **kwargs):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         super().__init__()
+        # print(self.__dict__)
+        # self._vals["schema"]["labels"]["year"]["validators"]["range"]["max"] = 2074
         # handle gfactors argument
         if gfactors is None:
             self._gfactors = GrowFactors()
@@ -100,6 +102,20 @@ class Policy(Parameters):
                         Policy.REMOVED_PARAMS,
                         Policy.REDEFINED_PARAMS,
                         Policy.WAGE_INDEXED_PARAMS, **kwargs)
+        print("Defaults = ", self.defaults)
+        # json_params = self.get_defaults()
+        # label = json_params["schema"]["labels"]["year"]
+        # label["validators"]["range"]["max"] = 2074
+        #         return self.defaults
+        # json_params["schema"]["labels"]["year"]["validators"]["range"]["max"] = 2074
+        # self.defaults = json_params
+        self.initialize(syr, nyrs, Policy.LAST_KNOWN_YEAR,
+                        Policy.REMOVED_PARAMS,
+                        Policy.REDEFINED_PARAMS,
+                        Policy.WAGE_INDEXED_PARAMS, **kwargs)
+        # quit()
+        print("Num years = ", nyrs)
+        # self.defaults = self.get_defaults()
 
     @staticmethod
     def read_json_reform(obj):
