@@ -181,27 +181,29 @@ def test_DependentCare(skip_jit):
 
 STD_in = [6000, 12000, 6000, 12000, 12000]
 STD_Aged_in = [1500, 1200, 1500, 1500, 1500]
-tuple1 = (0, 1000, STD_in, 45, 44, STD_Aged_in, 1000, 2, 0, 0, 0, 2, 0,
-          False, 0)
+Charity_max_in = [300, 600, 300, 300, 300]
+tuple1 = (0, 1000, STD_in, 45, 44, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
+          False, 0, 0, 0, Charity_max_in)
 tuple2 = (0, 1000, STD_in, 66, 44, STD_Aged_in, 1000, 2, 0, 1, 1, 2,
-          200, True, 300)
+          True, 200, 100000, 1, Charity_max_in)
 tuple3 = (0, 1000, STD_in, 44, 66, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
-          400, True, 300)
-tuple4 = (0, 1200, STD_in, 66, 67, STD_Aged_in, 1000, 2, 0, 0, 0, 2, 0,
-          True, 0)
-tuple5 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2, 0,
-          True, 0)
-tuple6 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2, 0,
-          True, 0)
-tuple7 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 1, 0, 0, 2, 0,
-          True, 0)
-tuple8 = (1, 200, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2, 0,
-          True, 0)
-tuple9 = (1, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2, 0,
-          True, 0)
-expected = [12000, 15800, 13500, 14400, 6000, 6000, 0, 1000, 1350]
+          True, 700, 100000, 1, Charity_max_in)
+tuple4 = (0, 1200, STD_in, 66, 67, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
+          True, 0, 100000, 1, Charity_max_in)
+tuple5 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2,
+          True, 0, 100000, 1, Charity_max_in)
+tuple6 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2,
+          True, 0, 100000, 1, Charity_max_in)
+tuple7 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 1, 0, 0, 2,
+          True, 0, 100000, 1, Charity_max_in)
+tuple8 = (1, 200, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2,
+          True, 0, 100000, 1, Charity_max_in)
+tuple9 = (1, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2,
+          True, 0,100000, 1, Charity_max_in)
+expected = [12000, 15800, 13800, 14400, 6000, 6000, 0, 1000, 1350]
 
 
+@pytest.mark.stded
 @pytest.mark.parametrize(
     'test_tuple,expected_value', [
         (tuple1, expected[0]), (tuple2, expected[1]),
@@ -218,9 +220,8 @@ def test_StdDed(test_tuple, expected_value, skip_jit):
     """
     Tests the StdDed function
     """
-    test_value = calcfunctions.StdDed(*test_tuple)
-
-    assert np.allclose(test_value, expected_value)
+    avalue = calcfunctions.StdDed(*test_tuple)
+    assert np.allclose(avalue, expected_value), f"{avalue} != {expected_value}"
 
 
 tuple1 = (120000, 10000, 15000, 100, 2000, 0.06, 0.06, 0.015, 0.015, 0, 99999999999, 
@@ -559,6 +560,7 @@ c04470 = [37000.00, 49000.00, 0.00, 32000.00]
 c04600 = [0.00, 0.00, 0.00, 0.00]
 MARS = [2, 2, 2, 4]
 e00900 = [352000.00, 23000.00, 0.00, 0.00]
+c03260 = [13516.17, 1624.90, 0.00, 0.00]
 e26270 = [0.00, 0.00, 11000.00, 6000.00]
 e02100 = [0.00, 0.00, 0.00, 0.00]
 e27200 = [0.00, 0.00, 0.00, 0.00]
@@ -571,7 +573,8 @@ c04800 = [0.0, 0.0, 0.0, 0.0]  # unimportant for function
 qbided = [0.0, 0.0, 0.0, 0.0]  # unimportant for function
 
 tuple0 = (
-    c00100[0], standard[0], c04470[0], c04600[0], MARS[0], e00900[0], e26270[0],
+    c00100[0], standard[0], c04470[0], c04600[0], MARS[0], e00900[0],
+    c03260[0], e26270[0],
     e02100[0], e27200[0], e00650[0], c01000[0], PT_SSTB_income[0],
     PT_binc_w2_wages[0], PT_ubia_property[0], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
@@ -579,15 +582,17 @@ tuple0 = (
     PT_qbid_ps, PT_qbid_prt, qbided[0], PT_qbid_limit_switch)
 expected0 = (490860.66, 0)
 tuple1 = (
-    c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1], e26270[1],
+    c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1],
+    c03260[1], e26270[1],
     e02100[1], e27200[1], e00650[1], c01000[1], PT_SSTB_income[1],
     PT_binc_w2_wages[1], PT_ubia_property[1], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[1],
     PT_qbid_ps, PT_qbid_prt, qbided[1], PT_qbid_limit_switch)
-expected1 = (284075.10, 4600)
+expected1 = (284400.08, 4275.02)
 tuple2 = (
-    c00100[2], standard[2], c04470[2], c04600[2], MARS[2], e00900[2], e26270[2],
+    c00100[2], standard[2], c04470[2], c04600[2], MARS[2], e00900[2],
+    c03260[2], e26270[2],
     e02100[2], e27200[2], e00650[2], c01000[2], PT_SSTB_income[2],
     PT_binc_w2_wages[2], PT_ubia_property[2], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
@@ -595,13 +600,16 @@ tuple2 = (
     PT_qbid_ps, PT_qbid_prt, qbided[2], PT_qbid_limit_switch)
 expected2 = (579300.00, 0)
 tuple3 = (
-    c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3], e26270[3],
+    c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3],
+    c03260[3], e26270[3],
+
     e02100[3], e27200[3], e00650[3], c01000[3], PT_SSTB_income[3],
     PT_binc_w2_wages[3], PT_ubia_property[3], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[3],
     PT_qbid_ps, PT_qbid_prt, qbided[3], PT_qbid_limit_switch)
 expected3 = (57500.00, 1200)
+
 
 @pytest.mark.parametrize(
     'test_tuple,expected_value', [
