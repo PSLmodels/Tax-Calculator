@@ -3574,7 +3574,7 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 0.0
-            }            
+            }
         ],
         "validators": {
             "range": {
@@ -3846,7 +3846,7 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 0.0
-            }            
+            }
         ],
         "validators": {
             "range": {
@@ -5954,7 +5954,7 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 9e+99
-            }           
+            }
         ],
         "validators": {
             "range": {
@@ -6747,7 +6747,7 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 9e+99
-            }           
+            }
         ],
         "validators": {
             "range": {
@@ -7100,7 +7100,7 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 9e+99
-            }           
+            }
         ],
         "validators": {
             "range": {
@@ -8253,7 +8253,7 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 9e+99
-            }            
+            }
         ],
         "validators": {
             "range": {
@@ -9278,7 +9278,6 @@
                 "MARS": "widow",
                 "value": 9e+99
             }
-
         ],
         "validators": {
             "range": {
