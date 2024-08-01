@@ -16331,15 +16331,15 @@
         "value": [
             {
                 "year": 2013,
-                "value": 0.350
+                "value": 0.35
             },
             {
                 "year": 2021,
-                "value": 0.500
+                "value": 0.5
             },
             {
                 "year": 2022,
-                "value": 0.350
+                "value": 0.35
             }
         ],
         "validators": {
@@ -16365,7 +16365,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": 0.200
+                "value": 0.2
             }
         ],
         "validators": {
@@ -16397,7 +16397,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 9e99
+                "max": 9e+99
             }
         },
         "compatible_data": {
