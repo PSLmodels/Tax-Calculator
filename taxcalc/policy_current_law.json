@@ -19872,7 +19872,7 @@
         "section_1": "",
         "section_2": "",
         "indexable": true,
-        "indexed": true,
+        "indexed": false,
         "type": "float",
         "value": [
             {
