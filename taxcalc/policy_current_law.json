@@ -19804,13 +19804,13 @@
         }
     },
     "ETC_pe_Single": {
-        "title": "Education tax credit phaseout ends (Single)",
-        "description": "The education tax credit will be zero for those taxpayers of single filing status with modified AGI (in thousands) higher than this level.",
+        "title": "Education tax credit phaseout ends (single and other non-joint)",
+        "description": "The education tax credit will be zero for those taxpayers of non-joint filing status with modified AGI (in thousands) higher than this level.",
         "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
-        "indexed": true,
+        "indexed": false,
         "type": "float",
         "value": [
             {
@@ -19851,7 +19851,7 @@
             },
             {
                 "year": 2022,
-                "value": 80.0
+                "value": 90.0
             }
         ],
         "validators": {
@@ -19866,13 +19866,13 @@
         }
     },
     "ETC_pe_Married": {
-        "title": "Education tax credit phaseout ends (Married)",
-        "description": "The education tax credit will be zero for those taxpayers of married filing status with modified AGI level (in thousands) higher than this level.",
+        "title": "Education tax credit phaseout ends (joint)",
+        "description": "The education tax credit will be zero for those taxpayers of married filing joint status with modified AGI level (in thousands) higher than this level.",
         "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
-        "indexed": true,
+        "indexed": false,
         "type": "float",
         "value": [
             {
