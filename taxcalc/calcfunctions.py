@@ -2809,7 +2809,7 @@ def SchR(age_head, age_spouse, MARS, c00100,
 
 
 @iterate_jit(nopython=True)
-def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
+def EducationTaxCredit(exact, e87530, MARS, c00100, c05800,
                        e07300, c07180, c07200, c87668,
                        LLC_Expense_c, ETC_pe_Single, ETC_pe_Married,
                        CR_Education_hc,
@@ -2828,8 +2828,6 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
         Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     c00100: float
         Adjusted Gross Income (AGI)
-    num: int
-        2 when MARS is 2 (married filing jointly), otherwise 1
     c05800: float
         Total (regular + AMT) income tax liability before credits
     e07300: float
@@ -2860,14 +2858,19 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
     -----
     Tax Law Parameters that are not parameterized:
         0.2: Lifetime Learning Credit ratio against expense
+        10000.0: AGI range bewteen ETC_pe_Single and single phase-out start;
+                 twice this amount for ETC_pe_Married
     """
     c87560 = 0.2 * min(e87530, LLC_Expense_c)
+    # on the following credit phase-out law see:
+    # https://www.law.cornell.edu/uscode/text/26/25A#d_1
     if MARS == 2:
         c87570 = ETC_pe_Married * 1000.
+        c87600 = 20000.
     else:
         c87570 = ETC_pe_Single * 1000.
+        c87600 = 10000.
     c87590 = max(0., c87570 - c00100)
-    c87600 = 10000. * num
     if exact == 1:  # exact calculation as on tax forms
         c87610 = min(1., round(c87590 / c87600, 3))
     else:
