@@ -74,3 +74,4 @@ for param in param_data:
 # write new pcl dictionary to policy_current_law.json
 with open('taxcalc/policy_current_law.json', 'w', encoding='utf-8') as pcl_new:
     json.dump(pcl, pcl_new, indent=4)
+    pcl_new.write('\n')
