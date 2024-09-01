@@ -513,7 +513,7 @@ document.write(`
                 <span class="c1"># ... weights must be same size as data</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_length</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data has more records than weights.&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_length</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_length</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
                     <span class="c1"># scale-up sub-sample weights by year-specific factor</span>
                     <span class="n">sum_full_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">WT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__index</span><span class="p">]</span>
@@ -521,9 +521,11 @@ document.write(`
                     <span class="n">factor</span> <span class="o">=</span> <span class="n">sum_full_weights</span> <span class="o">/</span> <span class="n">sum_sub_weights</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">WT</span> <span class="o">*=</span> <span class="n">factor</span>
                 <span class="c1"># ... construct sample weights for current_year</span>
-                <span class="n">wt_colname</span> <span class="o">=</span> <span class="s1">&#39;WT</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">wt_colname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">s006</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="p">[</span><span class="n">wt_colname</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.01</span>
+                <span class="n">wt_colname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;WT</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">assert</span> <span class="n">wt_colname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;no weights for start year </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">s006</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="p">[</span><span class="n">wt_colname</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.01</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -559,7 +561,10 @@ document.write(`
             <span class="c1"># ... apply variable extrapolation growth factors</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_extrapolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span><span class="p">)</span>
             <span class="c1"># ... specify current-year sample weights</span>
-            <span class="n">wt_colname</span> <span class="o">=</span> <span class="s1">&#39;WT</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span><span class="p">)</span>
+            <span class="n">wt_colname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;WT</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">assert</span> <span class="n">wt_colname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;no weights for new year </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">s006</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="p">[</span><span class="n">wt_colname</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.01</span></div>
 
 
