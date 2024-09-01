@@ -102,7 +102,7 @@ class Data():
                 # ... weights must be same size as data
                 if self.array_length > len(self.WT.index):
                     raise ValueError("Data has more records than weights.")
-                elif self.array_length < len(self.WT.index):
+                if self.array_length < len(self.WT.index):
                     # scale-up sub-sample weights by year-specific factor
                     sum_full_weights = self.WT.sum()
                     self.WT = self.WT.iloc[self.__index]
@@ -110,9 +110,11 @@ class Data():
                     factor = sum_full_weights / sum_sub_weights
                     self.WT *= factor
                 # ... construct sample weights for current_year
-                wt_colname = 'WT{}'.format(self.current_year)
-                if wt_colname in self.WT.columns:
-                    self.s006 = self.WT[wt_colname] * 0.01
+                wt_colname = f'WT{self.current_year}'
+                assert wt_colname in self.WT.columns, (
+                    f'no weights for start year {self.current_year}'
+                )
+                self.s006 = self.WT[wt_colname] * 0.01
 
     @property
     def data_year(self):
@@ -146,7 +148,10 @@ class Data():
             # ... apply variable extrapolation growth factors
             self._extrapolate(self.__current_year)
             # ... specify current-year sample weights
-            wt_colname = 'WT{}'.format(self.__current_year)
+            wt_colname = f'WT{self.__current_year}'
+            assert wt_colname in self.WT.columns, (
+                f'no weights for new year {self.current_year}'
+            )
             self.s006 = self.WT[wt_colname] * 0.01
 
     # ----- begin private methods of Data class -----
