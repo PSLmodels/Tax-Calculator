@@ -111,10 +111,10 @@ class Data():
                     self.WT *= factor
                 # ... construct sample weights for current_year
                 wt_colname = f'WT{self.current_year}'
-                if wt_colname in self.WT.columns:
-                    self.s006 = self.WT[wt_colname] * 0.01
-                else:
-                    raise ValueError(f'no weights for {self.current_year}')
+                assert wt_colname in self.WT.columns, (
+                    f'no weights for start year {self.current_year}'
+                )
+                self.s006 = self.WT[wt_colname] * 0.01
 
     @property
     def data_year(self):
@@ -149,10 +149,10 @@ class Data():
             self._extrapolate(self.__current_year)
             # ... specify current-year sample weights
             wt_colname = f'WT{self.__current_year}'
-            if wt_colname in self.WT.columns:
-                self.s006 = self.WT[wt_colname] * 0.01
-            else:
-                raise ValueError(f'no weights for {self.current_year}')
+            assert wt_colname in self.WT.columns, (
+                f'no weights for new year {self.current_year}'
+            )
+            self.s006 = self.WT[wt_colname] * 0.01
 
     # ----- begin private methods of Data class -----
 
