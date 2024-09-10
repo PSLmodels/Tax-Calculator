@@ -6,8 +6,6 @@ dependencies:
 - "numpy>=1.26,<1.27"
 - "pandas>=2.2"
 - "bokeh>=2.4"
-- "marshmallow<3.22"    # to work around paramtools bug
-- "paramtools>=0.18.2"  # requires marshmallow>=3.0
 - numba
 - curl
 - pytest
@@ -20,3 +18,4 @@ dependencies:
 - pip
 - pip:
     - jupyter-book
+    - "paramtools>=0.18.3"
