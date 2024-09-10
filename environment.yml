@@ -1,6 +1,4 @@
 name: taxcalc-dev
-channels:
-  - conda-forge
 dependencies:
 - "python>=3.9, <3.13"
 - "numpy>=1.26,<1.27"
