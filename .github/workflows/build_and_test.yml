@@ -1,4 +1,4 @@
-name: Build Package and Test Source Code [Python 3.9, 3.10, 3.11, 3.12]
+name: Build Package and Test Source Code [Python 3.10, 3.11, 3.12]
 
 on: [push, pull_request]
 
@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: [3.9, '3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12']
 
     steps:
       - name: Checkout
@@ -36,7 +36,7 @@ jobs:
         run: |
           pytest -m 'not requires_pufcsv and not requires_tmdcsv and not pre_release and not local' --cov=./ --cov-report=xml
       - name: Upload coverage to Codecov
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-latest' && contains(github.repository, 'PSLmodels/Tax-Calculator')
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
