@@ -3,7 +3,7 @@ from setuptools import setup
 with open("README.md") as f:
     longdesc = f.read()
 
-version = "4.2.1"
+version = "4.2.2"
 
 config = {
     "description": "Tax Calculator",
@@ -24,7 +24,7 @@ config = {
         "bokeh",
         "numba",
         "requests",
-        "paramtools",
+        "paramtools>=0.18.3",
     ],
     "classifiers": [
         "Development Status :: 4 - Beta",
@@ -34,7 +34,6 @@ config = {
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
