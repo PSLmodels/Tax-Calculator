@@ -14,13 +14,13 @@ for a complete commit history.
 
 **New Features**
 - Non-substantive, cosmetic changes to `policy_current_law.json` file [[#2791](https://github.com/PSLmodels/Tax-Calculator/pull/2791) by Martin Holmer]
--Update `tmd_growfactors.csv` and `tmd_weights.csv.gz` files file [[#2797](https://github.com/PSLmodels/Tax-Calculator/pull/2797) by Martin Holmer]
-
+- Update `tmd_growfactors.csv` and `tmd_weights.csv.gz` files [[#2797](https://github.com/PSLmodels/Tax-Calculator/pull/2797) by Martin Holmer]
 
 **Bug Fixes**
 - Add missing pre-2022 values for indexed policy parameters [[#2789](https://github.com/PSLmodels/Tax-Calculator/pull/2789) by Martin Holmer]
 - Fix education tax credit phase-out parameters [[#2790](https://github.com/PSLmodels/Tax-Calculator/pull/2790) by Martin Holmer]
 - Several PRs with updates for dependency versions and other minor changes by Martin Holmer and Jason DeBacker
+
 
 2024-07-30 Release 4.2.1
 ------------------------
