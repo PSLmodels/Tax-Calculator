@@ -1030,13 +1030,6 @@ def test_raise_errors_regression():
     assert pol.errors
 
 
-# Test update and indexing rules as defined in the Parameters docstring.
-#
-# Each of the following tests implements a Tax-Calculator style reform and
-# a pt styled reform, checks that the updated values are equal, and then,
-# tests that values were extended and indexed (or not indexed) correctly.
-
-
 def test_simple_adj():
     """
     Test updating a 2D parameter that is indexed to inflation.
