@@ -54,6 +54,5 @@
     "PT_qbid_w2_wages_rt": {"2026": 0.50},
     "PT_qbid_alt_w2_wages_rt": {"2026": 0.25},
     "PT_qbid_alt_property_rt": {"2026": 0.03},
-    "ALD_BusinessLosses_c": {"2026": [319821.19, 639642.39, 319821.19, 319821.19, 639642.39]},
-    "ALD_DomesticProduction_hc": {"2026": 1.00}
+    "ALD_BusinessLosses_c": {"2026": [319821.19, 639642.39, 319821.19, 319821.19, 639642.39]}
 }
