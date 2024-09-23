@@ -1228,10 +1228,9 @@ def test_activate_index():
     np.testing.assert_allclose(pol2.CTC_c, exp)
 
 
-@pytest.mark.skip
 def test_apply_cpi_offset():
     """
-    OBSOLETE: Test applying the parameter_indexing_CPI_offset parameter
+    Test applying the parameter_indexing_CPI_offset parameter
     without any other parameters.
     """
     pol1 = Policy()
@@ -1261,10 +1260,11 @@ def test_apply_cpi_offset():
     # make sure values prior to 2021 were not affected.
     cmp_policy_objs(pol0, pol2, year_range=range(pol2.start_year, 2021))
 
-    pol2.set_state(year=[2022, 2023])
+    test_year = Policy.LAST_KNOWN_YEAR
+    pol2.set_state(year=[test_year, test_year + 1])
     np.testing.assert_equal(
         (pol2.EITC_c[1] / pol2.EITC_c[0] - 1).round(4),
-        (pol0.inflation_rates(year=2022) + (-0.001)).round(4),
+        (pol0.inflation_rates(year=test_year) + (-0.001)).round(4),
     )
 
 
