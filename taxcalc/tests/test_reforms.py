@@ -97,44 +97,42 @@ def test_round_trip_reforms(fyear, tests_path):
     rtr_pol = Policy()
     # Revert to 2017 law
     reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
-    with open(reform_file, 'r', encoding='utf_8') as rfile:
+    with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
     # Layer on TCJA
     reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
-    with open(reform_file, 'r', encoding='utf_8') as rfile:
+    with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
     # Layer on the CARES Act
     reform_file = os.path.join(tests_path, '..', 'reforms', 'CARES.json')
-    with open(reform_file, 'r', encoding='utf_8') as rfile:
+    with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     # Layer on the Consolidated Appropriations Act of 2021
     reform_file = os.path.join(
         tests_path, '..', 'reforms', 'ConsolidatedAppropriationsAct2021.json'
     )
-    with open(reform_file, 'r', encoding='utf_8') as rfile:
+    with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
     # Layer on ARPA
     reform_file = os.path.join(tests_path, '..', 'reforms', 'ARPA.json')
-    with open(reform_file, 'r', encoding='utf_8') as rfile:
+    with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     assert not rtr_pol.parameter_warnings
     assert not rtr_pol.errors
-    # Layer on 2023 rounding from IRS
-    reform_file = os.path.join(
-        tests_path, '..', 'reforms', 'rounding2023.json'
-    )
-    with open(reform_file, 'r', encoding='utf_8') as rfile:
+    # Layer on rounding from IRS through Policy.LAST_KNOWN_YEAR
+    reform_file = os.path.join(tests_path, '..', 'reforms', 'rounding.json')
+    with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     assert not rtr_pol.parameter_warnings
@@ -145,8 +143,8 @@ def test_round_trip_reforms(fyear, tests_path):
     assert clp_mdata.keys() == rtr_mdata.keys()
     fail_dump = False
     if fail_dump:
-        rtr_fails = open('fails_rtr', 'w', encoding='utf_8')
-        clp_fails = open('fails_clp', 'w', encoding='utf_8')
+        rtr_fails = open('fails_rtr', 'w', encoding='utf-8')
+        clp_fails = open('fails_clp', 'w', encoding='utf-8')
     fail_params = []
     msg = '\nRound-trip-reform and current-law-policy param values differ for:'
     for pname in clp_mdata.keys():
@@ -367,7 +365,7 @@ def test_ext_reform(tests_path):
     end.set_year(2026)
     ext = Policy()
     reform_file = os.path.join(tests_path, '..', 'reforms', 'ext.json')
-    with open(reform_file, 'r', encoding='utf_8') as rfile:
+    with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
     ext.implement_reform(Policy.read_json_reform(rtext))
     assert not ext.parameter_warnings

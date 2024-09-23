@@ -736,7 +736,7 @@ def test_section_titles(tests_path):
     }
     # check validity of parameter section titles in policy_current_law.json
     path = os.path.join(tests_path, '..', 'policy_current_law.json')
-    with open(path, 'r', encoding='utf_8') as clpfile:
+    with open(path, 'r', encoding='utf-8') as clpfile:
         clpdict = json.load(clpfile)
         clpdict.pop("schema", None)
     # ... make sure ever clpdict section title is in valid_dict
@@ -761,7 +761,7 @@ def test_section_titles(tests_path):
     # check validity of parameter section titles in docs/uguide.htmx skeleton
     path = os.path.join(tests_path, '..', '..', 'docs', 'guide',
                         'policy_params.md')
-    with open(path, 'r', encoding='utf_8') as md_file:
+    with open(path, 'r', encoding='utf-8') as md_file:
         md_text = md_file.read()
     md_dict = generate_section_dictionary(md_text)
     # ... make sure every md_dict section title is in valid_dict
@@ -784,7 +784,7 @@ def test_description_punctuation(tests_path):
     """
     # read JSON file into a dictionary
     path = os.path.join(tests_path, '..', 'policy_current_law.json')
-    with open(path, 'r', encoding='utf_8') as jsonfile:
+    with open(path, 'r', encoding='utf-8') as jsonfile:
         dct = json.load(jsonfile)
         dct.pop("schema", None)
     all_desc_ok = True
