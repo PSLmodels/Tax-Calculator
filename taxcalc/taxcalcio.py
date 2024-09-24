@@ -93,9 +93,13 @@ class TaxCalcIO():
                 msg = 'INPUT file could not be found'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
             # if tmd_input_data is True, construct weights and gfactor paths
-            if self.tmd_input_data:
+            if self.tmd_input_data:  # pragma: no cover
                 tmd_dir = os.path.dirname(input_data)
-                self.tmd_weights = os.path.join(tmd_dir, 'tmd_weights.csv.gz')
+                if 'TMD_AREA' in os.environ:
+                    wfile = f'{os.environ["TMD_AREA"]}_tmd_weights.csv.gz'
+                else:  # using national weights
+                    wfile = 'tmd_weights.csv.gz'
+                self.tmd_weights = os.path.join(tmd_dir, wfile)
                 self.tmd_gfactor = os.path.join(tmd_dir, 'tmd_growfactors.csv')
                 if not os.path.isfile(self.tmd_weights):
                     msg = f'weights file {self.tmd_weights} could not be found'

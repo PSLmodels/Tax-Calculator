@@ -240,6 +240,9 @@ class Records(Data):
         eliminate the need to specify all the details of the PUF input
         data.
         """
+        assert isinstance(data_path, Path)
+        assert isinstance(weights_path, Path)
+        assert isinstance(growfactors_path, Path)
         return Records(
             data=pd.read_csv(data_path),
             start_year=Records.TMDCSV_YEAR,
