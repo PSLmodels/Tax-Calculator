@@ -61,13 +61,16 @@ file.
 
 The [tax-microdata
 repository](https://github.com/PSLmodels/tax-microdata-benchmarking)
-produces an input variables file (`tmd.csv`) and a
-`tmd_weights.csv.gz` file that is included in the Tax-Calculator
+produces an input variables file (`tmd.csv`), a national weights file
+(`tmd_weights.csv.gz`), and a variable growth factors file
+(`tmd_growfactors.csv`) that can be used with the Tax-Calculator
 package beginning with the 3.6.0 release.  The `tmd.csv` file is
 available only to Tax-Calculator users who have purchased their own
-version of the 2015 IRS-SOI PUF.  For those users, the
-`Records.tmd_constructor()` method creates a `Records` class object
-containing the `tmd` variables and weights.
+version of the 2015 IRS-SOI PUF.  For those users, those three files
+are avaiable from the tax-microdata repository.  These three tmd files
+can be used with the Tax-Calculator Python API (using the 
+`Records.tmd_constructor()` static method) or with the Tax-Calculator
+CLI tool, `tc`.
 
 ## Using other data with Tax-Calculator
 
