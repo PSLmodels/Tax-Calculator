@@ -96,7 +96,9 @@ class TaxCalcIO():
             if self.tmd_input_data:  # pragma: no cover
                 tmd_dir = os.path.dirname(input_data)
                 if 'TMD_AREA' in os.environ:
-                    wfile = f'{os.environ["TMD_AREA"]}_tmd_weights.csv.gz'
+                    area = os.environ['TMD_AREA']
+                    wfile = f'{area}_tmd_weights.csv.gz'
+                    inp = f'{fname[:-4]}_{area}-{str(tax_year)[2:]}'
                 else:  # using national weights
                     wfile = 'tmd_weights.csv.gz'
                 self.tmd_weights = os.path.join(tmd_dir, wfile)
