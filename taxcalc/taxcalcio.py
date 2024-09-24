@@ -97,6 +97,12 @@ class TaxCalcIO():
                 tmd_dir = os.path.dirname(input_data)
                 self.tmd_weights = os.path.join(tmd_dir, 'tmd_weights.csv.gz')
                 self.tmd_gfactor = os.path.join(tmd_dir, 'tmd_growfactors.csv')
+                if not os.path.isfile(self.tmd_weights):
+                    msg = f'weights file {self.tmd_weights} could not be found'
+                    self.errmsg += 'ERROR: {}\n'.format(msg)
+                if not os.path.isfile(self.tmd_gfactor):
+                    msg = f'gfactor file {self.tmd_gfactor} could not be found'
+                    self.errmsg += 'ERROR: {}\n'.format(msg)
         elif isinstance(input_data, pd.DataFrame):
             inp = 'df-{}'.format(str(tax_year)[2:])
         else:
