@@ -545,13 +545,16 @@ file.</p>
 <h3>2015 IRS public use data (<code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code>)<a class="headerlink" href="#irs-public-use-data-tmd-csv" title="Link to this heading">#</a></h3>
 <p>The <a class="reference external" href="https://github.com/PSLmodels/tax-microdata-benchmarking">tax-microdata
 repository</a>
-produces an input variables file (<code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code>) and a
-<code class="docutils literal notranslate"><span class="pre">tmd_weights.csv.gz</span></code> file that is included in the Tax-Calculator
+produces an input variables file (<code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code>), a national weights file
+(<code class="docutils literal notranslate"><span class="pre">tmd_weights.csv.gz</span></code>), and a variable growth factors file
+(<code class="docutils literal notranslate"><span class="pre">tmd_growfactors.csv</span></code>) that can be used with the Tax-Calculator
 package beginning with the 3.6.0 release.  The <code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code> file is
 available only to Tax-Calculator users who have purchased their own
-version of the 2015 IRS-SOI PUF.  For those users, the
-<code class="docutils literal notranslate"><span class="pre">Records.tmd_constructor()</span></code> method creates a <code class="docutils literal notranslate"><span class="pre">Records</span></code> class object
-containing the <code class="docutils literal notranslate"><span class="pre">tmd</span></code> variables and weights.</p>
+version of the 2015 IRS-SOI PUF.  For those users, those three files
+are avaiable from the tax-microdata repository.  These three tmd files
+can be used with the Tax-Calculator Python API (using the
+<code class="docutils literal notranslate"><span class="pre">Records.tmd_constructor()</span></code> static method) or with the Tax-Calculator
+CLI tool, <code class="docutils literal notranslate"><span class="pre">tc</span></code>.</p>
 </section>
 </section>
 <section id="using-other-data-with-tax-calculator">

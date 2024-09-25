@@ -485,6 +485,8 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">puf_input_data</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cps_input_data</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmd_weights</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmd_gfactor</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># remove any leading directory path from INPUT filename</span>
             <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
@@ -501,6 +503,23 @@ document.write(`
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cps_input_data</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">input_data</span><span class="p">):</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;INPUT file could not be found&#39;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="c1"># if tmd_input_data is True, construct weights and gfactor paths</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="n">tmd_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;TMD_AREA&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+                    <span class="n">area</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TMD_AREA&#39;</span><span class="p">]</span>
+                    <span class="n">wfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">area</span><span class="si">}</span><span class="s1">_tmd_weights.csv.gz&#39;</span>
+                    <span class="n">inp</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fname</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">area</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">tax_year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># using national weights</span>
+                    <span class="n">wfile</span> <span class="o">=</span> <span class="s1">&#39;tmd_weights.csv.gz&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tmd_weights</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmd_dir</span><span class="p">,</span> <span class="n">wfile</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tmd_gfactor</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmd_dir</span><span class="p">,</span> <span class="s1">&#39;tmd_growfactors.csv&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmd_weights</span><span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;weights file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tmd_weights</span><span class="si">}</span><span class="s1"> could not be found&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmd_gfactor</span><span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;gfactor file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tmd_gfactor</span><span class="si">}</span><span class="s1"> could not be found&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
             <span class="n">inp</span> <span class="o">=</span> <span class="s1">&#39;df-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tax_year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:])</span>
         <span class="k">else</span><span class="p">:</span>
@@ -534,7 +553,7 @@ document.write(`
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="c1"># split any compound reform into list of simple reforms</span>
-            <span class="n">refnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">refnames</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">reforms</span> <span class="o">=</span> <span class="n">reform</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">rfm</span> <span class="ow">in</span> <span class="n">reforms</span><span class="p">:</span>
                 <span class="c1"># remove any leading directory path from rfm filename</span>
@@ -617,7 +636,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">policy_dicts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">policy_dicts</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">tax_year</span><span class="p">,</span> <span class="n">baseline</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span> <span class="n">assump</span><span class="p">,</span>
              <span class="n">aging_input_data</span><span class="p">,</span> <span class="n">exact_calculations</span><span class="p">):</span>
@@ -645,7 +664,7 @@ document.write(`
         <span class="c1"># get assumption sub-dictionaries</span>
         <span class="n">paramdict</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">read_json_param_objects</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">assump</span><span class="p">)</span>
         <span class="c1"># get policy parameter dictionaries from --reform file(s)</span>
-        <span class="n">policydicts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">policydicts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span><span class="p">:</span>
             <span class="n">reforms</span> <span class="o">=</span> <span class="n">reform</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">reforms</span><span class="p">:</span>
@@ -663,9 +682,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">valerr_msg</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
         <span class="c1"># create GrowFactors base object that incorporates gdiff_baseline</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>
-            <span class="n">gfactors_base</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
-                <span class="n">Records</span><span class="o">.</span><span class="n">TMD_GROWFACTORS_FILENAME</span>
-            <span class="p">)</span>
+            <span class="n">gfactors_base</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmd_gfactor</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">gfactors_base</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
         <span class="n">gdiff_baseline</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_base</span><span class="p">)</span>
@@ -677,9 +694,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">valerr_msg</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
         <span class="c1"># create GrowFactors ref object that has all gdiff objects applied</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>
-            <span class="n">gfactors_ref</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
-                <span class="n">Records</span><span class="o">.</span><span class="n">TMD_GROWFACTORS_FILENAME</span>
-            <span class="p">)</span>
+            <span class="n">gfactors_ref</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmd_gfactor</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">gfactors_ref</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
         <span class="n">gdiff_baseline</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_ref</span><span class="p">)</span>
@@ -744,14 +759,20 @@ document.write(`
                     <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>
-                <span class="n">recs</span> <span class="o">=</span> <span class="n">Records</span><span class="o">.</span><span class="n">tmd_constructor</span><span class="p">(</span>
-                    <span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
+                <span class="n">recs</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">input_data</span><span class="p">),</span>
+                    <span class="n">start_year</span><span class="o">=</span><span class="n">Records</span><span class="o">.</span><span class="n">TMDCSV_YEAR</span><span class="p">,</span>
+                    <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tmd_weights</span><span class="p">,</span>
                     <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_ref</span><span class="p">,</span>
+                    <span class="n">adjust_ratios</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span>
                 <span class="p">)</span>  <span class="c1"># pragma: no cover</span>
-                <span class="n">recs_base</span> <span class="o">=</span> <span class="n">Records</span><span class="o">.</span><span class="n">tmd_constructor</span><span class="p">(</span>
-                    <span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
+                <span class="n">recs_base</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">input_data</span><span class="p">),</span>
+                    <span class="n">start_year</span><span class="o">=</span><span class="n">Records</span><span class="o">.</span><span class="n">TMDCSV_YEAR</span><span class="p">,</span>
+                    <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tmd_weights</span><span class="p">,</span>
                     <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_base</span><span class="p">,</span>
+                    <span class="n">adjust_ratios</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span>
                 <span class="p">)</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">else</span><span class="p">:</span>  <span class="c1"># if not {cps|tmd}_input_data but aging_input_data</span>
@@ -969,7 +990,7 @@ document.write(`
             <span class="n">doc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">reform_documentation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span><span class="p">,</span>
                                                   <span class="bp">self</span><span class="o">.</span><span class="n">policy_dicts</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="n">doc_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-doc.text&#39;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">doc_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dfile</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">doc_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dfile</span><span class="p">:</span>
             <span class="n">dfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 
 
@@ -1009,7 +1030,7 @@ document.write(`
         <span class="n">tab_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-tab.text&#39;</span><span class="p">)</span>
         <span class="c1"># skip tables if there are not some positive weights</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">total_weight</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tab_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tfile</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tab_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tfile</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;No tables because sum of weights is not positive</span><span class="se">\n</span><span class="s1">&#39;</span>
                 <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">return</span>
@@ -1031,7 +1052,7 @@ document.write(`
         <span class="n">diff</span> <span class="o">=</span> <span class="n">nontax</span> <span class="o">+</span> <span class="n">change</span>  <span class="c1"># using expanded_income under baseline policy</span>
         <span class="n">diffdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">diff</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">all_vars</span><span class="p">)</span>
         <span class="c1"># write each kind of distributional table</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tab_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tfile</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tab_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tfile</span><span class="p">:</span>
             <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_decile_table</span><span class="p">(</span><span class="n">distdf</span><span class="p">,</span> <span class="n">tfile</span><span class="p">,</span> <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Reform Totals&#39;</span><span class="p">)</span>
             <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_decile_table</span><span class="p">(</span><span class="n">diffdf</span><span class="p">,</span> <span class="n">tfile</span><span class="p">,</span> <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Differences&#39;</span><span class="p">)</span>
@@ -1173,7 +1194,7 @@ document.write(`
                <span class="s1">&#39;&lt;head&gt;&lt;title&gt;</span><span class="si">{}</span><span class="s1">&lt;/title&gt;&lt;/head&gt;</span><span class="se">\n</span><span class="s1">&#39;</span>
                <span class="s1">&#39;&lt;body&gt;&lt;center&lt;h1&gt;</span><span class="si">{}</span><span class="s1">&lt;/h1&gt;&lt;/center&gt;&lt;/body&gt;</span><span class="se">\n</span><span class="s1">&#39;</span>
                <span class="s1">&#39;&lt;/html&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gfile</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gfile</span><span class="p">:</span>
             <span class="n">gfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span></div>
 
 
@@ -1184,7 +1205,7 @@ document.write(`
 <span class="sd">        Extract minimal output and return it as Pandas DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">varlist</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RECID&#39;</span><span class="p">,</span> <span class="s1">&#39;YEAR&#39;</span><span class="p">,</span> <span class="s1">&#39;WEIGHT&#39;</span><span class="p">,</span> <span class="s1">&#39;INCTAX&#39;</span><span class="p">,</span> <span class="s1">&#39;LSTAX&#39;</span><span class="p">,</span> <span class="s1">&#39;PAYTAX&#39;</span><span class="p">]</span>
-        <span class="n">odict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">odict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">scalc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span>
         <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;RECID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scalc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;RECID&#39;</span><span class="p">)</span>  <span class="c1"># id for tax filing unit</span>
         <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tax_year</span><span class="p">()</span>  <span class="c1"># tax calculation year</span>
