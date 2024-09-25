@@ -13,7 +13,7 @@ help:
 	@echo "clean      : remove .pyc files and local taxcalc package"
 	@echo "package    : build and install local package"
 	@echo "pytest-cps : generate report for and cleanup after"
-	@echo "             pytest -m 'not requires_pufcsv and not requires_tmdcsv and not pre_release'"
+	@echo "             pytest -m 'not requires_pufcsv and not pre_release'"
 	@echo "pytest     : generate report for and cleanup after"
 	@echo "             pytest -m 'not pre_release'"
 	@echo "pytest-all : generate report for and cleanup after"
@@ -51,7 +51,7 @@ endef
 .PHONY=pytest-cps
 pytest-cps:
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m "not requires_pufcsv and not requires_tmdcsv and not pre_release"
+	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m "not requires_pufcsv and not pre_release"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
@@ -103,7 +103,7 @@ define coverage-cleanup
 rm -f .coverage htmlcov/*
 endef
 
-COVMARK = "not requires_pufcsv and not requires_tmdcsv and not pre_release"
+COVMARK = "not requires_pufcsv and not pre_release"
 
 OS := $(shell uname -s)
 
