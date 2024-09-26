@@ -21,5 +21,6 @@ comment:
 
 ignore:
   - "setup.py"
+  - "update_pcl.py"
   - "ppp.py"
   - "extend_tcja.py"
