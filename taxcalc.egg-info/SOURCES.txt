@@ -171,8 +171,6 @@ taxcalc/reforms/ptaxes2.json
 taxcalc/reforms/ptaxes2.out.csv
 taxcalc/reforms/ptaxes3.json
 taxcalc/reforms/ptaxes3.out.csv
-taxcalc/reforms/rounding2022.json
-taxcalc/reforms/rounding2022.out.csv
 taxcalc/reforms/archive/Clinton2016.json
 taxcalc/reforms/archive/RyanBrady.json
 taxcalc/reforms/archive/TCJA_House.json
