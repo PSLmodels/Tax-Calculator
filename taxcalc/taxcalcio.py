@@ -347,24 +347,25 @@ class TaxCalcIO():
                     gfactors=gfactors_base,
                     exact_calculations=exact_calculations
                 )
-            elif self.tmd_input_data:
+            elif self.tmd_input_data:  # pragma: no cover
+                wghts = pd.read_csv(self.tmd_weights)
                 recs = Records(
                     data=pd.read_csv(input_data),
                     start_year=Records.TMDCSV_YEAR,
-                    weights=self.tmd_weights,
+                    weights=wghts,
                     gfactors=gfactors_ref,
                     adjust_ratios=None,
                     exact_calculations=exact_calculations
-                )  # pragma: no cover
+                )
                 recs_base = Records(
                     data=pd.read_csv(input_data),
                     start_year=Records.TMDCSV_YEAR,
-                    weights=self.tmd_weights,
+                    weights=wghts,
                     gfactors=gfactors_base,
                     adjust_ratios=None,
                     exact_calculations=exact_calculations
-                )  # pragma: no cover
-            else:  # if not {cps|tmd}_input_data but aging_input_data
+                )
+            else:  # if not {cps|tmd}_input_data but aging_input_data: puf
                 recs = Records(
                     data=input_data,
                     gfactors=gfactors_ref,
