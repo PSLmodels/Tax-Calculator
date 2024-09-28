@@ -660,7 +660,7 @@ document.write(`
         <span class="k">return</span> <span class="n">Records</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_path</span><span class="p">),</span>
             <span class="n">start_year</span><span class="o">=</span><span class="n">Records</span><span class="o">.</span><span class="n">TMDCSV_YEAR</span><span class="p">,</span>
-            <span class="n">weights</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">weights_path</span><span class="p">),</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">weights_path</span><span class="p">),</span>
             <span class="n">gfactors</span><span class="o">=</span><span class="n">GrowFactors</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">growfactors_path</span><span class="p">)),</span>
             <span class="n">adjust_ratios</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span><span class="p">,</span>
