@@ -23436,54 +23436,29 @@
                 "value": 1000000.0
             },
             {
-                "year": 2023,
-                "MARS": "single",
-                "value": 9e+99
-            },
-            {
-                "year": 2023,
-                "MARS": "mjoint",
-                "value": 9e+99
-            },
-            {
-                "year": 2023,
-                "MARS": "mseparate",
-                "value": 9e+99
-            },
-            {
-                "year": 2023,
-                "MARS": "headhh",
-                "value": 9e+99
-            },
-            {
-                "year": 2023,
-                "MARS": "widow",
-                "value": 9e+99
-            },
-            {
                 "year": 2024,
                 "MARS": "single",
-                "value": 9e+99
+                "value": 1000000.0
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 9e+99
+                "value": 1000000.0
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 9e+99
+                "value": 500000.0
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 9e+99
+                "value": 1000000.0
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 9e+99
+                "value": 1000000.0
             }
         ],
         "validators": {
@@ -23783,54 +23758,29 @@
                 "value": 2000000.0
             },
             {
-                "year": 2023,
-                "MARS": "single",
-                "value": 9e+99
-            },
-            {
-                "year": 2023,
-                "MARS": "mjoint",
-                "value": 9e+99
-            },
-            {
-                "year": 2023,
-                "MARS": "mseparate",
-                "value": 9e+99
-            },
-            {
-                "year": 2023,
-                "MARS": "headhh",
-                "value": 9e+99
-            },
-            {
-                "year": 2023,
-                "MARS": "widow",
-                "value": 9e+99
-            },
-            {
                 "year": 2024,
                 "MARS": "single",
-                "value": 9e+99
+                "value": 2000000.0
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 9e+99
+                "value": 2000000.0
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 9e+99
+                "value": 1000000.0
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 9e+99
+                "value": 2000000.0
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 9e+99
+                "value": 2000000.0
             }
         ],
         "validators": {
