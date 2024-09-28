@@ -246,7 +246,7 @@ class Records(Data):
         return Records(
             data=pd.read_csv(data_path),
             start_year=Records.TMDCSV_YEAR,
-            weights=str(weights_path),
+            weights=pd.read_csv(weights_path),
             gfactors=GrowFactors(growfactors_filename=str(growfactors_path)),
             adjust_ratios=None,
             exact_calculations=exact_calculations,
