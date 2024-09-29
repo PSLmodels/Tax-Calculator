@@ -1,6 +1,7 @@
 // REFORM TO EXTEND TEMPORARY TCJA PROVISIONS BEYOND 2025
 // USING TAX-CALCULATOR 4.2.2b
 // WITH 2025-to-2026 INDEXING FACTOR = 1.022000
+//  AND 2028-to-2029 INDEXING FACTOR = 1.019400
 {
     "II_rt1": {"2026": 0.10},
     "II_brk1": {"2026": [12157.51, 24315.02, 12157.51, 17345.41, 24315.02]},
@@ -54,5 +55,5 @@
     "PT_qbid_w2_wages_rt": {"2026": 0.50},
     "PT_qbid_alt_w2_wages_rt": {"2026": 0.25},
     "PT_qbid_alt_property_rt": {"2026": 0.03},
-    "ALD_BusinessLosses_c": {"2026": [319658.6, 639317.21, 319658.6, 319658.6, 639317.21]}
+    "ALD_BusinessLosses_c": {"2029": [339091.08, 678182.18, 339091.08, 339091.08, 678182.18]},
 }
