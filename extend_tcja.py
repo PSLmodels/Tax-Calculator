@@ -3,7 +3,9 @@ This script generates a JSON reform file, which could be called
 extend_tcja.json, that can serve as an alternative baseline to
 current-law policy (which ends TCJA temporary provisions after 2025).
 
-USAGE: (taxcalc-dev) ~% python extend_tcja.py
+USAGE: (taxcalc-dev) Tax-Calculator% python extend_tcja.py > ext.json
+  THEN CHECK:                      % diff ext.json taxcalc/reforms/ext.json
+  IF DIFFS:                        % mv ext.json taxcalc/reforms/ext.json
 
 WHEN TO USE: use this script to update reforms/ext.json in these situations:
 (a) whenever inflation rates in the growfactors.csv files are changed
@@ -92,7 +94,8 @@ def main():
     # calculate 2025-to-2026 parameters indexing factor
     pol = taxcalc.Policy()
     pirates = pol.inflation_rates()
-    ifactor = 1.0 + pirates[2025-taxcalc.Policy.JSON_START_YEAR]
+    ifactor25 = 1.0 + pirates[2025-taxcalc.Policy.JSON_START_YEAR]
+    ifactor28 = 1.0 + pirates[2028-taxcalc.Policy.JSON_START_YEAR]
     # specify extend-TCJA-beyond-2025 reform
     # ... get 2025 parameter values
     pol.set_year(2025)
@@ -100,28 +103,42 @@ def main():
     # ... write reform header comments
     print( '// REFORM TO EXTEND TEMPORARY TCJA PROVISIONS BEYOND 2025')
     print(f'// USING TAX-CALCULATOR {taxcalc.__version__}')
-    print(f'// WITH 2025-to-2026 INDEXING FACTOR = {ifactor:.6f}')
+    print(f'// WITH 2025-to-2026 INDEXING FACTOR = {ifactor25:.6f}')
+    print(f'//  AND 2028-to-2029 INDEXING FACTOR = {ifactor28:.6f}')
     if TCJA_CATEGORY:
         print(f'// ONLY TCJA PROVISIONS IN CATEGORY {TCJA_CATEGORY}')
     print('{')
-    # ... set 2026 nonreverted values for the parameters set to revert
+    # ... set 2026/29 nonreverted values for the parameters set to revert
+    left_brace = '{'
+    year = 2026
     for pname, pinfo in TCJA_PARAMETERS.items():
         if TCJA_CATEGORY and pinfo['category'] != TCJA_CATEGORY:
             continue  # skip this parameter
+        if pname == 'ALD_BusinessLosses_c':
+            ifactor = ifactor28
+            year = 2029
+            pol.set_year(2028)
+            pdata = dict(pol.items())
+        else:
+            if year != 2026:
+                pol.set_year(2028)
+                pdata = dict(pol.items())
+            ifactor = ifactor25
+            year = 2026
         if pinfo['indexed']:
             pval = pdata[pname][0] * ifactor
             if isinstance(pval, numpy.ndarray):
                 # handle vector parameter
                 pval = numpy.minimum(9e99, pval.round(2))
                 sys.stdout.write(f'    "{pname}": ')
-                sys.stdout.write('{"2026": ')
+                sys.stdout.write(f'{left_brace}"{year}": ')
                 sys.stdout.write(f'{pval.tolist()}')
                 sys.stdout.write('},\n')
             else:
                 # handle scalar parameter
                 pval = min(9e99, pval)
                 sys.stdout.write(f'    "{pname}": ')
-                sys.stdout.write('{"2026": ')
+                sys.stdout.write(f'{left_brace}"{year}": ')
                 sys.stdout.write(f'{pval*ifactor:.2f}')
                 sys.stdout.write('},\n')
         else:  # if parameter is not indexed
@@ -130,13 +147,13 @@ def main():
                 # handle vector parameter
                 pval = numpy.minimum(9e99, pval.round(2))
                 sys.stdout.write(f'    "{pname}": ')
-                sys.stdout.write('{"2026": ')
+                sys.stdout.write(f'{left_brace}"{year}": ')
                 sys.stdout.write(f'{pval.tolist()}')
                 sys.stdout.write('},\n')
             else:
                 # handle scalar parameter
                 sys.stdout.write(f'    "{pname}": ')
-                sys.stdout.write('{"2026": ')
+                sys.stdout.write(f'{left_brace}"{year}": ')
                 sys.stdout.write(f'{pval:.2f}')
                 sys.stdout.write('},\n')
     print('}')
