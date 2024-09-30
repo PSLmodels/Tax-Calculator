@@ -13,6 +13,8 @@ Create new `taxcalc` packages
 
 --> merge master branch into X-Y-Z branch
 
+--> run `python extend_tcja.py`  [update taxcalc/reforms/ext.json if needed]
+
 --> run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
 
 --> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc subdir]
