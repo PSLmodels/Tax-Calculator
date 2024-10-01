@@ -73,7 +73,9 @@ def integrate_fragments(fragments):
     # pylint: disable=consider-using-with
     nfile = open('pcl.json', 'w', encoding='utf-8')
     re_param_line = re.compile(r'^\s{4}"(\w+)": {$')
-    re_value_line = re.compile(r'^\s{12}"value":')
+    re_ryear26_line = re.compile(r'^\s{16}"year": 2026,$')
+    re_ryear29_line = re.compile(r'^\s{16}"year": 2029,$')
+    re_value_line = re.compile(r'^\s{16}"value":')
     writing_oline = True
     pname_has_fragments = False
     for oline in olines:
@@ -82,9 +84,10 @@ def integrate_fragments(fragments):
             pname = pmatch.group(1)
             pname_has_fragments = pname in fragments
             if pname_has_fragments:
-                re_ryear_line = re.compile(r'^\s{12}"year": 2026,$')
-                if fragments[pname][0]['year'] == 2029:
-                    re_ryear_line = re.compile(r'^\s{12}"year": 2029,$')
+                if fragments[pname][0]['year'] == 2026:
+                    re_ryear_line = re_ryear26_line
+                else:
+                    re_ryear_line = re_ryear29_line
                 idx = -1
         elif pname_has_fragments:
             ymatch = re_ryear_line.search(oline)
@@ -99,8 +102,7 @@ def integrate_fragments(fragments):
             nfile.write(oline)
         else:
             nfile.write(
-                '            "value": '
-                f'{fragments[pname][idx]["value"]}'
+                f'                "value": {fragments[pname][idx]["value"]}\n'
             )
     nfile.close()
     return 0
