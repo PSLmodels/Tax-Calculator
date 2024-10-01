@@ -487,7 +487,9 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="releasing-tax-caclculator-packages">
 <h1>Releasing Tax-Caclculator Packages<a class="headerlink" href="#releasing-tax-caclculator-packages" title="Link to this heading">#</a></h1>
-<p>The following outlines the process to release Tax-Calculator Packages on Conda-Forge and creating a new branch to fix a bug in a previous release.</p>
+<p>The following outlines the process to release Tax-Calculator Packages
+on Conda-Forge and creating a new branch to fix a bug in a previous
+release.</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="create-new-taxcalc-packages">
 <h1>Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> packages<a class="headerlink" href="#create-new-taxcalc-packages" title="Link to this heading">#</a></h1>
@@ -498,7 +500,11 @@ document.write(`
 
 --&gt; merge master branch into X-Y-Z branch
 
---&gt; run `python extend_tcja.py`  [update taxcalc/reforms/ext.json if needed]
+--&gt; run `python update_pcl.py`  [to update policy_current_law.json if needed]
+
+--&gt; run `python ppp.py`  [to update policy_current_law.json if needed]
+
+--&gt; run `python extend_tcja.py &gt; ext.json`  [to update reforms/ext.json if needed]
 
 --&gt; run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
 
