@@ -326,7 +326,7 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'headhh', 'value': 305000.0},
         {'year': 2024, 'MARS': 'widow', 'value': 610000.0},
     ],
-    'FST_AGI_thd_lo': [  # not inflation-indexed, but needs to be here
+    'FST_AGI_thd_lo': [  # not part of current-law policy, but needs to be here
         {'year': 2023, 'MARS': 'single', 'value': 1000000.0},
         {'year': 2023, 'MARS': 'mjoint', 'value': 1000000.0},
         {'year': 2023, 'MARS': 'mseparate', 'value': 500000.0},
@@ -338,8 +338,10 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 500000.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 1000000.0},
         {'year': 2024, 'MARS': 'widow', 'value': 1000000.0},
+
+        # each year's values are the same as for the prior year
     ],
-    'FST_AGI_thd_hi': [  # not inflation-indexed, but needs to be here
+    'FST_AGI_thd_hi': [  # not part of current-law policy, but needs to be here
         {'year': 2023, 'MARS': 'single', 'value': 2000000.0},
         {'year': 2023, 'MARS': 'mjoint', 'value': 2000000.0},
         {'year': 2023, 'MARS': 'mseparate', 'value': 1000000.0},
@@ -351,6 +353,8 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 1000000.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 2000000.0},
         {'year': 2024, 'MARS': 'widow', 'value': 2000000.0},
+
+        # each year's values are the same as for the prior year
     ],
     # ITEMS NOT PART OF CURRENT-LAW POLICY IN 2022-2025 PERIOD:
     'ALD_Dependents_Child_c': LIST_SCALAR_ZERO,
