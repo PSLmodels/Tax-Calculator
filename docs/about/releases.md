@@ -3,6 +3,29 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+
+2024-10-02 Release 4.3.0
+------------------------
+(last merged pull request is
+[#2819](https://github.com/PSLmodels/Tax-Calculator/pull/2819))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Add known values of inflation-indexed policy parameters for 2023 [[#2806](https://github.com/PSLmodels/Tax-Calculator/pull/2806) by Martin Holmer]
+- Enhance `Records.tmd_constructor` static method [[#2809](https://github.com/PSLmodels/Tax-Calculator/pull/2809) by Martin Holmer]
+- Remove TMD data files from Tax-Calculator repository [[#2810](https://github.com/PSLmodels/Tax-Calculator/pull/2810) by Martin Holmer]
+- Add known values of inflation-indexed policy parameters for 2024 [[#2816](https://github.com/PSLmodels/Tax-Calculator/pull/2816) by Martin Holmer]
+- Enhance `extend_tcja.py` and update `reforms/ext.json` [[#2817](https://github.com/PSLmodels/Tax-Calculator/pull/2817) by Martin Holmer]
+- Enhance `ppp.py` script [[#2819](https://github.com/PSLmodels/Tax-Calculator/pull/2819) by Martin Holmer]
+
+**Bug Fixes**
+- Fix specification of domestic production deduction under TCJA [[#2807](https://github.com/PSLmodels/Tax-Calculator/pull/2807) by Martin Holmer]
+- Fix `ALD_BusinessLosses_c` parameter values after 2025 [[#2818](https://github.com/PSLmodels/Tax-Calculator/pull/2818) by Martin Holmer]
+
+
 2024-09-14 Release 4.2.2
 ------------------------
 (last merged pull request is
