@@ -2,10 +2,12 @@
 This script uses known values of inflation-indexed policy parameters after
 2022 to write an updated version of the taxcalc/policy_current_law.json file.
 
-USAGE: (taxcalc-dev) Tax-Calculator% python update_pcl.py
+USAGE: (taxcalc-dev) T-C% python update_pcl.py
+THEN CHECK:             % diff pcl.json taxcalc/policy_current_law.json
+IF DIFFS OK:            % mv pcl.json taxcalc/policy_current_law.json
 
-THEN: look at differences between the newly written pcl.json file and
-      the old existing taxcalc/policy_current_law.json file
+WHEN TO USE: use this script to update taxcalc/policy_current_law.json
+whenever post-2016 inflation rates in the growfactors.csv files are changed.
 """
 
 import os
