@@ -1,10 +1,12 @@
 Releasing Tax-Caclculator Packages
 ==================================
 
-The following outlines the process to release Tax-Calculator Packages on Conda-Forge and creating a new branch to fix a bug in a previous release.
+The following outlines the process to release Tax-Calculator Packages
+on Conda-Forge and creating a new branch to fix a bug in a previous
+release.
 
 Create new `taxcalc` packages
-===========================
+=============================
 ```
 
 --> on branch X-Y-Z, edit docs/about/releases.md to finalize X.Y.Z info
@@ -12,6 +14,12 @@ Create new `taxcalc` packages
 --> specify release X.Y.Z in setup.py and taxcalc/__init__.py
 
 --> merge master branch into X-Y-Z branch
+
+--> run `python update_pcl.py`  [to update policy_current_law.json if needed]
+
+--> run `python ppp.py`  [to update policy_current_law.json if needed]
+
+--> run `python extend_tcja.py > ext.json`  [to update reforms/ext.json if needed]
 
 --> run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
 
