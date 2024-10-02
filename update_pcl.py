@@ -326,6 +326,36 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'headhh', 'value': 305000.0},
         {'year': 2024, 'MARS': 'widow', 'value': 610000.0},
     ],
+    'FST_AGI_thd_lo': [  # not part of current-law policy, but needs to be here
+        {'year': 2023, 'MARS': 'single', 'value': 1000000.0},
+        {'year': 2023, 'MARS': 'mjoint', 'value': 1000000.0},
+        {'year': 2023, 'MARS': 'mseparate', 'value': 500000.0},
+        {'year': 2023, 'MARS': 'headhh', 'value': 1000000.0},
+        {'year': 2023, 'MARS': 'widow', 'value': 1000000.0},
+
+        {'year': 2024, 'MARS': 'single', 'value': 1000000.0},
+        {'year': 2024, 'MARS': 'mjoint', 'value': 1000000.0},
+        {'year': 2024, 'MARS': 'mseparate', 'value': 500000.0},
+        {'year': 2024, 'MARS': 'headhh', 'value': 1000000.0},
+        {'year': 2024, 'MARS': 'widow', 'value': 1000000.0},
+
+        # each year's values are the same as for the prior year
+    ],
+    'FST_AGI_thd_hi': [  # not part of current-law policy, but needs to be here
+        {'year': 2023, 'MARS': 'single', 'value': 2000000.0},
+        {'year': 2023, 'MARS': 'mjoint', 'value': 2000000.0},
+        {'year': 2023, 'MARS': 'mseparate', 'value': 1000000.0},
+        {'year': 2023, 'MARS': 'headhh', 'value': 2000000.0},
+        {'year': 2023, 'MARS': 'widow', 'value': 2000000.0},
+
+        {'year': 2024, 'MARS': 'single', 'value': 2000000.0},
+        {'year': 2024, 'MARS': 'mjoint', 'value': 2000000.0},
+        {'year': 2024, 'MARS': 'mseparate', 'value': 1000000.0},
+        {'year': 2024, 'MARS': 'headhh', 'value': 2000000.0},
+        {'year': 2024, 'MARS': 'widow', 'value': 2000000.0},
+
+        # each year's values are the same as for the prior year
+    ],
     # ITEMS NOT PART OF CURRENT-LAW POLICY IN 2022-2025 PERIOD:
     'ALD_Dependents_Child_c': LIST_SCALAR_ZERO,
     'ALD_Dependents_Elder_c': LIST_SCALAR_ZERO,
@@ -349,8 +379,6 @@ NEW_KNOWN_ITEMS = {
     'PT_qbid_ps': LIST_MARS_INF,
     'RPTC_c': LIST_SCALAR_ZERO,
     'CTC_new_ps': LIST_MARS_ZERO,
-    'FST_AGI_thd_lo': LIST_MARS_INF,
-    'FST_AGI_thd_hi': LIST_MARS_INF,
     'AGI_surtax_thd': LIST_MARS_INF,
     'UBI_u18': LIST_SCALAR_ZERO,
     'UBI_1820': LIST_SCALAR_ZERO,
