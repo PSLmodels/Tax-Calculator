@@ -1217,7 +1217,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
            PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
            PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
-           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch):
+           PT_qbid_ps, PT_qbid_prt, qbided):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
@@ -1275,8 +1275,6 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         QBID phaseout rate
     qbided: float
         Qualified Business Income (QBI) deduction
-    PT_qbid_limit_switch: bool
-        QBID wage and capital limitations switch
 
     Returns
     -------
@@ -1300,9 +1298,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
             upper_thd = lower_thd + pre_qbid_taxinc_gap
             if PT_SSTB_income == 1 and pre_qbid_taxinc >= upper_thd:
                 qbided = 0.
-            # if PT_qbid_limit_switch is True, apply wage/capital
-            # limitations.
-            elif PT_qbid_limit_switch:
+            else:
                 wage_cap = PT_binc_w2_wages * PT_qbid_w2_wages_rt
                 alt_cap = (PT_binc_w2_wages * PT_qbid_alt_w2_wages_rt +
                            PT_ubia_property * PT_qbid_alt_property_rt)
@@ -1323,12 +1319,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
                     prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
                     adj = prt * (qbid_adjusted - cap_adjusted)
                     qbided = qbid_adjusted - adj
-            # if PT_qbid_limit_switch is False, assume all taxpayers
-            # have sufficient wage expenses and capital income to avoid
-            # QBID limitations.
-            else:
-                qbided = qbid_before_limits
-        # apply taxinc cap (assuning cap rate is equal to PT_qbid_rt)
+
+        # apply taxinc cap (assuming cap rate is equal to PT_qbid_rt)
         net_cg = e00650 + c01000  # per line 34 in 2018 Pub 535 Worksheet 12-A
         taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
         qbided = min(qbided, taxinc_cap)
