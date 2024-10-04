@@ -19,7 +19,7 @@ Create new `taxcalc` packages
 
 --> run `python ppp.py`  [to update policy_current_law.json if needed]
 
---> run `python extend_tcja.py > ext.json`  [to update reforms/ext.json if needed]
+--> run `python extend_tcja.py > ext.json`  [to update reforms/ext.json]
 
 --> run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
 
