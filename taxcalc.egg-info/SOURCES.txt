@@ -121,8 +121,6 @@ taxcalc/puf_weights.csv.gz
 taxcalc/records.py
 taxcalc/records_variables.json
 taxcalc/taxcalcio.py
-taxcalc/tmd_growfactors.csv
-taxcalc/tmd_weights.csv.gz
 taxcalc/utils.py
 taxcalc/utilsprvt.py
 taxcalc.egg-info/PKG-INFO
@@ -173,8 +171,6 @@ taxcalc/reforms/ptaxes2.json
 taxcalc/reforms/ptaxes2.out.csv
 taxcalc/reforms/ptaxes3.json
 taxcalc/reforms/ptaxes3.out.csv
-taxcalc/reforms/rounding2022.json
-taxcalc/reforms/rounding2022.out.csv
 taxcalc/reforms/archive/Clinton2016.json
 taxcalc/reforms/archive/RyanBrady.json
 taxcalc/reforms/archive/TCJA_House.json
@@ -214,7 +210,6 @@ taxcalc/tests/test_records.py
 taxcalc/tests/test_reforms.py
 taxcalc/tests/test_responses.py
 taxcalc/tests/test_taxcalcio.py
-taxcalc/tests/test_tmdcsv.py
 taxcalc/tests/test_utils.py
 taxcalc/validation/CSV_INPUT_VARS.md
 taxcalc/validation/CSV_OUTPUT_VARS.md
