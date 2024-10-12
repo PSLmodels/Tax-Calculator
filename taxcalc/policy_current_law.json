@@ -18379,32 +18379,6 @@
             "cps": false
         }
     },
-    "PT_qbid_limit_switch": {
-        "title": "QBID wage and capital limitations switch.",
-        "description": "A value of True imposes wage/capital limitations. Note that neither the PUF nor CPS have data on wage expenses or capital income, and therefore all taxpayers are fully subject to the QBID limitations. A value of False assumes sufficient wage and capital income to avoid QBID limitations.",
-        "notes": "",
-        "section_1": "Personal Income",
-        "section_2": "Pass-Through",
-        "indexable": false,
-        "indexed": false,
-        "type": "bool",
-        "value": [
-            {
-                "year": 2013,
-                "value": true
-            }
-        ],
-        "validators": {
-            "range": {
-                "min": false,
-                "max": true
-            }
-        },
-        "compatible_data": {
-            "puf": false,
-            "cps": false
-        }
-    },
     "PT_qbid_ps": {
         "title": "QBID phaseout taxable income start",
         "description": "QBID begins to decrease when pre-QBID taxable income is above this level.",
