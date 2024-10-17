@@ -15,3 +15,5 @@ from taxcalc.utils import *
 from taxcalc.cli import *
 
 __version__ = '4.3.0'
+__min_python3_version__ = 10
+__max_python3_version__ = 12

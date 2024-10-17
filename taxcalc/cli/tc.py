@@ -138,11 +138,23 @@ def cli_tc_main():
                         default=False,
                         action="store_true")
     args = parser.parse_args()
-    # show Tax-Calculator version and quit if --version option specified
+    # check Python version
+    pyv = sys.version_info
+    pymin = tc.__min_python3_version__
+    pymax = tc.__max_python3_version__
+    if pyv[0] != 3 or pyv[1] < pymin or pyv[1] > pymax:  # pragma: no cover
+        pyreq = f'at least Python 3.{pymin} and at most Python 3.{pymax}'
+        sys.stderr.write(
+            f'ERROR: Tax-Calculator requires {pyreq}\n'
+            f'       but Python {pyv[0]}.{pyv[1]} is installed\n'
+        )
+        return 1
+    # show Tax-Calculator version and quit if --version option is specified
     if args.version:
-        sys.stdout.write('Tax-Calculator {}\n'.format(tc.__version__))
+        pyver = f'Python 3.{pyv[1]}'
+        sys.stdout.write(f'Tax-Calculator {tc.__version__} on {pyver}\n')
         return 0
-    # write test input and expected output files if --test option specified
+    # write test input and expected output files if --test option is specified
     if args.test:
         _write_expected_test_output()
         inputfn = TEST_INPUT_FILENAME
@@ -181,7 +193,7 @@ def cli_tc_main():
     dumpvar_set = None
     if args.dvars and (args.dump or args.sqldb):
         if os.path.exists(args.dvars):
-            with open(args.dvars) as dfile:
+            with open(args.dvars, 'r', encoding='utf-8') as dfile:
                 dump_vars_str = dfile.read()
             dumpvar_set = tcio.custom_dump_variables(dump_vars_str)
             if tcio.errmsg:
@@ -213,8 +225,8 @@ def cli_tc_main():
 # end of cli_tc_main function code
 
 
-EXPECTED_TEST_OUTPUT_FILENAME = 'test-{}-out.csv'.format(str(TEST_TAXYEAR)[2:])
-ACTUAL_TEST_OUTPUT_FILENAME = 'test-{}-#-#-#.csv'.format(str(TEST_TAXYEAR)[2:])
+EXPECTED_TEST_OUTPUT_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-out.csv'
+ACTUAL_TEST_OUTPUT_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.csv'
 
 
 def _write_expected_test_output():
@@ -226,14 +238,14 @@ def _write_expected_test_output():
         '1,       2,   3,  1, 40000,  40000,      0,     0,  3000,  4000\n'
         '2,       2,   3,  1,200000, 200000,      0,     0, 15000, 20000\n'
     )
-    with open(TEST_INPUT_FILENAME, 'w') as ifile:
+    with open(TEST_INPUT_FILENAME, 'w', encoding='utf-8') as ifile:
         ifile.write(input_data)
     expected_output_data = (
         'RECID,YEAR,WEIGHT,INCTAX,LSTAX,PAYTAX\n'
         '1,2018,0.00,131.88,0.00,6120.00\n'
         '2,2018,0.00,28879.00,0.00,21721.60\n'
     )
-    with open(EXPECTED_TEST_OUTPUT_FILENAME, 'w') as ofile:
+    with open(EXPECTED_TEST_OUTPUT_FILENAME, 'w', encoding='utf-8') as ofile:
         ofile.write(expected_output_data)
 
 
@@ -242,8 +254,12 @@ def _compare_test_output_files():
     Private function that compares expected and actual tc --test output files;
     returns 0 if pass test, otherwise returns 1.
     """
-    explines = open(EXPECTED_TEST_OUTPUT_FILENAME, 'r').readlines()
-    actlines = open(ACTUAL_TEST_OUTPUT_FILENAME, 'r').readlines()
+    explines = open(
+        EXPECTED_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8'
+    ).readlines()
+    actlines = open(
+        ACTUAL_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8'
+    ).readlines()
     if ''.join(explines) == ''.join(actlines):
         sys.stdout.write('PASSED TEST\n')
         retcode = 0
