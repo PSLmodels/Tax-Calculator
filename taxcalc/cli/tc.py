@@ -143,10 +143,10 @@ def cli_tc_main():
     pymin = tc.__min_python3_version__
     pymax = tc.__max_python3_version__
     if pyv[0] != 3 or pyv[1] < pymin or pyv[1] > pymax:  # pragma: no cover
+        pyreq = f'at least Python 3.{pymin} and at most Python 3.{pymax}'
         sys.stderr.write(
-            'ERROR: '
-            f'Tax-Calculator requires Python 3.{pymin} thru Python 3.{pymax}\n'
-            f'but Python {pyv[0]}.{pyv[1]} is installed\n'
+            f'ERROR: Tax-Calculator requires {pyreq}\n'
+            f'       but Python {pyv[0]}.{pyv[1]} is installed\n'
         )
         return 1
     # show Tax-Calculator version and quit if --version option is specified
