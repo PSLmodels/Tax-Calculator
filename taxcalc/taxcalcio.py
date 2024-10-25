@@ -355,7 +355,8 @@ class TaxCalcIO():
                     weights=wghts,
                     gfactors=gfactors_ref,
                     adjust_ratios=None,
-                    exact_calculations=exact_calculations
+                    exact_calculations=exact_calculations,
+                    weights_scale=1.0,
                 )
                 recs_base = Records(
                     data=pd.read_csv(input_data),
@@ -363,7 +364,8 @@ class TaxCalcIO():
                     weights=wghts,
                     gfactors=gfactors_base,
                     adjust_ratios=None,
-                    exact_calculations=exact_calculations
+                    exact_calculations=exact_calculations,
+                    weights_scale=1.0,
                 )
             else:  # if not {cps|tmd}_input_data but aging_input_data: puf
                 recs = Records(

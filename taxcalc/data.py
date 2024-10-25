@@ -66,7 +66,8 @@ class Data():
     VARINFO_FILE_NAME = None
     VARINFO_FILE_PATH = None
 
-    def __init__(self, data, start_year, gfactors=None, weights=None):
+    def __init__(self, data, start_year, gfactors=None,
+                 weights=None, weights_scale=0.01):
         # initialize data variable info sets and read variable information
         self.INTEGER_READ_VARS = set()
         self.MUST_READ_VARS = set()
@@ -97,6 +98,7 @@ class Data():
             self.gfactors = gfactors
             # read sample weights
             self.WT = None
+            self.weights_scale = weights_scale
             if self.__aging_data:
                 self._read_weights(weights)
                 # ... weights must be same size as data
@@ -114,7 +116,7 @@ class Data():
                 assert wt_colname in self.WT.columns, (
                     f'no weights for start year {self.current_year}'
                 )
-                self.s006 = self.WT[wt_colname] * 0.01
+                self.s006 = self.WT[wt_colname] * self.weights_scale
 
     @property
     def data_year(self):
@@ -152,7 +154,7 @@ class Data():
             assert wt_colname in self.WT.columns, (
                 f'no weights for new year {self.current_year}'
             )
-            self.s006 = self.WT[wt_colname] * 0.01
+            self.s006 = self.WT[wt_colname] * self.weights_scale
 
     # ----- begin private methods of Data class -----
 

@@ -69,6 +69,13 @@ class Records(Data):
         any smoothing of stair-step provisions in income tax law;
         default value is false.
 
+    weights_scale: float
+        specifies the weights scaling factor used to convert contents
+        of weights file into the s006 variable.  PUF and CPS input data
+        generated in the taxdata repository use a weights_scale of 0.01,
+        while TMD input data generated in the tax-microdata repository
+        use a 1.0 weights_scale value.
+
     Raises
     ------
     ValueError:
@@ -127,7 +134,8 @@ class Records(Data):
                  gfactors=GrowFactors(),
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
-                 exact_calculations=False):
+                 exact_calculations=False,
+                 weights_scale=0.01):
         # pylint: disable=no-member,too-many-branches
         if isinstance(weights, str):
             weights = os.path.join(Records.CODE_PATH, weights)
@@ -250,6 +258,7 @@ class Records(Data):
             gfactors=GrowFactors(growfactors_filename=str(growfactors_path)),
             adjust_ratios=None,
             exact_calculations=exact_calculations,
+            weights_scale=1.0,
         )
 
     def increment_year(self):
