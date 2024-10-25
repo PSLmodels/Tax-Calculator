@@ -53,7 +53,7 @@ class Records(Data):
         None creates empty sample-weights DataFrame;
         default value is filename of the PUF weights.
         NOTE: when using custom weights, set this argument to a DataFrame.
-        NOTE: assumes weights are integers that are 100 times the real weights.
+        NOTE: see weights_scale documentation below.
 
     adjust_ratios: string or Pandas DataFrame or None
         string describes CSV file in which adjustment ratios reside;
@@ -139,7 +139,7 @@ class Records(Data):
         # pylint: disable=no-member,too-many-branches
         if isinstance(weights, str):
             weights = os.path.join(Records.CODE_PATH, weights)
-        super().__init__(data, start_year, gfactors, weights)
+        super().__init__(data, start_year, gfactors, weights, weights_scale)
         if data is None:
             return  # because there are no data
         # read adjustment ratios

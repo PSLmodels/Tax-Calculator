@@ -42,6 +42,13 @@ class Data():
         NOTE: when using custom weights, set this argument to a DataFrame.
         NOTE: assumes weights are integers that are 100 times the real weights.
 
+    weights_scale: float
+        specifies the weights scaling factor used to convert contents
+        of weights file into the s006 variable.  PUF and CPS input data
+        generated in the taxdata repository use a weights_scale of 0.01,
+        while TMD input data generated in the tax-microdata repository
+        use a 1.0 weights_scale value.
+
     Raises
     ------
     ValueError:
