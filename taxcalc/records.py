@@ -236,7 +236,7 @@ class Records(Data):
             data_path: Path,
             weights_path: Path,
             growfactors_path: Path,
-            exact_calculations=False
+            exact_calculations=False,
     ):  # pragma: no cover
         """
         Static method returns a Records object instantiated with TMD
