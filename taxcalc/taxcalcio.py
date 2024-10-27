@@ -550,7 +550,7 @@ class TaxCalcIO():
             outdf = self.minimal_output()
             column_order = outdf.columns
         assert len(outdf.index) == self.calc.array_len
-        if self.tmd_input_data:
+        if self.tmd_input_data:  # pragma: no cover
             if "s006" in outdf:
                 weights = outdf["s006"].round(5)
             outdf = outdf.round(2)
