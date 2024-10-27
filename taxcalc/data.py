@@ -269,7 +269,6 @@ class Data():
         Read sample weights from file or
         use specified DataFrame as weights or
         create empty DataFrame if None.
-        NOTE: assumes weights are integers equal to 100 times the real weight.
         """
         if weights is None:
             return
@@ -285,7 +284,7 @@ class Data():
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         assert isinstance(WT, pd.DataFrame)
-        setattr(self, 'WT', WT.astype(np.int32))
+        setattr(self, 'WT', WT.astype(np.float32))
         del WT
 
     def _extrapolate(self, year):
