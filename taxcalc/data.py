@@ -42,6 +42,13 @@ class Data():
         NOTE: when using custom weights, set this argument to a DataFrame.
         NOTE: assumes weights are integers that are 100 times the real weights.
 
+    weights_scale: float
+        specifies the weights scaling factor used to convert contents
+        of weights file into the s006 variable.  PUF and CPS input data
+        generated in the taxdata repository use a weights_scale of 0.01,
+        while TMD input data generated in the tax-microdata repository
+        use a 1.0 weights_scale value.
+
     Raises
     ------
     ValueError:
@@ -66,7 +73,8 @@ class Data():
     VARINFO_FILE_NAME = None
     VARINFO_FILE_PATH = None
 
-    def __init__(self, data, start_year, gfactors=None, weights=None):
+    def __init__(self, data, start_year, gfactors=None,
+                 weights=None, weights_scale=0.01):
         # initialize data variable info sets and read variable information
         self.INTEGER_READ_VARS = set()
         self.MUST_READ_VARS = set()
@@ -97,6 +105,7 @@ class Data():
             self.gfactors = gfactors
             # read sample weights
             self.WT = None
+            self.weights_scale = weights_scale
             if self.__aging_data:
                 self._read_weights(weights)
                 # ... weights must be same size as data
@@ -114,7 +123,7 @@ class Data():
                 assert wt_colname in self.WT.columns, (
                     f'no weights for start year {self.current_year}'
                 )
-                self.s006 = self.WT[wt_colname] * 0.01
+                self.s006 = self.WT[wt_colname] * self.weights_scale
 
     @property
     def data_year(self):
@@ -152,7 +161,7 @@ class Data():
             assert wt_colname in self.WT.columns, (
                 f'no weights for new year {self.current_year}'
             )
-            self.s006 = self.WT[wt_colname] * 0.01
+            self.s006 = self.WT[wt_colname] * self.weights_scale
 
     # ----- begin private methods of Data class -----
 
@@ -260,7 +269,6 @@ class Data():
         Read sample weights from file or
         use specified DataFrame as weights or
         create empty DataFrame if None.
-        NOTE: assumes weights are integers equal to 100 times the real weight.
         """
         if weights is None:
             return
@@ -276,7 +284,7 @@ class Data():
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         assert isinstance(WT, pd.DataFrame)
-        setattr(self, 'WT', WT.astype(np.int32))
+        setattr(self, 'WT', WT.astype(np.float64))
         del WT
 
     def _extrapolate(self, year):

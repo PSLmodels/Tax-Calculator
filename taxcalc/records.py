@@ -53,7 +53,7 @@ class Records(Data):
         None creates empty sample-weights DataFrame;
         default value is filename of the PUF weights.
         NOTE: when using custom weights, set this argument to a DataFrame.
-        NOTE: assumes weights are integers that are 100 times the real weights.
+        NOTE: see weights_scale documentation below.
 
     adjust_ratios: string or Pandas DataFrame or None
         string describes CSV file in which adjustment ratios reside;
@@ -68,6 +68,13 @@ class Records(Data):
         specifies whether or not exact tax calculations are done without
         any smoothing of stair-step provisions in income tax law;
         default value is false.
+
+    weights_scale: float
+        specifies the weights scaling factor used to convert contents
+        of weights file into the s006 variable.  PUF and CPS input data
+        generated in the taxdata repository use a weights_scale of 0.01,
+        while TMD input data generated in the tax-microdata repository
+        use a 1.0 weights_scale value.
 
     Raises
     ------
@@ -127,11 +134,12 @@ class Records(Data):
                  gfactors=GrowFactors(),
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
-                 exact_calculations=False):
+                 exact_calculations=False,
+                 weights_scale=0.01):
         # pylint: disable=no-member,too-many-branches
         if isinstance(weights, str):
             weights = os.path.join(Records.CODE_PATH, weights)
-        super().__init__(data, start_year, gfactors, weights)
+        super().__init__(data, start_year, gfactors, weights, weights_scale)
         if data is None:
             return  # because there are no data
         # read adjustment ratios
@@ -228,7 +236,7 @@ class Records(Data):
             data_path: Path,
             weights_path: Path,
             growfactors_path: Path,
-            exact_calculations=False
+            exact_calculations=False,
     ):  # pragma: no cover
         """
         Static method returns a Records object instantiated with TMD
@@ -250,6 +258,7 @@ class Records(Data):
             gfactors=GrowFactors(growfactors_filename=str(growfactors_path)),
             adjust_ratios=None,
             exact_calculations=exact_calculations,
+            weights_scale=1.0,
         )
 
     def increment_year(self):

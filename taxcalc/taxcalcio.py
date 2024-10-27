@@ -355,7 +355,8 @@ class TaxCalcIO():
                     weights=wghts,
                     gfactors=gfactors_ref,
                     adjust_ratios=None,
-                    exact_calculations=exact_calculations
+                    exact_calculations=exact_calculations,
+                    weights_scale=1.0,
                 )
                 recs_base = Records(
                     data=pd.read_csv(input_data),
@@ -363,7 +364,8 @@ class TaxCalcIO():
                     weights=wghts,
                     gfactors=gfactors_base,
                     adjust_ratios=None,
-                    exact_calculations=exact_calculations
+                    exact_calculations=exact_calculations,
+                    weights_scale=1.0,
                 )
             else:  # if not {cps|tmd}_input_data but aging_input_data: puf
                 recs = Records(
@@ -548,8 +550,17 @@ class TaxCalcIO():
             outdf = self.minimal_output()
             column_order = outdf.columns
         assert len(outdf.index) == self.calc.array_len
-        outdf.to_csv(self._output_filename, columns=column_order,
-                     index=False, float_format='%.2f')
+        if self.tmd_input_data:  # pragma: no cover
+            if "s006" in outdf:
+                weights = outdf["s006"].round(5)
+            outdf = outdf.round(2)
+            if "s006" in outdf:
+                outdf["s006"] = weights
+            outdf.to_csv(self._output_filename, columns=column_order,
+                         index=False)
+        else:
+            outdf.to_csv(self._output_filename, columns=column_order,
+                         index=False, float_format='%.2f')
         del outdf
         gc.collect()
 
@@ -786,8 +797,8 @@ class TaxCalcIO():
             vardata = calcx.array(varname)
             if varname in recs_vinfo.INTEGER_VARS:
                 odf[varname] = vardata
-            else:
-                odf[varname] = vardata.round(2)  # rounded to nearest cent
+            else:  # specify precision that can handle small TMD area weights
+                odf[varname] = vardata.round(5)
             odf = odf.copy()
         # specify mtr values in percentage terms
         if 'mtr_inctax' in varset:

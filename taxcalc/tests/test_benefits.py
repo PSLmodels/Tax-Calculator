@@ -77,9 +77,9 @@ def test_benefits(tests_path, cps_fullsample):
     if diffs:
         msg = 'CPS BENEFITS RESULTS DIFFER\n'
         msg += '-------------------------------------------------\n'
-        msg += '--- NEW RESULTS IN benefits_actual.txt FILE   ---\n'
-        msg += '--- if new OK, copy benefits_actual.txt to    ---\n'
-        msg += '---                 benefits_expect.txt       ---\n'
+        msg += '--- NEW RESULTS IN benefits_actual.csv FILE   ---\n'
+        msg += '--- if new OK, copy benefits_actual.csv to    ---\n'
+        msg += '---                 benefits_expect.csv       ---\n'
         msg += '---            and rerun test.                ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
