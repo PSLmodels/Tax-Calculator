@@ -284,7 +284,7 @@ class Data():
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         assert isinstance(WT, pd.DataFrame)
-        setattr(self, 'WT', WT.astype(np.float32))
+        setattr(self, 'WT', WT.astype(np.float64))
         del WT
 
     def _extrapolate(self, year):
