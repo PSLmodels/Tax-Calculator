@@ -88,7 +88,7 @@ def fixture_reformfile1():
         "II_em": { // personal exemption amount (see indexing changes below)
           "2016": 6000,
           "2018": 7500,
-          "2020": 9000},
+          "2021": 9000},
         "II_em-indexed": { // personal exemption amount indexing status
           "2016": false, // values in future years are same as this year value
           "2018": true // values in future years indexed with this year as base
