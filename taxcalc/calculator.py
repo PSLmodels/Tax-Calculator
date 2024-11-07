@@ -1189,14 +1189,9 @@ class Calculator():
                 for pname in baseline.keys():
                     upda_value = getattr(updated, pname)
                     base_value = getattr(baseline, pname)
-                    is_diff = False
-                    if isinstance(upda_value, np.ndarray):
-                        if not np.allclose(upda_value, base_value):
-                            is_diff = True
-                    else:
-                        if upda_value != base_value:
-                            is_diff = True
-                    if is_diff:
+                    isarray = isinstance(upda_value, np.ndarray)
+                    if ((isarray and not np.allclose(upda_value, base_value))
+                        or (not is_array and upda_value != base_value)):
                         params_with_diff.append(pname)
                 if params_with_diff:
                     mdata_base = baseline.specification(meta_data=True)
