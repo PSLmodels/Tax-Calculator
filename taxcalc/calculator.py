@@ -698,7 +698,8 @@ class Calculator():
                                   self.policy_param('FICA_ss_trt_employee') +
                                   self.policy_param('FICA_mc_trt_employer') +
                                   self.policy_param('FICA_mc_trt_employee')),
-                           0.5 * (self.policy_param('FICA_mc_trt_employer') + self.policy_param('FICA_mc_trt_employee')))
+                           0.5 * (self.policy_param('FICA_mc_trt_employer') +
+                                  self.policy_param('FICA_mc_trt_employee')))
         else:
             adj = 0.0
         # compute marginal tax rates
@@ -1189,9 +1190,11 @@ class Calculator():
                 for pname in baseline.keys():
                     upda_value = getattr(updated, pname)
                     base_value = getattr(baseline, pname)
-                    isarray = isinstance(upda_value, np.ndarray)
-                    if ((isarray and not np.allclose(upda_value, base_value))
-                        or (not is_array and upda_value != base_value)):
+                    is_array = isinstance(upda_value, np.ndarray)
+                    if (
+                        (is_array and not np.allclose(upda_value, base_value))
+                        or (is_array == False and upda_value != base_value)
+                    ):
                         params_with_diff.append(pname)
                 if params_with_diff:
                     mdata_base = baseline.specification(meta_data=True)
