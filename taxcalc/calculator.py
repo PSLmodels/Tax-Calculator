@@ -1248,7 +1248,7 @@ class Calculator():
                         else:  # if baseline is GrowDiff object
                             # each GrowDiff parameter has zero as default value
                             doc += '  baseline_value: 0.0\n'
-            del mdata_base
+                    del mdata_base
             return doc
 
         # begin main logic of reform_documentation
