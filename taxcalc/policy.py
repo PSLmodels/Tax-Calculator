@@ -7,6 +7,7 @@ Tax-Calculator federal tax policy Policy class.
 
 import os
 import json
+from pathlib import Path
 import numpy as np
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
@@ -80,7 +81,7 @@ class Policy(Parameters):
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
 
-    def __init__(self, gfactors=None, only_reading_defaults=False, **kwargs):
+    def __init__(self, gfactors=None, **kwargs):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         super().__init__()
         # handle gfactors argument
@@ -92,7 +93,6 @@ class Policy(Parameters):
             raise ValueError('gfactors is not None or a GrowFactors instance')
         # read default parameters and initialize
         syr = Policy.JSON_START_YEAR
-        lyr = Policy.LAST_BUDGET_YEAR
         nyrs = Policy.DEFAULT_NUM_YEARS
         self._inflation_rates = None
         self._wage_growth_rates = None
@@ -100,6 +100,19 @@ class Policy(Parameters):
                         Policy.REMOVED_PARAMS,
                         Policy.REDEFINED_PARAMS,
                         Policy.WAGE_INDEXED_PARAMS, **kwargs)
+
+    @staticmethod
+    def tmd_constructor(growfactors_path):  # pragma: no cover
+        """
+        Static method returns a Policy object instantiated with TMD
+        input data.  This convenience method works in a analogous way
+        to Policy(), which returns a Policy object instantiated with
+        non-TMD input data.
+        """
+        assert isinstance(growfactors_path, Path)
+        gf_filename = str(growfactors_path)
+        tmd_growfactors = GrowFactors(growfactors_filename=gf_filename)
+        return Policy(gfactors=tmd_growfactors)
 
     @staticmethod
     def read_json_reform(obj):
@@ -129,7 +142,7 @@ class Policy(Parameters):
             Policy.DEFAULTS_FILE_PATH,
             Policy.DEFAULTS_FILE_NAME
         )
-        with open(path) as f:
+        with open(path, 'r',  encoding='utf-8') as f:
             defaults = json.loads(f.read())  # pylint: disable=protected-access
         return [k for k in defaults if k != "schema"]
 
