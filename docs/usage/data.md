@@ -69,8 +69,8 @@ available only to Tax-Calculator users who have purchased their own
 version of the 2015 IRS-SOI PUF.  For those users, those three files
 are avaiable from the tax-microdata repository.  These three tmd files
 can be used with the Tax-Calculator Python API (using the 
-`Records.tmd_constructor()` static method) or with the Tax-Calculator
-CLI tool, `tc`.
+`Records.tmd_constructor()` and `Policy.tmd_constructor()`static methods)
+or with the Tax-Calculator CLI tool, `tc`.
 
 ## Using other data with Tax-Calculator
 
