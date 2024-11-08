@@ -397,6 +397,7 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">taxcalc.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
 <span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
@@ -472,7 +473,7 @@
     <span class="c1"># (3) specify which Policy parameters are wage (rather than price) indexed</span>
     <span class="n">WAGE_INDEXED_PARAMS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SS_Earnings_c&#39;</span><span class="p">,</span> <span class="s1">&#39;SS_Earnings_thd&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_reading_defaults</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="c1"># handle gfactors argument</span>
@@ -484,7 +485,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;gfactors is not None or a GrowFactors instance&#39;</span><span class="p">)</span>
         <span class="c1"># read default parameters and initialize</span>
         <span class="n">syr</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
-        <span class="n">lyr</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">LAST_BUDGET_YEAR</span>
         <span class="n">nyrs</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">DEFAULT_NUM_YEARS</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span> <span class="o">=</span> <span class="kc">None</span>
@@ -492,6 +492,19 @@
                         <span class="n">Policy</span><span class="o">.</span><span class="n">REMOVED_PARAMS</span><span class="p">,</span>
                         <span class="n">Policy</span><span class="o">.</span><span class="n">REDEFINED_PARAMS</span><span class="p">,</span>
                         <span class="n">Policy</span><span class="o">.</span><span class="n">WAGE_INDEXED_PARAMS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">tmd_constructor</span><span class="p">(</span><span class="n">growfactors_path</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Static method returns a Policy object instantiated with TMD</span>
+<span class="sd">        input data.  This convenience method works in a analogous way</span>
+<span class="sd">        to Policy(), which returns a Policy object instantiated with</span>
+<span class="sd">        non-TMD input data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors_path</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span>
+        <span class="n">gf_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">growfactors_path</span><span class="p">)</span>
+        <span class="n">tmd_growfactors</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="o">=</span><span class="n">gf_filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Policy</span><span class="p">(</span><span class="n">gfactors</span><span class="o">=</span><span class="n">tmd_growfactors</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Policy.read_json_reform">
 <a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.read_json_reform">[docs]</a>
@@ -529,7 +542,7 @@
             <span class="n">Policy</span><span class="o">.</span><span class="n">DEFAULTS_FILE_PATH</span><span class="p">,</span>
             <span class="n">Policy</span><span class="o">.</span><span class="n">DEFAULTS_FILE_NAME</span>
         <span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span>  <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">defaults</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=protected-access</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">defaults</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;schema&quot;</span><span class="p">]</span></div>
 
