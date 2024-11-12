@@ -2918,16 +2918,6 @@
                 "value": 1950.0
             },
             {
-                "year": 2023,
-                "MARS": "widow",
-                "value": 1500.0
-            },
-            {
-                "year": 2024,
-                "MARS": "widow",
-                "value": 1550.0
-            },
-            {
                 "year": 2025,
                 "MARS": "single",
                 "value": 2000.0
@@ -5846,7 +5836,8 @@
             }
         },
         "compatible_data": {
-            "puf": true
+            "puf": true,
+            "cps": true
         }
     },
     "ID_RealEstate_hc": {
