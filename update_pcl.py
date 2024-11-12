@@ -269,7 +269,7 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'headhh', 'value': 9e99},
         {'year': 2025, 'MARS': 'widow', 'value': 9e99},
     ],
-    'EITC_c': [  # TODO: begin adding 2025 values here:
+    'EITC_c': [
         {'year': 2023, 'EIC': '0kids', 'value': 600.0},
         {'year': 2023, 'EIC': '1kid', 'value': 3995.0},
         {'year': 2023, 'EIC': '2kids', 'value': 6604.0},
@@ -279,6 +279,11 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'EIC': '1kid', 'value': 4213.0},
         {'year': 2024, 'EIC': '2kids', 'value': 6960.0},
         {'year': 2024, 'EIC': '3+kids', 'value': 7830.0},
+
+        {'year': 2025, 'EIC': '0kids', 'value': 649.0},
+        {'year': 2025, 'EIC': '1kid', 'value': 4328.0},
+        {'year': 2025, 'EIC': '2kids', 'value': 7152.0},
+        {'year': 2025, 'EIC': '3+kids', 'value': 8046.0},
     ],
     'EITC_ps': [
         {'year': 2023, 'EIC': '0kids', 'value': 9800.0},
@@ -290,6 +295,11 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'EIC': '1kid', 'value': 22720.0},
         {'year': 2024, 'EIC': '2kids', 'value': 22720.0},
         {'year': 2024, 'EIC': '3+kids', 'value': 22720.0},
+
+        {'year': 2025, 'EIC': '0kids', 'value': 10620.0},
+        {'year': 2025, 'EIC': '1kid', 'value': 23350.0},
+        {'year': 2025, 'EIC': '2kids', 'value': 23350.0},
+        {'year': 2025, 'EIC': '3+kids', 'value': 23350.0},
     ],
     'EITC_ps_MarriedJ': [
         {'year': 2023, 'EIC': '0kids', 'value': 6570.0},
@@ -301,16 +311,25 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'EIC': '1kid', 'value': 6920.0},
         {'year': 2024, 'EIC': '2kids', 'value': 6920.0},
         {'year': 2024, 'EIC': '3+kids', 'value': 6920.0},
+
+        {'year': 2025, 'EIC': '0kids', 'value': 7110.0},
+        {'year': 2025, 'EIC': '1kid', 'value': 7120.0},
+        {'year': 2025, 'EIC': '2kids', 'value': 7120.0},
+        {'year': 2025, 'EIC': '3+kids', 'value': 7120.0},
     ],
     'EITC_InvestIncome_c': [
         {'year': 2023, 'value': 11000.0},
 
         {'year': 2024, 'value': 11600.0},
+
+        {'year': 2025, 'value': 11950.0},
     ],
     'AMT_brk1': [
         {'year': 2023, 'value': 220700.0},
 
         {'year': 2024, 'value': 232600.0},
+
+        {'year': 2025, 'value': 239100.0},
     ],
     'AMT_em': [
         {'year': 2023, 'MARS': 'single', 'value': 81300.0},
@@ -324,6 +343,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 66650.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 85700.0},
         {'year': 2024, 'MARS': 'widow', 'value': 133300.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 88100.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 137000.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 68500.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 88100.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 137000.0},
     ],
     'AMT_em_ps': [
         {'year': 2023, 'MARS': 'single', 'value': 578150.0},
@@ -337,16 +362,26 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 609350.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 609350.0},
         {'year': 2024, 'MARS': 'widow', 'value': 1218700.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 626350.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 1252700.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 626350.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 626350.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 1252700.0},
     ],
     'AMT_em_pe': [
         {"year": 2023, "value": 831150.0},
 
         {"year": 2024, "value": 875950.0},
+
+        {"year": 2025, "value": 900350.0},
     ],
     'AMT_child_em': [
         {'year': 2023, 'value': 8800.0},
 
         {'year': 2024, 'value': 9250.0},
+
+        {'year': 2025, 'value': 9550.0},
     ],
     'STD': [
         {'year': 2023, 'MARS': 'single', 'value': 13850.0},
@@ -360,24 +395,38 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 14600.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 21900.0},
         {'year': 2024, 'MARS': 'widow', 'value': 29200.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 15000.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 30000.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 15000.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 22500.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 30000.0},
     ],
     'STD_Dep': [
         {'year': 2023, 'value': 1250.0},
 
         {'year': 2024, 'value': 1300.0},
+
+        {'year': 2025, 'value': 1350.0},
     ],
     'STD_Aged': [
         {'year': 2023, 'MARS': 'single', 'value': 1800.0},
         {'year': 2023, 'MARS': 'mjoint', 'value': 1500.0},
         {'year': 2023, 'MARS': 'mseparate', 'value': 1500.0},
         {'year': 2023, 'MARS': 'headhh', 'value': 1800.0},
-        {'year': 2023, 'MARS': 'widow', 'value': 1800.0},
+        {'year': 2023, 'MARS': 'widow', 'value': 1500.0},
 
         {'year': 2024, 'MARS': 'single', 'value': 1950.0},
         {'year': 2024, 'MARS': 'mjoint', 'value': 1550.0},
         {'year': 2024, 'MARS': 'mseparate', 'value': 1550.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 1950.0},
-        {'year': 2024, 'MARS': 'widow', 'value': 1950.0},
+        {'year': 2024, 'MARS': 'widow', 'value': 1550.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 2000.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 1600.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 1600.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 2000.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 1600.0},
     ],
     'PT_qbid_taxinc_thd': [
         {'year': 2023, 'MARS': 'single', 'value': 182100.0},
@@ -391,6 +440,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 191950.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 191950.0},
         {'year': 2024, 'MARS': 'widow', 'value': 191950.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 197300.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 394600.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 197300.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 197300.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 197300.0},
     ],
     'ALD_BusinessLosses_c': [
         {'year': 2023, 'MARS': 'single', 'value': 289000.0},
@@ -404,6 +459,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 305000.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 305000.0},
         {'year': 2024, 'MARS': 'widow', 'value': 610000.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 313000.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 626000.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 313000.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 313000.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 626000.0},
     ],
     'FST_AGI_thd_lo': [  # not part of current-law policy, but needs to be here
         {'year': 2023, 'MARS': 'single', 'value': 1000000.0},
@@ -417,6 +478,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 500000.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 1000000.0},
         {'year': 2024, 'MARS': 'widow', 'value': 1000000.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 1000000.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 1000000.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 500000.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 1000000.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 1000000.0},
 
         # each year's values are the same as for the prior year
     ],
@@ -432,6 +499,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 1000000.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 2000000.0},
         {'year': 2024, 'MARS': 'widow', 'value': 2000000.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 2000000.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 2000000.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 1000000.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 2000000.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 2000000.0},
 
         # each year's values are the same as for the prior year
     ],
