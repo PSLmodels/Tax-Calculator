@@ -54,12 +54,16 @@ NEW_KNOWN_ITEMS = {
         {'year': 2023, 'value': 160200.0},
 
         {'year': 2024, 'value': 168600.0},
+
+        {'year': 2025, 'value': 176100.0},
     ],
     # INCOME TAX PARAMETER SOURCES:
     # - IRS Rev. Proc. 2022-38 containing 2023 policy parameter values is at:
     #       https://www.irs.gov/pub/irs-drop/rp-22-38.pdf
     # - IRS Rev. Proc. 2023-34 containing 2024 policy parameter values is at:
     #       https://www.irs.gov/pub/irs-drop/rp-23-34.pdf
+    # - IRS Rev. Proc. 2024-40 containing 2025 policy parameter values is at:
+    #       https://www.irs.gov/pub/irs-drop/rp-24-40.pdf
     'II_brk1': [
         {'year': 2023, 'MARS': 'single', 'value': 11000.0},
         {'year': 2023, 'MARS': 'mjoint', 'value': 22000.0},
