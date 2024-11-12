@@ -5847,7 +5847,6 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
         }
     },
     "ID_RealEstate_hc": {
