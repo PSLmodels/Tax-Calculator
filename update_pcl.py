@@ -7,7 +7,8 @@ THEN CHECK:             % diff pcl.json taxcalc/policy_current_law.json
 IF DIFFS OK:            % mv pcl.json taxcalc/policy_current_law.json
 
 WHEN TO USE: use this script to update taxcalc/policy_current_law.json
-whenever post-2016 inflation rates in the growfactors.csv files are changed.
+whenever post-2016 inflation rates in the growfactors.csv files are changed,
+or whenever new known policy parameter values are published.
 """
 
 import os
@@ -223,6 +224,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 47025.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 63000.0},
         {'year': 2024, 'MARS': 'widow', 'value': 94050.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 48350.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 96700.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 48350.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 64750.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 96700.0},
     ],
     'CG_brk2': [
         {'year': 2023, 'MARS': 'single', 'value': 492300.0},
@@ -236,6 +243,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 291850.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 551350.0},
         {'year': 2024, 'MARS': 'widow', 'value': 583750.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 533400.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 600050.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 300000.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 566700.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 600050.0},
     ],
     'CG_brk3': [
         {'year': 2023, 'MARS': 'single', 'value': 9e99},
@@ -249,8 +262,14 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 9e99},
         {'year': 2024, 'MARS': 'headhh', 'value': 9e99},
         {'year': 2024, 'MARS': 'widow', 'value': 9e99},
+
+        {'year': 2025, 'MARS': 'single', 'value': 9e99},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 9e99},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 9e99},
+        {'year': 2025, 'MARS': 'headhh', 'value': 9e99},
+        {'year': 2025, 'MARS': 'widow', 'value': 9e99},
     ],
-    'EITC_c': [
+    'EITC_c': [  # TODO: begin adding 2025 values here:
         {'year': 2023, 'EIC': '0kids', 'value': 600.0},
         {'year': 2023, 'EIC': '1kid', 'value': 3995.0},
         {'year': 2023, 'EIC': '2kids', 'value': 6604.0},
