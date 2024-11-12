@@ -27,6 +27,12 @@ LIST_MARS_ZERO = [
     {'year': 2024, 'MARS': 'mseparate', 'value': 0.0},
     {'year': 2024, 'MARS': 'headhh', 'value': 0.0},
     {'year': 2024, 'MARS': 'widow', 'value': 0.0},
+
+    {'year': 2025, 'MARS': 'single', 'value': 0.0},
+    {'year': 2025, 'MARS': 'mjoint', 'value': 0.0},
+    {'year': 2025, 'MARS': 'mseparate', 'value': 0.0},
+    {'year': 2025, 'MARS': 'headhh', 'value': 0.0},
+    {'year': 2025, 'MARS': 'widow', 'value': 0.0},
 ]
 LIST_MARS_INF = [
     {'year': 2023, 'MARS': 'single', 'value': 9e99},
@@ -40,11 +46,19 @@ LIST_MARS_INF = [
     {'year': 2024, 'MARS': 'mseparate', 'value': 9e99},
     {'year': 2024, 'MARS': 'headhh', 'value': 9e99},
     {'year': 2024, 'MARS': 'widow', 'value': 9e99},
+
+    {'year': 2025, 'MARS': 'single', 'value': 9e99},
+    {'year': 2025, 'MARS': 'mjoint', 'value': 9e99},
+    {'year': 2025, 'MARS': 'mseparate', 'value': 9e99},
+    {'year': 2025, 'MARS': 'headhh', 'value': 9e99},
+    {'year': 2025, 'MARS': 'widow', 'value': 9e99},
 ]
 LIST_SCALAR_ZERO = [
     {'year': 2023, 'value': 0.0},
 
     {'year': 2024, 'value': 0.0},
+
+    {'year': 2025, 'value': 0.0},
 ]
 NEW_KNOWN_ITEMS = {
     # PAYROLL TAX PARAMETER SOURCES:
@@ -76,6 +90,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 11600.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 16550.0},
         {'year': 2024, 'MARS': 'widow', 'value': 23200.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 11925.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 23850.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 11925.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 17000.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 23850.0},
     ],
     'II_brk2': [
         {'year': 2023, 'MARS': 'single', 'value': 44725.},
@@ -89,6 +109,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 47150.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 63100.0},
         {'year': 2024, 'MARS': 'widow', 'value': 94300.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 48475.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 96950.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 48475.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 64850.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 96950.0},
     ],
     'II_brk3': [
         {'year': 2023, 'MARS': 'single', 'value': 95375.0},
@@ -102,6 +128,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 100525.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 100500.0},
         {'year': 2024, 'MARS': 'widow', 'value': 201050.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 103350.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 206700.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 103350.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 103350.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 206700.0},
     ],
     'II_brk4': [
         {'year': 2023, 'MARS': 'single', 'value': 182100.0},
@@ -115,6 +147,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 191950.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 191950.0},
         {'year': 2024, 'MARS': 'widow', 'value': 383900.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 197300.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 394600.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 197300.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 197300.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 394600.0},
     ],
     'II_brk5': [
         {'year': 2023, 'MARS': 'single', 'value': 231250.0},
@@ -128,6 +166,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 243725.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 243700.0},
         {'year': 2024, 'MARS': 'widow', 'value': 487450.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 250525.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 501050.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 250525.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 250500.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 501050.0},
     ],
     'II_brk6': [
         {'year': 2023, 'MARS': 'single', 'value': 578125.0},
@@ -141,6 +185,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 365600.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 609350.0},
         {'year': 2024, 'MARS': 'widow', 'value': 731200.0},
+
+        {'year': 2025, 'MARS': 'single', 'value': 626350.0},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 751600.0},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 375800.0},
+        {'year': 2025, 'MARS': 'headhh', 'value': 626350.0},
+        {'year': 2025, 'MARS': 'widow', 'value': 751600.0},
     ],
     'II_brk7': [
         {'year': 2023, 'MARS': 'single', 'value': 9e99},
@@ -154,6 +204,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'mseparate', 'value': 9e99},
         {'year': 2024, 'MARS': 'headhh', 'value': 9e99},
         {'year': 2024, 'MARS': 'widow', 'value': 9e99},
+
+        {'year': 2025, 'MARS': 'single', 'value': 9e99},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 9e99},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 9e99},
+        {'year': 2025, 'MARS': 'headhh', 'value': 9e99},
+        {'year': 2025, 'MARS': 'widow', 'value': 9e99},
     ],
     'CG_brk1': [
         {'year': 2023, 'MARS': 'single', 'value': 44625.0},
