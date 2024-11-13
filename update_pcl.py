@@ -414,13 +414,13 @@ NEW_KNOWN_ITEMS = {
         {'year': 2023, 'MARS': 'mjoint', 'value': 1500.0},
         {'year': 2023, 'MARS': 'mseparate', 'value': 1500.0},
         {'year': 2023, 'MARS': 'headhh', 'value': 1800.0},
-        {'year': 2023, 'MARS': 'widow', 'value': 1500.0},
+        {'year': 2023, 'MARS': 'widow', 'value': 1800.0},
 
         {'year': 2024, 'MARS': 'single', 'value': 1950.0},
         {'year': 2024, 'MARS': 'mjoint', 'value': 1550.0},
         {'year': 2024, 'MARS': 'mseparate', 'value': 1550.0},
         {'year': 2024, 'MARS': 'headhh', 'value': 1950.0},
-        {'year': 2024, 'MARS': 'widow', 'value': 1550.0},
+        {'year': 2024, 'MARS': 'widow', 'value': 1950.0},
 
         {'year': 2025, 'MARS': 'single', 'value': 2000.0},
         {'year': 2025, 'MARS': 'mjoint', 'value': 1600.0},
