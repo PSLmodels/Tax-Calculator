@@ -1598,31 +1598,6 @@
                 "value": 610000.0
             },
             {
-                "year": 2029,
-                "MARS": "single",
-                "value": 9e+99
-            },
-            {
-                "year": 2029,
-                "MARS": "mjoint",
-                "value": 9e+99
-            },
-            {
-                "year": 2029,
-                "MARS": "mseparate",
-                "value": 9e+99
-            },
-            {
-                "year": 2029,
-                "MARS": "headhh",
-                "value": 9e+99
-            },
-            {
-                "year": 2029,
-                "MARS": "widow",
-                "value": 9e+99
-            },
-            {
                 "year": 2025,
                 "MARS": "single",
                 "value": 313000.0
@@ -1646,6 +1621,31 @@
                 "year": 2025,
                 "MARS": "widow",
                 "value": 626000.0
+            },
+            {
+                "year": 2029,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2029,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2029,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2029,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2029,
+                "MARS": "widow",
+                "value": 9e+99
             }
         ],
         "validators": {
