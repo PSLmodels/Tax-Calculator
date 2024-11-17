@@ -4,6 +4,22 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2024-11-14 Release 4.3.3
+------------------------
+(last merged pull request is
+[#2837](https://github.com/PSLmodels/Tax-Calculator/pull/2837))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Clarify TCJA-after-2025 documentation
+[[#2836](https://github.com/PSLmodels/Tax-Calculator/pull/2836) by Martin Holmer]
+- Add known values of 2025 policy parameters
+[[#2837](https://github.com/PSLmodels/Tax-Calculator/pull/2837) by Martin Holmer]
+
+
 2024-11-08 Release 4.3.2
 ------------------------
 (last merged pull request is

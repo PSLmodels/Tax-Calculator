@@ -680,7 +680,7 @@ concern about side effects from Calculator method calls on calc1.</p>
     </style>
     <div>
         <a href="https://bokeh.org" target="_blank" class="bk-notebook-logo"></a>
-        <span id="b516c325-62cc-4d22-9608-448665f40d6e">Loading BokehJS ...</span>
+        <span id="e87ed26b-4312-4430-b428-7992d9aa02b6">Loading BokehJS ...</span>
     </div>
 </div><script type="application/javascript">'use strict';
 (function(root) {
@@ -845,7 +845,7 @@ const JS_MIME_TYPE = 'application/javascript';
      "</div>"}};
 
   function display_loaded(error = null) {
-    const el = document.getElementById("b516c325-62cc-4d22-9608-448665f40d6e");
+    const el = document.getElementById("e87ed26b-4312-4430-b428-7992d9aa02b6");
     if (el != null) {
       const html = (() => {
         if (typeof root.Bokeh === "undefined") {
@@ -979,7 +979,7 @@ function(Bokeh) {
       console.log("Bokeh: BokehJS failed to load within specified timeout.");
       root._bokeh_failed_load = true;
     } else if (force !== true) {
-      const cell = $(document.getElementById("b516c325-62cc-4d22-9608-448665f40d6e")).parents('.cell').data().cell;
+      const cell = $(document.getElementById("e87ed26b-4312-4430-b428-7992d9aa02b6")).parents('.cell').data().cell;
       cell.output_area.append_execute_result(NB_LOAD_WARNING)
     }
   }
