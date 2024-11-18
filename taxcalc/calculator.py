@@ -698,7 +698,8 @@ class Calculator():
                                   self.policy_param('FICA_ss_trt_employee') +
                                   self.policy_param('FICA_mc_trt_employer') +
                                   self.policy_param('FICA_mc_trt_employee')),
-                           0.5 * (self.policy_param('FICA_mc_trt_employer') + self.policy_param('FICA_mc_trt_employee')))
+                           0.5 * (self.policy_param('FICA_mc_trt_employer') +
+                                  self.policy_param('FICA_mc_trt_employee')))
         else:
             adj = 0.0
         # compute marginal tax rates
@@ -1189,11 +1190,10 @@ class Calculator():
                 for pname in baseline.keys():
                     upda_value = getattr(updated, pname)
                     base_value = getattr(baseline, pname)
+                    is_array = isinstance(upda_value, np.ndarray)
                     if (
-                        (isinstance(upda_value, np.ndarray) and
-                         np.allclose(upda_value, base_value)) or
-                        (not isinstance(upda_value, np.ndarray) and
-                         upda_value != base_value)
+                        (is_array and not np.allclose(upda_value, base_value))
+                        or (is_array == False and upda_value != base_value)
                     ):
                         params_with_diff.append(pname)
                 if params_with_diff:
@@ -1248,7 +1248,7 @@ class Calculator():
                         else:  # if baseline is GrowDiff object
                             # each GrowDiff parameter has zero as default value
                             doc += '  baseline_value: 0.0\n'
-            del mdata_base
+                    del mdata_base
             return doc
 
         # begin main logic of reform_documentation

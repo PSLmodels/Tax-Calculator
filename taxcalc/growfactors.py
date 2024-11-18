@@ -38,7 +38,7 @@ class GrowFactors():
     which is for use with puf and cps data from the taxdata repository.
     """
 
-    PACKAGE_FILE_NAMES = ['growfactors.csv', 'tmd_growfactors.csv']
+    PACKAGE_FILE_NAMES = ['growfactors.csv']
     FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     VALID_NAMES = set(['ABOOK', 'ACGNS', 'ACPIM', 'ACPIU',
