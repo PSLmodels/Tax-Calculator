@@ -4,6 +4,42 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2024-11-14 Release 4.3.3
+------------------------
+(last merged pull request is
+[#2837](https://github.com/PSLmodels/Tax-Calculator/pull/2837))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Clarify TCJA-after-2025 documentation
+[[#2836](https://github.com/PSLmodels/Tax-Calculator/pull/2836) by Martin Holmer]
+- Add known values of 2025 policy parameters
+[[#2837](https://github.com/PSLmodels/Tax-Calculator/pull/2837) by Martin Holmer]
+
+
+2024-11-08 Release 4.3.2
+------------------------
+(last merged pull request is
+[#2834](https://github.com/PSLmodels/Tax-Calculator/pull/2834))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Add Policy.tmd_constructor() static method for convenience when using Python API
+[[#2834](https://github.com/PSLmodels/Tax-Calculator/pull/2834) by Martin Holmer]
+
+**Bug Fixes**
+- Fix handling of tmd_growfactors.csv file
+[[#2832](https://github.com/PSLmodels/Tax-Calculator/pull/2832) by Martin Holmer]
+- Fix `tc` reform documentation output
+[[#2833](https://github.com/PSLmodels/Tax-Calculator/pull/2833) by Martin Holmer]
+
+
 2024-10-28 Release 4.3.1
 ------------------------
 (last merged pull request is
