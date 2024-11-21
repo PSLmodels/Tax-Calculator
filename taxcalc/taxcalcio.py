@@ -546,16 +546,18 @@ class TaxCalcIO():
             assert 'RECID' in column_order, 'RECID not in dump output list'
             column_order.remove('RECID')
             column_order.insert(0, 'RECID')
+            weight_vname = 's006'
         else:
             outdf = self.minimal_output()
             column_order = outdf.columns
+            weight_vname = 'WEIGHT'
         assert len(outdf.index) == self.calc.array_len
         if self.tmd_input_data:  # pragma: no cover
-            if "s006" in outdf:
-                weights = outdf["s006"].round(5)
+            if weight_vname in outdf:
+                weights = outdf[weight_vname].round(5)
             outdf = outdf.round(2)
-            if "s006" in outdf:
-                outdf["s006"] = weights
+            if weight_vname in outdf:
+                outdf[weight_vname] = weights
             outdf.to_csv(self._output_filename, columns=column_order,
                          index=False)
         else:
