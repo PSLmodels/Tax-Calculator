@@ -105,7 +105,7 @@ class Calculator():
         if self.__policy.current_year < self.__records.data_year:
             self.__policy.set_year(self.__records.data_year)
         if consumption is None:
-            self.__consumption = Consumption()
+            self.__consumption = Consumption(policy.nyrs)
         elif isinstance(consumption, Consumption):
             self.__consumption = copy.deepcopy(consumption)
         else:
