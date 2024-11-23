@@ -4,6 +4,122 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2024-11-14 Release 4.3.3
+------------------------
+(last merged pull request is
+[#2837](https://github.com/PSLmodels/Tax-Calculator/pull/2837))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Clarify TCJA-after-2025 documentation
+[[#2836](https://github.com/PSLmodels/Tax-Calculator/pull/2836) by Martin Holmer]
+- Add known values of 2025 policy parameters
+[[#2837](https://github.com/PSLmodels/Tax-Calculator/pull/2837) by Martin Holmer]
+
+
+2024-11-08 Release 4.3.2
+------------------------
+(last merged pull request is
+[#2834](https://github.com/PSLmodels/Tax-Calculator/pull/2834))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Add Policy.tmd_constructor() static method for convenience when using Python API
+[[#2834](https://github.com/PSLmodels/Tax-Calculator/pull/2834) by Martin Holmer]
+
+**Bug Fixes**
+- Fix handling of tmd_growfactors.csv file
+[[#2832](https://github.com/PSLmodels/Tax-Calculator/pull/2832) by Martin Holmer]
+- Fix `tc` reform documentation output
+[[#2833](https://github.com/PSLmodels/Tax-Calculator/pull/2833) by Martin Holmer]
+
+
+2024-10-28 Release 4.3.1
+------------------------
+(last merged pull request is
+[#2828](https://github.com/PSLmodels/Tax-Calculator/pull/2828))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Remove PT_qbid_limit_switch parameter and it's assocated False code
+[[#2823](https://github.com/PSLmodels/Tax-Calculator/pull/2823) by Martin Holmer]
+- Add checking of Python version to the CLI tool, tc
+[[#2827](https://github.com/PSLmodels/Tax-Calculator/pull/2827) by Martin Holmer]
+- Add weights_scale attribute to the Records and Data classes
+[[#2828](https://github.com/PSLmodels/Tax-Calculator/pull/2828) by Martin Holmer]
+
+
+2024-10-02 Release 4.3.0
+------------------------
+(last merged pull request is
+[#2819](https://github.com/PSLmodels/Tax-Calculator/pull/2819))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Add known values of inflation-indexed policy parameters for 2023 [[#2806](https://github.com/PSLmodels/Tax-Calculator/pull/2806) by Martin Holmer]
+- Enhance `Records.tmd_constructor` static method [[#2809](https://github.com/PSLmodels/Tax-Calculator/pull/2809) by Martin Holmer]
+- Remove TMD data files from Tax-Calculator repository [[#2810](https://github.com/PSLmodels/Tax-Calculator/pull/2810) by Martin Holmer]
+- Add known values of inflation-indexed policy parameters for 2024 [[#2816](https://github.com/PSLmodels/Tax-Calculator/pull/2816) by Martin Holmer]
+- Enhance `extend_tcja.py` and update `reforms/ext.json` [[#2817](https://github.com/PSLmodels/Tax-Calculator/pull/2817) by Martin Holmer]
+- Enhance `ppp.py` script [[#2819](https://github.com/PSLmodels/Tax-Calculator/pull/2819) by Martin Holmer]
+
+**Bug Fixes**
+- Fix specification of domestic production deduction under TCJA [[#2807](https://github.com/PSLmodels/Tax-Calculator/pull/2807) by Martin Holmer]
+- Fix `ALD_BusinessLosses_c` parameter values after 2025 [[#2818](https://github.com/PSLmodels/Tax-Calculator/pull/2818) by Martin Holmer]
+
+
+2024-09-14 Release 4.2.2
+------------------------
+(last merged pull request is
+[#2801](https://github.com/PSLmodels/Tax-Calculator/pull/2801))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Non-substantive, cosmetic changes to `policy_current_law.json` file [[#2791](https://github.com/PSLmodels/Tax-Calculator/pull/2791) by Martin Holmer]
+- Update `tmd_growfactors.csv` and `tmd_weights.csv.gz` files [[#2797](https://github.com/PSLmodels/Tax-Calculator/pull/2797) by Martin Holmer]
+
+**Bug Fixes**
+- Add missing pre-2022 values for indexed policy parameters [[#2789](https://github.com/PSLmodels/Tax-Calculator/pull/2789) by Martin Holmer]
+- Fix education tax credit phase-out parameters [[#2790](https://github.com/PSLmodels/Tax-Calculator/pull/2790) by Martin Holmer]
+- Several PRs with updates for dependency versions and other minor changes by Martin Holmer and Jason DeBacker
+
+
+2024-07-30 Release 4.2.1
+------------------------
+(last merged pull request is
+[#2786](https://github.com/PSLmodels/Tax-Calculator/pull/2786))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+- Add custom `reforms/growfactors_ext.json` file to use in dynamic analysis of the `reforms/ext.json` extend-TCJA-beyond-2025 reform [[#2770](https://github.com/PSLmodels/Tax-Calculator/pull/2777) by Jason DeBacker]
+- Fix CDCC phase-out calculations [[#2779](https://github.com/PSLmodels/Tax-Calculator/pull/2779) by Martin Holmer]
+- Fix CARES charity deduction for nonitemizers [[#2781](https://github.com/PSLmodels/Tax-Calculator/pull/2781) by Martin Holmer]
+- Fix four 2020 PT_rt? parameter values [[#2783](https://github.com/PSLmodels/Tax-Calculator/pull/2783) by Martin Holmer]
+- Correct AMT taxable income calculation to handle QBID correctly [[#2784](https://github.com/PSLmodels/Tax-Calculator/pull/2784) by Martin Holmer]
+- Fix qualified business income calculation [[#2785](https://github.com/PSLmodels/Tax-Calculator/pull/2785) by Martin Holmer]
+- Add `ctc_nonrefundable` variable [[#2786](https://github.com/PSLmodels/Tax-Calculator/pull/2786) by Martin Holmer]
+
+
 2024-07-21 Release 4.2.0
 ------------------------
 (last merged pull request is

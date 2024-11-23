@@ -74,6 +74,8 @@ class TaxCalcIO():
         self.puf_input_data = False
         self.cps_input_data = False
         self.tmd_input_data = False
+        self.tmd_weights = None
+        self.tmd_gfactor = None
         if isinstance(input_data, str):
             # remove any leading directory path from INPUT filename
             fname = os.path.basename(input_data)
@@ -90,6 +92,23 @@ class TaxCalcIO():
             if not self.cps_input_data and not os.path.isfile(input_data):
                 msg = 'INPUT file could not be found'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
+            # if tmd_input_data is True, construct weights and gfactor paths
+            if self.tmd_input_data:  # pragma: no cover
+                tmd_dir = os.path.dirname(input_data)
+                if 'TMD_AREA' in os.environ:
+                    area = os.environ['TMD_AREA']
+                    wfile = f'{area}_tmd_weights.csv.gz'
+                    inp = f'{fname[:-4]}_{area}-{str(tax_year)[2:]}'
+                else:  # using national weights
+                    wfile = 'tmd_weights.csv.gz'
+                self.tmd_weights = os.path.join(tmd_dir, wfile)
+                self.tmd_gfactor = os.path.join(tmd_dir, 'tmd_growfactors.csv')
+                if not os.path.isfile(self.tmd_weights):
+                    msg = f'weights file {self.tmd_weights} could not be found'
+                    self.errmsg += 'ERROR: {}\n'.format(msg)
+                if not os.path.isfile(self.tmd_gfactor):
+                    msg = f'gfactor file {self.tmd_gfactor} could not be found'
+                    self.errmsg += 'ERROR: {}\n'.format(msg)
         elif isinstance(input_data, pd.DataFrame):
             inp = 'df-{}'.format(str(tax_year)[2:])
         else:
@@ -123,7 +142,7 @@ class TaxCalcIO():
         elif isinstance(reform, str):
             self.specified_reform = True
             # split any compound reform into list of simple reforms
-            refnames = list()
+            refnames = []
             reforms = reform.split('+')
             for rfm in reforms:
                 # remove any leading directory path from rfm filename
@@ -206,7 +225,7 @@ class TaxCalcIO():
         self.calc = None
         self.calc_base = None
         self.param_dict = None
-        self.policy_dicts = list()
+        self.policy_dicts = []
 
     def init(self, input_data, tax_year, baseline, reform, assump,
              aging_input_data, exact_calculations):
@@ -234,7 +253,7 @@ class TaxCalcIO():
         # get assumption sub-dictionaries
         paramdict = Calculator.read_json_param_objects(None, assump)
         # get policy parameter dictionaries from --reform file(s)
-        policydicts = list()
+        policydicts = []
         if self.specified_reform:
             reforms = reform.split('+')
             for ref in reforms:
@@ -252,9 +271,7 @@ class TaxCalcIO():
             self.errmsg += valerr_msg.__str__()
         # create GrowFactors base object that incorporates gdiff_baseline
         if self.tmd_input_data:
-            gfactors_base = GrowFactors(  # pragma: no cover
-                Records.TMD_GROWFACTORS_FILENAME
-            )
+            gfactors_base = GrowFactors(self.tmd_gfactor)  # pragma: no cover
         else:
             gfactors_base = GrowFactors()
         gdiff_baseline.apply_to(gfactors_base)
@@ -266,9 +283,7 @@ class TaxCalcIO():
             self.errmsg += valerr_msg.__str__()
         # create GrowFactors ref object that has all gdiff objects applied
         if self.tmd_input_data:
-            gfactors_ref = GrowFactors(  # pragma: no cover
-                Records.TMD_GROWFACTORS_FILENAME
-            )
+            gfactors_ref = GrowFactors(self.tmd_gfactor)  # pragma: no cover
         else:
             gfactors_ref = GrowFactors()
         gdiff_baseline.apply_to(gfactors_ref)
@@ -332,18 +347,27 @@ class TaxCalcIO():
                     gfactors=gfactors_base,
                     exact_calculations=exact_calculations
                 )
-            elif self.tmd_input_data:
-                recs = Records.tmd_constructor(
-                    data=input_data,
+            elif self.tmd_input_data:  # pragma: no cover
+                wghts = pd.read_csv(self.tmd_weights)
+                recs = Records(
+                    data=pd.read_csv(input_data),
+                    start_year=Records.TMDCSV_YEAR,
+                    weights=wghts,
                     gfactors=gfactors_ref,
-                    exact_calculations=exact_calculations
-                )  # pragma: no cover
-                recs_base = Records.tmd_constructor(
-                    data=input_data,
+                    adjust_ratios=None,
+                    exact_calculations=exact_calculations,
+                    weights_scale=1.0,
+                )
+                recs_base = Records(
+                    data=pd.read_csv(input_data),
+                    start_year=Records.TMDCSV_YEAR,
+                    weights=wghts,
                     gfactors=gfactors_base,
-                    exact_calculations=exact_calculations
-                )  # pragma: no cover
-            else:  # if not {cps|tmd}_input_data but aging_input_data
+                    adjust_ratios=None,
+                    exact_calculations=exact_calculations,
+                    weights_scale=1.0,
+                )
+            else:  # if not {cps|tmd}_input_data but aging_input_data: puf
                 recs = Records(
                     data=input_data,
                     gfactors=gfactors_ref,
@@ -526,8 +550,17 @@ class TaxCalcIO():
             outdf = self.minimal_output()
             column_order = outdf.columns
         assert len(outdf.index) == self.calc.array_len
-        outdf.to_csv(self._output_filename, columns=column_order,
-                     index=False, float_format='%.2f')
+        if self.tmd_input_data:  # pragma: no cover
+            if "s006" in outdf:
+                weights = outdf["s006"].round(5)
+            outdf = outdf.round(2)
+            if "s006" in outdf:
+                outdf["s006"] = weights
+            outdf.to_csv(self._output_filename, columns=column_order,
+                         index=False)
+        else:
+            outdf.to_csv(self._output_filename, columns=column_order,
+                         index=False, float_format='%.2f')
         del outdf
         gc.collect()
 
@@ -541,7 +574,7 @@ class TaxCalcIO():
             doc = Calculator.reform_documentation(self.param_dict,
                                                   self.policy_dicts[1:])
         doc_fname = self._output_filename.replace('.csv', '-doc.text')
-        with open(doc_fname, 'w') as dfile:
+        with open(doc_fname, 'w', encoding='utf-8') as dfile:
             dfile.write(doc)
 
     def write_sqldb_file(self, dump_varset, mtr_paytax, mtr_inctax,
@@ -575,7 +608,7 @@ class TaxCalcIO():
         tab_fname = self._output_filename.replace('.csv', '-tab.text')
         # skip tables if there are not some positive weights
         if self.calc_base.total_weight() <= 0.:
-            with open(tab_fname, 'w') as tfile:
+            with open(tab_fname, 'w', encoding='utf-8') as tfile:
                 msg = 'No tables because sum of weights is not positive\n'
                 tfile.write(msg)
             return
@@ -597,7 +630,7 @@ class TaxCalcIO():
         diff = nontax + change  # using expanded_income under baseline policy
         diffdf = pd.DataFrame(data=np.column_stack(diff), columns=all_vars)
         # write each kind of distributional table
-        with open(tab_fname, 'w') as tfile:
+        with open(tab_fname, 'w', encoding='utf-8') as tfile:
             TaxCalcIO.write_decile_table(distdf, tfile, tkind='Reform Totals')
             tfile.write('\n')
             TaxCalcIO.write_decile_table(diffdf, tfile, tkind='Differences')
@@ -730,7 +763,7 @@ class TaxCalcIO():
                '<head><title>{}</title></head>\n'
                '<body><center<h1>{}</h1></center></body>\n'
                '</html>\n').format(title, reason)
-        with open(fname, 'w') as gfile:
+        with open(fname, 'w', encoding='utf-8') as gfile:
             gfile.write(txt)
 
     def minimal_output(self):
@@ -738,7 +771,7 @@ class TaxCalcIO():
         Extract minimal output and return it as Pandas DataFrame.
         """
         varlist = ['RECID', 'YEAR', 'WEIGHT', 'INCTAX', 'LSTAX', 'PAYTAX']
-        odict = dict()
+        odict = {}
         scalc = self.calc
         odict['RECID'] = scalc.array('RECID')  # id for tax filing unit
         odict['YEAR'] = self.tax_year()  # tax calculation year
@@ -764,8 +797,8 @@ class TaxCalcIO():
             vardata = calcx.array(varname)
             if varname in recs_vinfo.INTEGER_VARS:
                 odf[varname] = vardata
-            else:
-                odf[varname] = vardata.round(2)  # rounded to nearest cent
+            else:  # specify precision that can handle small TMD area weights
+                odf[varname] = vardata.round(5)
             odf = odf.copy()
         # specify mtr values in percentage terms
         if 'mtr_inctax' in varset:

@@ -26,7 +26,7 @@ jobs:
         run: |
           pip install jupyter-book
           conda install -c pslmodels behresp
-          pip install -e .
+          pip install -e . --config-settings editable_mode=compat
           cd docs
           jb build .
 

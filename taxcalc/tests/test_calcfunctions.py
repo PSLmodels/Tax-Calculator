@@ -551,7 +551,6 @@ PT_qbid_alt_w2_wages_rt = 0.25
 PT_qbid_alt_property_rt = 0.025
 PT_qbid_ps = [9e99, 9e99, 9e99, 9e99, 9e99]
 PT_qbid_prt = 0.0
-PT_qbid_limit_switch = True  # will want to test with False also
 
 # Input variable values for tests
 c00100 = [527860.66, 337675.10, 603700.00, 90700.00]
@@ -560,6 +559,7 @@ c04470 = [37000.00, 49000.00, 0.00, 32000.00]
 c04600 = [0.00, 0.00, 0.00, 0.00]
 MARS = [2, 2, 2, 4]
 e00900 = [352000.00, 23000.00, 0.00, 0.00]
+c03260 = [13516.17, 1624.90, 0.00, 0.00]
 e26270 = [0.00, 0.00, 11000.00, 6000.00]
 e02100 = [0.00, 0.00, 0.00, 0.00]
 e27200 = [0.00, 0.00, 0.00, 0.00]
@@ -572,37 +572,43 @@ c04800 = [0.0, 0.0, 0.0, 0.0]  # unimportant for function
 qbided = [0.0, 0.0, 0.0, 0.0]  # unimportant for function
 
 tuple0 = (
-    c00100[0], standard[0], c04470[0], c04600[0], MARS[0], e00900[0], e26270[0],
+    c00100[0], standard[0], c04470[0], c04600[0], MARS[0], e00900[0],
+    c03260[0], e26270[0],
     e02100[0], e27200[0], e00650[0], c01000[0], PT_SSTB_income[0],
     PT_binc_w2_wages[0], PT_ubia_property[0], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[0],
-    PT_qbid_ps, PT_qbid_prt, qbided[0], PT_qbid_limit_switch)
+    PT_qbid_ps, PT_qbid_prt, qbided[0])
 expected0 = (490860.66, 0)
 tuple1 = (
-    c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1], e26270[1],
+    c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1],
+    c03260[1], e26270[1],
     e02100[1], e27200[1], e00650[1], c01000[1], PT_SSTB_income[1],
     PT_binc_w2_wages[1], PT_ubia_property[1], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[1],
-    PT_qbid_ps, PT_qbid_prt, qbided[1], PT_qbid_limit_switch)
-expected1 = (284075.10, 4600)
+    PT_qbid_ps, PT_qbid_prt, qbided[1])
+expected1 = (284400.08, 4275.02)
 tuple2 = (
-    c00100[2], standard[2], c04470[2], c04600[2], MARS[2], e00900[2], e26270[2],
+    c00100[2], standard[2], c04470[2], c04600[2], MARS[2], e00900[2],
+    c03260[2], e26270[2],
     e02100[2], e27200[2], e00650[2], c01000[2], PT_SSTB_income[2],
     PT_binc_w2_wages[2], PT_ubia_property[2], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[2],
-    PT_qbid_ps, PT_qbid_prt, qbided[2], PT_qbid_limit_switch)
+    PT_qbid_ps, PT_qbid_prt, qbided[2])
 expected2 = (579300.00, 0)
 tuple3 = (
-    c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3], e26270[3],
+    c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3],
+    c03260[3], e26270[3],
+
     e02100[3], e27200[3], e00650[3], c01000[3], PT_SSTB_income[3],
     PT_binc_w2_wages[3], PT_ubia_property[3], PT_qbid_rt,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[3],
-    PT_qbid_ps, PT_qbid_prt, qbided[3], PT_qbid_limit_switch)
+    PT_qbid_ps, PT_qbid_prt, qbided[3])
 expected3 = (57500.00, 1200)
+
 
 @pytest.mark.parametrize(
     'test_tuple,expected_value', [

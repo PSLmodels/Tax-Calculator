@@ -218,6 +218,18 @@
             {
                 "year": 2022,
                 "value": 147000.0
+            },
+            {
+                "year": 2023,
+                "value": 160200.0
+            },
+            {
+                "year": 2024,
+                "value": 168600.0
+            },
+            {
+                "year": 2025,
+                "value": 176100.0
             }
         ],
         "validators": {
@@ -953,26 +965,6 @@
             {
                 "year": 2018,
                 "value": 1.0
-            },
-            {
-                "year": 2019,
-                "value": 1.0
-            },
-            {
-                "year": 2020,
-                "value": 1.0
-            },
-            {
-                "year": 2021,
-                "value": 1.0
-            },
-            {
-                "year": 2022,
-                "value": 1.0
-            },
-            {
-                "year": 2026,
-                "value": 0.0
             }
         ],
         "validators": {
@@ -1137,6 +1129,30 @@
             {
                 "year": 2019,
                 "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "value": 0.0
             }
         ],
         "validators": {
@@ -1186,6 +1202,30 @@
             },
             {
                 "year": 2019,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
                 "value": 0.0
             }
         ],
@@ -1508,27 +1548,102 @@
                 "value": 540000.0
             },
             {
-                "year": 2026,
+                "year": 2023,
+                "MARS": "single",
+                "value": 289000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 578000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 289000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 289000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 578000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 305000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 610000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 305000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 305000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 610000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 313000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 626000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 313000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 313000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 626000.0
+            },
+            {
+                "year": 2029,
                 "MARS": "single",
                 "value": 9e+99
             },
             {
-                "year": 2026,
+                "year": 2029,
                 "MARS": "mjoint",
                 "value": 9e+99
             },
             {
-                "year": 2026,
+                "year": 2029,
                 "MARS": "mseparate",
                 "value": 9e+99
             },
             {
-                "year": 2026,
+                "year": 2029,
                 "MARS": "headhh",
                 "value": 9e+99
             },
             {
-                "year": 2026,
+                "year": 2029,
                 "MARS": "widow",
                 "value": 9e+99
             }
@@ -1580,6 +1695,30 @@
             },
             {
                 "year": 2019,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
                 "value": 0.0
             },
             {
@@ -1780,6 +1919,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 9e+99
             },
@@ -2133,6 +2422,81 @@
                 "value": 25900.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 13850.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 27700.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 13850.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 20800.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 27700.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 14600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 29200.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 14600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 21900.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 29200.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 15000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 30000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 15000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 22500.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 30000.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 8309.0
@@ -2218,6 +2582,18 @@
             {
                 "year": 2022,
                 "value": 1150.0
+            },
+            {
+                "year": 2023,
+                "value": 1250.0
+            },
+            {
+                "year": 2024,
+                "value": 1300.0
+            },
+            {
+                "year": 2025,
+                "value": 1350.0
             }
         ],
         "validators": {
@@ -2490,6 +2866,81 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 1750.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 1800.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 1500.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 1500.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 1800.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 1800.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 1950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 1550.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 1550.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 1950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 1950.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 2000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 1600.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 1600.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 2000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 1600.0
             }
         ],
         "validators": {
@@ -2518,7 +2969,35 @@
                 "value": false
             },
             {
+                "year": 2014,
+                "value": false
+            },
+            {
+                "year": 2015,
+                "value": false
+            },
+            {
+                "year": 2016,
+                "value": false
+            },
+            {
+                "year": 2017,
+                "value": false
+            },
+            {
+                "year": 2018,
+                "value": false
+            },
+            {
+                "year": 2019,
+                "value": false
+            },
+            {
                 "year": 2020,
+                "value": true
+            },
+            {
+                "year": 2021,
                 "value": true
             },
             {
@@ -2818,6 +3297,156 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 0.0
             }
         ],
         "validators": {
@@ -3013,6 +3642,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 0.0
             }
@@ -3238,6 +4017,156 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 0.0
             }
         ],
         "validators": {
@@ -3433,6 +4362,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 0.0
             }
@@ -4199,6 +5278,156 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 9e+99
             }
         ],
         "validators": {
@@ -4448,6 +5677,156 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 9e+99
             }
         ],
         "validators": {
@@ -4695,6 +6074,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 9e+99
             }
@@ -4972,6 +6501,31 @@
                 "value": 10000.0
             },
             {
+                "year": 2022,
+                "MARS": "single",
+                "value": 10000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 10000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 5000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 10000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 10000.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 9e+99
@@ -5216,6 +6770,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 9e+99
             }
@@ -5535,6 +7239,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 9e+99
             }
@@ -5861,6 +7715,156 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 9e+99
             }
         ],
         "validators": {
@@ -6139,6 +8143,156 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 9e+99
             }
         ],
         "validators": {
@@ -6334,6 +8488,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 9e+99
             },
@@ -6730,6 +9034,156 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 0.0
             }
         ],
         "validators": {
@@ -7065,6 +9519,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 9e+99
             }
@@ -7495,6 +10099,81 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 83350.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 44625.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 89250.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 44625.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 59750.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 89250.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 47025.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 94050.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 47025.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 63000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 94050.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 48350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 96700.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 48350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 64750.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 96700.0
             }
         ],
         "validators": {
@@ -7793,6 +10472,81 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 517200.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 492300.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 553850.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 276900.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 523050.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 553850.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 518900.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 583750.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 291850.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 551350.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 583750.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 533400.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 600050.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 300000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 566700.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 600050.0
             }
         ],
         "validators": {
@@ -8014,6 +10768,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 9e+99
             }
@@ -8340,6 +11244,81 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 83350.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 44625.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 89250.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 44625.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 59750.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 89250.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 47025.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 94050.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 47025.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 63000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 94050.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 48350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 96700.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 48350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 64750.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 96700.0
             }
         ],
         "validators": {
@@ -8638,6 +11617,81 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 517200.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 492300.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 553850.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 276900.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 523050.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 553850.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 518900.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 583750.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 291850.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 551350.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 583750.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 533400.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 600050.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 300000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 566700.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 600050.0
             }
         ],
         "validators": {
@@ -8936,6 +11990,81 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 9e+99
             }
         ],
         "validators": {
@@ -9037,6 +12166,30 @@
             },
             {
                 "year": 2019,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
                 "value": 0.0
             }
         ],
@@ -9404,6 +12557,81 @@
                 "value": 20550.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 11000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 22000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 11000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 15700.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 22000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 11600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 23200.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 11600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 16550.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 23200.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 11925.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 23850.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 11925.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 17000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 23850.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 12202.0
@@ -9765,6 +12993,81 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 83550.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 44725.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 89450.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 44725.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 59850.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 89450.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 47150.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 94300.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 47150.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 63100.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 94300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 48475.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 96950.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 48475.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 64850.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 96950.0
             },
             {
                 "year": 2026,
@@ -10130,6 +13433,81 @@
                 "value": 178150.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 95375.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 190750.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 95375.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 95350.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 190750.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 100525.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 201050.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 100525.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 100500.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 201050.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 103350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 206700.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 103350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 103350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 206700.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 120253.0
@@ -10491,6 +13869,81 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 340100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 182100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 364200.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 182100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 182100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 364200.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 191950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 383900.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 191950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 191950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 383900.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 197300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 394600.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 197300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 197300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 394600.0
             },
             {
                 "year": 2026,
@@ -10856,6 +14309,81 @@
                 "value": 431900.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 231250.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 462500.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 231250.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 231250.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 462500.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 243725.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 487450.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 243725.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 243700.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 487450.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 250525.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 501050.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 250525.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 250500.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 501050.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 545260.0
@@ -11219,6 +14747,81 @@
                 "value": 647850.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 578125.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 693750.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 578125.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 578100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 693750.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 609350.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 731200.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 365600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 609350.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 731200.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 626350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 751600.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 375800.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 626350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 751600.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 547484.0
@@ -11578,6 +15181,81 @@
             },
             {
                 "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 9e+99
             },
@@ -11971,6 +15649,81 @@
                 "value": 20550.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 11000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 22000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 11000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 15700.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 22000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 11600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 23200.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 11600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 16550.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 23200.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 11925.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 23850.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 11925.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 17000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 23850.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 12202.0
@@ -12332,6 +16085,81 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 83550.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 44725.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 89450.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 44725.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 59850.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 89450.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 47150.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 94300.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 47150.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 63100.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 94300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 48475.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 96950.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 48475.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 64850.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 96950.0
             },
             {
                 "year": 2026,
@@ -12697,6 +16525,81 @@
                 "value": 178150.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 95375.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 190750.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 95375.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 95350.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 190750.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 100525.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 201050.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 100525.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 100500.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 201050.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 103350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 206700.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 103350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 103350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 206700.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 120253.0
@@ -13058,6 +16961,81 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 340100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 182100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 364200.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 182100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 182100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 364200.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 191950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 383900.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 191950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 191950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 383900.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 197300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 394600.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 197300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 197300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 394600.0
             },
             {
                 "year": 2026,
@@ -13423,6 +17401,81 @@
                 "value": 431900.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 231250.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 462500.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 231250.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 231250.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 462500.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 243725.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 487450.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 243725.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 243700.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 487450.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 250525.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 501050.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 250525.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 250500.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 501050.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 545260.0
@@ -13786,6 +17839,81 @@
                 "value": 647850.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 578125.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 693750.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 578125.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 578100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 693750.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 609350.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 731200.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 365600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 609350.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 731200.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 626350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 751600.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 375800.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 626350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 751600.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 547484.0
@@ -14145,6 +18273,81 @@
             },
             {
                 "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 9e+99
             },
@@ -14630,6 +18833,81 @@
                 "value": 340100.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 182100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 364200.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 182100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 182100.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 182100.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 191950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 383900.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 191950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 191950.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 191950.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 197300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 394600.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 197300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 197300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 197300.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 0.0
@@ -14702,106 +18980,6 @@
                 "value": 1.0
             },
             {
-                "year": 2014,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2014,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2015,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2016,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "single",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "mjoint",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "mseparate",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "headhh",
-                "value": 1.0
-            },
-            {
-                "year": 2017,
-                "MARS": "widow",
-                "value": 1.0
-            },
-            {
                 "year": 2018,
                 "MARS": "single",
                 "value": 50000.0
@@ -14848,6 +19026,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 100000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 50000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 100000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 50000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 50000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 100000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 50000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 100000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 50000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 50000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 100000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 50000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 100000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 50000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 50000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 100000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 50000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 100000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 50000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 50000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 100000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 50000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 100000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 50000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 50000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 100000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 50000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 100000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 50000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 50000.0
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 100000.0
             },
@@ -15050,32 +19378,6 @@
             "cps": false
         }
     },
-    "PT_qbid_limit_switch": {
-        "title": "QBID wage and capital limitations switch.",
-        "description": "A value of True imposes wage/capital limitations. Note that neither the PUF nor CPS have data on wage expenses or capital income, and therefore all taxpayers are fully subject to the QBID limitations. A value of False assumes sufficient wage and capital income to avoid QBID limitations.",
-        "notes": "",
-        "section_1": "Personal Income",
-        "section_2": "Pass-Through",
-        "indexable": false,
-        "indexed": false,
-        "type": "bool",
-        "value": [
-            {
-                "year": 2013,
-                "value": true
-            }
-        ],
-        "validators": {
-            "range": {
-                "min": false,
-                "max": true
-            }
-        },
-        "compatible_data": {
-            "puf": false,
-            "cps": false
-        }
-    },
     "PT_qbid_ps": {
         "title": "QBID phaseout taxable income start",
         "description": "QBID begins to decrease when pre-QBID taxable income is above this level.",
@@ -15258,6 +19560,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 9e+99
             }
@@ -15715,6 +20167,81 @@
                 "value": 118100.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 81300.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 126500.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 63250.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 81300.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 126500.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 85700.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 133300.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 66650.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 85700.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 133300.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 88100.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 137000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 68500.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 88100.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 137000.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 71053.0
@@ -16038,6 +20565,81 @@
                 "value": 1079800.0
             },
             {
+                "year": 2023,
+                "MARS": "single",
+                "value": 578150.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 1156300.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 578150.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 578150.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 1156300.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 609350.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 1218700.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 609350.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 609350.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 1218700.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 626350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 1252700.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 626350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 626350.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 1252700.0
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
                 "value": 157938.0
@@ -16123,6 +20725,18 @@
             {
                 "year": 2022,
                 "value": 8200.0
+            },
+            {
+                "year": 2023,
+                "value": 8800.0
+            },
+            {
+                "year": 2024,
+                "value": 9250.0
+            },
+            {
+                "year": 2025,
+                "value": 9550.0
             }
         ],
         "validators": {
@@ -16237,6 +20851,18 @@
             {
                 "year": 2022,
                 "value": 206100.0
+            },
+            {
+                "year": 2023,
+                "value": 220700.0
+            },
+            {
+                "year": 2024,
+                "value": 232600.0
+            },
+            {
+                "year": 2025,
+                "value": 239100.0
             }
         ],
         "validators": {
@@ -16325,6 +20951,18 @@
             {
                 "year": 2022,
                 "value": 776100.0
+            },
+            {
+                "year": 2023,
+                "value": 831150.0
+            },
+            {
+                "year": 2024,
+                "value": 875950.0
+            },
+            {
+                "year": 2025,
+                "value": 900350.0
             },
             {
                 "year": 2026,
@@ -16456,15 +21094,15 @@
         "value": [
             {
                 "year": 2013,
-                "value": 0.350
+                "value": 0.35
             },
             {
                 "year": 2021,
-                "value": 0.500
+                "value": 0.5
             },
             {
                 "year": 2022,
-                "value": 0.350
+                "value": 0.35
             }
         ],
         "validators": {
@@ -16490,7 +21128,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": 0.200
+                "value": 0.2
             }
         ],
         "validators": {
@@ -16516,13 +21154,13 @@
         "value": [
             {
                 "year": 2013,
-                "value": 2000
+                "value": 2000.0
             }
         ],
         "validators": {
             "range": {
                 "min": 0,
-                "max": 9e99
+                "max": 9e+99
             }
         },
         "compatible_data": {
@@ -16716,7 +21354,7 @@
             "cps": true
         }
     },
-    "CTC_refundable": {
+    "CTC_is_refundable": {
         "title": "Whether the child tax credit is fully refundable",
         "description": "If true, the child tax credit is made fully refundable.",
         "notes": "If true, the Additional Child Tax Credit is not used.",
@@ -16750,7 +21388,7 @@
             "cps": true
         }
     },
-    "ODC_refundable": {
+    "ODC_is_refundable": {
         "title": "Whether the other dependents tax credit is fully refundable",
         "description": "If true, the other dependents tax credit is made fully refundable.",
         "notes": "",
@@ -17163,11 +21801,11 @@
             },
             {
                 "year": 2024,
-                "value": 1600.0
+                "value": 1700.0
             },
             {
                 "year": 2025,
-                "value": 1600.0
+                "value": 1700.0
             },
             {
                 "year": 2026,
@@ -17547,6 +22185,66 @@
                 "year": 2022,
                 "EIC": "3+kids",
                 "value": 6935.0
+            },
+            {
+                "year": 2023,
+                "EIC": "0kids",
+                "value": 600.0
+            },
+            {
+                "year": 2023,
+                "EIC": "1kid",
+                "value": 3995.0
+            },
+            {
+                "year": 2023,
+                "EIC": "2kids",
+                "value": 6604.0
+            },
+            {
+                "year": 2023,
+                "EIC": "3+kids",
+                "value": 7430.0
+            },
+            {
+                "year": 2024,
+                "EIC": "0kids",
+                "value": 632.0
+            },
+            {
+                "year": 2024,
+                "EIC": "1kid",
+                "value": 4213.0
+            },
+            {
+                "year": 2024,
+                "EIC": "2kids",
+                "value": 6960.0
+            },
+            {
+                "year": 2024,
+                "EIC": "3+kids",
+                "value": 7830.0
+            },
+            {
+                "year": 2025,
+                "EIC": "0kids",
+                "value": 649.0
+            },
+            {
+                "year": 2025,
+                "EIC": "1kid",
+                "value": 4328.0
+            },
+            {
+                "year": 2025,
+                "EIC": "2kids",
+                "value": 7152.0
+            },
+            {
+                "year": 2025,
+                "EIC": "3+kids",
+                "value": 8046.0
             }
         ],
         "validators": {
@@ -18015,6 +22713,66 @@
                 "year": 2022,
                 "EIC": "3+kids",
                 "value": 20130.0
+            },
+            {
+                "year": 2023,
+                "EIC": "0kids",
+                "value": 9800.0
+            },
+            {
+                "year": 2023,
+                "EIC": "1kid",
+                "value": 21560.0
+            },
+            {
+                "year": 2023,
+                "EIC": "2kids",
+                "value": 21560.0
+            },
+            {
+                "year": 2023,
+                "EIC": "3+kids",
+                "value": 21560.0
+            },
+            {
+                "year": 2024,
+                "EIC": "0kids",
+                "value": 10330.0
+            },
+            {
+                "year": 2024,
+                "EIC": "1kid",
+                "value": 22720.0
+            },
+            {
+                "year": 2024,
+                "EIC": "2kids",
+                "value": 22720.0
+            },
+            {
+                "year": 2024,
+                "EIC": "3+kids",
+                "value": 22720.0
+            },
+            {
+                "year": 2025,
+                "EIC": "0kids",
+                "value": 10620.0
+            },
+            {
+                "year": 2025,
+                "EIC": "1kid",
+                "value": 23350.0
+            },
+            {
+                "year": 2025,
+                "EIC": "2kids",
+                "value": 23350.0
+            },
+            {
+                "year": 2025,
+                "EIC": "3+kids",
+                "value": 23350.0
             }
         ],
         "validators": {
@@ -18237,6 +22995,66 @@
                 "year": 2022,
                 "EIC": "3+kids",
                 "value": 6130.0
+            },
+            {
+                "year": 2023,
+                "EIC": "0kids",
+                "value": 6570.0
+            },
+            {
+                "year": 2023,
+                "EIC": "1kid",
+                "value": 6560.0
+            },
+            {
+                "year": 2023,
+                "EIC": "2kids",
+                "value": 6560.0
+            },
+            {
+                "year": 2023,
+                "EIC": "3+kids",
+                "value": 6560.0
+            },
+            {
+                "year": 2024,
+                "EIC": "0kids",
+                "value": 6920.0
+            },
+            {
+                "year": 2024,
+                "EIC": "1kid",
+                "value": 6920.0
+            },
+            {
+                "year": 2024,
+                "EIC": "2kids",
+                "value": 6920.0
+            },
+            {
+                "year": 2024,
+                "EIC": "3+kids",
+                "value": 6920.0
+            },
+            {
+                "year": 2025,
+                "EIC": "0kids",
+                "value": 7110.0
+            },
+            {
+                "year": 2025,
+                "EIC": "1kid",
+                "value": 7120.0
+            },
+            {
+                "year": 2025,
+                "EIC": "2kids",
+                "value": 7120.0
+            },
+            {
+                "year": 2025,
+                "EIC": "3+kids",
+                "value": 7120.0
             }
         ],
         "validators": {
@@ -18371,6 +23189,18 @@
             {
                 "year": 2022,
                 "value": 10300.0
+            },
+            {
+                "year": 2023,
+                "value": 11000.0
+            },
+            {
+                "year": 2024,
+                "value": 11600.0
+            },
+            {
+                "year": 2025,
+                "value": 11950.0
             }
         ],
         "validators": {
@@ -18503,6 +23333,30 @@
             {
                 "year": 2019,
                 "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "value": 0.0
             }
         ],
         "validators": {
@@ -18569,13 +23423,13 @@
         }
     },
     "ETC_pe_Single": {
-        "title": "Education tax credit phaseout ends (Single)",
-        "description": "The education tax credit will be zero for those taxpayers of single filing status with modified AGI (in thousands) higher than this level.",
+        "title": "Education tax credit phaseout ends (single and other non-joint)",
+        "description": "The education tax credit will be zero for those taxpayers of non-joint filing status with modified AGI (in thousands) higher than this level.",
         "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
-        "indexed": true,
+        "indexed": false,
         "type": "float",
         "value": [
             {
@@ -18616,7 +23470,7 @@
             },
             {
                 "year": 2022,
-                "value": 80.0
+                "value": 90.0
             }
         ],
         "validators": {
@@ -18631,13 +23485,13 @@
         }
     },
     "ETC_pe_Married": {
-        "title": "Education tax credit phaseout ends (Married)",
-        "description": "The education tax credit will be zero for those taxpayers of married filing status with modified AGI level (in thousands) higher than this level.",
+        "title": "Education tax credit phaseout ends (joint)",
+        "description": "The education tax credit will be zero for those taxpayers of married filing joint status with modified AGI level (in thousands) higher than this level.",
         "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
-        "indexed": true,
+        "indexed": false,
         "type": "float",
         "value": [
             {
@@ -19150,6 +24004,31 @@
                 "value": 0.0
             },
             {
+                "year": 2020,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
                 "year": 2021,
                 "MARS": "single",
                 "value": 75000.0
@@ -19196,6 +24075,81 @@
             },
             {
                 "year": 2022,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 0.0
             }
@@ -19533,6 +24487,156 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 1000000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 1000000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 1000000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 500000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 1000000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 1000000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 1000000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 1000000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 500000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 1000000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 1000000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 1000000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 1000000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 500000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 1000000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 1000000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 1000000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 1000000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 500000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 1000000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 1000000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 1000000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 1000000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 500000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 1000000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 1000000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 1000000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 1000000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 500000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 1000000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 1000000.0
             }
         ],
         "validators": {
@@ -19728,6 +24832,156 @@
             },
             {
                 "year": 2019,
+                "MARS": "widow",
+                "value": 2000000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 2000000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 2000000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 1000000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 2000000.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 2000000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 2000000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 2000000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 1000000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 2000000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 2000000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 2000000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 2000000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 1000000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 2000000.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 2000000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 2000000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 2000000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 1000000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 2000000.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 2000000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 2000000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 2000000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 1000000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 2000000.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 2000000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 2000000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 2000000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 1000000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 2000000.0
+            },
+            {
+                "year": 2025,
                 "MARS": "widow",
                 "value": 2000000.0
             }
@@ -19953,6 +25207,156 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 9e+99
             }
         ],
         "validators": {
@@ -20029,6 +25433,30 @@
             {
                 "year": 2019,
                 "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "value": 0.0
             }
         ],
         "validators": {
@@ -20079,6 +25507,30 @@
             {
                 "year": 2019,
                 "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "value": 0.0
             }
         ],
         "validators": {
@@ -20128,6 +25580,30 @@
             },
             {
                 "year": 2019,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            },
+            {
+                "year": 2022,
+                "value": 0.0
+            },
+            {
+                "year": 2023,
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
                 "value": 0.0
             }
         ],

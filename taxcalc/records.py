@@ -6,6 +6,7 @@ Tax-Calculator tax-filing-unit Records class.
 # pylint --disable=locally-disabled records.py
 
 import os
+from pathlib import Path
 import numpy as np
 import pandas as pd
 from taxcalc.data import Data
@@ -52,7 +53,7 @@ class Records(Data):
         None creates empty sample-weights DataFrame;
         default value is filename of the PUF weights.
         NOTE: when using custom weights, set this argument to a DataFrame.
-        NOTE: assumes weights are integers that are 100 times the real weights.
+        NOTE: see weights_scale documentation below.
 
     adjust_ratios: string or Pandas DataFrame or None
         string describes CSV file in which adjustment ratios reside;
@@ -67,6 +68,13 @@ class Records(Data):
         specifies whether or not exact tax calculations are done without
         any smoothing of stair-step provisions in income tax law;
         default value is false.
+
+    weights_scale: float
+        specifies the weights scaling factor used to convert contents
+        of weights file into the s006 variable.  PUF and CPS input data
+        generated in the taxdata repository use a weights_scale of 0.01,
+        while TMD input data generated in the tax-microdata repository
+        use a 1.0 weights_scale value.
 
     Raises
     ------
@@ -116,9 +124,6 @@ class Records(Data):
     PUF_RATIOS_FILENAME = 'puf_ratios.csv'
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
-    TMD_WEIGHTS_FILENAME = 'tmd_weights.csv.gz'
-    TMD_GROWFACTORS_FILENAME = 'tmd_growfactors.csv'
-    TMD_RATIOS_FILENAME = None
     CODE_PATH = os.path.abspath(os.path.dirname(__file__))
     VARINFO_FILE_NAME = 'records_variables.json'
     VARINFO_FILE_PATH = CODE_PATH
@@ -129,11 +134,12 @@ class Records(Data):
                  gfactors=GrowFactors(),
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
-                 exact_calculations=False):
+                 exact_calculations=False,
+                 weights_scale=0.01):
         # pylint: disable=no-member,too-many-branches
         if isinstance(weights, str):
             weights = os.path.join(Records.CODE_PATH, weights)
-        super().__init__(data, start_year, gfactors, weights)
+        super().__init__(data, start_year, gfactors, weights, weights_scale)
         if data is None:
             return  # because there are no data
         # read adjustment ratios
@@ -226,9 +232,12 @@ class Records(Data):
                        exact_calculations=exact_calculations)
 
     @staticmethod
-    def tmd_constructor(data,  # path to tmd.csv file or dataframe
-                        gfactors=GrowFactors(TMD_GROWFACTORS_FILENAME),
-                        exact_calculations=False):  # pragma: no cover
+    def tmd_constructor(
+            data_path: Path,
+            weights_path: Path,
+            growfactors_path: Path,
+            exact_calculations=False,
+    ):  # pragma: no cover
         """
         Static method returns a Records object instantiated with TMD
         input data.  This works in a analogous way to Records(), which
@@ -239,14 +248,19 @@ class Records(Data):
         eliminate the need to specify all the details of the PUF input
         data.
         """
-        weights = os.path.join(Records.CODE_PATH, Records.TMD_WEIGHTS_FILENAME)
-        return Records(data=data,
-                       start_year=Records.TMDCSV_YEAR,
-                       gfactors=gfactors,
-                       weights=weights,
-                       adjust_ratios=Records.TMD_RATIOS_FILENAME,
-                       exact_calculations=exact_calculations)
-    
+        assert isinstance(data_path, Path)
+        assert isinstance(weights_path, Path)
+        assert isinstance(growfactors_path, Path)
+        return Records(
+            data=pd.read_csv(data_path),
+            start_year=Records.TMDCSV_YEAR,
+            weights=pd.read_csv(weights_path),
+            gfactors=GrowFactors(growfactors_filename=str(growfactors_path)),
+            adjust_ratios=None,
+            exact_calculations=exact_calculations,
+            weights_scale=1.0,
+        )
+
     def increment_year(self):
         """
         Add one to current year, and also does
@@ -277,7 +291,7 @@ class Records(Data):
         """
         # pylint: disable=too-many-statements,no-member
         # put values in local dictionary
-        gfv = dict()
+        gfv = {}
         for name in GrowFactors.VALID_NAMES:
             gfv[name] = self.gfactors.factor_value(name, year)
         # apply values to Records variables
