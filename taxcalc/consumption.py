@@ -35,7 +35,6 @@ class Consumption(Parameters):
     def __init__(self, nyrs=NUM_YEARS):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         super().__init__()
-        print("Consumption num years = ", nyrs)
         self.initialize(Consumption.JSON_START_YEAR,
                         nyrs)
 
