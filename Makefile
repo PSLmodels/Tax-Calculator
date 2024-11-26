@@ -36,7 +36,7 @@ clean:
 
 .PHONY=package
 package:
-	@pip install -e . --config-settings editable_mode=compat
+	@pip install -e .
 
 define pytest-setup
 rm -f taxcalc/tests/reforms_actual_init

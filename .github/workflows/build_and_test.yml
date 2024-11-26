@@ -27,7 +27,7 @@ jobs:
       - name: Build
         shell: bash -l {0}
         run: |
-          pip install -e . --user --config-settings editable_mode=compat
+          pip install -e .
           pip install pytest-cov --user
           pip install pytest-pycodestyle --user
 
