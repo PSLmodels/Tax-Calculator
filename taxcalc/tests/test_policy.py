@@ -248,7 +248,7 @@ def test_multi_year_reform():
     """
     # specify dimensions of policy Policy object
     syr = Policy.JSON_START_YEAR
-    nyrs = Policy.DEFAULT_NUM_YEARS
+    nyrs = Policy.NUM_YEARS
     pol = Policy()
     iratelist = pol.inflation_rates()
     ifactor = {}

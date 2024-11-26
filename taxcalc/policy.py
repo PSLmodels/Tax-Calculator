@@ -92,10 +92,11 @@ class Policy(Parameters):
             raise ValueError('gfactors is not None or a GrowFactors instance')
         # read default parameters and initialize
         syr = Policy.JSON_START_YEAR
-        self.nyrs = last_budget_year - syr + 1
+        nyrs = last_budget_year - syr + 1
+        Policy.NUM_YEARS = nyrs
         self._inflation_rates = None
         self._wage_growth_rates = None
-        self.initialize(syr, self.nyrs, Policy.LAST_KNOWN_YEAR,
+        self.initialize(syr, nyrs, Policy.LAST_KNOWN_YEAR,
                         Policy.REMOVED_PARAMS,
                         Policy.REDEFINED_PARAMS,
                         Policy.WAGE_INDEXED_PARAMS, **kwargs)

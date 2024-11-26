@@ -10,7 +10,7 @@ from taxcalc import GrowDiff, GrowFactors, Policy
 
 def test_year_consistency():
     assert GrowDiff.JSON_START_YEAR == Policy.JSON_START_YEAR
-    assert GrowDiff.DEFAULT_NUM_YEARS == Policy.DEFAULT_NUM_YEARS
+    assert GrowDiff.NUM_YEARS == Policy.NUM_YEARS
 
 
 def test_update_and_apply_growdiff():

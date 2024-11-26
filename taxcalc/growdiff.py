@@ -33,11 +33,6 @@ class GrowDiff(Parameters):
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     def __init__(self, nyrs=NUM_YEARS):
-        # Update defaults to user defined budget window
-        self.defaults = super().get_defaults()
-        label = self.defaults["schema"]["labels"]["year"]
-        label["validators"]["range"]["max"] = GrowDiff.JSON_START_YEAR + nyrs - 1
-        super().__init__()
         self.initialize(GrowDiff.JSON_START_YEAR,
                         nyrs)
 

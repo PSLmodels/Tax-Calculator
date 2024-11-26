@@ -102,12 +102,12 @@ class Parameters(pt.Parameters):
                 self.DEFAULTS_FILE_NAME
             )
 
-        last_budget_year = start_year + num_years - 1
+        self.LAST_BUDGET_YEAR = start_year + num_years - 1
         if last_known_year is None:
             self._last_known_year = start_year
         else:
             assert last_known_year >= start_year
-            assert last_known_year <= last_budget_year
+            assert last_known_year <= self.LAST_BUDGET_YEAR
             self._last_known_year = last_known_year
 
         self._removed_params = removed or self.REMOVED_PARAMS
@@ -125,13 +125,8 @@ class Parameters(pt.Parameters):
         # Update defaults to user defined budget window
         self.defaults = super().get_defaults()
         label = self.defaults["schema"]["labels"]["year"]
-        label["validators"]["range"]["max"] = start_year + num_years - 1
+        label["validators"]["range"]["max"] = self.LAST_BUDGET_YEAR
         super().__init__(**kwargs)
-
-    # def get_defaults(self):
-    #     label = self.defaults["schema"]["labels"]["year"]
-    #     label["validators"]["range"]["max"] = 2074
-    #     return self.defaults
 
     def adjust(
         self, params_or_path, print_warnings=True, raise_errors=True, **kwargs
