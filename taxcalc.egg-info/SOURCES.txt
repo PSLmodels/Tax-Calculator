@@ -15,6 +15,7 @@ gitpr.bat
 gitsync
 gitsync.bat
 ppp.py
+pyproject.toml
 pytest.ini
 setup.py
 tctest-nojit.sh
