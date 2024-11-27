@@ -4,6 +4,26 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2024-11-30 Release 4.3.4
+------------------------
+(last merged pull request is
+[#2844](https://github.com/PSLmodels/Tax-Calculator/pull/2844))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+- Fix deprecation warning when using pip to install an editable package
+[[#2840](https://github.com/PSLmodels/Tax-Calculator/pull/2840) by Jason DeBacker]
+- Fix weights precision in output file when using CLI tool with TMD input data
+[[#2841](https://github.com/PSLmodels/Tax-Calculator/pull/2841) by Martin Holmer]
+- Fix categorization of self-employment tax and additional Medicare tax
+[[#2844](https://github.com/PSLmodels/Tax-Calculator/pull/2844) by Martin Holmer]
+
+
 2024-11-14 Release 4.3.3
 ------------------------
 (last merged pull request is
