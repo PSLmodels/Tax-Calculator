@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
 - "python>=3.10, <3.13"
-- "numpy>=1.26,<1.27"
+- "numpy>=1.26"
 - "pandas>=2.2"
 - "bokeh>=2.4"
 - numba
@@ -18,4 +18,4 @@ dependencies:
 - pip
 - pip:
     - jupyter-book
-    - "paramtools>=0.18.3"
+    - "paramtools>=0.19.0"
