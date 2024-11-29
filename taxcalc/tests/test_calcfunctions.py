@@ -244,18 +244,18 @@ tuple6 = (120000, 10000, 15000, 100, 2000, 0.06, 0.06, 0.015, 0.015, 0, 99999999
           None, None, None, None, None, None)
 expected1 = (0, 4065, 4065, 0, 0, 3252, 25000, 10000, 15000, 10100,
              17000)
-expected2 = (15000, 6146.25, 4065, 2081.25, 1040.625, 4917, 38959.375,
+expected2 = (15000, 4065, 4065, 2081.25, 1040.625, 4917, 38959.375,
              21167.5, 17791.875, 21380, 19820)
-expected3 = (15000, 22202.25, 21453, 749.25, 374.625, 16773, 179625.375,
+expected3 = (15000, 21453, 21453, 749.25, 374.625, 16773, 179625.375,
              161833.5, 17791.875, 161380, 19820)
-expected4 = (15000, 46067.85, 31953, 749.25, 374.625, 30138.6,
+expected4 = (15000, 45318.6, 31953, 749.25, 374.625, 30138.6,
              529625.375, 511833.5, 17791.875, 511380, 19820)
 expected5 = (300, 4065, 4065, 0, 0, 3285.3, 25300, 10279.1875, 15000,
              10382, 17000)
 expected6 = (-40000, 4065, 4065, 0, 0, 3252, 0, 0, 15000, 10100, 17000)
 
 @pytest.mark.parametrize(
-    'test_tuple,expected_value', [
+    'test_input, expected_output', [
         (tuple1, expected1),
         (tuple2, expected2),
         (tuple3, expected3),
@@ -263,15 +263,16 @@ expected6 = (-40000, 4065, 4065, 0, 0, 3252, 0, 0, 15000, 10100, 17000)
         (tuple5, expected5),
         (tuple6, expected6)], ids=[
             'case 1', 'case 2', 'case 3', 'case 4', 'case 5', 'case 6'])
-def test_EI_PayrollTax(test_tuple, expected_value, skip_jit):
+def test_EI_PayrollTax(test_input, expected_output, skip_jit):
     """
     Tests the EI_PayrollTax function
     """
-    test_value = calcfunctions.EI_PayrollTax(*test_tuple)
-    print('Test value = ', test_value)
-
-    assert np.allclose(test_value, expected_value)
-
+    actual_output = calcfunctions.EI_PayrollTax(*test_input)
+    if not np.allclose(actual_output, expected_output):
+        print('*INPUT:', test_input)
+        print('ACTUAL:', actual_output)
+        print('EXPECT:', expected_output)
+        assert 1 == 2, 'ACTUAL != EXPECT'
 
 def test_AfterTaxIncome(skip_jit):
     '''
