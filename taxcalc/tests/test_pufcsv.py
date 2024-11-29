@@ -234,9 +234,7 @@ def test_mtr(tests_path, puf_path):
             assert np.allclose((calc.array('iitax') +
                                 calc.array('payrolltax')),
                                calc.array('combined'))
-            assert np.allclose((calc.array('ptax_was') +
-                                calc.array('setax') +
-                                calc.array('ptax_amc')),
+            assert np.allclose(calc.array('ptax_was'),
                                calc.array('payrolltax'))
             assert np.allclose(calc.array('c21060') - calc.array('c21040'),
                                calc.array('c04470'))

@@ -736,9 +736,8 @@
     },
     "payrolltax": {
       "type": "float",
-      "desc": "Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was + setax + ptax_amc)",
-      "form": {"2013-2013": "OASDI+HI FICA plus 1040 lines 56 and 60a",
-               "2014-2016": "OASDI+HI FICA plus 1040 lines 57 and 62a"}
+      "desc": "Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was)",
+      "form": {"2013-20??": "OASDI+HI FICA"}
     },
     "refund": {
       "type": "float",
@@ -1133,13 +1132,13 @@
     },
     "ptax_amc": {
       "type": "float",
-      "desc": "Additional Medicare Tax from Form 8959 (included in payrolltax)",
+      "desc": "Additional Medicare Tax from Form 8959 (included in othertaxes and iitax)",
       "form": {"2013-2013": "1040 line 60a",
                "2014-2016": "1040 line 62a"}
     },
     "ptax_oasdi": {
       "type": "float",
-      "desc": "Employee + employer OASDI FICA tax plus self-employment tax (excludes HI FICA so positive ptax_oasdi is less than ptax_was plus setax)",
+      "desc": "Employee + employer OASDI FICA tax plus self-employment tax",
       "form": {"2013-2013": "OASDI FICA plus 1040 line 56",
                "2014-2016": "OASDI FICA plus 1040 line 57"}
     },
@@ -1151,7 +1150,7 @@
     },
     "setax": {
       "type": "float",
-      "desc": "Self-employment tax",
+      "desc": "Self-employment tax (included in othertaxes and iitax)",
       "form": {"2013-2013": "1040 line 56",
                "2014-2016": "1040 line 57"}
     },
