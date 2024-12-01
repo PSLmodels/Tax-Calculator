@@ -103,8 +103,8 @@ _IRS Form Location:_
 _Description_: Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output  
 _Datatype_: float  
 _IRS Form Location:_  
-2013-2013: 1040 line 61 minus line 56 minus line 60a  
-2014-2016: 1040 line 63 minus line 57 minus line 62a  
+2013-2013: 1040 line 61 minus lines 56, 60a, 64a, 65, and 66  
+2014-2016: 1040 line 63 minus lines 57, 62a, 66a, 67, and 68  
 
 
 ##  `num`  
@@ -123,11 +123,10 @@ _IRS Form Location:_
 
 
 ##  `payrolltax`  
-_Description_: Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was + setax + ptax_amc)  
+_Description_: Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was)  
 _Datatype_: float  
 _IRS Form Location:_  
-2013-2013: OASDI+HI FICA plus 1040 lines 56 and 60a  
-2014-2016: OASDI+HI FICA plus 1040 lines 57 and 62a  
+2013-20??: OASDI+HI FICA  
 
 
 ##  `refund`  
@@ -242,7 +241,7 @@ _IRS Form Location:_
 
 
 ##  `c05200`  
-_Description_: Tax amount from Sch X,Y,X tables  
+_Description_: Tax amount from Sch X,Y,Z tables  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-20??: calculated variable  
@@ -544,6 +543,27 @@ _IRS Form Location:_
 2013-20??: calculated variable  
 
 
+##  `ctc_total`  
+_Description_: Total CTC amount (c07220 + c11070 + odc + ctc_new)  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `ctc_nonrefundable`  
+_Description_: Portion of total CTC amount that is nonrefundable  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `ctc_refundable`  
+_Description_: Portion of total CTC amount that is refundable  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
 ##  `personal_refundable_credit`  
 _Description_: Personal refundable credit  
 _Datatype_: float  
@@ -600,6 +620,13 @@ _IRS Form Location:_
 2013-20??: calculated variable  
 
 
+##  `dwks43`  
+_Description_: separate tax on long-term capital gains and qualified dividends  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
 ##  `fstax`  
 _Description_: search taxcalc/calcfunctions.py for how calculated and used  
 _Datatype_: float  
@@ -643,7 +670,7 @@ _IRS Form Location:_
 
 
 ##  `ptax_amc`  
-_Description_: Additional Medicare Tax from Form 8959 (included in payrolltax)  
+_Description_: Additional Medicare Tax from Form 8959 (included in othertaxes and iitax)  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2013: 1040 line 60a  
@@ -651,7 +678,7 @@ _IRS Form Location:_
 
 
 ##  `ptax_oasdi`  
-_Description_: Employee + employer OASDI FICA tax plus self-employment tax (excludes HI FICA so positive ptax_oasdi is less than ptax_was plus setax)  
+_Description_: Employee + employer OASDI FICA tax plus self-employment tax  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2013: OASDI FICA plus 1040 line 56  
@@ -667,7 +694,7 @@ _IRS Form Location:_
 
 
 ##  `setax`  
-_Description_: Self-employment tax  
+_Description_: Self-employment tax (included in othertaxes and iitax)  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2013: 1040 line 56  
