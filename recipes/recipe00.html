@@ -680,7 +680,7 @@ concern about side effects from Calculator method calls on calc1.</p>
     </style>
     <div>
         <a href="https://bokeh.org" target="_blank" class="bk-notebook-logo"></a>
-        <span id="cc8808fb-3bce-4afc-b553-86ccafafb38d">Loading BokehJS ...</span>
+        <span id="cc797a91-357e-4d1b-89b5-a1f94fdb3af1">Loading BokehJS ...</span>
     </div>
 </div><script type="application/javascript">'use strict';
 (function(root) {
@@ -845,7 +845,7 @@ const JS_MIME_TYPE = 'application/javascript';
      "</div>"}};
 
   function display_loaded(error = null) {
-    const el = document.getElementById("cc8808fb-3bce-4afc-b553-86ccafafb38d");
+    const el = document.getElementById("cc797a91-357e-4d1b-89b5-a1f94fdb3af1");
     if (el != null) {
       const html = (() => {
         if (typeof root.Bokeh === "undefined") {
@@ -953,7 +953,7 @@ const JS_MIME_TYPE = 'application/javascript';
     document.body.appendChild(element);
   }
 
-  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.6.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.6.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.6.1.min.js"];
+  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.6.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.6.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.6.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.6.2.min.js"];
   const css_urls = [];
 
   const inline_js = [    function(Bokeh) {
@@ -979,7 +979,7 @@ function(Bokeh) {
       console.log("Bokeh: BokehJS failed to load within specified timeout.");
       root._bokeh_failed_load = true;
     } else if (force !== true) {
-      const cell = $(document.getElementById("cc8808fb-3bce-4afc-b553-86ccafafb38d")).parents('.cell').data().cell;
+      const cell = $(document.getElementById("cc797a91-357e-4d1b-89b5-a1f94fdb3af1")).parents('.cell').data().cell;
       cell.output_area.append_execute_result(NB_LOAD_WARNING)
     }
   }
