@@ -157,11 +157,11 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Partner self-employment earnings/loss for spouse (included in e26270 total)
     payrolltax: float
         Total (employee and employer) payroll tax liability
-        payrolltax = ptax_was + setax + ptax_amc
+        payrolltax = ptax_was
     ptax_was: float
         Employee and employer OASDI plus HI FICA tax
     setax: float
-        Self-employment tax
+        Self-employment tax (included in othertaxes and iitax)
     c03260: float
         Deductible part of self-employment tax
         c03260 = (1 - ALD_SelfEmploymentTax_hc) * 0.5 * setax
@@ -187,11 +187,11 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Total self-employment income for filing unit
     payrolltax: float
         Total (employee and employer) payroll tax liability
-        payrolltax = ptax_was + setax + ptax_amc
+        payrolltax = ptax_was
     ptax_was: float
         Employee and employer OASDI plus HI FICA tax
     setax: float
-        Self-employment tax
+        Self-employment tax (included in othertaxes and iitax)
     c03260: float
         Deductible part of self-employment tax
         c03260 = (1 - ALD_SelfEmploymentTax_hc) * 0.5 * setax
@@ -260,9 +260,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                         extra_ss_income_s * (FICA_ss_trt_employer + FICA_ss_trt_employee))
 
     # compute part of total payroll taxes for filing unit
-    # (the ptax_amc part of total payroll taxes for the filing unit is
-    # computed in the AdditionalMedicareTax function below)
-    payrolltax = ptax_was + setax + extra_payrolltax
+    payrolltax = ptax_was + extra_payrolltax
 
     # compute OASDI part of payroll taxes
     ptax_oasdi = (ptax_ss_was_p + ptax_ss_was_s +
@@ -1088,9 +1086,9 @@ def AdditionalMedicareTax(e00200, MARS,
                           AMEDT_ec, sey, AMEDT_rt,
                           FICA_mc_trt_employer, FICA_mc_trt_employee,
                           FICA_ss_trt_employer, FICA_ss_trt_employee,
-                          ptax_amc, payrolltax):
+                          ptax_amc):
     """
-    Computes Additional Medicare Tax (Form 8959) included in payroll taxes.
+    Computes Additional Medicare Tax (Form 8959) included in othertaxes.
 
     Parameters
     -----
@@ -1113,23 +1111,18 @@ def AdditionalMedicareTax(e00200, MARS,
     sey: float
         Self-employment income
     ptax_amc: float
-        Additional Medicare Tax
-    payrolltax: float
-        payroll tax augmented by Additional Medicare Tax
+        Additional Medicare Tax (included in othertaxes and iitax)
 
     Returns
     -------
     ptax_amc: float
-        Additional Medicare Tax
-    payrolltax: float
-        payroll tax augmented by Additional Medicare Tax
+        Additional Medicare Tax (included in othertaxes and iitax)
     """
     line8 = max(0., sey) * (1. - 0.5 * (FICA_mc_trt_employer + FICA_mc_trt_employee + FICA_ss_trt_employer + FICA_ss_trt_employee))
     line11 = max(0., AMEDT_ec[MARS - 1] - e00200)
     ptax_amc = AMEDT_rt * (max(0., e00200 - AMEDT_ec[MARS - 1]) +
                            max(0., line8 - line11))
-    payrolltax += ptax_amc
-    return (ptax_amc, payrolltax)
+    return ptax_amc
 
 
 @iterate_jit(nopython=True)
@@ -3150,8 +3143,8 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
 
 @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
-          c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
-          c07100, c09200, odc, charity_credit,
+          c07400, c07600, c08000, e09700, e09800, e09900, niit, setax,
+          ptax_amc, othertaxes, c07100, c09200, odc, charity_credit,
           personal_nonrefundable_credit,
           CTC_is_refundable, ODC_is_refundable):
     """
@@ -3190,8 +3183,12 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
         Penalty tax on qualified retirement plans
     niit: float
         Net Investment Income Tax from Form 8960
+    setax: float
+        Self-employment tax
+    ptax_amc: float
+        Additional Medicare tax
     othertaxes: float
-        Sum of niit, e09700, e09800, and e09900
+        Sum of niit, setax, ptax_amc, e09700, e09800, and e09900
     c07100: float
         Total non-refundable credits used to reduce positive tax liability
     c09200: float
@@ -3221,7 +3218,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     # tax after credits (2016 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)
     # tax (including othertaxes) before refundable credits
-    othertaxes = e09700 + e09800 + e09900 + niit
+    othertaxes = e09700 + e09800 + e09900 + niit + setax + ptax_amc
     c09200 = othertaxes + tax_net_nonrefundable_credits
     return (c07100, othertaxes, c09200)
 

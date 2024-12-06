@@ -193,20 +193,20 @@ def test_create_tables(cps_subsample):
     tabcol = 'iitax'
     expected = [0.0,
                 0.0,
-                -0.4,
-                -4.1,
-                -5.9,
-                8.0,
-                16.9,
-                29.0,
-                27.0,
-                71.4,
-                153.4,
-                910.1,
-                1205.5,
+                -0.3,
+                -3.8,
+                -5.4,
+                14.8,
+                21.8,
+                34.4,
+                32.9,
+                75.8,
                 159.4,
-                268.1,
-                482.7]
+                930.7,
+                1260.3,
+                162.9,
+                278.0,
+                489.7]
     if not np.allclose(dist[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
@@ -291,18 +291,18 @@ def test_create_tables(cps_subsample):
     tabcol = 'iitax'
     expected = [0.0,
                 0.0,
-                -1.3,
-                -7.6,
                 -1.2,
-                20.7,
-                26.3,
-                47.2,
-                95.5,
-                321.9,
-                324.0,
-                64.8,
-                315.2,
-                1205.5]
+                -7.2,
+                3.2,
+                26.1,
+                32.8,
+                54.4,
+                100.9,
+                334.8,
+                335.3,
+                65.6,
+                315.5,
+                1260.3]
     if not np.allclose(dist[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
