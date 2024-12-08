@@ -24,7 +24,7 @@ config = {
         "bokeh",
         "numba",
         "requests",
-        "paramtools>=0.18.3",
+        "paramtools>=0.19.0",
     ],
     "classifiers": [
         "Development Status :: 4 - Beta",

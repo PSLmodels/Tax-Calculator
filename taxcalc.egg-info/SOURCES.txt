@@ -19,6 +19,7 @@ pyproject.toml
 pytest.ini
 setup.py
 tctest-nojit.sh
+update_pcl.py
 .github/FUNDING.yml
 .github/workflows/build_and_test.yml
 .github/workflows/check_jupyterbook.yml
@@ -172,6 +173,8 @@ taxcalc/reforms/ptaxes2.json
 taxcalc/reforms/ptaxes2.out.csv
 taxcalc/reforms/ptaxes3.json
 taxcalc/reforms/ptaxes3.out.csv
+taxcalc/reforms/rounding.json
+taxcalc/reforms/rounding.out.csv
 taxcalc/reforms/archive/Clinton2016.json
 taxcalc/reforms/archive/RyanBrady.json
 taxcalc/reforms/archive/TCJA_House.json
@@ -239,3 +242,5 @@ taxcalc/validation/taxsim35/expected_differences/b21-taxdiffs-expect.csv
 taxcalc/validation/taxsim35/expected_differences/c17-taxdiffs-expect.csv
 taxcalc/validation/taxsim35/expected_differences/c18-taxdiffs-expect.csv
 taxcalc/validation/taxsim35/expected_differences/c19-taxdiffs-expect.csv
+taxcalc/validation/taxsim35/expected_differences/c20-taxdiffs-expect.csv
+taxcalc/validation/taxsim35/expected_differences/c21-taxdiffs-expect.csv
