@@ -4,7 +4,7 @@
 // about how individuals and the overall economy respond to a tax reform.
 //
 // Detailed documentation on these parameters can be found at
-// <http://PSLmodels.github.io/Tax-Calculator/#params>.
+// <https://taxcalc.pslmodels.org/guide/assumption_params.html>.
 {
     "consumption": {
         "MPC_e17500": {"2017": 0.0},
