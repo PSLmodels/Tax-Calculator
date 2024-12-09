@@ -445,7 +445,7 @@
         <span class="s1">&#39;DependentCredit_before_CTC&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
         <span class="s1">&#39;FilerCredit_c&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
         <span class="s1">&#39;ALD_InvInc_ec_base_RyanBrady&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
-        <span class="c1"># TODO: following parameter renamed in PR 2292 merged on 2019-04-15</span>
+        <span class="c1"># following parameter renamed in PR 2292 merged on 2019-04-15</span>
         <span class="s2">&quot;cpi_offset&quot;</span><span class="p">:</span> <span class="p">(</span>
             <span class="s2">&quot;was renamed parameter_indexing_CPI_offset. &quot;</span>
             <span class="s2">&quot;See documentation for change in usage.&quot;</span>
@@ -454,7 +454,7 @@
             <span class="s2">&quot;was renamed parameter_indexing_CPI_offset. &quot;</span>
             <span class="s2">&quot;See documentation for change in usage.&quot;</span>
         <span class="p">),</span>
-        <span class="c1"># TODO: following parameters renamed in PR 2345 merged on 2019-06-24</span>
+        <span class="c1"># following parameters renamed in PR 2345 merged on 2019-06-24</span>
         <span class="s1">&#39;PT_excl_rt&#39;</span><span class="p">:</span>
         <span class="s1">&#39;was renamed PT_qbid_rt in release 2.4.0&#39;</span><span class="p">,</span>
         <span class="s1">&#39;PT_excl_wagelim_thd&#39;</span><span class="p">:</span>
@@ -494,17 +494,18 @@
                         <span class="n">Policy</span><span class="o">.</span><span class="n">WAGE_INDEXED_PARAMS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">tmd_constructor</span><span class="p">(</span><span class="n">growfactors_path</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span> <span class="nf">tmd_constructor</span><span class="p">(</span><span class="n">growfactors</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="n">GrowFactors</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Static method returns a Policy object instantiated with TMD</span>
 <span class="sd">        input data.  This convenience method works in a analogous way</span>
 <span class="sd">        to Policy(), which returns a Policy object instantiated with</span>
 <span class="sd">        non-TMD input data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors_path</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span>
-        <span class="n">gf_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">growfactors_path</span><span class="p">)</span>
-        <span class="n">tmd_growfactors</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="o">=</span><span class="n">gf_filename</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Policy</span><span class="p">(</span><span class="n">gfactors</span><span class="o">=</span><span class="n">tmd_growfactors</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+            <span class="n">growfactors</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">growfactors</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors</span><span class="p">,</span> <span class="n">GrowFactors</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Policy</span><span class="p">(</span><span class="n">gfactors</span><span class="o">=</span><span class="n">growfactors</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Policy.read_json_reform">
 <a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.read_json_reform">[docs]</a>
