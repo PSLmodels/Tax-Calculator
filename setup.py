@@ -19,9 +19,9 @@ config = {
     "name": "taxcalc",
     "install_requires": [
         "setuptools",
-        "numpy",
-        "pandas",
-        "bokeh",
+        "numpy>=1.26",
+        "pandas>=2.2",
+        "bokeh>=2.4",
         "numba",
         "requests",
         "paramtools>=0.19.0",
