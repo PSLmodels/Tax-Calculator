@@ -28,14 +28,13 @@ class GrowDiff(Parameters):
     """
 
     JSON_START_YEAR = Policy.JSON_START_YEAR
-    DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
+    NUM_YEARS = Policy.NUM_YEARS
     DEFAULTS_FILE_NAME = 'growdiff.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, nyrs=NUM_YEARS):
         self.initialize(GrowDiff.JSON_START_YEAR,
-                        GrowDiff.DEFAULT_NUM_YEARS)
+                        nyrs)
 
     @staticmethod
     def read_json_update(obj, topkey):

@@ -10,6 +10,34 @@ import re
 import subprocess
 import yaml
 import pytest
+import ast
+
+
+def extract_install_requires(setup_py_content):
+    """
+    Extract the install_requires list from a setup.py file content.
+
+    Args:
+        setup_py_content (str): The full content of the setup.py file
+
+    Returns:
+        list: A list of package requirements
+    """
+    # Use regex to find the install_requires list
+    match = re.search(r'"install_requires"\s*:\s*\[([^\]]+)\]', setup_py_content, re.DOTALL)
+
+    if match:
+        # Extract the contents of the list and split into packages
+        packages_str = match.group(1)
+        # Use ast.literal_eval to safely parse the string representations
+        packages = [
+            ast.literal_eval(f'{pkg.strip()}')
+            for pkg in packages_str.split(',')
+            if pkg.strip()
+        ]
+        return packages
+
+    return []
 
 
 @pytest.mark.local
@@ -38,6 +66,7 @@ def test_for_consistency(tests_path):
         'coverage',
         "pip",
         "jupyter-book",
+        "setuptools"
     ])
     # read conda.recipe/meta.yaml requirements
     meta_file = os.path.join(tests_path, '..', '..',
@@ -65,3 +94,16 @@ def test_for_consistency(tests_path):
     # confirm that extras in env (relative to run) equal the dev_pkgs set
     extras = env - run
     assert extras == dev_pkgs
+    # Read the setup.py file and extract the install_requires list
+    setup_file = os.path.join(tests_path, '..', '..',
+                              'setup.py')
+    with open(setup_file, 'r') as f:
+        setup_py_content = f.read()
+    setup = set(extract_install_requires(setup_py_content))
+    # confirm that setup.py
+    print("Setup packages = ", setup)
+    print("Meta packages = ", bld)
+    # if package in both, confirm that the version is the same
+    for pkg in setup.intersection(bld):
+        assert pkg in setup
+        assert pkg in bld
