@@ -18,7 +18,6 @@ config = {
     "include_package_data": True,
     "name": "taxcalc",
     "install_requires": [
-        "setuptools",
         "numpy>=1.26",
         "pandas>=2.2",
         "bokeh>=2.4",
