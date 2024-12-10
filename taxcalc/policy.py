@@ -52,7 +52,7 @@ class Policy(Parameters):
         'DependentCredit_before_CTC': 'is a removed parameter name',
         'FilerCredit_c': 'is a removed parameter name',
         'ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
-        # TODO: following parameter renamed in PR 2292 merged on 2019-04-15
+        # following parameter renamed in PR 2292 merged on 2019-04-15
         "cpi_offset": (
             "was renamed parameter_indexing_CPI_offset. "
             "See documentation for change in usage."
@@ -61,7 +61,7 @@ class Policy(Parameters):
             "was renamed parameter_indexing_CPI_offset. "
             "See documentation for change in usage."
         ),
-        # TODO: following parameters renamed in PR 2345 merged on 2019-06-24
+        # following parameters renamed in PR 2345 merged on 2019-06-24
         'PT_excl_rt':
         'was renamed PT_qbid_rt in release 2.4.0',
         'PT_excl_wagelim_thd':
@@ -102,17 +102,18 @@ class Policy(Parameters):
                         Policy.WAGE_INDEXED_PARAMS, **kwargs)
 
     @staticmethod
-    def tmd_constructor(growfactors_path):  # pragma: no cover
+    def tmd_constructor(growfactors: Path | GrowFactors):  # pragma: no cover
         """
         Static method returns a Policy object instantiated with TMD
         input data.  This convenience method works in a analogous way
         to Policy(), which returns a Policy object instantiated with
         non-TMD input data.
         """
-        assert isinstance(growfactors_path, Path)
-        gf_filename = str(growfactors_path)
-        tmd_growfactors = GrowFactors(growfactors_filename=gf_filename)
-        return Policy(gfactors=tmd_growfactors)
+        if isinstance(growfactors, Path):
+            growfactors = GrowFactors(growfactors_filename=str(growfactors))
+        else:
+            assert isinstance(growfactors, GrowFactors)
+        return Policy(gfactors=growfactors)
 
     @staticmethod
     def read_json_reform(obj):
