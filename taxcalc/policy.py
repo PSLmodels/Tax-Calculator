@@ -102,7 +102,8 @@ class Policy(Parameters):
                         Policy.WAGE_INDEXED_PARAMS, **kwargs)
 
     @staticmethod
-    def tmd_constructor(growfactors: Path | GrowFactors):  # pragma: no cover
+    def tmd_constructor(growfactors: Path | GrowFactors,
+                        last_budget_year=DEFAULT_LAST_BUDGET_YEAR):  # pragma: no cover
         """
         Static method returns a Policy object instantiated with TMD
         input data.  This convenience method works in a analogous way
@@ -113,7 +114,8 @@ class Policy(Parameters):
             growfactors = GrowFactors(growfactors_filename=str(growfactors))
         else:
             assert isinstance(growfactors, GrowFactors)
-        return Policy(gfactors=growfactors)
+        return Policy(gfactors=growfactors,
+                      last_budget_year=last_budget_year)
 
     @staticmethod
     def read_json_reform(obj):
