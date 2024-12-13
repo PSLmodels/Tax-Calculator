@@ -35,7 +35,7 @@ class TaxCalcIO():
         string is name of INPUT file that is CSV formatted containing
         variable names in the Records USABLE_READ_VARS set, or
         Pandas DataFrame is INPUT data containing variable names in
-        the Records USABLE_READ_VARS set.  INPUT vsrisbles not in the
+        the Records USABLE_READ_VARS set.  INPUT variables not in the
         Records USABLE_READ_VARS set can be present but are ignored.
 
     tax_year: integer
