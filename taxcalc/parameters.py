@@ -1,15 +1,12 @@
-import copy
 import os
-import re
+import copy
 from collections import defaultdict
 from typing import Union, Mapping, Any, List
 
 import marshmallow as ma
 import paramtools as pt
 import numpy as np
-import requests
 
-import taxcalc
 from taxcalc.growfactors import GrowFactors
 
 
@@ -249,7 +246,6 @@ class Parameters(pt.Parameters):
         label_to_extend = self.label_to_extend
         array_first = self.array_first
         self.array_first = False
-        self._gfactors = GrowFactors()
 
         params = self.read_params(params_or_path)
 
@@ -508,12 +504,14 @@ class Parameters(pt.Parameters):
 
     def wage_growth_rates(self, year=None):
         if year is not None:
-            return self._wage_growth_rates[year - self.start_year]
+            syr = max(self.start_year, self._gfactors.first_year)
+            return self._wage_growth_rates[year - syr]
         return self._wage_growth_rates or []
 
     def inflation_rates(self, year=None):
         if year is not None:
-            return self._inflation_rates[year - self.start_year]
+            syr = max(self.start_year, self._gfactors.first_year)
+            return self._inflation_rates[year - syr]
         return self._inflation_rates or []
 
     # alias methods below
