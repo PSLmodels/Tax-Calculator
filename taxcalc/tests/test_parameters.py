@@ -18,10 +18,10 @@ from taxcalc import (
     Parameters,
     Policy,
     Consumption,
+    GrowDiff,
     GrowFactors,
     is_paramtools_format,
 )
-from taxcalc.growdiff import GrowDiff
 
 
 # Test specification and use of simple Parameters-derived class that has
@@ -244,7 +244,7 @@ def test_json_file_contents(tests_path, fname):
     elif fname == "growdiff.json":
         o = GrowDiff()
     param_list = []
-    for k in o: 
+    for k in o:
         if k[0].isupper():  # find parameters by case of first letter
             param_list.append(k)
     for param in param_list:
@@ -386,7 +386,7 @@ class ArrayParams(Parameters):
     array_first = False
 
     START_YEAR = 2013
-    LAST_YEAR = 2034
+    LAST_YEAR = 2028
     NUM_YEARS = LAST_YEAR - START_YEAR + 1
 
     def __init__(self, **kwargs):
@@ -395,6 +395,7 @@ class ArrayParams(Parameters):
             ArrayParams.NUM_YEARS,
             **kwargs
         )
+        self._gfactors = GrowFactors()
         self._inflation_rates = [0.02] * self.num_years
         self._wage_growth_rates = [0.03] * self.num_years
 
