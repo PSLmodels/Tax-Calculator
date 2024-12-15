@@ -28,6 +28,8 @@ def cli_tc_main():
     usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
         '[--help]\n',
         ('          '
+         '[--budgetend BUDGETENDYEAR]\n'),
+        ('          '
          '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP]\n'),
         ('          '
          '[--exact] [--tables] [--graphs] [--timings]\n'),
@@ -56,6 +58,15 @@ def cli_tc_main():
                               'are computed.'),
                         type=int,
                         default=0)
+    parser.add_argument('--budgetend',
+                        help=('BUDGETENDYEAR is name of optional '
+                              'calendar year that is the last year '
+                              'of the budget window to be analyzed. '
+                              'No --budget implies the budget window '
+                              'extends until '
+                              'Policy.DEFAULT_LAST_BUDGET_YEAR.'),
+                        default=None)
+    parser.add_argument('--reform',
     parser.add_argument('--baseline',
                         help=('BASELINE is name of optional JSON reform file. '
                               'No --baseline implies baseline policy is '
@@ -164,6 +175,7 @@ def cli_tc_main():
         taxyear = args.TAXYEAR
     # instantiate TaxCalcIO object and do tax analysis
     tcio = tc.TaxCalcIO(input_data=inputfn, tax_year=taxyear,
+                        bugdet_end_year=args.budgetend,
                         baseline=args.baseline,
                         reform=args.reform, assump=args.assump,
                         outdir=args.outdir)
@@ -179,6 +191,7 @@ def cli_tc_main():
     if args.timings:
         stime = time.time()
     tcio.init(input_data=inputfn, tax_year=taxyear,
+              budget_end_year=args.budgetend,
               baseline=args.baseline,
               reform=args.reform, assump=args.assump,
               aging_input_data=aging,
