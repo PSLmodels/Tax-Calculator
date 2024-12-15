@@ -148,7 +148,10 @@ class Policy(Parameters):
         return [k for k in defaults if k != "schema"]
 
     def set_rates(self):
-        """Initialize taxcalc indexing data."""
+        """
+        Initialize policy parameter indexing rates.
+        """
+        syr = max(self.start_year, self._gfactors.first_year)
         cpi_vals = [
             vo["value"] for
             vo in self._data["parameter_indexing_CPI_offset"]["value"]
@@ -156,24 +159,25 @@ class Policy(Parameters):
         # extend parameter_indexing_CPI_offset values through budget window
         # if they have not been extended already.
         cpi_vals = cpi_vals + cpi_vals[-1:] * (
-            self.end_year - self.start_year + 1 - len(cpi_vals)
+            self.end_year - syr + 1 - len(cpi_vals)
         )
-        cpi_offset = {
-            (self.start_year + ix): val
-            for ix, val in enumerate(cpi_vals)
-        }
-
-        self._gfactors = GrowFactors()
-
-        self._inflation_rates = [
-            np.round(rate + cpi_offset[self.start_year + ix], 4)
-            for ix, rate in enumerate(
-                self._gfactors.price_inflation_rates(
-                    self.start_year, self.end_year
+        if any(cpi_vals):
+            cpi_offset = {
+                (self.start_year + ix): val
+                for ix, val in enumerate(cpi_vals)
+            }
+            self._inflation_rates = [
+                np.round(rate + cpi_offset[self.start_year + ix], 4)
+                for ix, rate in enumerate(
+                        self._gfactors.price_inflation_rates(
+                            syr, self.end_year
+                        )
                 )
+            ]
+        else:  # all cpi_vals are zero
+            self._inflation_rates = self._gfactors.price_inflation_rates(
+                syr, self.end_year
             )
-        ]
-
         self._wage_growth_rates = self._gfactors.wage_growth_rates(
-            self.start_year, self.end_year
+            syr, self.end_year
         )
