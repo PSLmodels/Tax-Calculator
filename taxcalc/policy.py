@@ -8,7 +8,6 @@ Tax-Calculator federal tax policy Policy class.
 import os
 import json
 from pathlib import Path
-import numpy as np
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
 
@@ -151,33 +150,17 @@ class Policy(Parameters):
         """
         Initialize policy parameter indexing rates.
         """
-        syr = max(self.start_year, self._gfactors.first_year)
         cpi_vals = [
             vo["value"] for
             vo in self._data["parameter_indexing_CPI_offset"]["value"]
         ]
-        # extend parameter_indexing_CPI_offset values through budget window
-        # if they have not been extended already.
-        cpi_vals = cpi_vals + cpi_vals[-1:] * (
-            self.end_year - syr + 1 - len(cpi_vals)
+        # policy_current_law.json should not specify any non-zero values
+        # for the parameter_indexing_CPI_offset parameter, so check this
+        assert any(cpi_vals) is False
+        syr = max(self.start_year, self._gfactors.first_year)
+        self._inflation_rates = self._gfactors.price_inflation_rates(
+            syr, self.end_year
         )
-        if any(cpi_vals):  # pragma: no cover
-            cpi_offset = {
-                (self.start_year + ix): val
-                for ix, val in enumerate(cpi_vals)
-            }
-            self._inflation_rates = [
-                np.round(rate + cpi_offset[self.start_year + ix], 4)
-                for ix, rate in enumerate(
-                        self._gfactors.price_inflation_rates(
-                            syr, self.end_year
-                        )
-                )
-            ]
-        else:  # all cpi_vals are zero
-            self._inflation_rates = self._gfactors.price_inflation_rates(
-                syr, self.end_year
-            )
         self._wage_growth_rates = self._gfactors.wage_growth_rates(
             syr, self.end_year
         )
