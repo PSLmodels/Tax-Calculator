@@ -7,7 +7,7 @@ for a complete commit history.
 2024-12-16 Release 4.3.5
 ------------------------
 (last merged pull request is
-[#2852](https://github.com/PSLmodels/Tax-Calculator/pull/2852))
+[#2854](https://github.com/PSLmodels/Tax-Calculator/pull/2854))
 
 **This is a minor enhancement and bug-fix release.**
 
@@ -18,6 +18,8 @@ for a complete commit history.
 [[#2831](https://github.com/PSLmodels/Tax-Calculator/pull/2831) by Bodi Yang]
 - Generalize tmd_constructor in both Records and Policy classes
 [[#2850](https://github.com/PSLmodels/Tax-Calculator/pull/2850) by Martin Holmer]
+- Add changes that should have been included in PR #2831
+[[#2854](https://github.com/PSLmodels/Tax-Calculator/pull/2854) by Martin Holmer]
 
 **Bug Fixes**
 - Fix several broken documentation links
