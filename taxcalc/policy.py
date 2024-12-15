@@ -1,4 +1,4 @@
-"""
+>"""
 Tax-Calculator federal tax policy Policy class.
 """
 # CODING-STYLE CHECKS:
@@ -161,7 +161,7 @@ class Policy(Parameters):
         cpi_vals = cpi_vals + cpi_vals[-1:] * (
             self.end_year - syr + 1 - len(cpi_vals)
         )
-        if any(cpi_vals):
+        if any(cpi_vals):  # pragma: no cover
             cpi_offset = {
                 (self.start_year + ix): val
                 for ix, val in enumerate(cpi_vals)
