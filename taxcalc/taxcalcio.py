@@ -68,6 +68,7 @@ class TaxCalcIO():
                  outdir=None):
         # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=too-many-branches,too-many-statements
+        self.gf_reform = None
         self.errmsg = ''
         # check name and existence of INPUT file
         inp = 'x'
@@ -288,6 +289,7 @@ class TaxCalcIO():
             gfactors_ref = GrowFactors()
         gdiff_baseline.apply_to(gfactors_ref)
         gdiff_response.apply_to(gfactors_ref)
+        self.gf_reform = copy.deepcopy(gfactors_ref)
         # create Policy objects:
         # ... the baseline Policy object
         base = Policy(gfactors=gfactors_base)
@@ -571,10 +573,13 @@ class TaxCalcIO():
         Write reform documentation to text file.
         """
         if len(self.policy_dicts) <= 1:
-            doc = Calculator.reform_documentation(self.param_dict)
+            doc = Calculator.reform_documentation(
+                self.param_dict, self.gf_reform
+            )
         else:
-            doc = Calculator.reform_documentation(self.param_dict,
-                                                  self.policy_dicts[1:])
+            doc = Calculator.reform_documentation(
+                self.param_dict, self.gf_reform, self.policy_dicts[1:]
+            )
         doc_fname = self._output_filename.replace('.csv', '-doc.text')
         with open(doc_fname, 'w', encoding='utf-8') as dfile:
             dfile.write(doc)
