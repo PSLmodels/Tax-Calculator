@@ -1,4 +1,4 @@
->"""
+"""
 Tax-Calculator federal tax policy Policy class.
 """
 # CODING-STYLE CHECKS:
