@@ -1573,7 +1573,7 @@
 <div class="viewcode-block" id="Calculator.reform_documentation">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.reform_documentation">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">reform_documentation</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">policy_dicts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reform_documentation</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">growfactors</span><span class="p">,</span> <span class="n">policy_dicts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate reform documentation versus current-law policy.</span>
 
@@ -1582,6 +1582,9 @@
 <span class="sd">        params: dict</span>
 <span class="sd">            dictionary is structured like dict returned from</span>
 <span class="sd">            the static Calculator.read_json_param_objects() method</span>
+
+<span class="sd">        growfactors: GrowFactors</span>
+<span class="sd">            GrowFactors object used to construct Calculator Policy object</span>
 
 <span class="sd">        policy_dicts : list of dict or None</span>
 <span class="sd">            each dictionary in list is a params[&#39;policy&#39;] dictionary</span>
@@ -1718,13 +1721,14 @@
         <span class="c1"># create Policy object with current-law-policy values</span>
         <span class="n">gdiff_base</span> <span class="o">=</span> <span class="n">GrowDiff</span><span class="p">()</span>
         <span class="n">gdiff_base</span><span class="o">.</span><span class="n">update_growdiff</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;growdiff_baseline&#39;</span><span class="p">])</span>
-        <span class="n">gfactors_clp</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors</span><span class="p">,</span> <span class="n">GrowFactors</span><span class="p">)</span>
+        <span class="n">gfactors_clp</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">growfactors</span><span class="p">)</span>
         <span class="n">gdiff_base</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_clp</span><span class="p">)</span>
         <span class="n">clp</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span><span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_clp</span><span class="p">)</span>
         <span class="c1"># create Policy object with post-reform values</span>
         <span class="n">gdiff_resp</span> <span class="o">=</span> <span class="n">GrowDiff</span><span class="p">()</span>
         <span class="n">gdiff_resp</span><span class="o">.</span><span class="n">update_growdiff</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;growdiff_response&#39;</span><span class="p">])</span>
-        <span class="n">gfactors_ref</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+        <span class="n">gfactors_ref</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">growfactors</span><span class="p">)</span>
         <span class="n">gdiff_base</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_ref</span><span class="p">)</span>
         <span class="n">gdiff_resp</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_ref</span><span class="p">)</span>
         <span class="n">ref</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span><span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_ref</span><span class="p">)</span>

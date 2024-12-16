@@ -1020,13 +1020,14 @@ suitable as input into the GrowDiff.update_growdiff method.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.calculator.Calculator.reform_documentation">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reform_documentation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy_dicts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.reform_documentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.reform_documentation" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reform_documentation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growfactors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy_dicts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.reform_documentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.reform_documentation" title="Link to this definition">#</a></dt>
 <dd><p>Generate reform documentation versus current-law policy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>params</strong> (<em>dict</em>) – dictionary is structured like dict returned from
 the static Calculator.read_json_param_objects() method</p></li>
+<li><p><strong>growfactors</strong> (<a class="reference internal" href="growfactors.html#taxcalc.growfactors.GrowFactors" title="taxcalc.growfactors.GrowFactors"><em>GrowFactors</em></a>) – GrowFactors object used to construct Calculator Policy object</p></li>
 <li><p><strong>policy_dicts</strong> (<em>list</em><em> of </em><em>dict</em><em> or </em><em>None</em>) – each dictionary in list is a params[‘policy’] dictionary
 representing second and subsequent elements of a compound
 reform; None implies no compound reform with the simple

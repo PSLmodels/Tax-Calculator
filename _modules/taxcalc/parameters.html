@@ -388,18 +388,15 @@
                 <article class="bd-article">
                   
   <h1>Source code for taxcalc.parameters</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">marshmallow</span> <span class="k">as</span> <span class="nn">ma</span>
 <span class="kn">import</span> <span class="nn">paramtools</span> <span class="k">as</span> <span class="nn">pt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">requests</span>
 
-<span class="kn">import</span> <span class="nn">taxcalc</span>
 <span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
 
 
@@ -646,7 +643,6 @@
         <span class="n">label_to_extend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span>
         <span class="n">array_first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_first</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">array_first</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_params</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">)</span>
 
@@ -912,12 +908,14 @@
 
     <span class="k">def</span> <span class="nf">wage_growth_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span><span class="p">[</span><span class="n">year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">]</span>
+            <span class="n">syr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">first_year</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span><span class="p">[</span><span class="n">year</span> <span class="o">-</span> <span class="n">syr</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span> <span class="ow">or</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">inflation_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span><span class="p">[</span><span class="n">year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">]</span>
+            <span class="n">syr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">first_year</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span><span class="p">[</span><span class="n">year</span> <span class="o">-</span> <span class="n">syr</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="ow">or</span> <span class="p">[]</span>
 
     <span class="c1"># alias methods below</span>

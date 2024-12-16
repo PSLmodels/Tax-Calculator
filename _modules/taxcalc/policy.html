@@ -398,7 +398,6 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">taxcalc.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
 <span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
 
@@ -551,34 +550,22 @@
 <div class="viewcode-block" id="Policy.set_rates">
 <a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.set_rates">[docs]</a>
     <span class="k">def</span> <span class="nf">set_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize taxcalc indexing data.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize policy parameter indexing rates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cpi_vals</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">for</span>
             <span class="n">vo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
         <span class="p">]</span>
-        <span class="c1"># extend parameter_indexing_CPI_offset values through budget window</span>
-        <span class="c1"># if they have not been extended already.</span>
-        <span class="n">cpi_vals</span> <span class="o">=</span> <span class="n">cpi_vals</span> <span class="o">+</span> <span class="n">cpi_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">*</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">cpi_vals</span><span class="p">)</span>
+        <span class="c1"># policy_current_law.json should not specify any non-zero values</span>
+        <span class="c1"># for the parameter_indexing_CPI_offset parameter, so check this</span>
+        <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">cpi_vals</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span>
+        <span class="n">syr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">first_year</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">price_inflation_rates</span><span class="p">(</span>
+            <span class="n">syr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span>
         <span class="p">)</span>
-        <span class="n">cpi_offset</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span> <span class="o">+</span> <span class="n">ix</span><span class="p">):</span> <span class="n">val</span>
-            <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cpi_vals</span><span class="p">)</span>
-        <span class="p">}</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rate</span> <span class="o">+</span> <span class="n">cpi_offset</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span> <span class="o">+</span> <span class="n">ix</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">rate</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">price_inflation_rates</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="p">]</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">wage_growth_rates</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span>
+            <span class="n">syr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span>
         <span class="p">)</span></div>
 </div>
 
