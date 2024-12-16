@@ -1258,13 +1258,14 @@ class Calculator():
         # create Policy object with current-law-policy values
         gdiff_base = GrowDiff()
         gdiff_base.update_growdiff(params['growdiff_baseline'])
-        gfactors_clp = GrowFactors()
+        assert isinstance(growfactors, GrowFactors)
+        gfactors_clp = copy.deepcopy(growfactors)
         gdiff_base.apply_to(gfactors_clp)
         clp = Policy(gfactors=gfactors_clp)
         # create Policy object with post-reform values
         gdiff_resp = GrowDiff()
         gdiff_resp.update_growdiff(params['growdiff_response'])
-        gfactors_ref = GrowFactors()
+        gfactors_ref = copy.deepcopy(growfactors)
         gdiff_base.apply_to(gfactors_ref)
         gdiff_resp.apply_to(gfactors_ref)
         ref = Policy(gfactors=gfactors_ref)
