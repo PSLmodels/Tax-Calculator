@@ -4,6 +4,31 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2024-12-16 Release 4.3.5
+------------------------
+(last merged pull request is
+[#2854](https://github.com/PSLmodels/Tax-Calculator/pull/2854))
+
+**This is a minor enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Update PUF and CPS input data using CBO June 2024 baseline projection
+[[#2831](https://github.com/PSLmodels/Tax-Calculator/pull/2831) by Bodi Yang]
+- Generalize tmd_constructor in both Records and Policy classes
+[[#2850](https://github.com/PSLmodels/Tax-Calculator/pull/2850) by Martin Holmer]
+- Add changes that should have been included in PR #2831
+[[#2854](https://github.com/PSLmodels/Tax-Calculator/pull/2854) by Martin Holmer]
+
+**Bug Fixes**
+- Fix several broken documentation links
+[[#2847](https://github.com/PSLmodels/Tax-Calculator/pull/2847) by Martin Holmer] and
+[[#2849](https://github.com/PSLmodels/Tax-Calculator/pull/2849) by Martin Holmer]
+- Remove incorrect use of GrowFactors() in Policy and Parameters classes
+[[#2852](https://github.com/PSLmodels/Tax-Calculator/pull/2852) by Martin Holmer]
+
+
 2024-11-30 Release 4.3.4
 ------------------------
 (last merged pull request is
