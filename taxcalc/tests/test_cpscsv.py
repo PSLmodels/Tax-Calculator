@@ -18,7 +18,7 @@ import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator
+from taxcalc import GrowFactors, GrowDiff, Policy, Records, Calculator
 
 
 START_YEAR = 2017
@@ -161,3 +161,52 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
                 else:
                     return True
         return False
+
+
+def test_flexible_last_budget_year(cps_fullsample):
+    """
+    Test flexible LAST_BUDGET_YEAR logic using cps.csv file.
+    """
+    tax_calc_year = Policy.LAST_BUDGET_YEAR - 1
+    growdiff_year = tax_calc_year - 1
+    growdiff_dict = {'AWAGE': {growdiff_year: 0.01, tax_calc_year: 0.0}}
+
+    def default_calculator(growdiff_dictionary):
+        """
+        Return CPS-based Calculator object using default LAST_BUDGET_YEAR.
+        """
+        g_factors = GrowFactors()
+        gdiff = GrowDiff()
+        gdiff.update_growdiff(growdiff_dictionary)
+        gdiff.apply_to(g_factors)
+        pol = Policy(gfactors=g_factors)
+        rec = Records.cps_constructor(data=cps_fullsample, gfactors=g_factors)
+        calc = Calculator(policy=pol, records=rec)
+        return calc
+
+    def flexible_calculator(growdiff_dictionary, last_b_year, num_years):
+        """
+        Return CPS-based Calculator object using custom LAST_BUDGET_YEAR.
+        """
+        g_factors = GrowFactors()
+        gdiff = GrowDiff(last_budget_year=last_b_year)
+        gdiff.update_growdiff(growdiff_dictionary)
+        gdiff.apply_to(g_factors)
+        pol = Policy(gfactors=g_factors, last_budget_year=last_b_year)
+        rec = Records.cps_constructor(data=cps_fullsample, gfactors=g_factors)
+        calc = Calculator(policy=pol, records=rec)
+        return calc
+
+    # begin main test logic
+    cdef = default_calculator(growdiff_dict)
+    cdef.advance_to_year(tax_calc_year)
+    cdef.calc_all()
+    iitax_def = round(cdef.weighted_total('iitax'))
+
+    num_years = tax_calc_year - Policy.JSON_START_YEAR + 1
+    cflx = flexible_calculator(growdiff_dict, tax_calc_year, num_years)
+    cflx.advance_to_year(tax_calc_year)
+    cflx.calc_all()
+    iitax_flx = round(cflx.weighted_total('iitax'))
+
+    assert np.allclose([iitax_flx], [iitax_def])

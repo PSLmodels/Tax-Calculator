@@ -20,7 +20,8 @@ class GrowDiff(Parameters):
 
     Parameters
     ----------
-    none
+    last_budget_year: integer
+        user-defined last parameter extrapolation year
 
     Returns
     -------
@@ -28,14 +29,13 @@ class GrowDiff(Parameters):
     """
 
     JSON_START_YEAR = Policy.JSON_START_YEAR
-    DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
     DEFAULTS_FILE_NAME = 'growdiff.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
-    def __init__(self):
+    def __init__(self, last_budget_year=Policy.LAST_BUDGET_YEAR):
         super().__init__()
-        self.initialize(GrowDiff.JSON_START_YEAR,
-                        GrowDiff.DEFAULT_NUM_YEARS)
+        nyrs = Policy.number_of_years(last_budget_year)
+        self.initialize(GrowDiff.JSON_START_YEAR, nyrs)
 
     @staticmethod
     def read_json_update(obj, topkey):
@@ -81,8 +81,3 @@ class GrowDiff(Parameters):
                 cyr = i + self.start_year
                 diff_array = getattr(self, _gfvn)
                 growfactors.update(gfvn, cyr, diff_array[i])
-
-    def set_rates(self):
-        """
-        Unimplemented base class method that is not used here.
-        """
