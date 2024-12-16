@@ -84,6 +84,7 @@ class GrowFactors():
         # determine first_year and last_year from gfdf
         self._first_year = min(gfdf.index)
         self._last_year = max(gfdf.index)
+        print("IN Gfactors last year is ", self._last_year)
         # set gfdf as attribute of class
         self.gfdf = pd.DataFrame()
         setattr(self, 'gfdf', gfdf.astype(np.float64))

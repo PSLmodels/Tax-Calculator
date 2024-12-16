@@ -80,7 +80,9 @@ class Policy(Parameters):
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
 
-    def __init__(self, gfactors=None, last_budget_year=DEFAULT_LAST_BUDGET_YEAR,  **kwargs):
+    def __init__(self, gfactors=None,
+                 last_budget_year=DEFAULT_LAST_BUDGET_YEAR,
+                 **kwargs):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         super().__init__()
         # handle gfactors argument

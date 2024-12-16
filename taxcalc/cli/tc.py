@@ -65,8 +65,8 @@ def cli_tc_main():
                               'No --budget implies the budget window '
                               'extends until '
                               'Policy.DEFAULT_LAST_BUDGET_YEAR.'),
+                        type=int,
                         default=None)
-    parser.add_argument('--reform',
     parser.add_argument('--baseline',
                         help=('BASELINE is name of optional JSON reform file. '
                               'No --baseline implies baseline policy is '
@@ -175,7 +175,7 @@ def cli_tc_main():
         taxyear = args.TAXYEAR
     # instantiate TaxCalcIO object and do tax analysis
     tcio = tc.TaxCalcIO(input_data=inputfn, tax_year=taxyear,
-                        bugdet_end_year=args.budgetend,
+                        budget_end_year=args.budgetend,
                         baseline=args.baseline,
                         reform=args.reform, assump=args.assump,
                         outdir=args.outdir)

@@ -41,6 +41,10 @@ class TaxCalcIO():
     tax_year: integer
         calendar year for which taxes will be computed for INPUT.
 
+    budget_end_year: integer
+        last calendar year in the budget window for which taxes will
+        be computed for INPUT.
+
     baseline: None or string
         None implies baseline policy is current-law policy, or
         string is name of optional BASELINE file that is a JSON
@@ -64,8 +68,8 @@ class TaxCalcIO():
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, input_data, tax_year, baseline, reform, assump,
-                 outdir=None):
+    def __init__(self, input_data, tax_year, budget_end_year, baseline,
+                 reform, assump, outdir=None):
         # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=too-many-branches,too-many-statements
         self.errmsg = ''
@@ -227,8 +231,8 @@ class TaxCalcIO():
         self.param_dict = None
         self.policy_dicts = []
 
-    def init(self, input_data, tax_year, baseline, reform, assump,
-             aging_input_data, exact_calculations):
+    def init(self, input_data, tax_year, budget_end_year, baseline,
+             reform, assump, aging_input_data, exact_calculations):
         """
         TaxCalcIO class post-constructor method that completes initialization.
 
@@ -252,6 +256,11 @@ class TaxCalcIO():
         basedict = Calculator.read_json_param_objects(baseline, None)
         # get assumption sub-dictionaries
         paramdict = Calculator.read_json_param_objects(None, assump)
+        # Set budget window end year
+        if budget_end_year is None:
+            budget_end_year = Policy.DEFAULT_LAST_BUDGET_YEAR
+        else:
+            Policy.DEFAULT_LAST_BUDGET_YEAR = budget_end_year
         # get policy parameter dictionaries from --reform file(s)
         policydicts = []
         if self.specified_reform:
@@ -290,7 +299,10 @@ class TaxCalcIO():
         gdiff_response.apply_to(gfactors_ref)
         # create Policy objects:
         # ... the baseline Policy object
-        base = Policy(gfactors=gfactors_base)
+        print("GF BASE = ", gfactors_base.last_year, max(gfactors_base.gfdf.index))
+        print("GF BASE = ", gfactors_base.last_year)
+        base = Policy(gfactors=gfactors_base,
+                      last_budget_year=budget_end_year)
         try:
             base.implement_reform(basedict['policy'],
                                   print_warnings=True,
@@ -301,7 +313,8 @@ class TaxCalcIO():
             self.errmsg += valerr_msg.__str__()
         # ... the reform Policy object
         if self.specified_reform:
-            pol = Policy(gfactors=gfactors_ref)
+            pol = Policy(gfactors=gfactors_ref,
+                         last_budget_year=budget_end_year)
             for poldict in policydicts:
                 try:
                     pol.implement_reform(poldict,
@@ -314,7 +327,8 @@ class TaxCalcIO():
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += valerr_msg.__str__()
         else:
-            pol = Policy(gfactors=gfactors_base)
+            pol = Policy(gfactors=gfactors_base,
+                         last_budget_year=budget_end_year)
         # create Consumption object
         con = Consumption()
         try:
@@ -349,6 +363,8 @@ class TaxCalcIO():
                 )
             elif self.tmd_input_data:  # pragma: no cover
                 wghts = pd.read_csv(self.tmd_weights)
+                print("WEIGHTS = ", wghts.head())
+                print("G FACTORS = ", gfactors_ref)
                 recs = Records(
                     data=pd.read_csv(input_data),
                     start_year=Records.TMDCSV_YEAR,
