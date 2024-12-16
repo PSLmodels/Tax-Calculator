@@ -8,7 +8,6 @@ Tax-Calculator federal tax policy Policy class.
 import os
 import json
 from pathlib import Path
-import numpy as np
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
 
@@ -152,32 +151,20 @@ class Policy(Parameters):
         return [k for k in defaults if k != "schema"]
 
     def set_rates(self):
-        """Initialize taxcalc indexing data."""
+        """
+        Initialize policy parameter indexing rates.
+        """
         cpi_vals = [
             vo["value"] for
             vo in self._data["parameter_indexing_CPI_offset"]["value"]
         ]
-        # extend parameter_indexing_CPI_offset values through budget window
-        # if they have not been extended already.
-        cpi_vals = cpi_vals + cpi_vals[-1:] * (
-            self.end_year - self.start_year + 1 - len(cpi_vals)
+        # policy_current_law.json should not specify any non-zero values
+        # for the parameter_indexing_CPI_offset parameter, so check this
+        assert any(cpi_vals) is False
+        syr = max(self.start_year, self._gfactors.first_year)
+        self._inflation_rates = self._gfactors.price_inflation_rates(
+            syr, self.end_year
         )
-        cpi_offset = {
-            (self.start_year + ix): val
-            for ix, val in enumerate(cpi_vals)
-        }
-
-        self._gfactors = GrowFactors()
-
-        self._inflation_rates = [
-            np.round(rate + cpi_offset[self.start_year + ix], 4)
-            for ix, rate in enumerate(
-                self._gfactors.price_inflation_rates(
-                    self.start_year, self.end_year
-                )
-            )
-        ]
-
         self._wage_growth_rates = self._gfactors.wage_growth_rates(
-            self.start_year, self.end_year
+            syr, self.end_year
         )

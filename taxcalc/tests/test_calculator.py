@@ -13,7 +13,7 @@ import copy
 import pytest
 import numpy as np
 import pandas as pd
-from taxcalc import Policy, Records, Calculator, Consumption
+from taxcalc import GrowFactors, Policy, Records, Calculator, Consumption
 
 
 def test_make_calculator(cps_subsample):
@@ -568,7 +568,8 @@ def test_noreform_documentation():
     """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
     assert isinstance(params, dict)
-    actual_doc = Calculator.reform_documentation(params)
+    gfs = GrowFactors()
+    actual_doc = Calculator.reform_documentation(params, gfs)
     expected_doc = (
         'REFORM DOCUMENTATION\n'
         'Baseline Growth-Difference Assumption Values by Year:\n'
@@ -623,7 +624,8 @@ def test_reform_documentation():
     params = Calculator.read_json_param_objects(reform_json, assump_json)
     assert isinstance(params, dict)
     second_reform = {'II_em': {2019: 6500}}
-    doc = Calculator.reform_documentation(params, [second_reform])
+    gfs = GrowFactors()
+    doc = Calculator.reform_documentation(params, gfs, [second_reform])
     assert isinstance(doc, str)
     dump = False  # set to True to print documentation and force test failure
     if dump:
