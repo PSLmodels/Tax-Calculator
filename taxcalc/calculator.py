@@ -1110,7 +1110,7 @@ class Calculator():
         return param_dict
 
     @staticmethod
-    def reform_documentation(params, policy_dicts=None):
+    def reform_documentation(params, growfactors, policy_dicts=None):
         """
         Generate reform documentation versus current-law policy.
 
@@ -1119,6 +1119,9 @@ class Calculator():
         params: dict
             dictionary is structured like dict returned from
             the static Calculator.read_json_param_objects() method
+
+        growfactors: GrowFactors
+            GrowFactors object used to construct Calculator Policy object
 
         policy_dicts : list of dict or None
             each dictionary in list is a params['policy'] dictionary
