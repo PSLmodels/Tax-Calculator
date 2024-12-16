@@ -8,9 +8,8 @@ import pytest
 from taxcalc import GrowDiff, GrowFactors, Policy
 
 
-def test_year_consistency():
+def test_start_year_consistency():
     assert GrowDiff.JSON_START_YEAR == Policy.JSON_START_YEAR
-    assert GrowDiff.DEFAULT_NUM_YEARS == Policy.DEFAULT_NUM_YEARS
 
 
 def test_update_and_apply_growdiff():
@@ -22,14 +21,13 @@ def test_update_and_apply_growdiff():
     }
     gdiff.update_growdiff(diffs)
     expected_wage_diffs = [0.00, 0.01, 0.01, 0.02, 0.02]
-    extra_years = GrowDiff.DEFAULT_NUM_YEARS - len(expected_wage_diffs)
+    extra_years = gdiff.num_years - len(expected_wage_diffs)
     expected_wage_diffs.extend([0.02] * extra_years)
     assert np.allclose(gdiff._AWAGE, expected_wage_diffs, atol=0.0, rtol=0.0)
     # apply growdiff to GrowFactors instance
     gf = GrowFactors()
-    syr = GrowDiff.JSON_START_YEAR
-    nyrs = GrowDiff.DEFAULT_NUM_YEARS
-    lyr = syr + nyrs - 1
+    syr = gdiff.start_year
+    lyr = gdiff.end_year
     pir_pre = gf.price_inflation_rates(syr, lyr)
     wgr_pre = gf.wage_growth_rates(syr, lyr)
     gfactors = GrowFactors()
@@ -37,7 +35,7 @@ def test_update_and_apply_growdiff():
     pir_pst = gfactors.price_inflation_rates(syr, lyr)
     wgr_pst = gfactors.wage_growth_rates(syr, lyr)
     expected_wgr_pst = [wgr_pre[i] + expected_wage_diffs[i]
-                        for i in range(0, nyrs)]
+                        for i in range(0, gdiff.num_years)]
     assert np.allclose(pir_pre, pir_pst, atol=0.0, rtol=0.0)
     assert np.allclose(wgr_pst, expected_wgr_pst, atol=1.0e-9, rtol=0.0)
 
