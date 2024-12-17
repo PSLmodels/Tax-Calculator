@@ -249,6 +249,31 @@ class TaxCalcIO():
         # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=too-many-statements,too-many-branches
         self.errmsg = ''
+        # instantiate base and reform GrowFactors objects
+        if self.tmd_input_data:
+            gfactors_base = GrowFactors(self.tmd_gfactor)  # pragma: no cover
+            gfactors_ref = GrowFactors(self.tmd_gfactor)  # pragma: no cover
+        else:
+            gfactors_base = GrowFactors()
+            gfactors_ref = GrowFactors()
+        # check tax_year validity
+        max_tax_year = gfactors_base.last_year
+        if tax_year > max_tax_year:
+            msg = f'TAXYEAR={tax_year} is greater than {max_tax_year}'
+            self.errmsg += f'ERROR: {msg}\n'
+        min_tax_year = Policy.JSON_START_YEAR
+        if self.puf_input_data:
+            min_tax_year = max(Policy.JSON_START_YEAR, Records.PUFCSV_YEAR)
+        if self.cps_input_data:
+            min_tax_year = max(Policy.JSON_START_YEAR, Records.CPSCSV_YEAR)
+        if self.tmd_input_data:
+            min_tax_year = max(Policy.JSON_START_YEAR, Records.TMDCSV_YEAR)
+        if tax_year < min_tax_year:
+            msg = f'TAXYEAR={tax_year} is less than {min_tax_year}'
+            self.errmsg += f'ERROR: {msg}\n'
+        # tax_year out of range means cannot proceed with calculations
+        if self.errmsg:
+            return
         # get policy parameter dictionary from --baseline file
         basedict = Calculator.read_json_param_objects(baseline, None)
         # get assumption sub-dictionaries
@@ -264,35 +289,29 @@ class TaxCalcIO():
         # remember parameters for reform documentation
         self.param_dict = paramdict
         self.policy_dicts = policydicts
+        # set last_b_year
+        last_b_year = max(tax_year, Policy.LAST_BUDGET_YEAR)
         # create gdiff_baseline object
-        gdiff_baseline = GrowDiff()
+        gdiff_baseline = GrowDiff(last_budget_year=last_b_year)
         try:
             gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
-        # create GrowFactors base object that incorporates gdiff_baseline
-        if self.tmd_input_data:
-            gfactors_base = GrowFactors(self.tmd_gfactor)  # pragma: no cover
-        else:
-            gfactors_base = GrowFactors()
+        # apply gdiff_baseline to gfactor_base
         gdiff_baseline.apply_to(gfactors_base)
         # specify gdiff_response object
-        gdiff_response = GrowDiff()
+        gdiff_response = GrowDiff(last_budget_year=last_b_year)
         try:
             gdiff_response.update_growdiff(paramdict['growdiff_response'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
-        # create GrowFactors ref object that has all gdiff objects applied
-        if self.tmd_input_data:
-            gfactors_ref = GrowFactors(self.tmd_gfactor)  # pragma: no cover
-        else:
-            gfactors_ref = GrowFactors()
+        # apply gdiff_baseline and gdiff_response to gfactor_ref
         gdiff_baseline.apply_to(gfactors_ref)
         gdiff_response.apply_to(gfactors_ref)
         self.gf_reform = copy.deepcopy(gfactors_ref)
         # create Policy objects:
         # ... the baseline Policy object
-        base = Policy(gfactors=gfactors_base)
+        base = Policy(gfactors=gfactors_base, last_budget_year=last_b_year)
         try:
             base.implement_reform(basedict['policy'],
                                   print_warnings=True,
@@ -303,7 +322,7 @@ class TaxCalcIO():
             self.errmsg += valerr_msg.__str__()
         # ... the reform Policy object
         if self.specified_reform:
-            pol = Policy(gfactors=gfactors_ref)
+            pol = Policy(gfactors=gfactors_ref, last_budget_year=last_b_year)
             for poldict in policydicts:
                 try:
                     pol.implement_reform(poldict,
@@ -316,22 +335,13 @@ class TaxCalcIO():
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += valerr_msg.__str__()
         else:
-            pol = Policy(gfactors=gfactors_base)
+            pol = Policy(gfactors=gfactors_base, last_budget_year=last_b_year)
         # create Consumption object
-        con = Consumption()
+        con = Consumption(last_budget_year=last_b_year)
         try:
             con.update_consumption(paramdict['consumption'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
-        # check for valid tax_year value
-        if tax_year < pol.start_year:
-            msg = 'tax_year {} less than policy.start_year {}'
-            msg = msg.format(tax_year, pol.start_year)
-            self.errmsg += 'ERROR: {}\n'.format(msg)
-        if tax_year > pol.end_year:
-            msg = 'tax_year {} greater than policy.end_year {}'
-            msg = msg.format(tax_year, pol.end_year)
-            self.errmsg += 'ERROR: {}\n'.format(msg)
         # any errors imply cannot proceed with calculations
         if self.errmsg:
             return
