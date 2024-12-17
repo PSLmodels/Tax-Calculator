@@ -184,7 +184,7 @@ def test_flexible_last_budget_year(cps_fullsample):
         calc = Calculator(policy=pol, records=rec)
         return calc
 
-    def flexible_calculator(growdiff_dictionary, last_b_year, num_years):
+    def flexible_calculator(growdiff_dictionary, last_b_year):
         """
         Return CPS-based Calculator object using custom LAST_BUDGET_YEAR.
         """
@@ -203,8 +203,7 @@ def test_flexible_last_budget_year(cps_fullsample):
     cdef.calc_all()
     iitax_def = round(cdef.weighted_total('iitax'))
 
-    num_years = tax_calc_year - Policy.JSON_START_YEAR + 1
-    cflx = flexible_calculator(growdiff_dict, tax_calc_year, num_years)
+    cflx = flexible_calculator(growdiff_dict, tax_calc_year)
     cflx.advance_to_year(tax_calc_year)
     cflx.calc_all()
     iitax_flx = round(cflx.weighted_total('iitax'))
