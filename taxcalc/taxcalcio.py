@@ -263,11 +263,14 @@ class TaxCalcIO():
             self.errmsg += f'ERROR: {msg}\n'
         min_tax_year = Policy.JSON_START_YEAR
         if self.puf_input_data:
-            min_tax_year = max(Policy.JSON_START_YEAR, Records.PUFCSV_YEAR)
+            min_tax_year = max(  # pragma: no cover
+                Policy.JSON_START_YEAR, Records.PUFCSV_YEAR)
         if self.cps_input_data:
-            min_tax_year = max(Policy.JSON_START_YEAR, Records.CPSCSV_YEAR)
+            min_tax_year = max(
+                Policy.JSON_START_YEAR, Records.CPSCSV_YEAR)
         if self.tmd_input_data:
-            min_tax_year = max(Policy.JSON_START_YEAR, Records.TMDCSV_YEAR)
+            min_tax_year = max(  # pragma: no cover
+                Policy.JSON_START_YEAR, Records.TMDCSV_YEAR)
         if tax_year < min_tax_year:
             msg = f'TAXYEAR={tax_year} is less than {min_tax_year}'
             self.errmsg += f'ERROR: {msg}\n'
@@ -398,10 +401,6 @@ class TaxCalcIO():
                            adjust_ratios=None,
                            exact_calculations=exact_calculations)
             recs_base = copy.deepcopy(recs)
-        if tax_year < recs.data_year:
-            msg = 'tax_year {} less than records.data_year {}'
-            msg = msg.format(tax_year, recs.data_year)
-            self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Calculator objects
         self.calc = Calculator(policy=pol, records=recs,
                                verbose=True,
