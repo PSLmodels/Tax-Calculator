@@ -20,7 +20,8 @@ class Consumption(Parameters):
 
     Parameters
     ----------
-    none
+    last_budget_year: integer
+        user-defined last parameter extrapolation year
 
     Returns
     -------
@@ -28,14 +29,13 @@ class Consumption(Parameters):
     """
 
     JSON_START_YEAR = Policy.JSON_START_YEAR
-    DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
     DEFAULTS_FILE_NAME = 'consumption.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
-    def __init__(self):
+    def __init__(self, last_budget_year=Policy.LAST_BUDGET_YEAR):
         super().__init__()
-        self.initialize(Consumption.JSON_START_YEAR,
-                        Consumption.DEFAULT_NUM_YEARS)
+        nyrs = Policy.number_of_years(last_budget_year)
+        self.initialize(Consumption.JSON_START_YEAR, nyrs)
 
     @staticmethod
     def read_json_update(obj):

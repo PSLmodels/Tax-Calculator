@@ -18,13 +18,11 @@ config = {
     "include_package_data": True,
     "name": "taxcalc",
     "install_requires": [
-        "setuptools",
-        "numpy",
-        "pandas",
-        "bokeh",
+        "numpy>=1.26",
+        "pandas>=2.2",
+        "bokeh>=2.4",
         "numba",
-        "requests",
-        "paramtools>=0.18.3",
+        "paramtools>=0.19.0",
     ],
     "classifiers": [
         "Development Status :: 4 - Beta",
