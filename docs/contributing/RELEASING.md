@@ -8,12 +8,11 @@ release.
 Create new `taxcalc` packages
 =============================
 ```
+--> merge master branch into X-Y-Z branch
 
 --> on branch X-Y-Z, edit docs/about/releases.md to finalize X.Y.Z info
 
---> specify release X.Y.Z in setup.py and taxcalc/__init__.py
-
---> merge master branch into X-Y-Z branch
+--> specify release X.Y.Z in setup.py and taxcalc/__init__.py and docs/index.md
 
 --> run `python update_pcl.py`  [to update policy_current_law.json if needed]
 
@@ -29,8 +28,6 @@ Create new `taxcalc` packages
 
 --> cd taxcalc/validation ; ./tests_35.sh ; .fix. ; cd ../..
 
---> specify release X.Y.Z in docs/index.md
-
 --> make clean  [to remove taxcalc package]
 
 --> commit X-Y-Z branch and push to origin
@@ -42,7 +39,8 @@ Create new `taxcalc` packages
 --> create release X.Y.Z on GitHub using master branch
 
 --> Create new package on Conda-Forge for release X.Y.Z
-    --> open a PR to github.com/conda-forge/taxcalc-feedstock where you change the `recipe/meta.yaml` file by updating (1) the version number to X.Y.Z and (2) the checksum to reflect the checksum for the tarball for release X.Y.Z in the Tax-Calculator GitHub repo
+
+--> open a PR to github.com/conda-forge/taxcalc-feedstock where you change the `recipe/meta.yaml` file by updating (1) the version number to X.Y.Z and (2) the checksum to reflect the checksum for the tarball for release X.Y.Z in the Tax-Calculator GitHub repo
 
 ====> ADD NEW DEPENDENCY OR UPDATE MINIMUM REQUIRED VERSION <====
 
