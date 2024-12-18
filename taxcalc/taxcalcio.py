@@ -261,20 +261,21 @@ class TaxCalcIO():
         if tax_year > max_tax_year:
             msg = f'TAXYEAR={tax_year} is greater than {max_tax_year}'
             self.errmsg += f'ERROR: {msg}\n'
-        min_tax_year = Policy.JSON_START_YEAR
         if self.puf_input_data:
             min_tax_year = max(  # pragma: no cover
                 Policy.JSON_START_YEAR, Records.PUFCSV_YEAR)
-        if self.cps_input_data:
+        elif self.cps_input_data:
             min_tax_year = max(
                 Policy.JSON_START_YEAR, Records.CPSCSV_YEAR)
-        if self.tmd_input_data:
+        elif self.tmd_input_data:
             min_tax_year = max(  # pragma: no cover
                 Policy.JSON_START_YEAR, Records.TMDCSV_YEAR)
+        else:
+            min_tax_year = Policy.JSON_START_YEAR
         if tax_year < min_tax_year:
             msg = f'TAXYEAR={tax_year} is less than {min_tax_year}'
             self.errmsg += f'ERROR: {msg}\n'
-        # tax_year out of range means cannot proceed with calculations
+        # tax_year out of valid range means cannot proceed with calculations
         if self.errmsg:
             return
         # get policy parameter dictionary from --baseline file
