@@ -8,7 +8,6 @@ Tax-Calculator federal tax policy Policy class.
 import os
 import json
 from pathlib import Path
-import numpy as np
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
 
@@ -25,6 +24,9 @@ class Policy(Parameters):
     gfactors: GrowFactors class instance
         containing price inflation rates and wage growth rates
 
+    last_budget_year: integer
+        user-defined last parameter extrapolation year
+
     Raises
     ------
     ValueError:
@@ -40,9 +42,16 @@ class Policy(Parameters):
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
     LAST_KNOWN_YEAR = 2025  # last year for which indexed param vals are known
     # should increase LAST_KNOWN_YEAR by one every calendar year
-    LAST_BUDGET_YEAR = 2034  # last extrapolation year
+    LAST_BUDGET_YEAR = 2034  # default value of last extrapolation year
     # should increase LAST_BUDGET_YEAR by one every calendar year
-    DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
+
+    @staticmethod
+    def number_of_years(last_budget_year=LAST_BUDGET_YEAR):
+        """
+        Static method returns number of policy parameters years given
+        user-defined last_budget_year.
+        """
+        return last_budget_year - Policy.JSON_START_YEAR + 1
 
     # NOTE: the following three data structures use internal parameter names:
     # (1) specify which Policy parameters have been removed or renamed
@@ -53,7 +62,7 @@ class Policy(Parameters):
         'DependentCredit_before_CTC': 'is a removed parameter name',
         'FilerCredit_c': 'is a removed parameter name',
         'ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
-        # TODO: following parameter renamed in PR 2292 merged on 2019-04-15
+        # following parameter renamed in PR 2292 merged on 2019-04-15
         "cpi_offset": (
             "was renamed parameter_indexing_CPI_offset. "
             "See documentation for change in usage."
@@ -62,7 +71,7 @@ class Policy(Parameters):
             "was renamed parameter_indexing_CPI_offset. "
             "See documentation for change in usage."
         ),
-        # TODO: following parameters renamed in PR 2345 merged on 2019-06-24
+        # following parameters renamed in PR 2345 merged on 2019-06-24
         'PT_excl_rt':
         'was renamed PT_qbid_rt in release 2.4.0',
         'PT_excl_wagelim_thd':
@@ -81,7 +90,10 @@ class Policy(Parameters):
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
 
-    def __init__(self, gfactors=None, **kwargs):
+    def __init__(self,
+                 gfactors=None,
+                 last_budget_year=LAST_BUDGET_YEAR,
+                 **kwargs):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         super().__init__()
         # handle gfactors argument
@@ -93,7 +105,7 @@ class Policy(Parameters):
             raise ValueError('gfactors is not None or a GrowFactors instance')
         # read default parameters and initialize
         syr = Policy.JSON_START_YEAR
-        nyrs = Policy.DEFAULT_NUM_YEARS
+        nyrs = Policy.number_of_years(last_budget_year)
         self._inflation_rates = None
         self._wage_growth_rates = None
         self.initialize(syr, nyrs, Policy.LAST_KNOWN_YEAR,
@@ -102,17 +114,21 @@ class Policy(Parameters):
                         Policy.WAGE_INDEXED_PARAMS, **kwargs)
 
     @staticmethod
-    def tmd_constructor(growfactors_path):  # pragma: no cover
+    def tmd_constructor(
+            growfactors: Path | GrowFactors,
+            last_budget_year=LAST_BUDGET_YEAR,
+    ):  # pragma: no cover
         """
         Static method returns a Policy object instantiated with TMD
         input data.  This convenience method works in a analogous way
         to Policy(), which returns a Policy object instantiated with
         non-TMD input data.
         """
-        assert isinstance(growfactors_path, Path)
-        gf_filename = str(growfactors_path)
-        tmd_growfactors = GrowFactors(growfactors_filename=gf_filename)
-        return Policy(gfactors=tmd_growfactors)
+        if isinstance(growfactors, Path):
+            growfactors = GrowFactors(growfactors_filename=str(growfactors))
+        else:
+            assert isinstance(growfactors, GrowFactors)
+        return Policy(gfactors=growfactors, last_budget_year=last_budget_year)
 
     @staticmethod
     def read_json_reform(obj):
@@ -147,32 +163,20 @@ class Policy(Parameters):
         return [k for k in defaults if k != "schema"]
 
     def set_rates(self):
-        """Initialize taxcalc indexing data."""
+        """
+        Initialize policy parameter indexing rates.
+        """
         cpi_vals = [
             vo["value"] for
             vo in self._data["parameter_indexing_CPI_offset"]["value"]
         ]
-        # extend parameter_indexing_CPI_offset values through budget window
-        # if they have not been extended already.
-        cpi_vals = cpi_vals + cpi_vals[-1:] * (
-            self.end_year - self.start_year + 1 - len(cpi_vals)
+        # policy_current_law.json should not specify any non-zero values
+        # for the parameter_indexing_CPI_offset parameter, so check this
+        assert any(cpi_vals) is False
+        syr = max(self.start_year, self._gfactors.first_year)
+        self._inflation_rates = self._gfactors.price_inflation_rates(
+            syr, self.end_year
         )
-        cpi_offset = {
-            (self.start_year + ix): val
-            for ix, val in enumerate(cpi_vals)
-        }
-
-        self._gfactors = GrowFactors()
-
-        self._inflation_rates = [
-            np.round(rate + cpi_offset[self.start_year + ix], 4)
-            for ix, rate in enumerate(
-                self._gfactors.price_inflation_rates(
-                    self.start_year, self.end_year
-                )
-            )
-        ]
-
         self._wage_growth_rates = self._gfactors.wage_growth_rates(
-            self.start_year, self.end_year
+            syr, self.end_year
         )

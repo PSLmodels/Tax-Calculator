@@ -247,9 +247,9 @@ def test_multi_year_reform():
     Test multi-year reform involving 1D and 2D parameters.
     """
     # specify dimensions of policy Policy object
-    syr = Policy.JSON_START_YEAR
-    nyrs = Policy.DEFAULT_NUM_YEARS
     pol = Policy()
+    syr = pol.start_year
+    nyrs = pol.num_years
     iratelist = pol.inflation_rates()
     ifactor = {}
     for i in range(0, nyrs):

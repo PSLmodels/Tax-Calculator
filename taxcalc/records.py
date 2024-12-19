@@ -235,7 +235,7 @@ class Records(Data):
     def tmd_constructor(
             data_path: Path,
             weights_path: Path,
-            growfactors_path: Path,
+            growfactors: Path | GrowFactors,
             exact_calculations=False,
     ):  # pragma: no cover
         """
@@ -250,12 +250,15 @@ class Records(Data):
         """
         assert isinstance(data_path, Path)
         assert isinstance(weights_path, Path)
-        assert isinstance(growfactors_path, Path)
+        if isinstance(growfactors, Path):
+            growfactors = GrowFactors(growfactors_filename=str(growfactors))
+        else:
+            assert isinstance(growfactors, GrowFactors)
         return Records(
             data=pd.read_csv(data_path),
             start_year=Records.TMDCSV_YEAR,
             weights=pd.read_csv(weights_path),
-            gfactors=GrowFactors(growfactors_filename=str(growfactors_path)),
+            gfactors=growfactors,
             adjust_ratios=None,
             exact_calculations=exact_calculations,
             weights_scale=1.0,

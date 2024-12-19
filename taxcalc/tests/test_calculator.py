@@ -13,7 +13,7 @@ import copy
 import pytest
 import numpy as np
 import pandas as pd
-from taxcalc import Policy, Records, Calculator, Consumption
+from taxcalc import GrowFactors, Policy, Records, Calculator, Consumption
 
 
 def test_make_calculator(cps_subsample):
@@ -74,9 +74,9 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     assert calc.current_year == year
     assert calc.policy_param('II_em') == 4000
     assert np.allclose(calc.policy_param('_II_em'),
-                       np.array([4000] * Policy.DEFAULT_NUM_YEARS))
+                       np.array([4000] * pol.num_years))
     exp_STD_Aged = [[1600, 1300, 1300,
-                     1600, 1600]] * Policy.DEFAULT_NUM_YEARS
+                     1600, 1600]] * pol.num_years
     assert np.allclose(calc.policy_param('_STD_Aged'),
                        np.array(exp_STD_Aged))
     assert np.allclose(calc.policy_param('STD_Aged'),
@@ -100,10 +100,9 @@ def test_make_calculator_with_multiyear_reform(cps_subsample):
     # create a Calculator object using this policy-reform
     calc = Calculator(policy=pol, records=rec)
     # check that Policy object embedded in Calculator object is correct
-    assert pol.num_years == Policy.DEFAULT_NUM_YEARS
     assert calc.current_year == year
     assert calc.policy_param('II_em') == 3950
-    exp_II_em = [3900, 3950, 5000] + [6000] * (Policy.DEFAULT_NUM_YEARS - 3)
+    exp_II_em = [3900, 3950, 5000] + [6000] * (pol.num_years - 3)
     assert np.allclose(calc.policy_param('_II_em'),
                        np.array(exp_II_em))
     calc.increment_year()
@@ -568,7 +567,8 @@ def test_noreform_documentation():
     """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
     assert isinstance(params, dict)
-    actual_doc = Calculator.reform_documentation(params)
+    gfs = GrowFactors()
+    actual_doc = Calculator.reform_documentation(params, gfs)
     expected_doc = (
         'REFORM DOCUMENTATION\n'
         'Baseline Growth-Difference Assumption Values by Year:\n'
@@ -623,7 +623,8 @@ def test_reform_documentation():
     params = Calculator.read_json_param_objects(reform_json, assump_json)
     assert isinstance(params, dict)
     second_reform = {'II_em': {2019: 6500}}
-    doc = Calculator.reform_documentation(params, [second_reform])
+    gfs = GrowFactors()
+    doc = Calculator.reform_documentation(params, gfs, [second_reform])
     assert isinstance(doc, str)
     dump = False  # set to True to print documentation and force test failure
     if dump:

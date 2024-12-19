@@ -8,9 +8,8 @@ import copy
 from taxcalc import Policy, Records, Calculator, Consumption
 
 
-def test_year_consistency():
+def test_start_year_consistency():
     assert Consumption.JSON_START_YEAR == Policy.JSON_START_YEAR
-    assert Consumption.DEFAULT_NUM_YEARS == Policy.DEFAULT_NUM_YEARS
 
 
 def test_validity_of_consumption_vars_set():
@@ -31,23 +30,23 @@ def test_update_consumption():
                             2015: 0.80}
     }
     consump.update_consumption(revision)
-    expected_mpc_e20400 = np.full((Consumption.DEFAULT_NUM_YEARS,), 0.06)
+    expected_mpc_e20400 = np.full((consump.num_years,), 0.06)
     expected_mpc_e20400[0] = 0.0
     expected_mpc_e20400[1] = 0.05
     assert np.allclose(consump._MPC_e20400,
                        expected_mpc_e20400,
                        rtol=0.0)
     assert np.allclose(consump._MPC_e17500,
-                       np.zeros((Consumption.DEFAULT_NUM_YEARS,)),
+                       np.zeros((consump.num_years,)),
                        rtol=0.0)
-    expected_ben_mcare_value = np.full((Consumption.DEFAULT_NUM_YEARS,), 0.80)
+    expected_ben_mcare_value = np.full((consump.num_years,), 0.80)
     expected_ben_mcare_value[0] = 1.0
     expected_ben_mcare_value[1] = 0.75
     assert np.allclose(consump._BEN_mcare_value,
                        expected_ben_mcare_value,
                        rtol=0.0)
     assert np.allclose(consump._BEN_snap_value,
-                       np.ones((Consumption.DEFAULT_NUM_YEARS,)),
+                       np.ones((consump.num_years,)),
                        rtol=0.0)
     consump.set_year(2015)
     assert consump.current_year == 2015

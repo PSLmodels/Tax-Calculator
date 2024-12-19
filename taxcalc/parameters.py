@@ -1,15 +1,12 @@
-import copy
 import os
-import re
+import copy
 from collections import defaultdict
 from typing import Union, Mapping, Any, List
 
 import marshmallow as ma
 import paramtools as pt
 import numpy as np
-import requests
 
-import taxcalc
 from taxcalc.growfactors import GrowFactors
 
 
@@ -101,19 +98,16 @@ class Parameters(pt.Parameters):
                 self.DEFAULTS_FILE_PATH,
                 self.DEFAULTS_FILE_NAME
             )
-
+        last_budget_year = start_year + num_years - 1
         if last_known_year is None:
             self._last_known_year = start_year
         else:
             assert last_known_year >= start_year
-            assert last_known_year <= self.LAST_BUDGET_YEAR
+            assert last_known_year <= last_budget_year
             self._last_known_year = last_known_year
-
         self._removed_params = removed or self.REMOVED_PARAMS
         self._redefined_params = redefined or self.REDEFINED_PARAMS
-
         self._wage_indexed = wage_indexed or self.WAGE_INDEXED_PARAMS
-
         if (
             (start_year or self.JSON_START_YEAR) and
             "initial_state" not in kwargs
@@ -121,6 +115,10 @@ class Parameters(pt.Parameters):
             kwargs["initial_state"] = {
                 "year": start_year or self.JSON_START_YEAR
             }
+        # update defaults to correspond to user-defined parameter years
+        self.defaults = super().get_defaults()
+        label = self.defaults["schema"]["labels"]["year"]
+        label["validators"]["range"]["max"] = last_budget_year
         super().__init__(**kwargs)
 
     def adjust(
@@ -249,7 +247,6 @@ class Parameters(pt.Parameters):
         label_to_extend = self.label_to_extend
         array_first = self.array_first
         self.array_first = False
-        self._gfactors = GrowFactors()
 
         params = self.read_params(params_or_path)
 
@@ -508,12 +505,14 @@ class Parameters(pt.Parameters):
 
     def wage_growth_rates(self, year=None):
         if year is not None:
-            return self._wage_growth_rates[year - self.start_year]
+            syr = max(self.start_year, self._gfactors.first_year)
+            return self._wage_growth_rates[year - syr]
         return self._wage_growth_rates or []
 
     def inflation_rates(self, year=None):
         if year is not None:
-            return self._inflation_rates[year - self.start_year]
+            syr = max(self.start_year, self._gfactors.first_year)
+            return self._inflation_rates[year - syr]
         return self._inflation_rates or []
 
     # alias methods below
@@ -776,7 +775,7 @@ class Parameters(pt.Parameters):
                 attr[1:], year=list(range(self.start_year, self.end_year + 1))
             )
         else:
-            raise AttributeError(f"{attr} not definied.")
+            raise AttributeError(f"{attr} is not defined.")
 
 
 TaxcalcReform = Union[str, Mapping[int, Any]]
