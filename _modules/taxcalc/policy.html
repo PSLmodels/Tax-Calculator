@@ -15,8 +15,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
@@ -38,10 +38,10 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
-  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
@@ -254,9 +254,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -416,6 +421,9 @@
 <span class="sd">    gfactors: GrowFactors class instance</span>
 <span class="sd">        containing price inflation rates and wage growth rates</span>
 
+<span class="sd">    last_budget_year: integer</span>
+<span class="sd">        user-defined last parameter extrapolation year</span>
+
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError:</span>
@@ -431,9 +439,16 @@
     <span class="n">JSON_START_YEAR</span> <span class="o">=</span> <span class="mi">2013</span>  <span class="c1"># remains the same unless earlier data added</span>
     <span class="n">LAST_KNOWN_YEAR</span> <span class="o">=</span> <span class="mi">2025</span>  <span class="c1"># last year for which indexed param vals are known</span>
     <span class="c1"># should increase LAST_KNOWN_YEAR by one every calendar year</span>
-    <span class="n">LAST_BUDGET_YEAR</span> <span class="o">=</span> <span class="mi">2034</span>  <span class="c1"># last extrapolation year</span>
+    <span class="n">LAST_BUDGET_YEAR</span> <span class="o">=</span> <span class="mi">2034</span>  <span class="c1"># default value of last extrapolation year</span>
     <span class="c1"># should increase LAST_BUDGET_YEAR by one every calendar year</span>
-    <span class="n">DEFAULT_NUM_YEARS</span> <span class="o">=</span> <span class="n">LAST_BUDGET_YEAR</span> <span class="o">-</span> <span class="n">JSON_START_YEAR</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">number_of_years</span><span class="p">(</span><span class="n">last_budget_year</span><span class="o">=</span><span class="n">LAST_BUDGET_YEAR</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Static method returns number of policy parameters years given</span>
+<span class="sd">        user-defined last_budget_year.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">last_budget_year</span> <span class="o">-</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="c1"># NOTE: the following three data structures use internal parameter names:</span>
     <span class="c1"># (1) specify which Policy parameters have been removed or renamed</span>
@@ -472,7 +487,10 @@
     <span class="c1"># (3) specify which Policy parameters are wage (rather than price) indexed</span>
     <span class="n">WAGE_INDEXED_PARAMS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SS_Earnings_c&#39;</span><span class="p">,</span> <span class="s1">&#39;SS_Earnings_thd&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">gfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">LAST_BUDGET_YEAR</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="c1"># handle gfactors argument</span>
@@ -484,7 +502,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;gfactors is not None or a GrowFactors instance&#39;</span><span class="p">)</span>
         <span class="c1"># read default parameters and initialize</span>
         <span class="n">syr</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
-        <span class="n">nyrs</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">DEFAULT_NUM_YEARS</span>
+        <span class="n">nyrs</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">number_of_years</span><span class="p">(</span><span class="n">last_budget_year</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">syr</span><span class="p">,</span> <span class="n">nyrs</span><span class="p">,</span> <span class="n">Policy</span><span class="o">.</span><span class="n">LAST_KNOWN_YEAR</span><span class="p">,</span>
@@ -493,7 +511,10 @@
                         <span class="n">Policy</span><span class="o">.</span><span class="n">WAGE_INDEXED_PARAMS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">tmd_constructor</span><span class="p">(</span><span class="n">growfactors</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="n">GrowFactors</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span> <span class="nf">tmd_constructor</span><span class="p">(</span>
+            <span class="n">growfactors</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="n">GrowFactors</span><span class="p">,</span>
+            <span class="n">last_budget_year</span><span class="o">=</span><span class="n">LAST_BUDGET_YEAR</span><span class="p">,</span>
+    <span class="p">):</span>  <span class="c1"># pragma: no cover</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Static method returns a Policy object instantiated with TMD</span>
 <span class="sd">        input data.  This convenience method works in a analogous way</span>
@@ -504,7 +525,7 @@
             <span class="n">growfactors</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">growfactors</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors</span><span class="p">,</span> <span class="n">GrowFactors</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Policy</span><span class="p">(</span><span class="n">gfactors</span><span class="o">=</span><span class="n">growfactors</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Policy</span><span class="p">(</span><span class="n">gfactors</span><span class="o">=</span><span class="n">growfactors</span><span class="p">,</span> <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_budget_year</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Policy.read_json_reform">
 <a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.read_json_reform">[docs]</a>
@@ -631,8 +652,8 @@ By Policy Simulation Library
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

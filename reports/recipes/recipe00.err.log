@@ -1,7 +1,7 @@
 Traceback (most recent call last):
   File "/usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
     executenb(
-  File "/usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/nbclient/client.py", line 1314, in execute
+  File "/usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/nbclient/client.py", line 1319, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   File "/usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped

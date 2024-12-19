@@ -16,8 +16,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
@@ -39,10 +39,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
@@ -255,9 +255,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -451,6 +456,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-4-0">2024-12-19 Release 4.4.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-3-5">2024-12-16 Release 4.3.5</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-3-4">2024-11-30 Release 4.3.4</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-3-3">2024-11-14 Release 4.3.3</a></li>
@@ -568,6 +574,18 @@
 <h1>Release history<a class="headerlink" href="#release-history" title="Link to this heading">#</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<section id="release-4-4-0">
+<h2>2024-12-19 Release 4.4.0<a class="headerlink" href="#release-4-4-0" title="Link to this heading">#</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2856">#2856</a>)</p>
+<p><strong>This is an enhancement release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Make a Policy object’s last budget year be flexible
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2856">#2856</a> by Jason DeBacker with minor assistance from Martin Holmer]</p></li>
+</ul>
+</section>
 <section id="release-4-3-5">
 <h2>2024-12-16 Release 4.3.5<a class="headerlink" href="#release-4-3-5" title="Link to this heading">#</a></h2>
 <p>(last merged pull request is
@@ -586,8 +604,8 @@ for a complete commit history.</p>
 <p><strong>Bug Fixes</strong></p>
 <ul class="simple">
 <li><p>Fix several broken documentation links
-[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2847">#2847</a> by Martin Holmer] and
-[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2849">#2849</a> by Martin Holmer]</p></li>
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2847">#2847</a> by Martin Holmer and
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2849">#2849</a> by Martin Holmer]</p></li>
 <li><p>Remove incorrect use of GrowFactors() in Policy and Parameters classes
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2852">#2852</a> by Martin Holmer]</p></li>
 </ul>
@@ -3295,6 +3313,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-4-0">2024-12-19 Release 4.4.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-3-5">2024-12-16 Release 4.3.5</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-3-4">2024-11-30 Release 4.3.4</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-4-3-3">2024-11-14 Release 4.3.3</a></li>
@@ -3445,8 +3464,8 @@ By Policy Simulation Library
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -15,8 +15,8 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
+  <!--
+    this give us a css class that will be invisible only if js is disabled
   -->
   <noscript>
     <style>
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
@@ -38,10 +38,10 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
-  <script src="../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
@@ -254,9 +254,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -490,19 +495,16 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULTS_FILE_PATH</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULTS_FILE_NAME</span>
             <span class="p">)</span>
-
+        <span class="n">last_budget_year</span> <span class="o">=</span> <span class="n">start_year</span> <span class="o">+</span> <span class="n">num_years</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">last_known_year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_last_known_year</span> <span class="o">=</span> <span class="n">start_year</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">last_known_year</span> <span class="o">&gt;=</span> <span class="n">start_year</span>
-            <span class="k">assert</span> <span class="n">last_known_year</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LAST_BUDGET_YEAR</span>
+            <span class="k">assert</span> <span class="n">last_known_year</span> <span class="o">&lt;=</span> <span class="n">last_budget_year</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_last_known_year</span> <span class="o">=</span> <span class="n">last_known_year</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_removed_params</span> <span class="o">=</span> <span class="n">removed</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">REMOVED_PARAMS</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_redefined_params</span> <span class="o">=</span> <span class="n">redefined</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">REDEFINED_PARAMS</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_wage_indexed</span> <span class="o">=</span> <span class="n">wage_indexed</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">WAGE_INDEXED_PARAMS</span>
-
         <span class="k">if</span> <span class="p">(</span>
             <span class="p">(</span><span class="n">start_year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">JSON_START_YEAR</span><span class="p">)</span> <span class="ow">and</span>
             <span class="s2">&quot;initial_state&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span>
@@ -510,6 +512,10 @@
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;initial_state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">start_year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
             <span class="p">}</span>
+        <span class="c1"># update defaults to correspond to user-defined parameter years</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_defaults</span><span class="p">()</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">[</span><span class="s2">&quot;schema&quot;</span><span class="p">][</span><span class="s2">&quot;labels&quot;</span><span class="p">][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+        <span class="n">label</span><span class="p">[</span><span class="s2">&quot;validators&quot;</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">][</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">last_budget_year</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Parameters.adjust">
@@ -1192,7 +1198,7 @@
                 <span class="n">attr</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">year</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2"> not definied.&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2"> is not defined.&quot;</span><span class="p">)</span></div>
 </div>
 
 
@@ -1303,8 +1309,8 @@ By Policy Simulation Library
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>
