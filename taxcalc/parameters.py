@@ -713,10 +713,10 @@ class Parameters(pt.Parameters):
             keys, into a dictionary with the same structure but having integer
             years as secondary keys.
             """
-            iyr_dict = dict()
+            iyr_dict = {}
             for pkey, sdict in syr_dict.items():
                 assert isinstance(pkey, str)
-                iyr_dict[pkey] = dict()
+                iyr_dict[pkey] = {}
                 assert isinstance(sdict, dict)
                 for skey, val in sdict.items():
                     assert isinstance(skey, str)
@@ -726,7 +726,7 @@ class Parameters(pt.Parameters):
         # end of embedded function
         # process the main function arguments
         if obj is None:
-            return dict()
+            return {}
 
         full_dict = pt.read_json(obj)
 

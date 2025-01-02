@@ -63,7 +63,7 @@ def create_base_table(test_path):
     with open(rec_vars_path, 'r',  encoding='utf-8') as rvfile:
         read_var_dict = json.load(rvfile)
     # create table_dict with sorted read vars followed by sorted calc vars
-    table_dict = dict()
+    table_dict = {}
     for var in sorted(read_vars):
         if "taxdata_puf" in read_var_dict['read'][var]['availability']:
             table_dict[var] = read_var_dict['read'][var]['desc']

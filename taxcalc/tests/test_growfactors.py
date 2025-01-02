@@ -31,7 +31,7 @@ def test_improper_usage(bad_gf_file):
     Tests of improper usage of GrowFactors object.
     """
     with pytest.raises(ValueError):
-        gfo = GrowFactors(dict())
+        gfo = GrowFactors({})
     with pytest.raises(ValueError):
         gfo = GrowFactors('non_existent_file.csv')
     with pytest.raises(ValueError):

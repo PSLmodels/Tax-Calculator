@@ -257,7 +257,7 @@ def iterate_jit(parameters=None, **kwargs):
         in_args = inspect.getfullargspec(func).args
         # Get the numba.jit arguments
         jit_args_list = inspect.getfullargspec(JIT).args + ['nopython']
-        kwargs_for_jit = dict()
+        kwargs_for_jit = {}
         for key, val in kwargs.items():
             if key in jit_args_list:
                 kwargs_for_jit[key] = val

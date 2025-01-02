@@ -24,9 +24,9 @@ class GetFuncDefs(ast.NodeVisitor):
         """
         self.fname = ''
         self.fnames = list()  # function name (fname) list
-        self.fargs = dict()  # lists of function arguments indexed by fname
-        self.cvars = dict()  # lists of calc vars in function indexed by fname
-        self.rvars = dict()  # lists of function return vars indexed by fname
+        self.fargs = {}  # lists of function arguments indexed by fname
+        self.cvars = {}  # lists of calc vars in function indexed by fname
+        self.rvars = {}  # lists of function return vars indexed by fname
 
     def visit_Module(self, node):  # pylint: disable=invalid-name
         """

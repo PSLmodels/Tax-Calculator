@@ -1101,7 +1101,7 @@ class Calculator():
         suitable as input into the GrowDiff.update_growdiff method.
         """
         # construct the composite dictionary
-        param_dict = dict()
+        param_dict = {}
         param_dict['policy'] = Policy.read_json_reform(reform)
         param_dict['consumption'] = Consumption.read_json_update(assump)
         for topkey in ['growdiff_baseline', 'growdiff_response']:
@@ -1399,7 +1399,7 @@ class Calculator():
         item_phaseout = self.array('c21040').copy()
         item_component_variable_names = ['c17000', 'c18300', 'c19200',
                                          'c19700', 'c20500', 'c20800']
-        item_cvar = dict()
+        item_cvar = {}
         for cvname in item_component_variable_names:
             item_cvar[cvname] = self.array(cvname).copy()
         self.zeroarray('c04470')

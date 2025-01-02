@@ -272,7 +272,7 @@ def get_sums(dframe):
     -------
     Pandas Series object containing column sums indexed by dframe column names.
     """
-    sums = dict()
+    sums = {}
     for col in dframe.columns.values.tolist():
         if col != 'table_row':
             sums[col] = dframe[col].sum()
@@ -930,7 +930,7 @@ def mtr_graph_data(vdf, year,
     lines['base'] = mtr1_series
     lines['reform'] = mtr2_series
     # construct dictionary containing merged data and auto-generated labels
-    data = dict()
+    data = {}
     data['lines'] = lines
     if dollar_weighting:
         income_str = 'Dollar-weighted {}'.format(income_str)
@@ -1067,7 +1067,7 @@ def atr_graph_data(vdf, year,
     # include only percentiles with average income no less than min_avginc
     lines = lines[included]
     # construct dictionary containing plot lines and auto-generated labels
-    data = dict()
+    data = {}
     data['lines'] = lines
     data['ylabel'] = '{} Average Tax Rate'.format(atr_str)
     xlabel_str = 'Baseline Expanded-Income Percentile'
@@ -1238,7 +1238,7 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
     # include only percentiles with average income no less than min_avginc
     line = line[included]
     # construct dictionary containing plot line and auto-generated labels
-    data = dict()
+    data = {}
     data['line'] = line
     data['ylabel'] = 'Change in After-Tax Expanded Income'
     data['xlabel'] = 'Baseline Expanded-Income Percentile'
@@ -1471,7 +1471,7 @@ def ce_aftertax_expanded_income(df1, df2,
         cmin = 1000
     # compute aggregate combined tax revenue and aggregate after-tax income
     billion = 1.0e-9
-    cedict = dict()
+    cedict = {}
     cedict['tax1'] = weighted_sum(df1, 'combined') * billion
     cedict['tax2'] = weighted_sum(df2, 'combined') * billion
     if require_no_agg_tax_change:
@@ -1557,7 +1557,7 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     assert isinstance(num_samples, int)
     assert callable(statistic)  # function that computes statistic from data
     assert isinstance(alpha, float)
-    bsest = dict()
+    bsest = {}
     bsest['seed'] = seed
     np.random.seed(seed)
     dlen = len(data)

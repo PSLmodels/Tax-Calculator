@@ -285,7 +285,7 @@ def reform_results(rid, reform_dict, puf_data, reform_2017_law):
     calc1 = Calculator(policy=pol, records=rec, verbose=False)
     # create reform Calculator object, calc2
     start_year = reform_dict['start_year']
-    reform = dict()
+    reform = {}
     for name, value in reform_dict['value'].items():
         reform[name] = {start_year: value}
     pol.implement_reform(reform)
