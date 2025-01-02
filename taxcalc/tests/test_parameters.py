@@ -157,8 +157,8 @@ def test_params_class(revision, expect, params_json_file):
         assert prms.start_year == 2001
         assert prms.current_year == 2001
         assert prms.end_year == 2010
-        assert prms.inflation_rates() == list()
-        assert prms.wage_growth_rates() == list()
+        assert prms.inflation_rates() == []
+        assert prms.wage_growth_rates() == []
         prms.set_year(2010)
         assert prms.current_year == 2010
         with pytest.raises(paramtools.ValidationError):
@@ -594,7 +594,7 @@ def test_read_json_revision(good_revision):
     # pllint: disable=private-method
     with pytest.raises(TypeError):
         # error because first obj argument is neither None nor a string
-        Parameters._read_json_revision(list(), '')
+        Parameters._read_json_revision([], '')
     with pytest.raises(ValueError):
         # error because second topkey argument must be a string
         Parameters._read_json_revision(good_revision, 999)

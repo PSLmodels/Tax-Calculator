@@ -238,7 +238,7 @@ def fixture_assumpfile2():
     ('no-dot-csv-filename', 'no-dot-json-filename',
      'no-dot-json-filename',
      'no-dot-json-filename', 'no-output-directory'),
-    (list(), list(), list(), list(), list()),
+    ([], [], [], [], []),
     ('no-exist.csv', 'no-exist.json', 'no-exist.json', 'no-exist.json', '.'),
 ])
 def test_ctor_errors(input_data, baseline, reform, assump, outdir):

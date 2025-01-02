@@ -13,17 +13,17 @@ from taxcalc import GrowFactors, Policy, Records, Calculator
 
 def test_incorrect_Records_instantiation(cps_subsample):
     with pytest.raises(ValueError):
-        recs = Records(data=list())
+        recs = Records(data=[])
     with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=list())
+        recs = Records(data=cps_subsample, gfactors=[])
     with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=None, weights=list())
-    with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=None, weights=None,
-                       start_year=list())
+        recs = Records(data=cps_subsample, gfactors=None, weights=[])
     with pytest.raises(ValueError):
         recs = Records(data=cps_subsample, gfactors=None, weights=None,
-                       adjust_ratios=list())
+                       start_year=[])
+    with pytest.raises(ValueError):
+        recs = Records(data=cps_subsample, gfactors=None, weights=None,
+                       adjust_ratios=[])
 
 
 def test_correct_Records_instantiation(cps_subsample):

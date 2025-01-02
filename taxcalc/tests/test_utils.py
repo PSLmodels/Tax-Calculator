@@ -607,7 +607,7 @@ def test_mtr_graph_data(cps_subsample):
                        income_measure='expanded_income',
                        dollar_weighting=True)
     with pytest.raises(ValueError):
-        mtr_graph_data(None, year, mars=list())
+        mtr_graph_data(None, year, mars=[])
     with pytest.raises(ValueError):
         mtr_graph_data(None, year, mars='ALL', mtr_variable='e00200s')
     with pytest.raises(ValueError):
@@ -636,7 +636,7 @@ def test_atr_graph_data(cps_subsample):
     with pytest.raises(ValueError):
         atr_graph_data(None, year, mars=0)
     with pytest.raises(ValueError):
-        atr_graph_data(None, year, mars=list())
+        atr_graph_data(None, year, mars=[])
     with pytest.raises(ValueError):
         atr_graph_data(None, year, atr_measure='badtax')
     calc.calc_all()

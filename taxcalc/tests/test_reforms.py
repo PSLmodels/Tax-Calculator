@@ -217,7 +217,7 @@ def test_reform_json_and_output(tests_path):
                     weights=None,
                     adjust_ratios=None)
     # specify list of reform failures
-    failures = list()
+    failures = []
     # specify current-law-policy Calculator object
     calc = Calculator(policy=Policy(), records=cases, verbose=False)
     calc.advance_to_year(tax_year)
@@ -296,7 +296,7 @@ def reform_results(rid, reform_dict, puf_data, reform_2017_law):
     # calculate baseline and reform output for several years
     output_type = reform_dict['output_type']
     num_years = 4
-    results = list()
+    results = []
     for _ in range(0, num_years):
         calc1.calc_all()
         baseline = calc1.array(output_type)

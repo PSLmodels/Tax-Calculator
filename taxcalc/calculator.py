@@ -345,8 +345,8 @@ class Calculator():
         max_num_years = self.__policy.end_year - self.__policy.current_year + 1
         assert num_years <= max_num_years
         calc = copy.deepcopy(self)
-        yearlist = list()
-        varlist = list()
+        yearlist = []
+        varlist = []
         for iyr in range(1, num_years + 1):
             calc.calc_all()
             yearlist.append(calc.current_year)
@@ -1165,7 +1165,7 @@ class Calculator():
                     return [line]
                 # all text does not fix on one line
                 first_line = True
-                line_list = list()
+                line_list = []
                 words = text.split()
                 while words:
                     if first_line:
@@ -1189,7 +1189,7 @@ class Calculator():
                 baseline.set_year(year)
                 updated.set_year(year)
                 assert set(baseline.keys()) == set(updated.keys())
-                params_with_diff = list()
+                params_with_diff = []
                 for pname in baseline.keys():
                     upda_value = getattr(updated, pname)
                     base_value = getattr(baseline, pname)

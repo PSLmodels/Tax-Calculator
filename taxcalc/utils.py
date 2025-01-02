@@ -761,7 +761,7 @@ def create_diagnostic_table(dframe_list, year_list):
     assert isinstance(year_list[0], int)
     assert isinstance(dframe_list[0], pd.DataFrame)
     # construct diagnostic table
-    tlist = list()
+    tlist = []
     for year, vardf in zip(year_list, dframe_list):
         odict = diagnostic_table_odict(vardf)
         ddf = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
@@ -1495,8 +1495,8 @@ def ce_aftertax_expanded_income(df1, df2,
     ati2 = df2['expanded_income'] - df2['combined']
     # calculate certainty-equivaluent after-tax income in df1 and df2
     cedict['crra'] = crras
-    ce1 = list()
-    ce2 = list()
+    ce1 = []
+    ce2 = []
     for crra in crras:
         eu1 = expected_utility(ati1, prob, crra, cmin)
         ce1.append(certainty_equivalent(eu1, crra, cmin))

@@ -85,7 +85,7 @@ def calculate_corr_stats(calc, table):
     errmsg = ''
     for varname1 in table.index:
         var1 = calc.array(varname1)
-        var1_cc = list()
+        var1_cc = []
         for varname2 in table.index:
             var2 = calc.array(varname2)
             try:
@@ -105,7 +105,7 @@ def calculate_mean_stats(calc, table, year):
     Calculate weighted means for year.
     """
     total_weight = calc.total_weight()
-    means = list()
+    means = []
     for varname in table.index:
         wmean = calc.weighted_total(varname) / total_weight
         means.append(wmean)

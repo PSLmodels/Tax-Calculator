@@ -49,7 +49,7 @@ def test_compatible_data_presence(allparams):
         return True
 
     # Main logic of test_compatible_data_presence function
-    problem_pnames = list()
+    problem_pnames = []
     for pname in allparams:
         if 'compatible_data' in allparams[pname]:
             compatible_data = allparams[pname]['compatible_data']

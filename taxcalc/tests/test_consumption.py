@@ -113,7 +113,7 @@ def test_consumption_response(cps_subsample):
     consump.update_consumption(consumption_response)
     # test incorrect call to response method
     with pytest.raises(ValueError):
-        consump.response(list(), 1)
+        consump.response([], 1)
     # test correct call to response method
     rec = Records.cps_constructor(data=cps_subsample)
     pre = copy.deepcopy(rec.e20400)

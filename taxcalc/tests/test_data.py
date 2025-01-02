@@ -79,10 +79,10 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
 
     # test Recs class for incorrect instantiation
     with pytest.raises(ValueError):
-        Recs(data=list(), start_year=2000,
+        Recs(data=[], start_year=2000,
              gfactors=None, weights=None)
     with pytest.raises(ValueError):
-        Recs(data=cps_subsample, start_year=list(),
+        Recs(data=cps_subsample, start_year=[],
              gfactors=None, weights=None)
     with pytest.raises(ValueError):
         Recs(data=cps_subsample, start_year=2000,
@@ -130,4 +130,4 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     rec._read_data(data=None)
     rec._read_weights(weights=None)
     with pytest.raises(ValueError):
-        rec._read_weights(weights=list())
+        rec._read_weights(weights=[])

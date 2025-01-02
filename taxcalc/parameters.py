@@ -752,7 +752,7 @@ class Parameters(pt.Parameters):
         assumed to have a param:year:value format.
         """
         assert isinstance(revision, dict)
-        years = list()
+        years = []
         for _, paramdata in revision.items():
             assert isinstance(paramdata, dict)
             for year, _ in paramdata.items():

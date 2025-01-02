@@ -23,7 +23,7 @@ class GetFuncDefs(ast.NodeVisitor):
         GetFuncDefs class constructor
         """
         self.fname = ''
-        self.fnames = list()  # function name (fname) list
+        self.fnames = []  # function name (fname) list
         self.fargs = {}  # lists of function arguments indexed by fname
         self.cvars = {}  # lists of calc vars in function indexed by fname
         self.rvars = {}  # lists of function return vars indexed by fname
@@ -41,10 +41,10 @@ class GetFuncDefs(ast.NodeVisitor):
         """
         self.fname = node.name
         self.fnames.append(self.fname)
-        self.fargs[self.fname] = list()
+        self.fargs[self.fname] = []
         for anode in ast.iter_child_nodes(node.args):
             self.fargs[self.fname].append(anode.arg)
-        self.cvars[self.fname] = list()
+        self.cvars[self.fname] = []
         for bodynode in node.body:
             if isinstance(bodynode, ast.Return):
                 continue  # skip function's Return node

@@ -33,11 +33,11 @@ def test_benefits(tests_path, cps_fullsample):
     start_year = recs.current_year
     calc = Calculator(policy=Policy(), records=recs, verbose=False)
     assert calc.current_year == start_year
-    year_list = list()
-    bname_list = list()
-    benamt_list = list()
-    bencnt_list = list()
-    benavg_list = list()
+    year_list = []
+    bname_list = []
+    benamt_list = []
+    bencnt_list = []
+    benavg_list = []
     for year in range(start_year, 2034 + 1):
         calc.advance_to_year(year)
         size = calc.array('XTOT')

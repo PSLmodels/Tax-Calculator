@@ -38,7 +38,7 @@ def test_make_calculator(cps_subsample):
     with pytest.raises(ValueError):
         Calculator(policy=pol, records=None)
     with pytest.raises(ValueError):
-        Calculator(policy=pol, records=rec, consumption=list())
+        Calculator(policy=pol, records=rec, consumption=[])
 
 
 def test_make_calculator_deepcopy(cps_subsample):
@@ -522,7 +522,7 @@ def test_read_bad_json_assump_file():
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(TypeError):
-        Calculator.read_json_param_objects(None, list())
+        Calculator.read_json_param_objects(None, [])
 
 
 def test_json_doesnt_exist():
