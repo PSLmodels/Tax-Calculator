@@ -154,7 +154,7 @@ def test_create_tables(cps_subsample):
                 100.0,
                 13.2,
                 8.3,
-                1.4,]
+                1.4]
     if not np.allclose(diff[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True

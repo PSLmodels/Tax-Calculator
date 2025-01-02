@@ -100,8 +100,8 @@ def BenefitPrograms(calc):
 
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
-                  FICA_ss_trt_employer, FICA_ss_trt_employee, 
-                  FICA_mc_trt_employer, FICA_mc_trt_employee, 
+                  FICA_ss_trt_employer, FICA_ss_trt_employee,
+                  FICA_mc_trt_employer, FICA_mc_trt_employee,
                   ALD_SelfEmploymentTax_hc, SS_Earnings_thd, SECA_Earnings_thd,
                   e00900p, e00900s, e02100p, e02100s, k1bx14p,
                   k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
@@ -127,7 +127,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     FICA_ss_trt_employer: float
         Employer side social security payroll tax rate
     FICA_ss_trt_employee: float
-        Employee side social security payroll tax rate    
+        Employee side social security payroll tax rate
     FICA_mc_trt_employer: float
         Employer side medicare payroll tax rate
     FICA_mc_trt_employee: float
@@ -251,13 +251,15 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     # compute extra OASDI payroll taxes on the portion of the sum
     # of wage-and-salary income and taxable self employment income
     # that exceeds SS_Earnings_thd
-    sey_frac = 1.0 - 0.5 * (FICA_ss_trt_employer + FICA_ss_trt_employee) 
+    sey_frac = 1.0 - 0.5 * (FICA_ss_trt_employer + FICA_ss_trt_employee)
     was_plus_sey_p = gross_was_p + max(0., sey_p * sey_frac)
     was_plus_sey_s = gross_was_s + max(0., sey_s * sey_frac)
     extra_ss_income_p = max(0., was_plus_sey_p - SS_Earnings_thd)
     extra_ss_income_s = max(0., was_plus_sey_s - SS_Earnings_thd)
-    extra_payrolltax = (extra_ss_income_p * (FICA_ss_trt_employer + FICA_ss_trt_employee)  +
-                        extra_ss_income_s * (FICA_ss_trt_employer + FICA_ss_trt_employee))
+    extra_payrolltax = (
+        extra_ss_income_p * (FICA_ss_trt_employer + FICA_ss_trt_employee) +
+        extra_ss_income_s * (FICA_ss_trt_employer + FICA_ss_trt_employee)
+    )
 
     # compute part of total payroll taxes for filing unit
     payrolltax = ptax_was + extra_payrolltax
@@ -1105,7 +1107,7 @@ def AdditionalMedicareTax(e00200, MARS,
     FICA_mc_trt_employer: float
         Employer side FICA Medicare tax rate
     FICA_mc_trt_employee: float
-        Employee side FICA Medicare tax rate        
+        Employee side FICA Medicare tax rate
     e00200: float
         Wages and salaries
     sey: float
@@ -2432,7 +2434,7 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
 
 @iterate_jit(nopython=True)
 def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
-					  c05800, e07260, CR_ResidentialEnergy_hc,
+                      c05800, e07260, CR_ResidentialEnergy_hc,
                       e07300, CR_ForeignTax_hc,
                       c07180,
                       c07230,
@@ -2635,13 +2637,16 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
         recovery_rebate_credit = RRC_c * XTOT
         recovery_rebate_credit += RRC_c_unit[MARS-1] + RRC_c_kids * nu18
     elif c00100 < RRC_pe[MARS - 1] and c00100 > 0:
-        prt = ((c00100 - RRC_ps[MARS - 1])/
-               (RRC_pe[MARS - 1] - RRC_ps[MARS - 1]))
+        prt = (
+            (c00100 - RRC_ps[MARS - 1]) /
+            (RRC_pe[MARS - 1] - RRC_ps[MARS - 1])
+        )
         recovery_rebate_credit = RRC_c * XTOT * (1 - prt)
     else:
         recovery_rebate_credit = max(
-            0, RRC_c_unit[MARS-1] + RRC_c_kids * nu18 - RRC_prt *
-            (c00100 - RRC_ps[MARS -1]))
+            0, RRC_c_unit[MARS - 1] + RRC_c_kids * nu18 - RRC_prt *
+            (c00100 - RRC_ps[MARS - 1])
+        )
     return (personal_refundable_credit, personal_nonrefundable_credit,
             recovery_rebate_credit)
 
@@ -3279,9 +3284,9 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         New refundable child tax credit
     """
     if CTC_include17:
-            tu18 = int(age_head < 18)   # taxpayer is under age 18
-            su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
-            childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
+        tu18 = int(age_head < 18)   # taxpayer is under age 18
+        su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
+        childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
     else:
         childnum = n24
     if childnum > 0:

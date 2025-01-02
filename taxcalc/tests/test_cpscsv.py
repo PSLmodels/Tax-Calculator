@@ -65,7 +65,7 @@ def test_agg(tests_path, cps_fullsample):
         raise ValueError(msg)
     # create aggregate diagnostic table using unweighted sub-sample of records
     rn_seed = 180  # to ensure sub-sample is always the same
-    subfrac = 0.07# 0.03  # sub-sample fraction
+    subfrac = 0.07  # sub-sample fraction
     subsample = cps_fullsample.sample(frac=subfrac, random_state=rn_seed)
     recs_subsample = Records.cps_constructor(data=subsample)
     calc_subsample = Calculator(policy=baseline_policy, records=recs_subsample)
