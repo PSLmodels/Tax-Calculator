@@ -4,7 +4,8 @@ import numpy as np
 
 
 def make_io_vars(path, iotype):
-    """ Create string of information for input or output variables.
+    """
+    Create string of information for input or output variables.
 
     Args:
         path: Path to records_variables.json.
@@ -18,8 +19,7 @@ def make_io_vars(path, iotype):
         return '##  `' + df.index + '`  \n'
 
     def required(df):
-        return np.where(df.required == True, '**_Required Input Variable_**  \n',
-            '')
+        return np.where(df.required, '**_Required Input Variable_**  \n', '')
 
     def description(df):
         return '_Description_: ' + df.desc + '  \n'

@@ -1196,7 +1196,7 @@ class Calculator():
                     is_array = isinstance(upda_value, np.ndarray)
                     if (
                         (is_array and not np.allclose(upda_value, base_value))
-                        or (is_array == False and upda_value != base_value)
+                        or (is_array is False and upda_value != base_value)
                     ):
                         params_with_diff.append(pname)
                 if params_with_diff:

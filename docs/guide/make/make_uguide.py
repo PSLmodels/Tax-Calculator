@@ -25,7 +25,7 @@ IOVARS_PATH = os.path.join(TAXCALC_PATH, 'records_variables.json')
 CONSUMPTION_PATH = os.path.join(TAXCALC_PATH, 'consumption.json')
 GROWDIFF_PATH = os.path.join(TAXCALC_PATH, 'growdiff.json')
 TEMPLATE_PATH = os.path.join(CURDIR_PATH, '../templates')
-OUTPUT_PATH = os.path.join(CURDIR_PATH, '..')   
+OUTPUT_PATH = os.path.join(CURDIR_PATH, '..')
 
 START_YEAR = 2013
 END_YEAR_SHORT = 2020
@@ -39,9 +39,9 @@ def main():
     # Assumption parameters, created separately for growdiff and consumption.
     growdiff_param_text = make_params.make_params(GROWDIFF_PATH, 'growdiff')
     consumption_param_text = make_params.make_params(CONSUMPTION_PATH,
-        'consumption')
+                                                     'consumption')
     assumption_param_text = ('## Growdiff\n\n' + growdiff_param_text +
-        '\n\n## Consumption\n\n' + consumption_param_text)
+                             '\n\n## Consumption\n\n' + consumption_param_text)
     write_file(assumption_param_text, 'assumption_params')
     # Input and output variables.
     input_var_text = make_io_vars.make_io_vars(IOVARS_PATH, 'read')
@@ -65,7 +65,7 @@ def write_file(text, file):
     """
     template = os.path.join(TEMPLATE_PATH, file + '_template.md')
     outfile = os.path.join(OUTPUT_PATH, file + '.md')
-    with open(template,'r') as f:
+    with open(template, 'r') as f:
         template_text = f.read()
     with open(outfile, 'w') as f:
         f.write(template_text + '\n\n' + text)

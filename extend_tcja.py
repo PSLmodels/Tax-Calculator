@@ -97,10 +97,11 @@ def main():
     ifactor28 = 1.0 + pirates[2028-taxcalc.Policy.JSON_START_YEAR]
     # specify extend-TCJA-beyond-2025 reform
     # ... get 2025 parameter values
-    pol.set_year(2025)
+    year = 2025
+    pol.set_year(year)
     pdata = dict(pol.items())
     # ... write reform header comments
-    print( '// REFORM TO EXTEND TEMPORARY TCJA PROVISIONS BEYOND 2025')
+    print(f'// REFORM TO EXTEND TEMPORARY TCJA PROVISIONS BEYOND {year}')
     print(f'// USING TAX-CALCULATOR {taxcalc.__version__}')
     print(f'// WITH 2025-to-2026 INDEXING FACTOR = {ifactor25:.6f}')
     print(f'//  AND 2028-to-2029 INDEXING FACTOR = {ifactor28:.6f}')

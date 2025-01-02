@@ -765,7 +765,7 @@ def test_section_titles(tests_path):
         md_text = md_file.read()
     md_dict = generate_section_dictionary(md_text)
     # ... make sure every md_dict section title is in valid_dict
-    for sec1title,secdict in md_dict.items():
+    for sec1title, secdict in md_dict.items():
         assert isinstance(secdict, dict)
         assert sec1title in valid_dict
         for sec2title in secdict:
@@ -1332,7 +1332,7 @@ def test_multiple_cpi_swaps2():
                 {"year": 2018, "value": 500000},
             ],
             "SS_Earnings_c-indexed": [
-                    {"year": 2017, "value": False},
+                {"year": 2017, "value": False},
                 {"year": 2019, "value": True},
             ],
             "AMT_em-indexed": [
