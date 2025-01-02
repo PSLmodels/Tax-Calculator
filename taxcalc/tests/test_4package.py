@@ -24,8 +24,9 @@ def extract_install_requires(setup_py_content):
         list: A list of package requirements
     """
     # Use regex to find the install_requires list
-    match = re.search(r'"install_requires"\s*:\s*\[([^\]]+)\]', setup_py_content, re.DOTALL)
-
+    match = re.search(
+        r'"install_requires"\s*:\s*\[([^\]]+)\]', setup_py_content, re.DOTALL
+    )
     if match:
         # Extract the contents of the list and split into packages
         packages_str = match.group(1)
