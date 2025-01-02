@@ -148,9 +148,8 @@ def test_records_variables_content(tests_path):
     last_form_year = 2017
     # read JSON variable file into a dictionary
     path = os.path.join(tests_path, '..', 'records_variables.json')
-    vfile = open(path, 'r')
-    allvars = json.load(vfile)
-    vfile.close()
+    with open(path, 'r', encoding='utf-8') as vfile:
+        allvars = json.load(vfile)
     assert isinstance(allvars, dict)
     # check elements in each variable dictionary
     for iotype in ['read', 'calc']:
@@ -206,7 +205,7 @@ def test_csv_input_vars_md_contents(tests_path):
     civ_path = os.path.join(tests_path, '..', 'validation',
                             'CSV_INPUT_VARS.md')
     civ_set = set()
-    with open(civ_path, 'r') as civfile:
+    with open(civ_path, 'r', encoding='utf-8') as civfile:
         msg = 'DUPLICATE VARIABLE(S) IN CSV_INPUT_VARS.MD FILE:\n'
         found_duplicates = False
         for line in civfile:

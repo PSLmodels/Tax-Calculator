@@ -84,9 +84,10 @@ def test_calc_and_used_vars(tests_path):
     """
     # pylint: disable=too-many-locals
     funcpath = os.path.join(tests_path, '..', 'calcfunctions.py')
-    funcfile = open(funcpath, 'r', encoding='utf-8')
+    with open(funcpath, 'r', encoding='utf-8') as funcfile:
+        funcfile_text = funcfile.read()
     gfd = GetFuncDefs()
-    fnames, fargs, cvars, rvars = gfd.visit(ast.parse(funcfile.read()))
+    fnames, fargs, cvars, rvars = gfd.visit(ast.parse(funcfile_text))
     # Test (1):
     # .. create set of vars that are actually calculated in calcfunctions.py
     all_cvars = set()

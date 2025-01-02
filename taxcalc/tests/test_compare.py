@@ -325,12 +325,10 @@ def test_itax_compare(tests_path, using_puf, puf_fullsample, cps_fullsample):
         afilename = os.path.join(tests_path, 'cmpi_puf_actual.txt')
     else:
         afilename = os.path.join(tests_path, 'cmpi_cps_actual.txt')
-    afile = open(afilename, 'w', encoding='utf-8')
-    # write compare results to afile
-    for cname in sorted(ITAX.keys()):
-        comparison(cname, calc, ITAX, afile)
-    # close actual output file
-    afile.close()
+    with open(afilename, 'w', encoding='utf-8') as afile:
+        # write compare results to afile
+        for cname in sorted(ITAX.keys()):
+            comparison(cname, calc, ITAX, afile)
     # check for differences between actual and expect output files
     efilename = afilename.replace('actual', 'expect')
     differences(afilename, efilename)

@@ -143,8 +143,12 @@ def test_round_trip_reforms(fyear, tests_path):
     assert clp_mdata.keys() == rtr_mdata.keys()
     fail_dump = False
     if fail_dump:
-        rtr_fails = open('fails_rtr', 'w', encoding='utf-8')
-        clp_fails = open('fails_clp', 'w', encoding='utf-8')
+        rtr_fails = open(  # pylint: disable=consider-using-with
+            'fails_rtr', 'w', encoding='utf-8'
+        )
+        clp_fails = open(  # pylint: disable=consider-using-with
+            'fails_clp', 'w', encoding='utf-8'
+        )
     fail_params = []
     msg = '\nRound-trip-reform and current-law-policy param values differ for:'
     for pname in clp_mdata.keys():

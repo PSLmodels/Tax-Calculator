@@ -269,9 +269,8 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
     """
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', jfname)
-    pfile = open(path, 'r', encoding='utf-8')
-    allparams = json.load(pfile)
-    pfile.close()
+    with open(path, 'r', encoding='utf-8') as pfile:
+        allparams = json.load(pfile)
     assert isinstance(allparams, dict)
     # read PYTHON code file text
     if pfname == 'consumption.py':
@@ -289,9 +288,8 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
     else:
         # parameters are explicitly named in PYTHON file
         path = os.path.join(tests_path, '..', pfname)
-        pfile = open(path, 'r', encoding='utf-8')
-        code_text = pfile.read()
-        pfile.close()
+        with open(path, 'r', encoding='utf-8') as pfile:
+            code_text = pfile.read()
     # check that each param (without leading _) is mentioned in code text
     for pname in allparams:
         if pname == "schema":

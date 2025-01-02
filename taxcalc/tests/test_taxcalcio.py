@@ -37,7 +37,9 @@ def fixture_reformfile0():
       }
     }
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     rfile.write(txt + '\n')
     rfile.close()
     yield rfile
@@ -53,7 +55,9 @@ def fixture_assumpfile0():
     """
     Temporary assumption file with .json extension.
     """
-    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    afile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     contents = """
     {
     "consumption": {},
@@ -76,7 +80,9 @@ def fixture_reformfile1():
     """
     Temporary reform file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     contents = """
     {"policy": {
         "AMT_brk1": { // top of first AMT tax bracket
@@ -119,7 +125,9 @@ def fixture_baselinebad():
     """
     Temporary baseline file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     contents = '{ "policy": {"AMT_brk1": {"2011": 0.0}}}'
     rfile.write(contents)
     rfile.close()
@@ -136,7 +144,9 @@ def fixture_errorreformfile():
     """
     Temporary reform file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     contents = '{ "policy": {"xxx": {"2015": 0}}}'
     rfile.write(contents)
     rfile.close()
@@ -153,7 +163,9 @@ def fixture_errorassumpfile():
     """
     Temporary assumption file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     contents = """
     {
     "consumption": {"MPC_e18400": {"2018": -9}},
@@ -176,7 +188,9 @@ def fixture_assumpfile1():
     """
     Temporary assumption file with .json extension.
     """
-    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    afile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     contents = """
     {
     "consumption": { "MPC_e18400": {"2018": 0.05} },
@@ -199,7 +213,9 @@ def fixture_lumpsumreformfile():
     """
     Temporary reform file without .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     lumpsum_reform_contents = '{"policy": {"LST": {"2013": 200}}}'
     rfile.write(lumpsum_reform_contents)
     rfile.close()
@@ -216,7 +232,9 @@ def fixture_assumpfile2():
     """
     Temporary assumption file with .json extension.
     """
-    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    afile = tempfile.NamedTemporaryFil(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     assump2_contents = """
     {
     "consumption":  {"BEN_snap_value": {"2018": 0.90}},
@@ -650,7 +668,9 @@ def fixture_warnreformfile():
     """
     Temporary reform file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     contents = '{"policy": {"STD_Dep": {"2015": 0}}}'
     rfile.write(contents)
     rfile.close()
@@ -692,7 +712,9 @@ def fixture_reformfile9():
     """
     Temporary reform file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     contents = """
     { "policy": {
         "SS_Earnings_c": {
@@ -720,7 +742,9 @@ def fixture_regression_reform_file():
     Example causing regression reported in issue:
     https://github.com/PSLmodels/Tax-Calculator/issues/2622
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    rfile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
+        suffix='.json', mode='a', delete=False
+    )
     contents = '{ "policy": {"AMEDT_rt": {"2021": 1.8}}}'
     rfile.write(contents)
     rfile.close()
