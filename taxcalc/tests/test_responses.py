@@ -20,7 +20,7 @@ def test_response_json(tests_path):
     responses_path = os.path.join(tests_path, '..', 'responses', '*.json')
     for jpf in glob.glob(responses_path):
         # read contents of jpf (JSON parameter filename)
-        jfile = open(jpf, 'r')
+        jfile = open(jpf, 'r', encoding='utf-8')
         jpf_text = jfile.read()
         # check that jpf_text can be used to construct objects
         response_file = ('"consumption"' in jpf_text and

@@ -175,7 +175,7 @@ class Data():
         file_path = os.path.join(self.VARINFO_FILE_PATH,
                                  self.VARINFO_FILE_NAME)
         if os.path.isfile(file_path):
-            with open(file_path) as pfile:
+            with open(file_path, 'r', encoding='utf-8') as pfile:
                 json_text = pfile.read()
             vardict = json_to_dict(json_text)
         else:  # find file in conda package

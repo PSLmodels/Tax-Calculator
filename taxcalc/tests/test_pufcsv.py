@@ -255,12 +255,12 @@ def test_mtr(tests_path, puf_path):
         res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
     # check for differences between actual and expected results
     mtrres_path = os.path.join(tests_path, 'pufcsv_mtr_expect.txt')
-    with open(mtrres_path, 'r') as expected_file:
+    with open(mtrres_path, 'r', encoding='utf-8') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
     if nonsmall_diffs(res.splitlines(True), expected_results.splitlines(True)):
         new_filename = '{}{}'.format(mtrres_path[:-10], 'actual.txt')
-        with open(new_filename, 'w') as new_file:
+        with open(new_filename, 'w', encoding='utf-8') as new_file:
             new_file.write(res)
         msg = 'PUFCSV MTR RESULTS DIFFER\n'
         msg += '-------------------------------------------------\n'
@@ -372,7 +372,7 @@ def test_puf_availability(tests_path, puf_path):
     pufvars = set(list(pufdf))
     # make set of variable names that are marked as puf.csv available
     rvpath = os.path.join(tests_path, '..', 'records_variables.json')
-    with open(rvpath, 'r') as rvfile:
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
         rvdict = json.load(rvfile)
     recvars = set()
     for vname, vdict in rvdict['read'].items():

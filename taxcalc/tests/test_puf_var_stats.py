@@ -60,7 +60,7 @@ def create_base_table(test_path):
     read_vars = list(records_varinfo.USABLE_READ_VARS - unused_var_set)
     # get read variable information from JSON file
     rec_vars_path = os.path.join(test_path, '..', 'records_variables.json')
-    with open(rec_vars_path) as rvfile:
+    with open(rec_vars_path, 'r',  encoding='utf-8') as rvfile:
         read_var_dict = json.load(rvfile)
     # create table_dict with sorted read vars followed by sorted calc vars
     table_dict = dict()

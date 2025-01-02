@@ -89,7 +89,7 @@ PYLINT_OPTIONS = --disable=locally-disabled --score=no --jobs=4 --disable=R0801
 
 .PHONY=cstest
 cstest:
-	-pycodestyle . | grep -v taxcalc/validation
+	@-pycodestyle --exclude=taxcalc/validation/taxsim35/*py .
 	@-pycodestyle --ignore=E501,E121 $(TOPLEVEL_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)

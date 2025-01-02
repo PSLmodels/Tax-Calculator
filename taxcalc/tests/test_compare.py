@@ -281,9 +281,9 @@ def differences(afilename, efilename):
     """
     Check for differences between results in afilename and efilename files.
     """
-    with open(afilename, 'r') as afile:
+    with open(afilename, 'r', encoding='utf-8') as afile:
         actres = afile.read()
-    with open(efilename, 'r') as efile:
+    with open(efilename, 'r', encoding='utf-8') as efile:
         expres = efile.read()
     diffs = nonsmall_diffs(actres.splitlines(True),
                            expres.splitlines(True), 0.0)
@@ -325,7 +325,7 @@ def test_itax_compare(tests_path, using_puf, puf_fullsample, cps_fullsample):
         afilename = os.path.join(tests_path, 'cmpi_puf_actual.txt')
     else:
         afilename = os.path.join(tests_path, 'cmpi_cps_actual.txt')
-    afile = open(afilename, 'w')
+    afile = open(afilename, 'w', encoding='utf-8')
     # write compare results to afile
     for cname in sorted(ITAX.keys()):
         comparison(cname, calc, ITAX, afile)

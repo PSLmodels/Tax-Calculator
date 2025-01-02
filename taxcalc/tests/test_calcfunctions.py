@@ -84,8 +84,9 @@ def test_calc_and_used_vars(tests_path):
     """
     # pylint: disable=too-many-locals
     funcpath = os.path.join(tests_path, '..', 'calcfunctions.py')
+    funcfile = open(funcpath, 'r', encoding='utf-8')
     gfd = GetFuncDefs()
-    fnames, fargs, cvars, rvars = gfd.visit(ast.parse(open(funcpath).read()))
+    fnames, fargs, cvars, rvars = gfd.visit(ast.parse(funcfile.read()))
     # Test (1):
     # .. create set of vars that are actually calculated in calcfunctions.py
     all_cvars = set()
@@ -135,7 +136,7 @@ def test_function_args_usage(tests_path):
     function body.
     """
     funcfilename = os.path.join(tests_path, '..', 'calcfunctions.py')
-    with open(funcfilename, 'r') as funcfile:
+    with open(funcfilename, 'r', encoding='utf-8') as funcfile:
         fcontent = funcfile.read()
     fcontent = re.sub('#.*', '', fcontent)  # remove all '#...' comments
     fcontent = re.sub('\n', ' ', fcontent)  # replace EOL character with space

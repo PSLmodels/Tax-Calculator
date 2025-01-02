@@ -104,7 +104,7 @@ def test_cps_availability(tests_path, cps_path):
     cpsvars = set(list(cpsdf))
     # make set of variable names that are marked as cps.csv available
     rvpath = os.path.join(tests_path, '..', 'records_variables.json')
-    with open(rvpath, 'r') as rvfile:
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
         rvdict = json.load(rvfile)
     recvars = set()
     for vname, vdict in rvdict['read'].items():

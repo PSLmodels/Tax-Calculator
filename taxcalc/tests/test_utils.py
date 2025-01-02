@@ -764,7 +764,7 @@ def test_read_egg_json():
 def test_create_delete_temp_file():
     # test temporary_filename() and delete_file() functions
     fname = temporary_filename()
-    with open(fname, 'w') as tmpfile:
+    with open(fname, 'w', encoding='utf-8') as tmpfile:
         tmpfile.write('any content will do')
     assert os.path.isfile(fname) is True
     delete_file(fname)

@@ -72,7 +72,7 @@ def test_for_consistency(tests_path):
     # read conda.recipe/meta.yaml requirements
     meta_file = os.path.join(tests_path, '..', '..',
                              'conda.recipe', 'meta.yaml')
-    with open(meta_file, 'r') as stream:
+    with open(meta_file, 'r', encoding='utf-8') as stream:
         meta = yaml.safe_load(stream)
     bld = set(meta['requirements']['build'])
     run = set(meta['requirements']['run'])
@@ -81,7 +81,7 @@ def test_for_consistency(tests_path):
     # read environment.yml dependencies
     envr_file = os.path.join(tests_path, '..', '..',
                              'environment.yml')
-    with open(envr_file, 'r') as stream:
+    with open(envr_file, 'r', encoding='utf-8') as stream:
         envr = yaml.safe_load(stream)
 
     env = []
@@ -98,7 +98,7 @@ def test_for_consistency(tests_path):
     # Read the setup.py file and extract the install_requires list
     setup_file = os.path.join(tests_path, '..', '..',
                               'setup.py')
-    with open(setup_file, 'r') as f:
+    with open(setup_file, 'r', encoding='utf-8') as f:
         setup_py_content = f.read()
     setup = set(extract_install_requires(setup_py_content))
     # confirm that setup.py

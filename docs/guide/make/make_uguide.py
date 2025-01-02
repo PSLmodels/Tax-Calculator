@@ -65,9 +65,9 @@ def write_file(text, file):
     """
     template = os.path.join(TEMPLATE_PATH, file + '_template.md')
     outfile = os.path.join(OUTPUT_PATH, file + '.md')
-    with open(template, 'r') as f:
+    with open(template, 'r', encoding='utf-8') as f:
         template_text = f.read()
-    with open(outfile, 'w') as f:
+    with open(outfile, 'w',  encoding='utf-8') as f:
         f.write(template_text + '\n\n' + text)
 
 

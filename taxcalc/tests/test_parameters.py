@@ -206,7 +206,8 @@ def test_json_file_contents(tests_path, fname):
     long_known_years.add(2026)
     # check elements in each parameter sub-dictionary
     failures = ''
-    with open(os.path.join(tests_path, "..", fname)) as f:
+    path = os.path.join(tests_path, "..", fname)
+    with open(path, 'r', encoding='utf-8') as f:
         allparams = json.loads(f.read())
     for pname in allparams:
         if pname == "schema":
@@ -268,7 +269,7 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
     """
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', jfname)
-    pfile = open(path, 'r')
+    pfile = open(path, 'r', encoding='utf-8')
     allparams = json.load(pfile)
     pfile.close()
     assert isinstance(allparams, dict)
@@ -288,7 +289,7 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
     else:
         # parameters are explicitly named in PYTHON file
         path = os.path.join(tests_path, '..', pfname)
-        pfile = open(path, 'r')
+        pfile = open(path, 'r', encoding='utf-8')
         code_text = pfile.read()
         pfile.close()
     # check that each param (without leading _) is mentioned in code text

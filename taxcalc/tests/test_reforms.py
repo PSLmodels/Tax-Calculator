@@ -24,7 +24,7 @@ def test_2017_law_reform(tests_path):
     # create pre metadata dictionary for 2017_law.json reform in fyear
     pol = Policy()
     reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
-    with open(reform_file, 'r') as rfile:
+    with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
     pol.implement_reform(Policy.read_json_reform(rtext))
     assert not pol.parameter_warnings
@@ -188,7 +188,7 @@ def test_reform_json_and_output(tests_path):
         # varnames  AGI    STD         TaxInc    ITAX     PTAX
         stats = calc.dataframe(varlist)
         stats['RECID'] = stats['RECID'].astype(int)
-        with open(resfilename, 'w') as resfile:
+        with open(resfilename, 'w', encoding='utf-8') as resfile:
             stats.to_csv(resfile, index=False, float_format='%.2f')
 
     # embedded function used only in test_reform_json_and_output
@@ -239,7 +239,7 @@ def test_reform_json_and_output(tests_path):
         if jrf.endswith('ext.json'):
             continue  # skip ext.json, which is tested below in test_ext_reform
         # determine reform's baseline by reading contents of jrf
-        with open(jrf, 'r') as rfile:
+        with open(jrf, 'r', encoding='utf-8') as rfile:
             jrf_text = rfile.read()
         pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
         # implement the reform relative to its baseline
@@ -329,7 +329,7 @@ def fixture_reforms_dict(tests_path):
     Read reforms.json and convert to dictionary.
     """
     reforms_path = os.path.join(tests_path, 'reforms.json')
-    with open(reforms_path, 'r') as rfile:
+    with open(reforms_path, 'r', encoding='utf-8') as rfile:
         rjson = rfile.read()
     return json.loads(rjson)
 
@@ -350,7 +350,7 @@ def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
                             puf_subsample, baseline_2017_law)
     afile_path = os.path.join(tests_path,
                               'reform_actual_{}.csv'.format(rid))
-    with open(afile_path, 'w') as afile:
+    with open(afile_path, 'w', encoding='utf-8') as afile:
         afile.write('rid,res1,res2,res3,res4\n')
         afile.write('{}\n'.format(actual))
 
