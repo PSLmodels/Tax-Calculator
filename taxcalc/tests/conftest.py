@@ -139,5 +139,4 @@ def fixture_test_reforms(tests_path):
             msg += '---               AND RERUN TEST.             ---\n'
             msg += '-------------------------------------------------\n'
             raise ValueError(msg)
-        else:
-            os.remove(actfile_path)
+        os.remove(actfile_path)

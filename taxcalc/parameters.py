@@ -177,7 +177,7 @@ class Parameters(pt.Parameters):
         except pt.ValidationError as ve:
             if self.errors and raise_errors:
                 raise ve
-            elif self.errors and not raise_errors:
+            if self.errors and not raise_errors:
                 return {}
             if print_warnings:
                 print("WARNING:")
