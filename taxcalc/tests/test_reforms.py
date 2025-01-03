@@ -11,8 +11,7 @@ import json
 import pytest
 import numpy as np
 import pandas as pd
-# pylint: disable=import-error
-from taxcalc import Calculator, Policy, Records
+from taxcalc import Calculator, Policy, Records  # pylint: disable=import-error
 
 
 def test_2017_law_reform(tests_path):
@@ -342,7 +341,7 @@ NUM_REFORMS = 64  # when changing this also change num_reforms in conftest.py
 
 
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('rid', [i for i in range(1, NUM_REFORMS + 1)])
+@pytest.mark.parametrize('rid', list(range(1, NUM_REFORMS + 1)))
 def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
                  reforms_dict, puf_subsample):
     """

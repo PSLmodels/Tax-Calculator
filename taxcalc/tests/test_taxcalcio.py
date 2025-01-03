@@ -533,7 +533,7 @@ def test_no_tables_or_graphs(reformfile1):
     # create input sample that cannot output tables or graphs
     nobs = 10
     idict = {}
-    idict['RECID'] = [i for i in range(1, nobs + 1)]
+    idict['RECID'] = list(range(1, nobs + 1))
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['s006'] = [0.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
@@ -581,7 +581,7 @@ def test_tables(reformfile1):
     # create tabable input
     nobs = 100
     idict = {}
-    idict['RECID'] = [i for i in range(1, nobs + 1)]
+    idict['RECID'] = list(range(1, nobs + 1))
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['s006'] = [10.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
@@ -618,7 +618,7 @@ def test_graphs(reformfile1):
     # create graphable input
     nobs = 100
     idict = {}
-    idict['RECID'] = [i for i in range(1, nobs + 1)]
+    idict['RECID'] = list(range(1, nobs + 1))
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['XTOT'] = [3 for i in range(1, nobs + 1)]
     idict['s006'] = [10.0 for i in range(1, nobs + 1)]

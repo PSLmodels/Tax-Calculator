@@ -142,7 +142,7 @@ BATCHES = int(np.floor(NPARAMS / BATCHSIZE)) + 1
 
 
 @pytest.fixture(scope='module', name='allparams_batch',
-                params=[i for i in range(0, BATCHES)])
+                params=list(range(0, BATCHES)))
 def fixture_allparams_batch(request, allparams, sorted_param_names):
     """
     Fixture for grouping Tax-Calculator parameters
