@@ -189,8 +189,7 @@ def test_records_variables_content(tests_path):
                         assert msg1 == msg2
                     prior_eyr = eyr
             if not indefinite_yrange and len(yranges) > 0:
-                prior_ey_ok = (prior_eyr == last_form_year or
-                               prior_eyr == last_form_year - 1)
+                prior_ey_ok = prior_eyr in (last_form_year, last_form_year - 1)
                 if not prior_ey_ok:
                     msg1 = '{} prior_eyr {}'.format(vname, prior_eyr)
                     msg2 = '!= last_form_year {}'.format(last_form_year)

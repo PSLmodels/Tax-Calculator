@@ -87,7 +87,7 @@ def test_boolean_value_infomation(tests_path):
             if isinstance(val, list):
                 val = val[0]
         valstr = str(val)
-        if valstr == 'True' or valstr == 'False':
+        if valstr in ('True', 'False'):
             val_is_boolean = True
         else:
             val_is_boolean = False
