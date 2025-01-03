@@ -19,11 +19,8 @@ def fixture_bad_gf_file():
     """
     txt = (u'YEAR,AWAGE,ACPIU,ABADNAME,ASOCSEC\n'
            u'2015,1.000,1.000,1.000000,1.00000\n')
-    tfile = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
-        mode='a', delete=False
-    )
-    tfile.write(txt)
-    tfile.close()
+    with tempfile.NamedTemporaryFile(mode='a', delete=False) as tfile:
+        tfile.write(txt)
     yield tfile
     os.remove(tfile.name)
 

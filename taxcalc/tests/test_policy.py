@@ -577,7 +577,7 @@ def test_order_of_indexing_and_level_reforms():
     ppo = [Policy(), Policy()]
     # apply reforms to corresponding Policy object & check post-reform values
     syr = Policy.JSON_START_YEAR
-    for ref in range(len(reform)):  # pylint: disable=consider-using-enumerate
+    for ref, _ in enumerate(reform):
         # confirm pre-reform MTE values in 2014-2017
         mte = ppo[ref]._SS_Earnings_c
         assert mte[2014 - syr] == 117000
