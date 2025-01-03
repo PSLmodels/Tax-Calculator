@@ -142,24 +142,21 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
     for line1, line2 in zip(linelist1, linelist2):
         if line1 == line2:
             continue
-        else:
-            tokens1 = line1.replace(',', '').split()
-            tokens2 = line2.replace(',', '').split()
-            for tok1, tok2 in zip(tokens1, tokens2):
-                tok1_isfloat = isfloat(tok1)
-                tok2_isfloat = isfloat(tok2)
-                if tok1_isfloat and tok2_isfloat:
-                    if abs(float(tok1) - float(tok2)) <= smallamt:
-                        continue
-                    else:
-                        return True
-                elif not tok1_isfloat and not tok2_isfloat:
-                    if tok1 == tok2:
-                        continue
-                    else:
-                        return True
-                else:
-                    return True
+        tokens1 = line1.replace(',', '').split()
+        tokens2 = line2.replace(',', '').split()
+        for tok1, tok2 in zip(tokens1, tokens2):
+            tok1_isfloat = isfloat(tok1)
+            tok2_isfloat = isfloat(tok2)
+            if tok1_isfloat and tok2_isfloat:
+                if abs(float(tok1) - float(tok2)) <= smallamt:
+                    continue
+                return True
+            elif not tok1_isfloat and not tok2_isfloat:
+                if tok1 == tok2:
+                    continue
+                return True
+            else:
+                return True
         return False
 
 
