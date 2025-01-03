@@ -231,8 +231,8 @@ def test_compatible_data(cps_subsample, puf_subsample,
     at least one of these reforms when using datasets marked compatible
     and does not differ when using datasets marked as incompatible.
     """
-    # pylint: disable=too-many-arguments,too-many-locals
-    # pylint: disable=too-many-statements,too-many-branches
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-statements,too-many-branches,too-many-locals
 
     # Check NPARAMS value
     assert NPARAMS == len(allparams)

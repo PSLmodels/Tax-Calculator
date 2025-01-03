@@ -93,7 +93,8 @@ class Calculator():
 
     def __init__(self, policy=None, records=None, verbose=False,
                  sync_years=True, consumption=None):
-        # pylint: disable=too-many-arguments,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-branches
         if isinstance(policy, Policy):
             self.__policy = copy.deepcopy(policy)
         else:
@@ -625,8 +626,8 @@ class Calculator():
         'e20100',  Charity non-cash contributions;
         'k1bx14p', Partnership income (also included in e26270 and e02000).
         """
-        # pylint: disable=too-many-arguments,too-many-statements
-        # pylint: disable=too-many-locals,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-locals,too-many-branches,too-many-statements
         assert not zero_out_calculated_vars or not calc_all_already_called
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
@@ -823,7 +824,9 @@ class Calculator():
         -------
         graph that is a bokeh.plotting figure object
         """
-        # pylint: disable=too-many-arguments,too-many-locals
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-locals
+
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year

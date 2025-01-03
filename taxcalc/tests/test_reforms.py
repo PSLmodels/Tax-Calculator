@@ -349,7 +349,7 @@ def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
     """
     Write actual reform results to files.
     """
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     assert test_reforms_init == NUM_REFORMS
     actual = reform_results(rid, reforms_dict[str(rid)],
                             puf_subsample, baseline_2017_law)

@@ -66,8 +66,8 @@ class TaxCalcIO():
 
     def __init__(self, input_data, tax_year, baseline, reform, assump,
                  outdir=None):
-        # pylint: disable=too-many-arguments,too-many-locals
-        # pylint: disable=too-many-branches,too-many-statements
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-branches,too-many-statements,too-many-locals
         self.gf_reform = None
         self.errmsg = ''
         # check name and existence of INPUT file
@@ -246,8 +246,8 @@ class TaxCalcIO():
             specifies whether or not exact tax calculations are done without
             any smoothing of "stair-step" provisions in the tax law.
         """
-        # pylint: disable=too-many-arguments,too-many-locals
-        # pylint: disable=too-many-statements,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-statements,too-many-branches,too-many-locals
         self.errmsg = ''
         # instantiate base and reform GrowFactors objects
         if self.tmd_input_data:
@@ -494,7 +494,8 @@ class TaxCalcIO():
         -------
         Nothing
         """
-        # pylint: disable=too-many-arguments,too-many-branches,too-many-locals
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-branches,too-many-locals
         if self.puf_input_data and self.calc.reform_warnings:
             warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'  # pragma: no cover
             print(  # pragma: no cover
@@ -599,6 +600,7 @@ class TaxCalcIO():
         """
         Write dump output to SQLite3 database table dump.
         """
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
         db_fname = self._output_filename.replace('.csv', '.db')
         dbcon = sqlite3.connect(db_fname)
         # write baseline table

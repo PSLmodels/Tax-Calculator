@@ -271,7 +271,8 @@ def test_init_errors(reformfile0, errorreformfile, errorassumpfile,
     """
     Ensure error messages generated correctly by TaxCalcIO.init method.
     """
-    # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-locals,too-many-branches
     recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
     recdf = pd.DataFrame(data=recdict, index=[0])
     # test TaxCalcIO ctor

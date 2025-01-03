@@ -63,10 +63,7 @@ class Data():
     -------
     class instance: Data
     """
-    # suppress pylint warnings about uppercase variable names:
-    # pylint: disable=invalid-name
-    # suppress pylint warnings about too many class instance attributes:
-    # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-instance-attributes,invalid-name
 
     __metaclass__ = abc.ABCMeta
 
@@ -75,6 +72,8 @@ class Data():
 
     def __init__(self, data, start_year, gfactors=None,
                  weights=None, weights_scale=0.01):
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+
         # initialize data variable info sets and read variable information
         self.INTEGER_READ_VARS = set()
         self.MUST_READ_VARS = set()

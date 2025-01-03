@@ -172,7 +172,8 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
     and the top decile is broken into three subgroups
     (90-95, 95-99, and top 1%).
     """
-    # pylint: disable=too-many-arguments,too-many-locals
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-locals
     assert isinstance(dframe, pd.DataFrame)
     assert income_measure in dframe
     assert 's006' in dframe
@@ -854,8 +855,8 @@ def mtr_graph_data(vdf, year,
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
     """
-    # pylint: disable=too-many-arguments,too-many-statements
-    # pylint: disable=too-many-locals,too-many-branches
+    # pylint: disable=too-many-arguments,,too-many-positional-arguments
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # check validity of function arguments
     # . . check income_measure value
     weighting_function = weighted_mean
@@ -1148,7 +1149,7 @@ def xtr_graph_plot(data,
     raster graphics file.  There is no option to make the bokeh.plotting
     figure generate a vector graphics file such as an EPS file.
     """
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     if title == '':
         title = data['title']
     fig = bp.figure(width=width, height=height, title=title)
@@ -1286,7 +1287,7 @@ def pch_graph_plot(data,
     -----
     See Notes to xtr_graph_plot function.
     """
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     if title == '':
         title = data['title']
     fig = bp.figure(width=width, height=height, title=title)

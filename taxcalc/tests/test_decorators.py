@@ -128,12 +128,11 @@ def faux_function(MARS):
 
 @iterate_jit(nopython=True)
 def ret_everything(a, b, c, d, e, f):
-
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     c = a + b
     d = a + b
     e = a + b
     f = a + b
-
     return (c, d, e,
             f)
 
