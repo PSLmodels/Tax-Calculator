@@ -1310,7 +1310,6 @@ def pch_graph_plot(data,
     fig.yaxis.axis_label_text_font_style = 'normal'
     fig.yaxis[0].formatter = PrintfTickFormatter(format='%.1f')
     # return fig  # bokeh 3.4.1 cannot save this figure for some unknown reason
-    return None
 
 
 def write_graph_file(figure, filename, title):

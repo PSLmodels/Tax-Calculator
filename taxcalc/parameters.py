@@ -2,11 +2,9 @@ import os
 import copy
 from collections import defaultdict
 from typing import Union, Mapping, Any, List
-
+import numpy as np
 import marshmallow as ma
 import paramtools as pt
-import numpy as np
-
 from taxcalc.growfactors import GrowFactors
 
 
@@ -515,7 +513,8 @@ class Parameters(pt.Parameters):
             return self._inflation_rates[year - syr]
         return self._inflation_rates or []
 
-    # alias methods below
+    # alias methods below:
+
     def initialize(self, start_year, num_years, last_known_year=None,
                    removed=None, redefined=None, wage_indexed=None,
                    **kwargs):
@@ -530,6 +529,7 @@ class Parameters(pt.Parameters):
                 removed=removed, redefined=redefined,
                 wage_indexed=wage_indexed, **kwargs
             )
+        return None
 
     def _update(self, revision, print_warnings, raise_errors):
         """
