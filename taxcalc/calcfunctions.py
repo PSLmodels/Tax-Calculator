@@ -2759,7 +2759,7 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
     if c00100 < RRC_ps[MARS - 1]:
         recovery_rebate_credit = RRC_c * XTOT
         recovery_rebate_credit += RRC_c_unit[MARS-1] + RRC_c_kids * nu18
-    elif c00100 < RRC_pe[MARS - 1] and c00100 > 0:
+    elif 0 < c00100 < RRC_pe[MARS - 1]:
         prt = (
             (c00100 - RRC_ps[MARS - 1]) /
             (RRC_pe[MARS - 1] - RRC_ps[MARS - 1])
