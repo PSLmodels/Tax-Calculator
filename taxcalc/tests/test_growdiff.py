@@ -86,11 +86,7 @@ def test_boolean_value_infomation(tests_path):
             val = val[0]
             if isinstance(val, list):
                 val = val[0]
-        valstr = str(val)
-        if valstr in ('True', 'False'):
-            val_is_boolean = True
-        else:
-            val_is_boolean = False
+        val_is_boolean = str(val) in ('True', 'False')
         type_is_boolean = gdd[param]['type'] == 'bool'
         if val_is_boolean and not type_is_boolean:
             print('param,value_type,val,val_is_boolean=',

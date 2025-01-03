@@ -264,12 +264,11 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
                 if abs(float(tok1) - float(tok2)) <= smallamt:
                     continue
                 return True
-            elif not tok1_isfloat and not tok2_isfloat:
+            if not tok1_isfloat and not tok2_isfloat:
                 if tok1 == tok2:
                     continue
                 return True
-            else:
-                return True
+            return True
         return False
 
 

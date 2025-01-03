@@ -286,8 +286,7 @@ class Calculator():
             val = getattr(self.__policy, param_name)
             if param_name.startswith("_"):
                 return val
-            else:
-                return val[0]  # drop down a dimension.
+            return val[0]  # drop down a dimension.
         setattr(self.__policy, param_name, param_value)
         return None
 

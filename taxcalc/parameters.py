@@ -491,8 +491,7 @@ class Parameters(pt.Parameters):
             self.set_rates()
         if param in self._wage_indexed:
             return self.wage_growth_rates(year=label_to_extend_val)
-        else:
-            return self.inflation_rates(year=label_to_extend_val)
+        return self.inflation_rates(year=label_to_extend_val)
 
     def set_rates(self):
         """
@@ -774,8 +773,7 @@ class Parameters(pt.Parameters):
             return self.to_array(
                 attr[1:], year=list(range(self.start_year, self.end_year + 1))
             )
-        else:
-            raise AttributeError(f"{attr} is not defined.")
+        raise AttributeError(f"{attr} is not defined.")
 
 
 TaxcalcReform = Union[str, Mapping[int, Any]]
@@ -815,7 +813,6 @@ def is_paramtools_format(params: Union[TaxcalcReform, ParamToolsAdjustment]):
     for data in params.values():
         if isinstance(data, dict):
             return False  # taxcalc reform
-        else:
-            # Not doing a specific check to see if the value is a list
-            # since it could be a list or just a scalar value.
-            return True
+        # Not doing a specific check to see if the value is a list
+        # since it could be a list or just a scalar value.
+        return True
