@@ -68,7 +68,7 @@ def fixture_test_reforms(tests_path):
     """
     Execute logic only once rather than on each pytest-xdist node.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-statements
     num_reforms = 64  # must be same as NUM_REFORMS in test_reforms.py
     handling_logic = ('PYTEST_XDIST_WORKER' not in os.environ or
                       os.environ['PYTEST_XDIST_WORKER'] == 'gw0')

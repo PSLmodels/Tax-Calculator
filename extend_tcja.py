@@ -88,6 +88,8 @@ def main():
     """
     High-level script logic.
     """
+    # pylint: disable=too-many-statements
+
     # identify last parameter name in TCJA_PARAMETERS
     last_pname = list(TCJA_PARAMETERS.keys())[-1]
     # calculate 2025-to-2026 parameters indexing factor

@@ -244,6 +244,8 @@ class Parameters(pt.Parameters):
           wiped out after the year in which the value is adjusted for the
           same hard-coding reason.
         """
+        # pylint: disable=too-many-statements
+
         # Temporarily turn off extra ops during the intermediary adjustments
         # so that expensive and unnecessary operations are not run.
         label_to_extend = self.label_to_extend
@@ -527,7 +529,6 @@ class Parameters(pt.Parameters):
         should use the __init__ method in the future.
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
-
         # Handle case where project hasn't been initialized yet
         if getattr(self, "_data", None) is None:
             return Parameters.__init__(
@@ -535,7 +536,7 @@ class Parameters(pt.Parameters):
                 removed=removed, redefined=redefined,
                 wage_indexed=wage_indexed, **kwargs
             )
-        return None
+        return None  # pragma: no cover
 
     def _update(self, revision, print_warnings, raise_errors):
         """

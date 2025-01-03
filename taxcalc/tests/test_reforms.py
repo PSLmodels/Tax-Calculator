@@ -89,7 +89,8 @@ def test_round_trip_reforms(fyear, tests_path):
     and subsequent reform files that represent recent legislation are
     specified in a consistent manner.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-statements
+
     # create clp metadata dictionary for current-law policy in fyear
     clp_pol = Policy()
     clp_pol.set_year(fyear)
