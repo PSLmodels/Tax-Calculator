@@ -185,7 +185,7 @@ def test_json_file_contents(tests_path, fname):
     """
     Check contents of JSON parameter files in Tax-Calculator/taxcalc directory.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-branches
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     known_years = set(range(first_year, last_known_year + 1))

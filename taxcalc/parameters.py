@@ -62,8 +62,8 @@ class Parameters(pt.Parameters):
     Check out the ParamTools
     `documentation <https://paramtools.dev/api/reference.html>`_
     for more information on these inherited methods.
-
     """
+    # pylint: disable=too-many-instance-attributes
     defaults = None
     array_first = True
     label_to_extend = "year"
@@ -244,7 +244,7 @@ class Parameters(pt.Parameters):
           wiped out after the year in which the value is adjusted for the
           same hard-coding reason.
         """
-        # pylint: disable=too-many-statements,too-many-locals
+        # pylint: disable=too-many-statements,too-many-locals,too-many-branches
 
         # Temporarily turn off extra ops during the intermediary adjustments
         # so that expensive and unnecessary operations are not run.
@@ -569,6 +569,7 @@ class Parameters(pt.Parameters):
             }
 
         """
+        # pylint: disable=too-many-branches
         if not isinstance(revision, dict):
             raise pt.ValidationError(
                 {"errors": {"schema": "Revision must be a dictionary."}},
