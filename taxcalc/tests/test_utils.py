@@ -13,25 +13,28 @@ import random
 import numpy as np
 import pandas as pd
 import pytest
-# pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator
-from taxcalc.utils import (DIST_VARIABLES,
-                           DIST_TABLE_COLUMNS, DIST_TABLE_LABELS,
-                           DIFF_VARIABLES,
-                           DIFF_TABLE_COLUMNS, DIFF_TABLE_LABELS,
-                           SOI_AGI_BINS,
-                           create_difference_table,
-                           weighted_sum, weighted_mean,
-                           wage_weighted, agi_weighted,
-                           expanded_income_weighted,
-                           add_income_table_row_variable,
-                           add_quantile_table_row_variable,
-                           mtr_graph_data, atr_graph_data,
-                           xtr_graph_plot, write_graph_file,
-                           read_egg_csv, read_egg_json, delete_file,
-                           bootstrap_se_ci,
-                           certainty_equivalent,
-                           ce_aftertax_expanded_income)
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
+from taxcalc.utils import (
+    DIST_VARIABLES,
+    DIST_TABLE_COLUMNS, DIST_TABLE_LABELS,
+    DIFF_VARIABLES,
+    DIFF_TABLE_COLUMNS, DIFF_TABLE_LABELS,
+    SOI_AGI_BINS,
+    create_difference_table,
+    weighted_sum, weighted_mean,
+    wage_weighted, agi_weighted,
+    expanded_income_weighted,
+    add_income_table_row_variable,
+    add_quantile_table_row_variable,
+    mtr_graph_data, atr_graph_data,
+    xtr_graph_plot, write_graph_file,
+    read_egg_csv, read_egg_json, delete_file,
+    bootstrap_se_ci,
+    certainty_equivalent,
+    ce_aftertax_expanded_income
+)
 
 
 DATA = [[1.0, 2, 'a'],

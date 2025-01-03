@@ -10,8 +10,8 @@ this folder, and JSON files from Tax-Calculator.
 import os
 import sys
 # Other scripts in this folder.
-import make_params
-import make_io_vars
+from .make_params import make_params
+from .make_io_vars import make_io_vars
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 

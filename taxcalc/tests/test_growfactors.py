@@ -8,8 +8,9 @@ Tests of Tax-Calculator GrowFactors class.
 import os
 import tempfile
 import pytest
-# pylint: disable=import-error
-from taxcalc import GrowFactors, Records, Policy
+from taxcalc.growfactors import GrowFactors
+from taxcalc.policy import Policy
+from taxcalc.records import Records
 
 
 @pytest.fixture(scope='module', name='bad_gf_file')

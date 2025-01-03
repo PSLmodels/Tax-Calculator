@@ -11,7 +11,9 @@ import json
 import pytest
 import numpy as np
 import pandas as pd
-from taxcalc import Calculator, Policy, Records  # pylint: disable=import-error
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
 
 
 def test_2017_law_reform(tests_path):

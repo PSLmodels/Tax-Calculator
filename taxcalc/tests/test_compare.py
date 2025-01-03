@@ -8,22 +8,21 @@ Compares Tax-Calculator PUF and CPS results with historical information.
 import os
 import pytest
 import numpy as np
-# pylint: disable=import-error,pointless-string-statement
-from taxcalc import Policy, Records, Calculator
-from taxcalc import add_income_table_row_variable, SOI_AGI_BINS
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
+from taxcalc.utils import add_income_table_row_variable, SOI_AGI_BINS
 
 
-"""
-2015 IRS-SOI amounts by AGI category are from "Table 3.3 All Returns: Tax
-Liability, Tax Credits, and Tax Payments by Size of Adjusted Gross Income,
-Tax Year 2015" which is available as a spreadsheet at this URL:
-<https://www.irs.gov/statistics/soi-tax-stats-individual-
-statistical-tables-by-size-of-adjusted-gross-income>
-The IRS-SOI amounts are from 19 rows in the spreadsheet numbered from
-11 (AGI under one dollar) through 29 (AGI $10M or more).
-Dollar IRS-SOI amounts are expressed in billions of dollars and rounded
-to the nearest one-tenth of a million dollars.
-"""
+# 2015 IRS-SOI amounts by AGI category are from "Table 3.3 All Returns: Tax
+# Liability, Tax Credits, and Tax Payments by Size of Adjusted Gross Income,
+# Tax Year 2015" which is available as a spreadsheet at this URL:
+# <https://www.irs.gov/statistics/soi-tax-stats-individual-
+#  statistical-tables-by-size-of-adjusted-gross-income>
+# The IRS-SOI amounts are from 19 rows in the spreadsheet numbered from
+# 11 (AGI under one dollar) through 29 (AGI $10M or more).
+# Dollar IRS-SOI amounts are expressed in billions of dollars and rounded
+# to the nearest one-tenth of a million dollars.
 ITAX = {
     '0:EITC': {
         # Full earned income credit

@@ -12,7 +12,9 @@ plug-in pytest-xdist is able to run all parametrized functions in parallel
 import copy
 import pytest
 import numpy as np
-from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
 
 
 @pytest.fixture(scope='module', name='allparams')

@@ -1,8 +1,8 @@
+import os
+from collections import OrderedDict
 import numpy as np
 import pandas as pd
-from collections import OrderedDict
 import taxcalc as tc
-import os
 
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))

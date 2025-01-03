@@ -8,10 +8,10 @@ Tests for Tax-Calculator calcfunctions.py logic.
 import os
 import re
 import ast
-from taxcalc import Records  # pylint: disable=import-error
-from taxcalc import calcfunctions
 import numpy as np
 import pytest
+from taxcalc.records import Records
+import taxcalc.calcfunctions as calcfunctions
 
 
 class GetFuncDefs(ast.NodeVisitor):

@@ -13,8 +13,7 @@ import json
 import numpy as np
 import pytest
 import paramtools as pt
-# pylint: disable=import-error
-from taxcalc import Policy
+from taxcalc.policy import Policy
 
 
 def cmp_policy_objs(pol1, pol2, year_range=None, exclude=None):

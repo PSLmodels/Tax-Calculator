@@ -16,8 +16,9 @@ import os
 import pytest
 import numpy as np
 import pandas as pd
-# pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
 
 
 @pytest.mark.benefits

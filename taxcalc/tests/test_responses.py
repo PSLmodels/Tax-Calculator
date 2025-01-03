@@ -7,8 +7,8 @@ Test example JSON response assumption files in taxcalc/responses directory
 
 import os
 import glob
-# pylint: disable=import-error
-from taxcalc import Consumption, GrowDiff
+from taxcalc.consumption import Consumption
+from taxcalc.growdiff import GrowDiff
 
 
 def test_response_json(tests_path):

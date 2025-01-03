@@ -17,8 +17,11 @@ import json
 import pytest
 import numpy as np
 import pandas as pd
-# pylint: disable=import-error
-from taxcalc import GrowFactors, GrowDiff, Policy, Records, Calculator
+from taxcalc.growfactors import GrowFactors
+from taxcalc.growdiff import GrowDiff
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
 
 
 START_YEAR = 2017

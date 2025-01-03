@@ -13,15 +13,11 @@ import tempfile
 import numpy as np
 import paramtools
 import pytest
-# pylint: disable=import-error
-from taxcalc import (
-    Parameters,
-    Policy,
-    Consumption,
-    GrowDiff,
-    GrowFactors,
-    is_paramtools_format,
-)
+from taxcalc.parameters import Parameters, is_paramtools_format
+from taxcalc.policy import Policy
+from taxcalc.consumption import Consumption
+from taxcalc.growdiff import GrowDiff
+from taxcalc.growfactors import GrowFactors
 
 
 # Test specification and use of simple Parameters-derived class that has
