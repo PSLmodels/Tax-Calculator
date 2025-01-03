@@ -35,7 +35,8 @@ SECTION_1_ORDER = ['Parameter Indexing',
 
 
 def make_params(path, ptype):
-    """ Make string with all parameter information.
+    """
+    Make string with all parameter information.
 
     Args:
         path: Path to parameter file.
@@ -83,7 +84,8 @@ def make_params(path, ptype):
 
 
 def boolstr(b):
-    """ Return a bool value or Series as 'True'/'False' strings.
+    """
+    Return a bool value or Series as 'True'/'False' strings.
 
     Args:
         b: Bool value or pandas Series.
@@ -101,12 +103,15 @@ def boolstr(b):
 
 
 def paramtextdf(df, ptype):
-    """ Don't include sections - do that later.
+    """
+    Don't include sections - do that later.
 
     Args:
         df: DataFrame representing parameters.
         ptype:
     """
+    # pylint: disable=too-many-locals
+
     def title(df):
         return '####  `' + df.index + '`  \n'
 

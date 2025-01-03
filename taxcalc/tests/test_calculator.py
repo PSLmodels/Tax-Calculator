@@ -928,6 +928,8 @@ def test_cg_top_rate():
     """
     Test top CG bracket and rate.
     """
+    # pylint: disable=too-many-locals
+
     cy = 2019
 
     # set NIIT and STD to zero to isolate CG tax rates

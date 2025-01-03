@@ -107,6 +107,7 @@ def test_consumption_default_data():
 
 
 def test_consumption_response(cps_subsample):
+    # pylint: disable=too-many-locals
     consump = Consumption()
     mpc = 0.5
     consumption_response = {'MPC_e20400': {2013: mpc}}

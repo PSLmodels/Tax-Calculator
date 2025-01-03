@@ -142,6 +142,8 @@ def test_records_variables_content(tests_path):
     """
     Check completeness and consistency of records_variables.json content.
     """
+    # pylint: disable=too-many-locals
+
     # specify test information
     reqkeys = ['type', 'desc', 'form']
     first_year = Policy.JSON_START_YEAR

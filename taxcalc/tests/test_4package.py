@@ -59,6 +59,7 @@ def test_for_consistency(tests_path):
     Ensure that there is consistency between environment.yml dependencies
     and conda.recipe/meta.yaml requirements.
     """
+    # pylint: disable=too-many-locals
     dev_pkgs = set([
         'pytest',
         'pytest-xdist',

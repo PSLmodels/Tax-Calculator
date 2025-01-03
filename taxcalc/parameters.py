@@ -244,7 +244,7 @@ class Parameters(pt.Parameters):
           wiped out after the year in which the value is adjusted for the
           same hard-coding reason.
         """
-        # pylint: disable=too-many-statements
+        # pylint: disable=too-many-statements,too-many-locals
 
         # Temporarily turn off extra ops during the intermediary adjustments
         # so that expensive and unnecessary operations are not run.
