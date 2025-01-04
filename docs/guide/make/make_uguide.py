@@ -9,9 +9,9 @@ this folder, and JSON files from Tax-Calculator.
 
 import os
 import sys
-# pylint: disable=import-error
-from make_params import make_params
-from make_io_vars import make_io_vars
+# Other scripts in this folder.
+import make_params
+import make_io_vars
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -33,30 +33,27 @@ END_YEAR_LONG = 2027
 
 
 def main():
-    """
-    High-level logic.
-    """
     # Policy parameters.
-    policy_param_text = make_params(POLICY_PATH, 'policy')
+    policy_param_text = make_params.make_params(POLICY_PATH, 'policy')
     write_file(policy_param_text, 'policy_params')
     # Assumption parameters, created separately for growdiff and consumption.
-    growdiff_param_text = make_params(GROWDIFF_PATH, 'growdiff')
-    consumption_param_text = make_params(CONSUMPTION_PATH, 'consumption')
+    growdiff_param_text = make_params.make_params(GROWDIFF_PATH, 'growdiff')
+    consumption_param_text = make_params.make_params(CONSUMPTION_PATH,
+                                                     'consumption')
     assumption_param_text = ('## Growdiff\n\n' + growdiff_param_text +
                              '\n\n## Consumption\n\n' + consumption_param_text)
     write_file(assumption_param_text, 'assumption_params')
     # Input and output variables.
-    input_var_text = make_io_vars(IOVARS_PATH, 'read')
+    input_var_text = make_io_vars.make_io_vars(IOVARS_PATH, 'read')
     write_file(input_var_text, 'input_vars')
-    output_var_text = make_io_vars(IOVARS_PATH, 'calc')
+    output_var_text = make_io_vars.make_io_vars(IOVARS_PATH, 'calc')
     write_file(output_var_text, 'output_vars')
     # Normal return code
     return 0
 
 
 def write_file(text, file):
-    """
-    Writes the concatenation of a template and calculated text to a file.
+    """ Writes the concatenation of a template and calculated text to a file.
 
     Args:
         text: String with calculated documentation.
@@ -68,9 +65,9 @@ def write_file(text, file):
     """
     template = os.path.join(TEMPLATE_PATH, file + '_template.md')
     outfile = os.path.join(OUTPUT_PATH, file + '.md')
-    with open(template, 'r', encoding='utf-8') as f:
+    with open(template, 'r') as f:
         template_text = f.read()
-    with open(outfile, 'w',  encoding='utf-8') as f:
+    with open(outfile, 'w') as f:
         f.write(template_text + '\n\n' + text)
 
 

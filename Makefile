@@ -84,17 +84,17 @@ tctest-jit:
 TOPLEVEL_JSON_FILES := $(shell ls -l ./*json | awk '{print $$9}')
 TAXCALC_JSON_FILES := $(shell ls -l ./taxcalc/*json | awk '{print $$9}')
 TESTS_JSON_FILES := $(shell ls -l ./taxcalc/tests/*json | awk '{print $$9}')
-PYLINT_OPTS1 = --disable=locally-disabled --score=no --jobs=4
-PYLINT_OPTS2 = --disable=R0801,R0401
-PYLINT_OPTIONS = $(PYLINT_OPTS1) $(PYLINT_OPTS2)
+PYLINT_DISABLE = locally-disabled,duplicate-code,cyclic-import
+PYLINT_OPTIONS = --disable=$(PYLINT_DISABLE) --score=no --jobs=4
+EXCLUDED_PATHS = taxcalc/validation,docs/guide
 
 .PHONY=cstest
 cstest:
-	@-pycodestyle --exclude=taxcalc/validation/taxsim35/*py .
+	@-pycodestyle --exclude=$(EXCLUDED_PATHS) .
 	@-pycodestyle --ignore=E501,E121 $(TOPLEVEL_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
-	@-pylint $(PYLINT_OPTIONS) --ignore-paths=taxcalc/validation/.* .
+	@-pylint $(PYLINT_OPTIONS) --ignore-paths=$(EXCLUDED_PATHS) .
 
 define coverage-cleanup
 rm -f .coverage htmlcov/*

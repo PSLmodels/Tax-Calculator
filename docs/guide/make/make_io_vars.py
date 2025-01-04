@@ -1,9 +1,6 @@
-"""
-Helper functions used in make_uguide.py module.
-"""
+import taxcalc as tc
 import pandas as pd
 import numpy as np
-import taxcalc as tc
 
 
 def make_io_vars(path, iotype):
@@ -37,7 +34,7 @@ def make_io_vars(path, iotype):
         txt = '_IRS Form Location:_  \n'
         formdict = row.form
         for yrange in sorted(formdict.keys()):
-            txt += f'{yrange}: {formdict[yrange]}  \n'
+            txt += '{}: {}  \n'.format(yrange, formdict[yrange])
         return txt
 
     def form(df):
@@ -69,7 +66,7 @@ def create_io_df(path, iotype):
         DataFrame including input and output variables.
     """
     # Read json file and convert to a dict.
-    with open(path, 'r', encoding='utf-8') as vfile:
+    with open(path) as vfile:
         json_text = vfile.read()
     variables = tc.json_to_dict(json_text)
     assert isinstance(variables, dict)

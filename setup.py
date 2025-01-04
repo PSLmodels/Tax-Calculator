@@ -3,7 +3,7 @@ from setuptools import setup
 with open("README.md") as f:
     longdesc = f.read()
 
-version = "4.4.0"
+VERSION = "4.4.0"
 
 config = {
     "description": "Tax Calculator",
@@ -12,7 +12,7 @@ config = {
     "description": "taxcalc",
     "long_description_content_type": "text/markdown",
     "long_description": longdesc,
-    "version": version,
+    "version": VERSION,
     "license": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     "packages": ["taxcalc", "taxcalc.cli"],
     "include_package_data": True,
