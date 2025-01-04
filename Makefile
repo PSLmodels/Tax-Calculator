@@ -84,8 +84,9 @@ tctest-jit:
 TOPLEVEL_JSON_FILES := $(shell ls -l ./*json | awk '{print $$9}')
 TAXCALC_JSON_FILES := $(shell ls -l ./taxcalc/*json | awk '{print $$9}')
 TESTS_JSON_FILES := $(shell ls -l ./taxcalc/tests/*json | awk '{print $$9}')
-#PYLINT_FILES := $(shell grep -rl --include="*py" .)
-PYLINT_OPTIONS = --disable=locally-disabled --score=no --jobs=4 --disable=R0801
+PYLINT_OPTS1 = --disable=locally-disabled --score=no --jobs=4
+PYLINT_OPTS2 = --disable=R0801,R0401
+PYLINT_OPTIONS = $(PYLINT_OPTS1) $(PYLINT_OPTS2)
 
 .PHONY=cstest
 cstest:

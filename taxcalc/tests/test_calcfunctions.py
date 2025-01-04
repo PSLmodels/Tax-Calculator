@@ -11,7 +11,7 @@ import ast
 import numpy as np
 import pytest
 from taxcalc.records import Records
-import taxcalc.calcfunctions as calcfunctions
+from taxcalc import calcfunctions
 
 
 class GetFuncDefs(ast.NodeVisitor):
