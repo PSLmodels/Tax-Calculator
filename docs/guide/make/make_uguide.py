@@ -9,7 +9,7 @@ this folder, and JSON files from Tax-Calculator.
 
 import os
 import sys
-# Other scripts in this folder:
+# pylint: disable=import-error
 from make_params import make_params
 from make_io_vars import make_io_vars
 
@@ -33,6 +33,9 @@ END_YEAR_LONG = 2027
 
 
 def main():
+    """
+    High-level logic.
+    """
     # Policy parameters.
     policy_param_text = make_params(POLICY_PATH, 'policy')
     write_file(policy_param_text, 'policy_params')
@@ -52,7 +55,8 @@ def main():
 
 
 def write_file(text, file):
-    """ Writes the concatenation of a template and calculated text to a file.
+    """
+    Writes the concatenation of a template and calculated text to a file.
 
     Args:
         text: String with calculated documentation.

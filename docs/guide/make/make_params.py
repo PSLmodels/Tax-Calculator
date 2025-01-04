@@ -1,5 +1,7 @@
+"""
+Helper functions used in make_uguide.py module.
+"""
 import os
-from collections import OrderedDict
 import numpy as np
 import pandas as pd
 import taxcalc as tc
@@ -14,7 +16,7 @@ START_YEAR = 2013
 END_YEAR_SHORT = 2020
 END_YEAR_LONG = 2027
 
-# Order for policy_params.md.
+# Order for policy_params.md
 SECTION_1_ORDER = ['Parameter Indexing',
                    'Payroll Taxes',
                    'Social Security Taxability',
@@ -45,7 +47,7 @@ def make_params(path, ptype):
     Returns:
         Single string with all parameter information.
     """
-    with open(path) as pfile:
+    with open(path, 'r', encoding='utf-8') as pfile:
         json_text = pfile.read()
     params = tc.json_to_dict(json_text)
     df = pd.DataFrame(params).transpose().drop('schema')
