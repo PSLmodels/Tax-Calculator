@@ -13,10 +13,12 @@ from taxcalc import GrowDiff, GrowFactors, Policy
 
 
 def test_start_year_consistency():
+    """Test docstring"""
     assert GrowDiff.JSON_START_YEAR == Policy.JSON_START_YEAR
 
 
 def test_update_and_apply_growdiff():
+    """Test docstring"""
     gdiff = GrowDiff()
     # update GrowDiff instance
     diffs = {
@@ -45,6 +47,7 @@ def test_update_and_apply_growdiff():
 
 
 def test_has_any_response():
+    """Test docstring"""
     start_year = GrowDiff.JSON_START_YEAR
     gdiff = GrowDiff()
     assert gdiff.current_year == start_year

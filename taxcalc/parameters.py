@@ -506,18 +506,23 @@ class Parameters(pt.Parameters):
 
     def set_rates(self):
         """
-        This method is implemented by classes inheriting
-        Parameters.
+        This method is implemented by classes inheriting Parameters.
         """
         raise NotImplementedError()
 
     def wage_growth_rates(self, year=None):
+        """
+        Return wage growth rates used in parameter indexing.
+        """
         if year is not None:
             syr = max(self.start_year, self._gfactors.first_year)
             return self._wage_growth_rates[year - syr]
         return self._wage_growth_rates or []
 
     def inflation_rates(self, year=None):
+        """
+        Return price inflation rates used in parameter indexing.
+        """
         if year is not None:
             syr = max(self.start_year, self._gfactors.first_year)
             return self._inflation_rates[year - syr]
@@ -665,30 +670,37 @@ class Parameters(pt.Parameters):
         )
 
     def set_year(self, year):
+        """Specify parameter year"""
         self.set_state(year=year)
 
     @property
     def current_year(self):
+        """Propery docstring"""
         return self.label_grid["year"][0]
 
     @property
     def start_year(self):
+        """Propery docstring"""
         return self._stateless_label_grid["year"][0]
 
     @property
     def end_year(self):
+        """Propery docstring"""
         return self._stateless_label_grid["year"][-1]
 
     @property
     def num_years(self):
+        """Propery docstring"""
         return self.end_year - self.start_year + 1
 
     @property
     def parameter_warnings(self):
+        """Propery docstring"""
         return self.errors or {}
 
     @property
     def parameter_errors(self):
+        """Propery docstring"""
         return self.errors or {}
 
     @staticmethod
@@ -760,6 +772,9 @@ class Parameters(pt.Parameters):
         return convert_year_to_int(single_dict)
 
     def metadata(self):
+        """
+        Return parameter specification.
+        """
         return self.specification(meta_data=True, use_state=False)
 
     @staticmethod

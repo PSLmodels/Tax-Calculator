@@ -13,10 +13,12 @@ from taxcalc import Policy, Records, Calculator, Consumption
 
 
 def test_start_year_consistency():
+    """Test docstring"""
     assert Consumption.JSON_START_YEAR == Policy.JSON_START_YEAR
 
 
 def test_validity_of_consumption_vars_set():
+    """Test docstring"""
     records_varinfo = Records(data=None)
     assert Consumption.RESPONSE_VARS.issubset(records_varinfo.USABLE_READ_VARS)
     useable_vars = set(['housing', 'snap', 'tanf', 'vet', 'wic',
@@ -25,6 +27,7 @@ def test_validity_of_consumption_vars_set():
 
 
 def test_update_consumption():
+    """Test docstring"""
     consump = Consumption()
     consump.update_consumption({})
     revision = {
@@ -61,6 +64,7 @@ def test_update_consumption():
 
 
 def test_incorrect_update_consumption():
+    """Test docstring"""
     with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption([])
     with pytest.raises(paramtools.ValidationError):
@@ -78,6 +82,7 @@ def test_incorrect_update_consumption():
 
 
 def test_future_update_consumption():
+    """Test docstring"""
     consump = Consumption()
     assert consump.current_year == consump.start_year
     assert consump.has_response() is False
@@ -101,6 +106,7 @@ def test_future_update_consumption():
 
 
 def test_consumption_default_data():
+    """Test docstring"""
     consump = Consumption()
     pdata = consump.specification(meta_data=True, ignore_state=True)
     for pname in pdata.keys():
@@ -111,6 +117,7 @@ def test_consumption_default_data():
 
 
 def test_consumption_response(cps_subsample):
+    """Test docstring"""
     # pylint: disable=too-many-locals
     consump = Consumption()
     mpc = 0.5

@@ -746,6 +746,7 @@ def fixture_regression_reform_file():
 
 
 def test_error_message_parsed_correctly(regression_reform_file):
+    """Test docstring"""
     tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
                      tax_year=2022,
                      baseline=regression_reform_file.name,

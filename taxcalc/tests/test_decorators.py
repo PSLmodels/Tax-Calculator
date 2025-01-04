@@ -17,6 +17,7 @@ from taxcalc.decorators import *
 
 
 def test_create_apply_function_string():
+    """Test docstring"""
     ans = create_apply_function_string(['a', 'b', 'c'], ['d', 'e'], [])
     exp = ("def ap_func(x_0,x_1,x_2,x_3,x_4):\n"
            "  for i in range(len(x_0)):\n"
@@ -26,6 +27,7 @@ def test_create_apply_function_string():
 
 
 def test_create_apply_function_string_with_params():
+    """Test docstring"""
     ans = create_apply_function_string(['a', 'b', 'c'], ['d', 'e'], ['d'])
     exp = ("def ap_func(x_0,x_1,x_2,x_3,x_4):\n"
            "  for i in range(len(x_0)):\n"
@@ -35,6 +37,7 @@ def test_create_apply_function_string_with_params():
 
 
 def test_create_toplevel_function_string_mult_outputs():
+    """Test docstring"""
     ans = create_toplevel_function_string(['a', 'b'], ['d', 'e'],
                                           ['pm', 'pm', 'pf', 'pm'])
     exp = ''
@@ -59,6 +62,7 @@ def test_create_toplevel_function_string_mult_outputs():
 
 
 def test_create_toplevel_function_string():
+    """Test docstring"""
     ans = create_toplevel_function_string(['a'], ['d', 'e'],
                                           ['pm', 'pf', 'pm'])
     exp = ''
@@ -82,12 +86,14 @@ def test_create_toplevel_function_string():
 
 
 def some_calc(x, y, z):
+    """Function docstring"""
     a = x + y
     b = x + y + z
     return (a, b)
 
 
 def test_make_apply_function():
+    """Test docstring"""
     ans_do_jit = make_apply_function(some_calc, ['a', 'b'], ['x', 'y', 'z'],
                                      [], do_jit=True, no_python=True)
     assert ans_do_jit
@@ -98,12 +104,14 @@ def test_make_apply_function():
 
 @apply_jit(["a", "b"], ["x", "y", "z"], nopython=True)
 def magic_calc(x, y, z):
+    """Function docstring"""
     a = x + y
     b = x + y + z
     return (a, b)
 
 
 def magic(pm, pf):
+    """Function docstring"""
     # Adjustments
     outputs = pf.a, pf.b = magic_calc(pm, pf)
     header = ['a', 'b']
@@ -112,18 +120,21 @@ def magic(pm, pf):
 
 @iterate_jit(nopython=True)
 def magic_calc2(x, y, z):
+    """Function docstring"""
     a = x + y
     b = x + y + z
     return (a, b)
 
 
 class Foo:
+    """Foo class"""
     # pylint: disable=too-few-public-methods,too-many-instance-attributes
     pass
 
 
 @iterate_jit(nopython=True)
 def faux_function(mars):
+    """Function docstring"""
     if mars == 1:
         var = 2
     else:
@@ -133,15 +144,18 @@ def faux_function(mars):
 
 @iterate_jit(nopython=True)
 def ret_everything(a, b, c, d, e, f):
+    """Function docstring"""
     # pylint: disable=too-many-arguments,too-many-positional-arguments
     c = a + b
     d = a + b
     e = a + b
     f = a + b
-    return (c, d, e, f)
+    return (c, d, e,
+            f)
 
 
 def test_magic_apply_jit():
+    """Test docstring"""
     pm = Foo()
     pf = Foo()
     pm.a = np.ones((5,))
@@ -155,6 +169,7 @@ def test_magic_apply_jit():
 
 
 def test_magic_apply_jit_swap():
+    """Test docstring"""
     pm = Foo()
     pf = Foo()
     pm.a = np.ones((5,))
@@ -168,6 +183,7 @@ def test_magic_apply_jit_swap():
 
 
 def test_magic_iterate_jit():
+    """Test docstring"""
     pm = Foo()
     pf = Foo()
     pm.a = np.ones((1, 5))
@@ -181,6 +197,7 @@ def test_magic_iterate_jit():
 
 
 def test_faux_function_iterate_jit():
+    """Test docstring"""
     pm = Foo()
     pf = Foo()
     pf.mars = np.ones((5,))
@@ -191,6 +208,7 @@ def test_faux_function_iterate_jit():
 
 
 def test_ret_everything_iterate_jit():
+    """Test docstring"""
     pm = Foo()
     pf = Foo()
     pf.a = np.ones((5,))
@@ -207,12 +225,14 @@ def test_ret_everything_iterate_jit():
 
 @iterate_jit(nopython=True)
 def magic_calc3(x, y, z):
+    """Function docstring"""
     a = x + y
     b = a + z
     return (a, b)
 
 
 def test_function_takes_kwarg():
+    """Test docstring"""
     pm = Foo()
     pf = Foo()
     pm.a = np.ones((1, 5))
@@ -228,12 +248,14 @@ def test_function_takes_kwarg():
 
 @iterate_jit(nopython=True)
 def magic_calc4(x, y, z):
+    """Function docstring"""
     a = x + y
     b = a + z
     return (a, b)
 
 
 def test_function_no_parameters_listed():
+    """Test docstring"""
     pm = Foo()
     pf = Foo()
     pm.a = np.ones((1, 5))
@@ -249,12 +271,14 @@ def test_function_no_parameters_listed():
 
 @iterate_jit(parameters=['w'], nopython=True)
 def magic_calc5(w, x, y, z):
+    """Function docstring"""
     a = x + y
     b = w[0] + x + y + z
     return (a, b)
 
 
 def test_function_parameters_optional():
+    """Test docstring"""
     pm = Foo()
     pf = Foo()
     pm.a = np.ones((1, 5))
@@ -270,23 +294,27 @@ def test_function_parameters_optional():
 
 
 def unjittable_function1(w, x, y, z):
+    """Function docstring"""
     a = x + y
     b = w[0] + x + y + z
 
 
 def unjittable_function2(w, x, y, z):
+    """Function docstring"""
     a = x + y
     b = w[0] + x + y + z
     return (a, b, c)
 
 
 def test_iterate_jit_raises_on_no_return():
+    """Test docstring"""
     with pytest.raises(ValueError):
         ij = iterate_jit(parameters=['w'], nopython=True)
         ij(unjittable_function1)
 
 
 def test_iterate_jit_raises_on_unknown_return_argument():
+    """Test docstring"""
     ij = iterate_jit(parameters=['w'], nopython=True)
     uf2 = ij(unjittable_function2)
     pm = Foo()
@@ -302,6 +330,7 @@ def test_iterate_jit_raises_on_unknown_return_argument():
 
 
 def magic_calc6(w, x, y, z):
+    """Function docstring"""
     a = x + y
     b = w[0] + x + y + z
     return (a, b)

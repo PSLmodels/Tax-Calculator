@@ -297,6 +297,7 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
 # following tests access private methods, so pylint: disable=protected-access
 
 class ArrayParams(Parameters):
+    """ArrayParams class"""
     defaults = {
         "schema": {
             "labels": {
@@ -416,6 +417,7 @@ def test_expand_xd_errors():
 
 
 def test_expand_empty():
+    """Test docstring"""
     params = ArrayParams(label_to_extend=None, array_first=False)
     params.sort_values()
     one_dim = copy.deepcopy(params.one_dim)
@@ -427,6 +429,7 @@ def test_expand_empty():
 
 
 def test_expand_1d_scalar():
+    """Test docstring"""
     yrs = 12
     val = 10.0
     exp = np.array([val * math.pow(1.02, i) for i in range(0, yrs)])

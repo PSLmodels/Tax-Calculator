@@ -16,6 +16,7 @@ from taxcalc import GrowFactors, Policy, Records, Calculator
 
 
 def test_incorrect_records_instantiation(cps_subsample):
+    """Test docstring"""
     with pytest.raises(ValueError):
         recs = Records(data=[])
     with pytest.raises(ValueError):
@@ -31,6 +32,7 @@ def test_incorrect_records_instantiation(cps_subsample):
 
 
 def test_correct_records_instantiation(cps_subsample):
+    """Test docstring"""
     rec1 = Records.cps_constructor(data=cps_subsample, gfactors=None)
     assert rec1
     assert np.all(rec1.MARS != 0)
@@ -55,6 +57,7 @@ def test_correct_records_instantiation(cps_subsample):
 
 
 def test_read_cps_data(cps_fullsample):
+    """Test docstring"""
     data = Records.read_cps_data()
     assert data.equals(cps_fullsample)
 
@@ -118,12 +121,14 @@ def test_read_cps_data(cps_fullsample):
     )
 ])
 def test_read_data(csv):
+    """Test docstring"""
     df = pd.read_csv(StringIO(csv))
     with pytest.raises(ValueError):
         Records(data=df)
 
 
 def test_for_duplicate_names():
+    """Test docstring"""
     records_varinfo = Records(data=None)
     varnames = set()
     for varname in records_varinfo.USABLE_READ_VARS:
