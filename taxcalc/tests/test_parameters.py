@@ -559,19 +559,19 @@ def test_expand_2d_partial_expand():
     assert np.allclose(res, exp, atol=0.01, rtol=0.0)
 
 
-taxcalc_revision = """
+TAXCALC_REVISION = """
 {
     "consumption": {"BEN_mcaid_value": {"2013": 0.9}}
 }
 """
 
-paramtools_revision = """
+PARAMTOOLS_REVISION = """
 {
     "consumption": {"BEN_mcaid_value": [{"year": "2013", "value": 0.9}]}
 }
 """
 
-paramtools_revision2 = """
+PARAMTOOLS_REVISION2 = """
 {
     "consumption": {"BEN_mcaid_value": 0.9}
 }
@@ -579,8 +579,8 @@ paramtools_revision2 = """
 
 
 @pytest.mark.parametrize("good_revision", [
-    taxcalc_revision,
-    paramtools_revision,
+    TAXCALC_REVISION,
+    PARAMTOOLS_REVISION,
 ])
 def test_read_json_revision(good_revision):
     """
@@ -599,9 +599,9 @@ def test_read_json_revision(good_revision):
 
 
 @pytest.mark.parametrize("params,is_paramtools", [
-    (taxcalc_revision, False),
-    (paramtools_revision, True),
-    (paramtools_revision2, True),
+    (TAXCALC_REVISION, False),
+    (PARAMTOOLS_REVISION, True),
+    (PARAMTOOLS_REVISION2, True),
 ])
 def test_read_json_revision_foramts(params, is_paramtools):
     """

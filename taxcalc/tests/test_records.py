@@ -11,7 +11,7 @@ from io import StringIO
 from taxcalc import GrowFactors, Policy, Records, Calculator
 
 
-def test_incorrect_Records_instantiation(cps_subsample):
+def test_incorrect_records_instantiation(cps_subsample):
     with pytest.raises(ValueError):
         recs = Records(data=[])
     with pytest.raises(ValueError):
@@ -26,7 +26,7 @@ def test_incorrect_Records_instantiation(cps_subsample):
                        adjust_ratios=[])
 
 
-def test_correct_Records_instantiation(cps_subsample):
+def test_correct_records_instantiation(cps_subsample):
     rec1 = Records.cps_constructor(data=cps_subsample, gfactors=None)
     assert rec1
     assert np.all(rec1.MARS != 0)

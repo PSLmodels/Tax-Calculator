@@ -1416,6 +1416,9 @@ def test_multiple_cpi_swaps2():
     )
 
 
+# pylint: disable=invalid-name
+
+
 def test_adj_CPI_offset_and_index_status():
     """
     Test changing parameter_indexing_CPI_offset and another
