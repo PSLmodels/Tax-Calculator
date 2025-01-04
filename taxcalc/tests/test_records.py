@@ -13,17 +13,17 @@ from taxcalc import GrowFactors, Policy, Records, Calculator
 
 def test_incorrect_Records_instantiation(cps_subsample):
     with pytest.raises(ValueError):
-        recs = Records(data=list())
+        recs = Records(data=[])
     with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=list())
+        recs = Records(data=cps_subsample, gfactors=[])
     with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=None, weights=list())
-    with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=None, weights=None,
-                       start_year=list())
+        recs = Records(data=cps_subsample, gfactors=None, weights=[])
     with pytest.raises(ValueError):
         recs = Records(data=cps_subsample, gfactors=None, weights=None,
-                       adjust_ratios=list())
+                       start_year=[])
+    with pytest.raises(ValueError):
+        recs = Records(data=cps_subsample, gfactors=None, weights=None,
+                       adjust_ratios=[])
 
 
 def test_correct_Records_instantiation(cps_subsample):
@@ -142,15 +142,16 @@ def test_records_variables_content(tests_path):
     """
     Check completeness and consistency of records_variables.json content.
     """
+    # pylint: disable=too-many-locals
+
     # specify test information
     reqkeys = ['type', 'desc', 'form']
     first_year = Policy.JSON_START_YEAR
     last_form_year = 2017
     # read JSON variable file into a dictionary
     path = os.path.join(tests_path, '..', 'records_variables.json')
-    vfile = open(path, 'r')
-    allvars = json.load(vfile)
-    vfile.close()
+    with open(path, 'r', encoding='utf-8') as vfile:
+        allvars = json.load(vfile)
     assert isinstance(allvars, dict)
     # check elements in each variable dictionary
     for iotype in ['read', 'calc']:
@@ -190,8 +191,7 @@ def test_records_variables_content(tests_path):
                         assert msg1 == msg2
                     prior_eyr = eyr
             if not indefinite_yrange and len(yranges) > 0:
-                prior_ey_ok = (prior_eyr == last_form_year or
-                               prior_eyr == last_form_year - 1)
+                prior_ey_ok = prior_eyr in (last_form_year, last_form_year - 1)
                 if not prior_ey_ok:
                     msg1 = '{} prior_eyr {}'.format(vname, prior_eyr)
                     msg2 = '!= last_form_year {}'.format(last_form_year)
@@ -206,7 +206,7 @@ def test_csv_input_vars_md_contents(tests_path):
     civ_path = os.path.join(tests_path, '..', 'validation',
                             'CSV_INPUT_VARS.md')
     civ_set = set()
-    with open(civ_path, 'r') as civfile:
+    with open(civ_path, 'r', encoding='utf-8') as civfile:
         msg = 'DUPLICATE VARIABLE(S) IN CSV_INPUT_VARS.MD FILE:\n'
         found_duplicates = False
         for line in civfile:

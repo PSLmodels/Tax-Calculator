@@ -136,6 +136,7 @@ class Records(Data):
                  adjust_ratios=PUF_RATIOS_FILENAME,
                  exact_calculations=False,
                  weights_scale=0.01):
+        # pylint: disable=too-many-positional-arguments
         # pylint: disable=no-member,too-many-branches
         if isinstance(weights, str):
             weights = os.path.join(Records.CODE_PATH, weights)

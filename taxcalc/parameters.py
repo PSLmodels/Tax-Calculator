@@ -2,11 +2,9 @@ import os
 import copy
 from collections import defaultdict
 from typing import Union, Mapping, Any, List
-
+import numpy as np
 import marshmallow as ma
 import paramtools as pt
-import numpy as np
-
 from taxcalc.growfactors import GrowFactors
 
 
@@ -64,8 +62,8 @@ class Parameters(pt.Parameters):
     Check out the ParamTools
     `documentation <https://paramtools.dev/api/reference.html>`_
     for more information on these inherited methods.
-
     """
+    # pylint: disable=too-many-instance-attributes
     defaults = None
     array_first = True
     label_to_extend = "year"
@@ -83,6 +81,8 @@ class Parameters(pt.Parameters):
 
     def __init__(self, start_year=None, num_years=None, last_known_year=None,
                  removed=None, redefined=None, wage_indexed=None, **kwargs):
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+
         # In case we need to wait for this to be called from the
         # initialize method for legacy reasons.
         if not start_year or not num_years:
@@ -136,8 +136,10 @@ class Parameters(pt.Parameters):
 
                 {
                     "standard_deduction": [
-                        {"year": 2024, "marital_status": "single", "value": 10000.0},
-                        {"year": 2024, "marital_status": "joint", "value": 10000.0}
+                        {"year": 2024, "marital_status": "single",
+                         "value": 10000.0},
+                        {"year": 2024, "marital_status": "joint",
+                         "value": 10000.0}
                     ],
                     "ss_rate": [{"year": 2024, "value": 0.2}]}
                 }
@@ -154,7 +156,7 @@ class Parameters(pt.Parameters):
         adjustment : Dict
             Parsed paremeter dictionary
 
-        """  # noqa
+        """
         if print_warnings:
             _data = copy.deepcopy(self._data)
             kwargs["ignore_warnings"] = False
@@ -177,7 +179,7 @@ class Parameters(pt.Parameters):
         except pt.ValidationError as ve:
             if self.errors and raise_errors:
                 raise ve
-            elif self.errors and not raise_errors:
+            if self.errors and not raise_errors:
                 return {}
             if print_warnings:
                 print("WARNING:")
@@ -242,6 +244,8 @@ class Parameters(pt.Parameters):
           wiped out after the year in which the value is adjusted for the
           same hard-coding reason.
         """
+        # pylint: disable=too-many-statements,too-many-locals,too-many-branches
+
         # Temporarily turn off extra ops during the intermediary adjustments
         # so that expensive and unnecessary operations are not run.
         label_to_extend = self.label_to_extend
@@ -362,7 +366,7 @@ class Parameters(pt.Parameters):
                 ):
                     continue
                 if self._data[param].get("indexed", False):
-                    to_delete[param] = self.sel[param]["_auto"] == True  # noqa
+                    to_delete[param] = self.sel[param]["_auto"] == True
                     needs_reset.append(param)
 
             self.delete(to_delete, **kwargs)
@@ -411,7 +415,8 @@ class Parameters(pt.Parameters):
                         ]
                         self.delete(
                             {
-                                base_param: self.sel[base_param]["year"] > min_adj_year  # noqa
+                                base_param:
+                                self.sel[base_param]["year"] > min_adj_year
                             }
                         )
                         super().adjust({base_param: vos}, **kwargs)
@@ -493,8 +498,7 @@ class Parameters(pt.Parameters):
             self.set_rates()
         if param in self._wage_indexed:
             return self.wage_growth_rates(year=label_to_extend_val)
-        else:
-            return self.inflation_rates(year=label_to_extend_val)
+        return self.inflation_rates(year=label_to_extend_val)
 
     def set_rates(self):
         """
@@ -515,7 +519,8 @@ class Parameters(pt.Parameters):
             return self._inflation_rates[year - syr]
         return self._inflation_rates or []
 
-    # alias methods below
+    # alias methods below:
+
     def initialize(self, start_year, num_years, last_known_year=None,
                    removed=None, redefined=None, wage_indexed=None,
                    **kwargs):
@@ -523,13 +528,15 @@ class Parameters(pt.Parameters):
         Legacy method for initializing a Parameters instance. Projects
         should use the __init__ method in the future.
         """
-        # case where project hasn't been initialized yet.
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # Handle case where project hasn't been initialized yet
         if getattr(self, "_data", None) is None:
             return Parameters.__init__(
                 self, start_year, num_years, last_known_year=last_known_year,
                 removed=removed, redefined=redefined,
                 wage_indexed=wage_indexed, **kwargs
             )
+        return None  # pragma: no cover
 
     def _update(self, revision, print_warnings, raise_errors):
         """
@@ -553,13 +560,16 @@ class Parameters(pt.Parameters):
 
             {
                 "standard_deduction": [
-                    {"year": 2024, "marital_status": "single", "value": 10000.0},
-                    {"year": 2024, "marital_status": "joint", "value": 10000.0}
+                    {"year": 2024, "marital_status": "single",
+                     "value": 10000.0},
+                    {"year": 2024, "marital_status": "joint",
+                     "value": 10000.0}
                 ],
                 "ss_rate": [{"year": 2024, "value": 0.2}]}
             }
 
-        """  # noqa: E501
+        """
+        # pylint: disable=too-many-branches
         if not isinstance(revision, dict):
             raise pt.ValidationError(
                 {"errors": {"schema": "Revision must be a dictionary."}},
@@ -698,14 +708,17 @@ class Parameters(pt.Parameters):
 
         Some examples of valid links are:
 
-        - HTTP: ``https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/master/taxcalc/reforms/2017_law.json``
+        - HTTP: ``https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/
+                  master/taxcalc/reforms/2017_law.json``
 
-        - Github API: ``github://PSLmodels:Tax-Calculator@master/taxcalc/reforms/2017_law.json``
+        - Github API: ``github://PSLmodels:Tax-Calculator@master/taxcalc/
+                        reforms/2017_law.json``
 
         Checkout the ParamTools
-        `docs <https://paramtools.dev/_modules/paramtools/parameters.html#Parameters.read_params>`_
+        `docs <https://paramtools.dev/_modules/paramtools/
+                       parameters.html#Parameters.read_params>`_
         for more information on valid file URLs.
-        """  # noqa
+        """
         # embedded function used only in _read_json_revision staticmethod
         def convert_year_to_int(syr_dict):
             """
@@ -713,10 +726,10 @@ class Parameters(pt.Parameters):
             keys, into a dictionary with the same structure but having integer
             years as secondary keys.
             """
-            iyr_dict = dict()
+            iyr_dict = {}
             for pkey, sdict in syr_dict.items():
                 assert isinstance(pkey, str)
-                iyr_dict[pkey] = dict()
+                iyr_dict[pkey] = {}
                 assert isinstance(sdict, dict)
                 for skey, val in sdict.items():
                     assert isinstance(skey, str)
@@ -726,7 +739,7 @@ class Parameters(pt.Parameters):
         # end of embedded function
         # process the main function arguments
         if obj is None:
-            return dict()
+            return {}
 
         full_dict = pt.read_json(obj)
 
@@ -752,7 +765,7 @@ class Parameters(pt.Parameters):
         assumed to have a param:year:value format.
         """
         assert isinstance(revision, dict)
-        years = list()
+        years = []
         for _, paramdata in revision.items():
             assert isinstance(paramdata, dict)
             for year, _ in paramdata.items():
@@ -774,8 +787,7 @@ class Parameters(pt.Parameters):
             return self.to_array(
                 attr[1:], year=list(range(self.start_year, self.end_year + 1))
             )
-        else:
-            raise AttributeError(f"{attr} is not defined.")
+        raise AttributeError(f"{attr} is not defined.")
 
 
 TaxcalcReform = Union[str, Mapping[int, Any]]
@@ -815,7 +827,6 @@ def is_paramtools_format(params: Union[TaxcalcReform, ParamToolsAdjustment]):
     for data in params.values():
         if isinstance(data, dict):
             return False  # taxcalc reform
-        else:
-            # Not doing a specific check to see if the value is a list
-            # since it could be a list or just a scalar value.
-            return True
+        # Not doing a specific check to see if the value is a list
+        # since it could be a list or just a scalar value.
+        return True

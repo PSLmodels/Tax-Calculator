@@ -67,6 +67,7 @@ def integrate_fragments(fragments):
     """
     Integrate specified fragments with the policy_current_law.json text.
     """
+    # pylint: disable=too-many-locals
     p_c_l_path = Path('.') / 'taxcalc' / 'policy_current_law.json'
     with open(p_c_l_path, 'r', encoding='utf-8') as ofile:
         olines = ofile.readlines()

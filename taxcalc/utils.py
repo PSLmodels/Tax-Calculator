@@ -172,7 +172,8 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
     and the top decile is broken into three subgroups
     (90-95, 95-99, and top 1%).
     """
-    # pylint: disable=too-many-arguments,too-many-locals
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-locals
     assert isinstance(dframe, pd.DataFrame)
     assert income_measure in dframe
     assert 's006' in dframe
@@ -272,7 +273,7 @@ def get_sums(dframe):
     -------
     Pandas Series object containing column sums indexed by dframe column names.
     """
-    sums = dict()
+    sums = {}
     for col in dframe.columns.values.tolist():
         if col != 'table_row':
             sums[col] = dframe[col].sum()
@@ -761,7 +762,7 @@ def create_diagnostic_table(dframe_list, year_list):
     assert isinstance(year_list[0], int)
     assert isinstance(dframe_list[0], pd.DataFrame)
     # construct diagnostic table
-    tlist = list()
+    tlist = []
     for year, vardf in zip(year_list, dframe_list):
         odict = diagnostic_table_odict(vardf)
         ddf = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
@@ -854,8 +855,8 @@ def mtr_graph_data(vdf, year,
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
     """
-    # pylint: disable=too-many-arguments,too-many-statements
-    # pylint: disable=too-many-locals,too-many-branches
+    # pylint: disable=too-many-arguments,,too-many-positional-arguments
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # check validity of function arguments
     # . . check income_measure value
     weighting_function = weighted_mean
@@ -930,7 +931,7 @@ def mtr_graph_data(vdf, year,
     lines['base'] = mtr1_series
     lines['reform'] = mtr2_series
     # construct dictionary containing merged data and auto-generated labels
-    data = dict()
+    data = {}
     data['lines'] = lines
     if dollar_weighting:
         income_str = 'Dollar-weighted {}'.format(income_str)
@@ -1067,7 +1068,7 @@ def atr_graph_data(vdf, year,
     # include only percentiles with average income no less than min_avginc
     lines = lines[included]
     # construct dictionary containing plot lines and auto-generated labels
-    data = dict()
+    data = {}
     data['lines'] = lines
     data['ylabel'] = '{} Average Tax Rate'.format(atr_str)
     xlabel_str = 'Baseline Expanded-Income Percentile'
@@ -1148,7 +1149,7 @@ def xtr_graph_plot(data,
     raster graphics file.  There is no option to make the bokeh.plotting
     figure generate a vector graphics file such as an EPS file.
     """
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     if title == '':
         title = data['title']
     fig = bp.figure(width=width, height=height, title=title)
@@ -1238,7 +1239,7 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
     # include only percentiles with average income no less than min_avginc
     line = line[included]
     # construct dictionary containing plot line and auto-generated labels
-    data = dict()
+    data = {}
     data['line'] = line
     data['ylabel'] = 'Change in After-Tax Expanded Income'
     data['xlabel'] = 'Baseline Expanded-Income Percentile'
@@ -1286,7 +1287,7 @@ def pch_graph_plot(data,
     -----
     See Notes to xtr_graph_plot function.
     """
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     if title == '':
         title = data['title']
     fig = bp.figure(width=width, height=height, title=title)
@@ -1310,7 +1311,6 @@ def pch_graph_plot(data,
     fig.yaxis.axis_label_text_font_style = 'normal'
     fig.yaxis[0].formatter = PrintfTickFormatter(format='%.1f')
     # return fig  # bokeh 3.4.1 cannot save this figure for some unknown reason
-    return None
 
 
 def write_graph_file(figure, filename, title):
@@ -1471,7 +1471,7 @@ def ce_aftertax_expanded_income(df1, df2,
         cmin = 1000
     # compute aggregate combined tax revenue and aggregate after-tax income
     billion = 1.0e-9
-    cedict = dict()
+    cedict = {}
     cedict['tax1'] = weighted_sum(df1, 'combined') * billion
     cedict['tax2'] = weighted_sum(df2, 'combined') * billion
     if require_no_agg_tax_change:
@@ -1495,8 +1495,8 @@ def ce_aftertax_expanded_income(df1, df2,
     ati2 = df2['expanded_income'] - df2['combined']
     # calculate certainty-equivaluent after-tax income in df1 and df2
     cedict['crra'] = crras
-    ce1 = list()
-    ce2 = list()
+    ce1 = []
+    ce2 = []
     for crra in crras:
         eu1 = expected_utility(ati1, prob, crra, cmin)
         ce1.append(certainty_equivalent(eu1, crra, cmin))
@@ -1557,7 +1557,7 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     assert isinstance(num_samples, int)
     assert callable(statistic)  # function that computes statistic from data
     assert isinstance(alpha, float)
-    bsest = dict()
+    bsest = {}
     bsest['seed'] = seed
     np.random.seed(seed)
     dlen = len(data)

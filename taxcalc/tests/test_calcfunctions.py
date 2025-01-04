@@ -8,10 +8,10 @@ Tests for Tax-Calculator calcfunctions.py logic.
 import os
 import re
 import ast
-from taxcalc import Records  # pylint: disable=import-error
-from taxcalc import calcfunctions
 import numpy as np
 import pytest
+from taxcalc.records import Records
+from taxcalc import calcfunctions
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -23,10 +23,10 @@ class GetFuncDefs(ast.NodeVisitor):
         GetFuncDefs class constructor
         """
         self.fname = ''
-        self.fnames = list()  # function name (fname) list
-        self.fargs = dict()  # lists of function arguments indexed by fname
-        self.cvars = dict()  # lists of calc vars in function indexed by fname
-        self.rvars = dict()  # lists of function return vars indexed by fname
+        self.fnames = []  # function name (fname) list
+        self.fargs = {}  # lists of function arguments indexed by fname
+        self.cvars = {}  # lists of calc vars in function indexed by fname
+        self.rvars = {}  # lists of function return vars indexed by fname
 
     def visit_Module(self, node):  # pylint: disable=invalid-name
         """
@@ -41,10 +41,10 @@ class GetFuncDefs(ast.NodeVisitor):
         """
         self.fname = node.name
         self.fnames.append(self.fname)
-        self.fargs[self.fname] = list()
+        self.fargs[self.fname] = []
         for anode in ast.iter_child_nodes(node.args):
             self.fargs[self.fname].append(anode.arg)
-        self.cvars[self.fname] = list()
+        self.cvars[self.fname] = []
         for bodynode in node.body:
             if isinstance(bodynode, ast.Return):
                 continue  # skip function's Return node
@@ -84,8 +84,10 @@ def test_calc_and_used_vars(tests_path):
     """
     # pylint: disable=too-many-locals
     funcpath = os.path.join(tests_path, '..', 'calcfunctions.py')
+    with open(funcpath, 'r', encoding='utf-8') as funcfile:
+        funcfile_text = funcfile.read()
     gfd = GetFuncDefs()
-    fnames, fargs, cvars, rvars = gfd.visit(ast.parse(open(funcpath).read()))
+    fnames, fargs, cvars, rvars = gfd.visit(ast.parse(funcfile_text))
     # Test (1):
     # .. create set of vars that are actually calculated in calcfunctions.py
     all_cvars = set()
@@ -135,7 +137,7 @@ def test_function_args_usage(tests_path):
     function body.
     """
     funcfilename = os.path.join(tests_path, '..', 'calcfunctions.py')
-    with open(funcfilename, 'r') as funcfile:
+    with open(funcfilename, 'r', encoding='utf-8') as funcfile:
         fcontent = funcfile.read()
     fcontent = re.sub('#.*', '', fcontent)  # remove all '#...' comments
     fcontent = re.sub('\n', ' ', fcontent)  # replace EOL character with space
@@ -279,7 +281,7 @@ def test_EI_PayrollTax(test_input, expected_output, skip_jit):
         print('*INPUT:', test_input)
         print('ACTUAL:', actual_output)
         print('EXPECT:', expected_output)
-        assert 1 == 2, 'ACTUAL != EXPECT'
+        assert False, 'ERROR: ACTUAL != EXPECT'
 
 
 def test_AfterTaxIncome(skip_jit):

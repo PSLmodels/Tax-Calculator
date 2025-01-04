@@ -107,13 +107,14 @@ def test_consumption_default_data():
 
 
 def test_consumption_response(cps_subsample):
+    # pylint: disable=too-many-locals
     consump = Consumption()
     mpc = 0.5
     consumption_response = {'MPC_e20400': {2013: mpc}}
     consump.update_consumption(consumption_response)
     # test incorrect call to response method
     with pytest.raises(ValueError):
-        consump.response(list(), 1)
+        consump.response([], 1)
     # test correct call to response method
     rec = Records.cps_constructor(data=cps_subsample)
     pre = copy.deepcopy(rec.e20400)

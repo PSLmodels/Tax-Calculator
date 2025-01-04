@@ -11,8 +11,9 @@ import json
 import pytest
 import numpy as np
 import pandas as pd
-# pylint: disable=import-error
-from taxcalc import Calculator, Policy, Records
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
 
 
 def test_2017_law_reform(tests_path):
@@ -24,7 +25,7 @@ def test_2017_law_reform(tests_path):
     # create pre metadata dictionary for 2017_law.json reform in fyear
     pol = Policy()
     reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
-    with open(reform_file, 'r') as rfile:
+    with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
     pol.implement_reform(Policy.read_json_reform(rtext))
     assert not pol.parameter_warnings
@@ -88,7 +89,8 @@ def test_round_trip_reforms(fyear, tests_path):
     and subsequent reform files that represent recent legislation are
     specified in a consistent manner.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-statements
+
     # create clp metadata dictionary for current-law policy in fyear
     clp_pol = Policy()
     clp_pol.set_year(fyear)
@@ -143,8 +145,12 @@ def test_round_trip_reforms(fyear, tests_path):
     assert clp_mdata.keys() == rtr_mdata.keys()
     fail_dump = False
     if fail_dump:
-        rtr_fails = open('fails_rtr', 'w', encoding='utf-8')
-        clp_fails = open('fails_clp', 'w', encoding='utf-8')
+        rtr_fails = open(  # pylint: disable=consider-using-with
+            'fails_rtr', 'w', encoding='utf-8'
+        )
+        clp_fails = open(  # pylint: disable=consider-using-with
+            'fails_clp', 'w', encoding='utf-8'
+        )
     fail_params = []
     msg = '\nRound-trip-reform and current-law-policy param values differ for:'
     for pname in clp_mdata.keys():
@@ -188,7 +194,7 @@ def test_reform_json_and_output(tests_path):
         # varnames  AGI    STD         TaxInc    ITAX     PTAX
         stats = calc.dataframe(varlist)
         stats['RECID'] = stats['RECID'].astype(int)
-        with open(resfilename, 'w') as resfile:
+        with open(resfilename, 'w', encoding='utf-8') as resfile:
             stats.to_csv(resfile, index=False, float_format='%.2f')
 
     # embedded function used only in test_reform_json_and_output
@@ -217,7 +223,7 @@ def test_reform_json_and_output(tests_path):
                     weights=None,
                     adjust_ratios=None)
     # specify list of reform failures
-    failures = list()
+    failures = []
     # specify current-law-policy Calculator object
     calc = Calculator(policy=Policy(), records=cases, verbose=False)
     calc.advance_to_year(tax_year)
@@ -239,7 +245,7 @@ def test_reform_json_and_output(tests_path):
         if jrf.endswith('ext.json'):
             continue  # skip ext.json, which is tested below in test_ext_reform
         # determine reform's baseline by reading contents of jrf
-        with open(jrf, 'r') as rfile:
+        with open(jrf, 'r', encoding='utf-8') as rfile:
             jrf_text = rfile.read()
         pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
         # implement the reform relative to its baseline
@@ -285,7 +291,7 @@ def reform_results(rid, reform_dict, puf_data, reform_2017_law):
     calc1 = Calculator(policy=pol, records=rec, verbose=False)
     # create reform Calculator object, calc2
     start_year = reform_dict['start_year']
-    reform = dict()
+    reform = {}
     for name, value in reform_dict['value'].items():
         reform[name] = {start_year: value}
     pol.implement_reform(reform)
@@ -296,7 +302,7 @@ def reform_results(rid, reform_dict, puf_data, reform_2017_law):
     # calculate baseline and reform output for several years
     output_type = reform_dict['output_type']
     num_years = 4
-    results = list()
+    results = []
     for _ in range(0, num_years):
         calc1.calc_all()
         baseline = calc1.array(output_type)
@@ -329,7 +335,7 @@ def fixture_reforms_dict(tests_path):
     Read reforms.json and convert to dictionary.
     """
     reforms_path = os.path.join(tests_path, 'reforms.json')
-    with open(reforms_path, 'r') as rfile:
+    with open(reforms_path, 'r', encoding='utf-8') as rfile:
         rjson = rfile.read()
     return json.loads(rjson)
 
@@ -338,19 +344,19 @@ NUM_REFORMS = 64  # when changing this also change num_reforms in conftest.py
 
 
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('rid', [i for i in range(1, NUM_REFORMS + 1)])
+@pytest.mark.parametrize('rid', list(range(1, NUM_REFORMS + 1)))
 def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
                  reforms_dict, puf_subsample):
     """
     Write actual reform results to files.
     """
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     assert test_reforms_init == NUM_REFORMS
     actual = reform_results(rid, reforms_dict[str(rid)],
                             puf_subsample, baseline_2017_law)
     afile_path = os.path.join(tests_path,
                               'reform_actual_{}.csv'.format(rid))
-    with open(afile_path, 'w') as afile:
+    with open(afile_path, 'w', encoding='utf-8') as afile:
         afile.write('rid,res1,res2,res3,res4\n')
         afile.write('{}\n'.format(actual))
 

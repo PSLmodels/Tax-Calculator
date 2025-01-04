@@ -68,7 +68,7 @@ def fixture_test_reforms(tests_path):
     """
     Execute logic only once rather than on each pytest-xdist node.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-statements
     num_reforms = 64  # must be same as NUM_REFORMS in test_reforms.py
     handling_logic = ('PYTEST_XDIST_WORKER' not in os.environ or
                       os.environ['PYTEST_XDIST_WORKER'] == 'gw0')
@@ -111,22 +111,22 @@ def fixture_test_reforms(tests_path):
             expect_lines = efile.readlines()
         # ... compare actual and expected results for each test
         diffs = False
-        actfile = open(actfile_path, 'w')
-        actfile.write('rid,res1,res2,res3,res4\n')
-        idx = 1  # expect_lines list index
-        for rnum in range(1, num_reforms + 1):
-            afile_path = os.path.join(tests_path,
-                                      'reform_actual_{}.csv'.format(rnum))
-            with open(afile_path, 'r') as afile:
-                actual_lines = afile.readlines()
-            os.remove(afile_path)
-            actfile.write(actual_lines[1])
-            actual = [float(itm) for itm in actual_lines[1].split(',')]
-            expect = [float(itm) for itm in expect_lines[idx].split(',')]
-            if not numpy.allclose(actual, expect, atol=0.0, rtol=0.0):
-                diffs = True
-            idx += 1
-        actfile.close()
+        with open(actfile_path, 'w') as actfile:
+            actfile.write('rid,res1,res2,res3,res4\n')
+            idx = 1  # expect_lines list index
+            for rnum in range(1, num_reforms + 1):
+                afile_path = os.path.join(
+                    tests_path, f'reform_actual_{rnum}.csv'
+                )
+                with open(afile_path, 'r', encoding='utf-8') as afile:
+                    actual_lines = afile.readlines()
+                os.remove(afile_path)
+                actfile.write(actual_lines[1])
+                actual = [float(itm) for itm in actual_lines[1].split(',')]
+                expect = [float(itm) for itm in expect_lines[idx].split(',')]
+                if not numpy.allclose(actual, expect, atol=0.0, rtol=0.0):
+                    diffs = True
+                idx += 1
         # remove init file
         os.remove(initfile)
         # remove 'reforms_actual.csv' file if no actual-vs-expect diffs
@@ -139,5 +139,4 @@ def fixture_test_reforms(tests_path):
             msg += '---               AND RERUN TEST.             ---\n'
             msg += '-------------------------------------------------\n'
             raise ValueError(msg)
-        else:
-            os.remove(actfile_path)
+        os.remove(actfile_path)

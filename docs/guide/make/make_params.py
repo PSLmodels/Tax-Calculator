@@ -1,8 +1,10 @@
+"""
+Helper functions used in make_uguide.py module.
+"""
+import os
 import numpy as np
 import pandas as pd
-from collections import OrderedDict
 import taxcalc as tc
-import os
 
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -14,7 +16,7 @@ START_YEAR = 2013
 END_YEAR_SHORT = 2020
 END_YEAR_LONG = 2027
 
-# Order for policy_params.md.
+# Order for policy_params.md
 SECTION_1_ORDER = ['Parameter Indexing',
                    'Payroll Taxes',
                    'Social Security Taxability',
@@ -35,7 +37,8 @@ SECTION_1_ORDER = ['Parameter Indexing',
 
 
 def make_params(path, ptype):
-    """ Make string with all parameter information.
+    """
+    Make string with all parameter information.
 
     Args:
         path: Path to parameter file.
@@ -44,7 +47,7 @@ def make_params(path, ptype):
     Returns:
         Single string with all parameter information.
     """
-    with open(path) as pfile:
+    with open(path, 'r', encoding='utf-8') as pfile:
         json_text = pfile.read()
     params = tc.json_to_dict(json_text)
     df = pd.DataFrame(params).transpose().drop('schema')
@@ -83,7 +86,8 @@ def make_params(path, ptype):
 
 
 def boolstr(b):
-    """ Return a bool value or Series as 'True'/'False' strings.
+    """
+    Return a bool value or Series as 'True'/'False' strings.
 
     Args:
         b: Bool value or pandas Series.
@@ -101,12 +105,15 @@ def boolstr(b):
 
 
 def paramtextdf(df, ptype):
-    """ Don't include sections - do that later.
+    """
+    Don't include sections - do that later.
 
     Args:
         df: DataFrame representing parameters.
         ptype:
     """
+    # pylint: disable=too-many-locals
+
     def title(df):
         return '####  `' + df.index + '`  \n'
 

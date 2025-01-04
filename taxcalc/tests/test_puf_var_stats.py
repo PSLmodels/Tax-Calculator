@@ -11,8 +11,9 @@ import copy
 import numpy as np
 import pandas as pd
 import pytest
-# pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
 
 
 def create_base_table(test_path):
@@ -60,10 +61,10 @@ def create_base_table(test_path):
     read_vars = list(records_varinfo.USABLE_READ_VARS - unused_var_set)
     # get read variable information from JSON file
     rec_vars_path = os.path.join(test_path, '..', 'records_variables.json')
-    with open(rec_vars_path) as rvfile:
+    with open(rec_vars_path, 'r',  encoding='utf-8') as rvfile:
         read_var_dict = json.load(rvfile)
     # create table_dict with sorted read vars followed by sorted calc vars
-    table_dict = dict()
+    table_dict = {}
     for var in sorted(read_vars):
         if "taxdata_puf" in read_var_dict['read'][var]['availability']:
             table_dict[var] = read_var_dict['read'][var]['desc']
@@ -85,7 +86,7 @@ def calculate_corr_stats(calc, table):
     errmsg = ''
     for varname1 in table.index:
         var1 = calc.array(varname1)
-        var1_cc = list()
+        var1_cc = []
         for varname2 in table.index:
             var2 = calc.array(varname2)
             try:
@@ -105,7 +106,7 @@ def calculate_mean_stats(calc, table, year):
     Calculate weighted means for year.
     """
     total_weight = calc.total_weight()
-    means = list()
+    means = []
     for varname in table.index:
         wmean = calc.weighted_total(varname) / total_weight
         means.append(wmean)

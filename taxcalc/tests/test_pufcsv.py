@@ -20,8 +20,9 @@ import json
 import pytest
 import numpy as np
 import pandas as pd
-# pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
 
 
 START_YEAR = 2017
@@ -169,24 +170,20 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
     for line1, line2 in zip(linelist1, linelist2):
         if line1 == line2:
             continue
-        else:
-            tokens1 = line1.replace(',', '').split()
-            tokens2 = line2.replace(',', '').split()
-            for tok1, tok2 in zip(tokens1, tokens2):
-                tok1_isfloat = isfloat(tok1)
-                tok2_isfloat = isfloat(tok2)
-                if tok1_isfloat and tok2_isfloat:
-                    if abs(float(tok1) - float(tok2)) <= smallamt:
-                        continue
-                    else:
-                        return True
-                elif not tok1_isfloat and not tok2_isfloat:
-                    if tok1 == tok2:
-                        continue
-                    else:
-                        return True
-                else:
-                    return True
+        tokens1 = line1.replace(',', '').split()
+        tokens2 = line2.replace(',', '').split()
+        for tok1, tok2 in zip(tokens1, tokens2):
+            tok1_isfloat = isfloat(tok1)
+            tok2_isfloat = isfloat(tok2)
+            if tok1_isfloat and tok2_isfloat:
+                if abs(float(tok1) - float(tok2)) <= smallamt:
+                    continue
+                return True
+            if not tok1_isfloat and not tok2_isfloat:
+                if tok1 == tok2:
+                    continue
+                return True
+            return True
         return False
 
 
@@ -255,12 +252,12 @@ def test_mtr(tests_path, puf_path):
         res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
     # check for differences between actual and expected results
     mtrres_path = os.path.join(tests_path, 'pufcsv_mtr_expect.txt')
-    with open(mtrres_path, 'r') as expected_file:
+    with open(mtrres_path, 'r', encoding='utf-8') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
     if nonsmall_diffs(res.splitlines(True), expected_results.splitlines(True)):
         new_filename = '{}{}'.format(mtrres_path[:-10], 'actual.txt')
-        with open(new_filename, 'w') as new_file:
+        with open(new_filename, 'w', encoding='utf-8') as new_file:
             new_file.write(res)
         msg = 'PUFCSV MTR RESULTS DIFFER\n'
         msg += '-------------------------------------------------\n'
@@ -372,7 +369,7 @@ def test_puf_availability(tests_path, puf_path):
     pufvars = set(list(pufdf))
     # make set of variable names that are marked as puf.csv available
     rvpath = os.path.join(tests_path, '..', 'records_variables.json')
-    with open(rvpath, 'r') as rvfile:
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
         rvdict = json.load(rvfile)
     recvars = set()
     for vname, vdict in rvdict['read'].items():

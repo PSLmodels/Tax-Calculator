@@ -93,7 +93,8 @@ class Calculator():
 
     def __init__(self, policy=None, records=None, verbose=False,
                  sync_years=True, consumption=None):
-        # pylint: disable=too-many-arguments,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-branches
         if isinstance(policy, Policy):
             self.__policy = copy.deepcopy(policy)
         else:
@@ -286,8 +287,7 @@ class Calculator():
             val = getattr(self.__policy, param_name)
             if param_name.startswith("_"):
                 return val
-            else:
-                return val[0]  # drop down a dimension.
+            return val[0]  # drop down a dimension.
         setattr(self.__policy, param_name, param_value)
         return None
 
@@ -345,8 +345,8 @@ class Calculator():
         max_num_years = self.__policy.end_year - self.__policy.current_year + 1
         assert num_years <= max_num_years
         calc = copy.deepcopy(self)
-        yearlist = list()
-        varlist = list()
+        yearlist = []
+        varlist = []
         for iyr in range(1, num_years + 1):
             calc.calc_all()
             yearlist.append(calc.current_year)
@@ -626,8 +626,8 @@ class Calculator():
         'e20100',  Charity non-cash contributions;
         'k1bx14p', Partnership income (also included in e26270 and e02000).
         """
-        # pylint: disable=too-many-arguments,too-many-statements
-        # pylint: disable=too-many-locals,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-locals,too-many-branches,too-many-statements
         assert not zero_out_calculated_vars or not calc_all_already_called
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
@@ -824,7 +824,9 @@ class Calculator():
         -------
         graph that is a bokeh.plotting figure object
         """
-        # pylint: disable=too-many-arguments,too-many-locals
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-locals
+
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
@@ -1101,7 +1103,7 @@ class Calculator():
         suitable as input into the GrowDiff.update_growdiff method.
         """
         # construct the composite dictionary
-        param_dict = dict()
+        param_dict = {}
         param_dict['policy'] = Policy.read_json_reform(reform)
         param_dict['consumption'] = Consumption.read_json_update(assump)
         for topkey in ['growdiff_baseline', 'growdiff_response']:
@@ -1165,7 +1167,7 @@ class Calculator():
                     return [line]
                 # all text does not fix on one line
                 first_line = True
-                line_list = list()
+                line_list = []
                 words = text.split()
                 while words:
                     if first_line:
@@ -1189,7 +1191,7 @@ class Calculator():
                 baseline.set_year(year)
                 updated.set_year(year)
                 assert set(baseline.keys()) == set(updated.keys())
-                params_with_diff = list()
+                params_with_diff = []
                 for pname in baseline.keys():
                     upda_value = getattr(updated, pname)
                     base_value = getattr(baseline, pname)
@@ -1399,7 +1401,7 @@ class Calculator():
         item_phaseout = self.array('c21040').copy()
         item_component_variable_names = ['c17000', 'c18300', 'c19200',
                                          'c19700', 'c20500', 'c20800']
-        item_cvar = dict()
+        item_cvar = {}
         for cvname in item_component_variable_names:
             item_cvar[cvname] = self.array(cvname).copy()
         self.zeroarray('c04470')

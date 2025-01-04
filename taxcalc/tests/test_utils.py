@@ -13,25 +13,28 @@ import random
 import numpy as np
 import pandas as pd
 import pytest
-# pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator
-from taxcalc.utils import (DIST_VARIABLES,
-                           DIST_TABLE_COLUMNS, DIST_TABLE_LABELS,
-                           DIFF_VARIABLES,
-                           DIFF_TABLE_COLUMNS, DIFF_TABLE_LABELS,
-                           SOI_AGI_BINS,
-                           create_difference_table,
-                           weighted_sum, weighted_mean,
-                           wage_weighted, agi_weighted,
-                           expanded_income_weighted,
-                           add_income_table_row_variable,
-                           add_quantile_table_row_variable,
-                           mtr_graph_data, atr_graph_data,
-                           xtr_graph_plot, write_graph_file,
-                           read_egg_csv, read_egg_json, delete_file,
-                           bootstrap_se_ci,
-                           certainty_equivalent,
-                           ce_aftertax_expanded_income)
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
+from taxcalc.utils import (
+    DIST_VARIABLES,
+    DIST_TABLE_COLUMNS, DIST_TABLE_LABELS,
+    DIFF_VARIABLES,
+    DIFF_TABLE_COLUMNS, DIFF_TABLE_LABELS,
+    SOI_AGI_BINS,
+    create_difference_table,
+    weighted_sum, weighted_mean,
+    wage_weighted, agi_weighted,
+    expanded_income_weighted,
+    add_income_table_row_variable,
+    add_quantile_table_row_variable,
+    mtr_graph_data, atr_graph_data,
+    xtr_graph_plot, write_graph_file,
+    read_egg_csv, read_egg_json, delete_file,
+    bootstrap_se_ci,
+    certainty_equivalent,
+    ce_aftertax_expanded_income
+)
 
 
 DATA = [[1.0, 2, 'a'],
@@ -333,7 +336,7 @@ def test_create_tables(cps_subsample):
             print('{:.1f},'.format(val))
 
     if test_failure:
-        assert 1 == 2
+        assert False, 'ERROR: test failure'
 
 
 def test_diff_count_precision():
@@ -607,7 +610,7 @@ def test_mtr_graph_data(cps_subsample):
                        income_measure='expanded_income',
                        dollar_weighting=True)
     with pytest.raises(ValueError):
-        mtr_graph_data(None, year, mars=list())
+        mtr_graph_data(None, year, mars=[])
     with pytest.raises(ValueError):
         mtr_graph_data(None, year, mars='ALL', mtr_variable='e00200s')
     with pytest.raises(ValueError):
@@ -636,7 +639,7 @@ def test_atr_graph_data(cps_subsample):
     with pytest.raises(ValueError):
         atr_graph_data(None, year, mars=0)
     with pytest.raises(ValueError):
-        atr_graph_data(None, year, mars=list())
+        atr_graph_data(None, year, mars=[])
     with pytest.raises(ValueError):
         atr_graph_data(None, year, atr_measure='badtax')
     calc.calc_all()
@@ -699,7 +702,7 @@ def test_write_graph_file(cps_subsample):
                 os.remove(htmlfname)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'write_graph_file()_ok' == 'no'
+        assert False, 'ERROR: write_graph_file() failed'
     # if try was successful, try to remove the file
     if os.path.isfile(htmlfname):
         try:
@@ -764,7 +767,7 @@ def test_read_egg_json():
 def test_create_delete_temp_file():
     # test temporary_filename() and delete_file() functions
     fname = temporary_filename()
-    with open(fname, 'w') as tmpfile:
+    with open(fname, 'w', encoding='utf-8') as tmpfile:
         tmpfile.write('any content will do')
     assert os.path.isfile(fname) is True
     delete_file(fname)

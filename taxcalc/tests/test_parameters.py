@@ -13,15 +13,11 @@ import tempfile
 import numpy as np
 import paramtools
 import pytest
-# pylint: disable=import-error
-from taxcalc import (
-    Parameters,
-    Policy,
-    Consumption,
-    GrowDiff,
-    GrowFactors,
-    is_paramtools_format,
-)
+from taxcalc.parameters import Parameters, is_paramtools_format
+from taxcalc.policy import Policy
+from taxcalc.consumption import Consumption
+from taxcalc.growdiff import GrowDiff
+from taxcalc.growfactors import GrowFactors
 
 
 # Test specification and use of simple Parameters-derived class that has
@@ -157,8 +153,8 @@ def test_params_class(revision, expect, params_json_file):
         assert prms.start_year == 2001
         assert prms.current_year == 2001
         assert prms.end_year == 2010
-        assert prms.inflation_rates() == list()
-        assert prms.wage_growth_rates() == list()
+        assert prms.inflation_rates() == []
+        assert prms.wage_growth_rates() == []
         prms.set_year(2010)
         assert prms.current_year == 2010
         with pytest.raises(paramtools.ValidationError):
@@ -189,6 +185,7 @@ def test_json_file_contents(tests_path, fname):
     """
     Check contents of JSON parameter files in Tax-Calculator/taxcalc directory.
     """
+    # pylint: disable=too-many-locals,too-many-branches
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     known_years = set(range(first_year, last_known_year + 1))
@@ -206,7 +203,8 @@ def test_json_file_contents(tests_path, fname):
     long_known_years.add(2026)
     # check elements in each parameter sub-dictionary
     failures = ''
-    with open(os.path.join(tests_path, "..", fname)) as f:
+    path = os.path.join(tests_path, "..", fname)
+    with open(path, 'r', encoding='utf-8') as f:
         allparams = json.loads(f.read())
     for pname in allparams:
         if pname == "schema":
@@ -268,9 +266,8 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
     """
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', jfname)
-    pfile = open(path, 'r')
-    allparams = json.load(pfile)
-    pfile.close()
+    with open(path, 'r', encoding='utf-8') as pfile:
+        allparams = json.load(pfile)
     assert isinstance(allparams, dict)
     # read PYTHON code file text
     if pfname == 'consumption.py':
@@ -288,9 +285,8 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
     else:
         # parameters are explicitly named in PYTHON file
         path = os.path.join(tests_path, '..', pfname)
-        pfile = open(path, 'r')
-        code_text = pfile.read()
-        pfile.close()
+        with open(path, 'r', encoding='utf-8') as pfile:
+            code_text = pfile.read()
     # check that each param (without leading _) is mentioned in code text
     for pname in allparams:
         if pname == "schema":
@@ -593,7 +589,7 @@ def test_read_json_revision(good_revision):
     # pllint: disable=private-method
     with pytest.raises(TypeError):
         # error because first obj argument is neither None nor a string
-        Parameters._read_json_revision(list(), '')
+        Parameters._read_json_revision([], '')
     with pytest.raises(ValueError):
         # error because second topkey argument must be a string
         Parameters._read_json_revision(good_revision, 999)

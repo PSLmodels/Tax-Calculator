@@ -7,8 +7,8 @@ Test example JSON response assumption files in taxcalc/responses directory
 
 import os
 import glob
-# pylint: disable=import-error
-from taxcalc import Consumption, GrowDiff
+from taxcalc.consumption import Consumption
+from taxcalc.growdiff import GrowDiff
 
 
 def test_response_json(tests_path):
@@ -20,8 +20,8 @@ def test_response_json(tests_path):
     responses_path = os.path.join(tests_path, '..', 'responses', '*.json')
     for jpf in glob.glob(responses_path):
         # read contents of jpf (JSON parameter filename)
-        jfile = open(jpf, 'r')
-        jpf_text = jfile.read()
+        with open(jpf, 'r', encoding='utf-8') as jfile:
+            jpf_text = jfile.read()
         # check that jpf_text can be used to construct objects
         response_file = ('"consumption"' in jpf_text and
                          '"growdiff_baseline"' in jpf_text and

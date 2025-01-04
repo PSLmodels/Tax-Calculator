@@ -165,6 +165,6 @@ class GrowFactors():
             msg = 'cannot update growfactors after they have been used'
             raise ValueError(msg)
         assert name in GrowFactors.VALID_NAMES
-        if year >= self.first_year and year <= self.last_year:
+        if self.first_year <= year <= self.last_year:
             assert isinstance(diff, float)
             self.gfdf.loc[year, name] += diff

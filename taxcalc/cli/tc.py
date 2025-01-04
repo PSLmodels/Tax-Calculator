@@ -23,7 +23,8 @@ def cli_tc_main():
     Contains command-line interface (CLI) to Tax-Calculator TaxCalcIO class.
     """
     # pylint: disable=too-many-statements,too-many-branches
-    # pylint: disable=too-many-return-statements
+    # pylint: disable=too-many-return-statements,too-many-locals
+
     # parse command-line arguments:
     usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
         '[--help]\n',
@@ -254,12 +255,10 @@ def _compare_test_output_files():
     Private function that compares expected and actual tc --test output files;
     returns 0 if pass test, otherwise returns 1.
     """
-    explines = open(
-        EXPECTED_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8'
-    ).readlines()
-    actlines = open(
-        ACTUAL_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8'
-    ).readlines()
+    with open(EXPECTED_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8') as efile:
+        explines = efile.readlines()
+    with open(ACTUAL_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8') as afile:
+        actlines = afile.readlines()
     if ''.join(explines) == ''.join(actlines):
         sys.stdout.write('PASSED TEST\n')
         retcode = 0
