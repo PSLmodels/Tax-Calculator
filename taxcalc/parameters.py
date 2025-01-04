@@ -370,7 +370,15 @@ class Parameters(pt.Parameters):
                 ):
                     continue
                 if self._data[param].get("indexed", False):
+                    # pylint: disable=singleton-comparison
                     to_delete[param] = self.sel[param]["_auto"] == True
+                    # pylint warning message:
+                    #   Comparison 'self.sel[param]['_auto'] == True' should
+                    #   be 'self.sel[param]['_auto'] is True' if checking for
+                    #   the singleton value True, or
+                    #   'bool(self.sel[param]['_auto'])' if testing for
+                    #   truthiness
+                    # pylint: enable=singleton-comparison
                     needs_reset.append(param)
 
             self.delete(to_delete, **kwargs)

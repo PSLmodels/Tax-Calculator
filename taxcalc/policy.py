@@ -158,7 +158,7 @@ class Policy(Parameters):
             Policy.DEFAULTS_FILE_PATH,
             Policy.DEFAULTS_FILE_NAME
         )
-        with open(path, 'r',  encoding='utf-8') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             defaults = json.loads(f.read())  # pylint: disable=protected-access
         return [k for k in defaults if k != "schema"]
 

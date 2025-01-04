@@ -90,7 +90,7 @@ EXCLUDED_PATHS = taxcalc/validation,docs/guide
 
 .PHONY=cstest
 cstest:
-	@-pycodestyle --exclude=$(EXCLUDED_PATHS) .
+	@-pycodestyle --ignore=W503,W504,E712 --exclude=$(EXCLUDED_PATHS) .
 	@-pycodestyle --ignore=E501,E121 $(TOPLEVEL_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)

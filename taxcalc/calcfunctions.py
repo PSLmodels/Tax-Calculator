@@ -2759,7 +2759,7 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
     # calculate Recovery Rebate Credit from CARES Act 2020 and/or ARPA 2021
     if c00100 < RRC_ps[MARS - 1]:
         recovery_rebate_credit = RRC_c * XTOT
-        recovery_rebate_credit += RRC_c_unit[MARS-1] + RRC_c_kids * nu18
+        recovery_rebate_credit += RRC_c_unit[MARS - 1] + RRC_c_kids * nu18
     elif 0 < c00100 < RRC_pe[MARS - 1]:
         prt = (
             (c00100 - RRC_ps[MARS - 1]) /

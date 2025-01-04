@@ -58,7 +58,7 @@ def test_2017_law_reform(tests_path):
     }
     assert isinstance(pre_expect, dict)
     assert set(pre_expect.keys()).issubset(set(pre_mdata.keys()))
-    for name in pre_expect:
+    for name in pre_expect:  # pylint: disable=consider-using-dict-items
         aval = pre_mdata[name]
         if aval.ndim == 2:
             act = aval[0][0]  # comparing only first item in a vector parameter
@@ -153,7 +153,7 @@ def test_round_trip_reforms(fyear, tests_path):
         )
     fail_params = []
     msg = '\nRound-trip-reform and current-law-policy param values differ for:'
-    for pname in clp_mdata.keys():
+    for pname in clp_mdata.keys():  # pylint: disable=consider-using-dict-items
         rtr_val = rtr_mdata[pname]
         clp_val = clp_mdata[pname]
         if not np.allclose(rtr_val, clp_val):

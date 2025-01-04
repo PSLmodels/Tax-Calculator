@@ -1542,8 +1542,8 @@ def test_two_sets_of_tax_brackets():
     Test that II_brk? and PT_brk? values are the same under current law.
     """
     pol = Policy()
-    brackets = range(1, 7+1)
-    years = range(Policy.JSON_START_YEAR, Policy.LAST_KNOWN_YEAR+1)
+    brackets = range(1, 7 + 1)
+    years = range(Policy.JSON_START_YEAR, Policy.LAST_KNOWN_YEAR + 1)
     emsg = ''
     for year in years:
         pol.set_year(year)

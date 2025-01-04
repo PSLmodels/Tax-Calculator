@@ -95,8 +95,8 @@ def main():
     # calculate 2025-to-2026 parameters indexing factor
     pol = taxcalc.Policy()
     pirates = pol.inflation_rates()
-    ifactor25 = 1.0 + pirates[2025-taxcalc.Policy.JSON_START_YEAR]
-    ifactor28 = 1.0 + pirates[2028-taxcalc.Policy.JSON_START_YEAR]
+    ifactor25 = 1.0 + pirates[2025 - taxcalc.Policy.JSON_START_YEAR]
+    ifactor28 = 1.0 + pirates[2028 - taxcalc.Policy.JSON_START_YEAR]
     # specify extend-TCJA-beyond-2025 reform
     # ... get 2025 parameter values
     year = 2025
