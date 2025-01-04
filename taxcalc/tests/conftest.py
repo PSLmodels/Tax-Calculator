@@ -1,3 +1,7 @@
+"""
+The pytest configuration file.
+"""
+
 import os
 import time
 import glob

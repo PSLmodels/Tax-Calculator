@@ -1,5 +1,9 @@
+"""
+Test decorators.
+"""
 # CODING-STYLE CHECKS:
 # pycodestyle test_decorators.py
+# pylint --disable=locally-disabled test_decorators.py
 
 import os
 import sys

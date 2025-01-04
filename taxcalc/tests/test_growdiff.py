@@ -1,5 +1,9 @@
+"""
+Test GrowDiff class and its methods.
+"""
 # CODING-STYLE CHECKS:
 # pycodestyle test_growdiff.py
+# pylint --disable=locally-disabled test_growdiff.py
 
 import os
 import json

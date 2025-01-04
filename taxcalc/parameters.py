@@ -1,3 +1,7 @@
+"""
+Tax-Calculator abstract base parameter class based on paramtools package.
+"""
+
 import os
 import copy
 from collections import defaultdict

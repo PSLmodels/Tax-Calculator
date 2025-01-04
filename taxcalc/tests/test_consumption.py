@@ -1,5 +1,9 @@
+"""
+Test Consumption class and its methods.
+"""
 # CODING-STYLE CHECKS:
 # pycodestyle test_consumption.py
+# pylint --disable=locally-disabled test_consumption.py
 
 import numpy as np
 import paramtools

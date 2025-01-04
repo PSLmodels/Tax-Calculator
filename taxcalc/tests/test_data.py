@@ -1,5 +1,9 @@
+"""
+Test Data class and its methods.
+"""
 # CODING-STYLE CHECKS:
 # pycodestyle test_data.py
+# pylint --disable=locally-disabled test_data.py
 
 import os
 import tempfile

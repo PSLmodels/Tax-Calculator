@@ -1,5 +1,9 @@
+"""
+Test Records class and its methods.
+"""
 # CODING-STYLE CHECKS:
 # pycodestyle test_records.py
+# pylint --disable=locally-disabled test_records.py
 
 import os
 import json
