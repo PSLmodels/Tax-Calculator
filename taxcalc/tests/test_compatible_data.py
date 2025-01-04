@@ -63,7 +63,7 @@ def test_compatible_data_presence(allparams):
         msg = '{} has no or invalid compatible_data field'
         for pname in problem_pnames:
             print(msg.format(pname))
-        assert 'list of problem_pnames' == 'empty list'
+        assert False, 'ERROR: list of problem_pnames is above'
 
 
 XX_YEAR = 2019
@@ -337,4 +337,4 @@ def test_compatible_data(cps_subsample, puf_subsample,
     # test failure if any errors
     if errors:
         print(errors)
-        assert 'compatible_data' == 'invalid'
+        assert False, 'ERROR: compatible_data is invalid; see errors above'

@@ -281,7 +281,7 @@ def test_EI_PayrollTax(test_input, expected_output, skip_jit):
         print('*INPUT:', test_input)
         print('ACTUAL:', actual_output)
         print('EXPECT:', expected_output)
-        assert 1 == 2, 'ACTUAL != EXPECT'
+        assert False, 'ERROR: ACTUAL != EXPECT'
 
 
 def test_AfterTaxIncome(skip_jit):

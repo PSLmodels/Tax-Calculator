@@ -336,7 +336,7 @@ def test_create_tables(cps_subsample):
             print('{:.1f},'.format(val))
 
     if test_failure:
-        assert 1 == 2
+        assert False, 'ERROR: test failure'
 
 
 def test_diff_count_precision():
@@ -702,7 +702,7 @@ def test_write_graph_file(cps_subsample):
                 os.remove(htmlfname)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'write_graph_file()_ok' == 'no'
+        assert False, 'ERROR: write_graph_file() failed'
     # if try was successful, try to remove the file
     if os.path.isfile(htmlfname):
         try:

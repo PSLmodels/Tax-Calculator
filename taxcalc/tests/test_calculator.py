@@ -629,7 +629,7 @@ def test_reform_documentation():
     dump = False  # set to True to print documentation and force test failure
     if dump:
         print(doc)
-        assert 1 == 2
+        assert False, 'ERROR: reform_documentation above'
 
 
 def test_distribution_tables(cps_subsample):

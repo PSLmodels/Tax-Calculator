@@ -51,7 +51,7 @@ def test_for_package_existence():
     out = subprocess.check_output(['conda', 'list', 'taxcalc']).decode('ascii')
     envless_out = out.replace('taxcalc-dev', 'environment')
     if re.search('taxcalc', envless_out) is not None:
-        assert 'taxcalc package' == 'installed'
+        assert False, 'ERROR: taxcalc package is installed'
 
 
 def test_for_consistency(tests_path):

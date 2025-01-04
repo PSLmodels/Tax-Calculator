@@ -432,7 +432,7 @@ def test_output_options(reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(minimal_output)_ok' == 'no'
+        assert False, 'TaxCalcIO.analyze(minimal_output) failed'
     # --dump output with full dump
     try:
         tcio.analyze(writing_output_file=True, output_dump=True)
@@ -442,7 +442,7 @@ def test_output_options(reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(full_dump_output)_ok' == 'no'
+        assert False, 'TaxCalcIO.analyze(full_dump_output) failed'
     # --dump output with partial dump
     try:
         tcio.analyze(writing_output_file=True,
@@ -454,7 +454,7 @@ def test_output_options(reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(partial_dump_output)_ok' == 'no'
+        assert False, 'TaxCalcIO.analyze(partial_dump_output) failed'
     # if tries were successful, remove doc file and output file
     docfilepath = outfilepath.replace('.csv', '-doc.text')
     if os.path.isfile(docfilepath):
@@ -520,7 +520,7 @@ def test_sqldb_option(reformfile1, assumpfile1):
                 os.remove(dbfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(sqldb)_ok' == 'no'
+        assert False, 'ERROR: TaxCalcIO.analyze(sqldb) failed'
     # if try was successful, remove the db file
     if os.path.isfile(dbfilepath):
         os.remove(dbfilepath)
