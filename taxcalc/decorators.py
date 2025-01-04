@@ -49,7 +49,7 @@ class GetReturnNode(ast.NodeVisitor):
     """
     A NodeVisitor to get the return tuple names from a calc-style function.
     """
-    def visit_Return(self, node):  # pylint: disable=invalid-name,no-self-use
+    def visit_Return(self, node):  # pylint: disable=invalid-name
         """
         visit_Return is used by NodeVisitor.visit method.
         """

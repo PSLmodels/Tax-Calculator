@@ -113,7 +113,7 @@ def Magic_calc2(x, y, z):
     return (a, b)
 
 
-class Foo(object):
+class Foo:
     # pylint: disable=too-few-public-methods,too-many-instance-attributes
     pass
 
