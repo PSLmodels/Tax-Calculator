@@ -29,7 +29,7 @@ def cmp_policy_objs(pol1, pol2, year_range=None, exclude=None):
     else:
         pol1.clear_state()
         pol2.clear_state()
-    for param in pol1._data:
+    for param in pol1._data:  # pylint: disable=protected-access
         if exclude and param in exclude:
             continue
         v1 = getattr(pol1, param)

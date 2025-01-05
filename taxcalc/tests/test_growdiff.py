@@ -26,10 +26,11 @@ def test_update_and_apply_growdiff():
                   2016: 0.02}
     }
     gdiff.update_growdiff(diffs)
-    expected_wage_diffs = [0.00, 0.01, 0.01, 0.02, 0.02]
-    extra_years = gdiff.num_years - len(expected_wage_diffs)
-    expected_wage_diffs.extend([0.02] * extra_years)
-    assert np.allclose(gdiff._AWAGE, expected_wage_diffs, atol=0.0, rtol=0.0)
+    exp_wage_diffs = [0.00, 0.01, 0.01, 0.02, 0.02]
+    extra_years = gdiff.num_years - len(exp_wage_diffs)
+    exp_wage_diffs.extend([0.02] * extra_years)
+    act_wage_diffs = gdiff._AWAGE  # pylint: disable=protected-access
+    assert np.allclose(act_wage_diffs, exp_wage_diffs, atol=0.0, rtol=0.0)
     # apply growdiff to GrowFactors instance
     gf = GrowFactors()
     syr = gdiff.start_year
@@ -40,7 +41,7 @@ def test_update_and_apply_growdiff():
     gdiff.apply_to(gfactors)
     pir_pst = gfactors.price_inflation_rates(syr, lyr)
     wgr_pst = gfactors.wage_growth_rates(syr, lyr)
-    expected_wgr_pst = [wgr_pre[i] + expected_wage_diffs[i]
+    expected_wgr_pst = [wgr_pre[i] + exp_wage_diffs[i]
                         for i in range(0, gdiff.num_years)]
     assert np.allclose(pir_pre, pir_pst, atol=0.0, rtol=0.0)
     assert np.allclose(wgr_pst, expected_wgr_pst, atol=1.0e-9, rtol=0.0)

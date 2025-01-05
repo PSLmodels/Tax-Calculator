@@ -155,6 +155,9 @@ def ret_everything(a, b, c, d, e, f):
             f)
 
 
+# pylint: disable=attribute-defined-outside-init
+
+
 def test_magic_apply_jit():
     """Test docstring"""
     pm = Foo()

@@ -84,7 +84,7 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
                 self, 'e00300', val * self.gfactors.factor_value('AINTS', year)
             )
 
-    # test Recs class for incorrect instantiation
+    # test Recs class for incorrect instantiation:
     with pytest.raises(ValueError):
         Recs(data=[], start_year=2000,
              gfactors=None, weights=None)
@@ -100,7 +100,7 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     with pytest.raises(ValueError):
         Recs(data=cps_subsample, start_year=2000,
              gfactors='', weights='')
-    # test Recs class for correct instantiation with no aging of data
+    # test Recs class for correct instantiation with no aging of data:
     syr = 2014
     rec = Recs(data=cps_subsample, start_year=syr,
                gfactors=None, weights=None)
@@ -132,7 +132,8 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     assert sum_s006_in_syr_plus_one > sum_s006_in_syr
     sum_e00300_in_syr_plus_one = getattr(rec, 'e00300').sum()
     assert sum_e00300_in_syr_plus_one > sum_e00300_in_syr
-    # test private methods
+    # test private methods:
+    # pylint: disable=protected-access
     rec._read_data(data=None)
     rec._read_weights(weights=None)
     with pytest.raises(ValueError):

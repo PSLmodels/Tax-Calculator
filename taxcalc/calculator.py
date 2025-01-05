@@ -1220,7 +1220,9 @@ class Calculator():
                                     label = _label
                                     break
                             if label:
+                                # pylint: disable=protected-access
                                 lv = baseline._stateless_label_grid[label]
+                                # pylint: enable=protected-access
                                 lv = [
                                     str(item) for item in lv
                                 ]
