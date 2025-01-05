@@ -93,3 +93,8 @@ class Consumption(Parameters):
         """
         return [getattr(self, f'BEN_{var}_value')
                 for var in Consumption.BENEFIT_VARS]
+
+    def set_rates(self):
+        """
+        Consumption class has no parameter indexing rates.
+        """

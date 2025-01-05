@@ -125,8 +125,12 @@ class Parameters(pt.Parameters):
         label["validators"]["range"]["max"] = last_budget_year
         super().__init__(**kwargs)
 
-    def adjust(
-        self, params_or_path, print_warnings=True, raise_errors=True, **kwargs
+    def adjust(  # pylint: disable=arguments-differ
+            # pylint warning W0221 is:
+            #   Number of parameters was 6 in 'Parameters.adjust' and
+            #   is now 5 in overriding 'Parameters.adjust' method
+            self, params_or_path,
+            print_warnings=True, raise_errors=True, **kwargs
     ):
         """
         Update parameter values using a ParamTools styled adjustment.

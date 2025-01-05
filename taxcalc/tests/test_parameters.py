@@ -125,7 +125,7 @@ def test_params_class(revision, expect, params_json_file):
         """
         The Params class is derived from the abstract base Parameter class.
         """
-        # pylint: disable=too-few-public-methods
+        # pylint: disable=too-few-public-methods,abstract-method
         DEFAULTS_FILE_NAME = params_json_file.name
         DEFAULTS_FILE_PATH = ''
         START_YEAR = 2001
