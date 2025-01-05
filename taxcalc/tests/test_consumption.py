@@ -128,15 +128,15 @@ def test_consumption_response(cps_subsample):
         consump.response([], 1)
     # test correct call to response method
     rec = Records.cps_constructor(data=cps_subsample)
-    pre = copy.deepcopy(rec.e20400)
+    pre = copy.deepcopy(getattr(rec, 'e20400'))
     consump.response(rec, 1.0)
-    post = rec.e20400
+    post = getattr(rec, 'e20400')
     actual_diff = post - pre
     expected_diff = np.ones(rec.array_length) * mpc
     assert np.allclose(actual_diff, expected_diff)
     # compute earnings mtr with no consumption response
     rec = Records.cps_constructor(data=cps_subsample)
-    ided0 = copy.deepcopy(rec.e20400)
+    ided0 = copy.deepcopy(getattr(rec, 'e20400'))
     calc0 = Calculator(policy=Policy(), records=rec, consumption=None)
     (mtr0_ptax, mtr0_itax, _) = calc0.mtr(variable_str='e00200p',
                                           wrt_full_compensation=False)

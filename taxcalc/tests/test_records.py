@@ -35,11 +35,11 @@ def test_correct_records_instantiation(cps_subsample):
     """Test docstring"""
     rec1 = Records.cps_constructor(data=cps_subsample, gfactors=None)
     assert rec1
-    assert np.all(rec1.MARS != 0)
-    assert rec1.current_year == rec1.data_year
-    sum_e00200_in_cps_year = rec1.e00200.sum()
+    assert np.all(getattr(rec1, 'MARS') != 0)
+    assert getattr(rec1, 'current_year') == getattr(rec1, 'data_year')
+    sum_e00200_in_cps_year = getattr(rec1, 'e00200').sum()
     rec1.increment_year()
-    sum_e00200_in_cps_year_plus_one = rec1.e00200.sum()
+    sum_e00200_in_cps_year_plus_one = getattr(rec1, 'e00200').sum()
     assert sum_e00200_in_cps_year_plus_one == sum_e00200_in_cps_year
     wghts_path = os.path.join(Records.CODE_PATH, Records.CPS_WEIGHTS_FILENAME)
     wghts_df = pd.read_csv(wghts_path)
@@ -52,8 +52,8 @@ def test_correct_records_instantiation(cps_subsample):
                    adjust_ratios=ratios_df,
                    exact_calculations=False)
     assert rec2
-    assert np.all(rec2.MARS != 0)
-    assert rec2.current_year == rec2.data_year
+    assert np.all(getattr(rec2, 'MARS') != 0)
+    assert getattr(rec2, 'current_year') == getattr(rec2, 'data_year')a
 
 
 def test_read_cps_data(cps_fullsample):

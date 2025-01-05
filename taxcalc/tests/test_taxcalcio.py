@@ -231,7 +231,7 @@ def fixture_assumpfile2():
     "growdiff_response": {}
     }
     """
-    with tempfile.NamedTemporaryFil(
+    with tempfile.NamedTemporaryFile(
             suffix='.json', mode='a', delete=False
     ) as afile:
         afile.write(assump2_contents)

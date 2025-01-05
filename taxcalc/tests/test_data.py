@@ -79,7 +79,10 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
             super().__init__(data, start_year, gfactors, weights)
 
         def _extrapolate(self, year):
-            self.e00300 *= self.gfactors.factor_value('AINTS', year)
+            val = getattr(self, 'e00300')
+            setattr(
+                self, 'e00300', val* self.gfactors.factor_value('AINTS', year)
+            )
 
     # test Recs class for incorrect instantiation
     with pytest.raises(ValueError):
@@ -101,15 +104,14 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     syr = 2014
     rec = Recs(data=cps_subsample, start_year=syr,
                gfactors=None, weights=None)
-    assert isinstance(rec, Recs)
-    assert np.all(rec.MARS != 0)
-    assert rec.data_year == syr
-    assert rec.current_year == syr
-    sum_e00300_in_syr = rec.e00300.sum()
+    assert np.all(getattr(rec, 'MARS') != 0)
+    assert getattr(rec, 'data_year') == syr
+    assert getattr(rec, 'current_year') == syr
+    sum_e00300_in_syr = getattr(rec, 'e00300').sum()
     rec.increment_year()
-    assert rec.data_year == syr
-    assert rec.current_year == syr + 1
-    sum_e00300_in_syr_plus_one = rec.e00300.sum()
+    assert getattr(rec, 'data_year') == syr
+    assert getattr(rec, 'current_year') == syr + 1
+    sum_e00300_in_syr_plus_one = getattr(rec, 'e00300').sum()
     assert np.allclose([sum_e00300_in_syr], [sum_e00300_in_syr_plus_one])
     del rec
     # test Recs class for correct instantiation with aging of data
@@ -118,17 +120,17 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     rec = Recs(data=cps_subsample, start_year=syr,
                gfactors=GrowFactors(), weights=wghts_df)
     assert isinstance(rec, Recs)
-    assert np.all(rec.MARS != 0)
-    assert rec.data_year == syr
-    assert rec.current_year == syr
-    sum_s006_in_syr = rec.s006.sum()
-    sum_e00300_in_syr = rec.e00300.sum()
+    assert np.all(getattr(rec, 'MARS') != 0)
+    assert getattr(rec, 'data_year') == syr
+    assert getattr(rec, 'current_year') == syr
+    sum_s006_in_syr = getattr(rec, 's006').sum()
+    sum_e00300_in_syr = getattr(rec, 'e00300').sum()
     rec.increment_year()
-    assert rec.data_year == syr
-    assert rec.current_year == syr + 1
-    sum_s006_in_syr_plus_one = rec.s006.sum()
+    assert getattr(rec, 'data_year') == syr
+    assert getattr(rec, 'current_year') == syr + 1
+    sum_s006_in_syr_plus_one = getattr(rec, 's006').sum()
     assert sum_s006_in_syr_plus_one > sum_s006_in_syr
-    sum_e00300_in_syr_plus_one = rec.e00300.sum()
+    sum_e00300_in_syr_plus_one = getattr(rec, 'e00300').sum()
     assert sum_e00300_in_syr_plus_one > sum_e00300_in_syr
     # test private methods
     rec._read_data(data=None)
