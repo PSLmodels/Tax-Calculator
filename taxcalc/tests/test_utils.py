@@ -31,7 +31,8 @@ from taxcalc.utils import (
     read_egg_csv, read_egg_json, delete_file,
     bootstrap_se_ci,
     certainty_equivalent,
-    ce_aftertax_expanded_income
+    ce_aftertax_expanded_income,
+    json_to_dict
 )
 
 
@@ -815,3 +816,9 @@ def test_table_columns_labels():
     # check that length of two lists are the same
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)
+
+
+def test_invalid_json_to_dict():
+    """Test docstring"""
+    with pytest.raises(ValueError):
+        json_to_dict('invalid_json_text')
