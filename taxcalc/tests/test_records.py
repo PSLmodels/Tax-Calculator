@@ -53,7 +53,7 @@ def test_correct_records_instantiation(cps_subsample):
                    exact_calculations=False)
     assert rec2
     assert np.all(getattr(rec2, 'MARS') != 0)
-    assert getattr(rec2, 'current_year') == getattr(rec2, 'data_year')a
+    assert getattr(rec2, 'current_year') == getattr(rec2, 'data_year')
 
 
 def test_read_cps_data(cps_fullsample):
