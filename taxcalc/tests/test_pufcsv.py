@@ -8,8 +8,6 @@ and from the Census CPS file for the corresponding year.  If you have
 acquired from IRS the most recent SOI PUF file and want to execute
 this program, contact the Tax-Calculator development team to discuss
 your options.
-
-Read Tax-Calculator/TESTING.md for details.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle test_pufcsv.py
@@ -58,7 +56,7 @@ def test_agg(tests_path, puf_fullsample):
         if not np.allclose(adt[icol].values, edt[str(icol)].values):
             diffs = True
     if diffs:
-        new_filename = '{}{}'.format(aggres_path[:-10], 'actual.csv')
+        new_filename = f'{aggres_path[:-10]}actual.csv'
         adt.to_csv(new_filename, float_format='%.1f')
         msg = 'PUFCSV AGG RESULTS DIFFER FOR FULL-SAMPLE\n'
         msg += '-------------------------------------------------\n'
@@ -119,27 +117,32 @@ def mtr_bin_counts(mtr_data, bin_edges, recid):
     res = ''
     (bincount, _) = np.histogram(mtr_data.round(decimals=4), bins=bin_edges)
     sum_bincount = np.sum(bincount)
-    res += '{} :'.format(sum_bincount)
+    res += f'{sum_bincount} :'
     for idx in range(len(bin_edges) - 1):
-        res += ' {:6d}'.format(bincount[idx])
+        res += f' {bincount[idx]:6d}'
     res += '\n'
     if sum_bincount < mtr_data.size:
         res += 'WARNING: sum of bin counts is too low\n'
-        recinfo = '         mtr={:.2f} for recid={}\n'
         mtr_min = mtr_data.min()
         mtr_max = mtr_data.max()
         bin_min = min(bin_edges)
         bin_max = max(bin_edges)
         if mtr_min < bin_min:
-            res += '         min(mtr)={:.2f}\n'.format(mtr_min)
+            res += f'         min(mtr)={mtr_min:.2f}\n'
             for idx in range(mtr_data.size):
                 if mtr_data[idx] < bin_min:
-                    res += recinfo.format(mtr_data[idx], recid[idx])
+                    res += (
+                        f'         mtr={mtr_data[idx]:.2f} '
+                        f'for recid={recid[idx]}\n'
+                    )
         if mtr_max > bin_max:
-            res += '         max(mtr)={:.2f}\n'.format(mtr_max)
+            res += f'         max(mtr)={mtr_max:.2f}\n'
             for idx in range(mtr_data.size):
                 if mtr_data[idx] > bin_max:
-                    res += recinfo.format(mtr_data[idx], recid[idx])
+                    res += (
+                        f'         mtr={mtr_data[idx]:.2f} '
+                        f'for recid={recid[idx]}\n'
+                    )
     return res
 
 
@@ -204,7 +207,7 @@ def test_mtr(tests_path, puf_path):
         res += 'MTR computed using NEGATIVE finite_diff '
     else:
         res += 'MTR computed using POSITIVE finite_diff '
-    res += 'for tax year {}\n'.format(MTR_TAX_YEAR)
+    res += f'for tax year {MTR_TAX_YEAR}\n'
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
     clp.set_year(MTR_TAX_YEAR)
@@ -213,11 +216,11 @@ def test_mtr(tests_path, puf_path):
     recid = puf.RECID  # pylint: disable=no-member
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
-    res += '{} = {}\n'.format('Total number of data records', puf.array_length)
+    res += f'Total number of data records = {puf.array_length}\n'
     res += 'PTAX mtr histogram bin edges:\n'
-    res += '     {}\n'.format(PTAX_MTR_BIN_EDGES)
+    res += f'     {PTAX_MTR_BIN_EDGES}\n'
     res += 'ITAX mtr histogram bin edges:\n'
-    res += '     {}\n'.format(ITAX_MTR_BIN_EDGES)
+    res += f'     {ITAX_MTR_BIN_EDGES}\n'
     variable_header = 'PTAX and ITAX mtr histogram bin counts for'
     # compute marginal tax rate (mtr) histograms for each mtr variable
     for var_str in Calculator.MTR_VALID_VARIABLES:
@@ -247,7 +250,7 @@ def test_mtr(tests_path, puf_path):
             # only MARS==2 filing units have valid MTR values
             mtr_ptax = mtr_ptax[calc.array('MARS') == 2]
             mtr_itax = mtr_itax[calc.array('MARS') == 2]
-        res += '{} {}:\n'.format(variable_header, var_str)
+        res += f'{variable_header} {var_str}:\n'
         res += mtr_bin_counts(mtr_ptax, PTAX_MTR_BIN_EDGES, recid)
         res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
     # check for differences between actual and expected results
@@ -256,7 +259,7 @@ def test_mtr(tests_path, puf_path):
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
     if nonsmall_diffs(res.splitlines(True), expected_results.splitlines(True)):
-        new_filename = '{}{}'.format(mtrres_path[:-10], 'actual.txt')
+        new_filename = f'{mtrres_path[:-10]}actual.txt'
         with open(new_filename, 'w', encoding='utf-8') as new_file:
             new_file.write(res)
         msg = 'PUFCSV MTR RESULTS DIFFER\n'

@@ -4,8 +4,6 @@ Tests of Tax-Calculator utility functions.
 # CODING-STYLE CHECKS:
 # pycodestyle test_utils.py
 # pylint --disable=locally-disabled test_utils.py
-#
-# pylint: disable=missing-docstring
 
 import os
 import math
@@ -59,6 +57,7 @@ DATA_FLOAT = [[1.0, 2, 'a'],
 
 
 def test_validity_of_name_lists():
+    """Test docstring"""
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     records_varinfo = Records(data=None)
     assert set(DIST_VARIABLES).issubset(records_varinfo.CALCULATED_VARS |
@@ -71,7 +70,9 @@ def test_validity_of_name_lists():
 
 
 def test_create_tables(cps_subsample):
+    """Test docstring"""
     # pylint: disable=too-many-statements,too-many-branches
+
     # create a current-law Policy object and Calculator object calc1
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
@@ -111,7 +112,7 @@ def test_create_tables(cps_subsample):
         test_failure = True
         print('diff xbin', tabcol)
         for val in diff[tabcol].values:
-            print('{:.1f},'.format(val))
+            print(f'{val:.1f},')
 
     diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
                                    calc2.dataframe(DIFF_VARIABLES),
@@ -139,7 +140,7 @@ def test_create_tables(cps_subsample):
         test_failure = True
         print('diff xdec', tabcol)
         for val in diff[tabcol].values:
-            print('{:.1f},'.format(val))
+            print(f'{val:.1f},')
 
     tabcol = 'share_of_change'
     expected = [0.0,
@@ -163,7 +164,7 @@ def test_create_tables(cps_subsample):
         test_failure = True
         print('diff xdec', tabcol)
         for val in diff[tabcol].values:
-            print('{:.1f},'.format(val))
+            print(f'{val:.1f},')
 
     tabcol = 'pc_aftertaxinc'
     expected = [np.nan,
@@ -187,7 +188,7 @@ def test_create_tables(cps_subsample):
         test_failure = True
         print('diff xdec', tabcol)
         for val in diff[tabcol].values:
-            print('{:.1f},'.format(val))
+            print(f'{val:.1f},')
 
     # test creating various distribution tables
 
@@ -215,7 +216,7 @@ def test_create_tables(cps_subsample):
         test_failure = True
         print('dist xdec', tabcol)
         for val in dist[tabcol].values:
-            print('{:.1f},'.format(val))
+            print(f'{val:.1f},')
 
     tabcol = 'count_ItemDed'
     expected = [0.0,
@@ -239,7 +240,7 @@ def test_create_tables(cps_subsample):
         test_failure = True
         print('dist xdec', tabcol)
         for val in dist[tabcol].values:
-            print('{:.1f},'.format(val))
+            print(f'{val:.1f},')
 
     tabcol = 'expanded_income'
     expected = [0.0,
@@ -263,7 +264,7 @@ def test_create_tables(cps_subsample):
         test_failure = True
         print('dist xdec', tabcol)
         for val in dist[tabcol].values:
-            print('{:.1f},'.format(val))
+            print(f'{val:.1f},')
 
     tabcol = 'aftertax_income'
     expected = [0.0,
@@ -287,7 +288,7 @@ def test_create_tables(cps_subsample):
         test_failure = True
         print('dist xdec', tabcol)
         for val in dist[tabcol].values:
-            print('{:.1f},'.format(val))
+            print(f'{val:.1f},')
 
     dist, _ = calc2.distribution_tables(None, 'standard_income_bins')
     assert isinstance(dist, pd.DataFrame)
@@ -311,7 +312,7 @@ def test_create_tables(cps_subsample):
         test_failure = True
         print('dist xbin', tabcol)
         for val in dist[tabcol].values:
-            print('{:.1f},'.format(val))
+            print(f'{val:.1f},')
 
     tabcol = 'count_ItemDed'
     expected = [0.0,
@@ -333,7 +334,7 @@ def test_create_tables(cps_subsample):
         test_failure = True
         print('dist xbin', tabcol)
         for val in dist[tabcol].values:
-            print('{:.1f},'.format(val))
+            print(f'{val:.1f},')
 
     if test_failure:
         assert False, 'ERROR: test failure'
@@ -412,11 +413,11 @@ def test_diff_count_precision():
     cilo = bsd['cilo'] * 1e-3
     cihi = bsd['cihi'] * 1e-3
     if dump:
-        res = '{}EST={:.1f} B={} alpha={:.3f} se={:.2f} ci=[ {:.2f} , {:.2f} ]'
-        print(
-            res.format('STANDARD-BIN10: ',
-                       data_estimate, bs_samples, alpha, stderr, cilo, cihi)
+        res = (
+            f'EST={data_estimate:.1f} B={bs_samples} alpha={alpha:.3f} '
+            f'se={stderr:.2f} ci=[ {cilo:.2f} , {cihi:.2f} ]'
         )
+        print(f'STANDARD-BIN10: {res}')
     assert abs((stderr / 1.90) - 1) < 0.0008
     # NOTE: a se of 1.90 thousand implies that when comparing the difference
     #       in the weighted number of filing units in STANDARD bin 10 with a
@@ -445,11 +446,11 @@ def test_diff_count_precision():
     cilo = bsd['cilo'] * 1e-3
     cihi = bsd['cihi'] * 1e-3
     if dump:
-        res = '{}EST={:.1f} B={} alpha={:.3f} se={:.2f} ci=[ {:.2f} , {:.2f} ]'
-        print(
-            res.format('STANDARD-BIN11: ',
-                       data_estimate, bs_samples, alpha, stderr, cilo, cihi)
+        res = (
+            f'EST={data_estimate:.1f} B={bs_samples} alpha={alpha:.3f} '
+            f'se={stderr:.2f} ci=[ {cilo:.2f} , {cihi:.2f} ]'
         )
+        print(f'STANDARD-BIN11: {res}')
     assert abs((stderr / 0.85) - 1) < 0.0040
     # NOTE: a se of 0.85 thousand implies that when comparing the difference
     #       in the weighted number of filing units in STANDARD bin 11 with a
@@ -471,6 +472,7 @@ def test_diff_count_precision():
 
 
 def test_weighted_mean():
+    """Test docstring"""
     dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grouped = dfx.groupby('label')
     diffs = grouped.apply(weighted_mean, 'tax_diff', include_groups=False)
@@ -480,18 +482,21 @@ def test_weighted_mean():
 
 
 def test_wage_weighted():
+    """Test docstring"""
     dfx = pd.DataFrame(data=WEIGHT_DATA, columns=['var', 's006', 'e00200'])
     wvar = wage_weighted(dfx, 'var')
     assert round(wvar, 4) == 2.5714
 
 
 def test_agi_weighted():
+    """Test docstring"""
     dfx = pd.DataFrame(data=WEIGHT_DATA, columns=['var', 's006', 'c00100'])
     wvar = agi_weighted(dfx, 'var')
     assert round(wvar, 4) == 2.5714
 
 
 def test_expanded_income_weighted():
+    """Test docstring"""
     dfx = pd.DataFrame(data=WEIGHT_DATA,
                        columns=['var', 's006', 'expanded_income'])
     wvar = expanded_income_weighted(dfx, 'var')
@@ -499,6 +504,7 @@ def test_expanded_income_weighted():
 
 
 def test_weighted_sum():
+    """Test docstring"""
     dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grouped = dfx.groupby('label')
     diffs = grouped.apply(weighted_sum, 'tax_diff', include_groups=False)
@@ -511,6 +517,7 @@ EPSILON = 1e-5
 
 
 def test_add_income_trow_var():
+    """Test docstring"""
     dta = np.arange(1, 1e6, 5000)
     vdf = pd.DataFrame(data=dta, columns=['expanded_income'])
     vdf = add_income_table_row_variable(vdf, 'expanded_income', SOI_AGI_BINS)
@@ -523,6 +530,7 @@ def test_add_income_trow_var():
 
 
 def test_add_quantile_trow_var():
+    """Test docstring"""
     dfx = pd.DataFrame(data=DATA, columns=['expanded_income', 's006', 'label'])
     dfb = add_quantile_table_row_variable(dfx, 'expanded_income',
                                           100, decile_details=False,
@@ -540,6 +548,7 @@ def test_add_quantile_trow_var():
 
 
 def test_dist_table_sum_row(cps_subsample):
+    """Test docstring"""
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
@@ -569,6 +578,7 @@ def test_dist_table_sum_row(cps_subsample):
 
 
 def test_diff_table_sum_row(cps_subsample):
+    """Test docstring"""
     rec = Records.cps_constructor(data=cps_subsample)
     # create a current-law Policy object and Calculator calc1
     pol = Policy()
@@ -598,6 +608,7 @@ def test_diff_table_sum_row(cps_subsample):
 
 
 def test_mtr_graph_data(cps_subsample):
+    """Test docstring"""
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     year = calc.current_year
@@ -630,6 +641,7 @@ def test_mtr_graph_data(cps_subsample):
 
 
 def test_atr_graph_data(cps_subsample):
+    """Test docstring"""
     pol = Policy()
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=pol, records=rec)
@@ -654,6 +666,7 @@ def test_atr_graph_data(cps_subsample):
 
 
 def test_xtr_graph_plot(cps_subsample):
+    """Test docstring"""
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
@@ -676,11 +689,14 @@ def test_xtr_graph_plot(cps_subsample):
 
 
 def temporary_filename(suffix=''):
+    """Function docstring"""
     # Return string containing the temporary filename.
-    return 'tmp{}{}'.format(random.randint(10000000, 99999999), suffix)
+    rint = random.randint(10000000, 99999999)
+    return f'tmp{rint}{suffix}'
 
 
 def test_write_graph_file(cps_subsample):
+    """Test docstring"""
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
@@ -712,6 +728,7 @@ def test_write_graph_file(cps_subsample):
 
 
 def test_ce_aftertax_income(cps_subsample):
+    """Test docstring"""
     # test certainty_equivalent() function with con>cmin
     con = 5000
     cmin = 1000
@@ -755,16 +772,19 @@ def test_ce_aftertax_income(cps_subsample):
 
 
 def test_read_egg_csv():
+    """Test docstring"""
     with pytest.raises(ValueError):
         read_egg_csv('bad_filename')
 
 
 def test_read_egg_json():
+    """Test docstring"""
     with pytest.raises(ValueError):
         read_egg_json('bad_filename')
 
 
 def test_create_delete_temp_file():
+    """Test docstring"""
     # test temporary_filename() and delete_file() functions
     fname = temporary_filename()
     with open(fname, 'w', encoding='utf-8') as tmpfile:
@@ -775,6 +795,7 @@ def test_create_delete_temp_file():
 
 
 def test_bootstrap_se_ci():
+    """Test docstring"""
     # Use treated mouse data from Table 2.1 and
     # results from Table 2.2 and Table 13.1 in
     # Bradley Efron and Robert Tibshirani,
@@ -790,6 +811,7 @@ def test_bootstrap_se_ci():
 
 
 def test_table_columns_labels():
+    """Test docstring"""
     # check that length of two lists are the same
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)

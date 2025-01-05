@@ -191,19 +191,19 @@ def test_records_variables_content(tests_path):
                     indefinite_yrange = False
                     eyr = int(yrlist[1])
                     if fyr != (prior_eyr + 1):
-                        msg1 = '{} fyr {}'.format(vname, fyr)
-                        msg2 = '!= prior_eyr_1 {}'.format(prior_eyr + 1)
+                        msg1 = f'{vname} fyr {fyr}'
+                        msg2 = f'!= prior_eyr_1 {prior_eyr + 1}'
                         assert msg1 == msg2
                     if eyr > last_form_year:
-                        msg1 = '{} eyr {}'.format(vname, eyr)
-                        msg2 = '> last_form_year {}'.format(last_form_year)
+                        msg1 = f'{vname} eyr {eyr}'
+                        msg2 = f'> last_form_year {last_form_year}'
                         assert msg1 == msg2
                     prior_eyr = eyr
             if not indefinite_yrange and len(yranges) > 0:
                 prior_ey_ok = prior_eyr in (last_form_year, last_form_year - 1)
                 if not prior_ey_ok:
-                    msg1 = '{} prior_eyr {}'.format(vname, prior_eyr)
-                    msg2 = '!= last_form_year {}'.format(last_form_year)
+                    msg1 = f'{vname} prior_eyr {prior_eyr}'
+                    msg2 = f'!= last_form_year {last_form_year}'
                     assert msg1 == msg2
 
 
@@ -228,7 +228,7 @@ def test_csv_input_vars_md_contents(tests_path):
                 continue  # skip two lines that are the table head
             if var in civ_set:
                 found_duplicates = True
-                msg += 'VARIABLE= {}\n'.format(var)
+                msg += f'VARIABLE= {var}\n'
             else:
                 civ_set.add(var)
         if found_duplicates:
@@ -239,5 +239,5 @@ def test_csv_input_vars_md_contents(tests_path):
         valid_less_civ = records_varinfo.USABLE_READ_VARS - civ_set
         msg = 'VARIABLE(S) IN USABLE_READ_VARS BUT NOT CSV_INPUT_VARS.MD:\n'
         for var in valid_less_civ:
-            msg += 'VARIABLE= {}\n'.format(var)
+            msg += f'VARIABLE= {var}\n'  # pylint: disable=consider-using-join
         raise ValueError(msg)

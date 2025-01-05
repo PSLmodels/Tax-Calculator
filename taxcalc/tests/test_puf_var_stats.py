@@ -92,8 +92,8 @@ def calculate_corr_stats(calc, table):
             try:
                 cor = np.corrcoef(var1, var2)[0][1]
             except FloatingPointError:
-                msg = 'corr-coef error for {} and {}\n'
-                errmsg += msg.format(varname1, varname2)
+                msg = f'corr-coef error for {varname1} and {varname2}\n'
+                errmsg += msg
                 cor = 9.99  # because could not compute it
             var1_cc.append(cor)
         table[varname1] = var1_cc
@@ -132,14 +132,13 @@ def differences(new_filename, old_filename, stat_kind):
     if diffs:
         new_name = os.path.basename(new_filename)
         old_name = os.path.basename(old_filename)
-        msg = '{} RESULTS DIFFER:\n'.format(stat_kind)
+        msg = f'{stat_kind} RESULTS DIFFER:\n'
         msg += '-------------------------------------------------'
         msg += '-------------\n'
-        msg += '--- NEW RESULTS IN {} FILE ---\n'.format(new_name)
-        msg += '--- if new OK, copy {} to  ---\n'.format(new_name)
-        msg += '---                 {}         ---\n'.format(old_name)
-        msg += '---            and rerun test.                   '
-        msg += '          ---\n'
+        msg += f'--- NEW RESULTS IN {new_name} FILE ---\n'
+        msg += f'--- if new OK, copy {new_name} to\n'
+        msg += f'---                 {old_name}   \n'
+        msg += '---            and rerun test.      '
         msg += '-------------------------------------------------'
         msg += '-------------\n'
     else:

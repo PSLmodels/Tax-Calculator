@@ -113,7 +113,7 @@ def fixture_test_reforms(tests_path):
             expect_lines = efile.readlines()
         # ... compare actual and expected results for each test
         diffs = False
-        with open(actfile_path, 'w') as actfile:
+        with open(actfile_path, 'w', encoding='utf-8') as actfile:
             actfile.write('rid,res1,res2,res3,res4\n')
             idx = 1  # expect_lines list index
             for rnum in range(1, num_reforms + 1):

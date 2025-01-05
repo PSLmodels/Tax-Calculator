@@ -108,7 +108,7 @@ def test_calc_and_used_vars(tests_path):
                 'in calcfunctions.py\n')
         for var in records_varinfo.CALCULATED_VARS - all_cvars:
             found_error1 = True
-            msg1 += 'VAR NOT CALCULATED: {}\n'.format(var)
+            msg1 += f'VAR NOT CALCULATED: {var}\n'
     # Test (2):
     faux_functions = ['EITCamount', 'ComputeBenefit', 'BenefitPrograms',
                       'BenefitSurtax', 'BenefitLimitation']
@@ -121,10 +121,10 @@ def test_calc_and_used_vars(tests_path):
         if not crvars_set <= set(fargs[fname]):
             found_error2 = True
             for var in crvars_set - set(fargs[fname]):
-                msg2 += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
+                msg2 += f'FUNCTION,VARIABLE: {fname} {var}\n'
     # Report errors for the two tests:
     if found_error1 and found_error2:
-        raise ValueError('{}\n{}'.format(msg1, msg2))
+        raise ValueError(f'{msg1}\n{msg2}')
     if found_error1:
         raise ValueError(msg1)
     if found_error2:
@@ -151,7 +151,7 @@ def test_function_args_usage(tests_path):
             msg = ('Could not find function name, arguments, '
                    'and code portions in the following text:\n')
             msg += '--------------------------------------------------------\n'
-            msg += '{}\n'.format(fcode)
+            msg += f'{fcode}\n'
             msg += '--------------------------------------------------------\n'
             raise ValueError(msg)
         fname = match.group(1)
@@ -163,7 +163,7 @@ def test_function_args_usage(tests_path):
             arg = farg.strip()
             if fbody.find(arg) < 0:
                 found_error = True
-                msg += 'FUNCTION,ARGUMENT= {} {}\n'.format(fname, arg)
+                msg += f'FUNCTION,ARGUMENT= {fname} {arg}\n'
     if found_error:
         raise ValueError(msg)
 

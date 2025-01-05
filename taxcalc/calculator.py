@@ -1204,7 +1204,7 @@ class Calculator():
                 if params_with_diff:
                     mdata_base = baseline.specification(meta_data=True)
                     # write year
-                    doc += '{}:\n'.format(year)
+                    doc += f'{year}:\n'
                     for pname in sorted(params_with_diff):
                         # write updated value line
                         pval = getattr(updated, pname).tolist()[0]
@@ -1213,7 +1213,7 @@ class Calculator():
                                 pval = [bool(item) for item in pval]
                             else:
                                 pval = bool(pval)
-                        doc += ' {} : {}\n'.format(pname, pval)
+                        doc += f' {pname} : {pval}\n'
                         # ... write optional param-vector-index line
                         if isinstance(pval, list):
                             labels = paramtools.consistent_labels(
@@ -1231,7 +1231,7 @@ class Calculator():
                                 ]
                                 doc += ' ' * (
                                     4 + len(pname)
-                                ) + '{}\n'.format(lv)
+                                ) + f'{lv}\n'
                         # ... write param-name line
                         name = mdata_base[pname]['title']
                         for line in lines('name: ' + name, 6):
@@ -1249,7 +1249,7 @@ class Calculator():
                                     pval = [bool(item) for item in pval]
                             elif ptype == 'bool':
                                 pval = bool(pval)
-                            doc += '  baseline_value: {}\n'.format(pval)
+                            doc += f'  baseline_value: {pval}\n'
                         else:  # if baseline is GrowDiff object
                             # each GrowDiff parameter has zero as default value
                             doc += '  baseline_value: 0.0\n'

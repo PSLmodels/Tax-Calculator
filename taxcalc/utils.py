@@ -934,23 +934,22 @@ def mtr_graph_data(vdf, year,
     data = {}
     data['lines'] = lines
     if dollar_weighting:
-        income_str = 'Dollar-weighted {}'.format(income_str)
-        mtr_str = 'Dollar-weighted {}'.format(mtr_str)
-    data['ylabel'] = '{} MTR'.format(mtr_str)
-    xlabel_str = 'Baseline {} Percentile'.format(income_str)
+        income_str = f'Dollar-weighted {income_str}'
+        mtr_str = f'Dollar-weighted {mtr_str}'
+    data['ylabel'] = f'{mtr_str} MTR'
+    xlabel_str = f'Baseline {income_str} Percentile'
     if mars != 'ALL':
-        xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
+        xlabel_str = f'{xlabel_str} for MARS={mars}'
     data['xlabel'] = xlabel_str
-    var_str = '{}'.format(mtr_variable)
+    var_str = f'{mtr_variable}'
     if mtr_variable == 'e00200p' and alt_e00200p_text != '':
-        var_str = '{}'.format(alt_e00200p_text)
+        var_str = f'{alt_e00200p_text}'
     if mtr_variable == 'e00200p' and mtr_wrt_full_compen:
-        var_str = '{} wrt full compensation'.format(var_str)
-    title_str = 'Mean Marginal Tax Rate for {} by Income Percentile'
-    title_str = title_str.format(var_str)
+        var_str = f'{var_str} wrt full compensation'
+    title_str = f'Mean Marginal Tax Rate for {var_str} by Income Percentile'
     if mars != 'ALL':
-        title_str = '{} for MARS={}'.format(title_str, mars)
-    title_str = '{} for {}'.format(title_str, year)
+        title_str = f'{title_str} for MARS={mars}'
+    title_str = f'{title_str} for {year}'
     data['title'] = title_str
     return data
 
@@ -1070,15 +1069,15 @@ def atr_graph_data(vdf, year,
     # construct dictionary containing plot lines and auto-generated labels
     data = {}
     data['lines'] = lines
-    data['ylabel'] = '{} Average Tax Rate'.format(atr_str)
+    data['ylabel'] = f'{atr_str} Average Tax Rate'
     xlabel_str = 'Baseline Expanded-Income Percentile'
     if mars != 'ALL':
-        xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
+        xlabel_str = f'{xlabel_str} for MARS={mars}'
     data['xlabel'] = xlabel_str
     title_str = 'Average Tax Rate by Income Percentile'
     if mars != 'ALL':
-        title_str = '{} for MARS={}'.format(title_str, mars)
-    title_str = '{} for {}'.format(title_str, year)
+        title_str = f'{title_str} for MARS={mars}'
+    title_str = f'{title_str} for {year}'
     data['title'] = title_str
     return data
 
@@ -1245,7 +1244,7 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
     data['xlabel'] = 'Baseline Expanded-Income Percentile'
     title_str = ('Percentage Change in After-Tax Expanded Income '
                  'by Income Percentile')
-    title_str = '{} for {}'.format(title_str, year)
+    title_str = f'{title_str} for {year}'
     data['title'] = title_str
     return data
 
@@ -1607,7 +1606,7 @@ def json_to_dict(json_text):
         linenum = 0
         for line in text_lines:
             linenum += 1
-            msg += '{:04d}{}'.format(linenum, line) + '\n'
+            msg += f'{linenum:04d}{line}\n'
         msg += bline + '\n'
         raise ValueError(msg)
     return ordered_dict

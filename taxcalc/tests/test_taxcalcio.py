@@ -24,7 +24,7 @@ RAWINPUT = (
 )
 
 
-@pytest.fixture(scope='module', name='reformfile0')
+@pytest.fixture(scope='session', name='reformfile0')
 def fixture_reformfile0():
     """
     Specify JSON reform file.
@@ -49,7 +49,7 @@ def fixture_reformfile0():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='assumpfile0')
+@pytest.fixture(scope='session', name='assumpfile0')
 def fixture_assumpfile0():
     """
     Temporary assumption file with .json extension.
@@ -73,7 +73,7 @@ def fixture_assumpfile0():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='reformfile1')
+@pytest.fixture(scope='session', name='reformfile1')
 def fixture_reformfile1():
     """
     Temporary reform file with .json extension.
@@ -117,7 +117,7 @@ def fixture_reformfile1():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='baselinebad')
+@pytest.fixture(scope='session', name='baselinebad')
 def fixture_baselinebad():
     """
     Temporary baseline file with .json extension.
@@ -135,7 +135,7 @@ def fixture_baselinebad():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='errorreformfile')
+@pytest.fixture(scope='session', name='errorreformfile')
 def fixture_errorreformfile():
     """
     Temporary reform file with .json extension.
@@ -153,7 +153,7 @@ def fixture_errorreformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='errorassumpfile')
+@pytest.fixture(scope='session', name='errorassumpfile')
 def fixture_errorassumpfile():
     """
     Temporary assumption file with .json extension.
@@ -177,7 +177,7 @@ def fixture_errorassumpfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='assumpfile1')
+@pytest.fixture(scope='session', name='assumpfile1')
 def fixture_assumpfile1():
     """
     Temporary assumption file with .json extension.
@@ -201,7 +201,7 @@ def fixture_assumpfile1():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='lumpsumreformfile')
+@pytest.fixture(scope='session', name='lumpsumreformfile')
 def fixture_lumpsumreformfile():
     """
     Temporary reform file without .json extension.
@@ -219,7 +219,7 @@ def fixture_lumpsumreformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='assumpfile2')
+@pytest.fixture(scope='session', name='assumpfile2')
 def fixture_assumpfile2():
     """
     Temporary assumption file with .json extension.
@@ -468,7 +468,7 @@ def test_write_doc_file(reformfile1, assumpfile1):
     Test write_doc_file with compound reform.
     """
     taxyear = 2021
-    compound_reform = '{}+{}'.format(reformfile1.name, reformfile1.name)
+    compound_reform = f'{reformfile1.name}+{reformfile1.name}'
     tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
                      tax_year=taxyear,
                      baseline=None,
@@ -655,7 +655,7 @@ def test_graphs(reformfile1):
         os.remove(fname)
 
 
-@pytest.fixture(scope='module', name='warnreformfile')
+@pytest.fixture(scope='session', name='warnreformfile')
 def fixture_warnreformfile():
     """
     Temporary reform file with .json extension.
@@ -698,7 +698,7 @@ def test_analyze_warnings_print(warnreformfile):
     assert tcio.tax_year() == taxyear
 
 
-@pytest.fixture(scope='module', name='reformfile9')
+@pytest.fixture(scope='session', name='reformfile9')
 def fixture_reformfile9():
     """
     Temporary reform file with .json extension.
@@ -724,7 +724,7 @@ def fixture_reformfile9():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='regression_reform_file')
+@pytest.fixture(scope='session', name='regression_reform_file')
 def fixture_regression_reform_file():
     """
     Temporary reform file with .json extension.

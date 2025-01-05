@@ -55,7 +55,7 @@ def test_agg(tests_path, cps_fullsample):
         if not np.allclose(adt[icol], edt[str(icol)]):
             diffs = True
     if diffs:
-        new_filename = '{}{}'.format(aggres_path[:-10], 'actual.csv')
+        new_filename = f'{aggres_path[:-10]}actual.csv'
         adt.to_csv(new_filename, float_format='%.1f')
         msg = 'CPSCSV AGG RESULTS DIFFER\n'
         msg += '-------------------------------------------------\n'
@@ -87,14 +87,17 @@ def test_agg(tests_path, cps_fullsample):
         if not np.allclose(taxes_subsample[cyr], taxes_fullsample[cyr],
                            atol=0.0, rtol=reltol):
             reldiff = (taxes_subsample[cyr] / taxes_fullsample[cyr]) - 1.
-            line1 = '\nCPSCSV AGG SUB-vs-FULL RESULTS DIFFER IN {}'
-            line2 = '\n  when subfrac={:.3f}, rtol={:.4f}, seed={}'
-            line3 = '\n  with sub={:.3f}, full={:.3f}, rdiff={:.4f}'
-            msg += line1.format(cyr)
-            msg += line2.format(subfrac, reltol, rn_seed)
-            msg += line3.format(taxes_subsample[cyr],
-                                taxes_fullsample[cyr],
-                                reldiff)
+            line1 = f'\nCPSCSV AGG SUB-vs-FULL RESULTS DIFFER IN {cyr}'
+            line2 = (
+                f'\n  when subfrac={subfrac:.3f}, rtol={reltol:.4f}, '
+                f'seed={rn_seed}'
+            )
+            line3 = (
+                f'\n  with sub={taxes_subsample[cyr]:.3f}, '
+                f'full={taxes_fullsample[cyr]:.3f}, '
+                f'rdiff={reldiff:.4f}'
+            )
+            msg += line1 + line2 + line3
     if msg:
         raise ValueError(msg)
 

@@ -66,11 +66,11 @@ def test_2017_law_reform(tests_path):
             act = aval[0]
         exp = pre_expect[name]['value']
         if pre_expect[name]['relation'] == '<':
-            assert act < exp, '{} a={} !< e={}'.format(name, act, exp)
+            assert act < exp, f'{name} a={act} !< e={exp}'
         elif pre_expect[name]['relation'] == '>':
-            assert act > exp, '{} a={} !> e={}'.format(name, act, exp)
+            assert act > exp, f'{name} a={act} !> e={exp}'
         elif pre_expect[name]['relation'] == '=':
-            assert act == exp, '{} a={} != e={}'.format(name, act, exp)
+            assert act == exp, f'{name} a={act} != e={exp}'
 
 
 @pytest.mark.rtr
@@ -158,12 +158,10 @@ def test_round_trip_reforms(fyear, tests_path):
         clp_val = clp_mdata[pname]
         if not np.allclose(rtr_val, clp_val):
             fail_params.append(pname)
-            msg += '\n  {} in {} : rtr={} clp={}'.format(
-                pname, fyear, rtr_val, clp_val
-            )
+            msg += '\n  {pname} in {fyear} : rtr={rtr_val} clp={clp_val}'
             if fail_dump:
-                rtr_fails.write('{} {} {}\n'.format(pname, fyear, rtr_val))
-                clp_fails.write('{} {} {}\n'.format(pname, fyear, clp_val))
+                rtr_fails.write(f'{pname} {fyear} {rtr_val}\n')
+                clp_fails.write(f'{pname} {fyear} {clp_val}\n')
     if fail_dump:
         rtr_fails.close()
         clp_fails.close()
@@ -269,7 +267,7 @@ def test_reform_json_and_output(tests_path):
     if failures:
         msg = 'Following reforms have res-vs-out differences:\n'
         for ref in failures:
-            msg += '{}\n'.format(os.path.basename(ref))
+            msg += f'{os.path.basename(ref)}\n'
         raise ValueError(msg)
 
 
@@ -314,9 +312,9 @@ def reform_results(rid, reform_dict, puf_data, reform_2017_law):
         calc1.increment_year()
         calc2.increment_year()
     # write actual results to actual_str
-    actual_str = '{}'.format(rid)
+    actual_str = f'{rid}'
     for iyr in range(0, num_years):
-        actual_str += ',{:.1f}'.format(results[iyr])
+        actual_str += f',{results[iyr]:.1f}'
     return actual_str
 
 
@@ -354,11 +352,10 @@ def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
     assert test_reforms_init == NUM_REFORMS
     actual = reform_results(rid, reforms_dict[str(rid)],
                             puf_subsample, baseline_2017_law)
-    afile_path = os.path.join(tests_path,
-                              'reform_actual_{}.csv'.format(rid))
+    afile_path = os.path.join(tests_path, f'reform_actual_{rid}.csv')
     with open(afile_path, 'w', encoding='utf-8') as afile:
         afile.write('rid,res1,res2,res3,res4\n')
-        afile.write('{}\n'.format(actual))
+        afile.write(f'{actual}\n')
 
 
 @pytest.mark.extend_tcja

@@ -47,7 +47,7 @@ def test_benefits(tests_path, cps_fullsample):
         # (head counts include all members of filing unit receiving a benefit,
         #  which means benavg is f.unit benefit amount divided by f.unit size)
         for bname in benefit_names:
-            ben = calc.array('{}_ben'.format(bname))
+            ben = calc.array(f'{bname}_ben')
             benamt = round((ben * wght).sum() * 1e-9, 3)
             bencnt = round((size[ben > 0] * wght[ben > 0]).sum() * 1e-6, 3)
             benavg = round(benamt / bencnt, 1)
