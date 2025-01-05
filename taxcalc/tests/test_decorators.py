@@ -13,7 +13,13 @@ from pandas import DataFrame
 from pandas.testing import assert_frame_equal
 import pytest
 import taxcalc
-from taxcalc.decorators import *
+from taxcalc.decorators import (
+    iterate_jit,
+    apply_jit,
+    create_apply_function_string,
+    create_toplevel_function_string,
+    make_apply_function,
+)
 
 
 def test_create_apply_function_string():

@@ -505,18 +505,18 @@ class Parameters(pt.Parameters):
         )
         return adj
 
-    def get_index_rate(self, param, label_to_extend_val):
+    def get_index_rate(self, param, lte_val):
         """
         Initalize indexing data and return the indexing rate value
-        depending on the parameter name and label_to_extend_val, the value of
-        label_to_extend.
+        depending on the parameter name and lte_val (that is, the
+        label_to_extend_val), the value of label_to_extend.
         Returns: rate to use for indexing.
         """
         if not self._inflation_rates or not self._wage_growth_rates:
             self.set_rates()
         if param in self._wage_indexed:
-            return self.wage_growth_rates(year=label_to_extend_val)
-        return self.inflation_rates(year=label_to_extend_val)
+            return self.wage_growth_rates(year=lte_val)
+        return self.inflation_rates(year=lte_val)
 
     def set_rates(self):
         """
