@@ -1043,9 +1043,6 @@ class Calculator():
         # construct data for graph
         data = pch_graph_data(vdf, year=self.current_year,
                               pop_quantiles=pop_quantiles)
-        del vdf
-        del vdf1
-        del vdf2
         # construct figure from data
         fig = pch_graph_plot(data,
                              width=850,
@@ -1053,7 +1050,6 @@ class Calculator():
                              xlabel='',
                              ylabel='',
                              title='')
-        del data
         return fig
 
     REQUIRED_REFORM_KEYS = set(['policy'])

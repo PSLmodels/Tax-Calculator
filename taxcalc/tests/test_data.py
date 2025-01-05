@@ -81,7 +81,7 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
         def _extrapolate(self, year):
             val = getattr(self, 'e00300')
             setattr(
-                self, 'e00300', val* self.gfactors.factor_value('AINTS', year)
+                self, 'e00300', val * self.gfactors.factor_value('AINTS', year)
             )
 
     # test Recs class for incorrect instantiation

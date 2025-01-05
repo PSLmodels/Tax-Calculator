@@ -113,7 +113,9 @@ def magic_calc(x, y, z):
 def magic(pm, pf):
     """Function docstring"""
     # Adjustments
+    # pylint: disable=no-value-for-parameter
     outputs = pf.a, pf.b = magic_calc(pm, pf)
+    # pylint: enable=no-value-for-parameter
     header = ['a', 'b']
     return DataFrame(data=np.column_stack(outputs), columns=header)
 
@@ -180,6 +182,9 @@ def test_magic_apply_jit_swap():
     xx = magic(pf, pm)
     exp = DataFrame(data=[[2.0, 3.0]] * 5, columns=["a", "b"])
     assert_frame_equal(xx, exp)
+
+
+# pylint: disable=no-value-for-parameter
 
 
 def test_magic_iterate_jit():
@@ -291,6 +296,9 @@ def test_function_parameters_optional():
     exp = DataFrame(data=[[2.0, 4.0]] * 5,
                     columns=["a", "b"])
     assert_frame_equal(ans, exp)
+
+
+# pylint: enable=no-value-for-parameter
 
 
 def unjittable_function1(w, x, y, z):
