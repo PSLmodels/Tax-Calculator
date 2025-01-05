@@ -7,10 +7,10 @@ Tests for package existence and dependencies consistency.
 
 import os
 import re
+import ast
 import subprocess
 import yaml
 import pytest
-import ast
 
 
 def extract_install_requires(setup_py_content):

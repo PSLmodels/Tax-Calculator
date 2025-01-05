@@ -681,7 +681,7 @@ def create_diagnostic_table(dframe_list, year_list):
         agi = vdf['c00100']
         odict['AGI ($b)'] = round((agi * wghts).sum() * in_billions, 3)
         # number of itemizers
-        val = (wghts[vdf['c04470'] > 0.].sum())
+        val = wghts[vdf['c04470'] > 0.].sum()
         odict['Itemizers (#m)'] = round(val * in_millions, 2)
         # itemized deduction
         ided1 = vdf['c04470'] * wghts

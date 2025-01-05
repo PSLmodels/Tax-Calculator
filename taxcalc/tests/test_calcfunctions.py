@@ -786,7 +786,7 @@ tuple0 = (
     n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
     c09200, ctc_new)
 # output tuple is : (ctc_new)
-expected0 = (0)
+expected0 = 0
 
 
 @pytest.mark.parametrize(
@@ -832,7 +832,7 @@ tuple0 = (
     n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
     c09200, ctc_new)
 # output tuple is : (ctc_new)
-expected0 = (0)
+expected0 = 0
 
 
 @pytest.mark.parametrize(

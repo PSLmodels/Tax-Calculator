@@ -5,10 +5,10 @@ Test Consumption class and its methods.
 # pycodestyle test_consumption.py
 # pylint --disable=locally-disabled test_consumption.py
 
-import numpy as np
-import paramtools
-import pytest
 import copy
+import numpy as np
+import pytest
+import paramtools
 from taxcalc import Policy, Records, Calculator, Consumption
 
 

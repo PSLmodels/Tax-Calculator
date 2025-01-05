@@ -7,11 +7,11 @@ Test Records class and its methods.
 
 import os
 import json
+from io import StringIO
 import numpy as np
 from numpy.testing import assert_array_equal
 import pandas as pd
 import pytest
-from io import StringIO
 from taxcalc import GrowFactors, Policy, Records, Calculator
 
 

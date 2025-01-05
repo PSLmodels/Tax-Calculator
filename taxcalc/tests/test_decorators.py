@@ -7,11 +7,11 @@ Test decorators.
 
 import os
 import sys
-import pytest
 import importlib
 import numpy as np
 from pandas import DataFrame
 from pandas.testing import assert_frame_equal
+import pytest
 import taxcalc
 from taxcalc.decorators import *
 

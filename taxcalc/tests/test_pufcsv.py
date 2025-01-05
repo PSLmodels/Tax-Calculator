@@ -224,7 +224,7 @@ def test_mtr(tests_path, puf_path):
     variable_header = 'PTAX and ITAX mtr histogram bin counts for'
     # compute marginal tax rate (mtr) histograms for each mtr variable
     for var_str in Calculator.MTR_VALID_VARIABLES:
-        zero_out = (var_str == 'e01400')
+        zero_out = var_str == 'e01400'
         (mtr_ptax, mtr_itax, _) = calc.mtr(variable_str=var_str,
                                            negative_finite_diff=MTR_NEG_DIFF,
                                            zero_out_calculated_vars=zero_out,
