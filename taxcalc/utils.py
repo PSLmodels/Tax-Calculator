@@ -1311,7 +1311,13 @@ def pch_graph_plot(data,
     fig.yaxis.axis_label_text_font_size = '12pt'
     fig.yaxis.axis_label_text_font_style = 'normal'
     fig.yaxis[0].formatter = PrintfTickFormatter(format='%.1f')
-    return fig
+    # bokeh cannot save this fig saying:
+    #   bokeh.core.serialization.SerializationError:
+    #   can't serialize <class 'range'>
+    # so the "return fig" statement is replaced by "return None" until
+    # the above logic can be made compatible with modern bokeh packages
+    # return fig
+    return None
 
 
 def write_graph_file(figure, filename, title):

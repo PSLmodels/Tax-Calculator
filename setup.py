@@ -23,7 +23,7 @@ config = {
     "install_requires": [
         "numpy>=1.26",
         "pandas>=2.2",
-        "bokeh>=3.6",
+        "bokeh>=2.4",
         "numba",
         "paramtools>=0.19.0",
     ],
