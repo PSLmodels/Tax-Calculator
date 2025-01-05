@@ -231,6 +231,7 @@ def test_json_file_contents(tests_path, fname):
                 f'type={param["value_type"]}\n'
             )
             failures += msg
+    o = None
     if fname == "consumption.json":
         o = Consumption()
     elif fname == "policy_current_law.json":

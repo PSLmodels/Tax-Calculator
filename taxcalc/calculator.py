@@ -835,9 +835,8 @@ class Calculator():
         assert mars == 'ALL' or 1 <= mars <= 4
         # check validity of income_measure
         assert income_measure in ('expanded_income', 'agi', 'wages')
-        if income_measure == 'expanded_income':
-            income_variable = 'expanded_income'
-        elif income_measure == 'agi':
+        income_variable = 'expanded_income'
+        if income_measure == 'agi':
             income_variable = 'c00100'
         elif income_measure == 'wages':
             income_variable = 'e00200'

@@ -189,7 +189,9 @@ class Parameters(pt.Parameters):
                 print("WARNING:")
                 print(self.warnings)
             kwargs["ignore_warnings"] = True
+            # pylint: disable=possibly-used-before-assignment
             self._data = _data
+            # pylint: enable=possibly-used-before-assignment
             _warnings = copy.deepcopy(self._warnings)
             self._warnings = {}
             self._errors = {}
