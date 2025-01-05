@@ -300,7 +300,7 @@ class TaxCalcIO():
         try:
             gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
         except paramtools.ValidationError as valerr_msg:
-            self.errmsg += valerr_msg.__str__()
+            self.errmsg += str(valerr_msg)
         # apply gdiff_baseline to gfactor_base
         gdiff_baseline.apply_to(gfactors_base)
         # specify gdiff_response object
@@ -308,7 +308,7 @@ class TaxCalcIO():
         try:
             gdiff_response.update_growdiff(paramdict['growdiff_response'])
         except paramtools.ValidationError as valerr_msg:
-            self.errmsg += valerr_msg.__str__()
+            self.errmsg += str(valerr_msg)
         # apply gdiff_baseline and gdiff_response to gfactor_ref
         gdiff_baseline.apply_to(gfactors_ref)
         gdiff_response.apply_to(gfactors_ref)
@@ -323,7 +323,7 @@ class TaxCalcIO():
             for _, errors in base.parameter_errors.items():
                 self.errmsg += "\n".join(errors)
         except paramtools.ValidationError as valerr_msg:
-            self.errmsg += valerr_msg.__str__()
+            self.errmsg += str(valerr_msg)
         # ... the reform Policy object
         if self.specified_reform:
             pol = Policy(gfactors=gfactors_ref, last_budget_year=last_b_year)
@@ -337,7 +337,7 @@ class TaxCalcIO():
                     for _, errors in pol.parameter_errors.items():
                         self.errmsg += "\n".join(errors)
                 except paramtools.ValidationError as valerr_msg:
-                    self.errmsg += valerr_msg.__str__()
+                    self.errmsg += str(valerr_msg)
         else:
             pol = Policy(gfactors=gfactors_base, last_budget_year=last_b_year)
         # create Consumption object
@@ -345,7 +345,7 @@ class TaxCalcIO():
         try:
             con.update_consumption(paramdict['consumption'])
         except paramtools.ValidationError as valerr_msg:
-            self.errmsg += valerr_msg.__str__()
+            self.errmsg += str(valerr_msg)
         # any errors imply cannot proceed with calculations
         if self.errmsg:
             return

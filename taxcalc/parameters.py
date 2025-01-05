@@ -421,7 +421,7 @@ class Parameters(pt.Parameters):
                         min_index_change_year, strict=False
                     )
 
-                    if len(list(vos)):
+                    if list(vos):
                         min_adj_year = min(vos, key=lambda vo: vo["year"])[
                             "year"
                         ]
