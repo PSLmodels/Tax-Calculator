@@ -354,6 +354,7 @@ def create_distribution_table(vdf, groupby, income_measure,
     if pop_quantiles:
         assert groupby == 'weighted_deciles'
     # sort the data given specified groupby and income_measure
+    dframe = None
     if groupby == 'weighted_deciles':
         dframe = add_quantile_table_row_variable(vdf, income_measure, 10,
                                                  pop_quantiles=pop_quantiles,
@@ -545,6 +546,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
     else:
         df2['count'] = df2['s006']
     # add table_row column to df2 given specified groupby and income_measure
+    dframe = None
     if groupby == 'weighted_deciles':
         dframe = add_quantile_table_row_variable(
             df2, baseline_expanded_income, 10,
@@ -1530,10 +1532,10 @@ def read_egg_json(fname):
     try:
         path_in_egg = implibres.files('taxcalc').joinpath(fname)
         with implibres.as_file(path_in_egg) as rname:
-            vdf = json.loads(rname)
+            pdict = json.loads(rname)
     except Exception:
-        raise ValueError(f'could not read {fname} data from egg')
-    # cannot call read_egg_ function in unit tests
+        raise ValueError(f'could not read {fname} data from package')
+    # cannot call read_egg_ function in pytest unit tests
     return pdict  # pragma: no cover
 
 

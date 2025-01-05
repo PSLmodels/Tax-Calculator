@@ -303,7 +303,7 @@ def unjittable_function2(w, x, y, z):
     """Function docstring"""
     a = x + y
     b = w[0] + x + y + z
-    return (a, b, c)
+    return (a, b, c)  # pylint: disable=undefined-variable
 
 
 def test_iterate_jit_raises_on_no_return():

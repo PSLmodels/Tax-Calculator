@@ -177,9 +177,10 @@ class Data():
             with open(file_path, 'r', encoding='utf-8') as pfile:
                 json_text = pfile.read()
             vardict = json_to_dict(json_text)
-        else:  # find file in conda package
-            vardict = read_egg_json(
-                self.VARINFO_FILE_NAME)  # pragma: no cover
+        else:  # find file in taxcalc package
+            vardict = read_egg_json(  # pragma: no cover
+                self.VARINFO_FILE_NAME
+            )
         self.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
                                      if v['type'] == 'int')
         FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()

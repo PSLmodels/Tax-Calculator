@@ -850,15 +850,15 @@ class Calculator():
         (mtr2_ptax, mtr2_itax,
          mtr2_combined) = calc.mtr(variable_str=mtr_variable,
                                    wrt_full_compensation=mtr_wrt_full_compen)
-        if mtr_measure == 'combined':
-            mtr1 = mtr1_combined
-            mtr2 = mtr2_combined
-        elif mtr_measure == 'itax':
+        if mtr_measure == 'itax':
             mtr1 = mtr1_itax
             mtr2 = mtr2_itax
         elif mtr_measure == 'ptax':
             mtr1 = mtr1_ptax
             mtr2 = mtr2_ptax
+        else:
+            mtr1 = mtr1_combined
+            mtr2 = mtr2_combined
         # extract datafames needed by mtr_graph_data utility function
         record_variables = ['s006', 'XTOT']
         if mars != 'ALL':
