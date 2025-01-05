@@ -131,7 +131,6 @@ def magic_calc2(x, y, z):
 class Foo:
     """Foo class"""
     # pylint: disable=too-few-public-methods,too-many-instance-attributes
-    pass
 
 
 @iterate_jit(nopython=True)
@@ -207,7 +206,7 @@ def test_faux_function_iterate_jit():
     pf = Foo()
     pf.mars = np.ones((5,))
     pf.var = np.ones((5,))
-    ans = faux_function(pm, pf)
+    ans = faux_function(pm, pf)  # pylint: disable=too-many-function-args
     exp = DataFrame(data=[2.0] * 5, columns=['var'])
     assert_frame_equal(ans, exp)
 
