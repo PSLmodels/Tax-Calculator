@@ -6,7 +6,6 @@ Test decorators.
 # pylint --disable=locally-disabled test_decorators.py
 
 import os
-import sys
 import importlib
 import numpy as np
 from pandas import DataFrame
@@ -311,8 +310,8 @@ def test_function_parameters_optional():
 
 def unjittable_function1(w, x, y, z):
     """Function docstring"""
-    a = x + y
-    b = w[0] + x + y + z
+    a = x + y  # pylint: disable=unused-variable
+    b = w[0] + x + y + z  # pylint: disable=unused-variable
 
 
 def unjittable_function2(w, x, y, z):
@@ -342,7 +341,7 @@ def test_iterate_jit_raises_on_unknown_return_argument():
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
     with pytest.raises(AttributeError):
-        ans = uf2(pm, pf)
+        ans = uf2(pm, pf)  # pylint: disable=unused-variable
 
 
 def magic_calc6(w, x, y, z):

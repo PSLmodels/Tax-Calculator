@@ -8,7 +8,6 @@ Test GrowDiff class and its methods.
 import os
 import json
 import numpy as np
-import pytest
 from taxcalc import GrowDiff, GrowFactors, Policy
 
 

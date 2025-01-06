@@ -9,26 +9,25 @@ import os
 import json
 from io import StringIO
 import numpy as np
-from numpy.testing import assert_array_equal
 import pandas as pd
 import pytest
-from taxcalc import GrowFactors, Policy, Records, Calculator
+from taxcalc import GrowFactors, Policy, Records
 
 
 def test_incorrect_records_instantiation(cps_subsample):
     """Test docstring"""
     with pytest.raises(ValueError):
-        recs = Records(data=[])
+        _ = Records(data=[])
     with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=[])
+        _ = Records(data=cps_subsample, gfactors=[])
     with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=None, weights=[])
+        _ = Records(data=cps_subsample, gfactors=None, weights=[])
     with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=None, weights=None,
-                       start_year=[])
+        _ = Records(data=cps_subsample, gfactors=None, weights=None,
+                    start_year=[])
     with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=None, weights=None,
-                       adjust_ratios=[])
+        _ = Records(data=cps_subsample, gfactors=None, weights=None,
+                    adjust_ratios=[])
 
 
 def test_correct_records_instantiation(cps_subsample):

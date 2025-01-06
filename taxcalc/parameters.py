@@ -9,7 +9,6 @@ from typing import Union, Mapping, Any, List
 import numpy as np
 import marshmallow as ma
 import paramtools as pt
-from taxcalc.growfactors import GrowFactors
 
 
 class CompatibleDataSchema(ma.Schema):
@@ -324,7 +323,7 @@ class Parameters(pt.Parameters):
             self.delete(to_delete, **kwargs)
 
             # 1.b For all others, these are years after last_known_year.
-            last_known_year = max(cpi_min_year["year"], self._last_known_year)
+            # last_known_year=max(cpi_min_year["year"],self._last_known_year)
             # calculate 2026 value, using new inflation rates, for parameters
             # that revert to their pre-TCJA values.
             long_params = ['II_brk7', 'II_brk6', 'II_brk5', 'II_brk4',
