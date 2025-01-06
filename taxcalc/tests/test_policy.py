@@ -13,8 +13,7 @@ import json
 import numpy as np
 import pytest
 import paramtools as pt
-# pylint: disable=import-error
-from taxcalc import Policy
+from taxcalc.policy import Policy
 
 
 def cmp_policy_objs(pol1, pol2, year_range=None, exclude=None):
@@ -30,7 +29,7 @@ def cmp_policy_objs(pol1, pol2, year_range=None, exclude=None):
     else:
         pol1.clear_state()
         pol2.clear_state()
-    for param in pol1._data:
+    for param in pol1._data:  # pylint: disable=protected-access
         if exclude and param in exclude:
             continue
         v1 = getattr(pol1, param)
@@ -562,7 +561,7 @@ def test_order_of_indexing_and_level_reforms():
     make no difference to the post-reform policy parameter values.
     """
     # specify two reforms that raises the MTE and stops its indexing in 2015
-    reform = [
+    reforms = [
         {
             'SS_Earnings_c': {2015: 500000},
             'SS_Earnings_c-indexed': {2015: False}
@@ -577,17 +576,17 @@ def test_order_of_indexing_and_level_reforms():
     ppo = [Policy(), Policy()]
     # apply reforms to corresponding Policy object & check post-reform values
     syr = Policy.JSON_START_YEAR
-    for ref in range(len(reform)):  # pylint: disable=consider-using-enumerate
+    for idx, reform in enumerate(reforms):
         # confirm pre-reform MTE values in 2014-2017
-        mte = ppo[ref]._SS_Earnings_c
+        mte = ppo[idx]._SS_Earnings_c
         assert mte[2014 - syr] == 117000
         assert mte[2015 - syr] == 118500
         assert mte[2016 - syr] == 118500
         assert mte[2017 - syr] < 500000
         # implement reform in 2015
-        ppo[ref].implement_reform(reform[ref])
+        ppo[idx].implement_reform(reform)
         # confirm post-reform MTE values in 2014-2017
-        mte = ppo[ref]._SS_Earnings_c
+        mte = ppo[idx]._SS_Earnings_c
         assert mte[2014 - syr] == 117000
         assert mte[2015 - syr] == 500000
         assert mte[2016 - syr] == 500000
@@ -1417,6 +1416,9 @@ def test_multiple_cpi_swaps2():
     )
 
 
+# pylint: disable=invalid-name
+
+
 def test_adj_CPI_offset_and_index_status():
     """
     Test changing parameter_indexing_CPI_offset and another
@@ -1540,8 +1542,8 @@ def test_two_sets_of_tax_brackets():
     Test that II_brk? and PT_brk? values are the same under current law.
     """
     pol = Policy()
-    brackets = range(1, 7+1)
-    years = range(Policy.JSON_START_YEAR, Policy.LAST_KNOWN_YEAR+1)
+    brackets = range(1, 7 + 1)
+    years = range(Policy.JSON_START_YEAR, Policy.LAST_KNOWN_YEAR + 1)
     emsg = ''
     for year in years:
         pol.set_year(year)

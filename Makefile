@@ -84,20 +84,17 @@ tctest-jit:
 TOPLEVEL_JSON_FILES := $(shell ls -l ./*json | awk '{print $$9}')
 TAXCALC_JSON_FILES := $(shell ls -l ./taxcalc/*json | awk '{print $$9}')
 TESTS_JSON_FILES := $(shell ls -l ./taxcalc/tests/*json | awk '{print $$9}')
-PYLINT_FILES := $(shell grep -rl --include="*py" disable=locally-disabled .)
-PYLINT_OPTIONS = --disable=locally-disabled --score=no --jobs=4 --disable=R0801
-RECIPE_FILES := $(shell ls -l ./docs/recipes/recipe*.ipynb | awk '{print $$9}')
-RECIPE_IGNORE = C0103,C0111,E0401,E1120,R0913,R0914,W0401,W0614,R0801
-RECIPE_OPTIONS = --disable=$(RECIPE_IGNORE) --score=no --jobs=4
+PYLINT_DISABLE = locally-disabled,duplicate-code,cyclic-import
+PYLINT_OPTIONS = --disable=$(PYLINT_DISABLE) --score=no --jobs=4
+EXCLUDED_PATHS = taxcalc/validation,docs/guide
 
 .PHONY=cstest
 cstest:
-	-pycodestyle . | grep -v taxcalc/validation
+	@-pycodestyle --ignore=W503,W504,E712 --exclude=$(EXCLUDED_PATHS) .
 	@-pycodestyle --ignore=E501,E121 $(TOPLEVEL_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
-	@-pylint $(PYLINT_OPTIONS) $(PYLINT_FILES)
-	@-pylint $(RECIPE_OPTIONS) $(RECIPE_FILES)
+	@-pylint $(PYLINT_OPTIONS) --ignore-paths=$(EXCLUDED_PATHS) .
 
 define coverage-cleanup
 rm -f .coverage htmlcov/*

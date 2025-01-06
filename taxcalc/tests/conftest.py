@@ -1,3 +1,7 @@
+"""
+The pytest configuration file.
+"""
+
 import os
 import time
 import glob
@@ -12,55 +16,53 @@ numpy.seterr(all='raise')
 
 @pytest.fixture
 def skip_jit(monkeypatch):
+    """Fixture docstring"""
     monkeypatch.setenv("TESTING", "True")
     yield
 
 
-@pytest.fixture(scope='session')
-def tests_path():
+@pytest.fixture(scope='session', name='tests_path')
+def tests_path_fixture():
+    """Fixture docstring"""
     return os.path.abspath(os.path.dirname(__file__))
 
 
-@pytest.fixture(scope='session')
-def cps_path(tests_path):
+@pytest.fixture(scope='session', name='cps_path')
+def cps_path_fixture(tests_path):
+    """Fixture docstring"""
     return os.path.join(tests_path, '..', 'cps.csv.gz')
 
 
-@pytest.fixture(scope='session')
-def cps_fullsample(cps_path):
+@pytest.fixture(scope='session', name='cps_fullsample')
+def cps_fullsample_fixture(cps_path):
+    """Fixture docstring"""
     return pandas.read_csv(cps_path)
 
 
 @pytest.fixture(scope='session')
 def cps_subsample(cps_fullsample):
+    """Fixture docstring"""
     # draw smaller cps.csv subsample than in test_cpscsv.py
     return cps_fullsample.sample(frac=0.01, random_state=123456789)
 
 
-@pytest.fixture(scope='session')
-def puf_path(tests_path):
+@pytest.fixture(scope='session', name='puf_path')
+def puf_path_fixture(tests_path):
+    """Fixture docstring"""
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
-@pytest.fixture(scope='session')
-def puf_fullsample(puf_path):
+@pytest.fixture(scope='session', name='puf_fullsample')
+def puf_fullsample_fixture(puf_path):
+    """Fixture docstring"""
     return pandas.read_csv(puf_path)
 
 
 @pytest.fixture(scope='session')
 def puf_subsample(puf_fullsample):
+    """Fixture docstring"""
     # draw same puf.csv subsample as in test_pufcsv.py
     return puf_fullsample.sample(frac=0.05, random_state=2222)
-
-
-@pytest.fixture(scope='session')
-def tmd_path(tests_path):
-    return os.path.join(tests_path, '..', '..', 'tmd.csv')
-
-
-@pytest.fixture(scope='session')
-def tmd_fullsample(tmd_path):
-    return pandas.read_csv(tmd_path)
 
 
 @pytest.fixture(scope='session', name='test_reforms_init')
@@ -68,7 +70,7 @@ def fixture_test_reforms(tests_path):
     """
     Execute logic only once rather than on each pytest-xdist node.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-statements
     num_reforms = 64  # must be same as NUM_REFORMS in test_reforms.py
     handling_logic = ('PYTEST_XDIST_WORKER' not in os.environ or
                       os.environ['PYTEST_XDIST_WORKER'] == 'gw0')
@@ -86,7 +88,7 @@ def fixture_test_reforms(tests_path):
         for afile in glob.glob(afiles):
             os.remove(afile)
         # create reforms_actual_init file
-        with open(initfile, 'w') as ifile:
+        with open(initfile, 'w', encoding='utf-8') as ifile:
             ifile.write('test_reforms initialization done')
     else:
         num_waits = 0
@@ -107,26 +109,26 @@ def fixture_test_reforms(tests_path):
         # compare actual and expected results for each test
         # ... read expected results
         efile_path = os.path.join(tests_path, 'reforms_expect.csv')
-        with open(efile_path, 'r') as efile:
+        with open(efile_path, 'r', encoding='utf-8') as efile:
             expect_lines = efile.readlines()
         # ... compare actual and expected results for each test
         diffs = False
-        actfile = open(actfile_path, 'w')
-        actfile.write('rid,res1,res2,res3,res4\n')
-        idx = 1  # expect_lines list index
-        for rnum in range(1, num_reforms + 1):
-            afile_path = os.path.join(tests_path,
-                                      'reform_actual_{}.csv'.format(rnum))
-            with open(afile_path, 'r') as afile:
-                actual_lines = afile.readlines()
-            os.remove(afile_path)
-            actfile.write(actual_lines[1])
-            actual = [float(itm) for itm in actual_lines[1].split(',')]
-            expect = [float(itm) for itm in expect_lines[idx].split(',')]
-            if not numpy.allclose(actual, expect, atol=0.0, rtol=0.0):
-                diffs = True
-            idx += 1
-        actfile.close()
+        with open(actfile_path, 'w', encoding='utf-8') as actfile:
+            actfile.write('rid,res1,res2,res3,res4\n')
+            idx = 1  # expect_lines list index
+            for rnum in range(1, num_reforms + 1):
+                afile_path = os.path.join(
+                    tests_path, f'reform_actual_{rnum}.csv'
+                )
+                with open(afile_path, 'r', encoding='utf-8') as afile:
+                    actual_lines = afile.readlines()
+                os.remove(afile_path)
+                actfile.write(actual_lines[1])
+                actual = [float(itm) for itm in actual_lines[1].split(',')]
+                expect = [float(itm) for itm in expect_lines[idx].split(',')]
+                if not numpy.allclose(actual, expect, atol=0.0, rtol=0.0):
+                    diffs = True
+                idx += 1
         # remove init file
         os.remove(initfile)
         # remove 'reforms_actual.csv' file if no actual-vs-expect diffs
@@ -139,5 +141,4 @@ def fixture_test_reforms(tests_path):
             msg += '---               AND RERUN TEST.             ---\n'
             msg += '-------------------------------------------------\n'
             raise ValueError(msg)
-        else:
-            os.remove(actfile_path)
+        os.remove(actfile_path)

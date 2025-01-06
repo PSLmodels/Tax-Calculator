@@ -16,6 +16,7 @@ indexing).
 # pylint: disable=too-many-lines
 # pylint: disable=invalid-name
 # pylint: disable=too-many-arguments
+# pylint: disable=too-many-positional-arguments
 # pylint: disable=too-many-locals
 
 import math
@@ -2309,7 +2310,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         c32890 = earned_s  # earned income of spouse when present
     else:
         c32890 = earned_p
-    c33000 = max(0., min(c32800, min(c32880, c32890)))
+    c33000 = max(0., min(c32800, c32880, c32890))
     # credit rate is limited at high AGI
     # ... first phase-down from CDCC_crt to CDCC_frt
     steps_fractional = max(0., c00100 - CDCC_ps) / CDCC_po_step_size
@@ -2758,8 +2759,8 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
     # calculate Recovery Rebate Credit from CARES Act 2020 and/or ARPA 2021
     if c00100 < RRC_ps[MARS - 1]:
         recovery_rebate_credit = RRC_c * XTOT
-        recovery_rebate_credit += RRC_c_unit[MARS-1] + RRC_c_kids * nu18
-    elif c00100 < RRC_pe[MARS - 1] and c00100 > 0:
+        recovery_rebate_credit += RRC_c_unit[MARS - 1] + RRC_c_kids * nu18
+    elif 0 < c00100 < RRC_pe[MARS - 1]:
         prt = (
             (c00100 - RRC_ps[MARS - 1]) /
             (RRC_pe[MARS - 1] - RRC_ps[MARS - 1])
@@ -3445,8 +3446,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             ctc_new = min(ctc_new, ctc_new_reduced)
         if ctc_new > 0. and CTC_new_refund_limited:
             refund_new = max(0., ctc_new - c09200)
-            if not CTC_new_refund_limited_all_payroll:
-                limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
+            limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
             if CTC_new_refund_limited_all_payroll:
                 limit_new = CTC_new_refund_limit_payroll_rt * payrolltax
             limited_new = max(0., refund_new - limit_new)

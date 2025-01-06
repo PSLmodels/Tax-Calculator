@@ -1,5 +1,5 @@
 TABLE for EITC
-AGI category           	     T-C	     SOI	 %diff
+AGIcategory           	     T-C	     SOI	 %diff
 [-9e+99, 1)            	   0.174	   0.210	 -17.5
 [1, 5000)              	   1.495	   1.184	 +26.2
 [5000, 10000)          	   5.880	   7.156	 -17.8
@@ -21,7 +21,7 @@ AGI category           	     T-C	     SOI	 %diff
 [10000000, 9e+99)      	   0.000	   0.000	  +nan
 ALL                    	  68.057	  68.525	  -0.7
 TABLE for FCTC
-AGI category           	     T-C	     SOI	 %diff
+AGIcategory           	     T-C	     SOI	 %diff
 [-9e+99, 1)            	   0.145	   0.130	 +11.2
 [1, 5000)              	   0.115	   0.079	 +44.7
 [5000, 10000)          	   1.084	   1.474	 -26.5
@@ -43,7 +43,7 @@ AGI category           	     T-C	     SOI	 %diff
 [10000000, 9e+99)      	   0.000	   0.000	  +nan
 ALL                    	  53.276	  53.690	  -0.8
 TABLE for NIIT
-AGI category           	     T-C	     SOI	 %diff
+AGIcategory           	     T-C	     SOI	 %diff
 [-9e+99, 1)            	   0.000	   0.000	-100.0
 [1, 5000)              	   0.000	   0.000	  +nan
 [5000, 10000)          	   0.000	   0.000	  +nan
@@ -65,7 +65,7 @@ AGI category           	     T-C	     SOI	 %diff
 [10000000, 9e+99)      	   8.112	   8.273	  -1.9
 ALL                    	  27.149	  22.043	 +23.2
 TABLE for ITAX
-AGI category           	     T-C	     SOI	 %diff
+AGIcategory           	     T-C	     SOI	 %diff
 [-9e+99, 1)            	   4.502	   0.242	+1756.7
 [1, 5000)              	  -1.776	   0.041	-4442.6
 [5000, 10000)          	  -5.779	   0.368	-1670.5
@@ -87,7 +87,7 @@ AGI category           	     T-C	     SOI	 %diff
 [10000000, 9e+99)      	  97.259	 139.611	 -30.3
 ALL                    	1462.385	1457.891	  +0.3
 TABLE for SETAX
-AGI category           	     T-C	     SOI	 %diff
+AGIcategory           	     T-C	     SOI	 %diff
 [-9e+99, 1)            	   0.761	   0.656	 +16.1
 [1, 5000)              	   0.626	   0.555	 +12.7
 [5000, 10000)          	   1.633	   1.896	 -13.8
@@ -109,7 +109,7 @@ AGI category           	     T-C	     SOI	 %diff
 [10000000, 9e+99)      	   0.033	   0.638	 -94.8
 ALL                    	  49.779	  60.174	 -17.3
 TABLE for AMTAX
-AGI category           	     T-C	     SOI	 %diff
+AGIcategory           	     T-C	     SOI	 %diff
 [-9e+99, 1)            	   0.012	   0.022	 -45.5
 [1, 5000)              	   0.000	   0.000	 -68.2
 [5000, 10000)          	   0.000	   0.000	  +nan

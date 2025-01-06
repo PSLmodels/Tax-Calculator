@@ -8,8 +8,9 @@ Tests of Tax-Calculator GrowFactors class.
 import os
 import tempfile
 import pytest
-# pylint: disable=import-error
-from taxcalc import GrowFactors, Records, Policy
+from taxcalc.growfactors import GrowFactors
+from taxcalc.policy import Policy
+from taxcalc.records import Records
 
 
 @pytest.fixture(scope='module', name='bad_gf_file')
@@ -17,11 +18,10 @@ def fixture_bad_gf_file():
     """
     Fixture for invalid growfactors file.
     """
-    txt = (u'YEAR,AWAGE,ACPIU,ABADNAME,ASOCSEC\n'
-           u'2015,1.000,1.000,1.000000,1.00000\n')
-    tfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    tfile.write(txt)
-    tfile.close()
+    txt = ('YEAR,AWAGE,ACPIU,ABADNAME,ASOCSEC\n'
+           '2015,1.000,1.000,1.000000,1.00000\n')
+    with tempfile.NamedTemporaryFile(mode='a', delete=False) as tfile:
+        tfile.write(txt)
     yield tfile
     os.remove(tfile.name)
 
@@ -31,7 +31,7 @@ def test_improper_usage(bad_gf_file):
     Tests of improper usage of GrowFactors object.
     """
     with pytest.raises(ValueError):
-        gfo = GrowFactors(dict())
+        gfo = GrowFactors({})
     with pytest.raises(ValueError):
         gfo = GrowFactors('non_existent_file.csv')
     with pytest.raises(ValueError):

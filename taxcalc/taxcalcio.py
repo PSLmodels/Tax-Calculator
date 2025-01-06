@@ -66,8 +66,8 @@ class TaxCalcIO():
 
     def __init__(self, input_data, tax_year, baseline, reform, assump,
                  outdir=None):
-        # pylint: disable=too-many-arguments,too-many-locals
-        # pylint: disable=too-many-branches,too-many-statements
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-branches,too-many-statements,too-many-locals
         self.gf_reform = None
         self.errmsg = ''
         # check name and existence of INPUT file
@@ -82,17 +82,17 @@ class TaxCalcIO():
             fname = os.path.basename(input_data)
             # check if fname ends with ".csv"
             if fname.endswith('.csv'):
-                inp = '{}-{}'.format(fname[:-4], str(tax_year)[2:])
+                inp = f'{fname[:-4]}-{str(tax_year)[2:]}'
             else:
                 msg = 'INPUT file name does not end in .csv'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
+                self.errmsg += f'ERROR: {msg}\n'
             # check existence of INPUT file
             self.puf_input_data = input_data.endswith('puf.csv')
             self.cps_input_data = input_data.endswith('cps.csv')
             self.tmd_input_data = input_data.endswith('tmd.csv')
             if not self.cps_input_data and not os.path.isfile(input_data):
                 msg = 'INPUT file could not be found'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
+                self.errmsg += f'ERROR: {msg}\n'
             # if tmd_input_data is True, construct weights and gfactor paths
             if self.tmd_input_data:  # pragma: no cover
                 tmd_dir = os.path.dirname(input_data)
@@ -106,15 +106,15 @@ class TaxCalcIO():
                 self.tmd_gfactor = os.path.join(tmd_dir, 'tmd_growfactors.csv')
                 if not os.path.isfile(self.tmd_weights):
                     msg = f'weights file {self.tmd_weights} could not be found'
-                    self.errmsg += 'ERROR: {}\n'.format(msg)
+                    self.errmsg += f'ERROR: {msg}\n'
                 if not os.path.isfile(self.tmd_gfactor):
                     msg = f'gfactor file {self.tmd_gfactor} could not be found'
-                    self.errmsg += 'ERROR: {}\n'.format(msg)
+                    self.errmsg += f'ERROR: {msg}\n'
         elif isinstance(input_data, pd.DataFrame):
-            inp = 'df-{}'.format(str(tax_year)[2:])
+            inp = f'df-{str(tax_year)[2:]}'
         else:
             msg = 'INPUT is neither string nor Pandas DataFrame'
-            self.errmsg += 'ERROR: {}\n'.format(msg)
+            self.errmsg += f'ERROR: {msg}\n'
         # check name and existence of BASELINE file
         bas = '-x'
         if baseline is None:
@@ -124,17 +124,17 @@ class TaxCalcIO():
             fname = os.path.basename(baseline)
             # check if fname ends with ".json"
             if fname.endswith('.json'):
-                bas = '-{}'.format(fname[:-5])
+                bas = f'-{fname[:-5]}'
             else:
                 msg = 'BASELINE file name does not end in .json'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
+                self.errmsg += f'ERROR: {msg}\n'
             # check existence of BASELINE file
             if not os.path.isfile(baseline):
                 msg = 'BASELINE file could not be found'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
+                self.errmsg += f'ERROR: {msg}\n'
         else:
             msg = 'TaxCalcIO.ctor: baseline is neither None nor str'
-            self.errmsg += 'ERROR: {}\n'.format(msg)
+            self.errmsg += f'ERROR: {msg}\n'
         # check name(s) and existence of REFORM file(s)
         ref = '-x'
         if reform is None:
@@ -150,12 +150,12 @@ class TaxCalcIO():
                 fname = os.path.basename(rfm)
                 # check if fname ends with ".json"
                 if not fname.endswith('.json'):
-                    msg = '{} does not end in .json'.format(fname)
-                    self.errmsg += 'ERROR: REFORM file name {}\n'.format(msg)
+                    msg = f'{fname} does not end in .json'
+                    self.errmsg += f'ERROR: REFORM file name {msg}\n'
                 # check existence of REFORM file
                 if not os.path.isfile(rfm):
-                    msg = '{} could not be found'.format(rfm)
-                    self.errmsg += 'ERROR: REFORM file {}\n'.format(msg)
+                    msg = f'{rfm} could not be found'
+                    self.errmsg += f'ERROR: REFORM file {msg}\n'
                 # add fname to list of refnames used in output file names
                 refnames.append(fname)
             # create (possibly compound) reform name for output file names
@@ -165,10 +165,10 @@ class TaxCalcIO():
                 num_refnames += 1
                 if num_refnames > 1:
                     ref += '+'
-                ref += '{}'.format(refname[:-5])
+                ref += f'{refname[:-5]}'
         else:
             msg = 'TaxCalcIO.ctor: reform is neither None nor str'
-            self.errmsg += 'ERROR: {}\n'.format(msg)
+            self.errmsg += f'ERROR: {msg}\n'
         # check name and existence of ASSUMP file
         asm = '-x'
         if assump is None:
@@ -178,17 +178,17 @@ class TaxCalcIO():
             fname = os.path.basename(assump)
             # check if fname ends with ".json"
             if fname.endswith('.json'):
-                asm = '-{}'.format(fname[:-5])
+                asm = f'-{fname[:-5]}'
             else:
                 msg = 'ASSUMP file name does not end in .json'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
+                self.errmsg += f'ERROR: {msg}\n'
             # check existence of ASSUMP file
             if not os.path.isfile(assump):
                 msg = 'ASSUMP file could not be found'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
+                self.errmsg += f'ERROR: {msg}\n'
         else:
             msg = 'TaxCalcIO.ctor: assump is neither None nor str'
-            self.errmsg += 'ERROR: {}\n'.format(msg)
+            self.errmsg += f'ERROR: {msg}\n'
         # check name and existence of OUTDIR
         if outdir is None:
             valid_outdir = True
@@ -199,13 +199,13 @@ class TaxCalcIO():
             else:
                 valid_outdir = False
                 msg = 'OUTDIR could not be found'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
+                self.errmsg += f'ERROR: {msg}\n'
         else:
             valid_outdir = False
             msg = 'TaxCalcIO.ctor: outdir is neither None nor str'
-            self.errmsg += 'ERROR: {}\n'.format(msg)
+            self.errmsg += f'ERROR: {msg}\n'
         # create OUTPUT file name and delete any existing output files
-        output_filename = '{}{}{}{}.csv'.format(inp, bas, ref, asm)
+        output_filename = f'{inp}{bas}{ref}{asm}.csv'
         if outdir is None:
             self._output_filename = output_filename
             delete_old_files = True
@@ -246,8 +246,8 @@ class TaxCalcIO():
             specifies whether or not exact tax calculations are done without
             any smoothing of "stair-step" provisions in the tax law.
         """
-        # pylint: disable=too-many-arguments,too-many-locals
-        # pylint: disable=too-many-statements,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-statements,too-many-branches,too-many-locals
         self.errmsg = ''
         # instantiate base and reform GrowFactors objects
         if self.tmd_input_data:
@@ -300,7 +300,7 @@ class TaxCalcIO():
         try:
             gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
         except paramtools.ValidationError as valerr_msg:
-            self.errmsg += valerr_msg.__str__()
+            self.errmsg += str(valerr_msg)
         # apply gdiff_baseline to gfactor_base
         gdiff_baseline.apply_to(gfactors_base)
         # specify gdiff_response object
@@ -308,7 +308,7 @@ class TaxCalcIO():
         try:
             gdiff_response.update_growdiff(paramdict['growdiff_response'])
         except paramtools.ValidationError as valerr_msg:
-            self.errmsg += valerr_msg.__str__()
+            self.errmsg += str(valerr_msg)
         # apply gdiff_baseline and gdiff_response to gfactor_ref
         gdiff_baseline.apply_to(gfactors_ref)
         gdiff_response.apply_to(gfactors_ref)
@@ -323,7 +323,7 @@ class TaxCalcIO():
             for _, errors in base.parameter_errors.items():
                 self.errmsg += "\n".join(errors)
         except paramtools.ValidationError as valerr_msg:
-            self.errmsg += valerr_msg.__str__()
+            self.errmsg += str(valerr_msg)
         # ... the reform Policy object
         if self.specified_reform:
             pol = Policy(gfactors=gfactors_ref, last_budget_year=last_b_year)
@@ -337,7 +337,7 @@ class TaxCalcIO():
                     for _, errors in pol.parameter_errors.items():
                         self.errmsg += "\n".join(errors)
                 except paramtools.ValidationError as valerr_msg:
-                    self.errmsg += valerr_msg.__str__()
+                    self.errmsg += str(valerr_msg)
         else:
             pol = Policy(gfactors=gfactors_base, last_budget_year=last_b_year)
         # create Consumption object
@@ -345,7 +345,7 @@ class TaxCalcIO():
         try:
             con.update_consumption(paramdict['consumption'])
         except paramtools.ValidationError as valerr_msg:
-            self.errmsg += valerr_msg.__str__()
+            self.errmsg += str(valerr_msg)
         # any errors imply cannot proceed with calculations
         if self.errmsg:
             return
@@ -431,9 +431,8 @@ class TaxCalcIO():
         valid_set = recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS
         for var in dump_vars_list:
             if var not in valid_set:
-                msg = 'invalid variable name in tcdumpvars file: {}'
-                msg = msg.format(var)
-                self.errmsg += 'ERROR: {}\n'.format(msg)
+                msg = f'invalid variable name in tcdumpvars file: {var}'
+                self.errmsg += f'ERROR: {msg}\n'
         # add essential variables even if not on custom list
         if 'RECID' not in dump_vars_list:
             dump_vars_list.append('RECID')
@@ -494,7 +493,8 @@ class TaxCalcIO():
         -------
         Nothing
         """
-        # pylint: disable=too-many-arguments,too-many-branches,too-many-locals
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-branches,too-many-locals
         if self.puf_input_data and self.calc.reform_warnings:
             warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'  # pragma: no cover
             print(  # pragma: no cover
@@ -599,6 +599,7 @@ class TaxCalcIO():
         """
         Write dump output to SQLite3 database table dump.
         """
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
         db_fname = self._output_filename.replace('.csv', '.db')
         dbcon = sqlite3.connect(db_fname)
         # write baseline table
@@ -685,8 +686,9 @@ class TaxCalcIO():
             weighted_sum, 'combined', include_groups=False
         ).values[:, 1]
         # write decile table to text file
-        row = 'Weighted Tax {} by Baseline Expanded-Income Decile\n'
-        tfile.write(row.format(tkind))
+        row = f'Weighted Tax {tkind} by Baseline Expanded-Income Decile\n'
+        tfile.write(row)
+        # pylint: disable=consider-using-f-string
         rowfmt = '{}{}{}{}{}{}\n'
         row = rowfmt.format('    Returns',
                             '    ExpInc',
@@ -704,7 +706,7 @@ class TaxCalcIO():
         tfile.write(row)
         rowfmt = '{:9.2f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}\n'
         for decile in range(0, 10):
-            row = '{:2d}'.format(decile)
+            row = f'{decile:2d}'
             row += rowfmt.format(rtns_series[decile] * 1e-6,
                                  xinc_series[decile] * 1e-9,
                                  itax_series[decile] * 1e-9,
@@ -720,6 +722,7 @@ class TaxCalcIO():
                              htax_series.sum() * 1e-9,
                              ctax_series.sum() * 1e-9)
         tfile.write(row)
+        # pylint: enable=consider-using-f-string
         del gdfx
         del rtns_series
         del xinc_series
@@ -776,10 +779,12 @@ class TaxCalcIO():
         """
         Write HTML graph file with title but no graph for specified reason.
         """
-        txt = ('<html>\n'
-               '<head><title>{}</title></head>\n'
-               '<body><center<h1>{}</h1></center></body>\n'
-               '</html>\n').format(title, reason)
+        txt = (
+            '<html>\n'
+            f'<head><title>{title}</title></head>\n'
+            f'<body><center<h1>{reason}</h1></center></body>\n'
+            '</html>\n'
+        )
         with open(fname, 'w', encoding='utf-8') as gfile:
             gfile.write(txt)
 

@@ -1,18 +1,24 @@
+"""
+Test Consumption class and its methods.
+"""
 # CODING-STYLE CHECKS:
 # pycodestyle test_consumption.py
+# pylint --disable=locally-disabled test_consumption.py
 
-import numpy as np
-import paramtools
-import pytest
 import copy
+import numpy as np
+import pytest
+import paramtools
 from taxcalc import Policy, Records, Calculator, Consumption
 
 
 def test_start_year_consistency():
+    """Test docstring"""
     assert Consumption.JSON_START_YEAR == Policy.JSON_START_YEAR
 
 
 def test_validity_of_consumption_vars_set():
+    """Test docstring"""
     records_varinfo = Records(data=None)
     assert Consumption.RESPONSE_VARS.issubset(records_varinfo.USABLE_READ_VARS)
     useable_vars = set(['housing', 'snap', 'tanf', 'vet', 'wic',
@@ -21,6 +27,7 @@ def test_validity_of_consumption_vars_set():
 
 
 def test_update_consumption():
+    """Test docstring"""
     consump = Consumption()
     consump.update_consumption({})
     revision = {
@@ -33,21 +40,29 @@ def test_update_consumption():
     expected_mpc_e20400 = np.full((consump.num_years,), 0.06)
     expected_mpc_e20400[0] = 0.0
     expected_mpc_e20400[1] = 0.05
-    assert np.allclose(consump._MPC_e20400,
-                       expected_mpc_e20400,
-                       rtol=0.0)
-    assert np.allclose(consump._MPC_e17500,
-                       np.zeros((consump.num_years,)),
-                       rtol=0.0)
+    assert np.allclose(
+        consump._MPC_e20400,  # pylint: disable=protected-access
+        expected_mpc_e20400,
+        rtol=0.0
+    )
+    assert np.allclose(
+        consump._MPC_e17500,  # pylint: disable=protected-access
+        np.zeros((consump.num_years,)),
+        rtol=0.0
+    )
     expected_ben_mcare_value = np.full((consump.num_years,), 0.80)
     expected_ben_mcare_value[0] = 1.0
     expected_ben_mcare_value[1] = 0.75
-    assert np.allclose(consump._BEN_mcare_value,
-                       expected_ben_mcare_value,
-                       rtol=0.0)
-    assert np.allclose(consump._BEN_snap_value,
-                       np.ones((consump.num_years,)),
-                       rtol=0.0)
+    assert np.allclose(
+        consump._BEN_mcare_value,  # pylint: disable=protected-access
+        expected_ben_mcare_value,
+        rtol=0.0
+    )
+    assert np.allclose(
+        consump._BEN_snap_value,  # pylint: disable=protected-access
+        np.ones((consump.num_years,)),
+        rtol=0.0
+    )
     consump.set_year(2015)
     assert consump.current_year == 2015
     assert consump.MPC_e20400 == 0.06
@@ -57,6 +72,7 @@ def test_update_consumption():
 
 
 def test_incorrect_update_consumption():
+    """Test docstring"""
     with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption([])
     with pytest.raises(paramtools.ValidationError):
@@ -74,6 +90,7 @@ def test_incorrect_update_consumption():
 
 
 def test_future_update_consumption():
+    """Test docstring"""
     consump = Consumption()
     assert consump.current_year == consump.start_year
     assert consump.has_response() is False
@@ -97,6 +114,7 @@ def test_future_update_consumption():
 
 
 def test_consumption_default_data():
+    """Test docstring"""
     consump = Consumption()
     pdata = consump.specification(meta_data=True, ignore_state=True)
     for pname in pdata.keys():
@@ -107,24 +125,26 @@ def test_consumption_default_data():
 
 
 def test_consumption_response(cps_subsample):
+    """Test docstring"""
+    # pylint: disable=too-many-locals
     consump = Consumption()
     mpc = 0.5
     consumption_response = {'MPC_e20400': {2013: mpc}}
     consump.update_consumption(consumption_response)
     # test incorrect call to response method
     with pytest.raises(ValueError):
-        consump.response(list(), 1)
+        consump.response([], 1)
     # test correct call to response method
     rec = Records.cps_constructor(data=cps_subsample)
-    pre = copy.deepcopy(rec.e20400)
+    pre = copy.deepcopy(getattr(rec, 'e20400'))
     consump.response(rec, 1.0)
-    post = rec.e20400
+    post = getattr(rec, 'e20400')
     actual_diff = post - pre
     expected_diff = np.ones(rec.array_length) * mpc
     assert np.allclose(actual_diff, expected_diff)
     # compute earnings mtr with no consumption response
     rec = Records.cps_constructor(data=cps_subsample)
-    ided0 = copy.deepcopy(rec.e20400)
+    ided0 = copy.deepcopy(getattr(rec, 'e20400'))
     calc0 = Calculator(policy=Policy(), records=rec, consumption=None)
     (mtr0_ptax, mtr0_itax, _) = calc0.mtr(variable_str='e00200p',
                                           wrt_full_compensation=False)

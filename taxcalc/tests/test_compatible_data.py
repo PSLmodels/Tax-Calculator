@@ -12,7 +12,9 @@ plug-in pytest-xdist is able to run all parametrized functions in parallel
 import copy
 import pytest
 import numpy as np
-from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
 
 
 @pytest.fixture(scope='module', name='allparams')
@@ -49,7 +51,7 @@ def test_compatible_data_presence(allparams):
         return True
 
     # Main logic of test_compatible_data_presence function
-    problem_pnames = list()
+    problem_pnames = []
     for pname in allparams:
         if 'compatible_data' in allparams[pname]:
             compatible_data = allparams[pname]['compatible_data']
@@ -61,7 +63,7 @@ def test_compatible_data_presence(allparams):
         msg = '{} has no or invalid compatible_data field'
         for pname in problem_pnames:
             print(msg.format(pname))
-        assert 'list of problem_pnames' == 'empty list'
+        assert False, 'ERROR: list of problem_pnames is above'
 
 
 XX_YEAR = 2019
@@ -142,7 +144,7 @@ BATCHES = int(np.floor(NPARAMS / BATCHSIZE)) + 1
 
 
 @pytest.fixture(scope='module', name='allparams_batch',
-                params=[i for i in range(0, BATCHES)])
+                params=list(range(0, BATCHES)))
 def fixture_allparams_batch(request, allparams, sorted_param_names):
     """
     Fixture for grouping Tax-Calculator parameters
@@ -229,8 +231,8 @@ def test_compatible_data(cps_subsample, puf_subsample,
     at least one of these reforms when using datasets marked compatible
     and does not differ when using datasets marked as incompatible.
     """
-    # pylint: disable=too-many-arguments,too-many-locals
-    # pylint: disable=too-many-statements,too-many-branches
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-statements,too-many-branches,too-many-locals
 
     # Check NPARAMS value
     assert NPARAMS == len(allparams)
@@ -335,4 +337,4 @@ def test_compatible_data(cps_subsample, puf_subsample,
     # test failure if any errors
     if errors:
         print(errors)
-        assert 'compatible_data' == 'invalid'
+        assert False, 'ERROR: compatible_data is invalid; see errors above'

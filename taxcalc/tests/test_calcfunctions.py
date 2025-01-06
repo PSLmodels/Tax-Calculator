@@ -8,10 +8,10 @@ Tests for Tax-Calculator calcfunctions.py logic.
 import os
 import re
 import ast
-from taxcalc import Records  # pylint: disable=import-error
-from taxcalc import calcfunctions
 import numpy as np
 import pytest
+from taxcalc.records import Records
+from taxcalc import calcfunctions
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -23,10 +23,10 @@ class GetFuncDefs(ast.NodeVisitor):
         GetFuncDefs class constructor
         """
         self.fname = ''
-        self.fnames = list()  # function name (fname) list
-        self.fargs = dict()  # lists of function arguments indexed by fname
-        self.cvars = dict()  # lists of calc vars in function indexed by fname
-        self.rvars = dict()  # lists of function return vars indexed by fname
+        self.fnames = []  # function name (fname) list
+        self.fargs = {}  # lists of function arguments indexed by fname
+        self.cvars = {}  # lists of calc vars in function indexed by fname
+        self.rvars = {}  # lists of function return vars indexed by fname
 
     def visit_Module(self, node):  # pylint: disable=invalid-name
         """
@@ -41,10 +41,10 @@ class GetFuncDefs(ast.NodeVisitor):
         """
         self.fname = node.name
         self.fnames.append(self.fname)
-        self.fargs[self.fname] = list()
+        self.fargs[self.fname] = []
         for anode in ast.iter_child_nodes(node.args):
             self.fargs[self.fname].append(anode.arg)
-        self.cvars[self.fname] = list()
+        self.cvars[self.fname] = []
         for bodynode in node.body:
             if isinstance(bodynode, ast.Return):
                 continue  # skip function's Return node
@@ -84,8 +84,10 @@ def test_calc_and_used_vars(tests_path):
     """
     # pylint: disable=too-many-locals
     funcpath = os.path.join(tests_path, '..', 'calcfunctions.py')
+    with open(funcpath, 'r', encoding='utf-8') as funcfile:
+        funcfile_text = funcfile.read()
     gfd = GetFuncDefs()
-    fnames, fargs, cvars, rvars = gfd.visit(ast.parse(open(funcpath).read()))
+    fnames, fargs, cvars, rvars = gfd.visit(ast.parse(funcfile_text))
     # Test (1):
     # .. create set of vars that are actually calculated in calcfunctions.py
     all_cvars = set()
@@ -106,7 +108,7 @@ def test_calc_and_used_vars(tests_path):
                 'in calcfunctions.py\n')
         for var in records_varinfo.CALCULATED_VARS - all_cvars:
             found_error1 = True
-            msg1 += 'VAR NOT CALCULATED: {}\n'.format(var)
+            msg1 += f'VAR NOT CALCULATED: {var}\n'
     # Test (2):
     faux_functions = ['EITCamount', 'ComputeBenefit', 'BenefitPrograms',
                       'BenefitSurtax', 'BenefitLimitation']
@@ -119,10 +121,10 @@ def test_calc_and_used_vars(tests_path):
         if not crvars_set <= set(fargs[fname]):
             found_error2 = True
             for var in crvars_set - set(fargs[fname]):
-                msg2 += 'FUNCTION,VARIABLE: {} {}\n'.format(fname, var)
+                msg2 += f'FUNCTION,VARIABLE: {fname} {var}\n'
     # Report errors for the two tests:
     if found_error1 and found_error2:
-        raise ValueError('{}\n{}'.format(msg1, msg2))
+        raise ValueError(f'{msg1}\n{msg2}')
     if found_error1:
         raise ValueError(msg1)
     if found_error2:
@@ -135,7 +137,7 @@ def test_function_args_usage(tests_path):
     function body.
     """
     funcfilename = os.path.join(tests_path, '..', 'calcfunctions.py')
-    with open(funcfilename, 'r') as funcfile:
+    with open(funcfilename, 'r', encoding='utf-8') as funcfile:
         fcontent = funcfile.read()
     fcontent = re.sub('#.*', '', fcontent)  # remove all '#...' comments
     fcontent = re.sub('\n', ' ', fcontent)  # replace EOL character with space
@@ -149,7 +151,7 @@ def test_function_args_usage(tests_path):
             msg = ('Could not find function name, arguments, '
                    'and code portions in the following text:\n')
             msg += '--------------------------------------------------------\n'
-            msg += '{}\n'.format(fcode)
+            msg += f'{fcode}\n'
             msg += '--------------------------------------------------------\n'
             raise ValueError(msg)
         fname = match.group(1)
@@ -161,9 +163,12 @@ def test_function_args_usage(tests_path):
             arg = farg.strip()
             if fbody.find(arg) < 0:
                 found_error = True
-                msg += 'FUNCTION,ARGUMENT= {} {}\n'.format(fname, arg)
+                msg += f'FUNCTION,ARGUMENT= {fname} {arg}\n'
     if found_error:
         raise ValueError(msg)
+
+
+# pylint: disable=invalid-name,unused-argument
 
 
 def test_DependentCare(skip_jit):
@@ -279,7 +284,7 @@ def test_EI_PayrollTax(test_input, expected_output, skip_jit):
         print('*INPUT:', test_input)
         print('ACTUAL:', actual_output)
         print('EXPECT:', expected_output)
-        assert 1 == 2, 'ACTUAL != EXPECT'
+        assert False, 'ERROR: ACTUAL != EXPECT'
 
 
 def test_AfterTaxIncome(skip_jit):
@@ -781,7 +786,7 @@ tuple0 = (
     n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
     c09200, ctc_new)
 # output tuple is : (ctc_new)
-expected0 = (0)
+expected0 = 0
 
 
 @pytest.mark.parametrize(
@@ -827,7 +832,7 @@ tuple0 = (
     n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
     c09200, ctc_new)
 # output tuple is : (ctc_new)
-expected0 = (0)
+expected0 = 0
 
 
 @pytest.mark.parametrize(

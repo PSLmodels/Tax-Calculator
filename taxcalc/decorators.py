@@ -49,7 +49,7 @@ class GetReturnNode(ast.NodeVisitor):
     """
     A NodeVisitor to get the return tuple names from a calc-style function.
     """
-    def visit_Return(self, node):  # pylint: disable=invalid-name,no-self-use
+    def visit_Return(self, node):  # pylint: disable=invalid-name
         """
         visit_Return is used by NodeVisitor.visit method.
         """
@@ -89,7 +89,7 @@ def create_apply_function_string(sigout, sigin, parameters):
     out_args = ["x_" + str(i) for i in range(0, len(sigout))]
     in_args = ["x_" + str(i) for i in range(len(sigout), total_len)]
 
-    fstr.write("def ap_func({0}):\n".format(",".join(out_args + in_args)))
+    fstr.write(f"def ap_func({','.join(out_args + in_args)}):\n")
     fstr.write("  for i in range(len(x_0)):\n")
     out_index = [x + "[i]" for x in out_args]
     in_index = []
@@ -257,7 +257,7 @@ def iterate_jit(parameters=None, **kwargs):
         in_args = inspect.getfullargspec(func).args
         # Get the numba.jit arguments
         jit_args_list = inspect.getfullargspec(JIT).args + ['nopython']
-        kwargs_for_jit = dict()
+        kwargs_for_jit = {}
         for key, val in kwargs.items():
             if key in jit_args_list:
                 kwargs_for_jit[key] = val

@@ -93,7 +93,8 @@ class Calculator():
 
     def __init__(self, policy=None, records=None, verbose=False,
                  sync_years=True, consumption=None):
-        # pylint: disable=too-many-arguments,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-branches
         if isinstance(policy, Policy):
             self.__policy = copy.deepcopy(policy)
         else:
@@ -286,8 +287,7 @@ class Calculator():
             val = getattr(self.__policy, param_name)
             if param_name.startswith("_"):
                 return val
-            else:
-                return val[0]  # drop down a dimension.
+            return val[0]  # drop down a dimension.
         setattr(self.__policy, param_name, param_value)
         return None
 
@@ -345,8 +345,8 @@ class Calculator():
         max_num_years = self.__policy.end_year - self.__policy.current_year + 1
         assert num_years <= max_num_years
         calc = copy.deepcopy(self)
-        yearlist = list()
-        varlist = list()
+        yearlist = []
+        varlist = []
         for iyr in range(1, num_years + 1):
             calc.calc_all()
             yearlist.append(calc.current_year)
@@ -626,8 +626,8 @@ class Calculator():
         'e20100',  Charity non-cash contributions;
         'k1bx14p', Partnership income (also included in e26270 and e02000).
         """
-        # pylint: disable=too-many-arguments,too-many-statements
-        # pylint: disable=too-many-locals,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-locals,too-many-branches,too-many-statements
         assert not zero_out_calculated_vars or not calc_all_already_called
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
@@ -824,7 +824,9 @@ class Calculator():
         -------
         graph that is a bokeh.plotting figure object
         """
-        # pylint: disable=too-many-arguments,too-many-locals
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-locals
+
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
@@ -833,9 +835,8 @@ class Calculator():
         assert mars == 'ALL' or 1 <= mars <= 4
         # check validity of income_measure
         assert income_measure in ('expanded_income', 'agi', 'wages')
-        if income_measure == 'expanded_income':
-            income_variable = 'expanded_income'
-        elif income_measure == 'agi':
+        income_variable = 'expanded_income'
+        if income_measure == 'agi':
             income_variable = 'c00100'
         elif income_measure == 'wages':
             income_variable = 'e00200'
@@ -848,15 +849,15 @@ class Calculator():
         (mtr2_ptax, mtr2_itax,
          mtr2_combined) = calc.mtr(variable_str=mtr_variable,
                                    wrt_full_compensation=mtr_wrt_full_compen)
-        if mtr_measure == 'combined':
-            mtr1 = mtr1_combined
-            mtr2 = mtr2_combined
-        elif mtr_measure == 'itax':
+        if mtr_measure == 'itax':
             mtr1 = mtr1_itax
             mtr2 = mtr2_itax
         elif mtr_measure == 'ptax':
             mtr1 = mtr1_ptax
             mtr2 = mtr2_ptax
+        else:
+            mtr1 = mtr1_combined
+            mtr2 = mtr2_combined
         # extract datafames needed by mtr_graph_data utility function
         record_variables = ['s006', 'XTOT']
         if mars != 'ALL':
@@ -1042,17 +1043,15 @@ class Calculator():
         # construct data for graph
         data = pch_graph_data(vdf, year=self.current_year,
                               pop_quantiles=pop_quantiles)
-        del vdf
-        del vdf1
-        del vdf2
         # construct figure from data
-        fig = pch_graph_plot(data,
-                             width=850,
-                             height=500,
-                             xlabel='',
-                             ylabel='',
-                             title='')
-        del data
+        # (see comment at end of pch_graph_plot function in utils.py)
+        fig = pch_graph_plot(  # pylint: disable=assignment-from-no-return
+            data,
+            width=850,
+            height=500,
+            xlabel='',
+            ylabel='',
+            title='')
         return fig
 
     REQUIRED_REFORM_KEYS = set(['policy'])
@@ -1101,7 +1100,7 @@ class Calculator():
         suitable as input into the GrowDiff.update_growdiff method.
         """
         # construct the composite dictionary
-        param_dict = dict()
+        param_dict = {}
         param_dict['policy'] = Policy.read_json_reform(reform)
         param_dict['consumption'] = Consumption.read_json_update(assump)
         for topkey in ['growdiff_baseline', 'growdiff_response']:
@@ -1165,7 +1164,7 @@ class Calculator():
                     return [line]
                 # all text does not fix on one line
                 first_line = True
-                line_list = list()
+                line_list = []
                 words = text.split()
                 while words:
                     if first_line:
@@ -1189,7 +1188,7 @@ class Calculator():
                 baseline.set_year(year)
                 updated.set_year(year)
                 assert set(baseline.keys()) == set(updated.keys())
-                params_with_diff = list()
+                params_with_diff = []
                 for pname in baseline.keys():
                     upda_value = getattr(updated, pname)
                     base_value = getattr(baseline, pname)
@@ -1202,7 +1201,7 @@ class Calculator():
                 if params_with_diff:
                     mdata_base = baseline.specification(meta_data=True)
                     # write year
-                    doc += '{}:\n'.format(year)
+                    doc += f'{year}:\n'
                     for pname in sorted(params_with_diff):
                         # write updated value line
                         pval = getattr(updated, pname).tolist()[0]
@@ -1211,7 +1210,7 @@ class Calculator():
                                 pval = [bool(item) for item in pval]
                             else:
                                 pval = bool(pval)
-                        doc += ' {} : {}\n'.format(pname, pval)
+                        doc += f' {pname} : {pval}\n'
                         # ... write optional param-vector-index line
                         if isinstance(pval, list):
                             labels = paramtools.consistent_labels(
@@ -1223,13 +1222,15 @@ class Calculator():
                                     label = _label
                                     break
                             if label:
+                                # pylint: disable=protected-access
                                 lv = baseline._stateless_label_grid[label]
+                                # pylint: enable=protected-access
                                 lv = [
                                     str(item) for item in lv
                                 ]
                                 doc += ' ' * (
                                     4 + len(pname)
-                                ) + '{}\n'.format(lv)
+                                ) + f'{lv}\n'
                         # ... write param-name line
                         name = mdata_base[pname]['title']
                         for line in lines('name: ' + name, 6):
@@ -1247,7 +1248,7 @@ class Calculator():
                                     pval = [bool(item) for item in pval]
                             elif ptype == 'bool':
                                 pval = bool(pval)
-                            doc += '  baseline_value: {}\n'.format(pval)
+                            doc += f'  baseline_value: {pval}\n'
                         else:  # if baseline is GrowDiff object
                             # each GrowDiff parameter has zero as default value
                             doc += '  baseline_value: 0.0\n'
@@ -1399,7 +1400,7 @@ class Calculator():
         item_phaseout = self.array('c21040').copy()
         item_component_variable_names = ['c17000', 'c18300', 'c19200',
                                          'c19700', 'c20500', 'c20800']
-        item_cvar = dict()
+        item_cvar = {}
         for cvname in item_component_variable_names:
             item_cvar[cvname] = self.array(cvname).copy()
         self.zeroarray('c04470')

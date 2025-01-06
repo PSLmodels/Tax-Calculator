@@ -12,7 +12,7 @@ from io import StringIO
 import tempfile
 import pytest
 import pandas as pd
-from taxcalc import TaxCalcIO  # pylint: disable=import-error
+from taxcalc import TaxCalcIO
 
 
 RAWINPUT = (
@@ -24,7 +24,7 @@ RAWINPUT = (
 )
 
 
-@pytest.fixture(scope='module', name='reformfile0')
+@pytest.fixture(scope='session', name='reformfile0')
 def fixture_reformfile0():
     """
     Specify JSON reform file.
@@ -37,9 +37,10 @@ def fixture_reformfile0():
       }
     }
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    rfile.write(txt + '\n')
-    rfile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(txt + '\n')
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -48,12 +49,11 @@ def fixture_reformfile0():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='assumpfile0')
+@pytest.fixture(scope='session', name='assumpfile0')
 def fixture_assumpfile0():
     """
     Temporary assumption file with .json extension.
     """
-    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
     {
     "consumption": {},
@@ -61,8 +61,10 @@ def fixture_assumpfile0():
     "growdiff_response": {}
     }
     """
-    afile.write(contents)
-    afile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as afile:
+        afile.write(contents)
     yield afile
     if os.path.isfile(afile.name):
         try:
@@ -71,12 +73,11 @@ def fixture_assumpfile0():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='reformfile1')
+@pytest.fixture(scope='session', name='reformfile1')
 def fixture_reformfile1():
     """
     Temporary reform file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
     {"policy": {
         "AMT_brk1": { // top of first AMT tax bracket
@@ -104,8 +105,10 @@ def fixture_reformfile1():
       }
     }
     """
-    rfile.write(contents)
-    rfile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(contents)
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -114,15 +117,16 @@ def fixture_reformfile1():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='baselinebad')
+@pytest.fixture(scope='session', name='baselinebad')
 def fixture_baselinebad():
     """
     Temporary baseline file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = '{ "policy": {"AMT_brk1": {"2011": 0.0}}}'
-    rfile.write(contents)
-    rfile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(contents)
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -131,15 +135,16 @@ def fixture_baselinebad():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='errorreformfile')
+@pytest.fixture(scope='session', name='errorreformfile')
 def fixture_errorreformfile():
     """
     Temporary reform file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = '{ "policy": {"xxx": {"2015": 0}}}'
-    rfile.write(contents)
-    rfile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(contents)
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -148,12 +153,11 @@ def fixture_errorreformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='errorassumpfile')
+@pytest.fixture(scope='session', name='errorassumpfile')
 def fixture_errorassumpfile():
     """
     Temporary assumption file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
     {
     "consumption": {"MPC_e18400": {"2018": -9}},
@@ -161,8 +165,10 @@ def fixture_errorassumpfile():
     "growdiff_response": {"ABOOKxx": {"2017": 0.02}}
     }
     """
-    rfile.write(contents)
-    rfile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(contents)
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -171,12 +177,11 @@ def fixture_errorassumpfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='assumpfile1')
+@pytest.fixture(scope='session', name='assumpfile1')
 def fixture_assumpfile1():
     """
     Temporary assumption file with .json extension.
     """
-    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
     {
     "consumption": { "MPC_e18400": {"2018": 0.05} },
@@ -184,8 +189,10 @@ def fixture_assumpfile1():
     "growdiff_response": {}
     }
     """
-    afile.write(contents)
-    afile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as afile:
+        afile.write(contents)
     yield afile
     if os.path.isfile(afile.name):
         try:
@@ -194,15 +201,16 @@ def fixture_assumpfile1():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='lumpsumreformfile')
+@pytest.fixture(scope='session', name='lumpsumreformfile')
 def fixture_lumpsumreformfile():
     """
     Temporary reform file without .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     lumpsum_reform_contents = '{"policy": {"LST": {"2013": 200}}}'
-    rfile.write(lumpsum_reform_contents)
-    rfile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(lumpsum_reform_contents)
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -211,12 +219,11 @@ def fixture_lumpsumreformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='assumpfile2')
+@pytest.fixture(scope='session', name='assumpfile2')
 def fixture_assumpfile2():
     """
     Temporary assumption file with .json extension.
     """
-    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     assump2_contents = """
     {
     "consumption":  {"BEN_snap_value": {"2018": 0.90}},
@@ -224,8 +231,10 @@ def fixture_assumpfile2():
     "growdiff_response": {}
     }
     """
-    afile.write(assump2_contents)
-    afile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as afile:
+        afile.write(assump2_contents)
     yield afile
     if os.path.isfile(afile.name):
         try:
@@ -238,7 +247,7 @@ def fixture_assumpfile2():
     ('no-dot-csv-filename', 'no-dot-json-filename',
      'no-dot-json-filename',
      'no-dot-json-filename', 'no-output-directory'),
-    (list(), list(), list(), list(), list()),
+    ([], [], [], [], []),
     ('no-exist.csv', 'no-exist.json', 'no-exist.json', 'no-exist.json', '.'),
 ])
 def test_ctor_errors(input_data, baseline, reform, assump, outdir):
@@ -262,7 +271,8 @@ def test_init_errors(reformfile0, errorreformfile, errorassumpfile,
     """
     Ensure error messages generated correctly by TaxCalcIO.init method.
     """
-    # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-locals,too-many-branches
     recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
     recdf = pd.DataFrame(data=recdict, index=[0])
     # test TaxCalcIO ctor
@@ -422,7 +432,7 @@ def test_output_options(reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(minimal_output)_ok' == 'no'
+        assert False, 'TaxCalcIO.analyze(minimal_output) failed'
     # --dump output with full dump
     try:
         tcio.analyze(writing_output_file=True, output_dump=True)
@@ -432,7 +442,7 @@ def test_output_options(reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(full_dump_output)_ok' == 'no'
+        assert False, 'TaxCalcIO.analyze(full_dump_output) failed'
     # --dump output with partial dump
     try:
         tcio.analyze(writing_output_file=True,
@@ -444,7 +454,7 @@ def test_output_options(reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(partial_dump_output)_ok' == 'no'
+        assert False, 'TaxCalcIO.analyze(partial_dump_output) failed'
     # if tries were successful, remove doc file and output file
     docfilepath = outfilepath.replace('.csv', '-doc.text')
     if os.path.isfile(docfilepath):
@@ -458,7 +468,7 @@ def test_write_doc_file(reformfile1, assumpfile1):
     Test write_doc_file with compound reform.
     """
     taxyear = 2021
-    compound_reform = '{}+{}'.format(reformfile1.name, reformfile1.name)
+    compound_reform = f'{reformfile1.name}+{reformfile1.name}'
     tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
                      tax_year=taxyear,
                      baseline=None,
@@ -510,7 +520,7 @@ def test_sqldb_option(reformfile1, assumpfile1):
                 os.remove(dbfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(sqldb)_ok' == 'no'
+        assert False, 'ERROR: TaxCalcIO.analyze(sqldb) failed'
     # if try was successful, remove the db file
     if os.path.isfile(dbfilepath):
         os.remove(dbfilepath)
@@ -523,8 +533,8 @@ def test_no_tables_or_graphs(reformfile1):
     """
     # create input sample that cannot output tables or graphs
     nobs = 10
-    idict = dict()
-    idict['RECID'] = [i for i in range(1, nobs + 1)]
+    idict = {}
+    idict['RECID'] = list(range(1, nobs + 1))
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['s006'] = [0.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
@@ -571,8 +581,8 @@ def test_tables(reformfile1):
     """
     # create tabable input
     nobs = 100
-    idict = dict()
-    idict['RECID'] = [i for i in range(1, nobs + 1)]
+    idict = {}
+    idict['RECID'] = list(range(1, nobs + 1))
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['s006'] = [10.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
@@ -608,8 +618,8 @@ def test_graphs(reformfile1):
     """
     # create graphable input
     nobs = 100
-    idict = dict()
-    idict['RECID'] = [i for i in range(1, nobs + 1)]
+    idict = {}
+    idict['RECID'] = list(range(1, nobs + 1))
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
     idict['XTOT'] = [3 for i in range(1, nobs + 1)]
     idict['s006'] = [10.0 for i in range(1, nobs + 1)]
@@ -645,15 +655,16 @@ def test_graphs(reformfile1):
         os.remove(fname)
 
 
-@pytest.fixture(scope='module', name='warnreformfile')
+@pytest.fixture(scope='session', name='warnreformfile')
 def fixture_warnreformfile():
     """
     Temporary reform file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = '{"policy": {"STD_Dep": {"2015": 0}}}'
-    rfile.write(contents)
-    rfile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(contents)
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -687,12 +698,11 @@ def test_analyze_warnings_print(warnreformfile):
     assert tcio.tax_year() == taxyear
 
 
-@pytest.fixture(scope='module', name='reformfile9')
+@pytest.fixture(scope='session', name='reformfile9')
 def fixture_reformfile9():
     """
     Temporary reform file with .json extension.
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
     { "policy": {
         "SS_Earnings_c": {
@@ -702,8 +712,10 @@ def fixture_reformfile9():
       }
     }
     """
-    rfile.write(contents)
-    rfile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(contents)
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -712,7 +724,7 @@ def fixture_reformfile9():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='regression_reform_file')
+@pytest.fixture(scope='session', name='regression_reform_file')
 def fixture_regression_reform_file():
     """
     Temporary reform file with .json extension.
@@ -720,10 +732,11 @@ def fixture_regression_reform_file():
     Example causing regression reported in issue:
     https://github.com/PSLmodels/Tax-Calculator/issues/2622
     """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = '{ "policy": {"AMEDT_rt": {"2021": 1.8}}}'
-    rfile.write(contents)
-    rfile.close()
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(contents)
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -733,6 +746,7 @@ def fixture_regression_reform_file():
 
 
 def test_error_message_parsed_correctly(regression_reform_file):
+    """Test docstring"""
     tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
                      tax_year=2022,
                      baseline=regression_reform_file.name,
