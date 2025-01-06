@@ -2310,7 +2310,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         c32890 = earned_s  # earned income of spouse when present
     else:
         c32890 = earned_p
-    c33000 = max(0., min(c32800, min(c32880, c32890)))
+    c33000 = max(0., min(c32800, c32880, c32890))
     # credit rate is limited at high AGI
     # ... first phase-down from CDCC_crt to CDCC_frt
     steps_fractional = max(0., c00100 - CDCC_ps) / CDCC_po_step_size

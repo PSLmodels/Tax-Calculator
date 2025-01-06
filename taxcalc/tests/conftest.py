@@ -88,7 +88,7 @@ def fixture_test_reforms(tests_path):
         for afile in glob.glob(afiles):
             os.remove(afile)
         # create reforms_actual_init file
-        with open(initfile, 'w') as ifile:
+        with open(initfile, 'w', encoding='utf-8') as ifile:
             ifile.write('test_reforms initialization done')
     else:
         num_waits = 0
@@ -109,7 +109,7 @@ def fixture_test_reforms(tests_path):
         # compare actual and expected results for each test
         # ... read expected results
         efile_path = os.path.join(tests_path, 'reforms_expect.csv')
-        with open(efile_path, 'r') as efile:
+        with open(efile_path, 'r', encoding='utf-8') as efile:
             expect_lines = efile.readlines()
         # ... compare actual and expected results for each test
         diffs = False

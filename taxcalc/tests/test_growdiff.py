@@ -63,7 +63,7 @@ def test_description_punctuation(tests_path):
     """
     # read JSON file into a dictionary
     path = os.path.join(tests_path, '..', 'growdiff.json')
-    with open(path, 'r') as jsonfile:
+    with open(path, 'r', encoding='utf-8') as jsonfile:
         dct = json.load(jsonfile)
     all_desc_ok = True
     for param in dct.keys():
@@ -83,7 +83,7 @@ def test_boolean_value_infomation(tests_path):
     """
     # read growdiff.json file into a dictionary
     path = os.path.join(tests_path, '..', 'growdiff.json')
-    with open(path, 'r') as gddfile:
+    with open(path, 'r', encoding='utf-8') as gddfile:
         gdd = json.load(gddfile)
     for param in gdd.keys():
         if param == "schema":
