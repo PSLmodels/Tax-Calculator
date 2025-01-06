@@ -209,8 +209,6 @@
 <li class="toctree-l1"><a class="reference internal" href="param_naming.html">Policy parameter naming and placing conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Releasing Tax-Caclculator Packages</a></li>
-
-
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
@@ -456,11 +454,8 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Releasing Tax-Caclculator Packages</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#create-new-taxcalc-package">Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#notes-for-person-actually-creating-package">Notes for person actually creating package</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notes-on-creating-package-for-distribution">Notes on creating package for distribution</a></li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -473,10 +468,7 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="releasing-tax-caclculator-packages">
 <h1>Releasing Tax-Caclculator Packages<a class="headerlink" href="#releasing-tax-caclculator-packages" title="Link to this heading">#</a></h1>
-<p>The following outlines the process for releasing a new Tax-Calculator package.</p>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="create-new-taxcalc-package">
-<h1>Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package<a class="headerlink" href="#create-new-taxcalc-package" title="Link to this heading">#</a></h1>
+<p>The following outlines the process for releasing a new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package.</p>
 <p>In the top-level Tax-Calculator directory, do the following:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--&gt; run `git switch master`  [to get on master branch]
 
@@ -505,13 +497,12 @@
 --&gt; commit X-Y-Z branch and push to origin
 
 --&gt; open new GitHub pull request using your X-Y-Z branch
-
---&gt; ask [@jdebacker](https://github.com/jdebacker/) to merge and create package
 </pre></div>
 </div>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="notes-for-person-actually-creating-package">
-<h1>Notes for person actually creating package<a class="headerlink" href="#notes-for-person-actually-creating-package" title="Link to this heading">#</a></h1>
+<p>Then ask <a class="reference external" href="https://github.com/jdebacker/">&#64;jdebacker</a> to review and
+merge the pull request and create package</p>
+<section id="notes-on-creating-package-for-distribution">
+<h2>Notes on creating package for distribution<a class="headerlink" href="#notes-on-creating-package-for-distribution" title="Link to this heading">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--&gt; merge X-Y-Z branch into master branch on GitHub
 
 --&gt; on local master branch, ./gitsync
@@ -523,6 +514,7 @@
 --&gt; open a PR to github.com/conda-forge/taxcalc-feedstock where you change the `recipe/meta.yaml` file by updating (1) the version number to X.Y.Z and (2) the checksum to reflect the checksum for the tarball for release X.Y.Z in the Tax-Calculator GitHub repo
 </pre></div>
 </div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -590,11 +582,8 @@
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Releasing Tax-Caclculator Packages</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#create-new-taxcalc-package">Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#notes-for-person-actually-creating-package">Notes for person actually creating package</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notes-on-creating-package-for-distribution">Notes on creating package for distribution</a></li>
 </ul>
-
   </nav></div>
 
 </div></div>
