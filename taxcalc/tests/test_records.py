@@ -14,7 +14,7 @@ import pytest
 from taxcalc import GrowFactors, Policy, Records
 
 
-def test_incorrect_records_instantiation(cps_subsample):
+def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
     """Test docstring"""
     with pytest.raises(ValueError):
         _ = Records(data=[])
@@ -28,6 +28,11 @@ def test_incorrect_records_instantiation(cps_subsample):
     with pytest.raises(ValueError):
         _ = Records(data=cps_subsample, gfactors=None, weights=None,
                     adjust_ratios=[])
+    # test error raise when num of records is greater than num of weights
+    wghts_path = os.path.join(Records.CODE_PATH, Records.PUF_WEIGHTS_FILENAME)
+    puf_wghts = pd.read_csv(wghts_path)
+    with pytest.raises(ValueError):
+        _ = Records(data=cps_fullsample, weights=puf_wghts, start_year=2020)
 
 
 def test_correct_records_instantiation(cps_subsample):
