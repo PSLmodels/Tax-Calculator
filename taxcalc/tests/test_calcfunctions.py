@@ -168,7 +168,7 @@ def test_function_args_usage(tests_path):
         raise ValueError(msg)
 
 
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name,unused-argument
 
 
 def test_DependentCare(skip_jit):
