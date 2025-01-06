@@ -21,20 +21,20 @@ def skip_jit(monkeypatch):
     yield
 
 
-@pytest.fixture(scope='session')
-def tests_path():
+@pytest.fixture(scope='session', name='tests_path')
+def tests_path_fixture():
     """Fixture docstring"""
     return os.path.abspath(os.path.dirname(__file__))
 
 
-@pytest.fixture(scope='session')
-def cps_path(tests_path):
+@pytest.fixture(scope='session', name='cps_path')
+def cps_path_fixture(tests_path):
     """Fixture docstring"""
     return os.path.join(tests_path, '..', 'cps.csv.gz')
 
 
-@pytest.fixture(scope='session')
-def cps_fullsample(cps_path):
+@pytest.fixture(scope='session', name='cps_fullsample')
+def cps_fullsample_fixture(cps_path):
     """Fixture docstring"""
     return pandas.read_csv(cps_path)
 
@@ -46,14 +46,14 @@ def cps_subsample(cps_fullsample):
     return cps_fullsample.sample(frac=0.01, random_state=123456789)
 
 
-@pytest.fixture(scope='session')
-def puf_path(tests_path):
+@pytest.fixture(scope='session', name='puf_path')
+def puf_path_fixture(tests_path):
     """Fixture docstring"""
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
-@pytest.fixture(scope='session')
-def puf_fullsample(puf_path):
+@pytest.fixture(scope='session', name='puf_fullsample')
+def puf_fullsample_fixture(puf_path):
     """Fixture docstring"""
     return pandas.read_csv(puf_path)
 

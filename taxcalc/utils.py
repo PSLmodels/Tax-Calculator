@@ -1524,8 +1524,8 @@ def read_egg_csv(fname, index_col=None):
         path_in_egg = implibres.files('taxcalc').joinpath(fname)
         with implibres.as_file(path_in_egg) as rname:
             vdf = pd.read_csv(rname, index_col=index_col)
-    except Exception:
-        raise ValueError(f'could not read {fname} data from egg')
+    except Exception as exc:
+        raise ValueError(f'could not read {fname} data from egg') from exc
     # cannot call read_egg_ function in unit tests
     return vdf  # pragma: no cover
 
@@ -1539,8 +1539,8 @@ def read_egg_json(fname):
         path_in_egg = implibres.files('taxcalc').joinpath(fname)
         with implibres.as_file(path_in_egg) as rname:
             pdict = json.loads(rname)
-    except Exception:
-        raise ValueError(f'could not read {fname} data from package')
+    except Exception as exc:
+        raise ValueError(f'could not read {fname} data from package') from exc
     # cannot call read_egg_ function in pytest unit tests
     return pdict  # pragma: no cover
 
@@ -1616,5 +1616,5 @@ def json_to_dict(json_text):
             linenum += 1
             msg += f'{linenum:04d}{line}\n'
         msg += bline + '\n'
-        raise ValueError(msg)
+        raise ValueError(msg) from valerr
     return ordered_dict
