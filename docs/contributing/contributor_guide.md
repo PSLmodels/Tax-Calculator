@@ -2,7 +2,7 @@ Contributor guide
 =================
 
 The purpose of this guide is to get you to the point where you can
-make improvements to the Tax-Calculator and share them with the rest
+make improvements to Tax-Calculator and share them with the rest
 of the development team as a GitHub pull request.
 This document assumes that you have read {doc}`../usage/starting` and
 {doc}`../recipes/index`.
@@ -14,50 +14,52 @@ paragraph **before** preparing a pull request.
 (a) Modify {doc}`../recipes/recipe06` to
 analyze the kind of tax reform you want to add to the list of reforms
 that can be analyzed parametricly by Tax-Calculator.
-(b) Raise a Tax-Calculator issue in which you show your modified recipe 6 that
-simulates the reform and provide some numerical results that
-illustrate the effects of the reform.
-In the course of the conversation about your issue, you may be asked to prepare a pull request that would allow this reform to be analyzed using new policy parameters and associated logic.
-If so, follow the directions below when preparing that pull request.
+(b) Raise a Tax-Calculator issue in which you show your modified
+recipe 6 that simulates the reform and provide some numerical results
+that illustrate the effects of the reform.
+In the course of the conversation about your issue, you may be asked
+to prepare a pull request that would allow this reform to be analyzed
+using new policy parameters and associated logic.  If so, follow the
+directions below when preparing that pull request.
 
 We keep track of Tax-Calculator source code using the [Git version
-control system](https://git-scm.com/) via
-[GitHub](https://help.github.com/articles/github-glossary/#git).  We
-don't expect you to be an expert Git user.
-Where possible, we link toGit and GitHub documentation to help with some of the unfamiliar terminology (often from this [glossary of GitHub
-terms](https://help.github.com/articles/github-glossary/).
-Following the next steps will get you up and running and contributing to
+control system and
+GitHub](https://www.w3schools.com/git/git_intro.asp?remote=github).
+We don't expect you to be an expert Git user.  Where possible, we link
+to Git and GitHub documentation to help with some of the unfamiliar
+terminology (often from this [glossary of GitHub
+terms](https://help.github.com/articles/github-glossary/)).  Following
+the next steps will get you up and running and contributing to
 Tax-Calculator even if you've never used anything like Git and GitHub.
 But if you are unfamiliar with the concept of version control, you
-should read an introductory tutorial online.
-A good tutorial can be found
+should read an introductory tutorial online.  A good tutorial can be
+found
 [here](https://homes.cs.washington.edu/~mernst/advice/version-control.html).
 
-If you have already completed the [Setup Python](#setup-python) and
-[Setup Git](#setup-Git) sections, please skip to [Workflow](#workflow).
+If you have already completed the following Setup Python and Setup Git
+sections, please skip to [Workflow](#workflow).
 
 
 ## Setup Python
 
-Follow the [getting started instructions](https://PSLmodels.github.io/Tax-Calculator/tc_starting.html),
-but be sure to skip step 2, because the installation of the `taxcalc`
-package will interfere with the testing of changes in the source code.
+Follow the [getting started
+instructions](https://taxcalc.pslmodels.org/usage/starting.html).
 
 If you are new to or have limited experience with Python, you should
-read some introductory tutorials available online.  One such tutorial
-is [Quantitative Economics with
-Python](https://lectures.quantecon.org/py/).
+read some introductory tutorials available online.  One such
+interactive tutorial is the [W3 Schools' Python
+Introduction](https://www.w3schools.com/python/python_intro.asp).
 
 
 ## Setup Git
 
 1. Create a free GitHub user account from the [GitHub home
-page](https://github.com/).
+page](https://github.com).
 
-2. Install Git on your local computer by following steps 1-4
+2. Install Git on your local computer by following the steps
 [here](https://help.github.com/articles/set-up-git/).
 
-3. Tell Git to remember your GitHub password by following steps 1-4
+3. Tell Git to remember your GitHub password by following the steps
 [here](https://help.github.com/articles/caching-your-github-password-in-git/).
 
 4. Sign in to GitHub and create your own
@@ -97,21 +99,17 @@ page](https://github.com/).
 9. Create a conda environment with all of the necessary packages to
    execute Tax-Calculator source code in the Tax-Calculator directory:
    ```
-   conda env create
+   conda create --name taxcalc-dev
    ```
 
 10. The prior command will create a conda environment called `taxcalc-dev`.
-    Activate this environment as follows if working on Mac or Linux:
+    Activate this environment as follows:
     ```
-    source activate taxcalc-dev
-    ```
-    If you are working on Windows, use the following from the command line:
-    ```
-    activate taxcalc-dev
+    conda activate taxcalc-dev
     ```
     Important Note: never conda install the taxcalc package in the
     taxcalc-dev environment because the taxcalc source code and the
-    installed package will conflict.
+    installed package may be in conflict.
 
 11. To check that everything is working properly, run the following at
     the command line in the Tax-Calculator directory:
@@ -136,7 +134,7 @@ page](https://github.com/).
 
 If you've made it this far, you've successfully made a remote copy (a
 fork) of central Tax-Calculator repo. That remote repo is hosted on
-GitHub.com. You've also created a local repo --- a
+GitHub.  You've also created a local repo --- a
 [clone](https://help.github.com/articles/github-glossary/#clone) ---
 that lives on your computer and only you can see; you will make your
 changes to the Tax-Calculator by editing the files in the
@@ -166,7 +164,7 @@ situations, in which case other contributors are here to help.
       Navigate to your local Tax-Calculator directory and enter the
       following text at the command line:
       ```
-      git checkout master
+      git switch master
       ```
 
    b. Download all of the content from the central Tax-Calculator repo
@@ -198,13 +196,13 @@ situations, in which case other contributors are here to help.
       simply execute substeps `a` and `e`.  If you are working on Mac
       or Linux, execute these commands in the Tax-Calculator directory:
       ```
-      git checkout master
+      git switch master
       ./gitsync
       ```
       If you are working on Windows, execute these commands in the
       Tax-Calculator directory:
       ```
-      git checkout master
+      git switch master
       gitsync
       ```
 
@@ -224,17 +222,17 @@ situations, in which case other contributors are here to help.
    sure to read about the Tax-Calculator {doc}`param_naming`.
 
 4. As you make changes, frequently check that your changes do not
-   introduce bugs or degrade the accuracy of the Tax-Calculator.
-   To do this, run the following commands from the command line from inside
-   the Tax-Calculator/taxcalc directory::
+   violate Tax-Calculator coding style, introduce bugs, or degrade the
+   accuracy of Tax-Calculator.  To do this, run the following commands
+   from the command line in the Tax-Calculator directory:
    ```
-   pycodestyle .
-   pytest -m "not requires_pufcsv and not pre_release" -n4
+   make cstest
+   make pytest-cps
    ```
    Consult {doc}`testing` for more details.
 
-   If the tests do not pass, try to fix the issue by using the
-   information provided by the error message. If this isn't possible
+   If the tests do not pass, try to fix the problem by using the
+   information provided by the error message.  If this isn't possible
    or doesn't work, we are here to help.
 
 5. Now you're ready to
@@ -278,9 +276,9 @@ situations, in which case other contributors are here to help.
    ```
    You may need to resolve conflicts that arise when another
    contributor changed the same section of code that you are
-   changing. Feel free to ask other contributors for guidance
-   if this happens to you. If you do need to fix a merge
-   conflict, run the tests (step 4) again fixing.
+   changing.  Feel free to ask other contributors for guidance
+   if this happens to you.  If you do need to fix a merge
+   conflict, run the tests (step 4) again after fixing.
 
 7. When you are ready for other team members to review your code, make
    your final commit and push your local branch to your remote repo:
@@ -289,9 +287,9 @@ situations, in which case other contributors are here to help.
    ```
 
 8. From the [central GitHub Tax-Calculator
-page](https://github.com/PSLmodels/Tax-Calculator), open a
-[pull request](https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request)
-containing the changes in your local branch.
+   page](https://github.com/PSLmodels/Tax-Calculator), open a [pull
+   request](https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request)
+   containing the changes in your local branch.
 
 9. When you open a GitHub pull request, a code coverage report will be
    automatically generated.  If your branch adds new code that is not
@@ -307,3 +305,5 @@ branch, commit them (step 6), and push them to your remote repo (step
 pull request.
 
 You should now read the more detailed {doc}`pr_workflow` document.
+
+This is the end of the Contributor Guide document.
