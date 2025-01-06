@@ -1,10 +1,7 @@
 Releasing Tax-Caclculator Packages
-==================================
+=================================
 
-The following outlines the process for releasing a new Tax-Calculator package.
-
-Create new `taxcalc` package
-============================
+The following outlines the process for releasing a new `taxcalc` package.
 
 In the top-level Tax-Calculator directory, do the following:
 
@@ -36,13 +33,13 @@ In the top-level Tax-Calculator directory, do the following:
 --> commit X-Y-Z branch and push to origin
 
 --> open new GitHub pull request using your X-Y-Z branch
-
---> ask [@jdebacker](https://github.com/jdebacker/) to merge and create package
 ```
 
+Then ask [@jdebacker](https://github.com/jdebacker/) to review and
+merge the pull request and create package
 
-Notes for person actually creating package
-==========================================
+
+### Notes on creating package for distribution
 
 ```
 --> merge X-Y-Z branch into master branch on GitHub
