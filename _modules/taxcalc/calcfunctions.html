@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -411,17 +411,18 @@
 <span class="c1"># pylint: disable=too-many-lines</span>
 <span class="c1"># pylint: disable=invalid-name</span>
 <span class="c1"># pylint: disable=too-many-arguments</span>
+<span class="c1"># pylint: disable=too-many-positional-arguments</span>
 <span class="c1"># pylint: disable=too-many-locals</span>
 
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">taxcalc.decorators</span> <span class="kn">import</span> <span class="n">iterate_jit</span><span class="p">,</span> <span class="n">JIT</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">iterate_jit</span><span class="p">,</span> <span class="n">JIT</span>
 
 
 <div class="viewcode-block" id="BenefitPrograms">
 <a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.BenefitPrograms">[docs]</a>
-<span class="k">def</span> <span class="nf">BenefitPrograms</span><span class="p">(</span><span class="n">calc</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">BenefitPrograms</span><span class="p">(</span><span class="n">calc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate total government cost and consumption value of benefits</span>
 <span class="sd">    delivered by non-repealed benefit programs.</span>
@@ -497,7 +498,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">EI_PayrollTax</span><span class="p">(</span><span class="n">SS_Earnings_c</span><span class="p">,</span> <span class="n">e00200p</span><span class="p">,</span> <span class="n">e00200s</span><span class="p">,</span> <span class="n">pencon_p</span><span class="p">,</span> <span class="n">pencon_s</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">EI_PayrollTax</span><span class="p">(</span><span class="n">SS_Earnings_c</span><span class="p">,</span> <span class="n">e00200p</span><span class="p">,</span> <span class="n">e00200s</span><span class="p">,</span> <span class="n">pencon_p</span><span class="p">,</span> <span class="n">pencon_s</span><span class="p">,</span>
                   <span class="n">FICA_ss_trt_employer</span><span class="p">,</span> <span class="n">FICA_ss_trt_employee</span><span class="p">,</span>
                   <span class="n">FICA_mc_trt_employer</span><span class="p">,</span> <span class="n">FICA_mc_trt_employee</span><span class="p">,</span>
                   <span class="n">ALD_SelfEmploymentTax_hc</span><span class="p">,</span> <span class="n">SS_Earnings_thd</span><span class="p">,</span> <span class="n">SECA_Earnings_thd</span><span class="p">,</span>
@@ -697,7 +698,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">DependentCare</span><span class="p">(</span><span class="n">nu13</span><span class="p">,</span> <span class="n">elderly_dependents</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">DependentCare</span><span class="p">(</span><span class="n">nu13</span><span class="p">,</span> <span class="n">elderly_dependents</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span>
                   <span class="n">MARS</span><span class="p">,</span> <span class="n">ALD_Dependents_thd</span><span class="p">,</span> <span class="n">ALD_Dependents_hc</span><span class="p">,</span>
                   <span class="n">ALD_Dependents_Child_c</span><span class="p">,</span> <span class="n">ALD_Dependents_Elder_c</span><span class="p">,</span>
                   <span class="n">care_deduction</span><span class="p">):</span>
@@ -743,7 +744,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">Adj</span><span class="p">(</span><span class="n">e03150</span><span class="p">,</span> <span class="n">e03210</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">Adj</span><span class="p">(</span><span class="n">e03150</span><span class="p">,</span> <span class="n">e03210</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span>
         <span class="n">e03270</span><span class="p">,</span> <span class="n">e03300</span><span class="p">,</span> <span class="n">e03400</span><span class="p">,</span> <span class="n">e03500</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span>
         <span class="n">e03220</span><span class="p">,</span> <span class="n">e03230</span><span class="p">,</span> <span class="n">e03240</span><span class="p">,</span> <span class="n">e03290</span><span class="p">,</span> <span class="n">care_deduction</span><span class="p">,</span>
         <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span> <span class="n">ALD_SelfEmp_HealthIns_hc</span><span class="p">,</span> <span class="n">ALD_KEOGH_SEP_hc</span><span class="p">,</span>
@@ -829,7 +830,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ALD_InvInc_ec_base</span><span class="p">(</span><span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ALD_InvInc_ec_base</span><span class="p">(</span><span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span>
                        <span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
                        <span class="n">invinc_ec_base</span><span class="p">,</span> <span class="n">Capital_loss_limitation</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -874,7 +875,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">CapGains</span><span class="p">(</span><span class="n">p23250</span><span class="p">,</span> <span class="n">p22250</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">CapGains</span><span class="p">(</span><span class="n">p23250</span><span class="p">,</span> <span class="n">p22250</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span>
              <span class="n">ALD_InvInc_ec_rt</span><span class="p">,</span> <span class="n">invinc_ec_base</span><span class="p">,</span>
              <span class="n">e00200</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span>
              <span class="n">CG_nodiff</span><span class="p">,</span> <span class="n">CG_ec</span><span class="p">,</span> <span class="n">CG_reinvest_ec_rt</span><span class="p">,</span> <span class="n">Capital_loss_limitation</span><span class="p">,</span>
@@ -1007,7 +1008,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">SSBenefits</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">SS_all_in_agi</span><span class="p">,</span> <span class="n">SS_thd50</span><span class="p">,</span> <span class="n">SS_thd85</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">SSBenefits</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">SS_all_in_agi</span><span class="p">,</span> <span class="n">SS_thd50</span><span class="p">,</span> <span class="n">SS_thd85</span><span class="p">,</span>
                <span class="n">SS_percentage1</span><span class="p">,</span> <span class="n">SS_percentage2</span><span class="p">,</span> <span class="n">c02500</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates OASDI benefits included in AGI, c02500.</span>
@@ -1054,7 +1055,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">UBI</span><span class="p">(</span><span class="n">nu18</span><span class="p">,</span> <span class="n">n1820</span><span class="p">,</span> <span class="n">n21</span><span class="p">,</span> <span class="n">UBI_u18</span><span class="p">,</span> <span class="n">UBI_1820</span><span class="p">,</span> <span class="n">UBI_21</span><span class="p">,</span> <span class="n">UBI_ecrt</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">UBI</span><span class="p">(</span><span class="n">nu18</span><span class="p">,</span> <span class="n">n1820</span><span class="p">,</span> <span class="n">n21</span><span class="p">,</span> <span class="n">UBI_u18</span><span class="p">,</span> <span class="n">UBI_1820</span><span class="p">,</span> <span class="n">UBI_21</span><span class="p">,</span> <span class="n">UBI_ecrt</span><span class="p">,</span>
         <span class="n">ubi</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span> <span class="n">nontaxable_ubi</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates total and taxable Universal Basic Income (UBI) amount.</span>
@@ -1098,7 +1099,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">AGI</span><span class="p">(</span><span class="n">ymod1</span><span class="p">,</span> <span class="n">c02500</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AGI</span><span class="p">(</span><span class="n">ymod1</span><span class="p">,</span> <span class="n">c02500</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span>
         <span class="n">II_em</span><span class="p">,</span> <span class="n">II_em_ps</span><span class="p">,</span> <span class="n">II_prt</span><span class="p">,</span> <span class="n">II_no_em_nu18</span><span class="p">,</span>
         <span class="n">e02300</span><span class="p">,</span> <span class="n">UI_thd</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">pre_c04600</span><span class="p">,</span> <span class="n">c04600</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1188,7 +1189,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ItemDedCap</span><span class="p">(</span><span class="n">e17500</span><span class="p">,</span> <span class="n">e18400</span><span class="p">,</span> <span class="n">e18500</span><span class="p">,</span> <span class="n">e19200</span><span class="p">,</span> <span class="n">e19800</span><span class="p">,</span> <span class="n">e20100</span><span class="p">,</span> <span class="n">e20400</span><span class="p">,</span> <span class="n">g20500</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ItemDedCap</span><span class="p">(</span><span class="n">e17500</span><span class="p">,</span> <span class="n">e18400</span><span class="p">,</span> <span class="n">e18500</span><span class="p">,</span> <span class="n">e19200</span><span class="p">,</span> <span class="n">e19800</span><span class="p">,</span> <span class="n">e20100</span><span class="p">,</span> <span class="n">e20400</span><span class="p">,</span> <span class="n">g20500</span><span class="p">,</span>
                <span class="n">c00100</span><span class="p">,</span> <span class="n">ID_AmountCap_rt</span><span class="p">,</span> <span class="n">ID_AmountCap_Switch</span><span class="p">,</span> <span class="n">e17500_capped</span><span class="p">,</span>
                <span class="n">e18400_capped</span><span class="p">,</span> <span class="n">e18500_capped</span><span class="p">,</span> <span class="n">e19200_capped</span><span class="p">,</span> <span class="n">e19800_capped</span><span class="p">,</span>
                <span class="n">e20100_capped</span><span class="p">,</span> <span class="n">e20400_capped</span><span class="p">,</span> <span class="n">g20500_capped</span><span class="p">):</span>
@@ -1325,7 +1326,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ItemDed</span><span class="p">(</span><span class="n">e17500_capped</span><span class="p">,</span> <span class="n">e18400_capped</span><span class="p">,</span> <span class="n">e18500_capped</span><span class="p">,</span> <span class="n">e19200_capped</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ItemDed</span><span class="p">(</span><span class="n">e17500_capped</span><span class="p">,</span> <span class="n">e18400_capped</span><span class="p">,</span> <span class="n">e18500_capped</span><span class="p">,</span> <span class="n">e19200_capped</span><span class="p">,</span>
             <span class="n">e19800_capped</span><span class="p">,</span> <span class="n">e20100_capped</span><span class="p">,</span> <span class="n">e20400_capped</span><span class="p">,</span> <span class="n">g20500_capped</span><span class="p">,</span>
             <span class="n">MARS</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">c21060</span><span class="p">,</span>
             <span class="n">c17000</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">c19200</span><span class="p">,</span> <span class="n">c19700</span><span class="p">,</span> <span class="n">c20500</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span>
@@ -1549,7 +1550,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">AdditionalMedicareTax</span><span class="p">(</span><span class="n">e00200</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AdditionalMedicareTax</span><span class="p">(</span><span class="n">e00200</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
                           <span class="n">AMEDT_ec</span><span class="p">,</span> <span class="n">sey</span><span class="p">,</span> <span class="n">AMEDT_rt</span><span class="p">,</span>
                           <span class="n">FICA_mc_trt_employer</span><span class="p">,</span> <span class="n">FICA_mc_trt_employee</span><span class="p">,</span>
                           <span class="n">FICA_ss_trt_employer</span><span class="p">,</span> <span class="n">FICA_ss_trt_employee</span><span class="p">,</span>
@@ -1597,7 +1598,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">StdDed</span><span class="p">(</span><span class="n">DSI</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">STD</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">STD_Aged</span><span class="p">,</span> <span class="n">STD_Dep</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">StdDed</span><span class="p">(</span><span class="n">DSI</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">STD</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">STD_Aged</span><span class="p">,</span> <span class="n">STD_Dep</span><span class="p">,</span>
            <span class="n">MARS</span><span class="p">,</span> <span class="n">MIDR</span><span class="p">,</span> <span class="n">blind_head</span><span class="p">,</span> <span class="n">blind_spouse</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span>
            <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">,</span> <span class="n">e19800</span><span class="p">,</span> <span class="n">ID_Charity_crt_cash</span><span class="p">,</span>
            <span class="n">c00100</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">):</span>
@@ -1678,7 +1679,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">TaxInc</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c04600</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">TaxInc</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c04600</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span>
            <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">PT_SSTB_income</span><span class="p">,</span>
            <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span> <span class="n">PT_qbid_rt</span><span class="p">,</span>
            <span class="n">PT_qbid_taxinc_thd</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">,</span> <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span>
@@ -1809,7 +1810,7 @@
 <div class="viewcode-block" id="SchXYZ">
 <a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.SchXYZ">[docs]</a>
 <span class="nd">@JIT</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">SchXYZ</span><span class="p">(</span><span class="n">taxable_income</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e00200</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">SchXYZ</span><span class="p">(</span><span class="n">taxable_income</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e00200</span><span class="p">,</span>
            <span class="n">PT_rt1</span><span class="p">,</span> <span class="n">PT_rt2</span><span class="p">,</span> <span class="n">PT_rt3</span><span class="p">,</span> <span class="n">PT_rt4</span><span class="p">,</span> <span class="n">PT_rt5</span><span class="p">,</span>
            <span class="n">PT_rt6</span><span class="p">,</span> <span class="n">PT_rt7</span><span class="p">,</span> <span class="n">PT_rt8</span><span class="p">,</span>
            <span class="n">PT_brk1</span><span class="p">,</span> <span class="n">PT_brk2</span><span class="p">,</span> <span class="n">PT_brk3</span><span class="p">,</span> <span class="n">PT_brk4</span><span class="p">,</span> <span class="n">PT_brk5</span><span class="p">,</span>
@@ -1965,7 +1966,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">SchXYZTax</span><span class="p">(</span><span class="n">c04800</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e00200</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">SchXYZTax</span><span class="p">(</span><span class="n">c04800</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e00200</span><span class="p">,</span>
               <span class="n">PT_rt1</span><span class="p">,</span> <span class="n">PT_rt2</span><span class="p">,</span> <span class="n">PT_rt3</span><span class="p">,</span> <span class="n">PT_rt4</span><span class="p">,</span> <span class="n">PT_rt5</span><span class="p">,</span>
               <span class="n">PT_rt6</span><span class="p">,</span> <span class="n">PT_rt7</span><span class="p">,</span> <span class="n">PT_rt8</span><span class="p">,</span>
               <span class="n">PT_brk1</span><span class="p">,</span> <span class="n">PT_brk2</span><span class="p">,</span> <span class="n">PT_brk3</span><span class="p">,</span> <span class="n">PT_brk4</span><span class="p">,</span> <span class="n">PT_brk5</span><span class="p">,</span>
@@ -2092,7 +2093,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">GainsTax</span><span class="p">(</span><span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">c23650</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e58990</span><span class="p">,</span> <span class="n">e00200</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">GainsTax</span><span class="p">(</span><span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">c23650</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e58990</span><span class="p">,</span> <span class="n">e00200</span><span class="p">,</span>
              <span class="n">e24515</span><span class="p">,</span> <span class="n">e24518</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c04800</span><span class="p">,</span> <span class="n">c05200</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span>
              <span class="n">II_rt1</span><span class="p">,</span> <span class="n">II_rt2</span><span class="p">,</span> <span class="n">II_rt3</span><span class="p">,</span> <span class="n">II_rt4</span><span class="p">,</span> <span class="n">II_rt5</span><span class="p">,</span> <span class="n">II_rt6</span><span class="p">,</span> <span class="n">II_rt7</span><span class="p">,</span> <span class="n">II_rt8</span><span class="p">,</span>
              <span class="n">II_brk1</span><span class="p">,</span> <span class="n">II_brk2</span><span class="p">,</span> <span class="n">II_brk3</span><span class="p">,</span> <span class="n">II_brk4</span><span class="p">,</span> <span class="n">II_brk5</span><span class="p">,</span> <span class="n">II_brk6</span><span class="p">,</span> <span class="n">II_brk7</span><span class="p">,</span>
@@ -2367,7 +2368,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">AGIsurtax</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">AGI_surtax_trt</span><span class="p">,</span> <span class="n">AGI_surtax_thd</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span> <span class="n">surtax</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AGIsurtax</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">AGI_surtax_trt</span><span class="p">,</span> <span class="n">AGI_surtax_thd</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span> <span class="n">surtax</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes surtax on AGI above some threshold.</span>
 
@@ -2402,7 +2403,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">AMT</span><span class="p">(</span><span class="n">e07300</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">f6251</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AMT</span><span class="p">(</span><span class="n">e07300</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">f6251</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span>
         <span class="n">c04470</span><span class="p">,</span> <span class="n">c17000</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">e24515</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">dwks19</span><span class="p">,</span>
         <span class="n">dwks14</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">e62900</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">dwks10</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span>
         <span class="n">earned</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span>
@@ -2601,7 +2602,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">NetInvIncTax</span><span class="p">(</span><span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">NetInvIncTax</span><span class="p">(</span><span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
                  <span class="n">c00100</span><span class="p">,</span> <span class="n">NIIT_thd</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">NIIT_PT_taxed</span><span class="p">,</span> <span class="n">NIIT_rt</span><span class="p">,</span> <span class="n">niit</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Net Investment Income Tax (NIIT) amount assuming that</span>
@@ -2649,7 +2650,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">F2441</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">f2441</span><span class="p">,</span> <span class="n">CDCC_c</span><span class="p">,</span> <span class="n">e32800</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">F2441</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">f2441</span><span class="p">,</span> <span class="n">CDCC_c</span><span class="p">,</span> <span class="n">e32800</span><span class="p">,</span>
           <span class="n">exact</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CDCC_ps</span><span class="p">,</span> <span class="n">CDCC_ps2</span><span class="p">,</span> <span class="n">CDCC_crt</span><span class="p">,</span> <span class="n">CDCC_frt</span><span class="p">,</span>
           <span class="n">CDCC_po_step_size</span><span class="p">,</span> <span class="n">CDCC_po_rate_per_step</span><span class="p">,</span> <span class="n">CDCC_refundable</span><span class="p">,</span>
           <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">):</span>
@@ -2710,7 +2711,7 @@
         <span class="n">c32890</span> <span class="o">=</span> <span class="n">earned_s</span>  <span class="c1"># earned income of spouse when present</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">c32890</span> <span class="o">=</span> <span class="n">earned_p</span>
-    <span class="n">c33000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c32800</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c32880</span><span class="p">,</span> <span class="n">c32890</span><span class="p">)))</span>
+    <span class="n">c33000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c32800</span><span class="p">,</span> <span class="n">c32880</span><span class="p">,</span> <span class="n">c32890</span><span class="p">))</span>
     <span class="c1"># credit rate is limited at high AGI</span>
     <span class="c1"># ... first phase-down from CDCC_crt to CDCC_frt</span>
     <span class="n">steps_fractional</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps</span><span class="p">)</span> <span class="o">/</span> <span class="n">CDCC_po_step_size</span>
@@ -2741,7 +2742,7 @@
 <div class="viewcode-block" id="EITCamount">
 <a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.EITCamount">[docs]</a>
 <span class="nd">@JIT</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">EITCamount</span><span class="p">(</span><span class="n">basic_frac</span><span class="p">,</span> <span class="n">phasein_rate</span><span class="p">,</span> <span class="n">earnings</span><span class="p">,</span> <span class="n">max_amount</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">EITCamount</span><span class="p">(</span><span class="n">basic_frac</span><span class="p">,</span> <span class="n">phasein_rate</span><span class="p">,</span> <span class="n">earnings</span><span class="p">,</span> <span class="n">max_amount</span><span class="p">,</span>
                <span class="n">phaseout_start</span><span class="p">,</span> <span class="n">agi</span><span class="p">,</span> <span class="n">phaseout_rate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns EITC amount given specified parameters.</span>
@@ -2783,7 +2784,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">EITC</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">EIC</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">EITC</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">EIC</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
          <span class="n">e02000</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span>
          <span class="n">EITC_ps</span><span class="p">,</span> <span class="n">EITC_MinEligAge</span><span class="p">,</span> <span class="n">EITC_MaxEligAge</span><span class="p">,</span> <span class="n">EITC_ps_MarriedJ</span><span class="p">,</span>
          <span class="n">EITC_rt</span><span class="p">,</span> <span class="n">EITC_c</span><span class="p">,</span> <span class="n">EITC_prt</span><span class="p">,</span> <span class="n">EITC_basic_frac</span><span class="p">,</span>
@@ -2918,7 +2919,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">RefundablePayrollTaxCredit</span><span class="p">(</span><span class="n">was_plus_sey_p</span><span class="p">,</span> <span class="n">was_plus_sey_s</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">RefundablePayrollTaxCredit</span><span class="p">(</span><span class="n">was_plus_sey_p</span><span class="p">,</span> <span class="n">was_plus_sey_s</span><span class="p">,</span>
                                <span class="n">RPTC_c</span><span class="p">,</span> <span class="n">RPTC_rt</span><span class="p">,</span>
                                <span class="n">rptc_p</span><span class="p">,</span> <span class="n">rptc_s</span><span class="p">,</span> <span class="n">rptc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2957,7 +2958,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ChildDepTaxCredit</span><span class="p">(</span><span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ChildDepTaxCredit</span><span class="p">(</span><span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span>
                       <span class="n">c05800</span><span class="p">,</span> <span class="n">e07260</span><span class="p">,</span> <span class="n">CR_ResidentialEnergy_hc</span><span class="p">,</span>
                       <span class="n">e07300</span><span class="p">,</span> <span class="n">CR_ForeignTax_hc</span><span class="p">,</span>
                       <span class="n">c07180</span><span class="p">,</span>
@@ -3087,7 +3088,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">PersonalTaxCredit</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">PersonalTaxCredit</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span>
                       <span class="n">II_credit</span><span class="p">,</span> <span class="n">II_credit_ps</span><span class="p">,</span> <span class="n">II_credit_prt</span><span class="p">,</span>
                       <span class="n">II_credit_nr</span><span class="p">,</span> <span class="n">II_credit_nr_ps</span><span class="p">,</span> <span class="n">II_credit_nr_prt</span><span class="p">,</span>
                       <span class="n">RRC_c</span><span class="p">,</span> <span class="n">RRC_ps</span><span class="p">,</span> <span class="n">RRC_pe</span><span class="p">,</span> <span class="n">RRC_prt</span><span class="p">,</span> <span class="n">RRC_c_kids</span><span class="p">,</span> <span class="n">RRC_c_unit</span><span class="p">,</span>
@@ -3162,8 +3163,8 @@
     <span class="c1"># calculate Recovery Rebate Credit from CARES Act 2020 and/or ARPA 2021</span>
     <span class="k">if</span> <span class="n">c00100</span> <span class="o">&lt;</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
         <span class="n">recovery_rebate_credit</span> <span class="o">=</span> <span class="n">RRC_c</span> <span class="o">*</span> <span class="n">XTOT</span>
-        <span class="n">recovery_rebate_credit</span> <span class="o">+=</span> <span class="n">RRC_c_unit</span><span class="p">[</span><span class="n">MARS</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">RRC_c_kids</span> <span class="o">*</span> <span class="n">nu18</span>
-    <span class="k">elif</span> <span class="n">c00100</span> <span class="o">&lt;</span> <span class="n">RRC_pe</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">recovery_rebate_credit</span> <span class="o">+=</span> <span class="n">RRC_c_unit</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">RRC_c_kids</span> <span class="o">*</span> <span class="n">nu18</span>
+    <span class="k">elif</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">c00100</span> <span class="o">&lt;</span> <span class="n">RRC_pe</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
         <span class="n">prt</span> <span class="o">=</span> <span class="p">(</span>
             <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">/</span>
             <span class="p">(</span><span class="n">RRC_pe</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
@@ -3179,7 +3180,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">AmOppCreditParts</span><span class="p">(</span><span class="n">exact</span><span class="p">,</span> <span class="n">e87521</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CR_AmOppRefundable_hc</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AmOppCreditParts</span><span class="p">(</span><span class="n">exact</span><span class="p">,</span> <span class="n">e87521</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CR_AmOppRefundable_hc</span><span class="p">,</span>
                      <span class="n">CR_AmOppNonRefundable_hc</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">c87668</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a phaseout to the Form 8863, line 1, American Opportunity Credit</span>
@@ -3238,7 +3239,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">SchR</span><span class="p">(</span><span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">SchR</span><span class="p">(</span><span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span>
          <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">c02500</span><span class="p">,</span> <span class="n">e01500</span><span class="p">,</span> <span class="n">e01700</span><span class="p">,</span> <span class="n">CR_SchR_hc</span><span class="p">,</span>
          <span class="n">c07200</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3328,7 +3329,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">EducationTaxCredit</span><span class="p">(</span><span class="n">exact</span><span class="p">,</span> <span class="n">e87530</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">EducationTaxCredit</span><span class="p">(</span><span class="n">exact</span><span class="p">,</span> <span class="n">e87530</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span>
                        <span class="n">e07300</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">c07200</span><span class="p">,</span> <span class="n">c87668</span><span class="p">,</span>
                        <span class="n">LLC_Expense_c</span><span class="p">,</span> <span class="n">ETC_pe_Single</span><span class="p">,</span> <span class="n">ETC_pe_Married</span><span class="p">,</span>
                        <span class="n">CR_Education_hc</span><span class="p">,</span>
@@ -3406,7 +3407,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">CharityCredit</span><span class="p">(</span><span class="n">e19800</span><span class="p">,</span> <span class="n">e20100</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CR_Charity_rt</span><span class="p">,</span> <span class="n">CR_Charity_f</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">CharityCredit</span><span class="p">(</span><span class="n">e19800</span><span class="p">,</span> <span class="n">e20100</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CR_Charity_rt</span><span class="p">,</span> <span class="n">CR_Charity_f</span><span class="p">,</span>
                   <span class="n">CR_Charity_frt</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes nonrefundable charity credit, charity_credit.</span>
@@ -3445,7 +3446,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">NonrefundableCredits</span><span class="p">(</span><span class="n">c05800</span><span class="p">,</span> <span class="n">e07240</span><span class="p">,</span> <span class="n">e07260</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">e07400</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">NonrefundableCredits</span><span class="p">(</span><span class="n">c05800</span><span class="p">,</span> <span class="n">e07240</span><span class="p">,</span> <span class="n">e07260</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">e07400</span><span class="p">,</span>
                          <span class="n">e07600</span><span class="p">,</span> <span class="n">p08000</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span>
                          <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
                          <span class="n">CTC_is_refundable</span><span class="p">,</span>
@@ -3589,7 +3590,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">AdditionalCTC</span><span class="p">(</span><span class="n">codtc_limited</span><span class="p">,</span> <span class="n">ACTC_c</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">ACTC_Income_thd</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AdditionalCTC</span><span class="p">(</span><span class="n">codtc_limited</span><span class="p">,</span> <span class="n">ACTC_c</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">ACTC_Income_thd</span><span class="p">,</span>
                   <span class="n">ACTC_rt</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">ACTC_rt_bonus_under6family</span><span class="p">,</span> <span class="n">ACTC_ChildNum</span><span class="p">,</span>
                   <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
                   <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span>
@@ -3681,7 +3682,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">C1040</span><span class="p">(</span><span class="n">c05800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">c07200</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">c07230</span><span class="p">,</span> <span class="n">c07240</span><span class="p">,</span> <span class="n">c07260</span><span class="p">,</span> <span class="n">c07300</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">C1040</span><span class="p">(</span><span class="n">c05800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">c07200</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">c07230</span><span class="p">,</span> <span class="n">c07240</span><span class="p">,</span> <span class="n">c07260</span><span class="p">,</span> <span class="n">c07300</span><span class="p">,</span>
           <span class="n">c07400</span><span class="p">,</span> <span class="n">c07600</span><span class="p">,</span> <span class="n">c08000</span><span class="p">,</span> <span class="n">e09700</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">e09900</span><span class="p">,</span> <span class="n">niit</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span>
           <span class="n">ptax_amc</span><span class="p">,</span> <span class="n">othertaxes</span><span class="p">,</span> <span class="n">c07100</span><span class="p">,</span> <span class="n">c09200</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">,</span>
           <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
@@ -3765,7 +3766,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">CTC_new</span><span class="p">(</span><span class="n">CTC_new_c</span><span class="p">,</span> <span class="n">CTC_new_rt</span><span class="p">,</span> <span class="n">CTC_new_c_under6_bonus</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">CTC_new</span><span class="p">(</span><span class="n">CTC_new_c</span><span class="p">,</span> <span class="n">CTC_new_rt</span><span class="p">,</span> <span class="n">CTC_new_c_under6_bonus</span><span class="p">,</span>
             <span class="n">CTC_new_ps</span><span class="p">,</span> <span class="n">CTC_new_prt</span><span class="p">,</span> <span class="n">CTC_new_for_all</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
             <span class="n">CTC_new_refund_limited</span><span class="p">,</span> <span class="n">CTC_new_refund_limit_payroll_rt</span><span class="p">,</span>
             <span class="n">CTC_new_refund_limited_all_payroll</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span>
@@ -3849,8 +3850,7 @@
             <span class="n">ctc_new</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ctc_new</span><span class="p">,</span> <span class="n">ctc_new_reduced</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ctc_new</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">CTC_new_refund_limited</span><span class="p">:</span>
             <span class="n">refund_new</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ctc_new</span> <span class="o">-</span> <span class="n">c09200</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">CTC_new_refund_limited_all_payroll</span><span class="p">:</span>
-                <span class="n">limit_new</span> <span class="o">=</span> <span class="n">CTC_new_refund_limit_payroll_rt</span> <span class="o">*</span> <span class="n">ptax_oasdi</span>
+            <span class="n">limit_new</span> <span class="o">=</span> <span class="n">CTC_new_refund_limit_payroll_rt</span> <span class="o">*</span> <span class="n">ptax_oasdi</span>
             <span class="k">if</span> <span class="n">CTC_new_refund_limited_all_payroll</span><span class="p">:</span>
                 <span class="n">limit_new</span> <span class="o">=</span> <span class="n">CTC_new_refund_limit_payroll_rt</span> <span class="o">*</span> <span class="n">payrolltax</span>
             <span class="n">limited_new</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">refund_new</span> <span class="o">-</span> <span class="n">limit_new</span><span class="p">)</span>
@@ -3861,7 +3861,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">IITAX</span><span class="p">(</span><span class="n">c59660</span><span class="p">,</span> <span class="n">c11070</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">,</span> <span class="n">rptc</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">IITAX</span><span class="p">(</span><span class="n">c59660</span><span class="p">,</span> <span class="n">c11070</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">,</span> <span class="n">rptc</span><span class="p">,</span>
           <span class="n">c09200</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">,</span> <span class="n">recovery_rebate_credit</span><span class="p">,</span>
           <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">ODC_is_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span>
           <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
@@ -3941,7 +3941,7 @@
 <div class="viewcode-block" id="Taxes">
 <a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.Taxes">[docs]</a>
 <span class="nd">@JIT</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">Taxes</span><span class="p">(</span><span class="n">income</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">tbrk_base</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">Taxes</span><span class="p">(</span><span class="n">income</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">tbrk_base</span><span class="p">,</span>
           <span class="n">rate1</span><span class="p">,</span> <span class="n">rate2</span><span class="p">,</span> <span class="n">rate3</span><span class="p">,</span> <span class="n">rate4</span><span class="p">,</span> <span class="n">rate5</span><span class="p">,</span> <span class="n">rate6</span><span class="p">,</span> <span class="n">rate7</span><span class="p">,</span> <span class="n">rate8</span><span class="p">,</span>
           <span class="n">tbrk1</span><span class="p">,</span> <span class="n">tbrk2</span><span class="p">,</span> <span class="n">tbrk3</span><span class="p">,</span> <span class="n">tbrk4</span><span class="p">,</span> <span class="n">tbrk5</span><span class="p">,</span> <span class="n">tbrk6</span><span class="p">,</span> <span class="n">tbrk7</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4022,7 +4022,7 @@
 
 <div class="viewcode-block" id="ComputeBenefit">
 <a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.ComputeBenefit">[docs]</a>
-<span class="k">def</span> <span class="nf">ComputeBenefit</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span> <span class="n">ID_switch</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ComputeBenefit</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span> <span class="n">ID_switch</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the value of the benefits accrued from itemizing.</span>
 
@@ -4064,7 +4064,7 @@
 
 <div class="viewcode-block" id="BenefitSurtax">
 <a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.BenefitSurtax">[docs]</a>
-<span class="k">def</span> <span class="nf">BenefitSurtax</span><span class="p">(</span><span class="n">calc</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">BenefitSurtax</span><span class="p">(</span><span class="n">calc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes itemized-deduction-benefit surtax and adds the surtax amount</span>
 <span class="sd">    to income tax, combined tax, and surtax liabilities.</span>
@@ -4098,7 +4098,7 @@
 
 <div class="viewcode-block" id="BenefitLimitation">
 <a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.BenefitLimitation">[docs]</a>
-<span class="k">def</span> <span class="nf">BenefitLimitation</span><span class="p">(</span><span class="n">calc</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">BenefitLimitation</span><span class="p">(</span><span class="n">calc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Limits the benefits of select itemized deductions to a fraction of</span>
 <span class="sd">    deductible expenses.</span>
@@ -4147,7 +4147,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">FairShareTax</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">ptax_amc</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">FairShareTax</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">ptax_amc</span><span class="p">,</span>
                  <span class="n">FST_AGI_trt</span><span class="p">,</span> <span class="n">FST_AGI_thd_lo</span><span class="p">,</span> <span class="n">FST_AGI_thd_hi</span><span class="p">,</span>
                  <span class="n">fstax</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">,</span> <span class="n">surtax</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4207,7 +4207,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">LumpSumTax</span><span class="p">(</span><span class="n">DSI</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">LumpSumTax</span><span class="p">(</span><span class="n">DSI</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span>
                <span class="n">LST</span><span class="p">,</span>
                <span class="n">lumpsum_tax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -4244,7 +4244,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">ExpandIncome</span><span class="p">(</span><span class="n">e00200</span><span class="p">,</span> <span class="n">pencon_p</span><span class="p">,</span> <span class="n">pencon_s</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ExpandIncome</span><span class="p">(</span><span class="n">e00200</span><span class="p">,</span> <span class="n">pencon_p</span><span class="p">,</span> <span class="n">pencon_s</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span>
                  <span class="n">e00700</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span> <span class="n">e01400</span><span class="p">,</span> <span class="n">e01500</span><span class="p">,</span>
                  <span class="n">e02000</span><span class="p">,</span> <span class="n">e02100</span><span class="p">,</span> <span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span>
                  <span class="n">benefit_value_total</span><span class="p">,</span> <span class="n">expanded_income</span><span class="p">):</span>
@@ -4331,7 +4331,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">AfterTaxIncome</span><span class="p">(</span><span class="n">combined</span><span class="p">,</span> <span class="n">expanded_income</span><span class="p">,</span> <span class="n">aftertax_income</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AfterTaxIncome</span><span class="p">(</span><span class="n">combined</span><span class="p">,</span> <span class="n">expanded_income</span><span class="p">,</span> <span class="n">aftertax_income</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates after-tax expanded income.</span>
 

@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -401,12 +401,12 @@
 <span class="c1"># pycodestyle decorators.py</span>
 <span class="c1"># pylint --disable=locally-disabled decorators.py</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">io</span>
-<span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">numba</span>
-<span class="kn">from</span> <span class="nn">taxcalc.policy</span> <span class="kn">import</span> <span class="n">Policy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numba</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.policy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Policy</span>
 
 
 <span class="n">DO_JIT</span> <span class="o">=</span> <span class="kc">True</span>
@@ -419,15 +419,15 @@
 
 <div class="viewcode-block" id="id_wrapper">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.id_wrapper">[docs]</a>
-<span class="k">def</span> <span class="nf">id_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">dec_args</span><span class="p">,</span> <span class="o">**</span><span class="n">dec_kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">id_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">dec_args</span><span class="p">,</span> <span class="o">**</span><span class="n">dec_kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function wrapper when numba package is not being used during debugging.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">fnc</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrap</span><span class="p">(</span><span class="n">fnc</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        wrap function nested in id_wrapper function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="nf">wrapped_f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapped_f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            wrapped_f function nested in wrap function.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
@@ -445,13 +445,13 @@
 
 <div class="viewcode-block" id="GetReturnNode">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.GetReturnNode">[docs]</a>
-<span class="k">class</span> <span class="nc">GetReturnNode</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GetReturnNode</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A NodeVisitor to get the return tuple names from a calc-style function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="GetReturnNode.visit_Return">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.GetReturnNode.visit_Return">[docs]</a>
-    <span class="k">def</span> <span class="nf">visit_Return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>  <span class="c1"># pylint: disable=invalid-name,no-self-use</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_Return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>  <span class="c1"># pylint: disable=invalid-name</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        visit_Return is used by NodeVisitor.visit method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -464,7 +464,7 @@
 
 <div class="viewcode-block" id="create_apply_function_string">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.create_apply_function_string">[docs]</a>
-<span class="k">def</span> <span class="nf">create_apply_function_string</span><span class="p">(</span><span class="n">sigout</span><span class="p">,</span> <span class="n">sigin</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_apply_function_string</span><span class="p">(</span><span class="n">sigout</span><span class="p">,</span> <span class="n">sigin</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a string for a function of the form::</span>
 
@@ -495,7 +495,7 @@
     <span class="n">out_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">))]</span>
     <span class="n">in_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">),</span> <span class="n">total_len</span><span class="p">)]</span>
 
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;def ap_func(</span><span class="si">{0}</span><span class="s2">):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_args</span> <span class="o">+</span> <span class="n">in_args</span><span class="p">)))</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;def ap_func(</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_args</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">in_args</span><span class="p">)</span><span class="si">}</span><span class="s2">):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;  for i in range(len(x_0)):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">out_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="s2">&quot;[i]&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">out_args</span><span class="p">]</span>
     <span class="n">in_index</span> <span class="o">=</span> <span class="p">[]</span>
@@ -510,7 +510,7 @@
 
 <div class="viewcode-block" id="create_toplevel_function_string">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.create_toplevel_function_string">[docs]</a>
-<span class="k">def</span> <span class="nf">create_toplevel_function_string</span><span class="p">(</span><span class="n">args_out</span><span class="p">,</span> <span class="n">args_in</span><span class="p">,</span> <span class="n">pm_or_pf</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_toplevel_function_string</span><span class="p">(</span><span class="n">args_out</span><span class="p">,</span> <span class="n">args_in</span><span class="p">,</span> <span class="n">pm_or_pf</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a string for a function of the form:</span>
 
@@ -572,7 +572,7 @@
 
 <div class="viewcode-block" id="make_apply_function">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.make_apply_function">[docs]</a>
-<span class="k">def</span> <span class="nf">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">out_args</span><span class="p">,</span> <span class="n">in_args</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">out_args</span><span class="p">,</span> <span class="n">in_args</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span>
                         <span class="n">do_jit</span><span class="o">=</span><span class="n">DO_JIT</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes a calc-style function and creates the necessary Python code for</span>
@@ -613,14 +613,14 @@
 
 <div class="viewcode-block" id="apply_jit">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.apply_jit">[docs]</a>
-<span class="k">def</span> <span class="nf">apply_jit</span><span class="p">(</span><span class="n">dtype_sig_out</span><span class="p">,</span> <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_jit</span><span class="p">(</span><span class="n">dtype_sig_out</span><span class="p">,</span> <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make a decorator that takes in a calc-style function, handle apply step.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters</span><span class="p">:</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">make_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        make_wrapper function nested in apply_jit function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -628,7 +628,7 @@
         <span class="n">jitted_apply</span> <span class="o">=</span> <span class="n">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dtype_sig_out</span><span class="p">,</span>
                                            <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            wrapper function nested in make_wrapper function.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
@@ -655,7 +655,7 @@
 
 <div class="viewcode-block" id="iterate_jit">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.iterate_jit">[docs]</a>
-<span class="k">def</span> <span class="nf">iterate_jit</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">iterate_jit</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Public decorator for a calc-style function (see calcfunctions.py) that</span>
 <span class="sd">    transforms the calc-style function into an apply-style function that</span>
@@ -665,7 +665,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters</span><span class="p">:</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">make_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        make_wrapper function nested in iterate_jit decorator</span>
 <span class="sd">        wraps specified func using apply_jit.</span>
@@ -675,7 +675,7 @@
         <span class="n">in_args</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
         <span class="c1"># Get the numba.jit arguments</span>
         <span class="n">jit_args_list</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">JIT</span><span class="p">)</span><span class="o">.</span><span class="n">args</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;nopython&#39;</span><span class="p">]</span>
-        <span class="n">kwargs_for_jit</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">kwargs_for_jit</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">jit_args_list</span><span class="p">:</span>
                 <span class="n">kwargs_for_jit</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
@@ -713,7 +713,7 @@
                                                <span class="n">do_jit</span><span class="o">=</span><span class="n">DO_JIT</span><span class="p">,</span>
                                                <span class="o">**</span><span class="n">kwargs_for_jit</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            wrapper function nested in make_wrapper function nested</span>
 <span class="sd">            in iterate_jit decorator.</span>

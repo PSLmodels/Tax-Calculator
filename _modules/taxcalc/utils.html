@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -402,17 +402,17 @@
 <span class="c1">#</span>
 <span class="c1"># pylint: disable=too-many-lines</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">importlib.resources</span> <span class="k">as</span> <span class="nn">implibres</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">bokeh.plotting</span> <span class="k">as</span> <span class="nn">bp</span>
-<span class="kn">from</span> <span class="nn">bokeh.models</span> <span class="kn">import</span> <span class="n">PrintfTickFormatter</span>
-<span class="kn">from</span> <span class="nn">taxcalc.utilsprvt</span> <span class="kn">import</span> <span class="p">(</span><span class="n">weighted_mean</span><span class="p">,</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib.resources</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">implibres</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bokeh.plotting</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bokeh.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrintfTickFormatter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.utilsprvt</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">weighted_mean</span><span class="p">,</span>
                                <span class="n">wage_weighted</span><span class="p">,</span> <span class="n">agi_weighted</span><span class="p">,</span>
                                <span class="n">expanded_income_weighted</span><span class="p">)</span>
 
@@ -530,7 +530,7 @@
 
 <div class="viewcode-block" id="unweighted_sum">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.unweighted_sum">[docs]</a>
-<span class="k">def</span> <span class="nf">unweighted_sum</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">unweighted_sum</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return unweighted sum of Pandas DataFrame col_name items.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -540,7 +540,7 @@
 
 <div class="viewcode-block" id="weighted_sum">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.weighted_sum">[docs]</a>
-<span class="k">def</span> <span class="nf">weighted_sum</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">weighted_sum</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return weighted sum of Pandas DataFrame col_name items.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -550,7 +550,7 @@
 
 <div class="viewcode-block" id="add_quantile_table_row_variable">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.add_quantile_table_row_variable">[docs]</a>
-<span class="k">def</span> <span class="nf">add_quantile_table_row_variable</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">income_measure</span><span class="p">,</span> <span class="n">num_quantiles</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_quantile_table_row_variable</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">income_measure</span><span class="p">,</span> <span class="n">num_quantiles</span><span class="p">,</span>
                                     <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                     <span class="n">decile_details</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                     <span class="n">weight_by_income_measure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -575,7 +575,8 @@
 <span class="sd">    and the top decile is broken into three subgroups</span>
 <span class="sd">    (90-95, 95-99, and top 1%).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
+    <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
+    <span class="c1"># pylint: disable=too-many-locals</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">income_measure</span> <span class="ow">in</span> <span class="n">dframe</span>
     <span class="k">assert</span> <span class="s1">&#39;s006&#39;</span> <span class="ow">in</span> <span class="n">dframe</span>
@@ -638,7 +639,7 @@
 
 <div class="viewcode-block" id="add_income_table_row_variable">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.add_income_table_row_variable">[docs]</a>
-<span class="k">def</span> <span class="nf">add_income_table_row_variable</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">income_measure</span><span class="p">,</span> <span class="n">bin_edges</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_income_table_row_variable</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">income_measure</span><span class="p">,</span> <span class="n">bin_edges</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add a variable to specified Pandas DataFrame, dframe, that specifies the</span>
 <span class="sd">    table row and is called &#39;table_row&#39;.  The rows are defined by the</span>
@@ -673,7 +674,7 @@
 
 <div class="viewcode-block" id="get_sums">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.get_sums">[docs]</a>
-<span class="k">def</span> <span class="nf">get_sums</span><span class="p">(</span><span class="n">dframe</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sums</span><span class="p">(</span><span class="n">dframe</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute unweighted sum of items in each column of Pandas DataFrame, dframe.</span>
 
@@ -681,7 +682,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    Pandas Series object containing column sums indexed by dframe column names.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sums</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">sums</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">dframe</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">col</span> <span class="o">!=</span> <span class="s1">&#39;table_row&#39;</span><span class="p">:</span>
             <span class="n">sums</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">dframe</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -691,7 +692,7 @@
 
 <div class="viewcode-block" id="create_distribution_table">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.create_distribution_table">[docs]</a>
-<span class="k">def</span> <span class="nf">create_distribution_table</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">income_measure</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_distribution_table</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">income_measure</span><span class="p">,</span>
                               <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get results from vdf, sort them by expanded_income based on groupby,</span>
@@ -736,7 +737,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
     <span class="c1"># nested function that returns calculated column statistics as a DataFrame</span>
-    <span class="k">def</span> <span class="nf">stat_dataframe</span><span class="p">(</span><span class="n">gdf</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stat_dataframe</span><span class="p">(</span><span class="n">gdf</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns calculated distribution table column statistics derived from</span>
 <span class="sd">        the specified grouped Dataframe object, gdf.</span>
@@ -765,6 +766,7 @@
     <span class="k">if</span> <span class="n">pop_quantiles</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">groupby</span> <span class="o">==</span> <span class="s1">&#39;weighted_deciles&#39;</span>
     <span class="c1"># sort the data given specified groupby and income_measure</span>
+    <span class="n">dframe</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">groupby</span> <span class="o">==</span> <span class="s1">&#39;weighted_deciles&#39;</span><span class="p">:</span>
         <span class="n">dframe</span> <span class="o">=</span> <span class="n">add_quantile_table_row_variable</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">income_measure</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
                                                  <span class="n">pop_quantiles</span><span class="o">=</span><span class="n">pop_quantiles</span><span class="p">,</span>
@@ -839,7 +841,7 @@
 
 <div class="viewcode-block" id="create_difference_table">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.create_difference_table">[docs]</a>
-<span class="k">def</span> <span class="nf">create_difference_table</span><span class="p">(</span><span class="n">vdf1</span><span class="p">,</span> <span class="n">vdf2</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">tax_to_diff</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_difference_table</span><span class="p">(</span><span class="n">vdf1</span><span class="p">,</span> <span class="n">vdf2</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">tax_to_diff</span><span class="p">,</span>
                             <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get results from two different vdf, construct tax difference results,</span>
@@ -885,17 +887,17 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements,too-many-locals,too-many-branches</span>
     <span class="c1"># nested function that creates dataframe containing additive statistics</span>
-    <span class="k">def</span> <span class="nf">additive_stats_dataframe</span><span class="p">(</span><span class="n">gdf</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">additive_stats_dataframe</span><span class="p">(</span><span class="n">gdf</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Nested function that returns additive stats DataFrame derived from gdf</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="nf">count_lt_zero</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=-</span><span class="mf">0.001</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">count_lt_zero</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=-</span><span class="mf">0.001</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Return count sum of negative Pandas DataFrame col_name items.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="n">dframe</span><span class="p">[</span><span class="n">dframe</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">tolerance</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
-        <span class="k">def</span> <span class="nf">count_gt_zero</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">count_gt_zero</span><span class="p">(</span><span class="n">dframe</span><span class="p">,</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Return count sum of positive Pandas DataFrame col_name items.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
@@ -959,6 +961,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">df2</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df2</span><span class="p">[</span><span class="s1">&#39;s006&#39;</span><span class="p">]</span>
     <span class="c1"># add table_row column to df2 given specified groupby and income_measure</span>
+    <span class="n">dframe</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">groupby</span> <span class="o">==</span> <span class="s1">&#39;weighted_deciles&#39;</span><span class="p">:</span>
         <span class="n">dframe</span> <span class="o">=</span> <span class="n">add_quantile_table_row_variable</span><span class="p">(</span>
             <span class="n">df2</span><span class="p">,</span> <span class="n">baseline_expanded_income</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
@@ -1057,7 +1060,7 @@
 
 <div class="viewcode-block" id="create_diagnostic_table">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.create_diagnostic_table">[docs]</a>
-<span class="k">def</span> <span class="nf">create_diagnostic_table</span><span class="p">(</span><span class="n">dframe_list</span><span class="p">,</span> <span class="n">year_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_diagnostic_table</span><span class="p">(</span><span class="n">dframe_list</span><span class="p">,</span> <span class="n">year_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract diagnostic table from list of Pandas DataFrame objects</span>
 <span class="sd">    returned from a Calculator dataframe(DIST_VARIABLES) call for</span>
@@ -1074,7 +1077,7 @@
 <span class="sd">    Pandas DataFrame object containing the diagnostic table</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements</span>
-    <span class="k">def</span> <span class="nf">diagnostic_table_odict</span><span class="p">(</span><span class="n">vdf</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diagnostic_table_odict</span><span class="p">(</span><span class="n">vdf</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Nested function that extracts diagnostic table dictionary from</span>
 <span class="sd">        the specified Pandas DataFrame object, vdf.</span>
@@ -1098,7 +1101,7 @@
         <span class="n">agi</span> <span class="o">=</span> <span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;c00100&#39;</span><span class="p">]</span>
         <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;AGI ($b)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">agi</span> <span class="o">*</span> <span class="n">wghts</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">in_billions</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="c1"># number of itemizers</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="p">(</span><span class="n">wghts</span><span class="p">[</span><span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;c04470&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">wghts</span><span class="p">[</span><span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;c04470&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;Itemizers (#m)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">val</span> <span class="o">*</span> <span class="n">in_millions</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="c1"># itemized deduction</span>
         <span class="n">ided1</span> <span class="o">=</span> <span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;c04470&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">wghts</span>
@@ -1179,7 +1182,7 @@
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">year_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dframe_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
     <span class="c1"># construct diagnostic table</span>
-    <span class="n">tlist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">tlist</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">year</span><span class="p">,</span> <span class="n">vardf</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">year_list</span><span class="p">,</span> <span class="n">dframe_list</span><span class="p">):</span>
         <span class="n">odict</span> <span class="o">=</span> <span class="n">diagnostic_table_odict</span><span class="p">(</span><span class="n">vardf</span><span class="p">)</span>
         <span class="n">ddf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">odict</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="n">year</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">odict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -1192,7 +1195,7 @@
 
 <div class="viewcode-block" id="mtr_graph_data">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.mtr_graph_data">[docs]</a>
-<span class="k">def</span> <span class="nf">mtr_graph_data</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mtr_graph_data</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span>
                    <span class="n">mars</span><span class="o">=</span><span class="s1">&#39;ALL&#39;</span><span class="p">,</span>
                    <span class="n">mtr_measure</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span>
                    <span class="n">mtr_variable</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span>
@@ -1275,8 +1278,8 @@
 <span class="sd">    -------</span>
 <span class="sd">    dictionary object suitable for passing to xtr_graph_plot utility function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># pylint: disable=too-many-arguments,too-many-statements</span>
-    <span class="c1"># pylint: disable=too-many-locals,too-many-branches</span>
+    <span class="c1"># pylint: disable=too-many-arguments,,too-many-positional-arguments</span>
+    <span class="c1"># pylint: disable=too-many-locals,too-many-branches,too-many-statements</span>
     <span class="c1"># check validity of function arguments</span>
     <span class="c1"># . . check income_measure value</span>
     <span class="n">weighting_function</span> <span class="o">=</span> <span class="n">weighted_mean</span>
@@ -1351,26 +1354,25 @@
     <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mtr1_series</span>
     <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;reform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mtr2_series</span>
     <span class="c1"># construct dictionary containing merged data and auto-generated labels</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;lines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lines</span>
     <span class="k">if</span> <span class="n">dollar_weighting</span><span class="p">:</span>
-        <span class="n">income_str</span> <span class="o">=</span> <span class="s1">&#39;Dollar-weighted </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">income_str</span><span class="p">)</span>
-        <span class="n">mtr_str</span> <span class="o">=</span> <span class="s1">&#39;Dollar-weighted </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mtr_str</span><span class="p">)</span>
-    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ylabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> MTR&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mtr_str</span><span class="p">)</span>
-    <span class="n">xlabel_str</span> <span class="o">=</span> <span class="s1">&#39;Baseline </span><span class="si">{}</span><span class="s1"> Percentile&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">income_str</span><span class="p">)</span>
+        <span class="n">income_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Dollar-weighted </span><span class="si">{</span><span class="n">income_str</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">mtr_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Dollar-weighted </span><span class="si">{</span><span class="n">mtr_str</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ylabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mtr_str</span><span class="si">}</span><span class="s1"> MTR&#39;</span>
+    <span class="n">xlabel_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Baseline </span><span class="si">{</span><span class="n">income_str</span><span class="si">}</span><span class="s1"> Percentile&#39;</span>
     <span class="k">if</span> <span class="n">mars</span> <span class="o">!=</span> <span class="s1">&#39;ALL&#39;</span><span class="p">:</span>
-        <span class="n">xlabel_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> for MARS=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xlabel_str</span><span class="p">,</span> <span class="n">mars</span><span class="p">)</span>
+        <span class="n">xlabel_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">xlabel_str</span><span class="si">}</span><span class="s1"> for MARS=</span><span class="si">{</span><span class="n">mars</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;xlabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xlabel_str</span>
-    <span class="n">var_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mtr_variable</span><span class="p">)</span>
+    <span class="n">var_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mtr_variable</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="k">if</span> <span class="n">mtr_variable</span> <span class="o">==</span> <span class="s1">&#39;e00200p&#39;</span> <span class="ow">and</span> <span class="n">alt_e00200p_text</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-        <span class="n">var_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alt_e00200p_text</span><span class="p">)</span>
+        <span class="n">var_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">alt_e00200p_text</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="k">if</span> <span class="n">mtr_variable</span> <span class="o">==</span> <span class="s1">&#39;e00200p&#39;</span> <span class="ow">and</span> <span class="n">mtr_wrt_full_compen</span><span class="p">:</span>
-        <span class="n">var_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> wrt full compensation&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var_str</span><span class="p">)</span>
-    <span class="n">title_str</span> <span class="o">=</span> <span class="s1">&#39;Mean Marginal Tax Rate for </span><span class="si">{}</span><span class="s1"> by Income Percentile&#39;</span>
-    <span class="n">title_str</span> <span class="o">=</span> <span class="n">title_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var_str</span><span class="p">)</span>
+        <span class="n">var_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">var_str</span><span class="si">}</span><span class="s1"> wrt full compensation&#39;</span>
+    <span class="n">title_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Mean Marginal Tax Rate for </span><span class="si">{</span><span class="n">var_str</span><span class="si">}</span><span class="s1"> by Income Percentile&#39;</span>
     <span class="k">if</span> <span class="n">mars</span> <span class="o">!=</span> <span class="s1">&#39;ALL&#39;</span><span class="p">:</span>
-        <span class="n">title_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> for MARS=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title_str</span><span class="p">,</span> <span class="n">mars</span><span class="p">)</span>
-    <span class="n">title_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title_str</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
+        <span class="n">title_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title_str</span><span class="si">}</span><span class="s1"> for MARS=</span><span class="si">{</span><span class="n">mars</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">title_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title_str</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title_str</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
@@ -1378,7 +1380,7 @@
 
 <div class="viewcode-block" id="atr_graph_data">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.atr_graph_data">[docs]</a>
-<span class="k">def</span> <span class="nf">atr_graph_data</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">atr_graph_data</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span>
                    <span class="n">mars</span><span class="o">=</span><span class="s1">&#39;ALL&#39;</span><span class="p">,</span>
                    <span class="n">atr_measure</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span>
                    <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1491,17 +1493,17 @@
     <span class="c1"># include only percentiles with average income no less than min_avginc</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">included</span><span class="p">]</span>
     <span class="c1"># construct dictionary containing plot lines and auto-generated labels</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;lines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lines</span>
-    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ylabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> Average Tax Rate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atr_str</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ylabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">atr_str</span><span class="si">}</span><span class="s1"> Average Tax Rate&#39;</span>
     <span class="n">xlabel_str</span> <span class="o">=</span> <span class="s1">&#39;Baseline Expanded-Income Percentile&#39;</span>
     <span class="k">if</span> <span class="n">mars</span> <span class="o">!=</span> <span class="s1">&#39;ALL&#39;</span><span class="p">:</span>
-        <span class="n">xlabel_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> for MARS=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xlabel_str</span><span class="p">,</span> <span class="n">mars</span><span class="p">)</span>
+        <span class="n">xlabel_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">xlabel_str</span><span class="si">}</span><span class="s1"> for MARS=</span><span class="si">{</span><span class="n">mars</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;xlabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xlabel_str</span>
     <span class="n">title_str</span> <span class="o">=</span> <span class="s1">&#39;Average Tax Rate by Income Percentile&#39;</span>
     <span class="k">if</span> <span class="n">mars</span> <span class="o">!=</span> <span class="s1">&#39;ALL&#39;</span><span class="p">:</span>
-        <span class="n">title_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> for MARS=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title_str</span><span class="p">,</span> <span class="n">mars</span><span class="p">)</span>
-    <span class="n">title_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title_str</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
+        <span class="n">title_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title_str</span><span class="si">}</span><span class="s1"> for MARS=</span><span class="si">{</span><span class="n">mars</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">title_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title_str</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title_str</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
@@ -1509,7 +1511,7 @@
 
 <div class="viewcode-block" id="xtr_graph_plot">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.xtr_graph_plot">[docs]</a>
-<span class="k">def</span> <span class="nf">xtr_graph_plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">xtr_graph_plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
                    <span class="n">width</span><span class="o">=</span><span class="mi">850</span><span class="p">,</span>
                    <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
                    <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -1575,7 +1577,7 @@
 <span class="sd">    raster graphics file.  There is no option to make the bokeh.plotting</span>
 <span class="sd">    figure generate a vector graphics file such as an EPS file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># pylint: disable=too-many-arguments</span>
+    <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
     <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
         <span class="n">title</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
@@ -1612,7 +1614,7 @@
 
 <div class="viewcode-block" id="pch_graph_data">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.pch_graph_data">[docs]</a>
-<span class="k">def</span> <span class="nf">pch_graph_data</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pch_graph_data</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prepare percentage change in after-tax expanded income data needed by</span>
 <span class="sd">    pch_graph_plot utility function.</span>
@@ -1668,13 +1670,13 @@
     <span class="c1"># include only percentiles with average income no less than min_avginc</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">included</span><span class="p">]</span>
     <span class="c1"># construct dictionary containing plot line and auto-generated labels</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;line&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ylabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Change in After-Tax Expanded Income&#39;</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;xlabel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Baseline Expanded-Income Percentile&#39;</span>
     <span class="n">title_str</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Percentage Change in After-Tax Expanded Income &#39;</span>
                  <span class="s1">&#39;by Income Percentile&#39;</span><span class="p">)</span>
-    <span class="n">title_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title_str</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
+    <span class="n">title_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title_str</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title_str</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
@@ -1682,7 +1684,7 @@
 
 <div class="viewcode-block" id="pch_graph_plot">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.pch_graph_plot">[docs]</a>
-<span class="k">def</span> <span class="nf">pch_graph_plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pch_graph_plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
                    <span class="n">width</span><span class="o">=</span><span class="mi">850</span><span class="p">,</span>
                    <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
                    <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -1719,7 +1721,7 @@
 <span class="sd">    -----</span>
 <span class="sd">    See Notes to xtr_graph_plot function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># pylint: disable=too-many-arguments</span>
+    <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
     <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
         <span class="n">title</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">bp</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
@@ -1741,15 +1743,20 @@
     <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label</span> <span class="o">=</span> <span class="n">ylabel</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label_text_font_size</span> <span class="o">=</span> <span class="s1">&#39;12pt&#39;</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label_text_font_style</span> <span class="o">=</span> <span class="s1">&#39;normal&#39;</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">PrintfTickFormatter</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.1f</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="c1"># return fig  # bokeh 3.4.1 cannot save this figure for some unknown reason</span>
-    <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">PrintfTickFormatter</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.1f</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
+    <span class="c1"># bokeh cannot save this fig saying:</span>
+    <span class="c1">#   bokeh.core.serialization.SerializationError:</span>
+    <span class="c1">#   can&#39;t serialize &lt;class &#39;range&#39;&gt;</span>
+    <span class="c1"># so the &quot;return fig&quot; statement is replaced by Python&#39;s implicit</span>
+    <span class="c1"># &quot;return None&quot; until the above logic can be made compatible with</span>
+    <span class="c1"># modern bokeh packages</span>
+    <span class="c1"># return fig</span>
 
 
 <div class="viewcode-block" id="write_graph_file">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.write_graph_file">[docs]</a>
-<span class="k">def</span> <span class="nf">write_graph_file</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_graph_file</span><span class="p">(</span><span class="n">figure</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write HTML file named filename containing figure.</span>
 <span class="sd">    The title is the text displayed in the browser tab.</span>
@@ -1777,7 +1784,7 @@
 
 <div class="viewcode-block" id="isoelastic_utility_function">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.isoelastic_utility_function">[docs]</a>
-<span class="k">def</span> <span class="nf">isoelastic_utility_function</span><span class="p">(</span><span class="n">consumption</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">isoelastic_utility_function</span><span class="p">(</span><span class="n">consumption</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate and return utility of consumption.</span>
 
@@ -1813,7 +1820,7 @@
 
 <div class="viewcode-block" id="expected_utility">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.expected_utility">[docs]</a>
-<span class="k">def</span> <span class="nf">expected_utility</span><span class="p">(</span><span class="n">consumption</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">expected_utility</span><span class="p">(</span><span class="n">consumption</span><span class="p">,</span> <span class="n">probability</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate and return expected utility of consumption.</span>
 
@@ -1843,7 +1850,7 @@
 
 <div class="viewcode-block" id="certainty_equivalent">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.certainty_equivalent">[docs]</a>
-<span class="k">def</span> <span class="nf">certainty_equivalent</span><span class="p">(</span><span class="n">exputil</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">certainty_equivalent</span><span class="p">(</span><span class="n">exputil</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate and return certainty-equivalent of exputil of consumption</span>
 <span class="sd">    assuming an isoelastic utility function with crra and cmin as parameters.</span>
@@ -1878,7 +1885,7 @@
 
 <div class="viewcode-block" id="ce_aftertax_expanded_income">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.ce_aftertax_expanded_income">[docs]</a>
-<span class="k">def</span> <span class="nf">ce_aftertax_expanded_income</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ce_aftertax_expanded_income</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span>
                                 <span class="n">custom_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                 <span class="n">require_no_agg_tax_change</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1919,7 +1926,7 @@
         <span class="n">cmin</span> <span class="o">=</span> <span class="mi">1000</span>
     <span class="c1"># compute aggregate combined tax revenue and aggregate after-tax income</span>
     <span class="n">billion</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
-    <span class="n">cedict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">cedict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">cedict</span><span class="p">[</span><span class="s1">&#39;tax1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">weighted_sum</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="s1">&#39;combined&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">billion</span>
     <span class="n">cedict</span><span class="p">[</span><span class="s1">&#39;tax2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">weighted_sum</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="s1">&#39;combined&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">billion</span>
     <span class="k">if</span> <span class="n">require_no_agg_tax_change</span><span class="p">:</span>
@@ -1943,8 +1950,8 @@
     <span class="n">ati2</span> <span class="o">=</span> <span class="n">df2</span><span class="p">[</span><span class="s1">&#39;expanded_income&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df2</span><span class="p">[</span><span class="s1">&#39;combined&#39;</span><span class="p">]</span>
     <span class="c1"># calculate certainty-equivaluent after-tax income in df1 and df2</span>
     <span class="n">cedict</span><span class="p">[</span><span class="s1">&#39;crra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">crras</span>
-    <span class="n">ce1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="n">ce2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">ce1</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ce2</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">crra</span> <span class="ow">in</span> <span class="n">crras</span><span class="p">:</span>
         <span class="n">eu1</span> <span class="o">=</span> <span class="n">expected_utility</span><span class="p">(</span><span class="n">ati1</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">)</span>
         <span class="n">ce1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">certainty_equivalent</span><span class="p">(</span><span class="n">eu1</span><span class="p">,</span> <span class="n">crra</span><span class="p">,</span> <span class="n">cmin</span><span class="p">))</span>
@@ -1959,7 +1966,7 @@
 
 <div class="viewcode-block" id="read_egg_csv">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.read_egg_csv">[docs]</a>
-<span class="k">def</span> <span class="nf">read_egg_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_egg_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read from egg the file named fname that contains CSV data and</span>
 <span class="sd">    return pandas DataFrame containing the data.</span>
@@ -1968,8 +1975,8 @@
         <span class="n">path_in_egg</span> <span class="o">=</span> <span class="n">implibres</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s1">&#39;taxcalc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">implibres</span><span class="o">.</span><span class="n">as_file</span><span class="p">(</span><span class="n">path_in_egg</span><span class="p">)</span> <span class="k">as</span> <span class="n">rname</span><span class="p">:</span>
             <span class="n">vdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">rname</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="n">index_col</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;could not read </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1"> data from egg&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;could not read </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1"> data from egg&#39;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
     <span class="c1"># cannot call read_egg_ function in unit tests</span>
     <span class="k">return</span> <span class="n">vdf</span>  <span class="c1"># pragma: no cover</span></div>
 
@@ -1977,7 +1984,7 @@
 
 <div class="viewcode-block" id="read_egg_json">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.read_egg_json">[docs]</a>
-<span class="k">def</span> <span class="nf">read_egg_json</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_egg_json</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read from egg the file named fname that contains JSON data and</span>
 <span class="sd">    return dictionary containing the data.</span>
@@ -1985,17 +1992,17 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">path_in_egg</span> <span class="o">=</span> <span class="n">implibres</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s1">&#39;taxcalc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">implibres</span><span class="o">.</span><span class="n">as_file</span><span class="p">(</span><span class="n">path_in_egg</span><span class="p">)</span> <span class="k">as</span> <span class="n">rname</span><span class="p">:</span>
-            <span class="n">vdf</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">rname</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;could not read </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1"> data from egg&#39;</span><span class="p">)</span>
-    <span class="c1"># cannot call read_egg_ function in unit tests</span>
+            <span class="n">pdict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">rname</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;could not read </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1"> data from package&#39;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="c1"># cannot call read_egg_ function in pytest unit tests</span>
     <span class="k">return</span> <span class="n">pdict</span>  <span class="c1"># pragma: no cover</span></div>
 
 
 
 <div class="viewcode-block" id="delete_file">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.delete_file">[docs]</a>
-<span class="k">def</span> <span class="nf">delete_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Remove specified file if it exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2006,7 +2013,7 @@
 
 <div class="viewcode-block" id="bootstrap_se_ci">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.bootstrap_se_ci">[docs]</a>
-<span class="k">def</span> <span class="nf">bootstrap_se_ci</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">statistic</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bootstrap_se_ci</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">statistic</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return bootstrap estimate of standard error of statistic and</span>
 <span class="sd">    bootstrap estimate of 100*(1-2*alpha)% confidence interval for statistic</span>
@@ -2017,7 +2024,7 @@
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">statistic</span><span class="p">)</span>  <span class="c1"># function that computes statistic from data</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
-    <span class="n">bsest</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">bsest</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">bsest</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">seed</span>
     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
     <span class="n">dlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -2036,7 +2043,7 @@
 
 <div class="viewcode-block" id="json_to_dict">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.json_to_dict">[docs]</a>
-<span class="k">def</span> <span class="nf">json_to_dict</span><span class="p">(</span><span class="n">json_text</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">json_to_dict</span><span class="p">(</span><span class="n">json_text</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert specified JSON text into an ordered Python dictionary.</span>
 
@@ -2070,9 +2077,9 @@
         <span class="n">linenum</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text_lines</span><span class="p">:</span>
             <span class="n">linenum</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{:04d}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">linenum</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">linenum</span><span class="si">:</span><span class="s1">04d</span><span class="si">}{</span><span class="n">line</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="n">bline</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">valerr</span>
     <span class="k">return</span> <span class="n">ordered_dict</span></div>
 
 </pre></div>

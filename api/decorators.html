@@ -30,7 +30,7 @@
   <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -497,7 +497,7 @@ of Tax-Calculator functions in the calcfunctions.py module.</p>
 <dt class="sig sig-object py" id="taxcalc.decorators.create_apply_function_string">
 <span class="sig-prename descclassname"><span class="pre">taxcalc.decorators.</span></span><span class="sig-name descname"><span class="pre">create_apply_function_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#create_apply_function_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.decorators.create_apply_function_string" title="Link to this definition">#</a></dt>
 <dd><p>Create a string for a function of the form:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ap_fuc</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">ap_fuc</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_0</span><span class="p">)):</span>
         <span class="n">x_0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">...</span> <span class="o">=</span> <span class="n">jitted_f</span><span class="p">(</span><span class="n">x_j</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">...</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x_0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">...</span>

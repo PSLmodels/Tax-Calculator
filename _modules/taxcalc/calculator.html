@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -402,11 +402,11 @@
 <span class="c1">#</span>
 <span class="c1"># pylint: disable=too-many-lines,no-value-for-parameter</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">paramtools</span>
-<span class="kn">from</span> <span class="nn">taxcalc.calcfunctions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">TaxInc</span><span class="p">,</span> <span class="n">SchXYZTax</span><span class="p">,</span> <span class="n">GainsTax</span><span class="p">,</span> <span class="n">AGIsurtax</span><span class="p">,</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">paramtools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.calcfunctions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">TaxInc</span><span class="p">,</span> <span class="n">SchXYZTax</span><span class="p">,</span> <span class="n">GainsTax</span><span class="p">,</span> <span class="n">AGIsurtax</span><span class="p">,</span>
                                    <span class="n">NetInvIncTax</span><span class="p">,</span> <span class="n">AMT</span><span class="p">,</span> <span class="n">EI_PayrollTax</span><span class="p">,</span> <span class="n">Adj</span><span class="p">,</span>
                                    <span class="n">DependentCare</span><span class="p">,</span> <span class="n">ALD_InvInc_ec_base</span><span class="p">,</span> <span class="n">CapGains</span><span class="p">,</span>
                                    <span class="n">SSBenefits</span><span class="p">,</span> <span class="n">UBI</span><span class="p">,</span> <span class="n">AGI</span><span class="p">,</span> <span class="n">ItemDedCap</span><span class="p">,</span> <span class="n">ItemDed</span><span class="p">,</span>
@@ -420,12 +420,12 @@
                                    <span class="n">BenefitSurtax</span><span class="p">,</span> <span class="n">BenefitLimitation</span><span class="p">,</span>
                                    <span class="n">FairShareTax</span><span class="p">,</span> <span class="n">LumpSumTax</span><span class="p">,</span> <span class="n">BenefitPrograms</span><span class="p">,</span>
                                    <span class="n">ExpandIncome</span><span class="p">,</span> <span class="n">AfterTaxIncome</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">taxcalc.policy</span> <span class="kn">import</span> <span class="n">Policy</span>
-<span class="kn">from</span> <span class="nn">taxcalc.records</span> <span class="kn">import</span> <span class="n">Records</span>
-<span class="kn">from</span> <span class="nn">taxcalc.consumption</span> <span class="kn">import</span> <span class="n">Consumption</span>
-<span class="kn">from</span> <span class="nn">taxcalc.growdiff</span> <span class="kn">import</span> <span class="n">GrowDiff</span>
-<span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
-<span class="kn">from</span> <span class="nn">taxcalc.utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">DIST_VARIABLES</span><span class="p">,</span> <span class="n">create_distribution_table</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.policy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Policy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.records</span><span class="w"> </span><span class="kn">import</span> <span class="n">Records</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.consumption</span><span class="w"> </span><span class="kn">import</span> <span class="n">Consumption</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.growdiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">GrowDiff</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.growfactors</span><span class="w"> </span><span class="kn">import</span> <span class="n">GrowFactors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">DIST_VARIABLES</span><span class="p">,</span> <span class="n">create_distribution_table</span><span class="p">,</span>
                            <span class="n">DIFF_VARIABLES</span><span class="p">,</span> <span class="n">create_difference_table</span><span class="p">,</span>
                            <span class="n">create_diagnostic_table</span><span class="p">,</span>
                            <span class="n">ce_aftertax_expanded_income</span><span class="p">,</span>
@@ -436,7 +436,7 @@
 
 <div class="viewcode-block" id="Calculator">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator">[docs]</a>
-<span class="k">class</span> <span class="nc">Calculator</span><span class="p">():</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Calculator</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Constructor for the Calculator class.</span>
 
@@ -488,9 +488,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-public-methods</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">sync_years</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">consumption</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># pylint: disable=too-many-arguments,too-many-branches</span>
+        <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
+        <span class="c1"># pylint: disable=too-many-branches</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">Policy</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -538,7 +539,7 @@
 
 <div class="viewcode-block" id="Calculator.increment_year">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.increment_year">[docs]</a>
-    <span class="k">def</span> <span class="nf">increment_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">increment_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Advance all embedded objects to next year.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -550,7 +551,7 @@
 
 <div class="viewcode-block" id="Calculator.advance_to_year">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.advance_to_year">[docs]</a>
-    <span class="k">def</span> <span class="nf">advance_to_year</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">advance_to_year</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The advance_to_year function gives an optional way of implementing</span>
 <span class="sd">        increment year functionality by immediately specifying the year</span>
@@ -567,7 +568,7 @@
 
 <div class="viewcode-block" id="Calculator.calc_all">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.calc_all">[docs]</a>
-    <span class="k">def</span> <span class="nf">calc_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call all tax-calculation functions for the current_year.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -585,7 +586,7 @@
 
 <div class="viewcode-block" id="Calculator.weighted_total">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.weighted_total">[docs]</a>
-    <span class="k">def</span> <span class="nf">weighted_total</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">weighted_total</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all-filing-unit weighted total of named Records variable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -594,7 +595,7 @@
 
 <div class="viewcode-block" id="Calculator.total_weight">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.total_weight">[docs]</a>
-    <span class="k">def</span> <span class="nf">total_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all-filing-unit total of sampling weights.</span>
 <span class="sd">        NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()</span>
@@ -604,7 +605,7 @@
 
 <div class="viewcode-block" id="Calculator.dataframe">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.dataframe">[docs]</a>
-    <span class="k">def</span> <span class="nf">dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_list</span><span class="p">,</span> <span class="n">all_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_list</span><span class="p">,</span> <span class="n">all_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Pandas DataFrame containing the listed variables from the</span>
 <span class="sd">        embedded Records object.  If all_vars is True, then the variable_list</span>
@@ -627,7 +628,7 @@
 
 <div class="viewcode-block" id="Calculator.array">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.array">[docs]</a>
-    <span class="k">def</span> <span class="nf">array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_name</span><span class="p">,</span> <span class="n">variable_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_name</span><span class="p">,</span> <span class="n">variable_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If variable_value is None, return numpy ndarray containing the</span>
 <span class="sd">         named variable in embedded Records object.</span>
@@ -644,7 +645,7 @@
 
 <div class="viewcode-block" id="Calculator.n65">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.n65">[docs]</a>
-    <span class="k">def</span> <span class="nf">n65</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n65</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return numpy ndarray containing the number of</span>
 <span class="sd">        individuals age 65+ in each filing unit.</span>
@@ -657,7 +658,7 @@
 
 <div class="viewcode-block" id="Calculator.incarray">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.incarray">[docs]</a>
-    <span class="k">def</span> <span class="nf">incarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_name</span><span class="p">,</span> <span class="n">variable_add</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_name</span><span class="p">,</span> <span class="n">variable_add</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add variable_add to named variable in embedded Records object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -668,7 +669,7 @@
 
 <div class="viewcode-block" id="Calculator.zeroarray">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.zeroarray">[docs]</a>
-    <span class="k">def</span> <span class="nf">zeroarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">zeroarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set named variable in embedded Records object to zeros.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -677,7 +678,7 @@
 
 <div class="viewcode-block" id="Calculator.store_records">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.store_records">[docs]</a>
-    <span class="k">def</span> <span class="nf">store_records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">store_records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Make internal copy of embedded Records object that can then be</span>
 <span class="sd">        restored after interim calculations that make temporary changes</span>
@@ -689,7 +690,7 @@
 
 <div class="viewcode-block" id="Calculator.restore_records">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.restore_records">[docs]</a>
-    <span class="k">def</span> <span class="nf">restore_records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restore_records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the embedded Records object to the stored Records object</span>
 <span class="sd">        that was saved in the last call to the store_records() method.</span>
@@ -701,7 +702,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">array_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">array_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Length of arrays in embedded Records object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -709,7 +710,7 @@
 
 <div class="viewcode-block" id="Calculator.policy_param">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.policy_param">[docs]</a>
-    <span class="k">def</span> <span class="nf">policy_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">policy_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If param_value is None, return named parameter in</span>
 <span class="sd">         embedded Policy object.</span>
@@ -721,15 +722,14 @@
             <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="n">param_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">param_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">val</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># drop down a dimension.</span>
+            <span class="k">return</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># drop down a dimension.</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_value</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="Calculator.consump_param">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.consump_param">[docs]</a>
-    <span class="k">def</span> <span class="nf">consump_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">consump_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return value of named parameter in embedded Consumption object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -738,7 +738,7 @@
 
 <div class="viewcode-block" id="Calculator.consump_benval_params">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.consump_benval_params">[docs]</a>
-    <span class="k">def</span> <span class="nf">consump_benval_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">consump_benval_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of benefit-consumption-value parameter values</span>
 <span class="sd">        in embedded Consumption object.</span>
@@ -747,21 +747,21 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">reform_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reform_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculator class embedded Policy object&#39;s parameter_warnings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">parameter_warnings</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">current_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">current_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculator class current calendar year property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">current_year</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">data_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculator class initial (i.e., first) records data year property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -769,7 +769,7 @@
 
 <div class="viewcode-block" id="Calculator.diagnostic_table">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.diagnostic_table">[docs]</a>
-    <span class="k">def</span> <span class="nf">diagnostic_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_years</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diagnostic_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_years</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate multi-year diagnostic table containing aggregate statistics;</span>
 <span class="sd">        this method leaves the Calculator object unchanged.</span>
@@ -789,8 +789,8 @@
         <span class="n">max_num_years</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">end_year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">current_year</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">assert</span> <span class="n">num_years</span> <span class="o">&lt;=</span> <span class="n">max_num_years</span>
         <span class="n">calc</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">yearlist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="n">varlist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">yearlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">varlist</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">iyr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_years</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">calc</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
             <span class="n">yearlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">current_year</span><span class="p">)</span>
@@ -803,7 +803,7 @@
 
 <div class="viewcode-block" id="Calculator.distribution_tables">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.distribution_tables">[docs]</a>
-    <span class="k">def</span> <span class="nf">distribution_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">distribution_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span>
                             <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get results from self and calc, sort them by expanded_income into</span>
@@ -854,7 +854,7 @@
 <span class="sd">              specified income_measure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># nested functions used only by this method</span>
-        <span class="k">def</span> <span class="nf">distribution_table_dataframe</span><span class="p">(</span><span class="n">calcobj</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">distribution_table_dataframe</span><span class="p">(</span><span class="n">calcobj</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Return pandas DataFrame containing the DIST_TABLE_COLUMNS variables</span>
 <span class="sd">            from specified Calculator object, calcobj.</span>
@@ -876,7 +876,7 @@
                 <span class="n">dframe</span><span class="p">[</span><span class="s1">&#39;c09600&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">dframe</span>
 
-        <span class="k">def</span> <span class="nf">have_same_income_measure</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">have_same_income_measure</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Return true if calc1 and calc2 contain the same expanded_income;</span>
 <span class="sd">            otherwise, return false.  (Note that &quot;same&quot; means nobody&#39;s</span>
@@ -919,7 +919,7 @@
 
 <div class="viewcode-block" id="Calculator.difference_table">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.difference_table">[docs]</a>
-    <span class="k">def</span> <span class="nf">difference_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">tax_to_diff</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">difference_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span> <span class="n">groupby</span><span class="p">,</span> <span class="n">tax_to_diff</span><span class="p">,</span>
                          <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get results from self and calc, sort them by expanded_income into</span>
@@ -992,7 +992,7 @@
 
 <div class="viewcode-block" id="Calculator.mtr">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.mtr">[docs]</a>
-    <span class="k">def</span> <span class="nf">mtr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_str</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mtr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_str</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span>
             <span class="n">negative_finite_diff</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">zero_out_calculated_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1079,8 +1079,8 @@
 <span class="sd">        &#39;e20100&#39;,  Charity non-cash contributions;</span>
 <span class="sd">        &#39;k1bx14p&#39;, Partnership income (also included in e26270 and e02000).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># pylint: disable=too-many-arguments,too-many-statements</span>
-        <span class="c1"># pylint: disable=too-many-locals,too-many-branches</span>
+        <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
+        <span class="c1"># pylint: disable=too-many-locals,too-many-branches,too-many-statements</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">zero_out_calculated_vars</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">calc_all_already_called</span>
         <span class="c1"># check validity of variable_str parameter</span>
         <span class="k">if</span> <span class="n">variable_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">MTR_VALID_VARIABLES</span><span class="p">:</span>
@@ -1194,7 +1194,7 @@
 
 <div class="viewcode-block" id="Calculator.mtr_graph">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.mtr_graph">[docs]</a>
-    <span class="k">def</span> <span class="nf">mtr_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mtr_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span>
                   <span class="n">mars</span><span class="o">=</span><span class="s1">&#39;ALL&#39;</span><span class="p">,</span>
                   <span class="n">mtr_measure</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span>
                   <span class="n">mtr_variable</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span>
@@ -1280,7 +1280,9 @@
 <span class="sd">        -------</span>
 <span class="sd">        graph that is a bokeh.plotting figure object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
+        <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
+        <span class="c1"># pylint: disable=too-many-locals</span>
+
         <span class="c1"># check that two Calculator objects are comparable</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">calc</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_year</span>
@@ -1289,9 +1291,8 @@
         <span class="k">assert</span> <span class="n">mars</span> <span class="o">==</span> <span class="s1">&#39;ALL&#39;</span> <span class="ow">or</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">mars</span> <span class="o">&lt;=</span> <span class="mi">4</span>
         <span class="c1"># check validity of income_measure</span>
         <span class="k">assert</span> <span class="n">income_measure</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;expanded_income&#39;</span><span class="p">,</span> <span class="s1">&#39;agi&#39;</span><span class="p">,</span> <span class="s1">&#39;wages&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">income_measure</span> <span class="o">==</span> <span class="s1">&#39;expanded_income&#39;</span><span class="p">:</span>
-            <span class="n">income_variable</span> <span class="o">=</span> <span class="s1">&#39;expanded_income&#39;</span>
-        <span class="k">elif</span> <span class="n">income_measure</span> <span class="o">==</span> <span class="s1">&#39;agi&#39;</span><span class="p">:</span>
+        <span class="n">income_variable</span> <span class="o">=</span> <span class="s1">&#39;expanded_income&#39;</span>
+        <span class="k">if</span> <span class="n">income_measure</span> <span class="o">==</span> <span class="s1">&#39;agi&#39;</span><span class="p">:</span>
             <span class="n">income_variable</span> <span class="o">=</span> <span class="s1">&#39;c00100&#39;</span>
         <span class="k">elif</span> <span class="n">income_measure</span> <span class="o">==</span> <span class="s1">&#39;wages&#39;</span><span class="p">:</span>
             <span class="n">income_variable</span> <span class="o">=</span> <span class="s1">&#39;e00200&#39;</span>
@@ -1304,15 +1305,15 @@
         <span class="p">(</span><span class="n">mtr2_ptax</span><span class="p">,</span> <span class="n">mtr2_itax</span><span class="p">,</span>
          <span class="n">mtr2_combined</span><span class="p">)</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">variable_str</span><span class="o">=</span><span class="n">mtr_variable</span><span class="p">,</span>
                                    <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="n">mtr_wrt_full_compen</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mtr_measure</span> <span class="o">==</span> <span class="s1">&#39;combined&#39;</span><span class="p">:</span>
-            <span class="n">mtr1</span> <span class="o">=</span> <span class="n">mtr1_combined</span>
-            <span class="n">mtr2</span> <span class="o">=</span> <span class="n">mtr2_combined</span>
-        <span class="k">elif</span> <span class="n">mtr_measure</span> <span class="o">==</span> <span class="s1">&#39;itax&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mtr_measure</span> <span class="o">==</span> <span class="s1">&#39;itax&#39;</span><span class="p">:</span>
             <span class="n">mtr1</span> <span class="o">=</span> <span class="n">mtr1_itax</span>
             <span class="n">mtr2</span> <span class="o">=</span> <span class="n">mtr2_itax</span>
         <span class="k">elif</span> <span class="n">mtr_measure</span> <span class="o">==</span> <span class="s1">&#39;ptax&#39;</span><span class="p">:</span>
             <span class="n">mtr1</span> <span class="o">=</span> <span class="n">mtr1_ptax</span>
             <span class="n">mtr2</span> <span class="o">=</span> <span class="n">mtr2_ptax</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mtr1</span> <span class="o">=</span> <span class="n">mtr1_combined</span>
+            <span class="n">mtr2</span> <span class="o">=</span> <span class="n">mtr2_combined</span>
         <span class="c1"># extract datafames needed by mtr_graph_data utility function</span>
         <span class="n">record_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;s006&#39;</span><span class="p">,</span> <span class="s1">&#39;XTOT&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">mars</span> <span class="o">!=</span> <span class="s1">&#39;ALL&#39;</span><span class="p">:</span>
@@ -1359,7 +1360,7 @@
 
 <div class="viewcode-block" id="Calculator.atr_graph">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.atr_graph">[docs]</a>
-    <span class="k">def</span> <span class="nf">atr_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">atr_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span>
                   <span class="n">mars</span><span class="o">=</span><span class="s1">&#39;ALL&#39;</span><span class="p">,</span>
                   <span class="n">atr_measure</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span>
                   <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1459,7 +1460,7 @@
 
 <div class="viewcode-block" id="Calculator.pch_graph">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.pch_graph">[docs]</a>
-    <span class="k">def</span> <span class="nf">pch_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span> <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pch_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span> <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create percentage change in after-tax expanded income graph that</span>
 <span class="sd">        can be written to an HTML file (using the write_graph_file utility</span>
@@ -1504,17 +1505,15 @@
         <span class="c1"># construct data for graph</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pch_graph_data</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="p">,</span>
                               <span class="n">pop_quantiles</span><span class="o">=</span><span class="n">pop_quantiles</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">vdf</span>
-        <span class="k">del</span> <span class="n">vdf1</span>
-        <span class="k">del</span> <span class="n">vdf2</span>
         <span class="c1"># construct figure from data</span>
-        <span class="n">fig</span> <span class="o">=</span> <span class="n">pch_graph_plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
-                             <span class="n">width</span><span class="o">=</span><span class="mi">850</span><span class="p">,</span>
-                             <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-                             <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                             <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                             <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">data</span>
+        <span class="c1"># (see comment at end of pch_graph_plot function in utils.py)</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">pch_graph_plot</span><span class="p">(</span>  <span class="c1"># pylint: disable=assignment-from-no-return</span>
+            <span class="n">data</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">850</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">fig</span></div>
 
 
@@ -1525,7 +1524,7 @@
 <div class="viewcode-block" id="Calculator.read_json_param_objects">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.read_json_param_objects">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_json_param_objects</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="n">assump</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_json_param_objects</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="n">assump</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read JSON reform and assump objects and</span>
 <span class="sd">        return a composite dictionary containing four key:dict pairs:</span>
@@ -1566,7 +1565,7 @@
 <span class="sd">        suitable as input into the GrowDiff.update_growdiff method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># construct the composite dictionary</span>
-        <span class="n">param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">param_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;policy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">reform</span><span class="p">)</span>
         <span class="n">param_dict</span><span class="p">[</span><span class="s1">&#39;consumption&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Consumption</span><span class="o">.</span><span class="n">read_json_update</span><span class="p">(</span><span class="n">assump</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">topkey</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;growdiff_baseline&#39;</span><span class="p">,</span> <span class="s1">&#39;growdiff_response&#39;</span><span class="p">]:</span>
@@ -1578,7 +1577,7 @@
 <div class="viewcode-block" id="Calculator.reform_documentation">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.reform_documentation">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">reform_documentation</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">growfactors</span><span class="p">,</span> <span class="n">policy_dicts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reform_documentation</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">growfactors</span><span class="p">,</span> <span class="n">policy_dicts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate reform documentation versus current-law policy.</span>
 
@@ -1605,7 +1604,7 @@
         <span class="c1"># pylint: disable=too-many-statements,too-many-branches,too-many-locals</span>
 
         <span class="c1"># nested function used only in reform_documentation function</span>
-        <span class="k">def</span> <span class="nf">param_doc</span><span class="p">(</span><span class="n">years_list</span><span class="p">,</span> <span class="n">updated</span><span class="p">,</span> <span class="n">baseline</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">param_doc</span><span class="p">(</span><span class="n">years_list</span><span class="p">,</span> <span class="n">updated</span><span class="p">,</span> <span class="n">baseline</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
@@ -1620,7 +1619,7 @@
             <span class="c1"># pylint: disable=too-many-locals</span>
 
             <span class="c1"># nested function used only in param_doc</span>
-            <span class="k">def</span> <span class="nf">lines</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">num_indent_spaces</span><span class="p">,</span> <span class="n">max_line_length</span><span class="o">=</span><span class="mi">77</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">lines</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">num_indent_spaces</span><span class="p">,</span> <span class="n">max_line_length</span><span class="o">=</span><span class="mi">77</span><span class="p">):</span>
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">                Return list of text lines, each one of which is no longer</span>
 <span class="sd">                than max_line_length, with the second and subsequent lines</span>
@@ -1633,7 +1632,7 @@
                     <span class="k">return</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
                 <span class="c1"># all text does not fix on one line</span>
                 <span class="n">first_line</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">line_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="n">line_list</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="k">while</span> <span class="n">words</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">first_line</span><span class="p">:</span>
@@ -1657,7 +1656,7 @@
                 <span class="n">baseline</span><span class="o">.</span><span class="n">set_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
                 <span class="n">updated</span><span class="o">.</span><span class="n">set_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">baseline</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">updated</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-                <span class="n">params_with_diff</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="n">params_with_diff</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">baseline</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="n">upda_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">updated</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span>
                     <span class="n">base_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">baseline</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span>
@@ -1670,7 +1669,7 @@
                 <span class="k">if</span> <span class="n">params_with_diff</span><span class="p">:</span>
                     <span class="n">mdata_base</span> <span class="o">=</span> <span class="n">baseline</span><span class="o">.</span><span class="n">specification</span><span class="p">(</span><span class="n">meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                     <span class="c1"># write year</span>
-                    <span class="n">doc</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+                    <span class="n">doc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">:</span><span class="se">\n</span><span class="s1">&#39;</span>
                     <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">params_with_diff</span><span class="p">):</span>
                         <span class="c1"># write updated value line</span>
                         <span class="n">pval</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">updated</span><span class="p">,</span> <span class="n">pname</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -1679,7 +1678,7 @@
                                 <span class="n">pval</span> <span class="o">=</span> <span class="p">[</span><span class="nb">bool</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">pval</span><span class="p">]</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="n">pval</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">pval</span><span class="p">)</span>
-                        <span class="n">doc</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1"> : </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pname</span><span class="p">,</span> <span class="n">pval</span><span class="p">)</span>
+                        <span class="n">doc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s1"> : </span><span class="si">{</span><span class="n">pval</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
                         <span class="c1"># ... write optional param-vector-index line</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pval</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                             <span class="n">labels</span> <span class="o">=</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">consistent_labels</span><span class="p">(</span>
@@ -1691,13 +1690,15 @@
                                     <span class="n">label</span> <span class="o">=</span> <span class="n">_label</span>
                                     <span class="k">break</span>
                             <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
+                                <span class="c1"># pylint: disable=protected-access</span>
                                 <span class="n">lv</span> <span class="o">=</span> <span class="n">baseline</span><span class="o">.</span><span class="n">_stateless_label_grid</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+                                <span class="c1"># pylint: enable=protected-access</span>
                                 <span class="n">lv</span> <span class="o">=</span> <span class="p">[</span>
                                     <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">lv</span>
                                 <span class="p">]</span>
                                 <span class="n">doc</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="p">(</span>
                                     <span class="mi">4</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
-                                <span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lv</span><span class="p">)</span>
+                                <span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">lv</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
                         <span class="c1"># ... write param-name line</span>
                         <span class="n">name</span> <span class="o">=</span> <span class="n">mdata_base</span><span class="p">[</span><span class="n">pname</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
                         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">(</span><span class="s1">&#39;name: &#39;</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
@@ -1715,7 +1716,7 @@
                                     <span class="n">pval</span> <span class="o">=</span> <span class="p">[</span><span class="nb">bool</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">pval</span><span class="p">]</span>
                             <span class="k">elif</span> <span class="n">ptype</span> <span class="o">==</span> <span class="s1">&#39;bool&#39;</span><span class="p">:</span>
                                 <span class="n">pval</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">pval</span><span class="p">)</span>
-                            <span class="n">doc</span> <span class="o">+=</span> <span class="s1">&#39;  baseline_value: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pval</span><span class="p">)</span>
+                            <span class="n">doc</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;  baseline_value: </span><span class="si">{</span><span class="n">pval</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
                         <span class="k">else</span><span class="p">:</span>  <span class="c1"># if baseline is GrowDiff object</span>
                             <span class="c1"># each GrowDiff parameter has zero as default value</span>
                             <span class="n">doc</span> <span class="o">+=</span> <span class="s1">&#39;  baseline_value: 0.0</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -1788,7 +1789,7 @@
 
 <div class="viewcode-block" id="Calculator.ce_aftertax_income">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.ce_aftertax_income">[docs]</a>
-    <span class="k">def</span> <span class="nf">ce_aftertax_income</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ce_aftertax_income</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span>
                            <span class="n">custom_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">require_no_agg_tax_change</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1835,7 +1836,7 @@
 
 <div class="viewcode-block" id="Calculator._taxinc_to_amt">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator._taxinc_to_amt">[docs]</a>
-    <span class="k">def</span> <span class="nf">_taxinc_to_amt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_taxinc_to_amt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call TaxInc through AMT functions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1849,7 +1850,7 @@
 
 <div class="viewcode-block" id="Calculator._calc_one_year">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator._calc_one_year">[docs]</a>
-    <span class="k">def</span> <span class="nf">_calc_one_year</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calc_one_year</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call all the functions except those in the calc_all() method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1876,7 +1877,7 @@
         <span class="n">item_phaseout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c21040&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">item_component_variable_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c17000&#39;</span><span class="p">,</span> <span class="s1">&#39;c18300&#39;</span><span class="p">,</span> <span class="s1">&#39;c19200&#39;</span><span class="p">,</span>
                                          <span class="s1">&#39;c19700&#39;</span><span class="p">,</span> <span class="s1">&#39;c20500&#39;</span><span class="p">,</span> <span class="s1">&#39;c20800&#39;</span><span class="p">]</span>
-        <span class="n">item_cvar</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">item_cvar</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">cvname</span> <span class="ow">in</span> <span class="n">item_component_variable_names</span><span class="p">:</span>
             <span class="n">item_cvar</span><span class="p">[</span><span class="n">cvname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cvname</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zeroarray</span><span class="p">(</span><span class="s1">&#39;c04470&#39;</span><span class="p">)</span>

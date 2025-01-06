@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -400,15 +400,15 @@
 <span class="c1"># pycodestyle growfactors.py</span>
 <span class="c1"># pylint --disable=locally-disabled growfactors.py</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">taxcalc.utils</span> <span class="kn">import</span> <span class="n">read_egg_csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_egg_csv</span>
 
 
 <div class="viewcode-block" id="GrowFactors">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors">[docs]</a>
-<span class="k">class</span> <span class="nc">GrowFactors</span><span class="p">():</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GrowFactors</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Constructor for the GrowFactors class.</span>
 
@@ -447,7 +447,7 @@
                        <span class="s1">&#39;ABENSSI&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENSNAP&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENWIC&#39;</span><span class="p">,</span>
                        <span class="s1">&#39;ABENHOUSING&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENTANF&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENVET&#39;</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">growfactors_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">growfactors_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># read grow factors from specified growfactors_filename</span>
         <span class="n">gfdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">growfactors_filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -489,14 +489,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">used</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">first_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">first_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        GrowFactors class first_year property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_year</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">last_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">last_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        GrowFactors class last_year property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -504,7 +504,7 @@
 
 <div class="viewcode-block" id="GrowFactors.price_inflation_rates">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.price_inflation_rates">[docs]</a>
-    <span class="k">def</span> <span class="nf">price_inflation_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">price_inflation_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of price inflation rates rounded to four decimal digits.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -525,7 +525,7 @@
 
 <div class="viewcode-block" id="GrowFactors.wage_growth_rates">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.wage_growth_rates">[docs]</a>
-    <span class="k">def</span> <span class="nf">wage_growth_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wage_growth_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of wage growth rates rounded to four decimal digits.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -546,7 +546,7 @@
 
 <div class="viewcode-block" id="GrowFactors.factor_value">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.factor_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">factor_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">factor_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return value of factor with specified name for specified year.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -565,7 +565,7 @@
 
 <div class="viewcode-block" id="GrowFactors.update">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.update">[docs]</a>
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add to self.gfdf (for name and year) the specified diff amount.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -573,7 +573,7 @@
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;cannot update growfactors after they have been used&#39;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span>
-        <span class="k">if</span> <span class="n">year</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span> <span class="ow">and</span> <span class="n">year</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span> <span class="o">&lt;=</span> <span class="n">year</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">year</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span> <span class="o">+=</span> <span class="n">diff</span></div>
 </div>

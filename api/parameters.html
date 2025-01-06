@@ -30,7 +30,7 @@
   <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -464,8 +464,11 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.adjust"><code class="docutils literal notranslate"><span class="pre">Parameters.adjust()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.adjust_with_indexing"><code class="docutils literal notranslate"><span class="pre">Parameters.adjust_with_indexing()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.get_index_rate"><code class="docutils literal notranslate"><span class="pre">Parameters.get_index_rate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.inflation_rates"><code class="docutils literal notranslate"><span class="pre">Parameters.inflation_rates()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.initialize"><code class="docutils literal notranslate"><span class="pre">Parameters.initialize()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.metadata"><code class="docutils literal notranslate"><span class="pre">Parameters.metadata()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.set_rates"><code class="docutils literal notranslate"><span class="pre">Parameters.set_rates()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.wage_growth_rates"><code class="docutils literal notranslate"><span class="pre">Parameters.wage_growth_rates()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.years_in_revision"><code class="docutils literal notranslate"><span class="pre">Parameters.years_in_revision()</span></code></a></li>
 </ul>
 </li>
@@ -503,7 +506,7 @@ over all allowed years can conveniently be retrieved by adding an
 underscore before the variable name (e.g. <code class="docutils literal notranslate"><span class="pre">EITC_c</span></code> vs <code class="docutils literal notranslate"><span class="pre">_EITC_c</span></code>).</p>
 <p>This class inherits methods from ParamTools like <code class="docutils literal notranslate"><span class="pre">items</span></code>:</p>
 <blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">taxcalc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tc</span>
 <span class="n">pol</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">pol</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -548,12 +551,23 @@ the top-level JSON keys, the <code class="docutils literal notranslate"><span cl
 non-compound-revision JSON text for the specified <code class="docutils literal notranslate"><span class="pre">topkey</span></code>.</p>
 <p>Some examples of valid links are:</p>
 <ul class="simple">
-<li><p>HTTP: <code class="docutils literal notranslate"><span class="pre">https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/master/taxcalc/reforms/2017_law.json</span></code></p></li>
-<li><p>Github API: <code class="docutils literal notranslate"><span class="pre">github://PSLmodels:Tax-Calculator&#64;master/taxcalc/reforms/2017_law.json</span></code></p></li>
+<li><dl class="simple">
+<dt>HTTP: <a href="#id1"><span class="problematic" id="id2">``</span></a><a class="reference external" href="https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/">https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/</a></dt><dd><p>master/taxcalc/reforms/2017_law.json``</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Github API: <a href="#id3"><span class="problematic" id="id4">``</span></a>github://PSLmodels:Tax-Calculator&#64;master/taxcalc/</dt><dd><p>reforms/2017_law.json``</p>
+</dd>
+</dl>
+</li>
 </ul>
 <p>Checkout the ParamTools
-<a class="reference external" href="https://paramtools.dev/_modules/paramtools/parameters.html#Parameters.read_params">docs</a>
-for more information on valid file URLs.</p>
+<a href="#id5"><span class="problematic" id="id6">`</span></a>docs &lt;<a class="reference external" href="https://paramtools.dev/_modules/paramtools/">https://paramtools.dev/_modules/paramtools/</a></p>
+<blockquote>
+<div><p>parameters.html#Parameters.read_params&gt;`_</p>
+</div></blockquote>
+<p>for more information on valid file URLs.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -573,8 +587,10 @@ without making any changes to how they handle adjustments.</p>
 <p>into reforms that are compatible with ParamTools:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;standard_deduction&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;marital_status&quot;</span><span class="p">:</span> <span class="s2">&quot;single&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">10000.0</span><span class="p">},</span>
-        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;marital_status&quot;</span><span class="p">:</span> <span class="s2">&quot;joint&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">10000.0</span><span class="p">}</span>
+        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;marital_status&quot;</span><span class="p">:</span> <span class="s2">&quot;single&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">10000.0</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;marital_status&quot;</span><span class="p">:</span> <span class="s2">&quot;joint&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">10000.0</span><span class="p">}</span>
     <span class="p">],</span>
     <span class="s2">&quot;ss_rate&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}]}</span>
 <span class="p">}</span>
@@ -592,8 +608,10 @@ without making any changes to how they handle adjustments.</p>
 <li><p><strong>params_or_path</strong> (<em>Dict</em><em>, </em><em>str</em>) – <p>New parameter values in the paramtools format. For example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;standard_deduction&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;year&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;marital_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;single&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10000.0</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;year&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;marital_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;joint&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10000.0</span><span class="p">}</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;year&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;marital_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;single&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10000.0</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;year&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;marital_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;joint&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10000.0</span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
 <span class="w">    </span><span class="nt">&quot;ss_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;year&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">}]}</span>
 <span class="p">}</span>
@@ -672,11 +690,17 @@ same hard-coding reason.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.parameters.Parameters.get_index_rate">
-<span class="sig-name descname"><span class="pre">get_index_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_to_extend_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.get_index_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.get_index_rate" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_index_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lte_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.get_index_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.get_index_rate" title="Link to this definition">#</a></dt>
 <dd><p>Initalize indexing data and return the indexing rate value
-depending on the parameter name and label_to_extend_val, the value of
-label_to_extend.
+depending on the parameter name and lte_val (that is, the
+label_to_extend_val), the value of label_to_extend.
 Returns: rate to use for indexing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="taxcalc.parameters.Parameters.inflation_rates">
+<span class="sig-name descname"><span class="pre">inflation_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.inflation_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.inflation_rates" title="Link to this definition">#</a></dt>
+<dd><p>Return price inflation rates used in parameter indexing.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -687,10 +711,21 @@ should use the __init__ method in the future.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="taxcalc.parameters.Parameters.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.metadata" title="Link to this definition">#</a></dt>
+<dd><p>Return parameter specification.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.parameters.Parameters.set_rates">
 <span class="sig-name descname"><span class="pre">set_rates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.set_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.set_rates" title="Link to this definition">#</a></dt>
-<dd><p>This method is implemented by classes inheriting
-Parameters.</p>
+<dd><p>This method is implemented by classes inheriting Parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="taxcalc.parameters.Parameters.wage_growth_rates">
+<span class="sig-name descname"><span class="pre">wage_growth_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.wage_growth_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.wage_growth_rates" title="Link to this definition">#</a></dt>
+<dd><p>Return wage growth rates used in parameter indexing.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -702,7 +737,8 @@ assumed to have a param:year:value format.</p>
 
 </dd></dl>
 
-<dl class="py function" id="module-taxcalc.parameters">
+<p id="module-taxcalc.parameters">Tax-Calculator abstract base parameter class based on paramtools package.</p>
+<dl class="py function">
 <dt class="sig sig-object py" id="taxcalc.parameters.is_paramtools_format">
 <span class="sig-prename descclassname"><span class="pre">taxcalc.parameters.</span></span><span class="sig-name descname"><span class="pre">is_paramtools_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ValueObject</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#is_paramtools_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.parameters.is_paramtools_format" title="Link to this definition">#</a></dt>
 <dd><p>Check first item in <code class="docutils literal notranslate"><span class="pre">params</span></code> to determine if it is using the ParamTools
@@ -811,8 +847,11 @@ not.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.adjust"><code class="docutils literal notranslate"><span class="pre">Parameters.adjust()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.adjust_with_indexing"><code class="docutils literal notranslate"><span class="pre">Parameters.adjust_with_indexing()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.get_index_rate"><code class="docutils literal notranslate"><span class="pre">Parameters.get_index_rate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.inflation_rates"><code class="docutils literal notranslate"><span class="pre">Parameters.inflation_rates()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.initialize"><code class="docutils literal notranslate"><span class="pre">Parameters.initialize()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.metadata"><code class="docutils literal notranslate"><span class="pre">Parameters.metadata()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.set_rates"><code class="docutils literal notranslate"><span class="pre">Parameters.set_rates()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.wage_growth_rates"><code class="docutils literal notranslate"><span class="pre">Parameters.wage_growth_rates()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.parameters.Parameters.years_in_revision"><code class="docutils literal notranslate"><span class="pre">Parameters.years_in_revision()</span></code></a></li>
 </ul>
 </li>

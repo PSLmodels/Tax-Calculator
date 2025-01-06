@@ -29,7 +29,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -400,17 +400,17 @@
 <span class="c1"># pycodestyle data.py</span>
 <span class="c1"># pylint --disable=locally-disabled data.py</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
-<span class="kn">from</span> <span class="nn">taxcalc.utils</span> <span class="kn">import</span> <span class="n">read_egg_csv</span><span class="p">,</span> <span class="n">read_egg_json</span><span class="p">,</span> <span class="n">json_to_dict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.growfactors</span><span class="w"> </span><span class="kn">import</span> <span class="n">GrowFactors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_egg_csv</span><span class="p">,</span> <span class="n">read_egg_json</span><span class="p">,</span> <span class="n">json_to_dict</span>
 
 
 <div class="viewcode-block" id="Data">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data">[docs]</a>
-<span class="k">class</span> <span class="nc">Data</span><span class="p">():</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Data</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inherit from this class for Records and other collections of</span>
 <span class="sd">    cross-sectional data that need to have growth factors and sample</span>
@@ -460,18 +460,17 @@
 <span class="sd">    -------</span>
 <span class="sd">    class instance: Data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># suppress pylint warnings about uppercase variable names:</span>
-    <span class="c1"># pylint: disable=invalid-name</span>
-    <span class="c1"># suppress pylint warnings about too many class instance attributes:</span>
-    <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+    <span class="c1"># pylint: disable=too-many-instance-attributes,invalid-name</span>
 
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
 
     <span class="n">VARINFO_FILE_NAME</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">VARINFO_FILE_PATH</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">gfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">gfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights_scale</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
+
         <span class="c1"># initialize data variable info sets and read variable information</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">INTEGER_READ_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">MUST_READ_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -523,21 +522,21 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">s006</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="p">[</span><span class="n">wt_colname</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_scale</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">data_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data class original data year property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data_year</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">current_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">current_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data class current calendar year property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">array_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">array_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Length of arrays in Data class&#39;s DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -545,7 +544,7 @@
 
 <div class="viewcode-block" id="Data.increment_year">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data.increment_year">[docs]</a>
-    <span class="k">def</span> <span class="nf">increment_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">increment_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add one to current year; and also does</span>
 <span class="sd">        extrapolation &amp; reweighting for new current year if aged_data is True.</span>
@@ -567,7 +566,7 @@
 
 <div class="viewcode-block" id="Data._read_var_info">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._read_var_info">[docs]</a>
-    <span class="k">def</span> <span class="nf">_read_var_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_var_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read Data variables metadata from JSON file and</span>
 <span class="sd">        specifies static variable name sets listed above.</span>
@@ -577,12 +576,13 @@
         <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VARINFO_FILE_PATH</span><span class="p">,</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">VARINFO_FILE_NAME</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
                 <span class="n">json_text</span> <span class="o">=</span> <span class="n">pfile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="n">vardict</span> <span class="o">=</span> <span class="n">json_to_dict</span><span class="p">(</span><span class="n">json_text</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># find file in conda package</span>
-            <span class="n">vardict</span> <span class="o">=</span> <span class="n">read_egg_json</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">VARINFO_FILE_NAME</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># find file in taxcalc package</span>
+            <span class="n">vardict</span> <span class="o">=</span> <span class="n">read_egg_json</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">VARINFO_FILE_NAME</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">INTEGER_READ_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">&#39;read&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                                      <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span>
         <span class="n">FLOAT_READ_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">&#39;read&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -605,7 +605,7 @@
 
 <div class="viewcode-block" id="Data._read_data">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._read_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">_read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read data from file or use specified DataFrame as data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -663,7 +663,7 @@
 
 <div class="viewcode-block" id="Data.zero_out_changing_calculated_vars">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data.zero_out_changing_calculated_vars">[docs]</a>
-    <span class="k">def</span> <span class="nf">zero_out_changing_calculated_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">zero_out_changing_calculated_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set to zero all variables in the self.CHANGING_CALCULATED_VARS set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -675,7 +675,7 @@
 
 <div class="viewcode-block" id="Data._read_weights">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._read_weights">[docs]</a>
-    <span class="k">def</span> <span class="nf">_read_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read sample weights from file or</span>
 <span class="sd">        use specified DataFrame as weights or</span>
@@ -701,7 +701,7 @@
 
 <div class="viewcode-block" id="Data._extrapolate">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._extrapolate">[docs]</a>
-    <span class="k">def</span> <span class="nf">_extrapolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extrapolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply to data variables the growth factor values for specified year.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
