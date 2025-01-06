@@ -186,7 +186,7 @@ def test_magic_apply_jit_swap():
     pf.x = np.ones((5,))
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
-    xx = magic(pf, pm)
+    xx = magic(pf, pm)  # pylint: disable=arguments-out-of-order
     exp = DataFrame(data=[[2.0, 3.0]] * 5, columns=["a", "b"])
     assert_frame_equal(xx, exp)
 

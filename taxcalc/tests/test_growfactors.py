@@ -18,8 +18,8 @@ def fixture_bad_gf_file():
     """
     Fixture for invalid growfactors file.
     """
-    txt = (u'YEAR,AWAGE,ACPIU,ABADNAME,ASOCSEC\n'
-           u'2015,1.000,1.000,1.000000,1.00000\n')
+    txt = ('YEAR,AWAGE,ACPIU,ABADNAME,ASOCSEC\n'
+           '2015,1.000,1.000,1.000000,1.00000\n')
     with tempfile.NamedTemporaryFile(mode='a', delete=False) as tfile:
         tfile.write(txt)
     yield tfile

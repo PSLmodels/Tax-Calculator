@@ -63,60 +63,60 @@ def test_read_cps_data(cps_fullsample):
 
 @pytest.mark.parametrize("csv", [
     (
-        u'RECID,MARS,e00200,e00200p,e00200s\n'
-        u'1,    2,   200000, 200000,   0.03\n'
+        'RECID,MARS,e00200,e00200p,e00200s\n'
+        '1,    2,   200000, 200000,   0.03\n'
     ),
     (
-        u'RECID,MARS,e00900,e00900p,e00900s\n'
-        u'1,    2,   200000, 200000,   0.03\n'
+        'RECID,MARS,e00900,e00900p,e00900s\n'
+        '1,    2,   200000, 200000,   0.03\n'
     ),
     (
-        u'RECID,MARS,e02100,e02100p,e02100s\n'
-        u'1,    2,   200000, 200000,   0.03\n'
+        'RECID,MARS,e02100,e02100p,e02100s\n'
+        '1,    2,   200000, 200000,   0.03\n'
     ),
     (
-        u'RECID,MARS,e00200,e00200p,e00200s\n'
-        u'1,    4,   200000, 100000, 100000\n'
+        'RECID,MARS,e00200,e00200p,e00200s\n'
+        '1,    4,   200000, 100000, 100000\n'
     ),
     (
-        u'RECID,MARS,e00900,e00900p,e00900s\n'
-        u'1,    4,   200000, 100000, 100000\n'
+        'RECID,MARS,e00900,e00900p,e00900s\n'
+        '1,    4,   200000, 100000, 100000\n'
     ),
     (
-        u'RECID,MARS,e02100,e02100p,e02100s\n'
-        u'1,    4,   200000, 100000, 100000\n'
+        'RECID,MARS,e02100,e02100p,e02100s\n'
+        '1,    4,   200000, 100000, 100000\n'
     ),
     (
-        u'RECID,MARS,k1bx14s\n'
-        u'1,    4,   0.03\n'
+        'RECID,MARS,k1bx14s\n'
+        '1,    4,   0.03\n'
     ),
     (
-        u'RxCID,MARS\n'
-        u'1,    2\n'
+        'RxCID,MARS\n'
+        '1,    2\n'
     ),
     (
-        u'RECID,e00300\n'
-        u'1,    456789\n'
+        'RECID,e00300\n'
+        '1,    456789\n'
     ),
     (
-        u'RECID,MARS\n'
-        u'1,    6\n'
+        'RECID,MARS\n'
+        '1,    6\n'
     ),
     (
-        u'RECID,MARS,EIC\n'
-        u'1,    5,   4\n'
+        'RECID,MARS,EIC\n'
+        '1,    5,   4\n'
     ),
     (
-        u'RECID,MARS,e00600,e00650\n'
-        u'1,    1,        8,     9\n'
+        'RECID,MARS,e00600,e00650\n'
+        '1,    1,        8,     9\n'
     ),
     (
-        u'RECID,MARS,e01500,e01700\n'
-        u'1,    1,        6,     7\n'
+        'RECID,MARS,e01500,e01700\n'
+        '1,    1,        6,     7\n'
     ),
     (
-        u'RECID,MARS,PT_SSTB_income\n'
-        u'1,    1,   2\n'
+        'RECID,MARS,PT_SSTB_income\n'
+        '1,    1,   2\n'
     )
 ])
 def test_read_data(csv):
