@@ -1044,12 +1044,14 @@ class Calculator():
         data = pch_graph_data(vdf, year=self.current_year,
                               pop_quantiles=pop_quantiles)
         # construct figure from data
-        fig = pch_graph_plot(data,
-                             width=850,
-                             height=500,
-                             xlabel='',
-                             ylabel='',
-                             title='')
+        # (see comment at end of pch_graph_plot function in utils.py)
+        fig = pch_graph_plot(  # pylint: disable=assignment-from-no-return
+            data,
+            width=850,
+            height=500,
+            xlabel='',
+            ylabel='',
+            title='')
         return fig
 
     REQUIRED_REFORM_KEYS = set(['policy'])

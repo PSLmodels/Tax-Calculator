@@ -1314,10 +1314,10 @@ def pch_graph_plot(data,
     # bokeh cannot save this fig saying:
     #   bokeh.core.serialization.SerializationError:
     #   can't serialize <class 'range'>
-    # so the "return fig" statement is replaced by "return None" until
-    # the above logic can be made compatible with modern bokeh packages
+    # so the "return fig" statement is replaced by Python's implicit
+    # "return None" until the above logic can be made compatible with
+    # modern bokeh packages
     # return fig
-    return None
 
 
 def write_graph_file(figure, filename, title):

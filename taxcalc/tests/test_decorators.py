@@ -133,9 +133,14 @@ def magic_calc2(x, y, z):
     return (a, b)
 
 
-class Foo:
+class Foo:  # pylint: disable=too-many-instance-attributes
     """Foo class"""
-    # pylint: disable=too-few-public-methods,too-many-instance-attributes
+
+    def faux_method1(self):
+        """ Foo method"""
+
+    def faux_method2(self):
+        """ Foo method"""
 
 
 @iterate_jit(nopython=True)
