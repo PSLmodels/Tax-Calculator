@@ -457,8 +457,8 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Releasing Tax-Caclculator Packages</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#create-new-taxcalc-packages">Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> packages</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-new-branch-to-fix-a-bug-in-an-old-release">Creating a new branch to fix a bug in an old release</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#create-new-taxcalc-package">Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#notes-for-person-actually-creating-package">Notes for person actually creating package</a></li>
 </ul>
 
             </nav>
@@ -473,13 +473,18 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="releasing-tax-caclculator-packages">
 <h1>Releasing Tax-Caclculator Packages<a class="headerlink" href="#releasing-tax-caclculator-packages" title="Link to this heading">#</a></h1>
-<p>The following outlines the process to release Tax-Calculator Packages
-on Conda-Forge and creating a new branch to fix a bug in a previous
-release.</p>
+<p>The following outlines the process for releasing a new Tax-Calculator package.</p>
 </section>
-<section class="tex2jax_ignore mathjax_ignore" id="create-new-taxcalc-packages">
-<h1>Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> packages<a class="headerlink" href="#create-new-taxcalc-packages" title="Link to this heading">#</a></h1>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--&gt; merge master branch into X-Y-Z branch
+<section class="tex2jax_ignore mathjax_ignore" id="create-new-taxcalc-package">
+<h1>Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package<a class="headerlink" href="#create-new-taxcalc-package" title="Link to this heading">#</a></h1>
+<p>In the top-level Tax-Calculator directory, do the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--&gt; run `git switch master`  [to get on master branch]
+
+--&gt; run `./gitsync`  [to ensure master is up-to-date with GitHub version]
+
+--&gt; make clean  [to remove any local taxcalc package]
+
+--&gt; run `git checkout -b X-Y-Z`  [to create X-Y-Z (e.g., `4-4-1`) branch]
 
 --&gt; on branch X-Y-Z, edit docs/about/releases.md to finalize X.Y.Z info
 
@@ -491,71 +496,31 @@ release.</p>
 
 --&gt; run `python extend_tcja.py &gt; ext.json`  [to update reforms/ext.json]
 
---&gt; run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
+--&gt; run `make cstest`  [to make confirm project coding style is being followed]
 
 --&gt; run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc subdir]
 
---&gt; run `make package`  [to make local taxcalc package available]
-
---&gt; cd taxcalc/validation ; ./tests_35.sh ; .fix. ; cd ../..
-
---&gt; make clean  [to remove taxcalc package]
+--&gt; run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
 
 --&gt; commit X-Y-Z branch and push to origin
 
---&gt; merge X-Y-Z branch into master branch on GitHub
+--&gt; open new GitHub pull request using your X-Y-Z branch
+
+--&gt; ask [@jdebacker](https://github.com/jdebacker/) to merge and create package
+</pre></div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="notes-for-person-actually-creating-package">
+<h1>Notes for person actually creating package<a class="headerlink" href="#notes-for-person-actually-creating-package" title="Link to this heading">#</a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--&gt; merge X-Y-Z branch into master branch on GitHub
 
 --&gt; on local master branch, ./gitsync
 
 --&gt; create release X.Y.Z on GitHub using master branch
 
---&gt; Create new package on Conda-Forge for release X.Y.Z
+--&gt; create new package on Conda-Forge for release X.Y.Z
 
 --&gt; open a PR to github.com/conda-forge/taxcalc-feedstock where you change the `recipe/meta.yaml` file by updating (1) the version number to X.Y.Z and (2) the checksum to reflect the checksum for the tarball for release X.Y.Z in the Tax-Calculator GitHub repo
-
-====&gt; ADD NEW DEPENDENCY OR UPDATE MINIMUM REQUIRED VERSION &lt;====
-
---&gt; add or update `run` list in `requirements` section of `conda.recipe/meta.yaml`
-
---&gt; add or update package in `environment.yaml`
-    (this may have already been done in the PR that added or updated the
-     dependency.)
-
---&gt; update `dev_pkgs` list in `test_4package.py:test_for_consistency` and make sure
-    the updated test passes
-
-====&gt; CREATE NEW BEHRESP PACKAGES (if necessary) &lt;====
-
---&gt; create Behavioral-Responses packages
-
-====&gt; NOTIFY OTHER DEVELOPERS &lt;====
-
---&gt; email Tax-Calculator user list about the new release and packages
-</pre></div>
-</div>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="creating-a-new-branch-to-fix-a-bug-in-an-old-release">
-<h1>Creating a new branch to fix a bug in an old release<a class="headerlink" href="#creating-a-new-branch-to-fix-a-bug-in-an-old-release" title="Link to this heading">#</a></h1>
-<p>Useful when tip of master branch includes major changes since old release.</p>
-<p>EXAMPLE: fix bug in release 1.4.0 and then release 1.4.1</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd ~/work/PSL/Tax-Calculator
-
-$ git checkout master
-
-$ git checkout  -b 1-4-1  1.4.0
-
---&gt; fix bug on branch 1-4-1, test, commit bug fix
-
-$ git push upstream 1-4-1
-
---&gt; create release 1.4.1 using GitHub releases GUI citing branch 1-4-1
-
---&gt; then in order to merge bug-fix into master branch and future releases
-    beginning with 1.5.0, do the following:
-
-$ git checkout master
-
-$ git merge 1-4-1
 </pre></div>
 </div>
 </section>
@@ -626,8 +591,8 @@ $ git merge 1-4-1
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Releasing Tax-Caclculator Packages</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#create-new-taxcalc-packages">Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> packages</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-new-branch-to-fix-a-bug-in-an-old-release">Creating a new branch to fix a bug in an old release</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#create-new-taxcalc-package">Create new <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> package</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#notes-for-person-actually-creating-package">Notes for person actually creating package</a></li>
 </ul>
 
   </nav></div>
