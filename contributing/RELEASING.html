@@ -500,7 +500,7 @@
 </pre></div>
 </div>
 <p>Then ask <a class="reference external" href="https://github.com/jdebacker/">&#64;jdebacker</a> to review and
-merge the pull request and create package</p>
+merge the pull request and create the package.</p>
 <section id="notes-on-creating-package-for-distribution">
 <h2>Notes on creating package for distribution<a class="headerlink" href="#notes-on-creating-package-for-distribution" title="Link to this heading">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--&gt; merge X-Y-Z branch into master branch on GitHub
@@ -511,7 +511,11 @@ merge the pull request and create package</p>
 
 --&gt; create new package on Conda-Forge for release X.Y.Z
 
---&gt; open a PR to github.com/conda-forge/taxcalc-feedstock where you change the `recipe/meta.yaml` file by updating (1) the version number to X.Y.Z and (2) the checksum to reflect the checksum for the tarball for release X.Y.Z in the Tax-Calculator GitHub repo
+--&gt; open a PR to github.com/conda-forge/taxcalc-feedstock where
+    you change the `recipe/meta.yaml` file by updating:
+    (1) the version number to X.Y.Z and
+    (2) the checksum to reflect the checksum for the
+        tarball for release X.Y.Z in the Tax-Calculator GitHub repo
 </pre></div>
 </div>
 </section>

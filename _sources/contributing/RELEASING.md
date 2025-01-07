@@ -36,7 +36,7 @@ In the top-level Tax-Calculator directory, do the following:
 ```
 
 Then ask [@jdebacker](https://github.com/jdebacker/) to review and
-merge the pull request and create package
+merge the pull request and create the package.
 
 
 ### Notes on creating package for distribution
@@ -50,5 +50,9 @@ merge the pull request and create package
 
 --> create new package on Conda-Forge for release X.Y.Z
 
---> open a PR to github.com/conda-forge/taxcalc-feedstock where you change the `recipe/meta.yaml` file by updating (1) the version number to X.Y.Z and (2) the checksum to reflect the checksum for the tarball for release X.Y.Z in the Tax-Calculator GitHub repo
+--> open a PR to github.com/conda-forge/taxcalc-feedstock where
+    you change the `recipe/meta.yaml` file by updating:
+    (1) the version number to X.Y.Z and
+    (2) the checksum to reflect the checksum for the
+        tarball for release X.Y.Z in the Tax-Calculator GitHub repo
 ```
