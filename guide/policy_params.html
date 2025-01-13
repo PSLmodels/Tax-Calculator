@@ -625,7 +625,7 @@
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#charity">Charity</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id-charity-crt-all"><code class="docutils literal notranslate"><span class="pre">ID_Charity_crt_all</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id-charity-crt-cash"><code class="docutils literal notranslate"><span class="pre">ID_Charity_crt_cash</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id-charity-crt-noncash"><code class="docutils literal notranslate"><span class="pre">ID_Charity_crt_noncash</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id-charity-frt"><code class="docutils literal notranslate"><span class="pre">ID_Charity_frt</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id-charity-hc"><code class="docutils literal notranslate"><span class="pre">ID_Charity_hc</span></code></a></li>
@@ -749,7 +749,6 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-w2-wages-rt"><code class="docutils literal notranslate"><span class="pre">PT_qbid_w2_wages_rt</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-alt-w2-wages-rt"><code class="docutils literal notranslate"><span class="pre">PT_qbid_alt_w2_wages_rt</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-alt-property-rt"><code class="docutils literal notranslate"><span class="pre">PT_qbid_alt_property_rt</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-limit-switch"><code class="docutils literal notranslate"><span class="pre">PT_qbid_limit_switch</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-ps"><code class="docutils literal notranslate"><span class="pre">PT_qbid_ps</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-prt"><code class="docutils literal notranslate"><span class="pre">PT_qbid_prt</span></code></a></li>
 </ul>
@@ -2455,9 +2454,9 @@ for: [med, sltx, retx, cas, misc, int, char]
 </section>
 <section id="charity">
 <h3>Charity<a class="headerlink" href="#charity" title="Link to this heading">#</a></h3>
-<section id="id-charity-crt-all">
-<h4><code class="docutils literal notranslate"><span class="pre">ID_Charity_crt_all</span></code><a class="headerlink" href="#id-charity-crt-all" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The total deduction for charity is capped at this fraction of AGI.
+<section id="id-charity-crt-cash">
+<h4><code class="docutils literal notranslate"><span class="pre">ID_Charity_crt_cash</span></code><a class="headerlink" href="#id-charity-crt-cash" title="Link to this heading">#</a></h4>
+<p><em>Description:</em> The cash deduction for charity is capped at this fraction of AGI.
 <em>Notes:</em> When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
 <em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False
@@ -4077,23 +4076,6 @@ for: [single, mjoint, mseparate, headhh, widow]
 2025: 0.025
 2026: 0.0
 <em>Valid Range:</em> min = 0 and max = 1
-<em>Out-of-Range Action:</em> error</p>
-</section>
-<section id="pt-qbid-limit-switch">
-<h4><code class="docutils literal notranslate"><span class="pre">PT_qbid_limit_switch</span></code><a class="headerlink" href="#pt-qbid-limit-switch" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> A value of True imposes wage/capital limitations. Note that neither the PUF nor CPS have data on wage expenses or capital income, and therefore all taxpayers are fully subject to the QBID limitations. A value of False assumes sufficient wage and capital income to avoid QBID limitations.
-<em>Has An Effect When Using:</em> <em>PUF data:</em> False <em>CPS data:</em> False
-<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False
-<em>Value Type:</em> bool
-<em>Known Values:</em>
-2013: True
-2014: True
-2015: True
-2016: True
-2017: True
-2018: True
-2019: True
-<em>Valid Range:</em> min = False and max = True
 <em>Out-of-Range Action:</em> error</p>
 </section>
 <section id="pt-qbid-ps">
@@ -6023,7 +6005,7 @@ for: [single, mjoint, mseparate, headhh, widow]
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#charity">Charity</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id-charity-crt-all"><code class="docutils literal notranslate"><span class="pre">ID_Charity_crt_all</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id-charity-crt-cash"><code class="docutils literal notranslate"><span class="pre">ID_Charity_crt_cash</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id-charity-crt-noncash"><code class="docutils literal notranslate"><span class="pre">ID_Charity_crt_noncash</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id-charity-frt"><code class="docutils literal notranslate"><span class="pre">ID_Charity_frt</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id-charity-hc"><code class="docutils literal notranslate"><span class="pre">ID_Charity_hc</span></code></a></li>
@@ -6147,7 +6129,6 @@ for: [single, mjoint, mseparate, headhh, widow]
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-w2-wages-rt"><code class="docutils literal notranslate"><span class="pre">PT_qbid_w2_wages_rt</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-alt-w2-wages-rt"><code class="docutils literal notranslate"><span class="pre">PT_qbid_alt_w2_wages_rt</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-alt-property-rt"><code class="docutils literal notranslate"><span class="pre">PT_qbid_alt_property_rt</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-limit-switch"><code class="docutils literal notranslate"><span class="pre">PT_qbid_limit_switch</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-ps"><code class="docutils literal notranslate"><span class="pre">PT_qbid_ps</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pt-qbid-prt"><code class="docutils literal notranslate"><span class="pre">PT_qbid_prt</span></code></a></li>
 </ul>
