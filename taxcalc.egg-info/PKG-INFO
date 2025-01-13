@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: taxcalc
 Version: 4.4.0
 Summary: Tax-Calculator
@@ -23,6 +23,14 @@ Requires-Dist: pandas>=2.2
 Requires-Dist: bokeh>=2.4
 Requires-Dist: numba
 Requires-Dist: paramtools>=0.19.0
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: download-url
+Dynamic: home-page
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: summary
 
 | | |
 | --- | --- |
@@ -37,8 +45,14 @@ Tax-Calculator
 Tax-Calculator is an open-source microsimulation model for static
 analysis of USA federal income and payroll taxes.
 
-We are seeking contributors and maintainers. If you are interested in joining the project as a contributor or maintainer,
-open a new [issue](https://github.com/PSLmodels/Tax-Calculator/issues) and ping [@MattHJensen](https://github.com/MattHJensen/) or [@jdebacker](https://github.com/jdebacker/) -- or just jump right in.
+We are seeking contributors and maintainers.  If you are interested in
+joining the project as a contributor or maintainer, open a new
+[issue](https://github.com/PSLmodels/Tax-Calculator/issues) and ping
+[@MattHJensen](https://github.com/MattHJensen/) or
+[@jdebacker](https://github.com/jdebacker/) -- or just jump right in.
+The [contributor
+guide](https://taxcalc.pslmodels.org/contributing/contributor_guide.html)
+explains the workflow involved in contributing model enhancements.
 
 Complete documentation is available
 [here](https://PSLmodels.github.io/Tax-Calculator/).
