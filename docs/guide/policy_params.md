@@ -1514,8 +1514,8 @@ _Out-of-Range Action:_ error
 
 ### Charity
 
-####  `ID_Charity_crt_all`
-_Description:_ The total deduction for charity is capped at this fraction of AGI.
+####  `ID_Charity_crt_cash`
+_Description:_ The cash deduction for charity is capped at this fraction of AGI.
 _Notes:_ When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False
@@ -3119,23 +3119,6 @@ _Known Values:_
 2025: 0.025
 2026: 0.0
 _Valid Range:_ min = 0 and max = 1
-_Out-of-Range Action:_ error
-
-
-####  `PT_qbid_limit_switch`
-_Description:_ A value of True imposes wage/capital limitations. Note that neither the PUF nor CPS have data on wage expenses or capital income, and therefore all taxpayers are fully subject to the QBID limitations. A value of False assumes sufficient wage and capital income to avoid QBID limitations.
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False
-_Value Type:_ bool
-_Known Values:_
-2013: True
-2014: True
-2015: True
-2016: True
-2017: True
-2018: True
-2019: True
-_Valid Range:_ min = False and max = True
 _Out-of-Range Action:_ error
 
 
