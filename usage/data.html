@@ -532,18 +532,19 @@ repository</a>
 produces an input variables file (<code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code>), a national weights file
 (<code class="docutils literal notranslate"><span class="pre">tmd_weights.csv.gz</span></code>), and a variable growth factors file
 (<code class="docutils literal notranslate"><span class="pre">tmd_growfactors.csv</span></code>) that can be used with the Tax-Calculator
-package beginning with the 3.6.0 release.  The <code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code> file is
-available only to Tax-Calculator users who have purchased their own
-version of the 2015 IRS-SOI PUF.  For those users, those three files
-are avaiable from the tax-microdata repository.  These three TMD files
-can be used with Tax-Calculator in two ways:</p>
+package beginning with the 3.6.0 release.  The TMD files are available
+only to users who have purchased their own version of the 2015 IRS-SOI
+PUF.  For those users, the three TMD files are avaiable from the
+tax-microdata repository.  These three TMD files can be used with
+Tax-Calculator in two ways:</p>
 <ul class="simple">
 <li><p>with the <strong>Python API</strong> by instantiating a GrowFactors object that
-uses TMD factors [gf = GrowFactors(“path/to/tmd_growfactors.csv”)]
+uses TMD factors [<code class="docutils literal notranslate"><span class="pre">gf</span> <span class="pre">=</span> <span class="pre">GrowFactors(&quot;path/to/tmd_growfactors.csv&quot;)</span></code>]
 and by using the <code class="docutils literal notranslate"><span class="pre">Records.tmd_constructor()</span></code> and
-<code class="docutils literal notranslate"><span class="pre">Policy.tmd_constructor()</span></code>static methods</p></li>
+<code class="docutils literal notranslate"><span class="pre">Policy.tmd_constructor()</span></code> static methods to instantiate a Records
+object and a Policy object, or</p></li>
 <li><p>with the <strong>CLI tool</strong>, <code class="docutils literal notranslate"><span class="pre">tc</span></code>, when the three TMD files are all in
-the same folder</p></li>
+the same folder.</p></li>
 </ul>
 </section>
 </section>
