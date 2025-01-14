@@ -529,22 +529,22 @@ file.</p>
 <h3>2015 IRS public use data (<code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code>)<a class="headerlink" href="#irs-public-use-data-tmd-csv" title="Link to this heading">#</a></h3>
 <p>The <a class="reference external" href="https://github.com/PSLmodels/tax-microdata-benchmarking">tax-microdata
 repository</a>
-produces an input variables file (<code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code>), a national weights file
-(<code class="docutils literal notranslate"><span class="pre">tmd_weights.csv.gz</span></code>), and a variable growth factors file
+produces an input variables file (<code class="docutils literal notranslate"><span class="pre">tmd.csv.gz</span></code>), a national weights
+file (<code class="docutils literal notranslate"><span class="pre">tmd_weights.csv.gz</span></code>), and a variable growth factors file
 (<code class="docutils literal notranslate"><span class="pre">tmd_growfactors.csv</span></code>) that can be used with the Tax-Calculator
 package beginning with the 3.6.0 release.  The TMD files are available
 only to users who have purchased their own version of the 2015 IRS-SOI
-PUF.  For those users, the three TMD files are avaiable from the
-tax-microdata repository.  These three TMD files can be used with
+PUF.  For those users, the TMD files are avaiable from the
+tax-microdata repository.  The three TMD files can be used with
 Tax-Calculator in two ways:</p>
 <ul class="simple">
 <li><p>with the <strong>Python API</strong> by instantiating a GrowFactors object that
-uses TMD factors [<code class="docutils literal notranslate"><span class="pre">gf</span> <span class="pre">=</span> <span class="pre">GrowFactors(&quot;path/to/tmd_growfactors.csv&quot;)</span></code>]
+uses TMD growth factors [<code class="docutils literal notranslate"><span class="pre">gf=GrowFactors(&quot;path/to/tmd_growfactors.csv&quot;)</span></code>]
 and by using the <code class="docutils literal notranslate"><span class="pre">Records.tmd_constructor()</span></code> and
 <code class="docutils literal notranslate"><span class="pre">Policy.tmd_constructor()</span></code> static methods to instantiate a Records
 object and a Policy object, or</p></li>
 <li><p>with the <strong>CLI tool</strong>, <code class="docutils literal notranslate"><span class="pre">tc</span></code>, when the three TMD files are all in
-the same folder.</p></li>
+the same folder and the <code class="docutils literal notranslate"><span class="pre">tmd.csv.gz</span></code> file has been unzipped.</p></li>
 </ul>
 </section>
 </section>
