@@ -66,7 +66,7 @@ file (`tmd_weights.csv.gz`), and a variable growth factors file
 (`tmd_growfactors.csv`) that can be used with the Tax-Calculator
 package beginning with the 3.6.0 release.  The TMD files are available
 only to users who have purchased their own version of the 2015 IRS-SOI
-PUF.  For those users, the TMD files are avaiable from the
+PUF.  For those users, the TMD files are available from the
 tax-microdata repository.  The three TMD files can be used with
 Tax-Calculator in two ways:
   - with the **Python API** by instantiating a GrowFactors object that
