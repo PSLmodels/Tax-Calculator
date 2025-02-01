@@ -8,22 +8,21 @@ Compares Tax-Calculator PUF and CPS results with historical information.
 import os
 import pytest
 import numpy as np
-# pylint: disable=import-error,pointless-string-statement
-from taxcalc import Policy, Records, Calculator
-from taxcalc import add_income_table_row_variable, SOI_AGI_BINS
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
+from taxcalc.utils import add_income_table_row_variable, SOI_AGI_BINS
 
 
-"""
-2015 IRS-SOI amounts by AGI category are from "Table 3.3 All Returns: Tax
-Liability, Tax Credits, and Tax Payments by Size of Adjusted Gross Income,
-Tax Year 2015" which is available as a spreadsheet at this URL:
-<https://www.irs.gov/statistics/soi-tax-stats-individual-
-statistical-tables-by-size-of-adjusted-gross-income>
-The IRS-SOI amounts are from 19 rows in the spreadsheet numbered from
-11 (AGI under one dollar) through 29 (AGI $10M or more).
-Dollar IRS-SOI amounts are expressed in billions of dollars and rounded
-to the nearest one-tenth of a million dollars.
-"""
+# 2015 IRS-SOI amounts by AGI category are from "Table 3.3 All Returns: Tax
+# Liability, Tax Credits, and Tax Payments by Size of Adjusted Gross Income,
+# Tax Year 2015" which is available as a spreadsheet at this URL:
+# <https://www.irs.gov/statistics/soi-tax-stats-individual-
+#  statistical-tables-by-size-of-adjusted-gross-income>
+# The IRS-SOI amounts are from 19 rows in the spreadsheet numbered from
+# 11 (AGI under one dollar) through 29 (AGI $10M or more).
+# Dollar IRS-SOI amounts are expressed in billions of dollars and rounded
+# to the nearest one-tenth of a million dollars.
 ITAX = {
     '0:EITC': {
         # Full earned income credit
@@ -204,11 +203,12 @@ def comparison(cname, calc, cmpdata, ofile):
     # construct AGI table
     vardf = add_income_table_row_variable(vardf, 'c00100', SOI_AGI_BINS)
     gbydf = vardf.groupby('table_row', as_index=False)
-    # write AGI table with ALL row at bottom to ofile
-    ofile.write('TABLE for {}\n'.format(cname.split(':')[1]))
+    # write AGI table with ALL row at bottom of ofile
+    ofile.write(f'TABLE for {cname.split(":")[1]}\n')
     results = '{:23s}\t{:8.3f}\t{:8.3f}\t{:+6.1f}\n'
-    colhead = '{:23s}\t{:>8s}\t{:>8s}\t{:>6s}\n'
-    ofile.write(colhead.format('AGI category', 'T-C', 'SOI', '%diff'))
+    colhead = f'{"AGIcategory":23s}\t{"T-C":>8s}\t{"SOI":>8s}\t{"%diff":>6s}\n'
+    ofile.write(colhead)
+    # pylint: disable=consider-using-f-string
     txc_tot = 0.
     soi_tot = 0.
     idx = 0
@@ -221,12 +221,12 @@ def comparison(cname, calc, cmpdata, ofile):
             pct_diff = 100. * ((txc / soi) - 1.)
         else:
             pct_diff = np.nan
-        glabel = '[{:.8g}, {:.8g})'.format(grp_interval.left,
-                                           grp_interval.right)
+        glabel = f'[{grp_interval.left:.8g}, {grp_interval.right:.8g})'
         ofile.write(results.format(glabel, txc, soi, pct_diff))
         idx += 1
     pct_diff = 100. * ((txc_tot / soi_tot) - 1.)
     ofile.write(results.format('ALL', txc_tot, soi_tot, pct_diff))
+    # pylint: enable=consider-using-f-string
 
 
 def nonsmall_diffs(linelist1, linelist2, small=0.0):
@@ -256,24 +256,20 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
     for line1, line2 in zip(linelist1, linelist2):
         if line1 == line2:
             continue
-        else:
-            tokens1 = line1.replace(',', '').split()
-            tokens2 = line2.replace(',', '').split()
-            for tok1, tok2 in zip(tokens1, tokens2):
-                tok1_isfloat = isfloat(tok1)
-                tok2_isfloat = isfloat(tok2)
-                if tok1_isfloat and tok2_isfloat:
-                    if abs(float(tok1) - float(tok2)) <= smallamt:
-                        continue
-                    else:
-                        return True
-                elif not tok1_isfloat and not tok2_isfloat:
-                    if tok1 == tok2:
-                        continue
-                    else:
-                        return True
-                else:
-                    return True
+        tokens1 = line1.replace(',', '').split()
+        tokens2 = line2.replace(',', '').split()
+        for tok1, tok2 in zip(tokens1, tokens2):
+            tok1_isfloat = isfloat(tok1)
+            tok2_isfloat = isfloat(tok2)
+            if tok1_isfloat and tok2_isfloat:
+                if abs(float(tok1) - float(tok2)) <= smallamt:
+                    continue
+                return True
+            if not tok1_isfloat and not tok2_isfloat:
+                if tok1 == tok2:
+                    continue
+                return True
+            return True
         return False
 
 
@@ -281,9 +277,9 @@ def differences(afilename, efilename):
     """
     Check for differences between results in afilename and efilename files.
     """
-    with open(afilename, 'r') as afile:
+    with open(afilename, 'r', encoding='utf-8') as afile:
         actres = afile.read()
-    with open(efilename, 'r') as efile:
+    with open(efilename, 'r', encoding='utf-8') as efile:
         expres = efile.read()
     diffs = nonsmall_diffs(actres.splitlines(True),
                            expres.splitlines(True), 0.0)
@@ -292,12 +288,12 @@ def differences(afilename, efilename):
         efname = os.path.basename(efilename)
         msg = 'COMPARE RESULTS DIFFER\n'
         msg += '-------------------------------------------------\n'
-        msg += '--- NEW RESULTS IN {} FILE ---\n'
-        msg += '--- if new OK, copy {} to  ---\n'
-        msg += '---                 {}     ---\n'
+        msg += f'--- NEW RESULTS IN {afname} FILE   ---\n'
+        msg += f'--- if new OK, copy {afname} to    ---\n'
+        msg += f'---                 {efname}       ---\n'
         msg += '---            and rerun test.                ---\n'
         msg += '-------------------------------------------------\n'
-        raise ValueError(msg.format(afname, afname, efname))
+        raise ValueError(msg)
     os.remove(afilename)
 
 
@@ -325,12 +321,10 @@ def test_itax_compare(tests_path, using_puf, puf_fullsample, cps_fullsample):
         afilename = os.path.join(tests_path, 'cmpi_puf_actual.txt')
     else:
         afilename = os.path.join(tests_path, 'cmpi_cps_actual.txt')
-    afile = open(afilename, 'w')
-    # write compare results to afile
-    for cname in sorted(ITAX.keys()):
-        comparison(cname, calc, ITAX, afile)
-    # close actual output file
-    afile.close()
+    with open(afilename, 'w', encoding='utf-8') as afile:
+        # write compare results to afile
+        for cname in sorted(ITAX.keys()):
+            comparison(cname, calc, ITAX, afile)
     # check for differences between actual and expect output files
     efilename = afilename.replace('actual', 'expect')
     differences(afilename, efilename)

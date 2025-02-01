@@ -63,10 +63,7 @@ class Data():
     -------
     class instance: Data
     """
-    # suppress pylint warnings about uppercase variable names:
-    # pylint: disable=invalid-name
-    # suppress pylint warnings about too many class instance attributes:
-    # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-instance-attributes,invalid-name
 
     __metaclass__ = abc.ABCMeta
 
@@ -75,6 +72,8 @@ class Data():
 
     def __init__(self, data, start_year, gfactors=None,
                  weights=None, weights_scale=0.01):
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+
         # initialize data variable info sets and read variable information
         self.INTEGER_READ_VARS = set()
         self.MUST_READ_VARS = set()
@@ -175,12 +174,13 @@ class Data():
         file_path = os.path.join(self.VARINFO_FILE_PATH,
                                  self.VARINFO_FILE_NAME)
         if os.path.isfile(file_path):
-            with open(file_path) as pfile:
+            with open(file_path, 'r', encoding='utf-8') as pfile:
                 json_text = pfile.read()
             vardict = json_to_dict(json_text)
-        else:  # find file in conda package
-            vardict = read_egg_json(
-                self.VARINFO_FILE_NAME)  # pragma: no cover
+        else:  # find file in taxcalc package
+            vardict = read_egg_json(  # pragma: no cover
+                self.VARINFO_FILE_NAME
+            )
         self.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
                                      if v['type'] == 'int')
         FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()

@@ -11,8 +11,14 @@ Tax-Calculator
 Tax-Calculator is an open-source microsimulation model for static
 analysis of USA federal income and payroll taxes.
 
-We are seeking contributors and maintainers. If you are interested in joining the project as a contributor or maintainer,
-open a new [issue](https://github.com/PSLmodels/Tax-Calculator/issues) and ping [@MattHJensen](https://github.com/MattHJensen/) or [@jdebacker](https://github.com/jdebacker/) -- or just jump right in.
+We are seeking contributors and maintainers.  If you are interested in
+joining the project as a contributor or maintainer, open a new
+[issue](https://github.com/PSLmodels/Tax-Calculator/issues) and ping
+[@MattHJensen](https://github.com/MattHJensen/) or
+[@jdebacker](https://github.com/jdebacker/) -- or just jump right in.
+The [contributor
+guide](https://taxcalc.pslmodels.org/contributing/contributor_guide.html)
+explains the workflow involved in contributing model enhancements.
 
 Complete documentation is available
 [here](https://PSLmodels.github.io/Tax-Calculator/).

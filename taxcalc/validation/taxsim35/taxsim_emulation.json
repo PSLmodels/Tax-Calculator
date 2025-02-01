@@ -36,14 +36,10 @@
 //      income of the receiving spouse, if made under a
 //      divorce or separation agreement executed after
 //      Dec. 31, 2018.
-
-// (4) PT_qbid_limit_switch = false implies TAXSIM35-like QBI deduction logic.
 {
     "AMT_child_em_c_age": {"2013": 24},
 
     "EITC_excess_InvestIncome_rt": {"2013": 1.0},
 
-    "ALD_AlimonyReceived_hc": {"2019": 1.0},
-
-    "PT_qbid_limit_switch": {"2018": false}
+    "ALD_AlimonyReceived_hc": {"2019": 1.0}
 }

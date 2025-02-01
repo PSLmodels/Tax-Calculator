@@ -172,7 +172,8 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
     and the top decile is broken into three subgroups
     (90-95, 95-99, and top 1%).
     """
-    # pylint: disable=too-many-arguments,too-many-locals
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-locals
     assert isinstance(dframe, pd.DataFrame)
     assert income_measure in dframe
     assert 's006' in dframe
@@ -272,7 +273,7 @@ def get_sums(dframe):
     -------
     Pandas Series object containing column sums indexed by dframe column names.
     """
-    sums = dict()
+    sums = {}
     for col in dframe.columns.values.tolist():
         if col != 'table_row':
             sums[col] = dframe[col].sum()
@@ -353,6 +354,7 @@ def create_distribution_table(vdf, groupby, income_measure,
     if pop_quantiles:
         assert groupby == 'weighted_deciles'
     # sort the data given specified groupby and income_measure
+    dframe = None
     if groupby == 'weighted_deciles':
         dframe = add_quantile_table_row_variable(vdf, income_measure, 10,
                                                  pop_quantiles=pop_quantiles,
@@ -544,6 +546,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
     else:
         df2['count'] = df2['s006']
     # add table_row column to df2 given specified groupby and income_measure
+    dframe = None
     if groupby == 'weighted_deciles':
         dframe = add_quantile_table_row_variable(
             df2, baseline_expanded_income, 10,
@@ -680,7 +683,7 @@ def create_diagnostic_table(dframe_list, year_list):
         agi = vdf['c00100']
         odict['AGI ($b)'] = round((agi * wghts).sum() * in_billions, 3)
         # number of itemizers
-        val = (wghts[vdf['c04470'] > 0.].sum())
+        val = wghts[vdf['c04470'] > 0.].sum()
         odict['Itemizers (#m)'] = round(val * in_millions, 2)
         # itemized deduction
         ided1 = vdf['c04470'] * wghts
@@ -761,7 +764,7 @@ def create_diagnostic_table(dframe_list, year_list):
     assert isinstance(year_list[0], int)
     assert isinstance(dframe_list[0], pd.DataFrame)
     # construct diagnostic table
-    tlist = list()
+    tlist = []
     for year, vardf in zip(year_list, dframe_list):
         odict = diagnostic_table_odict(vardf)
         ddf = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
@@ -854,8 +857,8 @@ def mtr_graph_data(vdf, year,
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
     """
-    # pylint: disable=too-many-arguments,too-many-statements
-    # pylint: disable=too-many-locals,too-many-branches
+    # pylint: disable=too-many-arguments,,too-many-positional-arguments
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # check validity of function arguments
     # . . check income_measure value
     weighting_function = weighted_mean
@@ -930,26 +933,25 @@ def mtr_graph_data(vdf, year,
     lines['base'] = mtr1_series
     lines['reform'] = mtr2_series
     # construct dictionary containing merged data and auto-generated labels
-    data = dict()
+    data = {}
     data['lines'] = lines
     if dollar_weighting:
-        income_str = 'Dollar-weighted {}'.format(income_str)
-        mtr_str = 'Dollar-weighted {}'.format(mtr_str)
-    data['ylabel'] = '{} MTR'.format(mtr_str)
-    xlabel_str = 'Baseline {} Percentile'.format(income_str)
+        income_str = f'Dollar-weighted {income_str}'
+        mtr_str = f'Dollar-weighted {mtr_str}'
+    data['ylabel'] = f'{mtr_str} MTR'
+    xlabel_str = f'Baseline {income_str} Percentile'
     if mars != 'ALL':
-        xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
+        xlabel_str = f'{xlabel_str} for MARS={mars}'
     data['xlabel'] = xlabel_str
-    var_str = '{}'.format(mtr_variable)
+    var_str = f'{mtr_variable}'
     if mtr_variable == 'e00200p' and alt_e00200p_text != '':
-        var_str = '{}'.format(alt_e00200p_text)
+        var_str = f'{alt_e00200p_text}'
     if mtr_variable == 'e00200p' and mtr_wrt_full_compen:
-        var_str = '{} wrt full compensation'.format(var_str)
-    title_str = 'Mean Marginal Tax Rate for {} by Income Percentile'
-    title_str = title_str.format(var_str)
+        var_str = f'{var_str} wrt full compensation'
+    title_str = f'Mean Marginal Tax Rate for {var_str} by Income Percentile'
     if mars != 'ALL':
-        title_str = '{} for MARS={}'.format(title_str, mars)
-    title_str = '{} for {}'.format(title_str, year)
+        title_str = f'{title_str} for MARS={mars}'
+    title_str = f'{title_str} for {year}'
     data['title'] = title_str
     return data
 
@@ -1067,17 +1069,17 @@ def atr_graph_data(vdf, year,
     # include only percentiles with average income no less than min_avginc
     lines = lines[included]
     # construct dictionary containing plot lines and auto-generated labels
-    data = dict()
+    data = {}
     data['lines'] = lines
-    data['ylabel'] = '{} Average Tax Rate'.format(atr_str)
+    data['ylabel'] = f'{atr_str} Average Tax Rate'
     xlabel_str = 'Baseline Expanded-Income Percentile'
     if mars != 'ALL':
-        xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
+        xlabel_str = f'{xlabel_str} for MARS={mars}'
     data['xlabel'] = xlabel_str
     title_str = 'Average Tax Rate by Income Percentile'
     if mars != 'ALL':
-        title_str = '{} for MARS={}'.format(title_str, mars)
-    title_str = '{} for {}'.format(title_str, year)
+        title_str = f'{title_str} for MARS={mars}'
+    title_str = f'{title_str} for {year}'
     data['title'] = title_str
     return data
 
@@ -1148,7 +1150,7 @@ def xtr_graph_plot(data,
     raster graphics file.  There is no option to make the bokeh.plotting
     figure generate a vector graphics file such as an EPS file.
     """
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     if title == '':
         title = data['title']
     fig = bp.figure(width=width, height=height, title=title)
@@ -1238,13 +1240,13 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
     # include only percentiles with average income no less than min_avginc
     line = line[included]
     # construct dictionary containing plot line and auto-generated labels
-    data = dict()
+    data = {}
     data['line'] = line
     data['ylabel'] = 'Change in After-Tax Expanded Income'
     data['xlabel'] = 'Baseline Expanded-Income Percentile'
     title_str = ('Percentage Change in After-Tax Expanded Income '
                  'by Income Percentile')
-    title_str = '{} for {}'.format(title_str, year)
+    title_str = f'{title_str} for {year}'
     data['title'] = title_str
     return data
 
@@ -1286,7 +1288,7 @@ def pch_graph_plot(data,
     -----
     See Notes to xtr_graph_plot function.
     """
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     if title == '':
         title = data['title']
     fig = bp.figure(width=width, height=height, title=title)
@@ -1309,8 +1311,13 @@ def pch_graph_plot(data,
     fig.yaxis.axis_label_text_font_size = '12pt'
     fig.yaxis.axis_label_text_font_style = 'normal'
     fig.yaxis[0].formatter = PrintfTickFormatter(format='%.1f')
-    # return fig  # bokeh 3.4.1 cannot save this figure for some unknown reason
-    return None
+    # bokeh cannot save this fig saying:
+    #   bokeh.core.serialization.SerializationError:
+    #   can't serialize <class 'range'>
+    # so the "return fig" statement is replaced by Python's implicit
+    # "return None" until the above logic can be made compatible with
+    # modern bokeh packages
+    # return fig
 
 
 def write_graph_file(figure, filename, title):
@@ -1471,7 +1478,7 @@ def ce_aftertax_expanded_income(df1, df2,
         cmin = 1000
     # compute aggregate combined tax revenue and aggregate after-tax income
     billion = 1.0e-9
-    cedict = dict()
+    cedict = {}
     cedict['tax1'] = weighted_sum(df1, 'combined') * billion
     cedict['tax2'] = weighted_sum(df2, 'combined') * billion
     if require_no_agg_tax_change:
@@ -1495,8 +1502,8 @@ def ce_aftertax_expanded_income(df1, df2,
     ati2 = df2['expanded_income'] - df2['combined']
     # calculate certainty-equivaluent after-tax income in df1 and df2
     cedict['crra'] = crras
-    ce1 = list()
-    ce2 = list()
+    ce1 = []
+    ce2 = []
     for crra in crras:
         eu1 = expected_utility(ati1, prob, crra, cmin)
         ce1.append(certainty_equivalent(eu1, crra, cmin))
@@ -1517,8 +1524,8 @@ def read_egg_csv(fname, index_col=None):
         path_in_egg = implibres.files('taxcalc').joinpath(fname)
         with implibres.as_file(path_in_egg) as rname:
             vdf = pd.read_csv(rname, index_col=index_col)
-    except Exception:
-        raise ValueError(f'could not read {fname} data from egg')
+    except Exception as exc:
+        raise ValueError(f'could not read {fname} data from egg') from exc
     # cannot call read_egg_ function in unit tests
     return vdf  # pragma: no cover
 
@@ -1531,10 +1538,10 @@ def read_egg_json(fname):
     try:
         path_in_egg = implibres.files('taxcalc').joinpath(fname)
         with implibres.as_file(path_in_egg) as rname:
-            vdf = json.loads(rname)
-    except Exception:
-        raise ValueError(f'could not read {fname} data from egg')
-    # cannot call read_egg_ function in unit tests
+            pdict = json.loads(rname)
+    except Exception as exc:
+        raise ValueError(f'could not read {fname} data from package') from exc
+    # cannot call read_egg_ function in pytest unit tests
     return pdict  # pragma: no cover
 
 
@@ -1557,7 +1564,7 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     assert isinstance(num_samples, int)
     assert callable(statistic)  # function that computes statistic from data
     assert isinstance(alpha, float)
-    bsest = dict()
+    bsest = {}
     bsest['seed'] = seed
     np.random.seed(seed)
     dlen = len(data)
@@ -1607,7 +1614,7 @@ def json_to_dict(json_text):
         linenum = 0
         for line in text_lines:
             linenum += 1
-            msg += '{:04d}{}'.format(linenum, line) + '\n'
+            msg += f'{linenum:04d}{line}\n'
         msg += bline + '\n'
-        raise ValueError(msg)
+        raise ValueError(msg) from valerr
     return ordered_dict

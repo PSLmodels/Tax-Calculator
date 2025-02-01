@@ -1,18 +1,21 @@
+"""
+Tax-Calculator setup.
+"""
+
 from setuptools import setup
 
-with open("README.md") as f:
+with open("README.md", "r", encoding="utf-8") as f:
     longdesc = f.read()
 
-version = "4.3.5"
+VERSION = "4.4.0"
 
 config = {
-    "description": "Tax Calculator",
+    "description": "Tax-Calculator",
     "url": "https://github.com/PSLmodels/Tax-Calculator",
     "download_url": "https://github.com/PSLmodels/Tax-Calculator",
-    "description": "taxcalc",
     "long_description_content_type": "text/markdown",
     "long_description": longdesc,
-    "version": version,
+    "version": VERSION,
     "license": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     "packages": ["taxcalc", "taxcalc.cli"],
     "include_package_data": True,

@@ -68,10 +68,10 @@ class Consumption(Parameters):
         parameters are one
         """
         for var in Consumption.RESPONSE_VARS:
-            if getattr(self, 'MPC_{}'.format(var)) > 0.0:
+            if getattr(self, f'MPC_{var}') > 0.0:
                 return True
         for var in Consumption.BENEFIT_VARS:
-            if getattr(self, 'BEN_{}_value'.format(var)) < 1.0:
+            if getattr(self, f'BEN_{var}_value') < 1.0:
                 return True
         return False
 
@@ -84,12 +84,17 @@ class Consumption(Parameters):
             raise ValueError('records is not a Records object')
         for var in Consumption.RESPONSE_VARS:
             records_var = getattr(records, var)
-            mpc_var = getattr(self, 'MPC_{}'.format(var))
+            mpc_var = getattr(self, f'MPC_{var}')
             records_var[:] += mpc_var * income_change
 
     def benval_params(self):
         """
         Returns list of BEN_*_value parameter values
         """
-        return [getattr(self, 'BEN_{}_value'.format(var))
+        return [getattr(self, f'BEN_{var}_value')
                 for var in Consumption.BENEFIT_VARS]
+
+    def set_rates(self):
+        """
+        Consumption class has no parameter indexing rates.
+        """

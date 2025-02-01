@@ -4,6 +4,20 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2024-12-19 Release 4.4.0
+------------------------
+(last merged pull request is
+[#2856](https://github.com/PSLmodels/Tax-Calculator/pull/2856))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Make a Policy object's last budget year be flexible
+[[#2856](https://github.com/PSLmodels/Tax-Calculator/pull/2856) by Jason DeBacker with minor assistance from Martin Holmer]
+
+
 2024-12-16 Release 4.3.5
 ------------------------
 (last merged pull request is
@@ -23,8 +37,8 @@ for a complete commit history.
 
 **Bug Fixes**
 - Fix several broken documentation links
-[[#2847](https://github.com/PSLmodels/Tax-Calculator/pull/2847) by Martin Holmer] and
-[[#2849](https://github.com/PSLmodels/Tax-Calculator/pull/2849) by Martin Holmer]
+[[#2847](https://github.com/PSLmodels/Tax-Calculator/pull/2847) by Martin Holmer and
+[#2849](https://github.com/PSLmodels/Tax-Calculator/pull/2849) by Martin Holmer]
 - Remove incorrect use of GrowFactors() in Policy and Parameters classes
 [[#2852](https://github.com/PSLmodels/Tax-Calculator/pull/2852) by Martin Holmer]
 

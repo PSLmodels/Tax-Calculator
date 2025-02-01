@@ -11,8 +11,9 @@ import copy
 import numpy as np
 import pandas as pd
 import pytest
-# pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
 
 
 def create_base_table(test_path):
@@ -60,10 +61,10 @@ def create_base_table(test_path):
     read_vars = list(records_varinfo.USABLE_READ_VARS - unused_var_set)
     # get read variable information from JSON file
     rec_vars_path = os.path.join(test_path, '..', 'records_variables.json')
-    with open(rec_vars_path) as rvfile:
+    with open(rec_vars_path, 'r', encoding='utf-8') as rvfile:
         read_var_dict = json.load(rvfile)
     # create table_dict with sorted read vars followed by sorted calc vars
-    table_dict = dict()
+    table_dict = {}
     for var in sorted(read_vars):
         if "taxdata_puf" in read_var_dict['read'][var]['availability']:
             table_dict[var] = read_var_dict['read'][var]['desc']
@@ -85,14 +86,14 @@ def calculate_corr_stats(calc, table):
     errmsg = ''
     for varname1 in table.index:
         var1 = calc.array(varname1)
-        var1_cc = list()
+        var1_cc = []
         for varname2 in table.index:
             var2 = calc.array(varname2)
             try:
                 cor = np.corrcoef(var1, var2)[0][1]
             except FloatingPointError:
-                msg = 'corr-coef error for {} and {}\n'
-                errmsg += msg.format(varname1, varname2)
+                msg = f'corr-coef error for {varname1} and {varname2}\n'
+                errmsg += msg
                 cor = 9.99  # because could not compute it
             var1_cc.append(cor)
         table[varname1] = var1_cc
@@ -105,7 +106,7 @@ def calculate_mean_stats(calc, table, year):
     Calculate weighted means for year.
     """
     total_weight = calc.total_weight()
-    means = list()
+    means = []
     for varname in table.index:
         wmean = calc.weighted_total(varname) / total_weight
         means.append(wmean)
@@ -131,14 +132,13 @@ def differences(new_filename, old_filename, stat_kind):
     if diffs:
         new_name = os.path.basename(new_filename)
         old_name = os.path.basename(old_filename)
-        msg = '{} RESULTS DIFFER:\n'.format(stat_kind)
+        msg = f'{stat_kind} RESULTS DIFFER:\n'
         msg += '-------------------------------------------------'
         msg += '-------------\n'
-        msg += '--- NEW RESULTS IN {} FILE ---\n'.format(new_name)
-        msg += '--- if new OK, copy {} to  ---\n'.format(new_name)
-        msg += '---                 {}         ---\n'.format(old_name)
-        msg += '---            and rerun test.                   '
-        msg += '          ---\n'
+        msg += f'--- NEW RESULTS IN {new_name} FILE ---\n'
+        msg += f'--- if new OK, copy {new_name} to\n'
+        msg += f'---                 {old_name}   \n'
+        msg += '---            and rerun test.      '
         msg += '-------------------------------------------------'
         msg += '-------------\n'
     else:

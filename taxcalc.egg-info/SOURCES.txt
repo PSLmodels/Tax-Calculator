@@ -55,7 +55,6 @@ docs/api/utils.rst
 docs/api/utilsprvt.rst
 docs/contributing/RELEASING.md
 docs/contributing/contributor_guide.md
-docs/contributing/dependencies.md
 docs/contributing/param_naming.md
 docs/contributing/pr_workflow.md
 docs/contributing/testing.md

@@ -88,19 +88,22 @@ def main():
     """
     High-level script logic.
     """
+    # pylint: disable=too-many-statements
+
     # identify last parameter name in TCJA_PARAMETERS
     last_pname = list(TCJA_PARAMETERS.keys())[-1]
     # calculate 2025-to-2026 parameters indexing factor
     pol = taxcalc.Policy()
     pirates = pol.inflation_rates()
-    ifactor25 = 1.0 + pirates[2025-taxcalc.Policy.JSON_START_YEAR]
-    ifactor28 = 1.0 + pirates[2028-taxcalc.Policy.JSON_START_YEAR]
+    ifactor25 = 1.0 + pirates[2025 - taxcalc.Policy.JSON_START_YEAR]
+    ifactor28 = 1.0 + pirates[2028 - taxcalc.Policy.JSON_START_YEAR]
     # specify extend-TCJA-beyond-2025 reform
     # ... get 2025 parameter values
-    pol.set_year(2025)
+    year = 2025
+    pol.set_year(year)
     pdata = dict(pol.items())
     # ... write reform header comments
-    print( '// REFORM TO EXTEND TEMPORARY TCJA PROVISIONS BEYOND 2025')
+    print(f'// REFORM TO EXTEND TEMPORARY TCJA PROVISIONS BEYOND {year}')
     print(f'// USING TAX-CALCULATOR {taxcalc.__version__}')
     print(f'// WITH 2025-to-2026 INDEXING FACTOR = {ifactor25:.6f}')
     print(f'//  AND 2028-to-2029 INDEXING FACTOR = {ifactor28:.6f}')

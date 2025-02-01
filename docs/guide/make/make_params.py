@@ -55,20 +55,27 @@ def make_params(path, ptype):
     df['content'] = paramtextdf(df, ptype)
     # Only policy parameters have sections.
     if ptype == 'policy':
-        df.section_1 = np.where(df.section_1 == '',
-            'Other Parameters (not in Tax-Brain webapp)', df.section_1)
+        df.section_1 = np.where(
+            df.section_1 == '',
+            'Other Parameters (not in Tax-Brain webapp)',
+            df.section_1
+        )
         section_1_order_index = dict(zip(SECTION_1_ORDER,
-            range(len(SECTION_1_ORDER))))
+                                         range(len(SECTION_1_ORDER))))
         df['section_1_order'] = df.section_1.map(section_1_order_index)
         df.sort_values(['section_1_order', 'section_2'], inplace=True)
         # Add section titles when they change.
         df['new_section_1'] = ~df.section_1.eq(df.section_1.shift())
-        df['new_section_2'] = (~df.section_2.eq(df.section_2.shift()) &
-            (df.section_2 > ''))
-        df['section_1_content'] = np.where(df.new_section_1,
-            '## ' + df.section_1 + '\n\n', '')
-        df['section_2_content'] = np.where(df.new_section_2,
-            '### ' + df.section_2 + '\n\n', '')
+        df['new_section_2'] = (
+            ~df.section_2.eq(df.section_2.shift()) &
+            (df.section_2 > '')
+        )
+        df['section_1_content'] = np.where(
+            df.new_section_1, '## ' + df.section_1 + '\n\n', ''
+        )
+        df['section_2_content'] = np.where(
+            df.new_section_2, '### ' + df.section_2 + '\n\n', ''
+        )
         # Concatenate section titles with content for each parameter.
         df.content = df.section_1_content + df.section_2_content + df.content
     # Return a single string.
@@ -95,41 +102,41 @@ def boolstr(b):
 
 def paramtextdf(df, ptype):
     """ Don't include sections - do that later.
-    
+
     Args:
         df: DataFrame representing parameters.
-        ptype: 
+        ptype:
     """
     def title(df):
         return '####  `' + df.index + '`  \n'
-    
+
     def long_name(df):
         return '_Long Name:_ ' + df.title + '  \n'
 
     def description(df):
         return '_Description:_ ' + df.description + '  \n'
-    
+
     def notes(df):
         return np.where(df.notes == '', '', '_Notes:_ ' + df.notes + '  \n')
-    
+
     def effect_puf_cps_one(row):
         return ('_Has An Effect When Using:_' +
                 ' _PUF data:_ ' + boolstr(row.compatible_data['puf']) +
                 ' _CPS data:_ ' + boolstr(row.compatible_data['cps']) + '  \n')
-    
+
     def effect_puf_cps(df):
         return df.apply(effect_puf_cps_one, axis=1)
-                
+
     def inflation_indexed(df):
         return ('_Can Be Inflation Indexed:_ ' + boolstr(df.indexable) +
                 ' _Is Inflation Indexed:_ ' + boolstr(df.indexed) + '  \n')
-        
+
     def value_type(df):
         return '_Value Type:_ ' + df.type + '  \n'
-    
+
     def known_values_one(row):
         # Requires non-vectorizable functions.
-        txt ='_Known Values:_  \n'
+        txt = '_Known Values:_  \n'
         nvalues = len(row['values'][0])
         if nvalues == 5:
             txt += ' for: [single, mjoint, mseparate, headhh, widow]  \n'
@@ -142,10 +149,10 @@ def paramtextdf(df, ptype):
                 val = val[0]
             txt += str(cyr) + ': ' + str(val) + '  \n'
         return txt
-                         
+
     def known_values(df):
         return df.apply(known_values_one, axis=1)
-    
+
     def default_value_one(row):
         return '_Default Value:_ ' + str(row.value[0]['value']) + '  \n'
 
@@ -158,10 +165,10 @@ def paramtextdf(df, ptype):
                 ' min = ' + str(r['min']) +
                 ' and max = ' + str(r['max']) + '  \n' +
                 '_Out-of-Range Action:_ ' + r.get('level', 'error') + '  \n')
-    
+
     def valid_range(df):
         return df.apply(valid_range_one, axis=1)
-    
+
     text = title(df)
     # Add "long name" for growdiff and consumption parameters.
     if ptype != 'policy':
@@ -214,8 +221,10 @@ def reformat_params():
             for idx in range(0, len(params[param])):
                 if params[param][idx]['year'] == year:
                     list_vals1.append(params[param][idx]['value'])
-                    if (params[param][idx]['year'] !=
-                        params[param][idx - 1]['year']):
+                    if (
+                            params[param][idx]['year'] !=
+                            params[param][idx - 1]['year']
+                    ):
                         list_vals2.append(list_vals1)
                         params_dict[param]['values'] = list_vals2
     return params_dict

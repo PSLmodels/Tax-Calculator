@@ -17,8 +17,11 @@ import json
 import pytest
 import numpy as np
 import pandas as pd
-# pylint: disable=import-error
-from taxcalc import GrowFactors, GrowDiff, Policy, Records, Calculator
+from taxcalc.growfactors import GrowFactors
+from taxcalc.growdiff import GrowDiff
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculator import Calculator
 
 
 START_YEAR = 2017
@@ -52,7 +55,7 @@ def test_agg(tests_path, cps_fullsample):
         if not np.allclose(adt[icol], edt[str(icol)]):
             diffs = True
     if diffs:
-        new_filename = '{}{}'.format(aggres_path[:-10], 'actual.csv')
+        new_filename = f'{aggres_path[:-10]}actual.csv'
         adt.to_csv(new_filename, float_format='%.1f')
         msg = 'CPSCSV AGG RESULTS DIFFER\n'
         msg += '-------------------------------------------------\n'
@@ -65,7 +68,7 @@ def test_agg(tests_path, cps_fullsample):
         raise ValueError(msg)
     # create aggregate diagnostic table using unweighted sub-sample of records
     rn_seed = 180  # to ensure sub-sample is always the same
-    subfrac = 0.07# 0.03  # sub-sample fraction
+    subfrac = 0.07  # sub-sample fraction
     subsample = cps_fullsample.sample(frac=subfrac, random_state=rn_seed)
     recs_subsample = Records.cps_constructor(data=subsample)
     calc_subsample = Calculator(policy=baseline_policy, records=recs_subsample)
@@ -84,14 +87,17 @@ def test_agg(tests_path, cps_fullsample):
         if not np.allclose(taxes_subsample[cyr], taxes_fullsample[cyr],
                            atol=0.0, rtol=reltol):
             reldiff = (taxes_subsample[cyr] / taxes_fullsample[cyr]) - 1.
-            line1 = '\nCPSCSV AGG SUB-vs-FULL RESULTS DIFFER IN {}'
-            line2 = '\n  when subfrac={:.3f}, rtol={:.4f}, seed={}'
-            line3 = '\n  with sub={:.3f}, full={:.3f}, rdiff={:.4f}'
-            msg += line1.format(cyr)
-            msg += line2.format(subfrac, reltol, rn_seed)
-            msg += line3.format(taxes_subsample[cyr],
-                                taxes_fullsample[cyr],
-                                reldiff)
+            line1 = f'\nCPSCSV AGG SUB-vs-FULL RESULTS DIFFER IN {cyr}'
+            line2 = (
+                f'\n  when subfrac={subfrac:.3f}, rtol={reltol:.4f}, '
+                f'seed={rn_seed}'
+            )
+            line3 = (
+                f'\n  with sub={taxes_subsample[cyr]:.3f}, '
+                f'full={taxes_fullsample[cyr]:.3f}, '
+                f'rdiff={reldiff:.4f}'
+            )
+            msg += line1 + line2 + line3
     if msg:
         raise ValueError(msg)
 
@@ -104,7 +110,7 @@ def test_cps_availability(tests_path, cps_path):
     cpsvars = set(list(cpsdf))
     # make set of variable names that are marked as cps.csv available
     rvpath = os.path.join(tests_path, '..', 'records_variables.json')
-    with open(rvpath, 'r') as rvfile:
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
         rvdict = json.load(rvfile)
     recvars = set()
     for vname, vdict in rvdict['read'].items():
@@ -142,24 +148,20 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
     for line1, line2 in zip(linelist1, linelist2):
         if line1 == line2:
             continue
-        else:
-            tokens1 = line1.replace(',', '').split()
-            tokens2 = line2.replace(',', '').split()
-            for tok1, tok2 in zip(tokens1, tokens2):
-                tok1_isfloat = isfloat(tok1)
-                tok2_isfloat = isfloat(tok2)
-                if tok1_isfloat and tok2_isfloat:
-                    if abs(float(tok1) - float(tok2)) <= smallamt:
-                        continue
-                    else:
-                        return True
-                elif not tok1_isfloat and not tok2_isfloat:
-                    if tok1 == tok2:
-                        continue
-                    else:
-                        return True
-                else:
-                    return True
+        tokens1 = line1.replace(',', '').split()
+        tokens2 = line2.replace(',', '').split()
+        for tok1, tok2 in zip(tokens1, tokens2):
+            tok1_isfloat = isfloat(tok1)
+            tok2_isfloat = isfloat(tok2)
+            if tok1_isfloat and tok2_isfloat:
+                if abs(float(tok1) - float(tok2)) <= smallamt:
+                    continue
+                return True
+            if not tok1_isfloat and not tok2_isfloat:
+                if tok1 == tok2:
+                    continue
+                return True
+            return True
         return False
 
 

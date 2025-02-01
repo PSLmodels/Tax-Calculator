@@ -81,3 +81,8 @@ class GrowDiff(Parameters):
                 cyr = i + self.start_year
                 diff_array = getattr(self, _gfvn)
                 growfactors.update(gfvn, cyr, diff_array[i])
+
+    def set_rates(self):
+        """
+        GrowDiff class has no parameter indexing rates.
+        """
