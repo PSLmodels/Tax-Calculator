@@ -2651,7 +2651,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">F2441</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">f2441</span><span class="p">,</span> <span class="n">CDCC_c</span><span class="p">,</span> <span class="n">e32800</span><span class="p">,</span>
           <span class="n">exact</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CDCC_ps</span><span class="p">,</span> <span class="n">CDCC_ps2</span><span class="p">,</span> <span class="n">CDCC_crt</span><span class="p">,</span> <span class="n">CDCC_frt</span><span class="p">,</span>
           <span class="n">CDCC_po_step_size</span><span class="p">,</span> <span class="n">CDCC_po_rate_per_step</span><span class="p">,</span> <span class="n">CDCC_refundable</span><span class="p">,</span>
-          <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">):</span>
+          <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c32800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates Form 2441 child and dependent care expense credit, c07180.</span>
 
@@ -2686,19 +2686,25 @@
 <span class="sd">        Child/dependent care credit phaseout AGI step size</span>
 <span class="sd">    CDCC_po_rate_per_step: float</span>
 <span class="sd">        Child/dependent care credit phaseout rate per step size</span>
-<span class="sd">    CDCC_refund: bool</span>
+<span class="sd">    CDCC_refundable: bool</span>
 <span class="sd">        Indicator for whether CDCC is refundable</span>
 <span class="sd">    c05800: float</span>
 <span class="sd">        Total (regular + AMT) income tax liability before credits</span>
 <span class="sd">    e07300: float</span>
 <span class="sd">        Foreign tax credit from Form 1116</span>
+<span class="sd">    c32800: float</span>
+<span class="sd">        Child and dependent care expenses capped by policy (not by earnings)</span>
 <span class="sd">    c07180: float</span>
 <span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    c32800: float</span>
+<span class="sd">        Child and dependent care expenses capped by policy (not by earnings)</span>
 <span class="sd">    c07180: float</span>
 <span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">    CDCC_refund: float</span>
+<span class="sd">        Refundable amount of c07180 amount</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># credit for at most two cared-for individuals and for actual expenses</span>
     <span class="n">max_credit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">f2441</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">CDCC_c</span>
@@ -2734,7 +2740,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">c07180</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">e07300</span><span class="p">),</span> <span class="n">c33200</span><span class="p">)</span>
         <span class="n">CDCC_refund</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">c32800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="EITCamount">
