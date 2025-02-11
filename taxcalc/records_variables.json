@@ -842,6 +842,12 @@
       "form": {"2013-2013": "1040 line 46 minus 1040 line 55",
                "2014-2016": "1040 line 47 minus 1040 line 56"}
     },
+    "c32800": {
+      "type": "float",
+      "desc": "Child and dependent care expenses capped by policy (not by earnings)",
+      "form": {"2013-2013": "1040 line 48",
+               "2014-2016": "1040 line 49"}
+    },
     "c07180": {
       "type": "float",
       "desc": "Nonrefundable credit for child and dependent care expenses from Form 2441",

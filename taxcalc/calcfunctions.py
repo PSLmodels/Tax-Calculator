@@ -2252,7 +2252,7 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
 def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
           exact, c00100, CDCC_ps, CDCC_ps2, CDCC_crt, CDCC_frt,
           CDCC_po_step_size, CDCC_po_rate_per_step, CDCC_refundable,
-          c05800, e07300, c07180, CDCC_refund):
+          c05800, e07300, c32800, c07180, CDCC_refund):
     """
     Calculates Form 2441 child and dependent care expense credit, c07180.
 
@@ -2287,19 +2287,25 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         Child/dependent care credit phaseout AGI step size
     CDCC_po_rate_per_step: float
         Child/dependent care credit phaseout rate per step size
-    CDCC_refund: bool
+    CDCC_refundable: bool
         Indicator for whether CDCC is refundable
     c05800: float
         Total (regular + AMT) income tax liability before credits
     e07300: float
         Foreign tax credit from Form 1116
+    c32800: float
+        Child and dependent care expenses capped by policy (not by earnings)
     c07180: float
         Credit for child and dependent care expenses from Form 2441
 
     Returns
     -------
+    c32800: float
+        Child and dependent care expenses capped by policy (not by earnings)
     c07180: float
         Credit for child and dependent care expenses from Form 2441
+    CDCC_refund: float
+        Refundable amount of c07180 amount
     """
     # credit for at most two cared-for individuals and for actual expenses
     max_credit = min(f2441, 2) * CDCC_c
@@ -2335,7 +2341,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     else:
         c07180 = min(max(0., c05800 - e07300), c33200)
         CDCC_refund = 0.
-    return (c07180, CDCC_refund)
+    return (c32800, c07180, CDCC_refund)
 
 
 @JIT(nopython=True)
