@@ -10,7 +10,7 @@ In the top-level Tax-Calculator directory, do the following:
 
 --> run `./gitsync`  [to ensure master is up-to-date with GitHub version]
 
---> make clean  [to remove any local taxcalc package]
+--> run `make clean`  [to remove any local taxcalc package]
 
 --> run `git checkout -b X-Y-Z`  [to create X-Y-Z (e.g., `4-4-1`) branch]
 
