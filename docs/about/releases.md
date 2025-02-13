@@ -4,6 +4,22 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2025-02-13 Release 4.4.1
+------------------------
+(last merged pull request is
+[#2872](https://github.com/PSLmodels/Tax-Calculator/pull/2872))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Cosmetic code changes so that "make cstest" produces no warnings
+- New tests added so that "make coverage" produces 100% code coverage
+- Add c32800 to list of calc variables in records_variables.json file
+[[#2872](https://github.com/PSLmodels/Tax-Calculator/pull/2872) by Martin Holmer]
+
+
 2024-12-19 Release 4.4.0
 ------------------------
 (last merged pull request is
