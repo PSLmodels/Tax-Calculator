@@ -381,7 +381,7 @@ class ArrayParams(Parameters):
     array_first = False
 
     START_YEAR = 2013
-    LAST_YEAR = 2034
+    LAST_YEAR = 2035
     NUM_YEARS = LAST_YEAR - START_YEAR + 1
 
     def __init__(self, **kwargs):
