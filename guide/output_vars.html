@@ -16,33 +16,30 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
@@ -67,7 +64,6 @@
     <link rel="prev" title="Input variables" href="input_vars.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -83,8 +79,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../search.html"
       method="get">
@@ -92,6 +99,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -99,8 +107,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -116,8 +124,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -147,17 +154,21 @@
     
     
     <img src="../_static/PSL.svg" class="logo__image only-light" alt="Tax-Calculator - Home"/>
-    <img src="../_static/PSL.svg" class="logo__image only-dark pst-js-only" alt="Tax-Calculator - Home"/>
+    <script>document.write(`<img src="../_static/PSL.svg" class="logo__image only-dark" alt="Tax-Calculator - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -253,14 +264,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -421,16 +427,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -490,7 +504,6 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c05700"><code class="docutils literal notranslate"><span class="pre">c05700</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c05800"><code class="docutils literal notranslate"><span class="pre">c05800</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c07100"><code class="docutils literal notranslate"><span class="pre">c07100</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c32800"><code class="docutils literal notranslate"><span class="pre">c32800</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c07180"><code class="docutils literal notranslate"><span class="pre">c07180</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cdcc-refund"><code class="docutils literal notranslate"><span class="pre">CDCC_refund</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c07200"><code class="docutils literal notranslate"><span class="pre">c07200</span></code></a></li>
@@ -529,9 +542,6 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#care-deduction"><code class="docutils literal notranslate"><span class="pre">care_deduction</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ctc-new"><code class="docutils literal notranslate"><span class="pre">ctc_new</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#odc"><code class="docutils literal notranslate"><span class="pre">odc</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ctc-total"><code class="docutils literal notranslate"><span class="pre">ctc_total</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ctc-nonrefundable"><code class="docutils literal notranslate"><span class="pre">ctc_nonrefundable</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ctc-refundable"><code class="docutils literal notranslate"><span class="pre">ctc_refundable</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#personal-refundable-credit"><code class="docutils literal notranslate"><span class="pre">personal_refundable_credit</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recovery-rebate-credit"><code class="docutils literal notranslate"><span class="pre">recovery_rebate_credit</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#personal-nonrefundable-credit"><code class="docutils literal notranslate"><span class="pre">personal_nonrefundable_credit</span></code></a></li>
@@ -540,7 +550,6 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks13"><code class="docutils literal notranslate"><span class="pre">dwks13</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks14"><code class="docutils literal notranslate"><span class="pre">dwks14</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks19"><code class="docutils literal notranslate"><span class="pre">dwks19</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks43"><code class="docutils literal notranslate"><span class="pre">dwks43</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fstax"><code class="docutils literal notranslate"><span class="pre">fstax</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#invinc-agi-ec"><code class="docutils literal notranslate"><span class="pre">invinc_agi_ec</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#invinc-ec-base"><code class="docutils literal notranslate"><span class="pre">invinc_ec_base</span></code></a></li>
@@ -675,8 +684,8 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <p><em>Description</em>: Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output<br />
 <em>Datatype</em>: float<br />
 <em>IRS Form Location:</em><br />
-2013-2013: 1040 line 61 minus lines 56, 60a, 64a, 65, and 66<br />
-2014-2016: 1040 line 63 minus lines 57, 62a, 66a, 67, and 68</p>
+2013-2013: 1040 line 61 minus line 56 minus line 60a<br />
+2014-2016: 1040 line 63 minus line 57 minus line 62a</p>
 </section>
 <section id="num">
 <h2><code class="docutils literal notranslate"><span class="pre">num</span></code><a class="headerlink" href="#num" title="Link to this heading">#</a></h2>
@@ -695,10 +704,11 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 </section>
 <section id="payrolltax">
 <h2><code class="docutils literal notranslate"><span class="pre">payrolltax</span></code><a class="headerlink" href="#payrolltax" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was)<br />
+<p><em>Description</em>: Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was + setax + ptax_amc)<br />
 <em>Datatype</em>: float<br />
 <em>IRS Form Location:</em><br />
-2013-20??: OASDI+HI FICA</p>
+2013-2013: OASDI+HI FICA plus 1040 lines 56 and 60a<br />
+2014-2016: OASDI+HI FICA plus 1040 lines 57 and 62a</p>
 </section>
 <section id="refund">
 <h2><code class="docutils literal notranslate"><span class="pre">refund</span></code><a class="headerlink" href="#refund" title="Link to this heading">#</a></h2>
@@ -813,7 +823,7 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 </section>
 <section id="c05200">
 <h2><code class="docutils literal notranslate"><span class="pre">c05200</span></code><a class="headerlink" href="#c05200" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: Tax amount from Sch X,Y,Z tables<br />
+<p><em>Description</em>: Tax amount from Sch X,Y,X tables<br />
 <em>Datatype</em>: float<br />
 <em>IRS Form Location:</em><br />
 2013-20??: calculated variable</p>
@@ -840,14 +850,6 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <em>IRS Form Location:</em><br />
 2013-2013: 1040 line 46 minus 1040 line 55<br />
 2014-2016: 1040 line 47 minus 1040 line 56</p>
-</section>
-<section id="c32800">
-<h2><code class="docutils literal notranslate"><span class="pre">c32800</span></code><a class="headerlink" href="#c32800" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: Child and dependent care expenses capped by policy (not by earnings)<br />
-<em>Datatype</em>: float<br />
-<em>IRS Form Location:</em><br />
-2013-2013: 1040 line 48<br />
-2014-2016: 1040 line 49</p>
 </section>
 <section id="c07180">
 <h2><code class="docutils literal notranslate"><span class="pre">c07180</span></code><a class="headerlink" href="#c07180" title="Link to this heading">#</a></h2>
@@ -1122,27 +1124,6 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <em>IRS Form Location:</em><br />
 2013-20??: calculated variable</p>
 </section>
-<section id="ctc-total">
-<h2><code class="docutils literal notranslate"><span class="pre">ctc_total</span></code><a class="headerlink" href="#ctc-total" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: Total CTC amount (c07220 + c11070 + odc + ctc_new)<br />
-<em>Datatype</em>: float<br />
-<em>IRS Form Location:</em><br />
-2013-20??: calculated variable</p>
-</section>
-<section id="ctc-nonrefundable">
-<h2><code class="docutils literal notranslate"><span class="pre">ctc_nonrefundable</span></code><a class="headerlink" href="#ctc-nonrefundable" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: Portion of total CTC amount that is nonrefundable<br />
-<em>Datatype</em>: float<br />
-<em>IRS Form Location:</em><br />
-2013-20??: calculated variable</p>
-</section>
-<section id="ctc-refundable">
-<h2><code class="docutils literal notranslate"><span class="pre">ctc_refundable</span></code><a class="headerlink" href="#ctc-refundable" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: Portion of total CTC amount that is refundable<br />
-<em>Datatype</em>: float<br />
-<em>IRS Form Location:</em><br />
-2013-20??: calculated variable</p>
-</section>
 <section id="personal-refundable-credit">
 <h2><code class="docutils literal notranslate"><span class="pre">personal_refundable_credit</span></code><a class="headerlink" href="#personal-refundable-credit" title="Link to this heading">#</a></h2>
 <p><em>Description</em>: Personal refundable credit<br />
@@ -1199,13 +1180,6 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <em>IRS Form Location:</em><br />
 2013-20??: calculated variable</p>
 </section>
-<section id="dwks43">
-<h2><code class="docutils literal notranslate"><span class="pre">dwks43</span></code><a class="headerlink" href="#dwks43" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: separate tax on long-term capital gains and qualified dividends<br />
-<em>Datatype</em>: float<br />
-<em>IRS Form Location:</em><br />
-2013-20??: calculated variable</p>
-</section>
 <section id="fstax">
 <h2><code class="docutils literal notranslate"><span class="pre">fstax</span></code><a class="headerlink" href="#fstax" title="Link to this heading">#</a></h2>
 <p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
@@ -1250,7 +1224,7 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 </section>
 <section id="ptax-amc">
 <h2><code class="docutils literal notranslate"><span class="pre">ptax_amc</span></code><a class="headerlink" href="#ptax-amc" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: Additional Medicare Tax from Form 8959 (included in othertaxes and iitax)<br />
+<p><em>Description</em>: Additional Medicare Tax from Form 8959 (included in payrolltax)<br />
 <em>Datatype</em>: float<br />
 <em>IRS Form Location:</em><br />
 2013-2013: 1040 line 60a<br />
@@ -1258,7 +1232,7 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 </section>
 <section id="ptax-oasdi">
 <h2><code class="docutils literal notranslate"><span class="pre">ptax_oasdi</span></code><a class="headerlink" href="#ptax-oasdi" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: Employee + employer OASDI FICA tax plus self-employment tax<br />
+<p><em>Description</em>: Employee + employer OASDI FICA tax plus self-employment tax (excludes HI FICA so positive ptax_oasdi is less than ptax_was plus setax)<br />
 <em>Datatype</em>: float<br />
 <em>IRS Form Location:</em><br />
 2013-2013: OASDI FICA plus 1040 line 56<br />
@@ -1274,7 +1248,7 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 </section>
 <section id="setax">
 <h2><code class="docutils literal notranslate"><span class="pre">setax</span></code><a class="headerlink" href="#setax" title="Link to this heading">#</a></h2>
-<p><em>Description</em>: Self-employment tax (included in othertaxes and iitax)<br />
+<p><em>Description</em>: Self-employment tax<br />
 <em>Datatype</em>: float<br />
 <em>IRS Form Location:</em><br />
 2013-2013: 1040 line 56<br />
@@ -1407,8 +1381,7 @@ There are no subsections, just a long list of output variables that Tax-Calculat
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -1453,7 +1426,6 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c05700"><code class="docutils literal notranslate"><span class="pre">c05700</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c05800"><code class="docutils literal notranslate"><span class="pre">c05800</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c07100"><code class="docutils literal notranslate"><span class="pre">c07100</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c32800"><code class="docutils literal notranslate"><span class="pre">c32800</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c07180"><code class="docutils literal notranslate"><span class="pre">c07180</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cdcc-refund"><code class="docutils literal notranslate"><span class="pre">CDCC_refund</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c07200"><code class="docutils literal notranslate"><span class="pre">c07200</span></code></a></li>
@@ -1492,9 +1464,6 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#care-deduction"><code class="docutils literal notranslate"><span class="pre">care_deduction</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ctc-new"><code class="docutils literal notranslate"><span class="pre">ctc_new</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#odc"><code class="docutils literal notranslate"><span class="pre">odc</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ctc-total"><code class="docutils literal notranslate"><span class="pre">ctc_total</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ctc-nonrefundable"><code class="docutils literal notranslate"><span class="pre">ctc_nonrefundable</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ctc-refundable"><code class="docutils literal notranslate"><span class="pre">ctc_refundable</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#personal-refundable-credit"><code class="docutils literal notranslate"><span class="pre">personal_refundable_credit</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recovery-rebate-credit"><code class="docutils literal notranslate"><span class="pre">recovery_rebate_credit</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#personal-nonrefundable-credit"><code class="docutils literal notranslate"><span class="pre">personal_nonrefundable_credit</span></code></a></li>
@@ -1503,7 +1472,6 @@ There are no subsections, just a long list of output variables that Tax-Calculat
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks13"><code class="docutils literal notranslate"><span class="pre">dwks13</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks14"><code class="docutils literal notranslate"><span class="pre">dwks14</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks19"><code class="docutils literal notranslate"><span class="pre">dwks19</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dwks43"><code class="docutils literal notranslate"><span class="pre">dwks43</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fstax"><code class="docutils literal notranslate"><span class="pre">fstax</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#invinc-agi-ec"><code class="docutils literal notranslate"><span class="pre">invinc_agi_ec</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#invinc-ec-base"><code class="docutils literal notranslate"><span class="pre">invinc_ec_base</span></code></a></li>
@@ -1572,8 +1540,8 @@ By Policy Simulation Library
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
