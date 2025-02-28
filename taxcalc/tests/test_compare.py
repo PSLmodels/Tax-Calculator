@@ -202,7 +202,7 @@ def comparison(cname, calc, cmpdata, ofile):
     vardf['cvar'] = cvar
     # construct AGI table
     vardf = add_income_table_row_variable(vardf, 'c00100', SOI_AGI_BINS)
-    gbydf = vardf.groupby('table_row', as_index=False)
+    gbydf = vardf.groupby('table_row', as_index=False, observed=True)
     # write AGI table with ALL row at bottom of ofile
     ofile.write(f'TABLE for {cname.split(":")[1]}\n')
     results = '{:23s}\t{:8.3f}\t{:8.3f}\t{:+6.1f}\n'
