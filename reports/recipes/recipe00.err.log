@@ -24,19 +24,19 @@ show(fig)
 ------------------
 
 
-[0;31m---------------------------------------------------------------------------[0m
-[0;31mValueError[0m                                Traceback (most recent call last)
-Cell [0;32mIn[12], line 3[0m
-[1;32m      1[0m fig [38;5;241m=[39m calc1[38;5;241m.[39mpch_graph(calc2)
-[1;32m      2[0m output_notebook()
-[0;32m----> 3[0m [43mshow[49m[43m([49m[43mfig[49m[43m)[49m
+[31m---------------------------------------------------------------------------[39m
+[31mValueError[39m                                Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[12][39m[32m, line 3[39m
+[32m      1[39m fig = calc1.pch_graph(calc2)
+[32m      2[39m output_notebook()
+[32m----> [39m[32m3[39m [43mshow[49m[43m([49m[43mfig[49m[43m)[49m
 
-File [0;32m/usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/bokeh/io/showing.py:158[0m, in [0;36mshow[0;34m(obj, browser, new, notebook_handle, notebook_url, **kwargs)[0m
-[1;32m    155[0m     [38;5;28;01massert[39;00m state[38;5;241m.[39mnotebook_type [38;5;129;01mis[39;00m [38;5;129;01mnot[39;00m [38;5;28;01mNone[39;00m
-[1;32m    156[0m     [38;5;28;01mreturn[39;00m run_notebook_hook(state[38;5;241m.[39mnotebook_type, [38;5;124m'[39m[38;5;124mapp[39m[38;5;124m'[39m, obj, state, notebook_url, [38;5;241m*[39m[38;5;241m*[39mkwargs)
-[0;32m--> 158[0m [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m(_BAD_SHOW_MSG)
+[36mFile [39m[32m/usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/bokeh/io/showing.py:158[39m, in [36mshow[39m[34m(obj, browser, new, notebook_handle, notebook_url, **kwargs)[39m
+[32m    155[39m     [38;5;28;01massert[39;00m state.notebook_type [38;5;129;01mis[39;00m [38;5;129;01mnot[39;00m [38;5;28;01mNone[39;00m
+[32m    156[39m     [38;5;28;01mreturn[39;00m run_notebook_hook(state.notebook_type, [33m'[39m[33mapp[39m[33m'[39m, obj, state, notebook_url, **kwargs)
+[32m--> [39m[32m158[39m [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m(_BAD_SHOW_MSG)
 
-[0;31mValueError[0m: Invalid object to show. The object to passed to show must be one of:
+[31mValueError[39m: Invalid object to show. The object to passed to show must be one of:
 
 * a UIElement (e.g. a plot, figure, widget or layout)
 * a Bokeh Application
