@@ -143,7 +143,7 @@ def main():
                 pval = min(9e99, pval)
                 sys.stdout.write(f'    "{pname}": ')
                 sys.stdout.write(f'{left_brace}"{year}": ')
-                sys.stdout.write(f'{pval*ifactor:.2f}')
+                sys.stdout.write(f'{(pval * ifactor):.2f}')
                 sys.stdout.write(f'{right_brace}{trailing_comma}\n')
         else:  # if parameter is not indexed
             pval = pdata[pname][0]
