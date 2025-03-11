@@ -4,6 +4,21 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2025-03-11 Release 4.5.0
+------------------------
+(last merged pull request is
+[#2878](https://github.com/PSLmodels/Tax-Calculator/pull/2878))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Updates for CBO January 2025 baseline projection
+[[#2874](https://github.com/PSLmodels/Tax-Calculator/pull/2874) by Bodi Yang]
+- Fixes to deprecation and code style warnings [PRs [#2876](https://github.com/PSLmodels/Tax-Calculator/pull/2876), [#2877](https://github.com/PSLmodels/Tax-Calculator/pull/2877), [#2878](https://github.com/PSLmodels/Tax-Calculator/pull/2878), by Martin Holmer]
+
+
 2025-02-13 Release 4.4.1
 ------------------------
 (last merged pull request is
