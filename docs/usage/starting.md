@@ -2,7 +2,7 @@ Getting started
 ===============
 
 Tax-Calculator packages are available for Windows, Mac, and Linux computers
-that have the free Anaconda Python 3.9, 3.10, 3.11, or 3.12 distribution
+that have the free Anaconda Python 3.10, 3.11, or 3.12 distribution
 installed.  You can use Tax-Calculator without doing any Python programming,
 but the Anaconda distribution is required for Tax-Calculator to run.
 Take the following four steps to get started.
