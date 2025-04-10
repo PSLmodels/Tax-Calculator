@@ -1297,7 +1297,6 @@ def pch_graph_plot(data,
     fig.line(line.index, line.pch, line_color='blue', line_width=3)
     fig.scatter(0, 0, visible=False)  # force zero to be included on y axis
     zero_grid_line_range = line.index
-    zero_grid_line_height = [0] * len(line.index)
     zero_grid_line_height = [0] * len(zero_grid_line_range)
     fig.line(zero_grid_line_range, zero_grid_line_height,
              line_color='black', line_width=1)
