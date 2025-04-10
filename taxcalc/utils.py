@@ -1336,8 +1336,6 @@ def write_graph_file(figure, filename, title):
     Nothing
     """
     delete_file(filename)
-    if figure is None:
-        raise ValueError("The figure is not initialized properly.")
     if figure:
         bp.output_file(filename=filename, title=title)
         bp.save(figure)
