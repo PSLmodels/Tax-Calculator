@@ -51,7 +51,7 @@ TCJA_PARAMETERS = {
     "PT_brk7": {"indexed": True, "category": 1},
     # category 2 ...
     "CTC_c": {"indexed": False, "category": 2},
-    "ACTC_c": {"indexed": False, "category": 2},
+    "ACTC_c": {"indexed": True, "category": 2},
     "ODC_c": {"indexed": False, "category": 2},
     "CTC_ps": {"indexed": False, "category": 2},
     "ACTC_Income_thd": {"indexed": False, "category": 2},

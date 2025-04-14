@@ -386,4 +386,4 @@ def test_ext_reform(tests_path):
     iitax_ext = calc_ext.array('iitax')
     rdiff = iitax_ext - iitax_end
     weighted_sum_rdiff = (rdiff * calc_end.array('s006')).sum() * 1.0e-9
-    assert np.allclose([weighted_sum_rdiff], [-214.11], rtol=0.0, atol=0.01)
+    assert np.allclose([weighted_sum_rdiff], [-205.769], rtol=0.0, atol=0.01)
