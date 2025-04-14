@@ -11,7 +11,7 @@ requirements:
     - "python>=3.10, <3.13"
     - "numpy>=1.26"
     - "pandas>=2.2"
-    - "bokeh>=2.4"
+    - "bokeh>=3.7"
     - "paramtools>=0.19.0"
     - numba
     - curl
@@ -22,7 +22,7 @@ requirements:
     - "python>=3.10, <3.13"
     - "numpy>=1.26"
     - "pandas>=2.2"
-    - "bokeh>=2.4"
+    - "bokeh>=3.7"
     - "paramtools>=0.19.0"
     - numba
     - curl

@@ -1160,7 +1160,7 @@ def xtr_graph_plot(data,
              line_color='blue', line_width=3, legend_label='Baseline')
     fig.line(lines.index, lines.reform,
              line_color='red', line_width=3, legend_label='Reform')
-    fig.circle(0, 0, visible=False)  # force zero to be included on y axis
+    fig.scatter(0, 0, visible=False)  # force zero to be included on y axis
     if xlabel == '':
         xlabel = data['xlabel']
     fig.xaxis.axis_label = xlabel
@@ -1295,8 +1295,8 @@ def pch_graph_plot(data,
     fig.title.text_font_size = '12pt'
     line = data['line']
     fig.line(line.index, line.pch, line_color='blue', line_width=3)
-    fig.circle(0, 0, visible=False)  # force zero to be included on y axis
-    zero_grid_line_range = range(0, 101)
+    fig.scatter(0, 0, visible=False)  # force zero to be included on y axis
+    zero_grid_line_range = line.index
     zero_grid_line_height = [0] * len(zero_grid_line_range)
     fig.line(zero_grid_line_range, zero_grid_line_height,
              line_color='black', line_width=1)
@@ -1311,13 +1311,8 @@ def pch_graph_plot(data,
     fig.yaxis.axis_label_text_font_size = '12pt'
     fig.yaxis.axis_label_text_font_style = 'normal'
     fig.yaxis[0].formatter = PrintfTickFormatter(format='%.1f')
-    # bokeh cannot save this fig saying:
-    #   bokeh.core.serialization.SerializationError:
-    #   can't serialize <class 'range'>
-    # so the "return fig" statement is replaced by Python's implicit
-    # "return None" until the above logic can be made compatible with
-    # modern bokeh packages
-    # return fig
+    return fig
+
 
 
 def write_graph_file(figure, filename, title):
