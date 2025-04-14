@@ -5,7 +5,7 @@ dependencies:
 - "python>=3.10, <3.13"
 - "numpy>=1.26"
 - "pandas>=2.2"
-- "bokeh>=2.4"
+- "bokeh>=3.7"
 - numba
 - curl
 - setuptools
