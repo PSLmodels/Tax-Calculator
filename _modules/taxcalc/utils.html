@@ -1599,7 +1599,7 @@ document.write(`
              <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">legend_label</span><span class="o">=</span><span class="s1">&#39;Baseline&#39;</span><span class="p">)</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">lines</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">lines</span><span class="o">.</span><span class="n">reform</span><span class="p">,</span>
              <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">legend_label</span><span class="o">=</span><span class="s1">&#39;Reform&#39;</span><span class="p">)</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># force zero to be included on y axis</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># force zero to be included on y axis</span>
     <span class="k">if</span> <span class="n">xlabel</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
         <span class="n">xlabel</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;xlabel&#39;</span><span class="p">]</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">axis_label</span> <span class="o">=</span> <span class="n">xlabel</span>
@@ -1740,8 +1740,8 @@ document.write(`
     <span class="n">fig</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">text_font_size</span> <span class="o">=</span> <span class="s1">&#39;12pt&#39;</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;line&#39;</span><span class="p">]</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">pch</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># force zero to be included on y axis</span>
-    <span class="n">zero_grid_line_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># force zero to be included on y axis</span>
+    <span class="n">zero_grid_line_range</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span>
     <span class="n">zero_grid_line_height</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">zero_grid_line_range</span><span class="p">)</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">zero_grid_line_range</span><span class="p">,</span> <span class="n">zero_grid_line_height</span><span class="p">,</span>
              <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1755,15 +1755,10 @@ document.write(`
     <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label</span> <span class="o">=</span> <span class="n">ylabel</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label_text_font_size</span> <span class="o">=</span> <span class="s1">&#39;12pt&#39;</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">axis_label_text_font_style</span> <span class="o">=</span> <span class="s1">&#39;normal&#39;</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">PrintfTickFormatter</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.1f</span><span class="s1">&#39;</span><span class="p">)</span></div>
+    <span class="n">fig</span><span class="o">.</span><span class="n">yaxis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">PrintfTickFormatter</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.1f</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span></div>
 
-    <span class="c1"># bokeh cannot save this fig saying:</span>
-    <span class="c1">#   bokeh.core.serialization.SerializationError:</span>
-    <span class="c1">#   can&#39;t serialize &lt;class &#39;range&#39;&gt;</span>
-    <span class="c1"># so the &quot;return fig&quot; statement is replaced by Python&#39;s implicit</span>
-    <span class="c1"># &quot;return None&quot; until the above logic can be made compatible with</span>
-    <span class="c1"># modern bokeh packages</span>
-    <span class="c1"># return fig</span>
+
 
 
 <div class="viewcode-block" id="write_graph_file">
