@@ -169,7 +169,10 @@ def cli_tc_main():
                         reform=args.reform, assump=args.assump,
                         outdir=args.outdir)
     if tcio.errmsg:
-        sys.stderr.write(tcio.errmsg)
+        if tcio.errmsg.endswith('\n'):
+            sys.stderr.write(tcio.errmsg)
+        else:
+            sys.stderr.write(tcio.errmsg + '\n')
         sys.stderr.write('USAGE: tc --help\n')
         return 1
     aging = (
@@ -188,7 +191,10 @@ def cli_tc_main():
         xtime = time.time() - stime
         sys.stdout.write(f'TIMINGS: init time = {xtime:.2f} secs\n')
     if tcio.errmsg:
-        sys.stderr.write(tcio.errmsg)
+        if tcio.errmsg.endswith('\n'):
+            sys.stderr.write(tcio.errmsg)
+        else:
+            sys.stderr.write(tcio.errmsg + '\n')
         sys.stderr.write('USAGE: tc --help\n')
         return 1
     dumpvar_set = None
@@ -198,7 +204,10 @@ def cli_tc_main():
                 dump_vars_str = dfile.read()
             dumpvar_set = tcio.custom_dump_variables(dump_vars_str)
             if tcio.errmsg:
-                sys.stderr.write(tcio.errmsg)
+                if tcio.errmsg.endswith('\n'):
+                    sys.stderr.write(tcio.errmsg)
+                else:
+                    sys.stderr.write(tcio.errmsg + '\n')
                 sys.stderr.write('USAGE: tc --help\n')
                 return 1
         else:
