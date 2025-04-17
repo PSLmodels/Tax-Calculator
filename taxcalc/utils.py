@@ -1314,7 +1314,6 @@ def pch_graph_plot(data,
     return fig
 
 
-
 def write_graph_file(figure, filename, title):
     """
     Write HTML file named filename containing figure.
