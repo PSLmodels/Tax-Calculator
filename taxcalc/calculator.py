@@ -126,10 +126,14 @@ class Calculator():
                 )
         else:
             if verbose:
-                print('Read input data that were not extrapolated in any way')
-        if verbose and self.__records.IGNORED_VARS:
-            print('Input data include the following unused ' +
-                  'variables that will be ignored:')
+                print(  # pragma: no cover
+                    'Read input data that were not extrapolated in any way'
+                )
+        if verbose and self.__records.IGNORED_VARS:  # pragma: no cover
+            print(
+                'Input data include the following unused '
+                'variables that will be ignored:'
+            )
             for var in self.__records.IGNORED_VARS:
                 print(f'  {var}')
         assert self.__policy.current_year == self.__records.current_year
