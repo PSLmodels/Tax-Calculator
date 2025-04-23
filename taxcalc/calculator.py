@@ -113,29 +113,25 @@ class Calculator():
             raise ValueError('consumption must be None or Consumption object')
         if self.__consumption.current_year < self.__policy.current_year:
             self.__consumption.set_year(self.__policy.current_year)
-        if verbose:
-            if self.__records.IGNORED_VARS:
-                print('Your data include the following unused ' +
-                      'variables that will be ignored:')
-                for var in self.__records.IGNORED_VARS:
-                    print('  ' +
-                          var)
         current_year_is_data_year = (
             self.__records.current_year == self.__records.data_year)
         if sync_years and current_year_is_data_year:
-            if verbose:
-                print('You loaded data for ' +
-                      str(self.__records.data_year) + '.')
             while self.__records.current_year < self.__policy.current_year:
                 self.__records.increment_year()
             if verbose:
-                print('Tax-Calculator startup automatically ' +
-                      'extrapolated your data to ' +
-                      str(self.__records.current_year) + '.')
+                print(
+                    f'Read input data for {self.__records.data_year}; '
+                    'input data were extrapolated to '
+                    f'{self.__records.current_year}'
+                )
         else:
             if verbose:
-                print('Tax-Calculator startup did not ' +
-                      'extrapolate your data.')
+                print('Read input data that were not extrapolated in any way')
+        if verbose and self.__records.IGNORED_VARS:
+            print('Input data include the following unused ' +
+                  'variables that will be ignored:')
+            for var in self.__records.IGNORED_VARS:
+                print(f'  {var}')
         assert self.__policy.current_year == self.__records.current_year
         assert self.__policy.current_year == self.__consumption.current_year
         self.__stored_records = None

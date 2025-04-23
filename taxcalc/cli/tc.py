@@ -35,7 +35,7 @@ def cli_tc_main():
         ('          '
          '[--dump] [--dvars DVARS] [--sqldb] [--outdir OUTDIR]\n'),
         ('          '
-         '[--test] [--version]'))
+         '[--silent] [--test] [--version]'))
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
@@ -127,6 +127,11 @@ def cli_tc_main():
                               'No --outdir implies output files are written '
                               'in the current directory.'),
                         default=None)
+    parser.add_argument('--silent',
+                        help=('optional flag that suppresses messages about '
+                              'input and output actions.'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('--test',
                         help=('optional flag that conducts installation '
                               'test, writes test result to stdout, '
@@ -167,7 +172,7 @@ def cli_tc_main():
     tcio = tc.TaxCalcIO(input_data=inputfn, tax_year=taxyear,
                         baseline=args.baseline,
                         reform=args.reform, assump=args.assump,
-                        outdir=args.outdir)
+                        silent=args.silent, outdir=args.outdir)
     if tcio.errmsg:
         if tcio.errmsg.endswith('\n'):
             sys.stderr.write(tcio.errmsg)
