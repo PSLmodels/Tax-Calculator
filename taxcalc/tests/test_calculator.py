@@ -808,10 +808,10 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     policy2.implement_reform(reform2)
     assert not policy2.parameter_errors
     # compute tax liability in specified year
-    calc1 = Calculator(policy=policy1, records=recs, verbose=False)
+    calc1 = Calculator(policy=policy1, records=recs, verbose=True)
     calc1.advance_to_year(year)
     calc1.calc_all()
-    calc2 = Calculator(policy=policy2, records=recs, verbose=False)
+    calc2 = Calculator(policy=policy2, records=recs, verbose=True)
     calc2.advance_to_year(year)
     calc2.calc_all()
     # confirm that nobody is taking the standard deduction

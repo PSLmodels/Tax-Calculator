@@ -25,13 +25,15 @@ def cli_tc_main():
     # pylint: disable=too-many-statements,too-many-branches
     # pylint: disable=too-many-return-statements,too-many-locals
 
+    start_time = time.time()
+
     # parse command-line arguments:
     usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
         '[--help]\n',
         ('          '
          '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP]\n'),
         ('          '
-         '[--exact] [--tables] [--graphs] [--timings]\n'),
+         '[--exact] [--tables] [--graphs]\n'),
         ('          '
          '[--dump] [--dvars DVARS] [--sqldb] [--outdir OUTDIR]\n'),
         ('          '
@@ -88,11 +90,6 @@ def cli_tc_main():
     parser.add_argument('--graphs',
                         help=('optional flag that causes graphs to be written '
                               'to HTML files for viewing in browser.'),
-                        default=False,
-                        action="store_true")
-    parser.add_argument('--timings',
-                        help=('optional flag that causes execution times to '
-                              'be written to stdout.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--dump',
@@ -185,16 +182,11 @@ def cli_tc_main():
         inputfn.endswith('cps.csv') or
         inputfn.endswith('tmd.csv')
     )
-    if args.timings:
-        stime = time.time()
     tcio.init(input_data=inputfn, tax_year=taxyear,
               baseline=args.baseline,
               reform=args.reform, assump=args.assump,
               aging_input_data=aging,
               exact_calculations=args.exact)
-    if args.timings:
-        xtime = time.time() - stime
-        sys.stdout.write(f'TIMINGS: init time = {xtime:.2f} secs\n')
     if tcio.errmsg:
         if tcio.errmsg.endswith('\n'):
             sys.stderr.write(tcio.errmsg)
@@ -221,21 +213,20 @@ def cli_tc_main():
             sys.stderr.write('USAGE: tc --help\n')
             return 1
     # conduct tax analysis
-    if args.timings:
-        stime = time.time()
     tcio.analyze(writing_output_file=True,
                  output_tables=args.tables,
                  output_graphs=args.graphs,
                  dump_varset=dumpvar_set,
                  output_dump=args.dump,
                  output_sqldb=args.sqldb)
-    if args.timings:
-        xtime = time.time() - stime
-        sys.stdout.write(f'TIMINGS: calc time = {xtime:.2f} secs\n')
     # compare test output with expected test output if --test option specified
     if args.test:
         retcode = _compare_test_output_files()
         return retcode
+    if not args.silent:
+        print(  # pragma: no cover
+            f'Execution time is {(time.time() - start_time):.1f} seconds'
+        )
     return 0
 # end of cli_tc_main function code
 
