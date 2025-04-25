@@ -220,13 +220,17 @@ class TaxCalcIO():
             delete_old_files = False
         if delete_old_files:
             delete_file(self._output_filename)
-            delete_file(self._output_filename.replace('.csv', '.db'))
-            delete_file(self._output_filename.replace('.csv', '-params.bas'))
-            delete_file(self._output_filename.replace('.csv', '-params.ref'))
-            delete_file(self._output_filename.replace('.csv', '-tables.text'))
-            delete_file(self._output_filename.replace('.csv', '-atr.html'))
-            delete_file(self._output_filename.replace('.csv', '-mtr.html'))
-            delete_file(self._output_filename.replace('.csv', '-pch.html'))
+            extensions = [
+                '.db',
+                '-params.bas',
+                '-params.ref',
+                '-tables.text',
+                '-atr.html',
+                '-mtr.html',
+                '-pch.html',
+            ]
+            for ext in extensions:
+                delete_file(self._output_filename.replace('.csv', ext))
         # initialize variables whose values are set in init method
         self.calc = None
         self.calc_base = None
@@ -476,8 +480,8 @@ class TaxCalcIO():
            whether or not to generate and write output file
 
         output_params: boolean
-           whether or not to generate and write reform-vs-baseline
-           policy parameter differences to a text file
+           whether or not to write baseline and reform policy parameter
+           values to separate text files
 
         output_tables: boolean
            whether or not to generate and write distributional tables
