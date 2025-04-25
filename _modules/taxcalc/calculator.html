@@ -522,29 +522,29 @@ document.write(`
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;consumption must be None or Consumption object&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__consumption</span><span class="o">.</span><span class="n">current_year</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">current_year</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__consumption</span><span class="o">.</span><span class="n">set_year</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">current_year</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">IGNORED_VARS</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Your data include the following unused &#39;</span> <span class="o">+</span>
-                      <span class="s1">&#39;variables that will be ignored:&#39;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">IGNORED_VARS</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  &#39;</span> <span class="o">+</span>
-                          <span class="n">var</span><span class="p">)</span>
         <span class="n">current_year_is_data_year</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">data_year</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sync_years</span> <span class="ow">and</span> <span class="n">current_year_is_data_year</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;You loaded data for &#39;</span> <span class="o">+</span>
-                      <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">data_year</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">current_year</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">current_year</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">increment_year</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tax-Calculator startup automatically &#39;</span> <span class="o">+</span>
-                      <span class="s1">&#39;extrapolated your data to &#39;</span> <span class="o">+</span>
-                      <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">current_year</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Read input data for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">data_year</span><span class="si">}</span><span class="s1">; &#39;</span>
+                    <span class="s1">&#39;input data were extrapolated to &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">current_year</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tax-Calculator startup did not &#39;</span> <span class="o">+</span>
-                      <span class="s1">&#39;extrapolate your data.&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                    <span class="s1">&#39;Read input data that were not extrapolated in any way&#39;</span>
+                <span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">IGNORED_VARS</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s1">&#39;Input data include the following unused &#39;</span>
+                <span class="s1">&#39;variables that will be ignored:&#39;</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">IGNORED_VARS</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">current_year</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__consumption</span><span class="o">.</span><span class="n">current_year</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__stored_records</span> <span class="o">=</span> <span class="kc">None</span>

@@ -463,6 +463,9 @@ document.write(`
 <span class="sd">        None implies economic assumptions are standard assumptions,</span>
 <span class="sd">        or string is name of optional ASSUMP file.</span>
 
+<span class="sd">    silent: boolean</span>
+<span class="sd">        whether or not to suppress action messages.</span>
+
 <span class="sd">    outdir: None or string</span>
 <span class="sd">        None implies output files written to current directory,</span>
 <span class="sd">        or string is name of optional output directory</span>
@@ -474,9 +477,10 @@ document.write(`
     <span class="c1"># pylint: disable=too-many-instance-attributes</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">tax_year</span><span class="p">,</span> <span class="n">baseline</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span> <span class="n">assump</span><span class="p">,</span>
-                 <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
         <span class="c1"># pylint: disable=too-many-branches,too-many-statements,too-many-locals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">silent</span> <span class="o">=</span> <span class="n">silent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gf_reform</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="c1"># check name and existence of INPUT file</span>
@@ -813,7 +817,7 @@ document.write(`
             <span class="n">recs_base</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">recs</span><span class="p">)</span>
         <span class="c1"># create Calculator objects</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">,</span>
-                               <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">verbose</span><span class="o">=</span><span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">),</span>
                                <span class="n">consumption</span><span class="o">=</span><span class="n">con</span><span class="p">,</span>
                                <span class="n">sync_years</span><span class="o">=</span><span class="n">aging_input_data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs_base</span><span class="p">,</span>
@@ -916,11 +920,11 @@ document.write(`
         <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
         <span class="c1"># pylint: disable=too-many-branches,too-many-locals</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">puf_input_data</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">reform_warnings</span><span class="p">:</span>
-            <span class="n">warn</span> <span class="o">=</span> <span class="s1">&#39;PARAMETER VALUE WARNING(S):  </span><span class="si">{}</span><span class="se">\n</span><span class="si">{}{}</span><span class="s1">&#39;</span>  <span class="c1"># pragma: no cover</span>
             <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
-                <span class="n">warn</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;(read documentation for each parameter)&#39;</span><span class="p">,</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">reform_warnings</span><span class="p">,</span>
-                            <span class="s1">&#39;CONTINUING WITH CALCULATIONS...&#39;</span><span class="p">)</span>
+                <span class="s1">&#39;PARAMETER VALUE WARNING(S):  &#39;</span>
+                <span class="s1">&#39;(read documentation for each parameter)</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">reform_warnings</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;CONTINUING WITH CALCULATIONS...&#39;</span>
             <span class="p">)</span>
         <span class="n">calc_base_calculated</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
@@ -999,7 +1003,11 @@ document.write(`
             <span class="n">outdf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_order</span><span class="p">,</span>
                          <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">float_format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">outdf</span>
-        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                <span class="sa">f</span><span class="s1">&#39;Write tax-unit output to file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TaxCalcIO.write_doc_file">
@@ -1018,7 +1026,11 @@ document.write(`
             <span class="p">)</span>
         <span class="n">doc_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-doc.text&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">doc_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dfile</span><span class="p">:</span>
-            <span class="n">dfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
+            <span class="n">dfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                <span class="sa">f</span><span class="s1">&#39;Write reform documentation to file </span><span class="si">{</span><span class="n">doc_fname</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TaxCalcIO.write_sqldb_file">
@@ -1045,7 +1057,11 @@ document.write(`
         <span class="n">outdf</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;reform&#39;</span><span class="p">,</span> <span class="n">dbcon</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">dbcon</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">del</span> <span class="n">outdf</span>
-        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                <span class="sa">f</span><span class="s1">&#39;Write tax-unit output to sqlite3 database file </span><span class="si">{</span><span class="n">db_fname</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TaxCalcIO.write_tables_file">
@@ -1087,7 +1103,11 @@ document.write(`
         <span class="c1"># delete intermediate DataFrame objects</span>
         <span class="k">del</span> <span class="n">distdf</span>
         <span class="k">del</span> <span class="n">diffdf</span>
-        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                <span class="sa">f</span><span class="s1">&#39;Write tabular output to file </span><span class="si">{</span><span class="n">tab_fname</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TaxCalcIO.write_decile_table">
@@ -1210,7 +1230,13 @@ document.write(`
             <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_empty_graph_file</span><span class="p">(</span><span class="n">mtr_fname</span><span class="p">,</span> <span class="n">mtr_title</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">fig</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">fig</span>
-            <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
+            <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                <span class="sa">f</span><span class="s1">&#39;Write graphical output to file </span><span class="si">{</span><span class="n">pch_fname</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Write graphical output to file </span><span class="si">{</span><span class="n">atr_fname</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Write graphical output to file </span><span class="si">{</span><span class="n">mtr_fname</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TaxCalcIO.write_empty_graph_file">
