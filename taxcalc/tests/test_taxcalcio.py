@@ -529,8 +529,8 @@ def test_sqldb_option(reformfile1, assumpfile1):
 
 def test_no_tables_or_graphs(reformfile1):
     """
-    Test TaxCalcIO with output_tables=True and output_graphs=True but
-    INPUT has zero weights.
+    Test TaxCalcIO with output_params=True and output_tables=True and
+    output_graphs=True but INPUT has zero weights.
     """
     # create input sample that cannot output tables or graphs
     nobs = 10
@@ -556,24 +556,25 @@ def test_no_tables_or_graphs(reformfile1):
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
-    # create TaxCalcIO tables file
+    # create several TaxCalcIO output files
     tcio.analyze(writing_output_file=False,
+                 output_params=True,
                  output_tables=True,
                  output_graphs=True)
     # delete tables and graph files
     output_filename = tcio.output_filepath()
-    fname = output_filename.replace('.csv', '-tables.text')
-    if os.path.isfile(fname):
-        os.remove(fname)
-    fname = output_filename.replace('.csv', '-atr.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
-    fname = output_filename.replace('.csv', '-mtr.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
-    fname = output_filename.replace('.csv', '-pch.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
+    extensions = [
+        '-params.bas',
+        '-params.ref',
+        '-tables.text',
+        '-atr.html',
+        '-mtr.html',
+        '-pch.html',
+    ]
+    for ext in extensions:
+        fname = output_filename.replace('.csv', ext)
+        if os.path.isfile(fname):
+            os.remove(fname)
 
 
 def test_tables(reformfile1):
