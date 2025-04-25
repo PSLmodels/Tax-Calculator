@@ -2059,7 +2059,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     e62900: float
         Alternative Minimum Tax foreign tax credit from Form 6251
     e00700: float
-        Schedule C business net profit/loss for filing unit
+        Taxable refunds of state and local income taxes
     dwks10: float
         Sum of dwks6 + dwks9
     age_head: int
