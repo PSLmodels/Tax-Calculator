@@ -54,6 +54,9 @@ class TaxCalcIO():
         None implies economic assumptions are standard assumptions,
         or string is name of optional ASSUMP file.
 
+    silent: boolean
+        whether or not to suppress action messages.
+
     outdir: None or string
         None implies output files written to current directory,
         or string is name of optional output directory
@@ -65,9 +68,10 @@ class TaxCalcIO():
     # pylint: disable=too-many-instance-attributes
 
     def __init__(self, input_data, tax_year, baseline, reform, assump,
-                 outdir=None):
+                 silent=True, outdir=None):
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-statements,too-many-locals
+        self.silent = silent
         self.gf_reform = None
         self.errmsg = ''
         # check name and existence of INPUT file
@@ -404,7 +408,7 @@ class TaxCalcIO():
             recs_base = copy.deepcopy(recs)
         # create Calculator objects
         self.calc = Calculator(policy=pol, records=recs,
-                               verbose=True,
+                               verbose=(not self.silent),
                                consumption=con,
                                sync_years=aging_input_data)
         self.calc_base = Calculator(policy=base, records=recs_base,
@@ -496,11 +500,11 @@ class TaxCalcIO():
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-locals
         if self.puf_input_data and self.calc.reform_warnings:
-            warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'  # pragma: no cover
             print(  # pragma: no cover
-                warn.format('(read documentation for each parameter)',
-                            self.calc.reform_warnings,
-                            'CONTINUING WITH CALCULATIONS...')
+                'PARAMETER VALUE WARNING(S):  '
+                '(read documentation for each parameter)\n'
+                f'{self.calc.reform_warnings}'
+                'CONTINUING WITH CALCULATIONS...'
             )
         calc_base_calculated = False
         self.calc.calc_all()
@@ -577,6 +581,10 @@ class TaxCalcIO():
                          index=False, float_format='%.2f')
         del outdf
         gc.collect()
+        if not self.silent:
+            print(  # pragma: no cover
+                f'Write tax-unit output to file {self._output_filename}'
+            )
 
     def write_doc_file(self):
         """
@@ -593,6 +601,10 @@ class TaxCalcIO():
         doc_fname = self._output_filename.replace('.csv', '-doc.text')
         with open(doc_fname, 'w', encoding='utf-8') as dfile:
             dfile.write(doc)
+        if not self.silent:
+            print(  # pragma: no cover
+                f'Write reform documentation to file {doc_fname}'
+            )
 
     def write_sqldb_file(self, dump_varset, mtr_paytax, mtr_inctax,
                          mtr_paytax_base, mtr_inctax_base):
@@ -617,6 +629,10 @@ class TaxCalcIO():
         dbcon.close()
         del outdf
         gc.collect()
+        if not self.silent:
+            print(  # pragma: no cover
+                f'Write tax-unit output to sqlite3 database file {db_fname}'
+            )
 
     def write_tables_file(self):
         """
@@ -656,6 +672,10 @@ class TaxCalcIO():
         del distdf
         del diffdf
         gc.collect()
+        if not self.silent:
+            print(  # pragma: no cover
+                f'Write tabular output to file {tab_fname}'
+            )
 
     @staticmethod
     def write_decile_table(dfx, tfile, tkind='Totals'):
@@ -773,6 +793,12 @@ class TaxCalcIO():
         if fig:
             del fig
             gc.collect()
+        if not self.silent:
+            print(  # pragma: no cover
+                f'Write graphical output to file {pch_fname}\n'
+                f'Write graphical output to file {atr_fname}\n'
+                f'Write graphical output to file {mtr_fname}'
+            )
 
     @staticmethod
     def write_empty_graph_file(fname, title, reason):

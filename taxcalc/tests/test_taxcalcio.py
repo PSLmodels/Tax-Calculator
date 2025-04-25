@@ -316,7 +316,8 @@ def test_creation_with_aging(reformfile0):
                      tax_year=taxyear,
                      baseline=None,
                      reform=reformfile0.name,
-                     assump=None)
+                     assump=None,
+                     silent=False)
     assert not tcio.errmsg
     tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
               tax_year=taxyear,
