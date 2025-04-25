@@ -221,8 +221,9 @@ class TaxCalcIO():
         if delete_old_files:
             delete_file(self._output_filename)
             delete_file(self._output_filename.replace('.csv', '.db'))
-            delete_file(self._output_filename.replace('.csv', '-doc.text'))
-            delete_file(self._output_filename.replace('.csv', '-tab.text'))
+            delete_file(self._output_filename.replace('.csv', '-params.bas'))
+            delete_file(self._output_filename.replace('.csv', '-params.ref'))
+            delete_file(self._output_filename.replace('.csv', '-tables.text'))
             delete_file(self._output_filename.replace('.csv', '-atr.html'))
             delete_file(self._output_filename.replace('.csv', '-mtr.html'))
             delete_file(self._output_filename.replace('.csv', '-pch.html'))
@@ -458,7 +459,9 @@ class TaxCalcIO():
         dirpath = os.path.abspath(os.path.dirname(__file__))
         return os.path.join(dirpath, self._output_filename)
 
-    def analyze(self, writing_output_file=False,
+    def analyze(self,
+                writing_output_file=False,
+                output_params=False,
                 output_tables=False,
                 output_graphs=False,
                 dump_varset=None,
@@ -471,6 +474,10 @@ class TaxCalcIO():
         ----------
         writing_output_file: boolean
            whether or not to generate and write output file
+
+        output_params: boolean
+           whether or not to generate and write reform-vs-baseline
+           policy parameter differences to a text file
 
         output_tables: boolean
            whether or not to generate and write distributional tables
@@ -528,13 +535,15 @@ class TaxCalcIO():
         if writing_output_file:
             self.write_output_file(output_dump, dump_varset,
                                    mtr_paytax, mtr_inctax)
-            self.write_doc_file()
         # optionally write --sqldb output to SQLite3 database
         if output_sqldb:
             self.write_sqldb_file(
                 dump_varset, mtr_paytax, mtr_inctax,
                 mtr_paytax_base, mtr_inctax_base
             )
+        # optionally write --params output to text file
+        if output_params:
+            self.write_policy_params_files()
         # optionally write --tables output to text file
         if output_tables:
             if not calc_base_calculated:
@@ -586,24 +595,28 @@ class TaxCalcIO():
                 f'Write tax-unit output to file {self._output_filename}'
             )
 
-    def write_doc_file(self):
+    def write_policy_params_files(self):
         """
-        Write reform documentation to text file.
+        Write policy parameter values for baseline and reform
         """
-        if len(self.policy_dicts) <= 1:
-            doc = Calculator.reform_documentation(
-                self.param_dict, self.gf_reform
-            )
-        else:
-            doc = Calculator.reform_documentation(
-                self.param_dict, self.gf_reform, self.policy_dicts[1:]
-            )
-        doc_fname = self._output_filename.replace('.csv', '-doc.text')
-        with open(doc_fname, 'w', encoding='utf-8') as dfile:
-            dfile.write(doc)
+        param_names = Policy.parameter_list()
+        fname = self._output_filename.replace('.csv', '-params.bas')
+        with open(fname, 'w', encoding='utf-8') as pfile:
+            for pname in param_names:
+                pval = self.calc_base.policy_param(pname)
+                pfile.write(f'{pname} {pval}\n')
         if not self.silent:
             print(  # pragma: no cover
-                f'Write reform documentation to file {doc_fname}'
+                f'Write baseline policy parameter values to file {fname}'
+            )
+        fname = self._output_filename.replace('.csv', '-params.ref')
+        with open(fname, 'w', encoding='utf-8') as pfile:
+            for pname in param_names:
+                pval = self.calc.policy_param(pname)
+                pfile.write(f'{pname} {pval}\n')
+        if not self.silent:
+            print(  # pragma: no cover
+                f'Write reform policy parameter values to file {fname}'
             )
 
     def write_sqldb_file(self, dump_varset, mtr_paytax, mtr_inctax,
@@ -639,7 +652,7 @@ class TaxCalcIO():
         Write tables to text file.
         """
         # pylint: disable=too-many-locals
-        tab_fname = self._output_filename.replace('.csv', '-tab.text')
+        tab_fname = self._output_filename.replace('.csv', '-tables.text')
         # skip tables if there are not some positive weights
         if self.calc_base.total_weight() <= 0.:
             with open(tab_fname, 'w', encoding='utf-8') as tfile:

@@ -30,14 +30,24 @@ def cli_tc_main():
     # parse command-line arguments:
     usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
         '[--help]\n',
-        ('          '
-         '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP]\n'),
-        ('          '
-         '[--exact] [--tables] [--graphs]\n'),
-        ('          '
-         '[--dump] [--dvars DVARS] [--sqldb] [--outdir OUTDIR]\n'),
-        ('          '
-         '[--silent] [--test] [--version]'))
+        (
+            '          '
+            '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP] '
+            '[--exact]\n'
+        ),
+        (
+            '          '
+            '[--params] [--tables] [--graphs]\n'
+        ),
+        (
+            '          '
+            '[--dump] [--dvars DVARS] [--sqldb] [--outdir OUTDIR]\n'
+        ),
+        (
+            '          '
+            '[--silent] [--test] [--version]'
+        )
+    )
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
@@ -80,6 +90,12 @@ def cli_tc_main():
                         help=('optional flag that suppresses the smoothing of '
                               '"stair-step" provisions in the tax law that '
                               'complicate marginal-tax-rate calculations.'),
+                        default=False,
+                        action="store_true")
+    parser.add_argument('--params',
+                        help=('optional flag that causes policy parameter '
+                              'values for baseline and reform to be written '
+                              'to separate text files.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--tables',
@@ -214,6 +230,7 @@ def cli_tc_main():
             return 1
     # conduct tax analysis
     tcio.analyze(writing_output_file=True,
+                 output_params=args.params,
                  output_tables=args.tables,
                  output_graphs=args.graphs,
                  dump_varset=dumpvar_set,
