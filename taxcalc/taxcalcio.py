@@ -258,13 +258,13 @@ class TaxCalcIO():
         self.errmsg = ''
         # instantiate base and reform GrowFactors objects
         if self.tmd_input_data:
-            gfactors_base = GrowFactors(self.tmd_gfactor)  # pragma: no cover
+            gfactors_bas = GrowFactors(self.tmd_gfactor)  # pragma: no cover
             gfactors_ref = GrowFactors(self.tmd_gfactor)  # pragma: no cover
         else:
-            gfactors_base = GrowFactors()
+            gfactors_bas = GrowFactors()
             gfactors_ref = GrowFactors()
         # check tax_year validity
-        max_tax_year = gfactors_base.last_year
+        max_tax_year = gfactors_bas.last_year
         if tax_year > max_tax_year:
             msg = f'TAXYEAR={tax_year} is greater than {max_tax_year}'
             self.errmsg += f'ERROR: {msg}\n'
@@ -285,32 +285,30 @@ class TaxCalcIO():
         # tax_year out of valid range means cannot proceed with calculations
         if self.errmsg:
             return
-        # get policy parameter dictionary from --baseline file
-        basedict = Calculator.read_json_param_objects(baseline, None)
         # get assumption sub-dictionaries
-        paramdict = Calculator.read_json_param_objects(None, assump)
+        assumpdict = Calculator.read_json_param_objects(None, assump)
+        # get policy parameter dictionary from --baseline file
+        poldict_bas = Calculator.read_json_param_objects(baseline, None)
         # get policy parameter dictionaries from --reform file(s)
-        policydicts = []
+        poldicts_ref = []
         if self.specified_reform:
-            reforms = reform.split('+')
-            for ref in reforms:
+            for ref in reform.split('+'):
                 pdict = Calculator.read_json_param_objects(ref, None)
-                policydicts.append(pdict['policy'])
-            paramdict['policy'] = policydicts[0]
+                poldicts_ref.append(pdict['policy'])
         # set last_b_year
         last_b_year = max(tax_year, Policy.LAST_BUDGET_YEAR)
         # create gdiff_baseline object
         gdiff_baseline = GrowDiff(last_budget_year=last_b_year)
         try:
-            gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
+            gdiff_baseline.update_growdiff(assumpdict['growdiff_baseline'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += str(valerr_msg)
-        # apply gdiff_baseline to gfactor_base
-        gdiff_baseline.apply_to(gfactors_base)
+        # apply gdiff_baseline to gfactor_bas
+        gdiff_baseline.apply_to(gfactors_bas)
         # specify gdiff_response object
         gdiff_response = GrowDiff(last_budget_year=last_b_year)
         try:
-            gdiff_response.update_growdiff(paramdict['growdiff_response'])
+            gdiff_response.update_growdiff(assumpdict['growdiff_response'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += str(valerr_msg)
         # apply gdiff_baseline and gdiff_response to gfactor_ref
@@ -319,57 +317,70 @@ class TaxCalcIO():
         self.gf_reform = copy.deepcopy(gfactors_ref)
         # create Policy objects:
         # ... the baseline Policy object
-        base = Policy(gfactors=gfactors_base, last_budget_year=last_b_year)
+        pol_bas = Policy(
+            gfactors=gfactors_bas,
+            last_budget_year=last_b_year,
+        )
         try:
-            base.implement_reform(basedict['policy'],
-                                  print_warnings=True,
-                                  raise_errors=False)
-            for _, errors in base.parameter_errors.items():
+            pol_bas.implement_reform(
+                poldict_bas['policy'],
+                print_warnings=True,
+                raise_errors=False,
+            )
+            for _, errors in pol_bas.parameter_errors.items():
                 self.errmsg += "\n".join(errors)
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += str(valerr_msg)
         # ... the reform Policy object
         if self.specified_reform:
-            pol = Policy(gfactors=gfactors_ref, last_budget_year=last_b_year)
-            for poldict in policydicts:
+            pol_ref = Policy(
+                gfactors=gfactors_ref,
+                last_budget_year=last_b_year,
+            )
+            for poldict in poldicts_ref:
                 try:
-                    pol.implement_reform(poldict,
-                                         print_warnings=True,
-                                         raise_errors=False)
+                    pol_ref.implement_reform(
+                        poldict,
+                        print_warnings=True,
+                        raise_errors=False,
+                    )
                     if self.errmsg:
                         self.errmsg += "\n"
-                    for _, errors in pol.parameter_errors.items():
+                    for _, errors in pol_ref.parameter_errors.items():
                         self.errmsg += "\n".join(errors)
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += str(valerr_msg)
         else:
-            pol = Policy(gfactors=gfactors_base, last_budget_year=last_b_year)
+            pol_ref = Policy(
+                gfactors=gfactors_bas,
+                last_budget_year=last_b_year,
+            )
         # create Consumption object
         con = Consumption(last_budget_year=last_b_year)
         try:
-            con.update_consumption(paramdict['consumption'])
+            con.update_consumption(assumpdict['consumption'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += str(valerr_msg)
         # any errors imply cannot proceed with calculations
         if self.errmsg:
             return
         # set policy to tax_year
-        pol.set_year(tax_year)
-        base.set_year(tax_year)
+        pol_ref.set_year(tax_year)
+        pol_bas.set_year(tax_year)
         # read input file contents into Records objects
         if aging_input_data:
             if self.cps_input_data:
-                recs = Records.cps_constructor(
+                recs_ref = Records.cps_constructor(
                     gfactors=gfactors_ref,
-                    exact_calculations=exact_calculations
+                    exact_calculations=exact_calculations,
                 )
-                recs_base = Records.cps_constructor(
-                    gfactors=gfactors_base,
-                    exact_calculations=exact_calculations
+                recs_bas = Records.cps_constructor(
+                    gfactors=gfactors_bas,
+                    exact_calculations=exact_calculations,
                 )
             elif self.tmd_input_data:  # pragma: no cover
                 wghts = pd.read_csv(self.tmd_weights)
-                recs = Records(
+                recs_ref = Records(
                     data=pd.read_csv(input_data),
                     start_year=Records.TMDCSV_YEAR,
                     weights=wghts,
@@ -378,43 +389,51 @@ class TaxCalcIO():
                     exact_calculations=exact_calculations,
                     weights_scale=1.0,
                 )
-                recs_base = Records(
+                recs_bas = Records(
                     data=pd.read_csv(input_data),
                     start_year=Records.TMDCSV_YEAR,
                     weights=wghts,
-                    gfactors=gfactors_base,
+                    gfactors=gfactors_bas,
                     adjust_ratios=None,
                     exact_calculations=exact_calculations,
                     weights_scale=1.0,
                 )
             else:  # if not {cps|tmd}_input_data but aging_input_data: puf
-                recs = Records(
+                recs_ref = Records(
                     data=input_data,
                     gfactors=gfactors_ref,
                     exact_calculations=exact_calculations
                 )
-                recs_base = Records(
+                recs_bas = Records(
                     data=input_data,
-                    gfactors=gfactors_base,
+                    gfactors=gfactors_bas,
                     exact_calculations=exact_calculations
                 )
         else:  # input_data are raw data that are not being aged
-            recs = Records(data=input_data,
-                           start_year=tax_year,
-                           gfactors=None,
-                           weights=None,
-                           adjust_ratios=None,
-                           exact_calculations=exact_calculations)
-            recs_base = copy.deepcopy(recs)
+            recs_ref = Records(
+                data=input_data,
+                start_year=tax_year,
+                gfactors=None,
+                weights=None,
+                adjust_ratios=None,
+                exact_calculations=exact_calculations,
+            )
+            recs_bas = copy.deepcopy(recs_ref)
         # create Calculator objects
-        self.calc_ref = Calculator(policy=pol, records=recs,
-                                   verbose=(not self.silent),
-                                   consumption=con,
-                                   sync_years=aging_input_data)
-        self.calc_bas = Calculator(policy=base, records=recs_base,
-                                   verbose=False,
-                                   consumption=con,
-                                   sync_years=aging_input_data)
+        self.calc_ref = Calculator(
+            policy=pol_ref,
+            records=recs_ref,
+            verbose=(not self.silent),
+            consumption=con,
+            sync_years=aging_input_data,
+        )
+        self.calc_bas = Calculator(
+            policy=pol_bas,
+            records=recs_bas,
+            verbose=False,
+            consumption=con,
+            sync_years=aging_input_data,
+        )
 
     def custom_dump_variables(self, tcdumpvars_str):
         """
