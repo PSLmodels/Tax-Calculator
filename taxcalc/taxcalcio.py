@@ -535,29 +535,30 @@ class TaxCalcIO():
         self.calc_ref.calc_all()
         if output_dump or output_sqldb:
             # might need marginal tax rates
-            (mtr_paytax, mtr_inctax,
+            (mtr_ptax_ref, mtr_itax_ref,
              _) = self.calc_ref.mtr(wrt_full_compensation=False,
                                     calc_all_already_called=True)
             self.calc_bas.calc_all()
             calc_base_calculated = True
-            (mtr_paytax_base, mtr_inctax_base,
+            (mtr_ptax_bas, mtr_itax_bas,
              _) = self.calc_bas.mtr(wrt_full_compensation=False,
                                     calc_all_already_called=True)
         else:
             # definitely do not need marginal tax rates
-            mtr_paytax = None
-            mtr_inctax = None
-            mtr_paytax_base = None
-            mtr_inctax_base = None
+            mtr_ptax_ref = None
+            mtr_itax_ref = None
+            mtr_ptax_bas = None
+            mtr_itax_bas = None
         # extract output if writing_output_file
         if writing_output_file:
             self.write_output_file(output_dump, dump_varset,
-                                   mtr_paytax, mtr_inctax)
+                                   mtr_ptax_ref, mtr_itax_ref)
         # optionally write --sqldb output to SQLite3 database
         if output_sqldb:
             self.write_sqldb_file(
-                dump_varset, mtr_paytax, mtr_inctax,
-                mtr_paytax_base, mtr_inctax_base
+                dump_varset,
+                mtr_ptax_ref, mtr_itax_ref,
+                mtr_ptax_bas, mtr_itax_bas,
             )
         # optionally write --params output to text files
         if output_params:
@@ -576,13 +577,13 @@ class TaxCalcIO():
             self.write_graph_files()
 
     def write_output_file(self, output_dump, dump_varset,
-                          mtr_paytax, mtr_inctax):
+                          mtr_ptax_ref, mtr_itax_ref):
         """
         Write output to CSV-formatted file.
         """
         if output_dump:
             outdf = self.dump_output(
-                self.calc_ref, dump_varset, mtr_inctax, mtr_paytax
+                self.calc_ref, dump_varset, mtr_itax_ref, mtr_ptax_ref,
             )
             column_order = sorted(outdf.columns)
             # place RECID at start of column_order list
@@ -637,8 +638,12 @@ class TaxCalcIO():
                 f'Write reform policy parameter values to file {fname}'
             )
 
-    def write_sqldb_file(self, dump_varset, mtr_paytax, mtr_inctax,
-                         mtr_paytax_base, mtr_inctax_base):
+    def write_sqldb_file(
+            self,
+            dump_varset,
+            mtr_ptax_ref, mtr_itax_ref,
+            mtr_ptax_bas, mtr_itax_bas,
+    ):
         """
         Write dump output to SQLite3 database table dump.
         """
@@ -647,13 +652,13 @@ class TaxCalcIO():
         dbcon = sqlite3.connect(db_fname)
         # write baseline table
         outdf = self.dump_output(
-            self.calc_bas, dump_varset, mtr_inctax_base, mtr_paytax_base
+            self.calc_bas, dump_varset, mtr_itax_bas, mtr_ptax_bas,
         )
         assert len(outdf.index) == self.calc_ref.array_len
         outdf.to_sql('baseline', dbcon, if_exists='replace', index=False)
         # write reform table
         outdf = self.dump_output(
-            self.calc_ref, dump_varset, mtr_inctax, mtr_paytax
+            self.calc_ref, dump_varset, mtr_itax_ref, mtr_ptax_ref,
         )
         assert len(outdf.index) == self.calc_ref.array_len
         outdf.to_sql('reform', dbcon, if_exists='replace', index=False)
