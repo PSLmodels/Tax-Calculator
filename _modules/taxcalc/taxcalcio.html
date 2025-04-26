@@ -629,12 +629,17 @@ document.write(`
             <span class="n">delete_old_files</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">delete_old_files</span><span class="p">:</span>
             <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="p">)</span>
-            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;.db&#39;</span><span class="p">))</span>
-            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-doc.text&#39;</span><span class="p">))</span>
-            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-tab.text&#39;</span><span class="p">))</span>
-            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-atr.html&#39;</span><span class="p">))</span>
-            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-mtr.html&#39;</span><span class="p">))</span>
-            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-pch.html&#39;</span><span class="p">))</span>
+            <span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;.db&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-params.bas&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-params.ref&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-tables.text&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-atr.html&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-mtr.html&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-pch.html&#39;</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
+                <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="n">ext</span><span class="p">))</span>
         <span class="c1"># initialize variables whose values are set in init method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span> <span class="o">=</span> <span class="kc">None</span>
@@ -878,7 +883,9 @@ document.write(`
 
 <div class="viewcode-block" id="TaxCalcIO.analyze">
 <a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.analyze">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writing_output_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">writing_output_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">output_params</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">output_tables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">output_graphs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">dump_varset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -891,6 +898,10 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        writing_output_file: boolean</span>
 <span class="sd">           whether or not to generate and write output file</span>
+
+<span class="sd">        output_params: boolean</span>
+<span class="sd">           whether or not to write baseline and reform policy parameter</span>
+<span class="sd">           values to separate text files</span>
 
 <span class="sd">        output_tables: boolean</span>
 <span class="sd">           whether or not to generate and write distributional tables</span>
@@ -948,13 +959,15 @@ document.write(`
         <span class="k">if</span> <span class="n">writing_output_file</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_output_file</span><span class="p">(</span><span class="n">output_dump</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span>
                                    <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_doc_file</span><span class="p">()</span>
         <span class="c1"># optionally write --sqldb output to SQLite3 database</span>
         <span class="k">if</span> <span class="n">output_sqldb</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_sqldb_file</span><span class="p">(</span>
                 <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span>
                 <span class="n">mtr_paytax_base</span><span class="p">,</span> <span class="n">mtr_inctax_base</span>
             <span class="p">)</span>
+        <span class="c1"># optionally write --params output to text files</span>
+        <span class="k">if</span> <span class="n">output_params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_policy_params_files</span><span class="p">()</span>
         <span class="c1"># optionally write --tables output to text file</span>
         <span class="k">if</span> <span class="n">output_tables</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">calc_base_calculated</span><span class="p">:</span>
@@ -1010,28 +1023,29 @@ document.write(`
             <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="TaxCalcIO.write_doc_file">
-<a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_doc_file">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">write_doc_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_policy_params_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Write reform documentation to text file.</span>
+<span class="sd">        Write baseline and reform policy parameter values to separate files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy_dicts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">doc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">reform_documentation</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gf_reform</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">doc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">reform_documentation</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gf_reform</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy_dicts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="p">)</span>
-        <span class="n">doc_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-doc.text&#39;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">doc_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dfile</span><span class="p">:</span>
-            <span class="n">dfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="n">param_names</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">parameter_list</span><span class="p">()</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-params.bas&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
+                <span class="n">pval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
+                <span class="n">pfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pval</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
-                <span class="sa">f</span><span class="s1">&#39;Write reform documentation to file </span><span class="si">{</span><span class="n">doc_fname</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span></div>
-
+                <span class="sa">f</span><span class="s1">&#39;Write baseline policy parameter values to file </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-params.ref&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
+                <span class="n">pval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
+                <span class="n">pfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pval</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                <span class="sa">f</span><span class="s1">&#39;Write reform policy parameter values to file </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
 
 <div class="viewcode-block" id="TaxCalcIO.write_sqldb_file">
 <a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file">[docs]</a>
@@ -1071,7 +1085,7 @@ document.write(`
 <span class="sd">        Write tables to text file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=too-many-locals</span>
-        <span class="n">tab_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-tab.text&#39;</span><span class="p">)</span>
+        <span class="n">tab_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-tables.text&#39;</span><span class="p">)</span>
         <span class="c1"># skip tables if there are not some positive weights</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">total_weight</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tab_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tfile</span><span class="p">:</span>
