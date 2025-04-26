@@ -32,7 +32,7 @@ def cli_tc_main():
         '[--help]\n',
         (
             '          '
-            '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP] '
+            '[--baseline BASELINE] [--reform REFORM] [--assump ASSUMP] '
             '[--exact]\n'
         ),
         (
@@ -45,7 +45,7 @@ def cli_tc_main():
         ),
         (
             '          '
-            '[--silent] [--test] [--version]'
+            '[--silent] [--test] [--version] [--usage]'
         )
     )
     parser = argparse.ArgumentParser(
@@ -78,7 +78,7 @@ def cli_tc_main():
                         help=('REFORM is name of optional JSON reform file. '
                               'A compound reform can be specified using two '
                               'file names separated by a plus (+) character. '
-                              'No --reform implies a "null" reform (that is, '
+                              'No --reform implies reform policy is '
                               'current-law policy).'),
                         default=None)
     parser.add_argument('--assump',
@@ -156,6 +156,11 @@ def cli_tc_main():
                               'release version to stdout and quits.'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--usage',
+                        help=('optional flag that writes short usage '
+                              'reminder to stdout and quits.'),
+                        default=False,
+                        action="store_true")
     args = parser.parse_args()
     # check Python version
     pyv = sys.version_info
@@ -172,6 +177,10 @@ def cli_tc_main():
     if args.version:
         pyver = f'Python 3.{pyv[1]}'
         sys.stdout.write(f'Tax-Calculator {tc.__version__} on {pyver}\n')
+        return 0
+    # show short usage reminder and quit if --usage option is specified
+    if args.usage:
+        sys.stdout.write(f'USAGE: {usage_str}\n')
         return 0
     # write test input and expected output files if --test option is specified
     if args.test:
