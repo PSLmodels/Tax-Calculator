@@ -456,39 +456,39 @@ def test_output_options(reformfile1, assumpfile1):
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
         assert False, 'TaxCalcIO.analyze(partial_dump_output) failed'
-    # if tries were successful, remove doc file and output file
-    docfilepath = outfilepath.replace('.csv', '-doc.text')
-    if os.path.isfile(docfilepath):
-        os.remove(docfilepath)
+    # if tries were successful, remove output file
     if os.path.isfile(outfilepath):
         os.remove(outfilepath)
 
 
-def test_write_doc_file(reformfile1, assumpfile1):
+def test_write_policy_param_files(reformfile1):
     """
-    Test write_doc_file with compound reform.
+    Test write_policy_params_files with compound reform.
     """
     taxyear = 2021
     compound_reform = f'{reformfile1.name}+{reformfile1.name}'
-    tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
-                     tax_year=taxyear,
-                     baseline=None,
-                     reform=compound_reform,
-                     assump=assumpfile1.name)
+    tcio = TaxCalcIO(
+        input_data=pd.read_csv(StringIO(RAWINPUT)),
+        tax_year=taxyear,
+        baseline=None,
+        reform=compound_reform,
+        assump=None,
+    )
     assert not tcio.errmsg
     tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
               tax_year=taxyear,
               baseline=None,
               reform=compound_reform,
-              assump=assumpfile1.name,
+              assump=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
-    tcio.write_doc_file()
+    tcio.write_policy_params_files()
     outfilepath = tcio.output_filepath()
-    docfilepath = outfilepath.replace('.csv', '-doc.text')
-    if os.path.isfile(docfilepath):
-        os.remove(docfilepath)
+    for ext in ['-params.bas', '-params.ref']:
+        filepath = outfilepath.replace('.csv', ext)
+        if os.path.isfile(filepath):
+            os.remove(filepath)
 
 
 def test_sqldb_option(reformfile1, assumpfile1):
@@ -529,8 +529,8 @@ def test_sqldb_option(reformfile1, assumpfile1):
 
 def test_no_tables_or_graphs(reformfile1):
     """
-    Test TaxCalcIO with output_tables=True and output_graphs=True but
-    INPUT has zero weights.
+    Test TaxCalcIO with output_params=True and output_tables=True and
+    output_graphs=True but INPUT has zero weights.
     """
     # create input sample that cannot output tables or graphs
     nobs = 10
@@ -556,24 +556,25 @@ def test_no_tables_or_graphs(reformfile1):
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
-    # create TaxCalcIO tables file
+    # create several TaxCalcIO output files
     tcio.analyze(writing_output_file=False,
+                 output_params=True,
                  output_tables=True,
                  output_graphs=True)
     # delete tables and graph files
     output_filename = tcio.output_filepath()
-    fname = output_filename.replace('.csv', '-tab.text')
-    if os.path.isfile(fname):
-        os.remove(fname)
-    fname = output_filename.replace('.csv', '-atr.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
-    fname = output_filename.replace('.csv', '-mtr.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
-    fname = output_filename.replace('.csv', '-pch.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
+    extensions = [
+        '-params.bas',
+        '-params.ref',
+        '-tables.text',
+        '-atr.html',
+        '-mtr.html',
+        '-pch.html',
+    ]
+    for ext in extensions:
+        fname = output_filename.replace('.csv', ext)
+        if os.path.isfile(fname):
+            os.remove(fname)
 
 
 def test_tables(reformfile1):
@@ -608,7 +609,7 @@ def test_tables(reformfile1):
     tcio.analyze(writing_output_file=False, output_tables=True)
     # delete tables file
     output_filename = tcio.output_filepath()
-    fname = output_filename.replace('.csv', '-tab.text')
+    fname = output_filename.replace('.csv', '-tables.text')
     if os.path.isfile(fname):
         os.remove(fname)
 
