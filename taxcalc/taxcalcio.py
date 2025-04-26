@@ -545,7 +545,7 @@ class TaxCalcIO():
                 dump_varset, mtr_paytax, mtr_inctax,
                 mtr_paytax_base, mtr_inctax_base
             )
-        # optionally write --params output to text file
+        # optionally write --params output to text files
         if output_params:
             self.write_policy_params_files()
         # optionally write --tables output to text file
@@ -601,7 +601,7 @@ class TaxCalcIO():
 
     def write_policy_params_files(self):
         """
-        Write policy parameter values for baseline and reform
+        Write baseline and reform policy parameter values to separate files.
         """
         param_names = Policy.parameter_list()
         fname = self._output_filename.replace('.csv', '-params.bas')

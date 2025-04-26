@@ -463,7 +463,7 @@ def test_output_options(reformfile1, assumpfile1):
 
 def test_write_policy_param_files(reformfile1):
     """
-    Test write_policy_params_diff_file with compound reform.
+    Test write_policy_params_files with compound reform.
     """
     taxyear = 2021
     compound_reform = f'{reformfile1.name}+{reformfile1.name}'
