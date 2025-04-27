@@ -9,6 +9,7 @@ which can be accessed as 'tc' from an installed taxcalc conda package.
 import os
 import sys
 import time
+import sqlite3
 import argparse
 import difflib
 import taxcalc as tc
@@ -127,7 +128,7 @@ def cli_tc_main():
     parser.add_argument('--test',
                         help=('optional flag that conducts installation '
                               'test, writes test result to stdout, '
-                              'and quits.'),
+                              'and quits leaving the test-related files.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--version',
@@ -166,6 +167,7 @@ def cli_tc_main():
         _write_expected_test_output()
         inputfn = TEST_INPUT_FILENAME
         taxyear = TEST_TAXYEAR
+        args.dumpdb = True
     else:
         inputfn = args.INPUT
         taxyear = args.TAXYEAR
@@ -212,6 +214,7 @@ def cli_tc_main():
         sys.stderr.write('USAGE: tc --help\n')
         return 1
     # construct dumpvars set from dumpvars_str
+    dumpvars_str = ''
     if args.dumpvars:
         if os.path.exists(args.dumpvars):
             with open(args.dumpvars, 'r', encoding='utf-8') as dfile:
@@ -221,8 +224,6 @@ def cli_tc_main():
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
             return 1
-    else:
-        dumpvars_str = ''
     dumpvars_list = tcio.dump_variables(dumpvars_str)
     if tcio.errmsg:
         if tcio.errmsg.endswith('\n'):
@@ -251,8 +252,15 @@ def cli_tc_main():
 # end of cli_tc_main function code
 
 
-EXPECTED_TEST_OUTPUT_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-out.csv'
-ACTUAL_TEST_OUTPUT_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.csv'
+EXPECTED_TEST_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}.exp'
+TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.db'
+TEST_SQLITE_QUERY = """
+SELECT
+  RECID           AS id,
+  ROUND(iitax, 2) AS itax
+FROM baseline;
+"""
+ACTUAL_TEST_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}.act'
 
 
 def _write_expected_test_output():
@@ -266,13 +274,13 @@ def _write_expected_test_output():
     )
     with open(TEST_INPUT_FILENAME, 'w', encoding='utf-8') as ifile:
         ifile.write(input_data)
-    expected_output_data = (
-        'RECID,YEAR,WEIGHT,INCTAX,LSTAX,PAYTAX\n'
-        '1,2018,0.00,131.88,0.00,6120.00\n'
-        '2,2018,0.00,28879.00,0.00,21721.60\n'
+    expected_output = (
+        'id|itax\n'
+        '1|131.88\n'
+        '2|28879.00\n'
     )
-    with open(EXPECTED_TEST_OUTPUT_FILENAME, 'w', encoding='utf-8') as ofile:
-        ofile.write(expected_output_data)
+    with open(EXPECTED_TEST_FILENAME, 'w', encoding='utf-8') as ofile:
+        ofile.write(expected_output)
 
 
 def _compare_test_output_files():
@@ -280,9 +288,19 @@ def _compare_test_output_files():
     Private function that compares expected and actual tc --test results;
     returns 0 if pass test, otherwise returns 1.
     """
-    with open(EXPECTED_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8') as efile:
+    # use TEST_SQLITE_QUERY to extract results from TEST_DUMPDB_FILENAME
+    with sqlite3.connect(TEST_DUMPDB_FILENAME) as connection:
+        cursor = connection.cursor()
+        cursor.execute(TEST_SQLITE_QUERY)
+        results = cursor.fetchall()
+        with open(ACTUAL_TEST_FILENAME, 'w', encoding='utf-8') as afile:
+            afile.write('id|itax\n')
+            for row in results:
+                afile.write(f'{row[0]}|{row[1]:.2f}\n')
+    # compare results in ACTUAL_TEST_FILENAME and in EXPECTED_TEST_FILENAME
+    with open(EXPECTED_TEST_FILENAME, 'r', encoding='utf-8') as efile:
         explines = efile.readlines()
-    with open(ACTUAL_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8') as afile:
+    with open(ACTUAL_TEST_FILENAME, 'r', encoding='utf-8') as afile:
         actlines = afile.readlines()
     if ''.join(explines) == ''.join(actlines):
         sys.stdout.write('PASSED TEST\n')
@@ -291,8 +309,8 @@ def _compare_test_output_files():
         retcode = 1
         sys.stdout.write('FAILED TEST\n')
         diff = difflib.unified_diff(explines, actlines,
-                                    fromfile=EXPECTED_TEST_OUTPUT_FILENAME,
-                                    tofile=ACTUAL_TEST_OUTPUT_FILENAME, n=0)
+                                    fromfile=EXPECTED_TEST_FILENAME,
+                                    tofile=ACTUAL_TEST_FILENAME, n=0)
         sys.stdout.writelines(diff)
     return retcode
 

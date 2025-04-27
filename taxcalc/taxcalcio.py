@@ -500,7 +500,7 @@ class TaxCalcIO():
                 self.calc_bas.calc_all()
                 calc_base_calculated = True
             self.write_graph_files()
-        # optionally write --dumpdb output to SQLite3 database file
+        # optionally write --dumpdb output to SQLite database file
         if output_dump:
             self.write_dumpdb_file(
                 dump_varlist,
@@ -765,7 +765,7 @@ class TaxCalcIO():
             mtr_ptax_bas, mtr_itax_bas,
     ):
         """
-        Write dump output to SQLite3 database file.
+        Write dump output to SQLite database file.
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         def dump_output(calcx, dumpvars, mtr_itax, mtr_ptax):
