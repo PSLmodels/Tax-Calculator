@@ -28,20 +28,17 @@ def cli_tc_main():
     start_time = time.time()
 
     # parse command-line arguments:
-    usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
+    usage_str = 'tc INPUT TAXYEAR {}{}{}{}'.format(
         '[--help]\n',
         (
             '          '
-            '[--baseline BASELINE] [--reform REFORM] [--assump ASSUMP] '
-            '[--exact]\n'
+            '[--baseline BASELINE] [--reform REFORM] '
+            '[--assump ASSUMP] [--exact]\n'
         ),
         (
             '          '
-            '[--params] [--tables] [--graphs]\n'
-        ),
-        (
-            '          '
-            '[--dump] [--dvars DVARS] [--sqldb] [--outdir OUTDIR]\n'
+            '[--params] [--tables] [--graphs] '
+            '[--dumpdb] [--dumpvars DUMPVARS]\n'
         ),
         (
             '          '
@@ -51,12 +48,8 @@ def cli_tc_main():
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
-        description=('Writes to a file the federal income and payroll tax '
-                     'OUTPUT for each filing unit specified in the INPUT '
-                     'file, with the OUTPUT computed from the INPUT for the '
-                     'TAXYEAR using Tax-Calculator. The OUTPUT file is a '
-                     'CSV-formatted file that contains tax information for '
-                     'each INPUT filing unit under the reform(s).'))
+        description=('Writes several output files computed from the INPUT '
+                     'for the TAXYEAR using Tax-Calculator.'))
     parser.add_argument('INPUT', nargs='?',
                         help=('INPUT is name of CSV-formatted file that '
                               'contains for each filing unit variables used '
@@ -108,37 +101,23 @@ def cli_tc_main():
                               'to HTML files for viewing in browser.'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--dump',
-                        help=('optional flag that causes OUTPUT to contain '
-                              'all INPUT variables (extrapolated to TAXYEAR) '
-                              'and all calculated tax variables for the '
-                              'reform, where all the variables are named '
-                              'using their internal Tax-Calculator names. '
-                              'No --dump option implies OUTPUT contains '
-                              'minimal tax output for the reform.  NOTE: '
-                              'use the --dvars option to point to a file '
-                              'containing a custom set of dump variables.'
-                              ''),
+    parser.add_argument('--dumpdb',
+                        help=('optional flag that causes TAXYEAR variable '
+                              'values for each tax-unit under both '
+                              'baseline and reform policies to be written '
+                              'to a SQLite database (where the variables '
+                              'included in the database are controlled by '
+                              'the --dumpvars option).'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--dvars',
-                        help=('DVARS is name of optional file containing a '
+    parser.add_argument('--dumpvars',
+                        help=('DUMPVARS is name of optional file containing a '
                               'space-delimited list of variables to include '
-                              'in a partial dump OUTPUT file.  No --dvars '
-                              'implies a full dump containing all variables.'),
-                        default=None)
-    parser.add_argument('--sqldb',
-                        help=('optional flag that writes SQLite database '
-                              'with two tables (baseline and reform) each '
-                              'containing same output variables as '
-                              'produced by --dump option.'),
-                        default=False,
-                        action="store_true")
-    parser.add_argument('--outdir',
-                        help=('OUTDIR is name of optional output directory '
-                              'in which all output files are written. '
-                              'No --outdir implies output files are written '
-                              'in the current directory.'),
+                              'in the dump database.  No --dumpvars '
+                              'implies a minimal set of variables.  Valid '
+                              'variable names include all variables in the '
+                              'records_variables.json file plus mtr_itax and '
+                              'mtr_ptax (MTRs wrt taxpayer earnings).'),
                         default=None)
     parser.add_argument('--silent',
                         help=('optional flag that suppresses messages about '
@@ -191,10 +170,14 @@ def cli_tc_main():
         inputfn = args.INPUT
         taxyear = args.TAXYEAR
     # instantiate TaxCalcIO object and do tax analysis
-    tcio = tc.TaxCalcIO(input_data=inputfn, tax_year=taxyear,
-                        baseline=args.baseline,
-                        reform=args.reform, assump=args.assump,
-                        silent=args.silent, outdir=args.outdir)
+    tcio = tc.TaxCalcIO(
+        input_data=inputfn,
+        tax_year=taxyear,
+        baseline=args.baseline,
+        reform=args.reform,
+        assump=args.assump,
+        silent=args.silent,
+    )
     if tcio.errmsg:
         if tcio.errmsg.endswith('\n'):
             sys.stderr.write(tcio.errmsg)
@@ -207,11 +190,14 @@ def cli_tc_main():
         inputfn.endswith('cps.csv') or
         inputfn.endswith('tmd.csv')
     )
-    tcio.init(input_data=inputfn, tax_year=taxyear,
-              baseline=args.baseline,
-              reform=args.reform, assump=args.assump,
-              aging_input_data=aging,
-              exact_calculations=args.exact)
+    tcio.init(
+        input_data=inputfn,
+        tax_year=taxyear,
+        baseline=args.baseline,
+        reform=args.reform, assump=args.assump,
+        aging_input_data=aging,
+        exact_calculations=args.exact,
+    )
     if tcio.errmsg:
         if tcio.errmsg.endswith('\n'):
             sys.stderr.write(tcio.errmsg)
@@ -219,32 +205,40 @@ def cli_tc_main():
             sys.stderr.write(tcio.errmsg + '\n')
         sys.stderr.write('USAGE: tc --help\n')
         return 1
-    dumpvar_set = None
-    if args.dvars and (args.dump or args.sqldb):
-        if os.path.exists(args.dvars):
-            with open(args.dvars, 'r', encoding='utf-8') as dfile:
-                dump_vars_str = dfile.read()
-            dumpvar_set = tcio.custom_dump_variables(dump_vars_str)
-            if tcio.errmsg:
-                if tcio.errmsg.endswith('\n'):
-                    sys.stderr.write(tcio.errmsg)
-                else:
-                    sys.stderr.write(tcio.errmsg + '\n')
-                sys.stderr.write('USAGE: tc --help\n')
-                return 1
+    # check args.dumpdb and args.dumpvars consistency
+    if not args.dumpdb and args.dumpvars:
+        msg = 'ERROR: DUMPVARS file specified without --dumpdb option\n'
+        sys.stderr.write(msg)
+        sys.stderr.write('USAGE: tc --help\n')
+        return 1
+    # construct dumpvars set from dumpvars_str
+    if args.dumpvars:
+        if os.path.exists(args.dumpvars):
+            with open(args.dumpvars, 'r', encoding='utf-8') as dfile:
+                dumpvars_str = dfile.read()
         else:
-            msg = 'ERROR: DVARS file {} does not exist\n'
-            sys.stderr.write(msg.format(args.dvars))
+            msg = f'ERROR: DUMPVARS file {args.dumpvars} does not exist\n'
+            sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
             return 1
+    else:
+        dumpvars_str = ''
+    dumpvars_list = tcio.dump_variables(dumpvars_str)
+    if tcio.errmsg:
+        if tcio.errmsg.endswith('\n'):
+            sys.stderr.write(tcio.errmsg)
+        else:
+            sys.stderr.write(tcio.errmsg + '\n')
+            sys.stderr.write('USAGE: tc --help\n')
+        return 1
     # conduct tax analysis
-    tcio.analyze(writing_output_file=True,
-                 output_params=args.params,
-                 output_tables=args.tables,
-                 output_graphs=args.graphs,
-                 dump_varset=dumpvar_set,
-                 output_dump=args.dump,
-                 output_sqldb=args.sqldb)
+    tcio.analyze(
+        output_params=args.params,
+        output_tables=args.tables,
+        output_graphs=args.graphs,
+        output_dump=args.dumpdb,
+        dump_varlist=dumpvars_list,
+    )
     # compare test output with expected test output if --test option specified
     if args.test:
         retcode = _compare_test_output_files()
