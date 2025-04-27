@@ -277,7 +277,7 @@ def _write_expected_test_output():
 
 def _compare_test_output_files():
     """
-    Private function that compares expected and actual tc --test output files;
+    Private function that compares expected and actual tc --test results;
     returns 0 if pass test, otherwise returns 1.
     """
     with open(EXPECTED_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8') as efile:

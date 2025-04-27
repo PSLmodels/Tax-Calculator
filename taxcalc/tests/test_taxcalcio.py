@@ -403,9 +403,9 @@ def test_dump_variables(dumpvar_str, str_valid, num_vars):
         assert len(varlist) == num_vars
 
 
-def test_output_options(reformfile1, assumpfile1):
+def test_output_options_min(reformfile1, assumpfile1):
     """
-    Test TaxCalcIO output_dump options when writing_output_file.
+    Test TaxCalcIO output_dump options with minimal dump variables.
     """
     taxyear = 2021
     tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
@@ -422,10 +422,11 @@ def test_output_options(reformfile1, assumpfile1):
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
-    # minimal dump output
     dumppath = tcio.output_filepath().replace('.xxx', '.db')
+    # minimal dump output
+    dumpvars = TaxCalcIO.MINIMAL_DUMPVARS
     try:
-        tcio.analyze(output_dump=True, dump_varlist=TaxCalcIO.MINIMAL_DUMPVARS)
+        tcio.analyze(output_dump=True, dump_varlist=dumpvars)
     except Exception:  # pylint: disable=broad-except
         if os.path.isfile(dumppath):
             try:
@@ -433,7 +434,43 @@ def test_output_options(reformfile1, assumpfile1):
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
         assert False, 'TaxCalcIO.analyze(minimal_dump_output) failed'
-    # if try was successful, remove dump output file
+    if os.path.isfile(dumppath):
+        os.remove(dumppath)
+
+
+def test_output_options_mtr(reformfile1, assumpfile1):
+    """
+    Test TaxCalcIO output_dump options with mtr_* dump variables.
+    """
+    taxyear = 2021
+    tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
+                     tax_year=taxyear,
+                     baseline=None,
+                     reform=reformfile1.name,
+                     assump=assumpfile1.name)
+    assert not tcio.errmsg
+    tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
+              tax_year=taxyear,
+              baseline=None,
+              reform=reformfile1.name,
+              assump=assumpfile1.name,
+              aging_input_data=False,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    dumppath = tcio.output_filepath().replace('.xxx', '.db')
+    # minimal+mtr_* dump output
+    dumpvars = TaxCalcIO.MINIMAL_DUMPVARS
+    for var in TaxCalcIO.MTR_DUMPVARS:
+        dumpvars.append(var)
+    try:
+        tcio.analyze(output_dump=True, dump_varlist=dumpvars)
+    except Exception:  # pylint: disable=broad-except
+        if os.path.isfile(dumppath):
+            try:
+                os.remove(dumppath)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
+        assert False, 'TaxCalcIO.analyze(minimal_dump_output) failed'
     if os.path.isfile(dumppath):
         os.remove(dumppath)
 
