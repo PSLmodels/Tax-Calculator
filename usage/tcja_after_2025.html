@@ -540,8 +540,8 @@ execute this command:</p>
 </div>
 <p>The tables would be in the <code class="docutils literal notranslate"><span class="pre">z-26-#-x-#-tab.text</span></code> output file generated
 by this <code class="docutils literal notranslate"><span class="pre">tc</span></code> run.  If you want to do custom tabulations of the micro
-output data, use the <code class="docutils literal notranslate"><span class="pre">--dump</span></code>, <code class="docutils literal notranslate"><span class="pre">--dvars</span></code>, and <code class="docutils literal notranslate"><span class="pre">--sqldb</span></code> options as
-explained by the <code class="docutils literal notranslate"><span class="pre">tc</span> <span class="pre">--help</span></code> documentation.</p>
+output data, use the <code class="docutils literal notranslate"><span class="pre">--dumpdb</span></code> and <code class="docutils literal notranslate"><span class="pre">--dumpvars</span></code> options as explained
+by the <code class="docutils literal notranslate"><span class="pre">tc</span> <span class="pre">--help</span></code> documentation.</p>
 <p>To analyze your reform relative to a reform that extends all TCJA
 temporary provisions beyond 2025, you would execute this command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">z</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span> <span class="o">--</span><span class="n">baseline</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span><span class="o">+</span><span class="n">x</span><span class="o">.</span><span class="n">json</span>
@@ -571,12 +571,9 @@ projection (incorporated in the Tax-Calculator <code class="docutils literal not
 changes or whenever new historical values of policy parameters are
 added to the <code class="docutils literal notranslate"><span class="pre">policy_current_law.json</span></code> file thereby changing the
 <code class="docutils literal notranslate"><span class="pre">Policy.LAST_KNOWN_YEAR</span></code>.</p>
-<p>The 4.0.0 version of Tax-Calculator incorporates the February 2024 CBO
-economic projection and contains historical tax policy parameter values
-through 2022.  Future versions of Tax-Calculator that use historical
-policy parameter values for 2023 and 2024 or use the February 2025 CBO
-economic projection will cause the <code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code> script to generate
-somewhat different 2026 parameter values in the <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file.</p>
+<p>Beginning with the 4.5.0 version, Tax-Calculator incorporates the
+January 2025 CBO economic projection and contains historical tax
+policy parameter values through 2025.</p>
 </section>
 
     <script type="text/x-thebe-config">
