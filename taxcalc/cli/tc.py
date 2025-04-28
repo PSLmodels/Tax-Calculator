@@ -164,7 +164,7 @@ def cli_tc_main():
         return 0
     # write test input and expected output files if --test option is specified
     if args.test:
-        _write_expected_test_output()
+        _write_test_files()
         inputfn = TEST_INPUT_FILENAME
         taxyear = TEST_TAXYEAR
         args.dumpdb = True
@@ -252,7 +252,17 @@ def cli_tc_main():
 # end of cli_tc_main function code
 
 
+TEST_INPUT_DATA = (
+    'RECID,MARS,XTOT,EIC,e00200,e00200p,e00200s,p23250,e18400,e19800,s006\n'
+    '1,       2,   3,  1, 40000,  40000,      0,     0,  3000,  4000, 1e7\n'
+    '2,       2,   3,  1,200000, 200000,      0,     0, 15000, 20000, 1e7\n'
+)
 EXPECTED_TEST_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}.exp'
+EXPECTED_TEST_OUTPUT = (
+    'id|itax\n'
+    '1|131.88\n'
+    '2|28879.00\n'
+)
 TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.db'
 TEST_SQLITE_QUERY = """
 SELECT
@@ -261,26 +271,56 @@ SELECT
 FROM baseline;
 """
 ACTUAL_TEST_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}.act'
+TEST_TABULATE_FILENAME = 'test-tabulate.sql'
+TEST_TABULATE_SQLCODE = (
+    f'-- USAGE: sqlite3 {TEST_DUMPDB_FILENAME} < {TEST_TABULATE_FILENAME}\n'
+    '\n'
+    '-- sepecify base.income_group values\n'
+    'UPDATE base SET income_group =\n'
+    '  CASE  -- specify the income_group brackets as desired\n'
+    '    WHEN expanded_income <   0.0   THEN 0\n'
+    '    WHEN expanded_income <  50.0e3 THEN 1\n'
+    '    WHEN expanded_income < 100.0e3 THEN 2\n'
+    '    WHEN expanded_income < 500.0e3 THEN 3\n'
+    '    WHEN expanded_income <   1.0e6 THEN 4\n'
+    '    ELSE                                5\n'
+    '  END;\n'
+    '\n'
+    '-- tabulate baseline and reform iitax for joint filers by income_group\n'
+    '.separator "\t"\n'
+    '.headers on\n'
+    'SELECT\n'
+    '  income_group                     AS g,\n'
+    '  COUNT(*)                         AS units,\n'
+    '  ROUND(SUM(b.iitax*s006)*1e-9, 3) AS b_iitax,\n'
+    '  ROUND(SUM(r.iitax*s006)*1e-9, 3) AS r_iitax\n'
+    'FROM base JOIN baseline AS b USING(RECID) JOIN reform AS r USING(RECID)\n'
+    'WHERE MARS == 2\n'
+    'GROUP BY income_group;\n'
+    '.headers off\n'
+    'SELECT\n'
+    "  'A'                              AS g,\n"
+    '  COUNT(*)                         AS units,\n'
+    '  ROUND(SUM(b.iitax*s006)*1e-9, 3) AS b_iitax,\n'
+    '  ROUND(SUM(r.iitax*s006)*1e-9, 3) AS r_iitax\n'
+    'FROM base JOIN baseline AS b USING(RECID) JOIN reform AS r USING(RECID)\n'
+    'WHERE MARS == 2;\n'
+    '\n'
+    '-- Documentation on the sqlite3 CLI program is available at\n'
+    '-- https://sqlite.org/cli.html\n'
+)
 
 
-def _write_expected_test_output():
+def _write_test_files():
     """
     Private function that writes tc --test input and expected output files.
     """
-    input_data = (
-        'RECID,MARS,XTOT,EIC,e00200,e00200p,e00200s,p23250,e18400,e19800\n'
-        '1,       2,   3,  1, 40000,  40000,      0,     0,  3000,  4000\n'
-        '2,       2,   3,  1,200000, 200000,      0,     0, 15000, 20000\n'
-    )
     with open(TEST_INPUT_FILENAME, 'w', encoding='utf-8') as ifile:
-        ifile.write(input_data)
-    expected_output = (
-        'id|itax\n'
-        '1|131.88\n'
-        '2|28879.00\n'
-    )
+        ifile.write(TEST_INPUT_DATA)
     with open(EXPECTED_TEST_FILENAME, 'w', encoding='utf-8') as ofile:
-        ofile.write(expected_output)
+        ofile.write(EXPECTED_TEST_OUTPUT)
+    with open(TEST_TABULATE_FILENAME, 'w', encoding='utf-8') as tfile:
+        tfile.write(TEST_TABULATE_SQLCODE)
 
 
 def _compare_test_output_files():

@@ -717,6 +717,7 @@ class TaxCalcIO():
         's006',
         'data_source',
         'XTOT',
+        'MARS',
         'expanded_income',
     ]
     MINIMAL_DUMPVARS = [
@@ -754,7 +755,7 @@ class TaxCalcIO():
         # construct variable list
         dumpvars_list = TaxCalcIO.MINIMAL_DUMPVARS
         for var in dumpvars:
-            if var not in dumpvars_list:
+            if var not in dumpvars_list and var not in TaxCalcIO.BASE_DUMPVARS:
                 dumpvars_list.append(var)
         return dumpvars_list
 
