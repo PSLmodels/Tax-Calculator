@@ -100,7 +100,7 @@ _IRS Form Location:_
 
 
 ##  `iitax`  
-_Description_: Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output  
+_Description_: Total federal individual income tax liability  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2013: 1040 line 61 minus line 56 minus line 60a  
@@ -123,7 +123,7 @@ _IRS Form Location:_
 
 
 ##  `payrolltax`  
-_Description_: Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was + setax + ptax_amc)  
+_Description_: Total (employee + employer) payroll tax liability (payrolltax = ptax_was + setax + ptax_amc)  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2013: OASDI+HI FICA plus 1040 lines 56 and 60a  
@@ -622,7 +622,7 @@ _IRS Form Location:_
 
 
 ##  `lumpsum_tax`  
-_Description_: Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output  
+_Description_: Lumpsum (or head) tax
 _Datatype_: float  
 _IRS Form Location:_  
 2013-20??: calculated variable  
