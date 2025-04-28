@@ -471,16 +471,11 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc-taxcalcio">taxcalc.taxcalcio</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.analyze"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.analyze()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.custom_dump_variables"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.custom_dump_variables()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.dump_output"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.dump_output()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.minimal_output"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.minimal_output()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.output_filepath"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.output_filepath()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.tax_year"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.tax_year()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_decile_table"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_decile_table()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_empty_graph_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_empty_graph_file()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_graph_files"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_graph_files()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_output_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_output_file()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_sqldb_file()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_tables_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_tables_file()</span></code></a></li>
 </ul>
 </li>
@@ -504,7 +499,7 @@ document.write(`
 <h2>taxcalc.taxcalcio<a class="headerlink" href="#taxcalc-taxcalcio" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">taxcalc.taxcalcio.</span></span><span class="sig-name descname"><span class="pre">TaxCalcIO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tax_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assump</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">taxcalc.taxcalcio.</span></span><span class="sig-name descname"><span class="pre">TaxCalcIO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tax_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assump</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO" title="Link to this definition">#</a></dt>
 <dd><p>Constructor for the Tax-Calculator Input-Output class.</p>
 <p>TaxCalcIO class constructor call must be followed by init() call.</p>
 <dl class="field-list simple">
@@ -524,8 +519,6 @@ string is name of optional REFORM file(s).</p></li>
 <li><p><strong>assump</strong> (<em>None</em><em> or </em><em>string</em>) – None implies economic assumptions are standard assumptions,
 or string is name of optional ASSUMP file.</p></li>
 <li><p><strong>silent</strong> (<em>boolean</em>) – whether or not to suppress action messages.</p></li>
-<li><p><strong>outdir</strong> (<em>None</em><em> or </em><em>string</em>) – None implies output files written to current directory,
-or string is name of optional output directory</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -537,51 +530,27 @@ or string is name of optional output directory</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.analyze">
-<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">writing_output_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_tables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_graphs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_varset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dump</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_sqldb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.analyze" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">analyze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_tables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_graphs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dump</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_varlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.analyze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.analyze" title="Link to this definition">#</a></dt>
 <dd><p>Conduct tax analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>writing_output_file</strong> (<em>boolean</em>) – whether or not to generate and write output file</p></li>
 <li><p><strong>output_params</strong> (<em>boolean</em>) – whether or not to write baseline and reform policy parameter
 values to separate text files</p></li>
 <li><p><strong>output_tables</strong> (<em>boolean</em>) – whether or not to generate and write distributional tables
 to a text file</p></li>
 <li><p><strong>output_graphs</strong> (<em>boolean</em>) – whether or not to generate and write HTML graphs of average
 and marginal tax rates by income percentile</p></li>
-<li><p><strong>dump_varset</strong> (<em>set</em>) – custom set of variables to include in dump and sqldb output;
-None implies include all variables in dump and sqldb output</p></li>
-<li><p><strong>output_dump</strong> (<em>boolean</em>) – whether or not to replace standard output with all input and
-calculated variables using their Tax-Calculator names</p></li>
-<li><p><strong>output_sqldb</strong> (<em>boolean</em>) – whether or not to write SQLite3 database with two tables
-(baseline and reform) each containing same output as written
-by output_dump to a csv file</p></li>
+<li><p><strong>output_dump</strong> (<em>boolean</em>) – whether or not to write SQLite3 database with baseline and
+reform tables each containing the variables in dump_varlist.</p></li>
+<li><p><strong>dump_varlist</strong> (<em>list</em>) – list of variables to include in dumpdb output;
+list must include at least one variable.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Nothing</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.custom_dump_variables">
-<span class="sig-name descname"><span class="pre">custom_dump_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcdumpvars_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.custom_dump_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.custom_dump_variables" title="Link to this definition">#</a></dt>
-<dd><p>Return set of variable names extracted from tcdumpvars_str, which
-contains the contents of the tcdumpvars file in the current directory.
-Also, builds self.errmsg if any custom variables are not valid.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.dump_output">
-<span class="sig-name descname"><span class="pre">dump_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calcx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_varset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_inctax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_paytax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.dump_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.dump_output" title="Link to this definition">#</a></dt>
-<dd><p>Extract dump output and return it as Pandas DataFrame.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.minimal_output">
-<span class="sig-name descname"><span class="pre">minimal_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.minimal_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.minimal_output" title="Link to this definition">#</a></dt>
-<dd><p>Extract minimal output and return it as Pandas DataFrame.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -613,18 +582,6 @@ Also, builds self.errmsg if any custom variables are not valid.</p>
 <span class="sig-name descname"><span class="pre">write_graph_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_graph_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_graph_files" title="Link to this definition">#</a></dt>
 <dd><p>Write graphs to HTML files.
 All graphs contain same number of filing units in each quantile.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.write_output_file">
-<span class="sig-name descname"><span class="pre">write_output_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dump</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_varset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_ptax_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_itax_ref</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_output_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_output_file" title="Link to this definition">#</a></dt>
-<dd><p>Write output to CSV-formatted file.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file">
-<span class="sig-name descname"><span class="pre">write_sqldb_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dump_varset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_ptax_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_itax_ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_ptax_bas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtr_itax_bas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_sqldb_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file" title="Link to this definition">#</a></dt>
-<dd><p>Write dump output to SQLite3 database table dump.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -705,16 +662,11 @@ All graphs contain same number of filing units in each quantile.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc-taxcalcio">taxcalc.taxcalcio</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.analyze"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.analyze()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.custom_dump_variables"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.custom_dump_variables()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.dump_output"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.dump_output()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.minimal_output"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.minimal_output()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.output_filepath"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.output_filepath()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.tax_year"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.tax_year()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_decile_table"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_decile_table()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_empty_graph_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_empty_graph_file()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_graph_files"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_graph_files()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_output_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_output_file()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_sqldb_file()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_tables_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_tables_file()</span></code></a></li>
 </ul>
 </li>
