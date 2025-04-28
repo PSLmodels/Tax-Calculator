@@ -50,7 +50,7 @@ _IRS Form Location:_
 
 ##  `RECID`  
 **_Required Input Variable_**  
-_Description_: Unique numeric identifier for filing unit; appears as RECID variable in tc CLI minimal output  
+_Description_: Unique numeric identifier for filing unit  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
 _IRS Form Location:_  
@@ -788,7 +788,7 @@ _IRS Form Location:_
 
 
 ##  `s006`  
-_Description_: Filing unit sampling weight; appears as WEIGHT variable in tc CLI minimal output  
+_Description_: Filing unit sampling weight 
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
 _IRS Form Location:_  
