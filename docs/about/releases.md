@@ -4,6 +4,28 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2025-04-30 Release 4.6.0
+------------------------
+(last merged pull request is
+[#2893](https://github.com/PSLmodels/Tax-Calculator/pull/2893))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Several enhancements to Tax-Calculator CLI program, `tc`
+[PRs [#2886](https://github.com/PSLmodels/Tax-Calculator/pull/2886), [#2888](https://github.com/PSLmodels/Tax-Calculator/pull/2888), [#2889](https://github.com/PSLmodels/Tax-Calculator/pull/2889), [#2890](https://github.com/PSLmodels/Tax-Calculator/pull/2890), [#2891](https://github.com/PSLmodels/Tax-Calculator/pull/2891), and [#2893](https://github.com/PSLmodels/Tax-Calculator/pull/2893) by Martin Holmer]
+
+**Bug Fixes**
+- Update required `bokeh` version
+[[#2882](https://github.com/PSLmodels/Tax-Calculator/pull/2882) by Bodi Yang]
+- Make ACTC_c parameter be inflation indexed in the TCJA-extension reform
+[[#2883](https://github.com/PSLmodels/Tax-Calculator/pull/2883) by Martin Holmer]
+- Avoid `marshmallow` version 4.0.0 until `paramtools` is fixed
+[[#2885](https://github.com/PSLmodels/Tax-Calculator/pull/2885) by Martin Holmer]
+
+
 2025-03-11 Release 4.5.0
 ------------------------
 (last merged pull request is
