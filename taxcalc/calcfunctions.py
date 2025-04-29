@@ -2,6 +2,8 @@
 Tax-Calculator functions that calculate payroll and individual income taxes.
 
 These functions are imported into the Calculator class.
+
+Note: the parameter_indexing_CPI_offset parameter is no longer used.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle calcfunctions.py

@@ -62,15 +62,6 @@ class Policy(Parameters):
         'DependentCredit_before_CTC': 'is a removed parameter name',
         'FilerCredit_c': 'is a removed parameter name',
         'ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
-        # following parameter renamed in PR 2292 merged on 2019-04-15
-        "cpi_offset": (
-            "was renamed parameter_indexing_CPI_offset. "
-            "See documentation for change in usage."
-        ),
-        "CPI_offset": (
-            "was renamed parameter_indexing_CPI_offset. "
-            "See documentation for change in usage."
-        ),
         # following parameters renamed in PR 2345 merged on 2019-06-24
         'PT_excl_rt':
         'was renamed PT_qbid_rt in release 2.4.0',
@@ -170,8 +161,7 @@ class Policy(Parameters):
             vo["value"] for
             vo in self._data["parameter_indexing_CPI_offset"]["value"]
         ]
-        # policy_current_law.json should not specify any non-zero values
-        # for the parameter_indexing_CPI_offset parameter, so check this
+        # parameter_indexing_CPI_offset parameter is no longer used, so check:
         assert any(cpi_vals) is False, \
             'obsolete parameter_indexing_CPI_offset values must all be zero'
         syr = max(self.start_year, self._gfactors.first_year)
