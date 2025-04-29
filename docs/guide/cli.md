@@ -85,7 +85,7 @@ Census public-use files, the IRS-SOI Public Use File is
 proprietary. If you or your organization has paid IRS to use the PUF
 version being by Tax-Calculator, then it may be possible for us to
 share with you one of our PUF-derived samples: the 2011-based  `puf.csv`
-or the 2015-based `tmd.csv` (read {doc}`usage/data` for details).
+or the 2015-based `tmd.csv`, which are described in {doc}`../usage/data`.
 Otherwise, you have two choices.
 
 **First**, you can easily create with a text editor a CSV-formatted
@@ -131,11 +131,12 @@ variable names correspond to those expected by Tax-Calculator. The
 only required input variables are `RECID` (a unique filing-unit record
 identifier) and `MARS` (a positive-valued filing-status
 indicator). Other variables in the input file must have variable names
-that are listed in the [Input Variables](#input) section for them to
-affect the tax calculations. Any variable listed in Input Variables
-that is not in an input file is automatically set to zero for every
-filing unit. Variables in the input file that are not listed in Input
-Variables are ignored by Tax-Calculator.
+that are listed in the [Input
+Variables](https://taxcalc.pslmodels.org/guide/input_vars.html)
+section for them to affect the tax calculations. Any variable listed
+in Input Variables that is not in an input file is automatically set
+to zero for every filing unit. Variables in the input file that are
+not listed in Input Variables are ignored by Tax-Calculator.
 
 However, there are important data-preparation issues related to the
 fact that the payroll tax is a tax on individuals, not on income-tax
@@ -190,12 +191,12 @@ credit bonus for young children. Also, the universal basic income
 input variables.
 
 The name of your input data file is also relevant to how `tc` will
-behave. If your file name ends with "puf.csv" or "cps.csv", `tc` will
-automatically extrapolate your data from its base year to the year you
-specify for tax calculations to be calculated using built in growth
-factors, extrapolated weights, and other adjustment factors. If you
-are not using the "puf.csv" or "cps.csv" files produced by the TaxData
-project, it is likely that your data will not be compatible with these
+behave. If your file name ends with `cps.csv`, `puf.csv` or `tmd.csv`,
+`tc` will automatically extrapolate your data from its base year to
+the year you specify for tax calculations to be calculated using built
+in growth factors, extrapolated weights, and other adjustment
+factors. If you are not using the `cps.csv`, `puf.csv`, or `tmd.csv`
+input, it is likely that your data will not be compatible with these
 extrapolations and you should adopt filenames with alternative
 endings.
 
@@ -231,7 +232,7 @@ Execution time is 33.2 seconds
 
 The dump database contains 2020 income tax liabilities for each filing
 unit under both baseline and reform policy regimes.  The name of the
-dump database file is `cps-20-#-#-#.csv`.  Because we did not use the
+dump database file is `cps-20-#-#-#.db`.  Because we did not use the
 `--dumpvars` option, a minimal set of baseline/reform variables are
 included in the dump database.  
 
@@ -278,9 +279,11 @@ Notice that the dump output includes three relational database tables:
 values for variables that keep the same value when policy changes.
 The `baseline` and `reform` tables can contain variables in addition
 to `RECID` and `iitax` if the `--dumpvars` option is used.  For a
-complete list of input variables, see the [Input Variables](#input)
+complete list of input variables, see the [Input
+Variables](https://taxcalc.pslmodels.org/guide/input_vars.html)
 section. For a complete list of output variables, see the [Output
-Variables](#output) section.
+Variables](https://taxcalc.pslmodels.org/guide/output_vars.html)
+section.
 
 There are several advantages to using a database file for dump output:
 the database is much smaller than the equivalent CSV-formatted files,
@@ -496,7 +499,6 @@ Using this `tab.sql` script to tabulate the `cps-24-#-ref3-#.db`
 database produces these results in about 1.3 seconds:
 
 ```
-% sqlite3 cps-24-#-ref3-#.db < tab.sql
 % sqlite3 cps-24-#-ref3-#.db < tab.sql
 *** unweighted and weighted tax unit counts:
 raw_count  wgh_count
