@@ -2,12 +2,6 @@
 Tax-Calculator functions that calculate payroll and individual income taxes.
 
 These functions are imported into the Calculator class.
-
-Note: the parameter_indexing_CPI_offset policy parameter is the only
-policy parameter that does not appear here; it is used in the policy.py
-file to possibly adjust the price inflation rate used to index policy
-parameters (as would be done in a reform that introduces chained-CPI
-indexing).
 """
 # CODING-STYLE CHECKS:
 # pycodestyle calcfunctions.py

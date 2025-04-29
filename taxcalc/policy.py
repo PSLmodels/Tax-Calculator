@@ -172,7 +172,8 @@ class Policy(Parameters):
         ]
         # policy_current_law.json should not specify any non-zero values
         # for the parameter_indexing_CPI_offset parameter, so check this
-        assert any(cpi_vals) is False
+        assert any(cpi_vals) is False, \
+            'obsolete parameter_indexing_CPI_offset values must all be zero'
         syr = max(self.start_year, self._gfactors.first_year)
         self._inflation_rates = self._gfactors.price_inflation_rates(
             syr, self.end_year
