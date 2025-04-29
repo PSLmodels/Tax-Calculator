@@ -471,15 +471,6 @@ document.write(`
         <span class="s1">&#39;DependentCredit_before_CTC&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
         <span class="s1">&#39;FilerCredit_c&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
         <span class="s1">&#39;ALD_InvInc_ec_base_RyanBrady&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
-        <span class="c1"># following parameter renamed in PR 2292 merged on 2019-04-15</span>
-        <span class="s2">&quot;cpi_offset&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s2">&quot;was renamed parameter_indexing_CPI_offset. &quot;</span>
-            <span class="s2">&quot;See documentation for change in usage.&quot;</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;CPI_offset&quot;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s2">&quot;was renamed parameter_indexing_CPI_offset. &quot;</span>
-            <span class="s2">&quot;See documentation for change in usage.&quot;</span>
-        <span class="p">),</span>
         <span class="c1"># following parameters renamed in PR 2345 merged on 2019-06-24</span>
         <span class="s1">&#39;PT_excl_rt&#39;</span><span class="p">:</span>
         <span class="s1">&#39;was renamed PT_qbid_rt in release 2.4.0&#39;</span><span class="p">,</span>
@@ -590,9 +581,9 @@ document.write(`
             <span class="n">vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">for</span>
             <span class="n">vo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
         <span class="p">]</span>
-        <span class="c1"># policy_current_law.json should not specify any non-zero values</span>
-        <span class="c1"># for the parameter_indexing_CPI_offset parameter, so check this</span>
-        <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">cpi_vals</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span>
+        <span class="c1"># parameter_indexing_CPI_offset parameter is no longer used, so check:</span>
+        <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">cpi_vals</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">,</span> \
+            <span class="s1">&#39;obsolete parameter_indexing_CPI_offset values must all be zero&#39;</span>
         <span class="n">syr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">first_year</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">price_inflation_rates</span><span class="p">(</span>
             <span class="n">syr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span>
