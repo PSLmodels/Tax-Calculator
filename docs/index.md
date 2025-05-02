@@ -5,17 +5,14 @@ Tax-Calculator
 
 Tax-Calculator is an open-source microsimulation model for static analysis of
 USA federal income and payroll taxes.
-You can install it with [Anaconda](https://www.anaconda.com/products/individual)
-via:
-
-```
-conda update taxcalc
-```
-
-or with [PyPI](https://pypi.org/project/taxcalc/) via:
-
+You can install it with [PyPI](https://pypi.org/project/taxcalc/) via:
 ```
 pip install taxcalc
+```
+or with [Anaconda](https://www.anaconda.com/products/individual)
+via:
+```
+conda install conda-forge::taxcalc
 ```
 
 When using sample data that represent the USA population,
@@ -60,15 +57,12 @@ cross-model validation work with NBER's TAXSIM-35 model is described
 {doc}`4.6.0 (2025-04-30) <about/releases>`
 
 If you are already using Tax-Calculator, upgrade using the following command:
-
-```
-conda update conda-forge::taxcalc
-```
-
-or
-
 ```
 pip install --upgrade taxcalc
+```
+or
+```
+conda update conda-forge::taxcalc
 ```
 
 If you're a new user, read {doc}`usage/starting`.

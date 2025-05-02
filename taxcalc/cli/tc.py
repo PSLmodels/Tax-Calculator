@@ -66,14 +66,14 @@ def cli_tc_main():
     parser.add_argument('--baseline',
                         help=('BASELINE is name of optional JSON reform file. '
                               'A compound reform can be specified using 2+ '
-                              'file names separated by a plus (+) character. '
+                              'file names separated by plus (+) character(s). '
                               'No --baseline implies baseline policy is '
                               'current-law policy.'),
                         default=None)
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
                               'A compound reform can be specified using 2+ '
-                              'file names separated by a plus (+) character. '
+                              'file names separated by plus (+) character(s). '
                               'No --reform implies reform policy is '
                               'current-law policy).'),
                         default=None)
