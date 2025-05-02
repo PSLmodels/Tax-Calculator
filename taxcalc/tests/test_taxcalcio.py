@@ -484,14 +484,14 @@ def test_write_policy_param_files(reformfile1):
     tcio = TaxCalcIO(
         input_data=pd.read_csv(StringIO(RAWINPUT)),
         tax_year=taxyear,
-        baseline=None,
+        baseline=compound_reform,
         reform=compound_reform,
         assump=None,
     )
     assert not tcio.errmsg
     tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
               tax_year=taxyear,
-              baseline=None,
+              baseline=compound_reform,
               reform=compound_reform,
               assump=None,
               aging_input_data=False,
