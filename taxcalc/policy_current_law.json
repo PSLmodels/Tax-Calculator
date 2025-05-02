@@ -76,8 +76,8 @@
         }
     },
     "parameter_indexing_CPI_offset": {
-        "title": "OBSOLETE: Decimal offset ADDED to unchained CPI to get parameter indexing rate",
-        "description": "OBSOLETE policy parameter.",
+        "title": "Decimal offset added to chained CPI-U inflation rate to get policy parameter indexing rate",
+        "description": "Always zero in policy_current_law.json, but non-zero values are allowed in reforms.",
         "notes": "",
         "section_1": "Parameter Indexing",
         "section_2": "Offsets",
@@ -103,6 +103,10 @@
             },
             {
                 "year": 2017,
+                "value": 0.0
+            },
+            {
+                "year": 2018,
                 "value": 0.0
             }
         ],
