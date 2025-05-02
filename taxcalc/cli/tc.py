@@ -1,6 +1,6 @@
 """
 Command-line interface (CLI) to Tax-Calculator,
-which can be accessed as 'tc' from an installed taxcalc conda package.
+which can be accessed as 'tc' from an installed taxcalc package.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle tc.py
@@ -65,12 +65,14 @@ def cli_tc_main():
                         default=0)
     parser.add_argument('--baseline',
                         help=('BASELINE is name of optional JSON reform file. '
+                              'A compound reform can be specified using 2+ '
+                              'file names separated by a plus (+) character. '
                               'No --baseline implies baseline policy is '
                               'current-law policy.'),
                         default=None)
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
-                              'A compound reform can be specified using two '
+                              'A compound reform can be specified using 2+ '
                               'file names separated by a plus (+) character. '
                               'No --reform implies reform policy is '
                               'current-law policy).'),

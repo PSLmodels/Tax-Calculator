@@ -115,23 +115,37 @@ class TaxCalcIO():
         else:
             msg = 'INPUT is neither string nor Pandas DataFrame'
             self.errmsg += f'ERROR: {msg}\n'
-        # check name and existence of BASELINE file
+        # check name(s) and existence of BASELINE file(s)
         bas = '-x'
         if baseline is None:
+            self.specified_baseline = False
             bas = '-#'
         elif isinstance(baseline, str):
-            # remove any leading directory path from BASELINE filename
-            fname = os.path.basename(baseline)
-            # check if fname ends with ".json"
-            if fname.endswith('.json'):
-                bas = f'-{fname[:-5]}'
-            else:
-                msg = 'BASELINE file name does not end in .json'
-                self.errmsg += f'ERROR: {msg}\n'
-            # check existence of BASELINE file
-            if not os.path.isfile(baseline):
-                msg = 'BASELINE file could not be found'
-                self.errmsg += f'ERROR: {msg}\n'
+            self.specified_baseline = True
+            # split any compound baseline into list of simple reforms
+            basnames = []
+            baselines = baseline.split('+')
+            for bas in baselines:
+                # remove any leading directory path from bas filename
+                fname = os.path.basename(bas)
+                # check if fname ends with ".json"
+                if not fname.endswith('.json'):
+                    msg = f'{fname} does not end in .json'
+                    self.errmsg += f'ERROR: BASELINE file name {msg}\n'
+                # check existence of BASELINE file
+                if not os.path.isfile(bas):
+                    msg = f'{bas} could not be found'
+                    self.errmsg += f'ERROR: BASELINE file {msg}\n'
+                # add fname to list of basnames used in output file names
+                basnames.append(fname)
+            # create (possibly compound) baseline name for output file names
+            bas = '-'
+            num_basnames = 0
+            for basname in basnames:
+                num_basnames += 1
+                if num_basnames > 1:
+                    bas += '+'
+                bas += f'{basname[:-5]}'
         else:
             msg = 'TaxCalcIO.ctor: baseline is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
@@ -258,8 +272,12 @@ class TaxCalcIO():
             return
         # get assumption sub-dictionaries
         assumpdict = Calculator.read_json_param_objects(None, assump)
-        # get policy parameter dictionary from --baseline file
-        poldict_bas = Calculator.read_json_param_objects(baseline, None)
+        # get policy parameter dictionaries from --baseline file(s)
+        poldicts_bas = []
+        if self.specified_baseline:
+            for bas in baseline.split('+'):
+                pdict = Calculator.read_json_param_objects(bas, None)
+                poldicts_bas.append(pdict['policy'])
         # get policy parameter dictionaries from --reform file(s)
         poldicts_ref = []
         if self.specified_reform:
@@ -288,20 +306,29 @@ class TaxCalcIO():
         self.gf_reform = copy.deepcopy(gfactors_ref)
         # create Policy objects:
         # ... the baseline Policy object
-        pol_bas = Policy(
-            gfactors=gfactors_bas,
-            last_budget_year=last_b_year,
-        )
-        try:
-            pol_bas.implement_reform(
-                poldict_bas['policy'],
-                print_warnings=True,
-                raise_errors=False,
+        if self.specified_baseline:
+            pol_bas = Policy(
+                gfactors=gfactors_bas,
+                last_budget_year=last_b_year,
             )
-            for _, errors in pol_bas.parameter_errors.items():
-                self.errmsg += "\n".join(errors)
-        except paramtools.ValidationError as valerr_msg:
-            self.errmsg += str(valerr_msg)
+            for poldict in poldicts_bas:
+                try:
+                    pol_bas.implement_reform(
+                        poldict,
+                        print_warnings=True,
+                        raise_errors=False,
+                    )
+                    if self.errmsg:
+                        self.errmsg += "\n"
+                    for _, errors in pol_bas.parameter_errors.items():
+                        self.errmsg += "\n".join(errors)
+                except paramtools.ValidationError as valerr_msg:
+                    self.errmsg += str(valerr_msg)
+        else:
+            pol_bas = Policy(
+                gfactors=gfactors_bas,
+                last_budget_year=last_b_year,
+            )
         # ... the reform Policy object
         if self.specified_reform:
             pol_ref = Policy(
