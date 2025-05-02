@@ -524,23 +524,37 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;INPUT is neither string nor Pandas DataFrame&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ERROR: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="c1"># check name and existence of BASELINE file</span>
+        <span class="c1"># check name(s) and existence of BASELINE file(s)</span>
         <span class="n">bas</span> <span class="o">=</span> <span class="s1">&#39;-x&#39;</span>
         <span class="k">if</span> <span class="n">baseline</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specified_baseline</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">bas</span> <span class="o">=</span> <span class="s1">&#39;-#&#39;</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">baseline</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="c1"># remove any leading directory path from BASELINE filename</span>
-            <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">baseline</span><span class="p">)</span>
-            <span class="c1"># check if fname ends with &quot;.json&quot;</span>
-            <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
-                <span class="n">bas</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;-</span><span class="si">{</span><span class="n">fname</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;BASELINE file name does not end in .json&#39;</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ERROR: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="c1"># check existence of BASELINE file</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">baseline</span><span class="p">):</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;BASELINE file could not be found&#39;</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ERROR: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specified_baseline</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># split any compound baseline into list of simple reforms</span>
+            <span class="n">basnames</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">baselines</span> <span class="o">=</span> <span class="n">baseline</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">bas</span> <span class="ow">in</span> <span class="n">baselines</span><span class="p">:</span>
+                <span class="c1"># remove any leading directory path from bas filename</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">bas</span><span class="p">)</span>
+                <span class="c1"># check if fname ends with &quot;.json&quot;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1"> does not end in .json&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ERROR: BASELINE file name </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="c1"># check existence of BASELINE file</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">bas</span><span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bas</span><span class="si">}</span><span class="s1"> could not be found&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ERROR: BASELINE file </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="c1"># add fname to list of basnames used in output file names</span>
+                <span class="n">basnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="c1"># create (possibly compound) baseline name for output file names</span>
+            <span class="n">bas</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+            <span class="n">num_basnames</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">basname</span> <span class="ow">in</span> <span class="n">basnames</span><span class="p">:</span>
+                <span class="n">num_basnames</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">num_basnames</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">bas</span> <span class="o">+=</span> <span class="s1">&#39;+&#39;</span>
+                <span class="n">bas</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">basname</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;TaxCalcIO.ctor: baseline is neither None nor str&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ERROR: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -667,8 +681,12 @@ document.write(`
             <span class="k">return</span>
         <span class="c1"># get assumption sub-dictionaries</span>
         <span class="n">assumpdict</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">read_json_param_objects</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">assump</span><span class="p">)</span>
-        <span class="c1"># get policy parameter dictionary from --baseline file</span>
-        <span class="n">poldict_bas</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">read_json_param_objects</span><span class="p">(</span><span class="n">baseline</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># get policy parameter dictionaries from --baseline file(s)</span>
+        <span class="n">poldicts_bas</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_baseline</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bas</span> <span class="ow">in</span> <span class="n">baseline</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">):</span>
+                <span class="n">pdict</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">read_json_param_objects</span><span class="p">(</span><span class="n">bas</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">poldicts_bas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdict</span><span class="p">[</span><span class="s1">&#39;policy&#39;</span><span class="p">])</span>
         <span class="c1"># get policy parameter dictionaries from --reform file(s)</span>
         <span class="n">poldicts_ref</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span><span class="p">:</span>
@@ -697,20 +715,29 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">gf_reform</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">gfactors_ref</span><span class="p">)</span>
         <span class="c1"># create Policy objects:</span>
         <span class="c1"># ... the baseline Policy object</span>
-        <span class="n">pol_bas</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
-            <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_bas</span><span class="p">,</span>
-            <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">pol_bas</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span>
-                <span class="n">poldict_bas</span><span class="p">[</span><span class="s1">&#39;policy&#39;</span><span class="p">],</span>
-                <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">raise_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_baseline</span><span class="p">:</span>
+            <span class="n">pol_bas</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
+                <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_bas</span><span class="p">,</span>
+                <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">errors</span> <span class="ow">in</span> <span class="n">pol_bas</span><span class="o">.</span><span class="n">parameter_errors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">valerr_msg</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">valerr_msg</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">poldict</span> <span class="ow">in</span> <span class="n">poldicts_bas</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">pol_bas</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span>
+                        <span class="n">poldict</span><span class="p">,</span>
+                        <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">raise_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">errors</span> <span class="ow">in</span> <span class="n">pol_bas</span><span class="o">.</span><span class="n">parameter_errors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">valerr_msg</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">valerr_msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pol_bas</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
+                <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_bas</span><span class="p">,</span>
+                <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="c1"># ... the reform Policy object</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span><span class="p">:</span>
             <span class="n">pol_ref</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
