@@ -902,40 +902,36 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
         <span class="c1"># pylint: disable=too-many-branches,too-many-locals</span>
-        <span class="n">calc_base_calculated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">doing_calcs</span> <span class="o">=</span> <span class="n">output_tables</span> <span class="ow">or</span> <span class="n">output_graphs</span> <span class="ow">or</span> <span class="n">output_dump</span>
+        <span class="c1"># optionally write --params output to text files</span>
+        <span class="k">if</span> <span class="n">output_params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_policy_params_files</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">doing_calcs</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># do output calculations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">output_dump</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dump_varlist</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">dump_varlist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-            <span class="c1"># might need marginal tax rates</span>
+            <span class="c1"># might need marginal tax rates for dumpdb</span>
             <span class="p">(</span><span class="n">mtr_ptax_ref</span><span class="p">,</span> <span class="n">mtr_itax_ref</span><span class="p">,</span>
              <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                     <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-            <span class="n">calc_base_calculated</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="p">(</span><span class="n">mtr_ptax_bas</span><span class="p">,</span> <span class="n">mtr_itax_bas</span><span class="p">,</span>
              <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                     <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># definitely do not need marginal tax rates</span>
+            <span class="c1"># do not need marginal tax rates for dumpdb</span>
             <span class="n">mtr_ptax_ref</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">mtr_itax_ref</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">mtr_ptax_bas</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">mtr_itax_bas</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># optionally write --params output to text files</span>
-        <span class="k">if</span> <span class="n">output_params</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_policy_params_files</span><span class="p">()</span>
         <span class="c1"># optionally write --tables output to text file</span>
         <span class="k">if</span> <span class="n">output_tables</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">calc_base_calculated</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-                <span class="n">calc_base_calculated</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_tables_file</span><span class="p">()</span>
         <span class="c1"># optionally write --graphs output to HTML files</span>
         <span class="k">if</span> <span class="n">output_graphs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">calc_base_calculated</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-                <span class="n">calc_base_calculated</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_graph_files</span><span class="p">()</span>
         <span class="c1"># optionally write --dumpdb output to SQLite database file</span>
         <span class="k">if</span> <span class="n">output_dump</span><span class="p">:</span>
