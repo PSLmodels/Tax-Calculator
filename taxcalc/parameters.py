@@ -707,11 +707,6 @@ class Parameters(pt.Parameters):
         return self.end_year - self.start_year + 1
 
     @property
-    def parameter_warnings(self):
-        """Propery docstring"""
-        return self.errors or {}
-
-    @property
     def parameter_errors(self):
         """Propery docstring"""
         return self.errors or {}

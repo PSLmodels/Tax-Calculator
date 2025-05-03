@@ -485,13 +485,6 @@ class TaxCalcIO():
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-locals
-        if self.puf_input_data and self.calc_ref.reform_warnings:
-            print(  # pragma: no cover
-                'PARAMETER VALUE WARNING(S):  '
-                '(read documentation for each parameter)\n'
-                f'{self.calc_ref.reform_warnings}'
-                'CONTINUING WITH CALCULATIONS...'
-            )
         calc_base_calculated = False
         self.calc_ref.calc_all()
         if output_dump:
