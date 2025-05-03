@@ -902,13 +902,6 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
         <span class="c1"># pylint: disable=too-many-branches,too-many-locals</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">puf_input_data</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="o">.</span><span class="n">reform_warnings</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
-                <span class="s1">&#39;PARAMETER VALUE WARNING(S):  &#39;</span>
-                <span class="s1">&#39;(read documentation for each parameter)</span><span class="se">\n</span><span class="s1">&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="o">.</span><span class="n">reform_warnings</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="s1">&#39;CONTINUING WITH CALCULATIONS...&#39;</span>
-            <span class="p">)</span>
         <span class="n">calc_base_calculated</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">output_dump</span><span class="p">:</span>
