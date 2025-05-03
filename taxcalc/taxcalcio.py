@@ -485,40 +485,36 @@ class TaxCalcIO():
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-locals
-        calc_base_calculated = False
+        doing_calcs = output_tables or output_graphs or output_dump
+        # optionally write --params output to text files
+        if output_params:
+            self.write_policy_params_files()
+        if not doing_calcs:
+            return
+        # do output calculations
+        self.calc_bas.calc_all()
         self.calc_ref.calc_all()
         if output_dump:
             assert isinstance(dump_varlist, list)
             assert len(dump_varlist) > 0
-            # might need marginal tax rates
+            # might need marginal tax rates for dumpdb
             (mtr_ptax_ref, mtr_itax_ref,
              _) = self.calc_ref.mtr(wrt_full_compensation=False,
                                     calc_all_already_called=True)
-            self.calc_bas.calc_all()
-            calc_base_calculated = True
             (mtr_ptax_bas, mtr_itax_bas,
              _) = self.calc_bas.mtr(wrt_full_compensation=False,
                                     calc_all_already_called=True)
         else:
-            # definitely do not need marginal tax rates
+            # do not need marginal tax rates for dumpdb
             mtr_ptax_ref = None
             mtr_itax_ref = None
             mtr_ptax_bas = None
             mtr_itax_bas = None
-        # optionally write --params output to text files
-        if output_params:
-            self.write_policy_params_files()
         # optionally write --tables output to text file
         if output_tables:
-            if not calc_base_calculated:
-                self.calc_bas.calc_all()
-                calc_base_calculated = True
             self.write_tables_file()
         # optionally write --graphs output to HTML files
         if output_graphs:
-            if not calc_base_calculated:
-                self.calc_bas.calc_all()
-                calc_base_calculated = True
             self.write_graph_files()
         # optionally write --dumpdb output to SQLite database file
         if output_dump:
