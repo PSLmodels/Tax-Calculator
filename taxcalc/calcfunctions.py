@@ -3,11 +3,7 @@ Tax-Calculator functions that calculate payroll and individual income taxes.
 
 These functions are imported into the Calculator class.
 
-Note: the parameter_indexing_CPI_offset policy parameter is the only
-policy parameter that does not appear here; it is used in the policy.py
-file to possibly adjust the price inflation rate used to index policy
-parameters (as would be done in a reform that introduces chained-CPI
-indexing).
+Note: the parameter_indexing_CPI_offset parameter is no longer used.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle calcfunctions.py
@@ -2059,7 +2055,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     e62900: float
         Alternative Minimum Tax foreign tax credit from Form 6251
     e00700: float
-        Schedule C business net profit/loss for filing unit
+        Taxable refunds of state and local income taxes
     dwks10: float
         Sum of dwks6 + dwks9
     age_head: int

@@ -57,10 +57,6 @@ class TaxCalcIO():
     silent: boolean
         whether or not to suppress action messages.
 
-    outdir: None or string
-        None implies output files written to current directory,
-        or string is name of optional output directory
-
     Returns
     -------
     class instance: TaxCalcIO
@@ -68,7 +64,7 @@ class TaxCalcIO():
     # pylint: disable=too-many-instance-attributes
 
     def __init__(self, input_data, tax_year, baseline, reform, assump,
-                 silent=True, outdir=None):
+                 silent=True):
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-statements,too-many-locals
         self.silent = silent
@@ -119,23 +115,37 @@ class TaxCalcIO():
         else:
             msg = 'INPUT is neither string nor Pandas DataFrame'
             self.errmsg += f'ERROR: {msg}\n'
-        # check name and existence of BASELINE file
+        # check name(s) and existence of BASELINE file(s)
         bas = '-x'
         if baseline is None:
+            self.specified_baseline = False
             bas = '-#'
         elif isinstance(baseline, str):
-            # remove any leading directory path from BASELINE filename
-            fname = os.path.basename(baseline)
-            # check if fname ends with ".json"
-            if fname.endswith('.json'):
-                bas = f'-{fname[:-5]}'
-            else:
-                msg = 'BASELINE file name does not end in .json'
-                self.errmsg += f'ERROR: {msg}\n'
-            # check existence of BASELINE file
-            if not os.path.isfile(baseline):
-                msg = 'BASELINE file could not be found'
-                self.errmsg += f'ERROR: {msg}\n'
+            self.specified_baseline = True
+            # split any compound baseline into list of simple reforms
+            basnames = []
+            baselines = baseline.split('+')
+            for bas in baselines:
+                # remove any leading directory path from bas filename
+                fname = os.path.basename(bas)
+                # check if fname ends with ".json"
+                if not fname.endswith('.json'):
+                    msg = f'{fname} does not end in .json'
+                    self.errmsg += f'ERROR: BASELINE file name {msg}\n'
+                # check existence of BASELINE file
+                if not os.path.isfile(bas):
+                    msg = f'{bas} could not be found'
+                    self.errmsg += f'ERROR: BASELINE file {msg}\n'
+                # add fname to list of basnames used in output file names
+                basnames.append(fname)
+            # create (possibly compound) baseline name for output file names
+            bas = '-'
+            num_basnames = 0
+            for basname in basnames:
+                num_basnames += 1
+                if num_basnames > 1:
+                    bas += '+'
+                bas += f'{basname[:-5]}'
         else:
             msg = 'TaxCalcIO.ctor: baseline is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
@@ -193,44 +203,22 @@ class TaxCalcIO():
         else:
             msg = 'TaxCalcIO.ctor: assump is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
-        # check name and existence of OUTDIR
-        if outdir is None:
-            valid_outdir = True
-        elif isinstance(outdir, str):
-            # check existence of OUTDIR
-            if os.path.isdir(outdir):
-                valid_outdir = True
-            else:
-                valid_outdir = False
-                msg = 'OUTDIR could not be found'
-                self.errmsg += f'ERROR: {msg}\n'
-        else:
-            valid_outdir = False
-            msg = 'TaxCalcIO.ctor: outdir is neither None nor str'
-            self.errmsg += f'ERROR: {msg}\n'
         # create OUTPUT file name and delete any existing output files
-        output_filename = f'{inp}{bas}{ref}{asm}.csv'
-        if outdir is None:
-            self._output_filename = output_filename
-            delete_old_files = True
-        elif valid_outdir:
-            self._output_filename = os.path.join(outdir, output_filename)
-            delete_old_files = True
-        else:
-            delete_old_files = False
-        if delete_old_files:
-            delete_file(self._output_filename)
-            delete_file(self._output_filename.replace('.csv', '.db'))
-            delete_file(self._output_filename.replace('.csv', '-doc.text'))
-            delete_file(self._output_filename.replace('.csv', '-tab.text'))
-            delete_file(self._output_filename.replace('.csv', '-atr.html'))
-            delete_file(self._output_filename.replace('.csv', '-mtr.html'))
-            delete_file(self._output_filename.replace('.csv', '-pch.html'))
+        self.output_filename = f'{inp}{bas}{ref}{asm}.xxx'
+        extensions = [
+            '-params.bas',
+            '-params.ref',
+            '-tables.text',
+            '-atr.html',
+            '-mtr.html',
+            '-pch.html',
+            '.db',
+        ]
+        for ext in extensions:
+            delete_file(self.output_filename.replace('.xxx', ext))
         # initialize variables whose values are set in init method
-        self.calc = None
-        self.calc_base = None
-        self.param_dict = None
-        self.policy_dicts = []
+        self.calc_ref = None
+        self.calc_bas = None
 
     def init(self, input_data, tax_year, baseline, reform, assump,
              aging_input_data, exact_calculations):
@@ -255,13 +243,13 @@ class TaxCalcIO():
         self.errmsg = ''
         # instantiate base and reform GrowFactors objects
         if self.tmd_input_data:
-            gfactors_base = GrowFactors(self.tmd_gfactor)  # pragma: no cover
+            gfactors_bas = GrowFactors(self.tmd_gfactor)  # pragma: no cover
             gfactors_ref = GrowFactors(self.tmd_gfactor)  # pragma: no cover
         else:
-            gfactors_base = GrowFactors()
+            gfactors_bas = GrowFactors()
             gfactors_ref = GrowFactors()
         # check tax_year validity
-        max_tax_year = gfactors_base.last_year
+        max_tax_year = gfactors_bas.last_year
         if tax_year > max_tax_year:
             msg = f'TAXYEAR={tax_year} is greater than {max_tax_year}'
             self.errmsg += f'ERROR: {msg}\n'
@@ -282,35 +270,34 @@ class TaxCalcIO():
         # tax_year out of valid range means cannot proceed with calculations
         if self.errmsg:
             return
-        # get policy parameter dictionary from --baseline file
-        basedict = Calculator.read_json_param_objects(baseline, None)
         # get assumption sub-dictionaries
-        paramdict = Calculator.read_json_param_objects(None, assump)
+        assumpdict = Calculator.read_json_param_objects(None, assump)
+        # get policy parameter dictionaries from --baseline file(s)
+        poldicts_bas = []
+        if self.specified_baseline:
+            for bas in baseline.split('+'):
+                pdict = Calculator.read_json_param_objects(bas, None)
+                poldicts_bas.append(pdict['policy'])
         # get policy parameter dictionaries from --reform file(s)
-        policydicts = []
+        poldicts_ref = []
         if self.specified_reform:
-            reforms = reform.split('+')
-            for ref in reforms:
+            for ref in reform.split('+'):
                 pdict = Calculator.read_json_param_objects(ref, None)
-                policydicts.append(pdict['policy'])
-            paramdict['policy'] = policydicts[0]
-        # remember parameters for reform documentation
-        self.param_dict = paramdict
-        self.policy_dicts = policydicts
+                poldicts_ref.append(pdict['policy'])
         # set last_b_year
         last_b_year = max(tax_year, Policy.LAST_BUDGET_YEAR)
         # create gdiff_baseline object
         gdiff_baseline = GrowDiff(last_budget_year=last_b_year)
         try:
-            gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
+            gdiff_baseline.update_growdiff(assumpdict['growdiff_baseline'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += str(valerr_msg)
-        # apply gdiff_baseline to gfactor_base
-        gdiff_baseline.apply_to(gfactors_base)
+        # apply gdiff_baseline to gfactor_bas
+        gdiff_baseline.apply_to(gfactors_bas)
         # specify gdiff_response object
         gdiff_response = GrowDiff(last_budget_year=last_b_year)
         try:
-            gdiff_response.update_growdiff(paramdict['growdiff_response'])
+            gdiff_response.update_growdiff(assumpdict['growdiff_response'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += str(valerr_msg)
         # apply gdiff_baseline and gdiff_response to gfactor_ref
@@ -319,57 +306,79 @@ class TaxCalcIO():
         self.gf_reform = copy.deepcopy(gfactors_ref)
         # create Policy objects:
         # ... the baseline Policy object
-        base = Policy(gfactors=gfactors_base, last_budget_year=last_b_year)
-        try:
-            base.implement_reform(basedict['policy'],
-                                  print_warnings=True,
-                                  raise_errors=False)
-            for _, errors in base.parameter_errors.items():
-                self.errmsg += "\n".join(errors)
-        except paramtools.ValidationError as valerr_msg:
-            self.errmsg += str(valerr_msg)
-        # ... the reform Policy object
-        if self.specified_reform:
-            pol = Policy(gfactors=gfactors_ref, last_budget_year=last_b_year)
-            for poldict in policydicts:
+        if self.specified_baseline:
+            pol_bas = Policy(
+                gfactors=gfactors_bas,
+                last_budget_year=last_b_year,
+            )
+            for poldict in poldicts_bas:
                 try:
-                    pol.implement_reform(poldict,
-                                         print_warnings=True,
-                                         raise_errors=False)
+                    pol_bas.implement_reform(
+                        poldict,
+                        print_warnings=True,
+                        raise_errors=False,
+                    )
                     if self.errmsg:
                         self.errmsg += "\n"
-                    for _, errors in pol.parameter_errors.items():
+                    for _, errors in pol_bas.parameter_errors.items():
                         self.errmsg += "\n".join(errors)
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += str(valerr_msg)
         else:
-            pol = Policy(gfactors=gfactors_base, last_budget_year=last_b_year)
+            pol_bas = Policy(
+                gfactors=gfactors_bas,
+                last_budget_year=last_b_year,
+            )
+        # ... the reform Policy object
+        if self.specified_reform:
+            pol_ref = Policy(
+                gfactors=gfactors_ref,
+                last_budget_year=last_b_year,
+            )
+            for poldict in poldicts_ref:
+                try:
+                    pol_ref.implement_reform(
+                        poldict,
+                        print_warnings=True,
+                        raise_errors=False,
+                    )
+                    if self.errmsg:
+                        self.errmsg += "\n"
+                    for _, errors in pol_ref.parameter_errors.items():
+                        self.errmsg += "\n".join(errors)
+                except paramtools.ValidationError as valerr_msg:
+                    self.errmsg += str(valerr_msg)
+        else:
+            pol_ref = Policy(
+                gfactors=gfactors_bas,
+                last_budget_year=last_b_year,
+            )
         # create Consumption object
         con = Consumption(last_budget_year=last_b_year)
         try:
-            con.update_consumption(paramdict['consumption'])
+            con.update_consumption(assumpdict['consumption'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += str(valerr_msg)
         # any errors imply cannot proceed with calculations
         if self.errmsg:
             return
         # set policy to tax_year
-        pol.set_year(tax_year)
-        base.set_year(tax_year)
+        pol_ref.set_year(tax_year)
+        pol_bas.set_year(tax_year)
         # read input file contents into Records objects
         if aging_input_data:
             if self.cps_input_data:
-                recs = Records.cps_constructor(
+                recs_ref = Records.cps_constructor(
                     gfactors=gfactors_ref,
-                    exact_calculations=exact_calculations
+                    exact_calculations=exact_calculations,
                 )
-                recs_base = Records.cps_constructor(
-                    gfactors=gfactors_base,
-                    exact_calculations=exact_calculations
+                recs_bas = Records.cps_constructor(
+                    gfactors=gfactors_bas,
+                    exact_calculations=exact_calculations,
                 )
             elif self.tmd_input_data:  # pragma: no cover
                 wghts = pd.read_csv(self.tmd_weights)
-                recs = Records(
+                recs_ref = Records(
                     data=pd.read_csv(input_data),
                     start_year=Records.TMDCSV_YEAR,
                     weights=wghts,
@@ -378,99 +387,81 @@ class TaxCalcIO():
                     exact_calculations=exact_calculations,
                     weights_scale=1.0,
                 )
-                recs_base = Records(
+                recs_bas = Records(
                     data=pd.read_csv(input_data),
                     start_year=Records.TMDCSV_YEAR,
                     weights=wghts,
-                    gfactors=gfactors_base,
+                    gfactors=gfactors_bas,
                     adjust_ratios=None,
                     exact_calculations=exact_calculations,
                     weights_scale=1.0,
                 )
             else:  # if not {cps|tmd}_input_data but aging_input_data: puf
-                recs = Records(
+                recs_ref = Records(
                     data=input_data,
                     gfactors=gfactors_ref,
                     exact_calculations=exact_calculations
                 )
-                recs_base = Records(
+                recs_bas = Records(
                     data=input_data,
-                    gfactors=gfactors_base,
+                    gfactors=gfactors_bas,
                     exact_calculations=exact_calculations
                 )
         else:  # input_data are raw data that are not being aged
-            recs = Records(data=input_data,
-                           start_year=tax_year,
-                           gfactors=None,
-                           weights=None,
-                           adjust_ratios=None,
-                           exact_calculations=exact_calculations)
-            recs_base = copy.deepcopy(recs)
+            recs_ref = Records(
+                data=input_data,
+                start_year=tax_year,
+                gfactors=None,
+                weights=None,
+                adjust_ratios=None,
+                exact_calculations=exact_calculations,
+            )
+            recs_bas = copy.deepcopy(recs_ref)
         # create Calculator objects
-        self.calc = Calculator(policy=pol, records=recs,
-                               verbose=(not self.silent),
-                               consumption=con,
-                               sync_years=aging_input_data)
-        self.calc_base = Calculator(policy=base, records=recs_base,
-                                    verbose=False,
-                                    consumption=con,
-                                    sync_years=aging_input_data)
-
-    def custom_dump_variables(self, tcdumpvars_str):
-        """
-        Return set of variable names extracted from tcdumpvars_str, which
-        contains the contents of the tcdumpvars file in the current directory.
-        Also, builds self.errmsg if any custom variables are not valid.
-        """
-        assert isinstance(tcdumpvars_str, str)
-        self.errmsg = ''
-        # change some common delimiter characters into spaces
-        dump_vars_str = tcdumpvars_str.replace(',', ' ')
-        dump_vars_str = dump_vars_str.replace(';', ' ')
-        dump_vars_str = dump_vars_str.replace('|', ' ')
-        # split dump_vars_str into a list of dump variables
-        dump_vars_list = dump_vars_str.split()
-        # check that all dump_vars_list items are valid
-        recs_vinfo = Records(data=None)  # contains records VARINFO only
-        valid_set = recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS
-        for var in dump_vars_list:
-            if var not in valid_set:
-                msg = f'invalid variable name in tcdumpvars file: {var}'
-                self.errmsg += f'ERROR: {msg}\n'
-        # add essential variables even if not on custom list
-        if 'RECID' not in dump_vars_list:
-            dump_vars_list.append('RECID')
-        if 'FLPDYR' not in dump_vars_list:
-            dump_vars_list.append('FLPDYR')
-        # convert list into a set and return
-        return set(dump_vars_list)
+        self.calc_ref = Calculator(
+            policy=pol_ref,
+            records=recs_ref,
+            verbose=(not self.silent),
+            consumption=con,
+            sync_years=aging_input_data,
+        )
+        self.calc_bas = Calculator(
+            policy=pol_bas,
+            records=recs_bas,
+            verbose=False,
+            consumption=con,
+            sync_years=aging_input_data,
+        )
 
     def tax_year(self):
         """
         Return calendar year for which TaxCalcIO calculations are being done.
         """
-        return self.calc.current_year
+        return self.calc_ref.current_year
 
     def output_filepath(self):
         """
         Return full path to output file named in TaxCalcIO constructor.
         """
         dirpath = os.path.abspath(os.path.dirname(__file__))
-        return os.path.join(dirpath, self._output_filename)
+        return os.path.join(dirpath, self.output_filename)
 
-    def analyze(self, writing_output_file=False,
-                output_tables=False,
-                output_graphs=False,
-                dump_varset=None,
-                output_dump=False,
-                output_sqldb=False):
+    def analyze(
+            self,
+            output_params=False,
+            output_tables=False,
+            output_graphs=False,
+            output_dump=False,
+            dump_varlist=None,
+    ):
         """
         Conduct tax analysis.
 
         Parameters
         ----------
-        writing_output_file: boolean
-           whether or not to generate and write output file
+        output_params: boolean
+           whether or not to write baseline and reform policy parameter
+           values to separate text files
 
         output_tables: boolean
            whether or not to generate and write distributional tables
@@ -480,18 +471,13 @@ class TaxCalcIO():
            whether or not to generate and write HTML graphs of average
            and marginal tax rates by income percentile
 
-        dump_varset: set
-           custom set of variables to include in dump and sqldb output;
-           None implies include all variables in dump and sqldb output
-
         output_dump: boolean
-           whether or not to replace standard output with all input and
-           calculated variables using their Tax-Calculator names
+           whether or not to write SQLite3 database with baseline and
+           reform tables each containing the variables in dump_varlist.
 
-        output_sqldb: boolean
-           whether or not to write SQLite3 database with two tables
-           (baseline and reform) each containing same output as written
-           by output_dump to a csv file
+        dump_varlist: list
+           list of variables to include in dumpdb output;
+           list must include at least one variable.
 
         Returns
         -------
@@ -499,139 +485,67 @@ class TaxCalcIO():
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-locals
-        if self.puf_input_data and self.calc.reform_warnings:
-            print(  # pragma: no cover
-                'PARAMETER VALUE WARNING(S):  '
-                '(read documentation for each parameter)\n'
-                f'{self.calc.reform_warnings}'
-                'CONTINUING WITH CALCULATIONS...'
-            )
-        calc_base_calculated = False
-        self.calc.calc_all()
-        if output_dump or output_sqldb:
-            # might need marginal tax rates
-            (mtr_paytax, mtr_inctax,
-             _) = self.calc.mtr(wrt_full_compensation=False,
-                                calc_all_already_called=True)
-            self.calc_base.calc_all()
-            calc_base_calculated = True
-            (mtr_paytax_base, mtr_inctax_base,
-             _) = self.calc_base.mtr(wrt_full_compensation=False,
-                                     calc_all_already_called=True)
+        doing_calcs = output_tables or output_graphs or output_dump
+        # optionally write --params output to text files
+        if output_params:
+            self.write_policy_params_files()
+        if not doing_calcs:
+            return
+        # do output calculations
+        self.calc_bas.calc_all()
+        self.calc_ref.calc_all()
+        if output_dump:
+            assert isinstance(dump_varlist, list)
+            assert len(dump_varlist) > 0
+            # might need marginal tax rates for dumpdb
+            (mtr_ptax_ref, mtr_itax_ref,
+             _) = self.calc_ref.mtr(wrt_full_compensation=False,
+                                    calc_all_already_called=True)
+            (mtr_ptax_bas, mtr_itax_bas,
+             _) = self.calc_bas.mtr(wrt_full_compensation=False,
+                                    calc_all_already_called=True)
         else:
-            # definitely do not need marginal tax rates
-            mtr_paytax = None
-            mtr_inctax = None
-            mtr_paytax_base = None
-            mtr_inctax_base = None
-        # extract output if writing_output_file
-        if writing_output_file:
-            self.write_output_file(output_dump, dump_varset,
-                                   mtr_paytax, mtr_inctax)
-            self.write_doc_file()
-        # optionally write --sqldb output to SQLite3 database
-        if output_sqldb:
-            self.write_sqldb_file(
-                dump_varset, mtr_paytax, mtr_inctax,
-                mtr_paytax_base, mtr_inctax_base
-            )
+            # do not need marginal tax rates for dumpdb
+            mtr_ptax_ref = None
+            mtr_itax_ref = None
+            mtr_ptax_bas = None
+            mtr_itax_bas = None
         # optionally write --tables output to text file
         if output_tables:
-            if not calc_base_calculated:
-                self.calc_base.calc_all()
-                calc_base_calculated = True
             self.write_tables_file()
         # optionally write --graphs output to HTML files
         if output_graphs:
-            if not calc_base_calculated:
-                self.calc_base.calc_all()
-                calc_base_calculated = True
             self.write_graph_files()
-
-    def write_output_file(self, output_dump, dump_varset,
-                          mtr_paytax, mtr_inctax):
-        """
-        Write output to CSV-formatted file.
-        """
+        # optionally write --dumpdb output to SQLite database file
         if output_dump:
-            outdf = self.dump_output(
-                self.calc, dump_varset, mtr_inctax, mtr_paytax
-            )
-            column_order = sorted(outdf.columns)
-            # place RECID at start of column_order list
-            assert 'RECID' in column_order, 'RECID not in dump output list'
-            column_order.remove('RECID')
-            column_order.insert(0, 'RECID')
-            weight_vname = 's006'
-        else:
-            outdf = self.minimal_output()
-            column_order = outdf.columns
-            weight_vname = 'WEIGHT'
-        assert len(outdf.index) == self.calc.array_len
-        if self.tmd_input_data:  # pragma: no cover
-            if weight_vname in outdf:
-                weights = outdf[weight_vname].round(5)
-            outdf = outdf.round(2)
-            if weight_vname in outdf:
-                outdf[weight_vname] = weights
-            outdf.to_csv(self._output_filename, columns=column_order,
-                         index=False)
-        else:
-            outdf.to_csv(self._output_filename, columns=column_order,
-                         index=False, float_format='%.2f')
-        del outdf
-        gc.collect()
-        if not self.silent:
-            print(  # pragma: no cover
-                f'Write tax-unit output to file {self._output_filename}'
+            self.write_dumpdb_file(
+                dump_varlist,
+                mtr_ptax_ref, mtr_itax_ref,
+                mtr_ptax_bas, mtr_itax_bas,
             )
 
-    def write_doc_file(self):
+    def write_policy_params_files(self):
         """
-        Write reform documentation to text file.
+        Write baseline and reform policy parameter values to separate files.
         """
-        if len(self.policy_dicts) <= 1:
-            doc = Calculator.reform_documentation(
-                self.param_dict, self.gf_reform
-            )
-        else:
-            doc = Calculator.reform_documentation(
-                self.param_dict, self.gf_reform, self.policy_dicts[1:]
-            )
-        doc_fname = self._output_filename.replace('.csv', '-doc.text')
-        with open(doc_fname, 'w', encoding='utf-8') as dfile:
-            dfile.write(doc)
+        param_names = Policy.parameter_list()
+        fname = self.output_filename.replace('.xxx', '-params.bas')
+        with open(fname, 'w', encoding='utf-8') as pfile:
+            for pname in param_names:
+                pval = self.calc_bas.policy_param(pname)
+                pfile.write(f'{pname} {pval}\n')
         if not self.silent:
             print(  # pragma: no cover
-                f'Write reform documentation to file {doc_fname}'
+                f'Write baseline policy parameter values to file {fname}'
             )
-
-    def write_sqldb_file(self, dump_varset, mtr_paytax, mtr_inctax,
-                         mtr_paytax_base, mtr_inctax_base):
-        """
-        Write dump output to SQLite3 database table dump.
-        """
-        # pylint: disable=too-many-arguments,too-many-positional-arguments
-        db_fname = self._output_filename.replace('.csv', '.db')
-        dbcon = sqlite3.connect(db_fname)
-        # write baseline table
-        outdf = self.dump_output(
-            self.calc_base, dump_varset, mtr_inctax_base, mtr_paytax_base
-        )
-        assert len(outdf.index) == self.calc.array_len
-        outdf.to_sql('baseline', dbcon, if_exists='replace', index=False)
-        # write reform table
-        outdf = self.dump_output(
-            self.calc, dump_varset, mtr_inctax, mtr_paytax
-        )
-        assert len(outdf.index) == self.calc.array_len
-        outdf.to_sql('reform', dbcon, if_exists='replace', index=False)
-        dbcon.close()
-        del outdf
-        gc.collect()
+        fname = self.output_filename.replace('.xxx', '-params.ref')
+        with open(fname, 'w', encoding='utf-8') as pfile:
+            for pname in param_names:
+                pval = self.calc_ref.policy_param(pname)
+                pfile.write(f'{pname} {pval}\n')
         if not self.silent:
             print(  # pragma: no cover
-                f'Write tax-unit output to sqlite3 database file {db_fname}'
+                f'Write reform policy parameter values to file {fname}'
             )
 
     def write_tables_file(self):
@@ -639,9 +553,9 @@ class TaxCalcIO():
         Write tables to text file.
         """
         # pylint: disable=too-many-locals
-        tab_fname = self._output_filename.replace('.csv', '-tab.text')
+        tab_fname = self.output_filename.replace('.xxx', '-tables.text')
         # skip tables if there are not some positive weights
-        if self.calc_base.total_weight() <= 0.:
+        if self.calc_bas.total_weight() <= 0.:
             with open(tab_fname, 'w', encoding='utf-8') as tfile:
                 msg = 'No tables because sum of weights is not positive\n'
                 tfile.write(msg)
@@ -650,16 +564,16 @@ class TaxCalcIO():
         # - weights don't change with reform
         # - expanded_income may change, so always use baseline expanded income
         nontax_vars = ['s006', 'expanded_income']
-        nontax = [self.calc_base.array(var) for var in nontax_vars]
+        nontax = [self.calc_bas.array(var) for var in nontax_vars]
         # create list of results for tax variables from reform Calculator
         tax_vars = ['iitax', 'payrolltax', 'lumpsum_tax', 'combined']
-        reform = [self.calc.array(var) for var in tax_vars]
+        reform = [self.calc_ref.array(var) for var in tax_vars]
         # create DataFrame with tax distribution under reform
         dist = nontax + reform  # using expanded_income under baseline policy
         all_vars = nontax_vars + tax_vars
         distdf = pd.DataFrame(data=np.column_stack(dist), columns=all_vars)
         # create DataFrame with tax differences (reform - baseline)
-        base = [self.calc_base.array(var) for var in tax_vars]
+        base = [self.calc_bas.array(var) for var in tax_vars]
         change = [(reform[idx] - base[idx]) for idx in range(0, len(tax_vars))]
         diff = nontax + change  # using expanded_income under baseline policy
         diffdf = pd.DataFrame(data=np.column_stack(diff), columns=all_vars)
@@ -757,32 +671,32 @@ class TaxCalcIO():
         Write graphs to HTML files.
         All graphs contain same number of filing units in each quantile.
         """
-        pos_wght_sum = self.calc.total_weight() > 0.0
+        pos_wght_sum = self.calc_ref.total_weight() > 0.0
         fig = None
         # percentage-aftertax-income-change graph
-        pch_fname = self._output_filename.replace('.csv', '-pch.html')
+        pch_fname = self.output_filename.replace('.xxx', '-pch.html')
         pch_title = 'PCH by Income Percentile'
         if pos_wght_sum:
-            fig = self.calc_base.pch_graph(self.calc, pop_quantiles=False)
+            fig = self.calc_bas.pch_graph(self.calc_ref, pop_quantiles=False)
             write_graph_file(fig, pch_fname, pch_title)
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(pch_fname, pch_title, reason)
         # average-tax-rate graph
-        atr_fname = self._output_filename.replace('.csv', '-atr.html')
+        atr_fname = self.output_filename.replace('.xxx', '-atr.html')
         atr_title = 'ATR by Income Percentile'
         if pos_wght_sum:
-            fig = self.calc_base.atr_graph(self.calc, pop_quantiles=False)
+            fig = self.calc_bas.atr_graph(self.calc_ref, pop_quantiles=False)
             write_graph_file(fig, atr_fname, atr_title)
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(atr_fname, atr_title, reason)
         # marginal-tax-rate graph
-        mtr_fname = self._output_filename.replace('.csv', '-mtr.html')
+        mtr_fname = self.output_filename.replace('.xxx', '-mtr.html')
         mtr_title = 'MTR by Income Percentile'
         if pos_wght_sum:
-            fig = self.calc_base.mtr_graph(
-                self.calc,
+            fig = self.calc_bas.mtr_graph(
+                self.calc_ref,
                 alt_e00200p_text='Taxpayer Earnings',
                 pop_quantiles=False
             )
@@ -814,45 +728,108 @@ class TaxCalcIO():
         with open(fname, 'w', encoding='utf-8') as gfile:
             gfile.write(txt)
 
-    def minimal_output(self):
-        """
-        Extract minimal output and return it as Pandas DataFrame.
-        """
-        varlist = ['RECID', 'YEAR', 'WEIGHT', 'INCTAX', 'LSTAX', 'PAYTAX']
-        odict = {}
-        scalc = self.calc
-        odict['RECID'] = scalc.array('RECID')  # id for tax filing unit
-        odict['YEAR'] = self.tax_year()  # tax calculation year
-        odict['WEIGHT'] = scalc.array('s006')  # sample weight
-        odict['INCTAX'] = scalc.array('iitax')  # federal income taxes
-        odict['LSTAX'] = scalc.array('lumpsum_tax')  # lump-sum tax
-        odict['PAYTAX'] = scalc.array('payrolltax')  # payroll taxes (ee+er)
-        odf = pd.DataFrame(data=odict, columns=varlist)
-        return odf
+    BASE_DUMPVARS = [
+        'RECID',
+        's006',
+        'data_source',
+        'XTOT',
+        'MARS',
+        'expanded_income',
+    ]
+    MINIMAL_DUMPVARS = [
+        'RECID',
+        'iitax',
+    ]
+    MTR_DUMPVARS = [
+        'mtr_itax',
+        'mtr_ptax',
+    ]
 
-    def dump_output(self, calcx, dump_varset, mtr_inctax, mtr_paytax):
+    def dump_variables(self, dumpvars_str):
         """
-        Extract dump output and return it as Pandas DataFrame.
+        Return set of variable names extracted from dumpvars_str, plus
+        minimal baseline/reform variables even if not in dumpvars_str.
+        Also, builds self.errmsg if any specified variables are not valid.
         """
-        recs_vinfo = Records(data=None)  # contains only Records VARINFO
-        if dump_varset is None:
-            varset = recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS
-        else:
-            varset = dump_varset
-        # create and return dump output DataFrame
-        odf = pd.DataFrame()
-        for varname in varset:
-            vardata = calcx.array(varname)
-            if varname in recs_vinfo.INTEGER_VARS:
-                odf[varname] = vardata
-            else:  # specify precision that can handle small TMD area weights
-                odf[varname] = vardata.round(5)
-            odf = odf.copy()
-        # specify mtr values in percentage terms
-        if 'mtr_inctax' in varset:
-            odf['mtr_inctax'] = (mtr_inctax * 100).round(2)
-        if 'mtr_paytax' in varset:
-            odf['mtr_paytax'] = (mtr_paytax * 100).round(2)
-        # specify tax calculation year
-        odf['FLPDYR'] = self.tax_year()
-        return odf
+        assert isinstance(dumpvars_str, str)
+        self.errmsg = ''
+        # change some common non-space delimiter characters into spaces
+        dumpvars_str = dumpvars_str.replace(',', ' ')
+        dumpvars_str = dumpvars_str.replace(';', ' ')
+        dumpvars_str = dumpvars_str.replace('|', ' ')
+        # split dumpvars_str into a set of dump variables
+        dumpvars = dumpvars_str.split()
+        # check that all dumpvars items are valid
+        recs_vinfo = Records(data=None)  # contains records VARINFO only
+        valid_set = recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS
+        for var in dumpvars:
+            if var not in valid_set and var not in TaxCalcIO.MTR_DUMPVARS:
+                msg = f'invalid variable name {var} in DUMPVARS file'
+                self.errmsg += f'ERROR: {msg}\n'
+        if self.errmsg:
+            return []
+        # construct variable list
+        dumpvars_list = TaxCalcIO.MINIMAL_DUMPVARS
+        for var in dumpvars:
+            if var not in dumpvars_list and var not in TaxCalcIO.BASE_DUMPVARS:
+                dumpvars_list.append(var)
+        return dumpvars_list
+
+    def write_dumpdb_file(
+            self,
+            dump_varlist,
+            mtr_ptax_ref, mtr_itax_ref,
+            mtr_ptax_bas, mtr_itax_bas,
+    ):
+        """
+        Write dump output to SQLite database file.
+        """
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        def dump_output(calcx, dumpvars, mtr_itax, mtr_ptax):
+            """
+            Extract dump output from calcx and return it as Pandas DataFrame.
+            """
+            odf = pd.DataFrame()
+            for var in dumpvars:
+                if var in TaxCalcIO.MTR_DUMPVARS:
+                    if var == 'mtr_itax':
+                        odf[var] = mtr_itax
+                    elif var == 'mtr_ptax':
+                        odf[var] = mtr_ptax
+                else:
+                    odf[var] = calcx.array(var)
+            return odf
+        # begin main logic
+        assert isinstance(dump_varlist, list)
+        assert len(dump_varlist) > 0
+        db_fname = self.output_filename.replace('.xxx', '.db')
+        dbcon = sqlite3.connect(db_fname)
+        # write base table
+        outdf = pd.DataFrame()
+        for var in TaxCalcIO.BASE_DUMPVARS:
+            outdf[var] = self.calc_bas.array(var)
+        outdf['income_group'] = 0
+        assert len(outdf.index) == self.calc_bas.array_len
+        outdf.to_sql('base', dbcon, index=False)
+        del outdf
+        # write baseline table
+        outdf = dump_output(
+            self.calc_bas, dump_varlist, mtr_itax_bas, mtr_ptax_bas,
+        )
+        assert len(outdf.index) == self.calc_bas.array_len
+        outdf.to_sql('baseline', dbcon, index=False)
+        del outdf
+        # write reform table
+        outdf = dump_output(
+            self.calc_ref, dump_varlist, mtr_itax_ref, mtr_ptax_ref,
+        )
+        assert len(outdf.index) == self.calc_ref.array_len
+        outdf.to_sql('reform', dbcon, index=False)
+        del outdf
+        dbcon.close()
+        del dbcon
+        gc.collect()
+        if not self.silent:
+            print(  # pragma: no cover
+                f'Write dump output to sqlite3 database file {db_fname}'
+            )

@@ -1,6 +1,6 @@
 """
 Command-line interface (CLI) to Tax-Calculator,
-which can be accessed as 'tc' from an installed taxcalc conda package.
+which can be accessed as 'tc' from an installed taxcalc package.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle tc.py
@@ -9,6 +9,7 @@ which can be accessed as 'tc' from an installed taxcalc conda package.
 import os
 import sys
 import time
+import sqlite3
 import argparse
 import difflib
 import taxcalc as tc
@@ -28,25 +29,28 @@ def cli_tc_main():
     start_time = time.time()
 
     # parse command-line arguments:
-    usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
+    usage_str = 'tc INPUT TAXYEAR {}{}{}{}'.format(
         '[--help]\n',
-        ('          '
-         '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP]\n'),
-        ('          '
-         '[--exact] [--tables] [--graphs]\n'),
-        ('          '
-         '[--dump] [--dvars DVARS] [--sqldb] [--outdir OUTDIR]\n'),
-        ('          '
-         '[--silent] [--test] [--version]'))
+        (
+            '          '
+            '[--baseline BASELINE] [--reform REFORM] '
+            '[--assump ASSUMP] [--exact]\n'
+        ),
+        (
+            '          '
+            '[--params] [--tables] [--graphs] '
+            '[--dumpdb] [--dumpvars DUMPVARS]\n'
+        ),
+        (
+            '          '
+            '[--silent] [--test] [--version] [--usage]'
+        )
+    )
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
-        description=('Writes to a file the federal income and payroll tax '
-                     'OUTPUT for each filing unit specified in the INPUT '
-                     'file, with the OUTPUT computed from the INPUT for the '
-                     'TAXYEAR using Tax-Calculator. The OUTPUT file is a '
-                     'CSV-formatted file that contains tax information for '
-                     'each INPUT filing unit under the reform(s).'))
+        description=('Writes several output files computed from the INPUT '
+                     'for the TAXYEAR using Tax-Calculator.'))
     parser.add_argument('INPUT', nargs='?',
                         help=('INPUT is name of CSV-formatted file that '
                               'contains for each filing unit variables used '
@@ -61,14 +65,16 @@ def cli_tc_main():
                         default=0)
     parser.add_argument('--baseline',
                         help=('BASELINE is name of optional JSON reform file. '
+                              'A compound reform can be specified using 2+ '
+                              'file names separated by plus (+) character(s). '
                               'No --baseline implies baseline policy is '
                               'current-law policy.'),
                         default=None)
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
-                              'A compound reform can be specified using two '
-                              'file names separated by a plus (+) character. '
-                              'No --reform implies a "null" reform (that is, '
+                              'A compound reform can be specified using 2+ '
+                              'file names separated by plus (+) character(s). '
+                              'No --reform implies reform policy is '
                               'current-law policy).'),
                         default=None)
     parser.add_argument('--assump',
@@ -82,6 +88,12 @@ def cli_tc_main():
                               'complicate marginal-tax-rate calculations.'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--params',
+                        help=('optional flag that causes policy parameter '
+                              'values for baseline and reform to be written '
+                              'to separate text files.'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('--tables',
                         help=('optional flag that causes distributional '
                               'tables to be written to a text file.'),
@@ -92,37 +104,23 @@ def cli_tc_main():
                               'to HTML files for viewing in browser.'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--dump',
-                        help=('optional flag that causes OUTPUT to contain '
-                              'all INPUT variables (extrapolated to TAXYEAR) '
-                              'and all calculated tax variables for the '
-                              'reform, where all the variables are named '
-                              'using their internal Tax-Calculator names. '
-                              'No --dump option implies OUTPUT contains '
-                              'minimal tax output for the reform.  NOTE: '
-                              'use the --dvars option to point to a file '
-                              'containing a custom set of dump variables.'
-                              ''),
+    parser.add_argument('--dumpdb',
+                        help=('optional flag that causes TAXYEAR variable '
+                              'values for each tax-unit under both '
+                              'baseline and reform policies to be written '
+                              'to a SQLite database (where the variables '
+                              'included in the database are controlled by '
+                              'the --dumpvars option).'),
                         default=False,
                         action="store_true")
-    parser.add_argument('--dvars',
-                        help=('DVARS is name of optional file containing a '
+    parser.add_argument('--dumpvars',
+                        help=('DUMPVARS is name of optional file containing a '
                               'space-delimited list of variables to include '
-                              'in a partial dump OUTPUT file.  No --dvars '
-                              'implies a full dump containing all variables.'),
-                        default=None)
-    parser.add_argument('--sqldb',
-                        help=('optional flag that writes SQLite database '
-                              'with two tables (baseline and reform) each '
-                              'containing same output variables as '
-                              'produced by --dump option.'),
-                        default=False,
-                        action="store_true")
-    parser.add_argument('--outdir',
-                        help=('OUTDIR is name of optional output directory '
-                              'in which all output files are written. '
-                              'No --outdir implies output files are written '
-                              'in the current directory.'),
+                              'in the dump database.  No --dumpvars '
+                              'implies a minimal set of variables.  Valid '
+                              'variable names include all variables in the '
+                              'records_variables.json file plus mtr_itax and '
+                              'mtr_ptax (MTRs wrt taxpayer earnings).'),
                         default=None)
     parser.add_argument('--silent',
                         help=('optional flag that suppresses messages about '
@@ -132,12 +130,17 @@ def cli_tc_main():
     parser.add_argument('--test',
                         help=('optional flag that conducts installation '
                               'test, writes test result to stdout, '
-                              'and quits.'),
+                              'and quits leaving the test-related files.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--version',
                         help=('optional flag that writes Tax-Calculator '
                               'release version to stdout and quits.'),
+                        default=False,
+                        action="store_true")
+    parser.add_argument('--usage',
+                        help=('optional flag that writes short usage '
+                              'reminder to stdout and quits.'),
                         default=False,
                         action="store_true")
     args = parser.parse_args()
@@ -157,19 +160,28 @@ def cli_tc_main():
         pyver = f'Python 3.{pyv[1]}'
         sys.stdout.write(f'Tax-Calculator {tc.__version__} on {pyver}\n')
         return 0
+    # show short usage reminder and quit if --usage option is specified
+    if args.usage:
+        sys.stdout.write(f'USAGE: {usage_str}\n')
+        return 0
     # write test input and expected output files if --test option is specified
     if args.test:
-        _write_expected_test_output()
+        _write_test_files()
         inputfn = TEST_INPUT_FILENAME
         taxyear = TEST_TAXYEAR
+        args.dumpdb = True
     else:
         inputfn = args.INPUT
         taxyear = args.TAXYEAR
     # instantiate TaxCalcIO object and do tax analysis
-    tcio = tc.TaxCalcIO(input_data=inputfn, tax_year=taxyear,
-                        baseline=args.baseline,
-                        reform=args.reform, assump=args.assump,
-                        silent=args.silent, outdir=args.outdir)
+    tcio = tc.TaxCalcIO(
+        input_data=inputfn,
+        tax_year=taxyear,
+        baseline=args.baseline,
+        reform=args.reform,
+        assump=args.assump,
+        silent=args.silent,
+    )
     if tcio.errmsg:
         if tcio.errmsg.endswith('\n'):
             sys.stderr.write(tcio.errmsg)
@@ -182,11 +194,14 @@ def cli_tc_main():
         inputfn.endswith('cps.csv') or
         inputfn.endswith('tmd.csv')
     )
-    tcio.init(input_data=inputfn, tax_year=taxyear,
-              baseline=args.baseline,
-              reform=args.reform, assump=args.assump,
-              aging_input_data=aging,
-              exact_calculations=args.exact)
+    tcio.init(
+        input_data=inputfn,
+        tax_year=taxyear,
+        baseline=args.baseline,
+        reform=args.reform, assump=args.assump,
+        aging_input_data=aging,
+        exact_calculations=args.exact,
+    )
     if tcio.errmsg:
         if tcio.errmsg.endswith('\n'):
             sys.stderr.write(tcio.errmsg)
@@ -194,31 +209,39 @@ def cli_tc_main():
             sys.stderr.write(tcio.errmsg + '\n')
         sys.stderr.write('USAGE: tc --help\n')
         return 1
-    dumpvar_set = None
-    if args.dvars and (args.dump or args.sqldb):
-        if os.path.exists(args.dvars):
-            with open(args.dvars, 'r', encoding='utf-8') as dfile:
-                dump_vars_str = dfile.read()
-            dumpvar_set = tcio.custom_dump_variables(dump_vars_str)
-            if tcio.errmsg:
-                if tcio.errmsg.endswith('\n'):
-                    sys.stderr.write(tcio.errmsg)
-                else:
-                    sys.stderr.write(tcio.errmsg + '\n')
-                sys.stderr.write('USAGE: tc --help\n')
-                return 1
+    # check args.dumpdb and args.dumpvars consistency
+    if not args.dumpdb and args.dumpvars:
+        msg = 'ERROR: DUMPVARS file specified without --dumpdb option\n'
+        sys.stderr.write(msg)
+        sys.stderr.write('USAGE: tc --help\n')
+        return 1
+    # construct dumpvars set from dumpvars_str
+    dumpvars_str = ''
+    if args.dumpvars:
+        if os.path.exists(args.dumpvars):
+            with open(args.dumpvars, 'r', encoding='utf-8') as dfile:
+                dumpvars_str = dfile.read()
         else:
-            msg = 'ERROR: DVARS file {} does not exist\n'
-            sys.stderr.write(msg.format(args.dvars))
+            msg = f'ERROR: DUMPVARS file {args.dumpvars} does not exist\n'
+            sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
             return 1
+    dumpvars_list = tcio.dump_variables(dumpvars_str)
+    if tcio.errmsg:
+        if tcio.errmsg.endswith('\n'):
+            sys.stderr.write(tcio.errmsg)
+        else:
+            sys.stderr.write(tcio.errmsg + '\n')
+            sys.stderr.write('USAGE: tc --help\n')
+        return 1
     # conduct tax analysis
-    tcio.analyze(writing_output_file=True,
-                 output_tables=args.tables,
-                 output_graphs=args.graphs,
-                 dump_varset=dumpvar_set,
-                 output_dump=args.dump,
-                 output_sqldb=args.sqldb)
+    tcio.analyze(
+        output_params=args.params,
+        output_tables=args.tables,
+        output_graphs=args.graphs,
+        output_dump=args.dumpdb,
+        dump_varlist=dumpvars_list,
+    )
     # compare test output with expected test output if --test option specified
     if args.test:
         retcode = _compare_test_output_files()
@@ -231,38 +254,95 @@ def cli_tc_main():
 # end of cli_tc_main function code
 
 
-EXPECTED_TEST_OUTPUT_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-out.csv'
-ACTUAL_TEST_OUTPUT_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.csv'
+TEST_INPUT_DATA = (
+    'RECID,MARS,XTOT,EIC,e00200,e00200p,e00200s,p23250,e18400,e19800,s006\n'
+    '1,       2,   3,  1, 40000,  40000,      0,     0,  3000,  4000, 1e7\n'
+    '2,       2,   3,  1,200000, 200000,      0,     0, 15000, 20000, 1e7\n'
+)
+EXPECTED_TEST_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}.exp'
+EXPECTED_TEST_OUTPUT = (
+    'id|itax\n'
+    '1|131.88\n'
+    '2|28879.00\n'
+)
+TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.db'
+TEST_SQLITE_QUERY = """
+SELECT
+  RECID           AS id,
+  ROUND(iitax, 2) AS itax
+FROM baseline;
+"""
+ACTUAL_TEST_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}.act'
+TEST_TABULATE_FILENAME = 'test-tabulate.sql'
+TEST_TABULATE_SQLCODE = (
+    f'-- USAGE: sqlite3 {TEST_DUMPDB_FILENAME} < {TEST_TABULATE_FILENAME}\n'
+    '\n'
+    '-- sepecify base.income_group values\n'
+    'UPDATE base SET income_group =\n'
+    '  CASE  -- specify the income_group brackets as desired\n'
+    '    WHEN expanded_income <   0.0   THEN 0\n'
+    '    WHEN expanded_income <  50.0e3 THEN 1\n'
+    '    WHEN expanded_income < 100.0e3 THEN 2\n'
+    '    WHEN expanded_income < 500.0e3 THEN 3\n'
+    '    WHEN expanded_income <   1.0e6 THEN 4\n'
+    '    ELSE                                5\n'
+    '  END;\n'
+    '\n'
+    '-- tabulate baseline and reform iitax for joint filers by income_group\n'
+    '.separator "\t"\n'
+    '.headers on\n'
+    'SELECT\n'
+    '  income_group                     AS g,\n'
+    '  COUNT(*)                         AS units,\n'
+    '  ROUND(SUM(b.iitax*s006)*1e-9, 3) AS b_iitax,\n'
+    '  ROUND(SUM(r.iitax*s006)*1e-9, 3) AS r_iitax\n'
+    'FROM base JOIN baseline AS b USING(RECID) JOIN reform AS r USING(RECID)\n'
+    'WHERE MARS == 2\n'
+    'GROUP BY income_group;\n'
+    '.headers off\n'
+    'SELECT\n'
+    "  'A'                              AS g,\n"
+    '  COUNT(*)                         AS units,\n'
+    '  ROUND(SUM(b.iitax*s006)*1e-9, 3) AS b_iitax,\n'
+    '  ROUND(SUM(r.iitax*s006)*1e-9, 3) AS r_iitax\n'
+    'FROM base JOIN baseline AS b USING(RECID) JOIN reform AS r USING(RECID)\n'
+    'WHERE MARS == 2;\n'
+    '\n'
+    '-- Documentation on the sqlite3 CLI program is available at\n'
+    '-- https://sqlite.org/cli.html\n'
+)
 
 
-def _write_expected_test_output():
+def _write_test_files():
     """
     Private function that writes tc --test input and expected output files.
     """
-    input_data = (
-        'RECID,MARS,XTOT,EIC,e00200,e00200p,e00200s,p23250,e18400,e19800\n'
-        '1,       2,   3,  1, 40000,  40000,      0,     0,  3000,  4000\n'
-        '2,       2,   3,  1,200000, 200000,      0,     0, 15000, 20000\n'
-    )
     with open(TEST_INPUT_FILENAME, 'w', encoding='utf-8') as ifile:
-        ifile.write(input_data)
-    expected_output_data = (
-        'RECID,YEAR,WEIGHT,INCTAX,LSTAX,PAYTAX\n'
-        '1,2018,0.00,131.88,0.00,6120.00\n'
-        '2,2018,0.00,28879.00,0.00,21721.60\n'
-    )
-    with open(EXPECTED_TEST_OUTPUT_FILENAME, 'w', encoding='utf-8') as ofile:
-        ofile.write(expected_output_data)
+        ifile.write(TEST_INPUT_DATA)
+    with open(EXPECTED_TEST_FILENAME, 'w', encoding='utf-8') as ofile:
+        ofile.write(EXPECTED_TEST_OUTPUT)
+    with open(TEST_TABULATE_FILENAME, 'w', encoding='utf-8') as tfile:
+        tfile.write(TEST_TABULATE_SQLCODE)
 
 
 def _compare_test_output_files():
     """
-    Private function that compares expected and actual tc --test output files;
+    Private function that compares expected and actual tc --test results;
     returns 0 if pass test, otherwise returns 1.
     """
-    with open(EXPECTED_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8') as efile:
+    # use TEST_SQLITE_QUERY to extract results from TEST_DUMPDB_FILENAME
+    with sqlite3.connect(TEST_DUMPDB_FILENAME) as connection:
+        cursor = connection.cursor()
+        cursor.execute(TEST_SQLITE_QUERY)
+        results = cursor.fetchall()
+        with open(ACTUAL_TEST_FILENAME, 'w', encoding='utf-8') as afile:
+            afile.write('id|itax\n')
+            for row in results:
+                afile.write(f'{row[0]}|{row[1]:.2f}\n')
+    # compare results in ACTUAL_TEST_FILENAME and in EXPECTED_TEST_FILENAME
+    with open(EXPECTED_TEST_FILENAME, 'r', encoding='utf-8') as efile:
         explines = efile.readlines()
-    with open(ACTUAL_TEST_OUTPUT_FILENAME, 'r', encoding='utf-8') as afile:
+    with open(ACTUAL_TEST_FILENAME, 'r', encoding='utf-8') as afile:
         actlines = afile.readlines()
     if ''.join(explines) == ''.join(actlines):
         sys.stdout.write('PASSED TEST\n')
@@ -271,8 +351,8 @@ def _compare_test_output_files():
         retcode = 1
         sys.stdout.write('FAILED TEST\n')
         diff = difflib.unified_diff(explines, actlines,
-                                    fromfile=EXPECTED_TEST_OUTPUT_FILENAME,
-                                    tofile=ACTUAL_TEST_OUTPUT_FILENAME, n=0)
+                                    fromfile=EXPECTED_TEST_FILENAME,
+                                    tofile=ACTUAL_TEST_FILENAME, n=0)
         sys.stdout.writelines(diff)
     return retcode
 

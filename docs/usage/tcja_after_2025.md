@@ -79,8 +79,8 @@ tc z.csv 2026 --exact --tables --reform x.json
 
 The tables would be in the `z-26-#-x-#-tab.text` output file generated
 by this `tc` run.  If you want to do custom tabulations of the micro
-output data, use the `--dump`, `--dvars`, and `--sqldb` options as
-explained by the `tc --help` documentation.
+output data, use the `--dumpdb` and `--dumpvars` options as explained
+by the `tc --help` documentation.
 
 To analyze your reform relative to a reform that extends all TCJA
 temporary provisions beyond 2025, you would execute this command:
@@ -122,9 +122,6 @@ changes or whenever new historical values of policy parameters are
 added to the `policy_current_law.json` file thereby changing the
 `Policy.LAST_KNOWN_YEAR`.
 
-The 4.0.0 version of Tax-Calculator incorporates the February 2024 CBO
-economic projection and contains historical tax policy parameter values
-through 2022.  Future versions of Tax-Calculator that use historical
-policy parameter values for 2023 and 2024 or use the February 2025 CBO
-economic projection will cause the `extend_tcja.py` script to generate
-somewhat different 2026 parameter values in the `ext.json` file.
+Beginning with the 4.5.0 version, Tax-Calculator incorporates the
+January 2025 CBO economic projection and contains historical tax
+policy parameter values through 2025.

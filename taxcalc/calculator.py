@@ -305,11 +305,11 @@ class Calculator():
         return self.__consumption.benval_params()
 
     @property
-    def reform_warnings(self):
+    def reform_errors(self):
         """
-        Calculator class embedded Policy object's parameter_warnings.
+        Calculator class embedded Policy object's parameter_errors.
         """
-        return self.__policy.parameter_warnings
+        return self.__policy.parameter_errors
 
     @property
     def current_year(self):

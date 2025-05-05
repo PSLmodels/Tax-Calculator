@@ -76,9 +76,9 @@
         }
     },
     "parameter_indexing_CPI_offset": {
-        "title": "Decimal offset ADDED to unchained CPI to get parameter indexing rate",
-        "description": "Values are zero before 2017; reforms that introduce indexing with chained CPI would have values around -0.0025 beginning in the year before the first year policy parameters will have values computed with chained CPI.",
-        "notes": "See April 2013 CBO report entitled 'What Would Be the Effect on the Deficit of Using the Chained CPI to Index Benefit Programs and the Tax Code?', which includes this: 'The chained CPI grows more slowly than the traditional CPI does: an average of about 0.25 percentage points more slowly per year over the past decade.' <https://www.cbo.gov/publication/44089>",
+        "title": "Decimal offset added to chained CPI-U inflation rate to get policy parameter indexing rate",
+        "description": "Always zero in policy_current_law.json, but non-zero values are allowed in reforms.",
+        "notes": "",
         "section_1": "Parameter Indexing",
         "section_2": "Offsets",
         "indexable": false,
@@ -103,6 +103,10 @@
             },
             {
                 "year": 2017,
+                "value": 0.0
+            },
+            {
+                "year": 2018,
                 "value": 0.0
             }
         ],
