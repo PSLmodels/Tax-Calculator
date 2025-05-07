@@ -747,7 +747,7 @@ class TaxCalcIO():
 
     def dump_variables(self, dumpvars_str):
         """
-        Return set of variable names extracted from dumpvars_str, plus
+        Return list of variable names extracted from dumpvars_str, plus
         minimal baseline/reform variables even if not in dumpvars_str.
         Also, builds self.errmsg if any specified variables are not valid.
         """

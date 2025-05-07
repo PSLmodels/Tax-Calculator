@@ -30,7 +30,7 @@ def cli_tc_main():
 
     # parse command-line arguments:
     usage_str = 'tc INPUT TAXYEAR {}{}{}{}'.format(
-        '[--help]\n',
+        '[--help] [--numyears N]\n',
         (
             '          '
             '[--baseline BASELINE] [--reform REFORM] '
@@ -63,6 +63,15 @@ def cli_tc_main():
                               'are computed.'),
                         type=int,
                         default=0)
+    parser.add_argument('--numyears', metavar='N',
+                        help=('N is an integer indicating for how many '
+                              'years taxes are calculated. No --numyears '
+                              'implies calculations are done only for '
+                              'TAXYEAR. N greater than one implies output '
+                              'is written to separate files for each year '
+                              'beginning with TAXYEAR.'),
+                        type=int,
+                        default=1)
     parser.add_argument('--baseline',
                         help=('BASELINE is name of optional JSON reform file. '
                               'A compound reform can be specified using 2+ '
@@ -169,10 +178,19 @@ def cli_tc_main():
         _write_test_files()
         inputfn = TEST_INPUT_FILENAME
         taxyear = TEST_TAXYEAR
+        numyears = 1
         args.dumpdb = True
     else:
         inputfn = args.INPUT
         taxyear = args.TAXYEAR
+        numyears = args.numyears
+    # check numyears value
+    if numyears < 1:
+        msg = 'ERROR: --numyears parameter N is less than one\n'
+        sys.stderr.write(msg)
+        sys.stderr.write('USAGE: tc --help\n')
+        return 1
+    # specify if aging input data
     aging = (
         inputfn.endswith('puf.csv') or
         inputfn.endswith('cps.csv') or
@@ -195,9 +213,9 @@ def cli_tc_main():
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
             return 1
-
-    for xyear in range(0, 10):
-        # initialize TaxCalcIO object for taxyear+xyear
+    # do calculations for each year
+    for xyear in range(0, numyears):
+        # ... initialize TaxCalcIO object for taxyear+xyear
         tcio = tc.TaxCalcIO(
             input_data=inputfn,
             tax_year=taxyear + xyear,
@@ -229,7 +247,7 @@ def cli_tc_main():
                 sys.stderr.write(tcio.errmsg + '\n')
             sys.stderr.write('USAGE: tc --help\n')
             return 1
-        # conduct tax analysis
+        # ... conduct tax analysis for taxyear+xyear
         dumpvars_list = tcio.dump_variables(dumpvars_str)
         if tcio.errmsg:
             if tcio.errmsg.endswith('\n'):
@@ -245,7 +263,6 @@ def cli_tc_main():
             output_dump=args.dumpdb,
             dump_varlist=dumpvars_list,
         )
-
     # compare test output with expected test output if --test option specified
     if args.test:
         retcode = _compare_test_output_files()
