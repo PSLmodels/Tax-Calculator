@@ -173,49 +173,18 @@ def cli_tc_main():
     else:
         inputfn = args.INPUT
         taxyear = args.TAXYEAR
-    # instantiate TaxCalcIO object and do tax analysis
-    tcio = tc.TaxCalcIO(
-        input_data=inputfn,
-        tax_year=taxyear,
-        baseline=args.baseline,
-        reform=args.reform,
-        assump=args.assump,
-        silent=args.silent,
-    )
-    if tcio.errmsg:
-        if tcio.errmsg.endswith('\n'):
-            sys.stderr.write(tcio.errmsg)
-        else:
-            sys.stderr.write(tcio.errmsg + '\n')
-        sys.stderr.write('USAGE: tc --help\n')
-        return 1
     aging = (
         inputfn.endswith('puf.csv') or
         inputfn.endswith('cps.csv') or
         inputfn.endswith('tmd.csv')
     )
-    tcio.init(
-        input_data=inputfn,
-        tax_year=taxyear,
-        baseline=args.baseline,
-        reform=args.reform, assump=args.assump,
-        aging_input_data=aging,
-        exact_calculations=args.exact,
-    )
-    if tcio.errmsg:
-        if tcio.errmsg.endswith('\n'):
-            sys.stderr.write(tcio.errmsg)
-        else:
-            sys.stderr.write(tcio.errmsg + '\n')
-        sys.stderr.write('USAGE: tc --help\n')
-        return 1
     # check args.dumpdb and args.dumpvars consistency
     if not args.dumpdb and args.dumpvars:
         msg = 'ERROR: DUMPVARS file specified without --dumpdb option\n'
         sys.stderr.write(msg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1
-    # construct dumpvars set from dumpvars_str
+    # specify dumpvars_str from args.dumpvars file
     dumpvars_str = ''
     if args.dumpvars:
         if os.path.exists(args.dumpvars):
@@ -226,22 +195,57 @@ def cli_tc_main():
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
             return 1
-    dumpvars_list = tcio.dump_variables(dumpvars_str)
-    if tcio.errmsg:
-        if tcio.errmsg.endswith('\n'):
-            sys.stderr.write(tcio.errmsg)
-        else:
-            sys.stderr.write(tcio.errmsg + '\n')
+
+    for xyear in range(0, 10):
+        # initialize TaxCalcIO object for taxyear+xyear
+        tcio = tc.TaxCalcIO(
+            input_data=inputfn,
+            tax_year=taxyear + xyear,
+            baseline=args.baseline,
+            reform=args.reform,
+            assump=args.assump,
+            silent=args.silent,
+        )
+        if tcio.errmsg:
+            if tcio.errmsg.endswith('\n'):
+                sys.stderr.write(tcio.errmsg)
+            else:
+                sys.stderr.write(tcio.errmsg + '\n')
             sys.stderr.write('USAGE: tc --help\n')
-        return 1
-    # conduct tax analysis
-    tcio.analyze(
-        output_params=args.params,
-        output_tables=args.tables,
-        output_graphs=args.graphs,
-        output_dump=args.dumpdb,
-        dump_varlist=dumpvars_list,
-    )
+            return 1
+        tcio.init(
+            input_data=inputfn,
+            tax_year=taxyear + xyear,
+            baseline=args.baseline,
+            reform=args.reform,
+            assump=args.assump,
+            aging_input_data=aging,
+            exact_calculations=args.exact,
+        )
+        if tcio.errmsg:
+            if tcio.errmsg.endswith('\n'):
+                sys.stderr.write(tcio.errmsg)
+            else:
+                sys.stderr.write(tcio.errmsg + '\n')
+            sys.stderr.write('USAGE: tc --help\n')
+            return 1
+        # conduct tax analysis
+        dumpvars_list = tcio.dump_variables(dumpvars_str)
+        if tcio.errmsg:
+            if tcio.errmsg.endswith('\n'):
+                sys.stderr.write(tcio.errmsg)
+            else:
+                sys.stderr.write(tcio.errmsg + '\n')
+                sys.stderr.write('USAGE: tc --help\n')
+            return 1
+        tcio.analyze(
+            output_params=args.params,
+            output_tables=args.tables,
+            output_graphs=args.graphs,
+            output_dump=args.dumpdb,
+            dump_varlist=dumpvars_list,
+        )
+
     # compare test output with expected test output if --test option specified
     if args.test:
         retcode = _compare_test_output_files()
