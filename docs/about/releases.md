@@ -4,6 +4,29 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2025-05-09 Release 4.6.1
+------------------------
+(last merged pull request is
+[#2900](https://github.com/PSLmodels/Tax-Calculator/pull/2900))
+
+**This is a minor enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Add ability to specify compound reforms when using the CLI tool's
+`--baseline` option
+[[#2896](https://github.com/PSLmodels/Tax-Calculator/pull/2896) by Martin Holmer]
+- Improve documentation of the `parameter_indexing_CPI_offset` policy parameter
+[[#2897](https://github.com/PSLmodels/Tax-Calculator/pull/2897) by Martin Holmer]
+- Add CLI `--numyears N` option that allows faster multiple-year runs with `tc`
+[[#2900](https://github.com/PSLmodels/Tax-Calculator/pull/2900) by Martin Holmer]
+
+**Bug Fixes**
+- Remove redundant Parameters class property
+[[#2898](https://github.com/PSLmodels/Tax-Calculator/pull/2898) by Martin Holmer]
+
+
 2025-04-30 Release 4.6.0
 ------------------------
 (last merged pull request is
