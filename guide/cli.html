@@ -474,6 +474,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-filing-units">Specify filing units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initiate-reform-analysis">Initiate reform analysis</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tabulate-reform-results">Tabulate reform results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-budget-window-results">Generate budget-window results</a></li>
 </ul>
             </nav>
         </div>
@@ -964,6 +965,42 @@ by the reform is essentially the same as the -331.1 amount in the
 –tables output above, although the income subgroups amounts differ
 because the income groups are defined in different ways.</p>
 </section>
+<section id="generate-budget-window-results">
+<h2>Generate budget-window results<a class="headerlink" href="#generate-budget-window-results" title="Link to this heading">#</a></h2>
+<p>Sometimes ten-year results for a reform are needed.  The easiest way
+to generate such budget-window results is to use the CLI tool’s
+<code class="docutils literal notranslate"><span class="pre">--numyears</span> <span class="pre">N</span></code> option.  If <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> contains the
+extend-TCJA-beyond-2025 reform, then we can execute the following run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="o">../</span><span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">numyears</span> <span class="mi">10</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">tables</span>
+<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2026</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2027</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">27</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2028</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2029</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">29</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2030</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2031</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2032</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">32</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2033</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">33</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2034</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">34</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2035</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">35</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">60.9</span> <span class="n">seconds</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2900#issue-3047043290">PR
+#2900</a>
+discusses how much faster this is relative to executing ten separate
+<code class="docutils literal notranslate"><span class="pre">tc</span></code> runs, and also shows how to tabulate the ten-year aggregate
+reform result from the files generated by this run.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1036,6 +1073,7 @@ because the income groups are defined in different ways.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-filing-units">Specify filing units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initiate-reform-analysis">Initiate reform analysis</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tabulate-reform-results">Tabulate reform results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-budget-window-results">Generate budget-window results</a></li>
 </ul>
   </nav></div>
 

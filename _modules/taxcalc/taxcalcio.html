@@ -614,6 +614,15 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ERROR: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="c1"># create OUTPUT file name and delete any existing output files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">inp</span><span class="si">}{</span><span class="n">bas</span><span class="si">}{</span><span class="n">ref</span><span class="si">}{</span><span class="n">asm</span><span class="si">}</span><span class="s1">.xxx&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_output_files</span><span class="p">()</span>
+        <span class="c1"># initialize variables whose values are set in init method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_output_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete all output files derived from self.output_filename.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s1">&#39;-params.bas&#39;</span><span class="p">,</span>
             <span class="s1">&#39;-params.ref&#39;</span><span class="p">,</span>
@@ -625,9 +634,6 @@ document.write(`
         <span class="p">]</span>
         <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
             <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="n">ext</span><span class="p">))</span>
-        <span class="c1"># initialize variables whose values are set in init method</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">tax_year</span><span class="p">,</span> <span class="n">baseline</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span> <span class="n">assump</span><span class="p">,</span>
              <span class="n">aging_input_data</span><span class="p">,</span> <span class="n">exact_calculations</span><span class="p">):</span>
@@ -860,6 +866,22 @@ document.write(`
         <span class="n">dirpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="p">)</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">advance_to_year</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">aging_data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update self.output_filename and advance Calculator objects to year.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># update self.output_filename and delete output files</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_output_files</span><span class="p">()</span>
+        <span class="c1"># advance baseline and reform Calculator objects to specified year</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+        <span class="n">idata</span> <span class="o">=</span> <span class="s1">&#39;Advance input data and &#39;</span> <span class="k">if</span> <span class="n">aging_data</span> <span class="k">else</span> <span class="s1">&#39;Advance&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">idata</span><span class="si">}</span><span class="s1"> policy to </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TaxCalcIO.analyze">
 <a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.analyze">[docs]</a>
@@ -1177,7 +1199,7 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">dump_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dumpvars_str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return set of variable names extracted from dumpvars_str, plus</span>
+<span class="sd">        Return list of variable names extracted from dumpvars_str, plus</span>
 <span class="sd">        minimal baseline/reform variables even if not in dumpvars_str.</span>
 <span class="sd">        Also, builds self.errmsg if any specified variables are not valid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

@@ -558,8 +558,8 @@ document.write(`
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data.increment_year">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">increment_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add one to current year; and also does</span>
-<span class="sd">        extrapolation &amp; reweighting for new current year if aged_data is True.</span>
+<span class="sd">        Add one to current year; and also does extrapolation &amp; reweighting</span>
+<span class="sd">        of data for the new current year if self._aging_data is True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># move to next year</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span> <span class="o">+=</span> <span class="mi">1</span>
