@@ -357,6 +357,10 @@ def test_ctor_init_with_cps_files():
               exact_calculations=False)
     assert not tcio.errmsg
     assert tcio.tax_year() == txyr
+    # test advance_to_year method
+    tcio.silent = False
+    tcio.advance_to_year(txyr + 1, True)
+    assert tcio.tax_year() == txyr + 1
     # specify invalid tax_year for cps.csv input data
     txyr = 2013
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
@@ -539,19 +543,7 @@ def test_no_tables_or_graphs(reformfile1):
                  output_tables=True,
                  output_graphs=True)
     # delete tables and graph files
-    output_filename = tcio.output_filepath()
-    extensions = [
-        '-params.bas',
-        '-params.ref',
-        '-tables.text',
-        '-atr.html',
-        '-mtr.html',
-        '-pch.html',
-    ]
-    for ext in extensions:
-        fname = output_filename.replace('.xxx', ext)
-        if os.path.isfile(fname):
-            os.remove(fname)
+    tcio.delete_output_files()
 
 
 def test_tables(reformfile1):
@@ -584,11 +576,7 @@ def test_tables(reformfile1):
     assert not tcio.errmsg
     # create TaxCalcIO tables file
     tcio.analyze(output_tables=True)
-    # delete tables file
-    output_filename = tcio.output_filepath()
-    fname = output_filename.replace('.xxx', '-tables.text')
-    if os.path.isfile(fname):
-        os.remove(fname)
+    tcio.delete_output_files()
 
 
 def test_graphs(reformfile1):
@@ -622,16 +610,7 @@ def test_graphs(reformfile1):
     assert not tcio.errmsg
     tcio.analyze(output_graphs=True)
     # delete graph files
-    output_filename = tcio.output_filepath()
-    fname = output_filename.replace('.xxx', '-atr.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
-    fname = output_filename.replace('.xxx', '-mtr.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
-    fname = output_filename.replace('.xxx', '-pch.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
+    tcio.delete_output_files()
 
 
 @pytest.fixture(scope='session', name='warnreformfile')

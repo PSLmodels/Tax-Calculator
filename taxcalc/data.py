@@ -147,8 +147,8 @@ class Data():
 
     def increment_year(self):
         """
-        Add one to current year; and also does
-        extrapolation & reweighting for new current year if aged_data is True.
+        Add one to current year; and also does extrapolation & reweighting
+        of data for the new current year if self._aging_data is True.
         """
         # move to next year
         self.__current_year += 1
