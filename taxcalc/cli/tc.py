@@ -178,15 +178,26 @@ def cli_tc_main():
         _write_test_files()
         inputfn = TEST_INPUT_FILENAME
         taxyear = TEST_TAXYEAR
-        numyears = 1
+        args.numyears = 1
         args.dumpdb = True
     else:
         inputfn = args.INPUT
         taxyear = args.TAXYEAR
-        numyears = args.numyears
+    # check taxyear value
+    if taxyear > tc.Policy.LAST_BUDGET_YEAR:
+        msg = f'ERROR: TAXYEAR is greater than {tc.Policy.LAST_BUDGET_YEAR}\n'
+        sys.stderr.write(msg)
+        sys.stderr.write('USAGE: tc --help\n')
+        return 1
     # check numyears value
-    if numyears < 1:
+    if args.numyears < 1:
         msg = 'ERROR: --numyears parameter N is less than one\n'
+        sys.stderr.write(msg)
+        sys.stderr.write('USAGE: tc --help\n')
+        return 1
+    max_numyears = tc.Policy.LAST_BUDGET_YEAR - taxyear + 1
+    if args.numyears > max_numyears:
+        msg = f'ERROR: --numyears parameter N is greater than {max_numyears}\n'
         sys.stderr.write(msg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1
@@ -213,49 +224,69 @@ def cli_tc_main():
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
             return 1
-    # do calculations for each year
-    for xyear in range(0, numyears):
-        # ... initialize TaxCalcIO object for taxyear+xyear
-        tcio = tc.TaxCalcIO(
-            input_data=inputfn,
-            tax_year=taxyear + xyear,
-            baseline=args.baseline,
-            reform=args.reform,
-            assump=args.assump,
-            silent=args.silent,
-        )
-        if tcio.errmsg:
-            if tcio.errmsg.endswith('\n'):
-                sys.stderr.write(tcio.errmsg)
-            else:
-                sys.stderr.write(tcio.errmsg + '\n')
+    # do calculations for taxyear
+    # ... initialize TaxCalcIO object for taxyear
+    tcio = tc.TaxCalcIO(
+        input_data=inputfn,
+        tax_year=taxyear,
+        baseline=args.baseline,
+        reform=args.reform,
+        assump=args.assump,
+        silent=args.silent,
+    )
+    if tcio.errmsg:
+        if tcio.errmsg.endswith('\n'):
+            sys.stderr.write(tcio.errmsg)
+        else:
+            sys.stderr.write(tcio.errmsg + '\n')
+        sys.stderr.write('USAGE: tc --help\n')
+        return 1
+    tcio.init(
+        input_data=inputfn,
+        tax_year=taxyear,
+        baseline=args.baseline,
+        reform=args.reform,
+        assump=args.assump,
+        aging_input_data=aging,
+        exact_calculations=args.exact,
+    )
+    if tcio.errmsg:
+        if tcio.errmsg.endswith('\n'):
+            sys.stderr.write(tcio.errmsg)
+        else:
+            sys.stderr.write(tcio.errmsg + '\n')
+        sys.stderr.write('USAGE: tc --help\n')
+        return 1
+    # ... conduct tax analysis for taxyear
+    dumpvars_list = tcio.dump_variables(dumpvars_str)
+    if tcio.errmsg:
+        if tcio.errmsg.endswith('\n'):
+            sys.stderr.write(tcio.errmsg)
+        else:
+            sys.stderr.write(tcio.errmsg + '\n')
             sys.stderr.write('USAGE: tc --help\n')
-            return 1
-        tcio.init(
-            input_data=inputfn,
-            tax_year=taxyear + xyear,
-            baseline=args.baseline,
-            reform=args.reform,
-            assump=args.assump,
-            aging_input_data=aging,
-            exact_calculations=args.exact,
-        )
-        if tcio.errmsg:
-            if tcio.errmsg.endswith('\n'):
-                sys.stderr.write(tcio.errmsg)
-            else:
-                sys.stderr.write(tcio.errmsg + '\n')
-            sys.stderr.write('USAGE: tc --help\n')
-            return 1
-        # ... conduct tax analysis for taxyear+xyear
-        dumpvars_list = tcio.dump_variables(dumpvars_str)
-        if tcio.errmsg:
-            if tcio.errmsg.endswith('\n'):
-                sys.stderr.write(tcio.errmsg)
-            else:
-                sys.stderr.write(tcio.errmsg + '\n')
-                sys.stderr.write('USAGE: tc --help\n')
-            return 1
+        return 1
+    tcio.analyze(
+        output_params=args.params,
+        output_tables=args.tables,
+        output_graphs=args.graphs,
+        output_dump=args.dumpdb,
+        dump_varlist=dumpvars_list,
+    )
+    # compare test output with expected test output if --test option specified
+    if args.test:
+        retcode = _compare_test_output_files()
+        return retcode
+    # quit if args.numyears is equal to one
+    if args.numyears == 1:
+        if not args.silent:
+            print(  # pragma: no cover
+                f'Execution time is {(time.time() - start_time):.1f} seconds'
+            )
+        return 0
+    # analyze years after taxyear if args.numyears is greater than one
+    for xyear in range(1, args.numyears):
+        tcio.advance_to_year(taxyear + xyear)
         tcio.analyze(
             output_params=args.params,
             output_tables=args.tables,
@@ -263,10 +294,6 @@ def cli_tc_main():
             output_dump=args.dumpdb,
             dump_varlist=dumpvars_list,
         )
-    # compare test output with expected test output if --test option specified
-    if args.test:
-        retcode = _compare_test_output_files()
-        return retcode
     if not args.silent:
         print(  # pragma: no cover
             f'Execution time is {(time.time() - start_time):.1f} seconds'

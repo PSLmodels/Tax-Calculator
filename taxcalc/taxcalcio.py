@@ -205,6 +205,15 @@ class TaxCalcIO():
             self.errmsg += f'ERROR: {msg}\n'
         # create OUTPUT file name and delete any existing output files
         self.output_filename = f'{inp}{bas}{ref}{asm}.xxx'
+        self.delete_output_files()
+        # initialize variables whose values are set in init method
+        self.calc_ref = None
+        self.calc_bas = None
+
+    def delete_output_files(self):
+        """
+        Delete all output files derived from self.output_filename.
+        """
         extensions = [
             '-params.bas',
             '-params.ref',
@@ -216,9 +225,6 @@ class TaxCalcIO():
         ]
         for ext in extensions:
             delete_file(self.output_filename.replace('.xxx', ext))
-        # initialize variables whose values are set in init method
-        self.calc_ref = None
-        self.calc_bas = None
 
     def init(self, input_data, tax_year, baseline, reform, assump,
              aging_input_data, exact_calculations):
@@ -445,6 +451,21 @@ class TaxCalcIO():
         """
         dirpath = os.path.abspath(os.path.dirname(__file__))
         return os.path.join(dirpath, self.output_filename)
+
+    def advance_to_year(self, year):
+        """
+        Update self.output_filename and advance Calculator objects to year.
+        """
+        # update self.output_filename and delete output files
+        parts = self.output_filename.split('-')
+        parts[1] = str(year)[2:]
+        self.output_filename = '-'.join(parts)
+        self.delete_output_files()
+        # advance baseline and reform Calculator objects to specified year
+        self.calc_bas.advance_to_year(year)
+        self.calc_ref.advance_to_year(year)
+        if not self.silent:
+            print(f'Advance input data and policy to {year}')
 
     def analyze(
             self,
