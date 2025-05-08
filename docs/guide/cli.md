@@ -541,25 +541,25 @@ extend-TCJA-beyond-2025 reform, then we can execute the following run:
 % tc ../tmd.csv 2026 --numyears 10 --reform ext.json --tables
 Read input data for 2021; input data were extrapolated to 2026
 Write tabular output to file tmd-26-#-ext-#-tables.text
-Read input data for 2021; input data were extrapolated to 2027
+Advance input data and policy to 2027
 Write tabular output to file tmd-27-#-ext-#-tables.text
-Read input data for 2021; input data were extrapolated to 2028
+Advance input data and policy to 2028
 Write tabular output to file tmd-28-#-ext-#-tables.text
-Read input data for 2021; input data were extrapolated to 2029
+Advance input data and policy to 2029
 Write tabular output to file tmd-29-#-ext-#-tables.text
-Read input data for 2021; input data were extrapolated to 2030
+Advance input data and policy to 2030
 Write tabular output to file tmd-30-#-ext-#-tables.text
-Read input data for 2021; input data were extrapolated to 2031
+Advance input data and policy to 2031
 Write tabular output to file tmd-31-#-ext-#-tables.text
-Read input data for 2021; input data were extrapolated to 2032
+Advance input data and policy to 2032
 Write tabular output to file tmd-32-#-ext-#-tables.text
-Read input data for 2021; input data were extrapolated to 2033
+Advance input data and policy to 2033
 Write tabular output to file tmd-33-#-ext-#-tables.text
-Read input data for 2021; input data were extrapolated to 2034
+Advance input data and policy to 2034
 Write tabular output to file tmd-34-#-ext-#-tables.text
-Read input data for 2021; input data were extrapolated to 2035
+Advance input data and policy to 2035
 Write tabular output to file tmd-35-#-ext-#-tables.text
-Execution time is 175.0 seconds
+Execution time is 60.9 seconds
 ```
 
 [PR

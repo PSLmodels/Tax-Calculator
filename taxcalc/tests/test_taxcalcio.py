@@ -359,7 +359,7 @@ def test_ctor_init_with_cps_files():
     assert tcio.tax_year() == txyr
     # test advance_to_year method
     tcio.silent = False
-    tcio.advance_to_year(txyr + 1)
+    tcio.advance_to_year(txyr + 1, True)
     assert tcio.tax_year() == txyr + 1
     # specify invalid tax_year for cps.csv input data
     txyr = 2013

@@ -452,7 +452,7 @@ class TaxCalcIO():
         dirpath = os.path.abspath(os.path.dirname(__file__))
         return os.path.join(dirpath, self.output_filename)
 
-    def advance_to_year(self, year):
+    def advance_to_year(self, year, aging_data):
         """
         Update self.output_filename and advance Calculator objects to year.
         """
@@ -464,8 +464,9 @@ class TaxCalcIO():
         # advance baseline and reform Calculator objects to specified year
         self.calc_bas.advance_to_year(year)
         self.calc_ref.advance_to_year(year)
+        idata = 'Advance input data and ' if aging_data else 'Advance'
         if not self.silent:
-            print(f'Advance input data and policy to {year}')
+            print(f'{idata} policy to {year}')
 
     def analyze(
             self,
