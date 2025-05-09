@@ -818,18 +818,11 @@ should replace <code class="docutils literal notranslate"><span class="pre">cat<
 <p>In all the examples in this section, we have executed one <code class="docutils literal notranslate"><span class="pre">tc</span></code> run at
 at time.  But <strong>what if you want to execute many <code class="docutils literal notranslate"><span class="pre">tc</span></code> runs</strong> because
 you want results for many years and/or for several different reforms.
-Unless you are asking for an enormous dump database, a single <code class="docutils literal notranslate"><span class="pre">tc</span></code> run
-should take no more than one minute on your computer.  The easiest way
-to speed up the execution of many <code class="docutils literal notranslate"><span class="pre">tc</span></code> runs is to split them into
-groups of runs and execute each group of runs in a different
-command-prompt window.  On most modern computers that have four or
-more CPU cores, at least eight gigabytes of memory, and fast disk
-storage, executing four or five runs in different windows will take
-only a little more time than executing a single <code class="docutils literal notranslate"><span class="pre">tc</span></code> run.  If you have
-more than one run in each group, put them in a Unix/Mac bash script or
-a Windows batch file, and execute one script in each command-prompt
-window.  If it still takes too long, consider splitting the <code class="docutils literal notranslate"><span class="pre">tc</span></code> runs
-across more than one computer.</p>
+The best way to execute multiple-year runs (say, ten-year runs to
+generate budget-window estimates) is to use the <code class="docutils literal notranslate"><span class="pre">--numyears</span> <span class="pre">N</span></code> option
+as decribed
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2900#issue-3047043290">here</a>
+and below in the final section of this document.</p>
 </section>
 <section id="tabulate-reform-results">
 <h2>Tabulate reform results<a class="headerlink" href="#tabulate-reform-results" title="Link to this heading">#</a></h2>
