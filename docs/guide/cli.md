@@ -375,18 +375,11 @@ The `cps-24-#-ref3-#-mtr.html` file looks something like this:
 In all the examples in this section, we have executed one `tc` run at
 at time.  But **what if you want to execute many `tc` runs** because
 you want results for many years and/or for several different reforms.
-Unless you are asking for an enormous dump database, a single `tc` run
-should take no more than one minute on your computer.  The easiest way
-to speed up the execution of many `tc` runs is to split them into
-groups of runs and execute each group of runs in a different
-command-prompt window.  On most modern computers that have four or
-more CPU cores, at least eight gigabytes of memory, and fast disk
-storage, executing four or five runs in different windows will take
-only a little more time than executing a single `tc` run.  If you have
-more than one run in each group, put them in a Unix/Mac bash script or
-a Windows batch file, and execute one script in each command-prompt
-window.  If it still takes too long, consider splitting the `tc` runs
-across more than one computer.
+The best way to execute multiple-year runs (say, ten-year runs to
+generate budget-window estimates) is to use the `--numyears N` option
+as decribed
+[here](https://github.com/PSLmodels/Tax-Calculator/pull/2900#issue-3047043290)
+and below in the final section of this document.
 
 ## Tabulate reform results
 
