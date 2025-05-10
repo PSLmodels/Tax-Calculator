@@ -13,55 +13,74 @@ Provisions in the "Tax Cuts and Jobs Act" (TCJA, P.L. 115-97)](
 https://crsreports.congress.gov/product/pdf/R/R47846), which is dated
 November 21, 2023.
 
-This document describes how to use the PSLmodels Tax-Calculator
-command-line interface
-[tc](https://taxcalc.pslmodels.org/guide/cli.html) with any compatible
-input dataset to analyze the post-2025 effects of alternatives to
-current-law policy (which calls for all temporary TCJA provisions to
-expire).  Compatible input datasets include:
-
-* the older `cps.csv` file included in the Tax-Calculator package
-
-* the older `puf.csv` file generated in the PSLmodels
-  [taxdata](https://github.com/PSLmodels/taxdata) repository and
-  available only to those with access to the 2011 IRS/SOI PUF
-
-* the newer `tmd.csv` file generated in the PSLmodels
-  [tax-microdata](https://github.com/PSLmodels/tax-microdata-benchmarking)
-  repository that are based on the 2015 IRS/SOI PUF and on more recent CPS
-  data, and are available only to those with access to the 2015
-  IRS/SOI PUF
-
-Note that if you are using the Python API to Tax-Calculator (as
-described in the
-[Recipes](https://taxcalc.pslmodels.org/recipes/index.html)) to
-analyze the TCJA after 2025 and need to specify custom GrowFactors
-after 2025, you can use the old additive-differences `growdiffs`
-approach or you can specify a custom `growfactors` file as described
-[here](https://github.com/PSLmodels/Tax-Calculator/pull/2757#issuecomment-2218662804).
+This document provides examples of using the PSLmodels Tax-Calculator
+command-line-interface tool
+[tc](https://taxcalc.pslmodels.org/guide/cli.html) with the newer
+`tmd.csv` file generated in the PSLmodels
+[tax-microdata](https://github.com/PSLmodels/tax-microdata-benchmarking)
+repository.  The `tmd` data and weights are based on the 2015 IRS/SOI
+PUF data and on recent CPS data, and therefore, are the best data to
+use with Tax-Calculator.  All the examples assume you have the [three
+`tmd` data
+files](https://taxcalc.pslmodels.org/usage/data.html#irs-public-use-data-tmd-csv)
+in the parent directory of your working directory.
 
 Before reading the rest of this document, be sure you understand how
 to use the Tax-Calculator command-line tool
 [tc](https://taxcalc.pslmodels.org/guide/cli.html), particularly the
-`--baseline` and `--reform` command-line options.  (For complete and
+`--baseline` and `--reform` command-line options.  For complete and
 up-to-date `tc` documentation, enter `tc --help` at the command
-prompt.)  Omitting the `--baseline` option means the baseline policy
-is current-law policy.  Omitting the `--reform` option means the
-reform policy is current-law policy.  The `--tables` option produces
-tables comparing taxes under the baseline policy to taxes under the
-reform policy by income decile and in aggregate.
+prompt.  Omitting the `--baseline` option means the baseline policy is
+current-law policy.  Omitting the `--reform` option means the reform
+policy is current-law policy.  The `--tables` option produces two
+tables in one file: the top table contains aggregate and income decile
+estimates under the reform and the bottom table contains estimates of
+reform-minus-baseline differences by income decile and in aggregate.
 
-The `--baseline` option is not commonly used, but it can be very
-helpful in analyzing reforms that take effect beginning in 2026.  Such
-a reform could be analyzed relative to current-law policy (that is,
-with temporary TCJA provisions expiring after 2025) by omitting the
-`--baseline` option.  But if such a reform were to be analyzed
+While nobody knows how the 2025 tax legislation will turn out, the
+idea of this document is to illustrate how to use the Tax-Calculator
+CLI tool to analyze some of the TCJA revisions that are being reported
+in the press in early May 2025.  The basic legislative goal is to
+extend TCJA beyond 2025, but there is discussion of a number of
+**revisions** to the basic extension.  The revisions being discussed
+include (but are not limited to) raising the SALT deduction cap,
+making social security benefits non-taxable, and liberalizing the
+child tax credit.  (Give the nature of the rules under which the
+legislation is being developed, no changes in social security
+financing can be make, so there is discussion of higher
+elderly/disability standard deduction amounts to proxy the non-taxable
+social security benefits revision.)  These revisions all involve
+reductions in income tax revenue, so there is also discussion about
+**enhancements** to the extended-TCJA policy that would raise revenue
+to pay for revisions.  The enhancement considered here is the one that
+adds a new top income tax bracket with a 39.6 percent marginal tax rate.
+
+The analysis examples below focus on the following policy scenarios:
+
+1. a strict extension of TCJA without any revisions or enhancements
+2. a TCJA extension with the nontaxable social security benefits revision
+3. a TCJA extension with the higher elderly/disabled standard deduction revision
+4. a TCJA extension with the higher elderly/disabled standard deduction revision and the new top tax bracket enhancement
+
+
+
+
+
+=============================================================================
+OLD TEXT:
+
+The `--baseline` option is not commonly used, but it can be
+very helpful in analyzing reforms that take effect beginning in 2026.
+Such a reform could be analyzed relative to current-law policy (that
+is, with temporary TCJA provisions expiring after 2025) by omitting
+the `--baseline` option.  But if such a reform were to be analyzed
 relative to extending all the temporary TCJA provisions beyond 2025,
 then the `--baseline ext.json` option would need to be used.  The
-[`ext.json`](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/ext.json) file contains the 2026
-tax policy reform provisions that would extend TCJA's temporary
-provisions beyond 2025.  Before using this `ext.json` reform file, be
-sure to read how it is generated at the end of this document.
+[`ext.json`](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/ext.json)
+file contains the 2026 tax policy reform provisions that would extend
+TCJA's temporary provisions beyond 2025.  Before using this `ext.json`
+reform file, be sure to read how it is generated at the end of this
+document.
 
 Here are some concrete examples of using the `tc` tool to analyze a
 reform of interest to you that begins in 2026.  The examples assume
@@ -125,3 +144,5 @@ added to the `policy_current_law.json` file thereby changing the
 Beginning with the 4.5.0 version, Tax-Calculator incorporates the
 January 2025 CBO economic projection and contains historical tax
 policy parameter values through 2025.
+
+=============================================================================

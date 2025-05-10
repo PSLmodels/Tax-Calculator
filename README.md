@@ -22,3 +22,6 @@ explains the workflow involved in contributing model enhancements.
 
 Complete documentation is available
 [here](https://PSLmodels.github.io/Tax-Calculator/).
+This documentation includes
+[examples](https://taxcalc.pslmodels.org/usage/tcja_after_2025.html)
+of how to analyze different ways of extending TCJA policy beyond 2025.
