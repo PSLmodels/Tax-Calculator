@@ -1,5 +1,4 @@
-TCJA after 2025
-===============
+# TCJA after 2025
 
 Many provisions of the TCJA are temporary and are scheduled to end
 after 2025 under current-law policy.  Tax policy parameters that are
@@ -37,23 +36,23 @@ tables in one file: the top table contains aggregate and income decile
 estimates under the reform and the bottom table contains estimates of
 reform-minus-baseline differences by income decile and in aggregate.
 
-While nobody knows how the 2025 tax legislation will turn out, the
-idea of this document is to illustrate how to use the Tax-Calculator
-CLI tool to analyze some of the TCJA revisions that are being reported
-in the press in early May 2025.  The basic legislative goal is to
-extend TCJA beyond 2025, but there is discussion of a number of
-**revisions** to the basic extension.  The revisions being discussed
-include (but are not limited to) raising the SALT deduction cap,
-making social security benefits non-taxable, and liberalizing the
-child tax credit.  (Give the nature of the rules under which the
-legislation is being developed, no changes in social security
-financing can be make, so there is discussion of higher
-elderly/disability standard deduction amounts to proxy the non-taxable
-social security benefits revision.)  These revisions all involve
-reductions in income tax revenue, so there is also discussion about
-**enhancements** to the extended-TCJA policy that would raise revenue
-to pay for revisions.  The enhancement considered here is the one that
-adds a new top income tax bracket with a 39.6 percent marginal tax rate.
+Nobody knows how the 2025 tax legislation will turn out, so the idea
+of this document is to illustrate how to use the Tax-Calculator CLI
+tool to analyze some of the TCJA revisions that are being reported in
+the press in early May 2025.  The basic legislative goal is to extend
+TCJA beyond 2025, but there is discussion of a number of **revisions**
+to the basic extension.  The revisions being discussed include, but
+are not limited to, raising the SALT deduction cap, making social
+security benefits nontaxable, and liberalizing the child tax credit.
+(Given the nature of the rules under which the legislation is being
+developed, no changes in social security financing can be made, so
+there is discussion of a higher elderly/disability standard deduction
+amount to proxy the nontaxable social security benefits revision.)
+These revisions all cause reductions in income tax revenue, so there
+is also discussion about **enhancements** to the extended-TCJA policy
+that would raise revenue to pay for revisions.  The enhancement
+considered here is the one that adds a new top income tax bracket with
+a 39.6 percent marginal tax rate.
 
 The analysis examples below focus on the following policy scenarios:
 
@@ -61,6 +60,32 @@ The analysis examples below focus on the following policy scenarios:
 2. a TCJA extension with the nontaxable social security benefits revision
 3. a TCJA extension with the higher elderly/disabled standard deduction revision
 4. a TCJA extension with the higher elderly/disabled standard deduction revision and the new top tax bracket enhancement
+
+All the examples use Tax-Calculator 4.6.1 version.
+```
+% tc --version
+Tax-Calculator 4.6.1 on Python 3.12
+```
+
+## 1. TCJA extension without any revisions or enhancements
+
+Text goes here ...
+
+
+## 2. TCJA extension with the nontaxable social security benefits revision
+
+Text goes here ...
+
+
+## 3. TCJA extension with the higher elderly/disabled standard deduction revision
+
+Text goes here ...
+
+
+## 4. TCJA extension with the higher elderly/disabled standard deduction revision and the new top tax bracket enhancement
+
+Text goes here ...
+
 
 
 
@@ -124,9 +149,10 @@ The resulting table output would be named `z-26-end-x-#-tab.text` and
 have the same tabular output as the `z-26-#-x-#-tab.text` file.  Some
 people may prefer `end` to `#` as a way of naming current-law policy
 in the context of discussing TCJA-related reforms.
+=============================================================================
 
 
-**How is the `ext.json` file generated?**
+## How is the `ext.json` file generated?
 
 The short answer is by using the
 [`extend_tcja.py`](https://github.com/PSLmodels/Tax-Calculator/blob/master/extend_tcja.py) script.
@@ -145,4 +171,3 @@ Beginning with the 4.5.0 version, Tax-Calculator incorporates the
 January 2025 CBO economic projection and contains historical tax
 policy parameter values through 2025.
 
-=============================================================================
