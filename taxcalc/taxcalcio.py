@@ -18,7 +18,7 @@ from taxcalc.consumption import Consumption
 from taxcalc.growdiff import GrowDiff
 from taxcalc.growfactors import GrowFactors
 from taxcalc.calculator import Calculator
-from taxcalc.utils import (delete_file, write_graph_file,
+from taxcalc.utils import (json_to_dict, delete_file, write_graph_file,
                            add_quantile_table_row_variable,
                            unweighted_sum, weighted_sum)
 
@@ -136,6 +136,18 @@ class TaxCalcIO():
                 if not os.path.isfile(bas):
                     msg = f'{bas} could not be found'
                     self.errmsg += f'ERROR: BASELINE file {msg}\n'
+                # check validity of JSON text
+                with open(bas, 'r', encoding='utf-8') as jfile:
+                    json_text = jfile.read()
+                    try:
+                        _ = json_to_dict(json_text)
+                    except ValueError as valerr:
+                        msg = (
+                            f'{bas} contains invalid JSON '
+                            '(check with JSONLint)'
+                        )
+                        self.errmsg += f'ERROR: BASELINE file {msg}\n'
+                        self.errmsg += f'{valerr}'
                 # add fname to list of basnames used in output file names
                 basnames.append(fname)
             # create (possibly compound) baseline name for output file names
@@ -170,6 +182,18 @@ class TaxCalcIO():
                 if not os.path.isfile(rfm):
                     msg = f'{rfm} could not be found'
                     self.errmsg += f'ERROR: REFORM file {msg}\n'
+                # check validity of JSON text
+                with open(rfm, 'r', encoding='utf-8') as jfile:
+                    json_text = jfile.read()
+                    try:
+                        _ = json_to_dict(json_text)
+                    except ValueError as valerr:
+                        msg = (
+                            f'{rfm} contains invalid JSON '
+                            '(check with JSONLint)'
+                        )
+                        self.errmsg += f'ERROR: REFORM file {msg}\n'
+                        self.errmsg += f'{valerr}'
                 # add fname to list of refnames used in output file names
                 refnames.append(fname)
             # create (possibly compound) reform name for output file names
