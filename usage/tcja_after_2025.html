@@ -445,7 +445,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -461,6 +463,18 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tcja-extension-without-any-revisions-or-enhancements">1. TCJA extension without any revisions or enhancements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tcja-extension-with-the-nontaxable-social-security-benefits-revision">2. TCJA extension with the nontaxable social security benefits revision</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tcja-extension-with-the-higher-elderly-disabled-standard-deduction-revision">3. TCJA extension with the higher elderly/disabled standard deduction revision</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tcja-extension-with-the-higher-elderly-disabled-standard-deduction-revision-and-the-new-top-tax-bracket-enhancement">4. TCJA extension with the higher elderly/disabled standard deduction revision and the new top tax bracket enhancement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-is-the-ext-json-file-generated">How is the <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file generated?</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -482,85 +496,282 @@ inflation factor.  For a list of the ending TCJA provisions, see this
 Congressional Research Service document: <a class="reference external" href="https://crsreports.congress.gov/product/pdf/R/R47846">Reference Table: Expiring
 Provisions in the “Tax Cuts and Jobs Act” (TCJA, P.L. 115-97)</a>, which is dated
 November 21, 2023.</p>
-<p>This document describes how to use the PSLmodels Tax-Calculator
-command-line interface
-<a class="reference external" href="https://taxcalc.pslmodels.org/guide/cli.html">tc</a> with any compatible
-input dataset to analyze the post-2025 effects of alternatives to
-current-law policy (which calls for all temporary TCJA provisions to
-expire).  Compatible input datasets include:</p>
-<ul class="simple">
-<li><p>the older <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file included in the Tax-Calculator package</p></li>
-<li><p>the older <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file generated in the PSLmodels
-<a class="reference external" href="https://github.com/PSLmodels/taxdata">taxdata</a> repository and
-available only to those with access to the 2011 IRS/SOI PUF</p></li>
-<li><p>the newer <code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code> file generated in the PSLmodels
+<p>This document provides examples of using the PSLmodels Tax-Calculator
+command-line-interface tool
+<a class="reference external" href="https://taxcalc.pslmodels.org/guide/cli.html">tc</a> with the newer
+<code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code> file generated in the PSLmodels
 <a class="reference external" href="https://github.com/PSLmodels/tax-microdata-benchmarking">tax-microdata</a>
-repository that are based on the 2015 IRS/SOI PUF and on more recent CPS
-data, and are available only to those with access to the 2015
-IRS/SOI PUF</p></li>
-</ul>
-<p>Note that if you are using the Python API to Tax-Calculator (as
-described in the
-<a class="reference external" href="https://taxcalc.pslmodels.org/recipes/index.html">Recipes</a>) to
-analyze the TCJA after 2025 and need to specify custom GrowFactors
-after 2025, you can use the old additive-differences <code class="docutils literal notranslate"><span class="pre">growdiffs</span></code>
-approach or you can specify a custom <code class="docutils literal notranslate"><span class="pre">growfactors</span></code> file as described
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2757#issuecomment-2218662804">here</a>.</p>
+repository.  The <code class="docutils literal notranslate"><span class="pre">tmd</span></code> data and weights are based on the 2015 IRS/SOI
+PUF data and on recent CPS data, and therefore, are the best data to
+use with Tax-Calculator.  All the examples assume you have the <a class="reference external" href="https://taxcalc.pslmodels.org/usage/data.html#irs-public-use-data-tmd-csv">three
+<code class="docutils literal notranslate"><span class="pre">tmd</span></code> data
+files</a>
+in the parent directory of your working directory.  The <code class="docutils literal notranslate"><span class="pre">tmd</span></code> data
+contain information on 225,256 tax filing units.</p>
 <p>Before reading the rest of this document, be sure you understand how
 to use the Tax-Calculator command-line tool
 <a class="reference external" href="https://taxcalc.pslmodels.org/guide/cli.html">tc</a>, particularly the
-<code class="docutils literal notranslate"><span class="pre">--baseline</span></code> and <code class="docutils literal notranslate"><span class="pre">--reform</span></code> command-line options.  (For complete and
+<code class="docutils literal notranslate"><span class="pre">--baseline</span></code> and <code class="docutils literal notranslate"><span class="pre">--reform</span></code> command-line options.  For complete and
 up-to-date <code class="docutils literal notranslate"><span class="pre">tc</span></code> documentation, enter <code class="docutils literal notranslate"><span class="pre">tc</span> <span class="pre">--help</span></code> at the command
-prompt.)  Omitting the <code class="docutils literal notranslate"><span class="pre">--baseline</span></code> option means the baseline policy
-is current-law policy.  Omitting the <code class="docutils literal notranslate"><span class="pre">--reform</span></code> option means the
-reform policy is current-law policy.  The <code class="docutils literal notranslate"><span class="pre">--tables</span></code> option produces
-tables comparing taxes under the baseline policy to taxes under the
-reform policy by income decile and in aggregate.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">--baseline</span></code> option is not commonly used, but it can be very
-helpful in analyzing reforms that take effect beginning in 2026.  Such
-a reform could be analyzed relative to current-law policy (that is,
-with temporary TCJA provisions expiring after 2025) by omitting the
-<code class="docutils literal notranslate"><span class="pre">--baseline</span></code> option.  But if such a reform were to be analyzed
-relative to extending all the temporary TCJA provisions beyond 2025,
-then the <code class="docutils literal notranslate"><span class="pre">--baseline</span> <span class="pre">ext.json</span></code> option would need to be used.  The
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/ext.json"><code class="docutils literal notranslate"><span class="pre">ext.json</span></code></a> file contains the 2026
-tax policy reform provisions that would extend TCJA’s temporary
-provisions beyond 2025.  Before using this <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> reform file, be
-sure to read how it is generated at the end of this document.</p>
-<p>Here are some concrete examples of using the <code class="docutils literal notranslate"><span class="pre">tc</span></code> tool to analyze a
-reform of interest to you that begins in 2026.  The examples assume
-you have named your reform file <code class="docutils literal notranslate"><span class="pre">x.json</span></code> and that you are using one
-of the compatible input datasets describe above.  The examples will
-call the input dataset <code class="docutils literal notranslate"><span class="pre">z.csv</span></code>.</p>
-<p>To analyze your reform relative to current-law policy (which means
-temporary TCJA provisions have expired beginning in 2026), you would
-execute this command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">z</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span> <span class="o">--</span><span class="n">reform</span> <span class="n">x</span><span class="o">.</span><span class="n">json</span>
+prompt.  Omitting the <code class="docutils literal notranslate"><span class="pre">--baseline</span></code> option means the baseline policy is
+current-law policy.  Omitting the <code class="docutils literal notranslate"><span class="pre">--reform</span></code> option means the reform
+policy is current-law policy.  The <code class="docutils literal notranslate"><span class="pre">--tables</span></code> option produces two
+tables in one file: the top table contains aggregate and income decile
+estimates under the reform and the bottom table contains estimates of
+reform-minus-baseline differences by income decile and in aggregate.</p>
+<p>Nobody knows how the 2025 tax legislation will turn out, so the idea
+of this document is to illustrate how to use the Tax-Calculator CLI
+tool to analyze some of the TCJA revisions that are being reported in
+the press in early May 2025.  The basic legislative goal is to extend
+TCJA beyond 2025, but there is discussion of a number of <strong>revisions</strong>
+to the basic extension.  The revisions being discussed include, but
+are not limited to, raising the SALT deduction cap, making social
+security benefits nontaxable, and liberalizing the child tax credit.
+(Given the nature of the rules under which the legislation is being
+developed, no changes in social security financing can be made, so
+there is discussion of a higher elderly/disability standard deduction
+amount to proxy the nontaxable social security benefits revision.)
+These revisions all cause reductions in income tax revenue, so there
+is also discussion about <strong>enhancements</strong> to the extended-TCJA policy
+that would raise revenue to pay for revisions.  The enhancement
+considered here is the one that adds a new top income tax bracket with
+a 39.6 percent marginal tax rate.</p>
+<p>The analysis examples below focus on the following policy scenarios:</p>
+<ol class="arabic simple">
+<li><p>a strict extension of TCJA without any revisions or enhancements</p></li>
+<li><p>a TCJA extension with the nontaxable social security benefits revision</p></li>
+<li><p>a TCJA extension with the higher elderly/disabled standard deduction revision</p></li>
+<li><p>a TCJA extension with the higher elderly/disabled standard deduction revision and the new top tax bracket enhancement</p></li>
+</ol>
+<p>All the examples use Tax-Calculator 4.6.1 version.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="o">--</span><span class="n">version</span>
+<span class="n">Tax</span><span class="o">-</span><span class="n">Calculator</span> <span class="mf">4.6.1</span> <span class="n">on</span> <span class="n">Python</span> <span class="mf">3.12</span>
 </pre></div>
 </div>
-<p>The tables would be in the <code class="docutils literal notranslate"><span class="pre">z-26-#-x-#-tab.text</span></code> output file generated
-by this <code class="docutils literal notranslate"><span class="pre">tc</span></code> run.  If you want to do custom tabulations of the micro
-output data, use the <code class="docutils literal notranslate"><span class="pre">--dumpdb</span></code> and <code class="docutils literal notranslate"><span class="pre">--dumpvars</span></code> options as explained
-by the <code class="docutils literal notranslate"><span class="pre">tc</span> <span class="pre">--help</span></code> documentation.</p>
-<p>To analyze your reform relative to a reform that extends all TCJA
-temporary provisions beyond 2025, you would execute this command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">z</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span> <span class="o">--</span><span class="n">baseline</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span><span class="o">+</span><span class="n">x</span><span class="o">.</span><span class="n">json</span>
+<p>The examples below were done on an ancient Mac with an old Intel
+processor with four CPU cores.  The execution times on newer computers
+should be substantially less than shown below.  In all the examples,
+each <code class="docutils literal notranslate"><span class="pre">tc</span></code> run is using just one CPU core.</p>
+<p>The
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/ext.json"><code class="docutils literal notranslate"><span class="pre">ext.json</span></code></a>
+reform file is used all the examples.  See the section at the end of
+this document for more information on <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> contents.</p>
+<section id="tcja-extension-without-any-revisions-or-enhancements">
+<h2>1. TCJA extension without any revisions or enhancements<a class="headerlink" href="#tcja-extension-without-any-revisions-or-enhancements" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="o">../</span><span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">numyears</span> <span class="mi">10</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span>
+<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2026</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2027</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">27</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2028</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2029</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">29</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2030</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2031</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2032</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">32</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2033</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">33</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2034</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">34</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2035</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">35</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">58.4</span> <span class="n">seconds</span>
 </pre></div>
 </div>
-<p>The tables would be in the <code class="docutils literal notranslate"><span class="pre">z-26-ext-ext+x-#-tab.text</span></code> output file
-generated by this <code class="docutils literal notranslate"><span class="pre">tc</span></code> run.</p>
-<p>And finally, you might consider creating a reform file called
-<code class="docutils literal notranslate"><span class="pre">end.json</span></code> that contains just the two characters <code class="docutils literal notranslate"><span class="pre">{}</span></code>.  This is a null
-reform, which is equivalent to current-law policy, that could be used
-as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tc</span> <span class="n">z</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span> <span class="o">--</span><span class="n">baseline</span> <span class="n">end</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">reform</span> <span class="n">x</span><span class="o">.</span><span class="n">json</span>
+<p>Because the aggregate change in taxes is displayed on the last line of
+the tables file (in column four), we can look at the ten changes like
+this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tail -1 tmd-??-#-ext-#-tables.text
+==&gt; tmd-26-#-ext-#-tables.text &lt;==
+ A   192.41   20828.3    -273.1       0.0       0.0    -273.1
+
+==&gt; tmd-27-#-ext-#-tables.text &lt;==
+ A   193.77   21613.4    -280.5       0.0       0.0    -280.5
+
+==&gt; tmd-28-#-ext-#-tables.text &lt;==
+ A   194.72   22404.7    -288.1       0.0       0.0    -288.1
+
+==&gt; tmd-29-#-ext-#-tables.text &lt;==
+ A   195.66   23243.3    -280.3       0.0       0.0    -280.3
+
+==&gt; tmd-30-#-ext-#-tables.text &lt;==
+ A   196.58   24115.1    -288.1       0.0       0.0    -288.1
+
+==&gt; tmd-31-#-ext-#-tables.text &lt;==
+ A   197.48   25020.0    -296.0       0.0       0.0    -296.0
+
+==&gt; tmd-32-#-ext-#-tables.text &lt;==
+ A   198.35   25952.7    -315.9       0.0       0.0    -315.9
+
+==&gt; tmd-33-#-ext-#-tables.text &lt;==
+ A   199.21   26905.4    -323.8       0.0       0.0    -323.8
+
+==&gt; tmd-34-#-ext-#-tables.text &lt;==
+ A   200.03   27878.9    -331.7       0.0       0.0    -331.7
+
+==&gt; tmd-35-#-ext-#-tables.text &lt;==
+ A   200.83   28883.0    -339.7       0.0       0.0    -339.7
 </pre></div>
 </div>
-<p>The resulting table output would be named <code class="docutils literal notranslate"><span class="pre">z-26-end-x-#-tab.text</span></code> and
-have the same tabular output as the <code class="docutils literal notranslate"><span class="pre">z-26-#-x-#-tab.text</span></code> file.  Some
-people may prefer <code class="docutils literal notranslate"><span class="pre">end</span></code> to <code class="docutils literal notranslate"><span class="pre">#</span></code> as a way of naming current-law policy
-in the context of discussing TCJA-related reforms.</p>
-<p><strong>How is the <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file generated?</strong></p>
+<p>And the ten-year change in aggregate federal income tax liability can
+be tabulated this way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tail -1 tmd-??-#-ext-#-tables.text | awk &#39;$1~/A/{n++;c+=$4}END{print n,c}&#39;
+10 -3017.2
+</pre></div>
+</div>
+</section>
+<section id="tcja-extension-with-the-nontaxable-social-security-benefits-revision">
+<h2>2. TCJA extension with the nontaxable social security benefits revision<a class="headerlink" href="#tcja-extension-with-the-nontaxable-social-security-benefits-revision" title="Link to this heading">#</a></h2>
+<p>There is some discussion of exempting all social security benefits
+from federal income taxation.  Here is a JSON file that implements
+that reform:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">cat</span> <span class="n">no_ssben_tax</span><span class="o">.</span><span class="n">json</span> 
+<span class="p">{</span>
+    <span class="s2">&quot;SS_percentage1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;2026&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;SS_percentage2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;2026&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The marginal effect of adding that reform on to the TCJA-extension can be
+estimated in this 2026 run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="o">../</span><span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">baseline</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span><span class="o">+</span><span class="n">no_ssben_tax</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span> 
+<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2026</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">no_ssben_tax</span><span class="o">-</span><span class="c1">#-tables.text</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">33.4</span> <span class="n">seconds</span>
+
+<span class="o">%</span> <span class="n">tail</span> <span class="o">-</span><span class="mi">1</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">no_ssben_tax</span><span class="o">-</span><span class="c1">#-tables.text</span>
+ <span class="n">A</span>   <span class="mf">192.41</span>   <span class="mf">20828.3</span>    <span class="o">-</span><span class="mf">110.6</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>    <span class="o">-</span><span class="mf">110.6</span>
+</pre></div>
+</div>
+<p>So, this reform reduces federal income tax liability by $110.6 billion in
+2026.</p>
+</section>
+<section id="tcja-extension-with-the-higher-elderly-disabled-standard-deduction-revision">
+<h2>3. TCJA extension with the higher elderly/disabled standard deduction revision<a class="headerlink" href="#tcja-extension-with-the-higher-elderly-disabled-standard-deduction-revision" title="Link to this heading">#</a></h2>
+<p>Next we find a reform that approximates the <code class="docutils literal notranslate"><span class="pre">no_ssben_tax</span></code> reform
+analyzed in the previous section.  Trying higher values for the
+<code class="docutils literal notranslate"><span class="pre">STD_Aged</span></code> parameter, we quickly find that $31,500 for all filing
+statuses produces a reasonable approximation of the effects of the
+<code class="docutils literal notranslate"><span class="pre">no_ssben_tax</span></code> reform.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">cat</span> <span class="n">higher_aged_std</span><span class="o">.</span><span class="n">json</span> 
+<span class="p">{</span>
+    <span class="s2">&quot;STD_Aged&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;2026&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">31500</span><span class="p">,</span> <span class="mi">31500</span><span class="p">,</span> <span class="mi">31500</span><span class="p">,</span> <span class="mi">31500</span><span class="p">,</span> <span class="mi">31500</span><span class="p">]}</span>
+<span class="p">}</span>
+
+<span class="o">%</span> <span class="n">tc</span> <span class="o">../</span><span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">baseline</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span>
+<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2026</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="c1">#-tables.text</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">34.0</span> <span class="n">seconds</span>
+
+<span class="o">%</span> <span class="n">diff</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="c1">#-tables.text tmd-26-ext-ext+no_ssben_tax-#-tables.text | tail -18</span>
+<span class="mi">22</span><span class="p">,</span><span class="mi">29</span><span class="n">c22</span><span class="p">,</span><span class="mi">29</span>
+<span class="o">&lt;</span>  <span class="mi">3</span>    <span class="mf">19.24</span>     <span class="mf">629.1</span>      <span class="o">-</span><span class="mf">0.3</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">0.3</span>
+<span class="o">&lt;</span>  <span class="mi">4</span>    <span class="mf">19.24</span>     <span class="mf">876.9</span>      <span class="o">-</span><span class="mf">1.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">1.9</span>
+<span class="o">&lt;</span>  <span class="mi">5</span>    <span class="mf">19.24</span>    <span class="mf">1173.0</span>      <span class="o">-</span><span class="mf">6.8</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">6.8</span>
+<span class="o">&lt;</span>  <span class="mi">6</span>    <span class="mf">19.25</span>    <span class="mf">1581.6</span>     <span class="o">-</span><span class="mf">13.3</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">13.3</span>
+<span class="o">&lt;</span>  <span class="mi">7</span>    <span class="mf">19.24</span>    <span class="mf">2191.6</span>     <span class="o">-</span><span class="mf">25.6</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">25.6</span>
+<span class="o">&lt;</span>  <span class="mi">8</span>    <span class="mf">19.24</span>    <span class="mf">3238.1</span>     <span class="o">-</span><span class="mf">33.2</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">33.2</span>
+<span class="o">&lt;</span>  <span class="mi">9</span>    <span class="mf">19.24</span>   <span class="mf">10787.1</span>     <span class="o">-</span><span class="mf">29.5</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">29.5</span>
+<span class="o">&lt;</span>  <span class="n">A</span>   <span class="mf">192.41</span>   <span class="mf">20828.3</span>    <span class="o">-</span><span class="mf">110.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>    <span class="o">-</span><span class="mf">110.9</span>
+<span class="o">---</span>
+<span class="o">&gt;</span>  <span class="mi">3</span>    <span class="mf">19.24</span>     <span class="mf">629.1</span>      <span class="o">-</span><span class="mf">0.1</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">0.1</span>
+<span class="o">&gt;</span>  <span class="mi">4</span>    <span class="mf">19.24</span>     <span class="mf">876.9</span>      <span class="o">-</span><span class="mf">1.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">1.0</span>
+<span class="o">&gt;</span>  <span class="mi">5</span>    <span class="mf">19.24</span>    <span class="mf">1173.0</span>      <span class="o">-</span><span class="mf">4.8</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">4.8</span>
+<span class="o">&gt;</span>  <span class="mi">6</span>    <span class="mf">19.25</span>    <span class="mf">1581.6</span>     <span class="o">-</span><span class="mf">11.8</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">11.8</span>
+<span class="o">&gt;</span>  <span class="mi">7</span>    <span class="mf">19.24</span>    <span class="mf">2191.6</span>     <span class="o">-</span><span class="mf">21.3</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">21.3</span>
+<span class="o">&gt;</span>  <span class="mi">8</span>    <span class="mf">19.24</span>    <span class="mf">3238.1</span>     <span class="o">-</span><span class="mf">29.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">29.9</span>
+<span class="o">&gt;</span>  <span class="mi">9</span>    <span class="mf">19.24</span>   <span class="mf">10787.1</span>     <span class="o">-</span><span class="mf">41.5</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">41.5</span>
+<span class="o">&gt;</span>  <span class="n">A</span>   <span class="mf">192.41</span>   <span class="mf">20828.3</span>    <span class="o">-</span><span class="mf">110.6</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>    <span class="o">-</span><span class="mf">110.6</span>
+</pre></div>
+</div>
+</section>
+<section id="tcja-extension-with-the-higher-elderly-disabled-standard-deduction-revision-and-the-new-top-tax-bracket-enhancement">
+<h2>4. TCJA extension with the higher elderly/disabled standard deduction revision and the new top tax bracket enhancement<a class="headerlink" href="#tcja-extension-with-the-higher-elderly-disabled-standard-deduction-revision-and-the-new-top-tax-bracket-enhancement" title="Link to this heading">#</a></h2>
+<p>In this last example, we look at how much of the extra cost of the
+<code class="docutils literal notranslate"><span class="pre">higher_aged_std</span></code> reform can be paid for by adding a new top income
+tax bracket to the TCJA-extension reform.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span><span class="p">)</span> <span class="n">Tax</span><span class="o">-</span><span class="n">Calculator</span><span class="o">%</span> <span class="n">cat</span> <span class="n">new_top_bracket</span><span class="o">.</span><span class="n">json</span>
+<span class="p">{</span>
+    <span class="s2">&quot;II_brk7&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;2026&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.5e6</span><span class="p">,</span> <span class="mf">5.0e6</span><span class="p">,</span> <span class="mf">2.5e6</span><span class="p">,</span> <span class="mf">4.2e6</span><span class="p">,</span> <span class="mf">5.0e6</span><span class="p">]},</span>
+    <span class="s2">&quot;II_rt8&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;2026&quot;</span><span class="p">:</span> <span class="mf">0.396</span><span class="p">},</span>
+    <span class="s2">&quot;PT_brk7&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;2026&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.5e6</span><span class="p">,</span> <span class="mf">5.0e6</span><span class="p">,</span> <span class="mf">2.5e6</span><span class="p">,</span> <span class="mf">4.2e6</span><span class="p">,</span> <span class="mf">5.0e6</span><span class="p">]},</span>
+    <span class="s2">&quot;PT_rt8&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;2026&quot;</span><span class="p">:</span> <span class="mf">0.396</span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="o">%</span> <span class="n">tc</span> <span class="o">../</span><span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">baseline</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">.</span><span class="n">json</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span> <span class="o">--</span><span class="n">graphs</span>
+<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2026</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">-</span><span class="c1">#-tables.text</span>
+<span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">-</span><span class="c1">#-pch.html</span>
+<span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">-</span><span class="c1">#-atr.html</span>
+<span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">-</span><span class="c1">#-mtr.html</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">40.9</span> <span class="n">seconds</span>
+
+<span class="n">tail</span> <span class="o">-</span><span class="mi">14</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">-</span><span class="c1">#-tables.text</span>
+<span class="n">Weighted</span> <span class="n">Tax</span> <span class="n">Differences</span> <span class="n">by</span> <span class="n">Baseline</span> <span class="n">Expanded</span><span class="o">-</span><span class="n">Income</span> <span class="n">Decile</span>
+    <span class="n">Returns</span>    <span class="n">ExpInc</span>    <span class="n">IncTax</span>    <span class="n">PayTax</span>     <span class="n">LSTax</span>    <span class="n">AllTax</span>
+       <span class="p">(</span><span class="c1">#m)      ($b)      ($b)      ($b)      ($b)      ($b)</span>
+ <span class="mi">0</span>    <span class="mf">19.24</span>    <span class="o">-</span><span class="mf">274.9</span>       <span class="mf">0.1</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.1</span>
+ <span class="mi">1</span>    <span class="mf">19.24</span>     <span class="mf">210.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>
+ <span class="mi">2</span>    <span class="mf">19.24</span>     <span class="mf">414.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>
+ <span class="mi">3</span>    <span class="mf">19.24</span>     <span class="mf">629.1</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>
+ <span class="mi">4</span>    <span class="mf">19.24</span>     <span class="mf">876.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>
+ <span class="mi">5</span>    <span class="mf">19.24</span>    <span class="mf">1173.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>
+ <span class="mi">6</span>    <span class="mf">19.25</span>    <span class="mf">1581.6</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>
+ <span class="mi">7</span>    <span class="mf">19.24</span>    <span class="mf">2191.6</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>
+ <span class="mi">8</span>    <span class="mf">19.24</span>    <span class="mf">3238.1</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>
+ <span class="mi">9</span>    <span class="mf">19.24</span>   <span class="mf">10787.1</span>      <span class="mf">15.8</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="mf">15.8</span>
+ <span class="n">A</span>   <span class="mf">192.41</span>   <span class="mf">20828.3</span>      <span class="mf">15.8</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="mf">15.8</span>
+</pre></div>
+</div>
+<p>So, the new top bracket (with a 39.6% marginal tax rate) raises
+aggregate federal income tax liability by enough to pay for the TCJA
+revision that approximates making social security benefits tax-free
+and produces an additional $15.8 billion (in 2026) that could be used
+to pay for other revisions.</p>
+<p>While those with the highest incomes do pay more tax, the reduction in
+their after-tax expanded income is quite small as can be seen in one
+of the standard graphs:
+<code class="docutils literal notranslate"><span class="pre">tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-pch.html</span></code>.
+This graph shows that the top one percent of the income distribution
+experiences a decline in after-tax income of about 0.36 percent (or
+less than four dollars per thousand dollars).</p>
+<p>Here are the ten-year results for this run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tc ../tmd.csv 2026 --numyears 10 --baseline ext.json+higher_aged_std.json --reform ext.json+higher_aged_std.json+new_top_bracket.json --exact --tables
+Read input data for 2021; input data were extrapolated to 2026
+Write tabular output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2027
+Write tabular output to file tmd-27-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2028
+Write tabular output to file tmd-28-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2029
+Write tabular output to file tmd-29-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2030
+Write tabular output to file tmd-30-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2031
+Write tabular output to file tmd-31-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2032
+Write tabular output to file tmd-32-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2033
+Write tabular output to file tmd-33-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2034
+Write tabular output to file tmd-34-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2035
+Write tabular output to file tmd-35-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Execution time is 58.2 seconds
+
+% tail -1 tmd-??-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text | awk &#39;$1~/A/{n++;c+=$4}END{print n,c}&#39;
+10 187.9
+</pre></div>
+</div>
+<p>So, there is nearly $188 billion left to pay for other revisions to
+the basic TCJA extension.</p>
+</section>
+<section id="how-is-the-ext-json-file-generated">
+<h2>How is the <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file generated?<a class="headerlink" href="#how-is-the-ext-json-file-generated" title="Link to this heading">#</a></h2>
 <p>The short answer is by using the
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/extend_tcja.py"><code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code></a> script.</p>
 <p>Reading the <code class="docutils literal notranslate"><span class="pre">extend_tcja.py</span></code> script will provide details on how the
@@ -574,6 +785,7 @@ added to the <code class="docutils literal notranslate"><span class="pre">policy
 <p>Beginning with the 4.5.0 version, Tax-Calculator incorporates the
 January 2025 CBO economic projection and contains historical tax
 policy parameter values through 2025.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -630,6 +842,25 @@ policy parameter values through 2025.</p>
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tcja-extension-without-any-revisions-or-enhancements">1. TCJA extension without any revisions or enhancements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tcja-extension-with-the-nontaxable-social-security-benefits-revision">2. TCJA extension with the nontaxable social security benefits revision</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tcja-extension-with-the-higher-elderly-disabled-standard-deduction-revision">3. TCJA extension with the higher elderly/disabled standard deduction revision</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tcja-extension-with-the-higher-elderly-disabled-standard-deduction-revision-and-the-new-top-tax-bracket-enhancement">4. TCJA extension with the higher elderly/disabled standard deduction revision and the new top tax bracket enhancement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-is-the-ext-json-file-generated">How is the <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> file generated?</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
