@@ -22,7 +22,8 @@ PUF data and on recent CPS data, and therefore, are the best data to
 use with Tax-Calculator.  All the examples assume you have the [three
 `tmd` data
 files](https://taxcalc.pslmodels.org/usage/data.html#irs-public-use-data-tmd-csv)
-in the parent directory of your working directory.
+in the parent directory of your working directory.  The `tmd` data
+contain information on 225,256 tax filing units.
 
 Before reading the rest of this document, be sure you understand how
 to use the Tax-Calculator command-line tool
@@ -67,89 +68,248 @@ All the examples use Tax-Calculator 4.6.1 version.
 Tax-Calculator 4.6.1 on Python 3.12
 ```
 
+The examples below were done on an ancient Mac with an old Intel
+processor with four CPU cores.  The execution times on newer computers
+should be substantially less than shown below.  In all the examples,
+each `tc` run is using just one CPU core.
+
+The
+[`ext.json`](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/ext.json)
+reform file is used all the examples.  See the section at the end of
+this document for more information on `ext.json` contents.
+
+
 ## 1. TCJA extension without any revisions or enhancements
 
-Text goes here ...
+```
+% tc ../tmd.csv 2026 --numyears 10 --reform ext.json --exact --tables
+Read input data for 2021; input data were extrapolated to 2026
+Write tabular output to file tmd-26-#-ext-#-tables.text
+Advance input data and  policy to 2027
+Write tabular output to file tmd-27-#-ext-#-tables.text
+Advance input data and  policy to 2028
+Write tabular output to file tmd-28-#-ext-#-tables.text
+Advance input data and  policy to 2029
+Write tabular output to file tmd-29-#-ext-#-tables.text
+Advance input data and  policy to 2030
+Write tabular output to file tmd-30-#-ext-#-tables.text
+Advance input data and  policy to 2031
+Write tabular output to file tmd-31-#-ext-#-tables.text
+Advance input data and  policy to 2032
+Write tabular output to file tmd-32-#-ext-#-tables.text
+Advance input data and  policy to 2033
+Write tabular output to file tmd-33-#-ext-#-tables.text
+Advance input data and  policy to 2034
+Write tabular output to file tmd-34-#-ext-#-tables.text
+Advance input data and  policy to 2035
+Write tabular output to file tmd-35-#-ext-#-tables.text
+Execution time is 58.4 seconds
+```
+
+Because the aggregate change in taxes is displayed on the last line of
+the tables file (in column four), we can look at the ten changes like
+this:
+
+```
+% tail -1 tmd-??-#-ext-#-tables.text
+==> tmd-26-#-ext-#-tables.text <==
+ A   192.41   20828.3    -273.1       0.0       0.0    -273.1
+
+==> tmd-27-#-ext-#-tables.text <==
+ A   193.77   21613.4    -280.5       0.0       0.0    -280.5
+
+==> tmd-28-#-ext-#-tables.text <==
+ A   194.72   22404.7    -288.1       0.0       0.0    -288.1
+
+==> tmd-29-#-ext-#-tables.text <==
+ A   195.66   23243.3    -280.3       0.0       0.0    -280.3
+
+==> tmd-30-#-ext-#-tables.text <==
+ A   196.58   24115.1    -288.1       0.0       0.0    -288.1
+
+==> tmd-31-#-ext-#-tables.text <==
+ A   197.48   25020.0    -296.0       0.0       0.0    -296.0
+
+==> tmd-32-#-ext-#-tables.text <==
+ A   198.35   25952.7    -315.9       0.0       0.0    -315.9
+
+==> tmd-33-#-ext-#-tables.text <==
+ A   199.21   26905.4    -323.8       0.0       0.0    -323.8
+
+==> tmd-34-#-ext-#-tables.text <==
+ A   200.03   27878.9    -331.7       0.0       0.0    -331.7
+
+==> tmd-35-#-ext-#-tables.text <==
+ A   200.83   28883.0    -339.7       0.0       0.0    -339.7
+```
+
+And the ten-year change in aggregate federal income tax liability can
+be tabulated this way:
+
+```
+% tail -1 tmd-??-#-ext-#-tables.text | awk '$1~/A/{n++;c+=$4}END{print n,c}'
+10 -3017.2
+```
 
 
 ## 2. TCJA extension with the nontaxable social security benefits revision
 
-Text goes here ...
+There is some discussion of exempting all social security benefits
+from federal income taxation.  Here is a JSON file that implements
+that reform:
+
+```
+% cat no_ssben_tax.json 
+{
+    "SS_percentage1": {"2026": 0.0},
+    "SS_percentage2": {"2026": 0.0}
+}
+```
+
+The marginal effect of adding that reform on to the TCJA-extension can be
+estimated in this 2026 run:
+
+```
+% tc ../tmd.csv 2026 --baseline ext.json --reform ext.json+no_ssben_tax.json --exact --tables 
+Read input data for 2021; input data were extrapolated to 2026
+Write tabular output to file tmd-26-ext-ext+no_ssben_tax-#-tables.text
+Execution time is 33.4 seconds
+
+% tail -1 tmd-26-ext-ext+no_ssben_tax-#-tables.text
+ A   192.41   20828.3    -110.6       0.0       0.0    -110.6
+```
+
+So, this reform reduces federal income tax liability by $110.6 billion in
+2026.
 
 
 ## 3. TCJA extension with the higher elderly/disabled standard deduction revision
 
-Text goes here ...
+Next we find a reform that approximates the `no_ssben_tax` reform
+analyzed in the previous section.  Trying higher values for the
+`STD_Aged` parameter, we quickly find that $31,500 for all filing
+statuses produces a reasonable approximation of the effects of the
+`no_ssben_tax` reform.
+
+```
+% cat higher_aged_std.json 
+{
+    "STD_Aged": {"2026": [31500, 31500, 31500, 31500, 31500]}
+}
+
+% tc ../tmd.csv 2026 --baseline ext.json --reform ext.json+higher_aged_std.json --exact --tables
+Read input data for 2021; input data were extrapolated to 2026
+Write tabular output to file tmd-26-ext-ext+higher_aged_std-#-tables.text
+Execution time is 34.0 seconds
+
+% diff tmd-26-ext-ext+higher_aged_std-#-tables.text tmd-26-ext-ext+no_ssben_tax-#-tables.text | tail -18
+22,29c22,29
+<  3    19.24     629.1      -0.3       0.0       0.0      -0.3
+<  4    19.24     876.9      -1.9       0.0       0.0      -1.9
+<  5    19.24    1173.0      -6.8       0.0       0.0      -6.8
+<  6    19.25    1581.6     -13.3       0.0       0.0     -13.3
+<  7    19.24    2191.6     -25.6       0.0       0.0     -25.6
+<  8    19.24    3238.1     -33.2       0.0       0.0     -33.2
+<  9    19.24   10787.1     -29.5       0.0       0.0     -29.5
+<  A   192.41   20828.3    -110.9       0.0       0.0    -110.9
+---
+>  3    19.24     629.1      -0.1       0.0       0.0      -0.1
+>  4    19.24     876.9      -1.0       0.0       0.0      -1.0
+>  5    19.24    1173.0      -4.8       0.0       0.0      -4.8
+>  6    19.25    1581.6     -11.8       0.0       0.0     -11.8
+>  7    19.24    2191.6     -21.3       0.0       0.0     -21.3
+>  8    19.24    3238.1     -29.9       0.0       0.0     -29.9
+>  9    19.24   10787.1     -41.5       0.0       0.0     -41.5
+>  A   192.41   20828.3    -110.6       0.0       0.0    -110.6
+```
 
 
 ## 4. TCJA extension with the higher elderly/disabled standard deduction revision and the new top tax bracket enhancement
 
-Text goes here ...
-
-
-
-
-
-
-=============================================================================
-OLD TEXT:
-
-The `--baseline` option is not commonly used, but it can be
-very helpful in analyzing reforms that take effect beginning in 2026.
-Such a reform could be analyzed relative to current-law policy (that
-is, with temporary TCJA provisions expiring after 2025) by omitting
-the `--baseline` option.  But if such a reform were to be analyzed
-relative to extending all the temporary TCJA provisions beyond 2025,
-then the `--baseline ext.json` option would need to be used.  The
-[`ext.json`](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/ext.json)
-file contains the 2026 tax policy reform provisions that would extend
-TCJA's temporary provisions beyond 2025.  Before using this `ext.json`
-reform file, be sure to read how it is generated at the end of this
-document.
-
-Here are some concrete examples of using the `tc` tool to analyze a
-reform of interest to you that begins in 2026.  The examples assume
-you have named your reform file `x.json` and that you are using one
-of the compatible input datasets describe above.  The examples will
-call the input dataset `z.csv`.
-
-To analyze your reform relative to current-law policy (which means
-temporary TCJA provisions have expired beginning in 2026), you would
-execute this command:
+In this last example, we look at how much of the extra cost of the
+`higher_aged_std` reform can be paid for by adding a new top income
+tax bracket to the TCJA-extension reform.
 
 ```
-tc z.csv 2026 --exact --tables --reform x.json
+(taxcalc-dev) Tax-Calculator% cat new_top_bracket.json
+{
+    "II_brk7": {"2026": [2.5e6, 5.0e6, 2.5e6, 4.2e6, 5.0e6]},
+    "II_rt8": {"2026": 0.396},
+    "PT_brk7": {"2026": [2.5e6, 5.0e6, 2.5e6, 4.2e6, 5.0e6]},
+    "PT_rt8": {"2026": 0.396}
+}
+
+% tc ../tmd.csv 2026 --baseline ext.json+higher_aged_std.json --reform ext.json+higher_aged_std.json+new_top_bracket.json --exact --tables --graphs
+Read input data for 2021; input data were extrapolated to 2026
+Write tabular output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Write graphical output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-pch.html
+Write graphical output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-atr.html
+Write graphical output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-mtr.html
+Execution time is 40.9 seconds
+
+tail -14 tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Weighted Tax Differences by Baseline Expanded-Income Decile
+    Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
+       (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
+ 0    19.24    -274.9       0.1       0.0       0.0       0.1
+ 1    19.24     210.9       0.0       0.0       0.0       0.0
+ 2    19.24     414.9       0.0       0.0       0.0       0.0
+ 3    19.24     629.1       0.0       0.0       0.0       0.0
+ 4    19.24     876.9       0.0       0.0       0.0       0.0
+ 5    19.24    1173.0       0.0       0.0       0.0       0.0
+ 6    19.25    1581.6       0.0       0.0       0.0       0.0
+ 7    19.24    2191.6       0.0       0.0       0.0       0.0
+ 8    19.24    3238.1       0.0       0.0       0.0       0.0
+ 9    19.24   10787.1      15.8       0.0       0.0      15.8
+ A   192.41   20828.3      15.8       0.0       0.0      15.8
 ```
 
-The tables would be in the `z-26-#-x-#-tab.text` output file generated
-by this `tc` run.  If you want to do custom tabulations of the micro
-output data, use the `--dumpdb` and `--dumpvars` options as explained
-by the `tc --help` documentation.
+So, the new top bracket (with a 39.6% marginal tax rate) raises
+aggregate federal income tax liability by enough to pay for the TCJA
+revision that approximates making social security benefits tax-free
+and produces an additional $15.8 billion (in 2026) that could be used
+to pay for other revisions.
 
-To analyze your reform relative to a reform that extends all TCJA
-temporary provisions beyond 2025, you would execute this command:
+While those with the highest incomes do pay more tax, the reduction in
+their after-tax expanded income is quite small as can be seen in one
+of the standard graphs:
+`tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-pch.html`.
+This graph shows that the top one percent of the income distribution
+experiences a decline in after-tax income of about 0.36 percent (or
+less than four dollars per thousand dollars).
 
-```
-tc z.csv 2026 --exact --tables --baseline ext.json --reform ext.json+x.json
-```
-
-The tables would be in the `z-26-ext-ext+x-#-tab.text` output file
-generated by this `tc` run.
-
-And finally, you might consider creating a reform file called
-`end.json` that contains just the two characters `{}`.  This is a null
-reform, which is equivalent to current-law policy, that could be used
-as follows:
+Here are the ten-year results for this run:
 
 ```
-tc z.csv 2026 --exact --tables --baseline end.json --reform x.json
+% tc ../tmd.csv 2026 --numyears 10 --baseline ext.json+higher_aged_std.json --reform ext.json+higher_aged_std.json+new_top_bracket.json --exact --tables
+Read input data for 2021; input data were extrapolated to 2026
+Write tabular output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2027
+Write tabular output to file tmd-27-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2028
+Write tabular output to file tmd-28-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2029
+Write tabular output to file tmd-29-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2030
+Write tabular output to file tmd-30-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2031
+Write tabular output to file tmd-31-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2032
+Write tabular output to file tmd-32-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2033
+Write tabular output to file tmd-33-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2034
+Write tabular output to file tmd-34-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Advance input data and  policy to 2035
+Write tabular output to file tmd-35-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+Execution time is 58.2 seconds
+
+% tail -1 tmd-??-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text | awk '$1~/A/{n++;c+=$4}END{print n,c}'
+10 187.9
 ```
 
-The resulting table output would be named `z-26-end-x-#-tab.text` and
-have the same tabular output as the `z-26-#-x-#-tab.text` file.  Some
-people may prefer `end` to `#` as a way of naming current-law policy
-in the context of discussing TCJA-related reforms.
-=============================================================================
+So, there is nearly $188 billion left to pay for other revisions to
+the basic TCJA extension.
 
 
 ## How is the `ext.json` file generated?
