@@ -21819,7 +21819,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": "CTC_c"
+                "max": 9e+99
             }
         },
         "compatible_data": {

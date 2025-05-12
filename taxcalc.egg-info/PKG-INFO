@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: taxcalc
-Version: 4.6.0
+Version: 4.6.1
 Summary: Tax-Calculator
 Home-page: https://github.com/PSLmodels/Tax-Calculator
 Download-URL: https://github.com/PSLmodels/Tax-Calculator
@@ -57,3 +57,6 @@ explains the workflow involved in contributing model enhancements.
 
 Complete documentation is available
 [here](https://PSLmodels.github.io/Tax-Calculator/).
+This documentation includes
+[examples](https://taxcalc.pslmodels.org/usage/tcja_after_2025.html)
+of how to analyze different ways of extending TCJA policy beyond 2025.

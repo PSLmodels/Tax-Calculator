@@ -3190,7 +3190,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 @iterate_jit(nopython=True)
 def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
                   ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
-                  CTC_is_refundable, CTC_include17,
+                  CTC_is_refundable, CTC_include17, CTC_c,
                   age_head, age_spouse, MARS, nu18,
                   ptax_was, c03260, e09800, c59660, e11200,
                   c11070):
@@ -3251,7 +3251,7 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
             childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
         else:
             childnum = n24
-        line4 = ACTC_c * childnum
+        line4 = min(ACTC_c, CTC_c) * childnum
     c11070 = 0.  # line15
     if line3 > 0. and line4 > 0.:
         line5 = min(line3, line4)

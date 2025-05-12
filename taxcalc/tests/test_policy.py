@@ -811,19 +811,6 @@ def test_get_index_rate():
     assert pol.wage_growth_rates() == pol._wage_growth_rates
 
 
-def test_reform_with_bad_ctc_levels():
-    """
-    Implement a reform with _ACTC > _CTC_c values.
-    """
-    pol = Policy()
-    child_credit_reform = {
-        'CTC_c': {2020: 2200},
-        'ACTC_c': {2020: 2500}
-    }
-    with pytest.raises(pt.ValidationError):
-        pol.implement_reform(child_credit_reform)
-
-
 def test_reform_with_removed_parameter(monkeypatch):
     """
     Try to use removed parameter in a reform.
