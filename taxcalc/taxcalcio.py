@@ -140,10 +140,7 @@ class TaxCalcIO():
                         try:
                             _ = json_to_dict(json_text)
                         except ValueError as valerr:
-                            msg = (
-                                f'{bas} contains invalid JSON '
-                                '(check with JSONLint)'
-                            )
+                            msg = f'{bas} contains invalid JSON'
                             self.errmsg += f'ERROR: BASELINE file {msg}\n'
                             self.errmsg += f'{valerr}'
                 else:
@@ -187,10 +184,7 @@ class TaxCalcIO():
                         try:
                             _ = json_to_dict(json_text)
                         except ValueError as valerr:
-                            msg = (
-                                f'{rfm} contains invalid JSON '
-                                '(check with JSONLint)'
-                            )
+                            msg = f'{rfm} contains invalid JSON'
                             self.errmsg += f'ERROR: REFORM file {msg}\n'
                             self.errmsg += f'{valerr}'
                 else:
