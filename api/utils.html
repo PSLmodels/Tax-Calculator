@@ -804,17 +804,17 @@ specified income_measure.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="taxcalc.utils.json_to_dict">
-<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">json_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#json_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.json_to_dict" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">taxcalc.utils.</span></span><span class="sig-name descname"><span class="pre">json_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jsontext</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#json_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.utils.json_to_dict" title="Link to this definition">#</a></dt>
 <dd><p>Convert specified JSON text into an ordered Python dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>json_text</strong> (<em>string</em>) – JSON text.</p>
+<dd class="field-odd"><p><strong>jsontext</strong> (<em>string</em>) – JSON text that may contain comments, which will be removed</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError:</strong> – if json_text contains a JSON syntax error.</p>
+<dd class="field-even"><p><strong>ValueError:</strong> – if jsontext contains a JSON syntax error after comments are removed</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dictionary</strong> – JSON data expressed as an ordered Python dictionary.</p>
+<dd class="field-odd"><p><strong>dictionary</strong> – JSON data expressed as an ordered Python dictionary</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>collections.OrderedDict</p>

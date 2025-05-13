@@ -3606,7 +3606,7 @@ document.write(`
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">AdditionalCTC</span><span class="p">(</span><span class="n">codtc_limited</span><span class="p">,</span> <span class="n">ACTC_c</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">ACTC_Income_thd</span><span class="p">,</span>
                   <span class="n">ACTC_rt</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">ACTC_rt_bonus_under6family</span><span class="p">,</span> <span class="n">ACTC_ChildNum</span><span class="p">,</span>
-                  <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
+                  <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span> <span class="n">CTC_c</span><span class="p">,</span>
                   <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span>
                   <span class="n">ptax_was</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">c59660</span><span class="p">,</span> <span class="n">e11200</span><span class="p">,</span>
                   <span class="n">c11070</span><span class="p">):</span>
@@ -3667,7 +3667,7 @@ document.write(`
             <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nu18</span> <span class="o">-</span> <span class="n">tu18</span> <span class="o">-</span> <span class="n">su18</span> <span class="o">-</span> <span class="n">n24</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span>
-        <span class="n">line4</span> <span class="o">=</span> <span class="n">ACTC_c</span> <span class="o">*</span> <span class="n">childnum</span>
+        <span class="n">line4</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ACTC_c</span><span class="p">,</span> <span class="n">CTC_c</span><span class="p">)</span> <span class="o">*</span> <span class="n">childnum</span>
     <span class="n">c11070</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># line15</span>
     <span class="k">if</span> <span class="n">line3</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">line4</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="n">line5</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line3</span><span class="p">,</span> <span class="n">line4</span><span class="p">)</span>

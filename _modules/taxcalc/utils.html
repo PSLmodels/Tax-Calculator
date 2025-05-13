@@ -415,6 +415,7 @@ document.write(`
 <span class="c1"># pylint: disable=too-many-lines</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
@@ -2049,25 +2050,45 @@ document.write(`
 
 <div class="viewcode-block" id="json_to_dict">
 <a class="viewcode-back" href="../../api/utils.html#taxcalc.utils.json_to_dict">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">json_to_dict</span><span class="p">(</span><span class="n">json_text</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">json_to_dict</span><span class="p">(</span><span class="n">jsontext</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert specified JSON text into an ordered Python dictionary.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    json_text: string</span>
-<span class="sd">        JSON text.</span>
+<span class="sd">    jsontext: string</span>
+<span class="sd">        JSON text that may contain comments, which will be removed</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError:</span>
-<span class="sd">        if json_text contains a JSON syntax error.</span>
+<span class="sd">        if jsontext contains a JSON syntax error after comments are removed</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dictionary: collections.OrderedDict</span>
-<span class="sd">        JSON data expressed as an ordered Python dictionary.</span>
+<span class="sd">        JSON data expressed as an ordered Python dictionary</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_comments</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove single and multiline comments from JSON.</span>
+<span class="sd">        Logic follows https://stackoverflow.com/a/18381470/9100772</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_replacer</span><span class="p">(</span><span class="n">match</span><span class="p">):</span>
+            <span class="c1"># if the 2nd group (capturing comments) is not None,</span>
+            <span class="c1"># it means we have captured a non-quoted (real) comment string.</span>
+            <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>  <span class="c1"># preserve line numbers</span>
+            <span class="c1"># otherwise, we will return the 1st group</span>
+            <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># captured quoted-string</span>
+        <span class="c1"># begin main remove_comments function logic</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(</span><span class="se">\&quot;</span><span class="s2">.*?</span><span class="se">\&quot;</span><span class="s2">|\&#39;.*?\&#39;)|(/\*.*?\*/|//[^\r\n]*$)&quot;</span>
+        <span class="c1"># first group captures quoted strings (double or single)</span>
+        <span class="c1"># second group captures comments (//single-line or /* multi-line */)</span>
+        <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span> <span class="o">|</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">regex</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">_replacer</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span>
+    <span class="c1"># begin main json_to_dict function logic</span>
+    <span class="n">json_text</span> <span class="o">=</span> <span class="n">remove_comments</span><span class="p">(</span><span class="n">jsontext</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">ordered_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_text</span><span class="p">,</span>
                                   <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">)</span>
@@ -2085,6 +2106,7 @@ document.write(`
             <span class="n">linenum</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">linenum</span><span class="si">:</span><span class="s1">04d</span><span class="si">}{</span><span class="n">line</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="n">bline</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;If still puzzled, try using JSONLint online.</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">valerr</span>
     <span class="k">return</span> <span class="n">ordered_dict</span></div>
 
