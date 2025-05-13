@@ -153,6 +153,24 @@ def fixture_errorreformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
+@pytest.fixture(scope='session', name='ereformfile')
+def fixture_ereformfile():
+    """
+    Temporary reform file with .json extension.
+    """
+    contents = '{"II_em": {"2022": 1000},}'
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(contents)
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
 @pytest.fixture(scope='session', name='errorassumpfile')
 def fixture_errorassumpfile():
     """
@@ -249,7 +267,7 @@ def fixture_assumpfile2():
      'no-dot-json-filename'),
     ([], [], [], [],),
     ('no-exist.csv', 'no-exist.json', 'no-exist.json', 'no-exist.json'),
-    ('cps.csv', 'errorreformfile', 'errorreformfile', 'no-exist.json'),
+    ('cps.csv', 'ereformfile', 'ereformfile', 'no-exist.json'),
 ])
 def test_ctor_errors(input_data, baseline, reform, assump):
     """
