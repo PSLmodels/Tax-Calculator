@@ -1626,11 +1626,11 @@ def json_to_dict(jsontext):
         bline = ('XXXX----.----1----.----2----.----3----.----4'
                  '----.----5----.----6----.----7')
         msg += bline + '\n'
-        msg += 'If still puzzled, try using JSONLint online.\n'
         linenum = 0
         for line in text_lines:
             linenum += 1
             msg += f'{linenum:04d}{line}\n'
         msg += bline + '\n'
+        msg += 'If still puzzled, try using JSONLint online.\n'
         raise ValueError(msg) from valerr
     return ordered_dict
