@@ -8,6 +8,7 @@ PUBLIC low-level utility functions for Tax-Calculator.
 # pylint: disable=too-many-lines
 
 import os
+import re
 import math
 import json
 import copy
@@ -1574,25 +1575,45 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def json_to_dict(json_text):
+def json_to_dict(jsontext):
     """
     Convert specified JSON text into an ordered Python dictionary.
 
     Parameters
     ----------
-    json_text: string
-        JSON text.
+    jsontext: string
+        JSON text that may contain comments, which will be removed
 
     Raises
     ------
     ValueError:
-        if json_text contains a JSON syntax error.
+        if jsontext contains a JSON syntax error after comments are removed
 
     Returns
     -------
     dictionary: collections.OrderedDict
-        JSON data expressed as an ordered Python dictionary.
+        JSON data expressed as an ordered Python dictionary
     """
+    def remove_comments(string):
+        """
+        Remove single and multiline comments from JSON.
+        Logic follows https://stackoverflow.com/a/18381470/9100772
+        """
+        def _replacer(match):
+            # if the 2nd group (capturing comments) is not None,
+            # it means we have captured a non-quoted (real) comment string.
+            if match.group(2) is not None:
+                return "\n"  # preserve line numbers
+            # otherwise, we will return the 1st group
+            return match.group(1)  # captured quoted-string
+        # begin main remove_comments function logic
+        pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
+        # first group captures quoted strings (double or single)
+        # second group captures comments (//single-line or /* multi-line */)
+        regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
+        return regex.sub(_replacer, string)
+    # begin main json_to_dict function logic
+    json_text = remove_comments(jsontext)
     try:
         ordered_dict = json.loads(json_text,
                                   object_pairs_hook=collections.OrderedDict)
@@ -1605,6 +1626,7 @@ def json_to_dict(json_text):
         bline = ('XXXX----.----1----.----2----.----3----.----4'
                  '----.----5----.----6----.----7')
         msg += bline + '\n'
+        msg += 'If still puzzled, try using JSONLint online.\n'
         linenum = 0
         for line in text_lines:
             linenum += 1

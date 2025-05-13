@@ -133,21 +133,22 @@ class TaxCalcIO():
                     msg = f'{fname} does not end in .json'
                     self.errmsg += f'ERROR: BASELINE file name {msg}\n'
                 # check existence of BASELINE file
-                if not os.path.isfile(bas):
+                if os.path.isfile(bas):
+                    # check validity of JSON text
+                    with open(bas, 'r', encoding='utf-8') as jfile:
+                        json_text = jfile.read()
+                        try:
+                            _ = json_to_dict(json_text)
+                        except ValueError as valerr:
+                            msg = (
+                                f'{bas} contains invalid JSON '
+                                '(check with JSONLint)'
+                            )
+                            self.errmsg += f'ERROR: BASELINE file {msg}\n'
+                            self.errmsg += f'{valerr}'
+                else:
                     msg = f'{bas} could not be found'
                     self.errmsg += f'ERROR: BASELINE file {msg}\n'
-                # check validity of JSON text
-                with open(bas, 'r', encoding='utf-8') as jfile:
-                    json_text = jfile.read()
-                    try:
-                        _ = json_to_dict(json_text)
-                    except ValueError as valerr:
-                        msg = (
-                            f'{bas} contains invalid JSON '
-                            '(check with JSONLint)'
-                        )
-                        self.errmsg += f'ERROR: BASELINE file {msg}\n'
-                        self.errmsg += f'{valerr}'
                 # add fname to list of basnames used in output file names
                 basnames.append(fname)
             # create (possibly compound) baseline name for output file names
@@ -179,21 +180,22 @@ class TaxCalcIO():
                     msg = f'{fname} does not end in .json'
                     self.errmsg += f'ERROR: REFORM file name {msg}\n'
                 # check existence of REFORM file
-                if not os.path.isfile(rfm):
+                if os.path.isfile(rfm):
+                    # check validity of JSON text
+                    with open(rfm, 'r', encoding='utf-8') as jfile:
+                        json_text = jfile.read()
+                        try:
+                            _ = json_to_dict(json_text)
+                        except ValueError as valerr:
+                            msg = (
+                                f'{rfm} contains invalid JSON '
+                                '(check with JSONLint)'
+                            )
+                            self.errmsg += f'ERROR: REFORM file {msg}\n'
+                            self.errmsg += f'{valerr}'
+                else:
                     msg = f'{rfm} could not be found'
                     self.errmsg += f'ERROR: REFORM file {msg}\n'
-                # check validity of JSON text
-                with open(rfm, 'r', encoding='utf-8') as jfile:
-                    json_text = jfile.read()
-                    try:
-                        _ = json_to_dict(json_text)
-                    except ValueError as valerr:
-                        msg = (
-                            f'{rfm} contains invalid JSON '
-                            '(check with JSONLint)'
-                        )
-                        self.errmsg += f'ERROR: REFORM file {msg}\n'
-                        self.errmsg += f'{valerr}'
                 # add fname to list of refnames used in output file names
                 refnames.append(fname)
             # create (possibly compound) reform name for output file names
