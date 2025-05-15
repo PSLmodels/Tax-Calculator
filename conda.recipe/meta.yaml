@@ -12,7 +12,7 @@ requirements:
     - "numpy>=1.26"
     - "pandas>=2.2"
     - "bokeh>=3.7"
-    - "paramtools>=0.19.0"
+    - "paramtools>=0.20.0"
     - numba
     - curl
     - openpyxl
@@ -23,7 +23,7 @@ requirements:
     - "numpy>=1.26"
     - "pandas>=2.2"
     - "bokeh>=3.7"
-    - "paramtools>=0.19.0"
+    - "paramtools>=0.20.0"
     - numba
     - curl
     - openpyxl
