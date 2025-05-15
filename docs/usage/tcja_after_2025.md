@@ -39,16 +39,17 @@ reform-minus-baseline differences by income decile and in aggregate.
 
 Nobody knows how the 2025 tax legislation will turn out, so the idea
 of this document is to illustrate how to use the Tax-Calculator CLI
-tool to analyze some of the TCJA revisions that are being reported in
+tool to analyze some of the TCJA revisions that were being reported in
 the press in early May 2025.  The basic legislative goal is to extend
 TCJA beyond 2025, but there is discussion of a number of **revisions**
 to the basic extension.  The revisions being discussed include, but
 are not limited to, raising the SALT deduction cap, making social
 security benefits nontaxable, and liberalizing the child tax credit.
-(Given the nature of the rules under which the legislation is being
-developed, no changes in social security financing can be made, so
-there is discussion of a higher elderly/disability standard deduction
-amount to proxy the nontaxable social security benefits revision.)
+(Given the nature of the reconciliation rules under which the
+legislation is being developed, no changes in social security
+financing can be made, so there is discussion of a higher
+elderly/disability standard deduction amount to proxy the nontaxable
+social security benefits revision.)
 These revisions all cause reductions in income tax revenue, so there
 is also discussion about **enhancements** to the extended-TCJA policy
 that would raise revenue to pay for revisions.  The enhancement
@@ -62,10 +63,10 @@ The analysis examples below focus on the following policy scenarios:
 3. a TCJA extension with the higher elderly/disabled standard deduction revision
 4. a TCJA extension with the higher elderly/disabled standard deduction revision and the new top tax bracket enhancement
 
-All the examples use Tax-Calculator 4.6.1 version.
+All the examples use Tax-Calculator 4.6.2 version.
 ```
 % tc --version
-Tax-Calculator 4.6.1 on Python 3.12
+Tax-Calculator 4.6.2 on Python 3.12
 ```
 
 The examples below were done on an ancient Mac with an old Intel
@@ -103,7 +104,7 @@ Advance input data and  policy to 2034
 Write tabular output to file tmd-34-#-ext-#-tables.text
 Advance input data and  policy to 2035
 Write tabular output to file tmd-35-#-ext-#-tables.text
-Execution time is 58.4 seconds
+Execution time is 56.8 seconds
 ```
 
 Because the aggregate change in taxes is displayed on the last line of
@@ -113,22 +114,22 @@ this:
 ```
 % tail -1 tmd-??-#-ext-#-tables.text
 ==> tmd-26-#-ext-#-tables.text <==
- A   192.41   20828.3    -273.1       0.0       0.0    -273.1
+ A   192.41   20828.3    -284.1       0.0       0.0    -284.1
 
 ==> tmd-27-#-ext-#-tables.text <==
- A   193.77   21613.4    -280.5       0.0       0.0    -280.5
+ A   193.77   21613.4    -291.8       0.0       0.0    -291.8
 
 ==> tmd-28-#-ext-#-tables.text <==
- A   194.72   22404.7    -288.1       0.0       0.0    -288.1
+ A   194.72   22404.7    -299.6       0.0       0.0    -299.6
 
 ==> tmd-29-#-ext-#-tables.text <==
- A   195.66   23243.3    -280.3       0.0       0.0    -280.3
+ A   195.66   23243.3    -291.9       0.0       0.0    -291.9
 
 ==> tmd-30-#-ext-#-tables.text <==
- A   196.58   24115.1    -288.1       0.0       0.0    -288.1
+ A   196.58   24115.1    -299.9       0.0       0.0    -299.9
 
 ==> tmd-31-#-ext-#-tables.text <==
- A   197.48   25020.0    -296.0       0.0       0.0    -296.0
+ A   197.48   25020.0    -307.9       0.0       0.0    -307.9
 
 ==> tmd-32-#-ext-#-tables.text <==
  A   198.35   25952.7    -315.9       0.0       0.0    -315.9
@@ -148,7 +149,7 @@ be tabulated this way:
 
 ```
 % tail -1 tmd-??-#-ext-#-tables.text | awk '$1~/A/{n++;c+=$4}END{print n,c}'
-10 -3017.2
+10 -3086.3
 ```
 
 
@@ -176,10 +177,10 @@ Write tabular output to file tmd-26-ext-ext+no_ssben_tax-#-tables.text
 Execution time is 33.4 seconds
 
 % tail -1 tmd-26-ext-ext+no_ssben_tax-#-tables.text
- A   192.41   20828.3    -110.6       0.0       0.0    -110.6
+ A   192.41   20828.3    -110.7       0.0       0.0    -110.7
 ```
 
-So, this reform reduces federal income tax liability by $110.6 billion in
+So, this reform reduces federal income tax liability by $110.7 billion in
 2026.
 
 
@@ -200,27 +201,27 @@ statuses produces a reasonable approximation of the effects of the
 % tc ../tmd.csv 2026 --baseline ext.json --reform ext.json+higher_aged_std.json --exact --tables
 Read input data for 2021; input data were extrapolated to 2026
 Write tabular output to file tmd-26-ext-ext+higher_aged_std-#-tables.text
-Execution time is 34.0 seconds
+Execution time is 32.4 seconds
 
 % diff tmd-26-ext-ext+higher_aged_std-#-tables.text tmd-26-ext-ext+no_ssben_tax-#-tables.text | tail -18
 22,29c22,29
-<  3    19.24     629.1      -0.3       0.0       0.0      -0.3
+<  3    19.24     629.1      -0.4       0.0       0.0      -0.4
 <  4    19.24     876.9      -1.9       0.0       0.0      -1.9
-<  5    19.24    1173.0      -6.8       0.0       0.0      -6.8
-<  6    19.25    1581.6     -13.3       0.0       0.0     -13.3
+<  5    19.24    1173.0      -6.9       0.0       0.0      -6.9
+<  6    19.25    1581.6     -13.4       0.0       0.0     -13.4
 <  7    19.24    2191.6     -25.6       0.0       0.0     -25.6
 <  8    19.24    3238.1     -33.2       0.0       0.0     -33.2
 <  9    19.24   10787.1     -29.5       0.0       0.0     -29.5
-<  A   192.41   20828.3    -110.9       0.0       0.0    -110.9
+<  A   192.41   20828.3    -111.1       0.0       0.0    -111.1
 ---
 >  3    19.24     629.1      -0.1       0.0       0.0      -0.1
 >  4    19.24     876.9      -1.0       0.0       0.0      -1.0
->  5    19.24    1173.0      -4.8       0.0       0.0      -4.8
->  6    19.25    1581.6     -11.8       0.0       0.0     -11.8
+>  5    19.24    1173.0      -4.9       0.0       0.0      -4.9
+>  6    19.25    1581.6     -11.9       0.0       0.0     -11.9
 >  7    19.24    2191.6     -21.3       0.0       0.0     -21.3
 >  8    19.24    3238.1     -29.9       0.0       0.0     -29.9
 >  9    19.24   10787.1     -41.5       0.0       0.0     -41.5
->  A   192.41   20828.3    -110.6       0.0       0.0    -110.6
+>  A   192.41   20828.3    -110.7       0.0       0.0    -110.7
 ```
 
 
@@ -245,9 +246,9 @@ Write tabular output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_
 Write graphical output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-pch.html
 Write graphical output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-atr.html
 Write graphical output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-mtr.html
-Execution time is 40.9 seconds
+Execution time is 39.8 seconds
 
-tail -14 tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
+% tail -14 tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
 Weighted Tax Differences by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
@@ -302,7 +303,7 @@ Advance input data and  policy to 2034
 Write tabular output to file tmd-34-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
 Advance input data and  policy to 2035
 Write tabular output to file tmd-35-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Execution time is 58.2 seconds
+Execution time is 57.1 seconds
 
 % tail -1 tmd-??-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text | awk '$1~/A/{n++;c+=$4}END{print n,c}'
 10 187.9
