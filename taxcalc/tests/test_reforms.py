@@ -392,7 +392,7 @@ def test_ext_reform(tests_path):
 @pytest.mark.extend_tcja
 def test_ext_plus_ctc_reform(tests_path):
     """
-    Test ext.json plus ctc.json compound reform relative to ext.json baseline.
+    Test ext.json plus ctc.jsonx compound reform relative to ext.json baseline.
     """
     # specify baseline policy, bas
     bas = Policy()
@@ -403,7 +403,7 @@ def test_ext_plus_ctc_reform(tests_path):
     assert not bas.parameter_errors
     # specify reform policy, ref
     ref = Policy()
-    for jsonname in ['ext.json', 'ctc.json']:
+    for jsonname in ['ext.json', 'ctc.jsonx']:
         filename = os.path.join(tests_path, '..', 'reforms', jsonname)
         with open(filename, 'r', encoding='utf-8') as rfile:
             rtext = rfile.read()
