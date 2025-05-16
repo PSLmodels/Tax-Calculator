@@ -4,6 +4,24 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2025-05-16 Release 4.6.2
+------------------------
+(last merged pull request is
+[#2905](https://github.com/PSLmodels/Tax-Calculator/pull/2905))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+- Work around multiple-indexing-change limitations in `parameters.py` code
+[[#2904](https://github.com/PSLmodels/Tax-Calculator/pull/2904) by Martin Holmer]
+- Require `paramtools` 0.20.0 that works with the current `marshmallow` 4.0.0
+[[#2905](https://github.com/PSLmodels/Tax-Calculator/pull/2905) by Martin Holmer]
+
+
 2025-05-09 Release 4.6.1
 ------------------------
 (last merged pull request is
