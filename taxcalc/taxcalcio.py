@@ -484,7 +484,7 @@ class TaxCalcIO():
         # advance baseline and reform Calculator objects to specified year
         self.calc_bas.advance_to_year(year)
         self.calc_ref.advance_to_year(year)
-        idata = 'Advance input data and ' if aging_data else 'Advance'
+        idata = 'Advance input data and' if aging_data else 'Advance'
         if not self.silent:
             print(f'{idata} policy to {year}')
 
