@@ -521,16 +521,17 @@ estimates under the reform and the bottom table contains estimates of
 reform-minus-baseline differences by income decile and in aggregate.</p>
 <p>Nobody knows how the 2025 tax legislation will turn out, so the idea
 of this document is to illustrate how to use the Tax-Calculator CLI
-tool to analyze some of the TCJA revisions that are being reported in
+tool to analyze some of the TCJA revisions that were being reported in
 the press in early May 2025.  The basic legislative goal is to extend
 TCJA beyond 2025, but there is discussion of a number of <strong>revisions</strong>
 to the basic extension.  The revisions being discussed include, but
 are not limited to, raising the SALT deduction cap, making social
 security benefits nontaxable, and liberalizing the child tax credit.
-(Given the nature of the rules under which the legislation is being
-developed, no changes in social security financing can be made, so
-there is discussion of a higher elderly/disability standard deduction
-amount to proxy the nontaxable social security benefits revision.)
+(Given the nature of the reconciliation rules under which the
+legislation is being developed, no changes in social security
+financing can be made, so there is discussion of a higher
+elderly/disability standard deduction amount to proxy the nontaxable
+social security benefits revision.)
 These revisions all cause reductions in income tax revenue, so there
 is also discussion about <strong>enhancements</strong> to the extended-TCJA policy
 that would raise revenue to pay for revisions.  The enhancement
@@ -543,9 +544,9 @@ a 39.6 percent marginal tax rate.</p>
 <li><p>a TCJA extension with the higher elderly/disabled standard deduction revision</p></li>
 <li><p>a TCJA extension with the higher elderly/disabled standard deduction revision and the new top tax bracket enhancement</p></li>
 </ol>
-<p>All the examples use Tax-Calculator 4.6.1 version.</p>
+<p>All the examples use Tax-Calculator 4.6.2 version.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="o">--</span><span class="n">version</span>
-<span class="n">Tax</span><span class="o">-</span><span class="n">Calculator</span> <span class="mf">4.6.1</span> <span class="n">on</span> <span class="n">Python</span> <span class="mf">3.12</span>
+<span class="n">Tax</span><span class="o">-</span><span class="n">Calculator</span> <span class="mf">4.6.2</span> <span class="n">on</span> <span class="n">Python</span> <span class="mf">3.12</span>
 </pre></div>
 </div>
 <p>The examples below were done on an ancient Mac with an old Intel
@@ -561,25 +562,25 @@ this document for more information on <code class="docutils literal notranslate"
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="o">../</span><span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">numyears</span> <span class="mi">10</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span>
 <span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2026</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2027</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2027</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">27</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2028</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2028</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2029</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2029</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">29</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2030</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2030</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2031</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2031</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2032</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2032</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">32</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2033</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2033</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">33</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2034</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2034</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">34</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span>  <span class="n">policy</span> <span class="n">to</span> <span class="mi">2035</span>
+<span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2035</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">35</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">58.4</span> <span class="n">seconds</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">56.8</span> <span class="n">seconds</span>
 </pre></div>
 </div>
 <p>Because the aggregate change in taxes is displayed on the last line of
@@ -587,22 +588,22 @@ the tables file (in column four), we can look at the ten changes like
 this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tail -1 tmd-??-#-ext-#-tables.text
 ==&gt; tmd-26-#-ext-#-tables.text &lt;==
- A   192.41   20828.3    -273.1       0.0       0.0    -273.1
+ A   192.41   20828.3    -284.1       0.0       0.0    -284.1
 
 ==&gt; tmd-27-#-ext-#-tables.text &lt;==
- A   193.77   21613.4    -280.5       0.0       0.0    -280.5
+ A   193.77   21613.4    -291.8       0.0       0.0    -291.8
 
 ==&gt; tmd-28-#-ext-#-tables.text &lt;==
- A   194.72   22404.7    -288.1       0.0       0.0    -288.1
+ A   194.72   22404.7    -299.6       0.0       0.0    -299.6
 
 ==&gt; tmd-29-#-ext-#-tables.text &lt;==
- A   195.66   23243.3    -280.3       0.0       0.0    -280.3
+ A   195.66   23243.3    -291.9       0.0       0.0    -291.9
 
 ==&gt; tmd-30-#-ext-#-tables.text &lt;==
- A   196.58   24115.1    -288.1       0.0       0.0    -288.1
+ A   196.58   24115.1    -299.9       0.0       0.0    -299.9
 
 ==&gt; tmd-31-#-ext-#-tables.text &lt;==
- A   197.48   25020.0    -296.0       0.0       0.0    -296.0
+ A   197.48   25020.0    -307.9       0.0       0.0    -307.9
 
 ==&gt; tmd-32-#-ext-#-tables.text &lt;==
  A   198.35   25952.7    -315.9       0.0       0.0    -315.9
@@ -620,7 +621,7 @@ this:</p>
 <p>And the ten-year change in aggregate federal income tax liability can
 be tabulated this way:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tail -1 tmd-??-#-ext-#-tables.text | awk &#39;$1~/A/{n++;c+=$4}END{print n,c}&#39;
-10 -3017.2
+10 -3086.3
 </pre></div>
 </div>
 </section>
@@ -644,10 +645,10 @@ estimated in this 2026 run:</p>
 <span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">33.4</span> <span class="n">seconds</span>
 
 <span class="o">%</span> <span class="n">tail</span> <span class="o">-</span><span class="mi">1</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">no_ssben_tax</span><span class="o">-</span><span class="c1">#-tables.text</span>
- <span class="n">A</span>   <span class="mf">192.41</span>   <span class="mf">20828.3</span>    <span class="o">-</span><span class="mf">110.6</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>    <span class="o">-</span><span class="mf">110.6</span>
+ <span class="n">A</span>   <span class="mf">192.41</span>   <span class="mf">20828.3</span>    <span class="o">-</span><span class="mf">110.7</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>    <span class="o">-</span><span class="mf">110.7</span>
 </pre></div>
 </div>
-<p>So, this reform reduces federal income tax liability by $110.6 billion in
+<p>So, this reform reduces federal income tax liability by $110.7 billion in
 2026.</p>
 </section>
 <section id="tcja-extension-with-the-higher-elderly-disabled-standard-deduction-revision">
@@ -665,27 +666,27 @@ statuses produces a reasonable approximation of the effects of the
 <span class="o">%</span> <span class="n">tc</span> <span class="o">../</span><span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">baseline</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span>
 <span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2026</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="c1">#-tables.text</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">34.0</span> <span class="n">seconds</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">32.4</span> <span class="n">seconds</span>
 
 <span class="o">%</span> <span class="n">diff</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="c1">#-tables.text tmd-26-ext-ext+no_ssben_tax-#-tables.text | tail -18</span>
 <span class="mi">22</span><span class="p">,</span><span class="mi">29</span><span class="n">c22</span><span class="p">,</span><span class="mi">29</span>
-<span class="o">&lt;</span>  <span class="mi">3</span>    <span class="mf">19.24</span>     <span class="mf">629.1</span>      <span class="o">-</span><span class="mf">0.3</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">0.3</span>
+<span class="o">&lt;</span>  <span class="mi">3</span>    <span class="mf">19.24</span>     <span class="mf">629.1</span>      <span class="o">-</span><span class="mf">0.4</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">0.4</span>
 <span class="o">&lt;</span>  <span class="mi">4</span>    <span class="mf">19.24</span>     <span class="mf">876.9</span>      <span class="o">-</span><span class="mf">1.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">1.9</span>
-<span class="o">&lt;</span>  <span class="mi">5</span>    <span class="mf">19.24</span>    <span class="mf">1173.0</span>      <span class="o">-</span><span class="mf">6.8</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">6.8</span>
-<span class="o">&lt;</span>  <span class="mi">6</span>    <span class="mf">19.25</span>    <span class="mf">1581.6</span>     <span class="o">-</span><span class="mf">13.3</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">13.3</span>
+<span class="o">&lt;</span>  <span class="mi">5</span>    <span class="mf">19.24</span>    <span class="mf">1173.0</span>      <span class="o">-</span><span class="mf">6.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">6.9</span>
+<span class="o">&lt;</span>  <span class="mi">6</span>    <span class="mf">19.25</span>    <span class="mf">1581.6</span>     <span class="o">-</span><span class="mf">13.4</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">13.4</span>
 <span class="o">&lt;</span>  <span class="mi">7</span>    <span class="mf">19.24</span>    <span class="mf">2191.6</span>     <span class="o">-</span><span class="mf">25.6</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">25.6</span>
 <span class="o">&lt;</span>  <span class="mi">8</span>    <span class="mf">19.24</span>    <span class="mf">3238.1</span>     <span class="o">-</span><span class="mf">33.2</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">33.2</span>
 <span class="o">&lt;</span>  <span class="mi">9</span>    <span class="mf">19.24</span>   <span class="mf">10787.1</span>     <span class="o">-</span><span class="mf">29.5</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">29.5</span>
-<span class="o">&lt;</span>  <span class="n">A</span>   <span class="mf">192.41</span>   <span class="mf">20828.3</span>    <span class="o">-</span><span class="mf">110.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>    <span class="o">-</span><span class="mf">110.9</span>
+<span class="o">&lt;</span>  <span class="n">A</span>   <span class="mf">192.41</span>   <span class="mf">20828.3</span>    <span class="o">-</span><span class="mf">111.1</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>    <span class="o">-</span><span class="mf">111.1</span>
 <span class="o">---</span>
 <span class="o">&gt;</span>  <span class="mi">3</span>    <span class="mf">19.24</span>     <span class="mf">629.1</span>      <span class="o">-</span><span class="mf">0.1</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">0.1</span>
 <span class="o">&gt;</span>  <span class="mi">4</span>    <span class="mf">19.24</span>     <span class="mf">876.9</span>      <span class="o">-</span><span class="mf">1.0</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">1.0</span>
-<span class="o">&gt;</span>  <span class="mi">5</span>    <span class="mf">19.24</span>    <span class="mf">1173.0</span>      <span class="o">-</span><span class="mf">4.8</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">4.8</span>
-<span class="o">&gt;</span>  <span class="mi">6</span>    <span class="mf">19.25</span>    <span class="mf">1581.6</span>     <span class="o">-</span><span class="mf">11.8</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">11.8</span>
+<span class="o">&gt;</span>  <span class="mi">5</span>    <span class="mf">19.24</span>    <span class="mf">1173.0</span>      <span class="o">-</span><span class="mf">4.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>      <span class="o">-</span><span class="mf">4.9</span>
+<span class="o">&gt;</span>  <span class="mi">6</span>    <span class="mf">19.25</span>    <span class="mf">1581.6</span>     <span class="o">-</span><span class="mf">11.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">11.9</span>
 <span class="o">&gt;</span>  <span class="mi">7</span>    <span class="mf">19.24</span>    <span class="mf">2191.6</span>     <span class="o">-</span><span class="mf">21.3</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">21.3</span>
 <span class="o">&gt;</span>  <span class="mi">8</span>    <span class="mf">19.24</span>    <span class="mf">3238.1</span>     <span class="o">-</span><span class="mf">29.9</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">29.9</span>
 <span class="o">&gt;</span>  <span class="mi">9</span>    <span class="mf">19.24</span>   <span class="mf">10787.1</span>     <span class="o">-</span><span class="mf">41.5</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>     <span class="o">-</span><span class="mf">41.5</span>
-<span class="o">&gt;</span>  <span class="n">A</span>   <span class="mf">192.41</span>   <span class="mf">20828.3</span>    <span class="o">-</span><span class="mf">110.6</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>    <span class="o">-</span><span class="mf">110.6</span>
+<span class="o">&gt;</span>  <span class="n">A</span>   <span class="mf">192.41</span>   <span class="mf">20828.3</span>    <span class="o">-</span><span class="mf">110.7</span>       <span class="mf">0.0</span>       <span class="mf">0.0</span>    <span class="o">-</span><span class="mf">110.7</span>
 </pre></div>
 </div>
 </section>
@@ -708,9 +709,9 @@ tax bracket to the TCJA-extension reform.</p>
 <span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">-</span><span class="c1">#-pch.html</span>
 <span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">-</span><span class="c1">#-atr.html</span>
 <span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">-</span><span class="c1">#-mtr.html</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">40.9</span> <span class="n">seconds</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">39.8</span> <span class="n">seconds</span>
 
-<span class="n">tail</span> <span class="o">-</span><span class="mi">14</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">-</span><span class="c1">#-tables.text</span>
+<span class="o">%</span> <span class="n">tail</span> <span class="o">-</span><span class="mi">14</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">-</span><span class="n">ext</span><span class="o">+</span><span class="n">higher_aged_std</span><span class="o">+</span><span class="n">new_top_bracket</span><span class="o">-</span><span class="c1">#-tables.text</span>
 <span class="n">Weighted</span> <span class="n">Tax</span> <span class="n">Differences</span> <span class="n">by</span> <span class="n">Baseline</span> <span class="n">Expanded</span><span class="o">-</span><span class="n">Income</span> <span class="n">Decile</span>
     <span class="n">Returns</span>    <span class="n">ExpInc</span>    <span class="n">IncTax</span>    <span class="n">PayTax</span>     <span class="n">LSTax</span>    <span class="n">AllTax</span>
        <span class="p">(</span><span class="c1">#m)      ($b)      ($b)      ($b)      ($b)      ($b)</span>
@@ -743,25 +744,25 @@ less than four dollars per thousand dollars).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tc ../tmd.csv 2026 --numyears 10 --baseline ext.json+higher_aged_std.json --reform ext.json+higher_aged_std.json+new_top_bracket.json --exact --tables
 Read input data for 2021; input data were extrapolated to 2026
 Write tabular output to file tmd-26-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Advance input data and  policy to 2027
+Advance input data and policy to 2027
 Write tabular output to file tmd-27-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Advance input data and  policy to 2028
+Advance input data and policy to 2028
 Write tabular output to file tmd-28-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Advance input data and  policy to 2029
+Advance input data and policy to 2029
 Write tabular output to file tmd-29-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Advance input data and  policy to 2030
+Advance input data and policy to 2030
 Write tabular output to file tmd-30-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Advance input data and  policy to 2031
+Advance input data and policy to 2031
 Write tabular output to file tmd-31-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Advance input data and  policy to 2032
+Advance input data and policy to 2032
 Write tabular output to file tmd-32-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Advance input data and  policy to 2033
+Advance input data and policy to 2033
 Write tabular output to file tmd-33-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Advance input data and  policy to 2034
+Advance input data and policy to 2034
 Write tabular output to file tmd-34-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Advance input data and  policy to 2035
+Advance input data and policy to 2035
 Write tabular output to file tmd-35-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text
-Execution time is 58.2 seconds
+Execution time is 57.1 seconds
 
 % tail -1 tmd-??-ext+higher_aged_std-ext+higher_aged_std+new_top_bracket-#-tables.text | awk &#39;$1~/A/{n++;c+=$4}END{print n,c}&#39;
 10 187.9

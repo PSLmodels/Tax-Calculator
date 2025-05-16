@@ -851,10 +851,7 @@ exploratory data analysis.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="n">cps</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2024</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ref3</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">dumpdb</span>
 <span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2014</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2024</span>
 <span class="n">Write</span> <span class="n">dump</span> <span class="n">output</span> <span class="n">to</span> <span class="n">sqlite3</span> <span class="n">database</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#.db</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">35.8</span> <span class="n">seconds</span>
-<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2014</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2025</span>
-<span class="n">Write</span> <span class="n">dump</span> <span class="n">output</span> <span class="n">to</span> <span class="n">sqlite3</span> <span class="n">database</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">25</span><span class="o">-</span><span class="c1">#-ref3-#.db</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">35.1</span> <span class="n">seconds</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">35.6</span> <span class="n">seconds</span>
 
 <span class="o">%</span> <span class="n">sqlite3</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#.db</span>
 <span class="n">SQLite</span> <span class="n">version</span> <span class="mf">3.39.5</span> <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">14</span> <span class="mi">20</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">05</span>
@@ -964,7 +961,10 @@ because the income groups are defined in different ways.</p>
 to generate such budget-window results is to use the CLI tool’s
 <code class="docutils literal notranslate"><span class="pre">--numyears</span> <span class="pre">N</span></code> option.  If <code class="docutils literal notranslate"><span class="pre">ext.json</span></code> contains the
 extend-TCJA-beyond-2025 reform, then we can execute the following run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="o">../</span><span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">numyears</span> <span class="mi">10</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">tables</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="o">--</span><span class="n">version</span>
+<span class="n">Tax</span><span class="o">-</span><span class="n">Calculator</span> <span class="mf">4.6.2</span> <span class="n">on</span> <span class="n">Python</span> <span class="mf">3.12</span>
+
+<span class="o">%</span> <span class="n">tc</span> <span class="o">../</span><span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">numyears</span> <span class="mi">10</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">tables</span>
 <span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2026</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2027</span>
@@ -985,7 +985,7 @@ extend-TCJA-beyond-2025 reform, then we can execute the following run:</p>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">34</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2035</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">35</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">60.9</span> <span class="n">seconds</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">55.6</span> <span class="n">seconds</span>
 </pre></div>
 </div>
 <p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2900#issue-3047043290">PR
@@ -993,6 +993,48 @@ extend-TCJA-beyond-2025 reform, then we can execute the following run:</p>
 discusses how much faster this is relative to executing ten separate
 <code class="docutils literal notranslate"><span class="pre">tc</span></code> runs, and also shows how to tabulate the ten-year aggregate
 reform result from the files generated by this run.</p>
+<p>Because the reform-induced change in aggregate federal income tax
+liability is located on the last row of each tables output file in the
+fourth column, we can look at the ten-year results quickly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tail -1 tmd-??-*tables.text
+==&gt; tmd-26-#-ext-#-tables.text &lt;==
+ A   192.41   20828.3    -284.0       0.0       0.0    -284.0
+
+==&gt; tmd-27-#-ext-#-tables.text &lt;==
+ A   193.77   21613.4    -291.7       0.0       0.0    -291.7
+
+==&gt; tmd-28-#-ext-#-tables.text &lt;==
+ A   194.72   22404.7    -299.5       0.0       0.0    -299.5
+
+==&gt; tmd-29-#-ext-#-tables.text &lt;==
+ A   195.66   23243.3    -291.8       0.0       0.0    -291.8
+
+==&gt; tmd-30-#-ext-#-tables.text &lt;==
+ A   196.58   24115.1    -299.8       0.0       0.0    -299.8
+
+==&gt; tmd-31-#-ext-#-tables.text &lt;==
+ A   197.48   25020.0    -307.8       0.0       0.0    -307.8
+
+==&gt; tmd-32-#-ext-#-tables.text &lt;==
+ A   198.35   25952.7    -315.7       0.0       0.0    -315.7
+
+==&gt; tmd-33-#-ext-#-tables.text &lt;==
+ A   199.21   26905.4    -323.6       0.0       0.0    -323.6
+
+==&gt; tmd-34-#-ext-#-tables.text &lt;==
+ A   200.03   27878.9    -331.6       0.0       0.0    -331.6
+
+==&gt; tmd-35-#-ext-#-tables.text &lt;==
+ A   200.83   28883.0    -339.6       0.0       0.0    -339.6
+</pre></div>
+</div>
+<p>A simple way to sum up the ten annual changes is to use the <a class="reference external" href="https://www.gnu.org/software/gawk/manual/gawk.html"><code class="docutils literal notranslate"><span class="pre">awk</span></code>
+program</a>, which
+could be called <code class="docutils literal notranslate"><span class="pre">gawk</span></code> or <code class="docutils literal notranslate"><span class="pre">gawk.exe</span></code> on your computer, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tail -1 tmd-??-*tables.text | awk &#39;$1~/A/{n++;c+=$4}END{print n,c}&#39;
+10 -3085.1
+</pre></div>
+</div>
 <p>More examples of analyzing different versions of the TCJA after 2025
 are available in this
 <a class="reference external" href="https://taxcalc.pslmodels.org/usage/tcja_after_2025.html">document</a>.</p>
