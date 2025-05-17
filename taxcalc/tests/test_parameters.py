@@ -11,8 +11,8 @@ import json
 import math
 import tempfile
 import numpy as np
-import paramtools
 import pytest
+import paramtools
 from taxcalc.parameters import Parameters, is_paramtools_format
 from taxcalc.policy import Policy
 from taxcalc.consumption import Consumption
@@ -125,7 +125,8 @@ def test_params_class(revision, expect, params_json_file):
         """
         The Params class is derived from the abstract base Parameter class.
         """
-        # pylint: disable=too-few-public-methods,abstract-method
+        # pylint: disable=abstract-method
+
         DEFAULTS_FILE_NAME = params_json_file.name
         DEFAULTS_FILE_PATH = ''
         START_YEAR = 2001
@@ -142,6 +143,8 @@ def test_params_class(revision, expect, params_json_file):
             Update parameters given specified revision dictionary.
             """
             self._update(revision, print_warnings, raise_errors)
+
+        # intentionally do not define a set_rates(self) method
 
     # test Params class
     prms = Params()
@@ -190,9 +193,6 @@ def test_json_file_contents(tests_path, fname):
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     known_years = set(range(first_year, last_known_year + 1))
-    # for TCJA-reverting long_params
-    long_known_years = set(range(first_year, last_known_year + 1))
-    long_known_years.add(2026)
     # check elements in each parameter sub-dictionary
     failures = ''
     path = os.path.join(tests_path, "..", fname)
@@ -284,7 +284,6 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
         path = os.path.join(tests_path, '..', pfname)
         with open(path, 'r', encoding='utf-8') as pfile:
             code_text = pfile.read()
-    # pylint: enable=consider-using-join
     # check that each param (without leading _) is mentioned in code text
     for pname in allparams:
         if pname == "schema":
@@ -293,6 +292,7 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
 
 
 # following tests access private methods, so pylint: disable=protected-access
+
 
 class ArrayParams(Parameters):
     """ArrayParams class"""
@@ -498,10 +498,9 @@ def test_expand_2d_already_filled():
     """
     One of several _expand_?D tests.
     """
-    # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
-    _II_brk2 = [[36000., 72250., 36500., 48600., 72500., 36250.],
-                [38000., 74000., 36900., 49400., 73800., 36900.],
-                [40000., 74900., 37450., 50200., 74900., 37450.]]
+    ii_brk2 = [[36000., 72250., 36500., 48600., 72500., 36250.],
+               [38000., 74000., 36900., 49400., 73800., 36900.],
+               [40000., 74900., 37450., 50200., 74900., 37450.]]
 
     years = [2013, 2014, 2015]
     params = ArrayParams(
@@ -509,27 +508,28 @@ def test_expand_2d_already_filled():
         label_to_extend=None,
     )
     params.adjust({
-        "II_brk2": params.from_array("II_brk2", np.array(_II_brk2), year=years)
+        "II_brk2": params.from_array("II_brk2", np.array(ii_brk2), year=years)
     })
 
     params.extend(
         params=["II_brk2"], label="year", label_values=years
     )
     res = params.to_array("II_brk2", year=years)
-    assert np.allclose(res, np.array(_II_brk2), atol=0.01, rtol=0.0)
+    assert np.allclose(res, np.array(ii_brk2), atol=0.01, rtol=0.0)
 
 
 def test_expand_2d_partial_expand():
     """
     One of several _expand_?D tests.
     """
-    # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
-    _II_brk2 = [[36000.0, 72250.0, 36500.0, 48600.0, 72500.0, 36250.0],
-                [38000.0, 74000.0, 36900.0, 49400.0, 73800.0, 36900.0],
-                [40000.0, 74900.0, 37450.0, 50200.0, 74900.0, 37450.0]]
+    ii_brk2 = [
+        [36000.0, 72250.0, 36500.0, 48600.0, 72500.0, 36250.0],
+        [38000.0, 74000.0, 36900.0, 49400.0, 73800.0, 36900.0],
+        [40000.0, 74900.0, 37450.0, 50200.0, 74900.0, 37450.0],
+    ]
     # We have three years worth of data, need 4 years worth,
     # but we only need the inflation rate for year 3 to go
-    # from year 3 -> year 4
+    # from year 3 to year 4
     inf_rates = [0.02, 0.02, 0.03]
     exp1 = 40000. * 1.03
     exp2 = 74900. * 1.03
@@ -545,11 +545,7 @@ def test_expand_2d_partial_expand():
     years = [2013, 2014, 2015]
     params = ArrayParams(array_first=False, label_to_extend=None)
     params.adjust({
-        "II_brk2": params.from_array(
-            "II_brk2",
-            np.array(_II_brk2),
-            year=years
-        )
+        "II_brk2": params.from_array("II_brk2", np.array(ii_brk2), year=years)
     })
     params._inflation_rates[:3] = inf_rates
     params.extend(
