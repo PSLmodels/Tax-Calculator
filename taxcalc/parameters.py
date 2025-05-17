@@ -22,13 +22,12 @@ class CompatibleDataSchema(marshmallow.Schema):
         }
 
     """
-
     puf = marshmallow.fields.Boolean()
     cps = marshmallow.fields.Boolean()
 
 
 paramtools.register_custom_type(
-    "compatible_data",
+    'compatible_data',
     marshmallow.fields.Nested(CompatibleDataSchema())
 )
 
@@ -69,7 +68,7 @@ class Parameters(paramtools.Parameters):
     # pylint: disable=too-many-instance-attributes
     defaults = None
     array_first = True
-    label_to_extend = "year"
+    label_to_extend = 'year'
     uses_extend_func = True
 
     REMOVED_PARAMS = None
@@ -113,15 +112,15 @@ class Parameters(paramtools.Parameters):
         self._wage_indexed = wage_indexed or self.WAGE_INDEXED_PARAMS
         if (
             (start_year or self.JSON_START_YEAR) and
-            "initial_state" not in kwargs
+            'initial_state' not in kwargs
         ):
-            kwargs["initial_state"] = {
-                "year": start_year or self.JSON_START_YEAR
+            kwargs['initial_state'] = {
+                'year': start_year or self.JSON_START_YEAR
             }
         # update defaults to correspond to user-defined parameter years
         self.defaults = super().get_defaults()
-        label = self.defaults["schema"]["labels"]["year"]
-        label["validators"]["range"]["max"] = last_budget_year
+        label = self.defaults['schema']['labels']['year']
+        label['validators']['range']['max'] = last_budget_year
         super().__init__(**kwargs)
 
     def adjust(  # pylint: disable=arguments-differ
@@ -166,9 +165,9 @@ class Parameters(paramtools.Parameters):
         """
         if print_warnings:
             _data = copy.deepcopy(self._data)
-            kwargs["ignore_warnings"] = False
+            kwargs['ignore_warnings'] = False
         else:
-            kwargs["ignore_warnings"] = True
+            kwargs['ignore_warnings'] = True
         self._warnings = {}
         self._errors = {}
         try:
@@ -178,7 +177,7 @@ class Parameters(paramtools.Parameters):
             with self.transaction(
                 defer_validation=True,
                 raise_errors=True,
-                ignore_warnings=kwargs["ignore_warnings"],
+                ignore_warnings=kwargs['ignore_warnings'],
             ):
                 return self.adjust_with_indexing(
                     params_or_path, raise_errors=True, **kwargs
@@ -189,9 +188,9 @@ class Parameters(paramtools.Parameters):
             if self.errors and not raise_errors:
                 return {}
             if print_warnings:
-                print("WARNING:")
+                print('WARNING:')
                 print(self.warnings)
-            kwargs["ignore_warnings"] = True
+            kwargs['ignore_warnings'] = True
             # pylint: disable=possibly-used-before-assignment
             self._data = _data
             # pylint: enable=possibly-used-before-assignment
