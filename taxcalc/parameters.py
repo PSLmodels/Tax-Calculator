@@ -7,11 +7,11 @@ import copy
 from collections import defaultdict
 from typing import Union, Mapping, Any, List
 import numpy as np
-import marshmallow as ma
-import paramtools as pt
+import marshmallow
+import paramtools
 
 
-class CompatibleDataSchema(ma.Schema):
+class CompatibleDataSchema(marshmallow.Schema):
     """
     Schema for Compatible data object
 
@@ -23,17 +23,17 @@ class CompatibleDataSchema(ma.Schema):
 
     """
 
-    puf = ma.fields.Boolean()
-    cps = ma.fields.Boolean()
+    puf = marshmallow.fields.Boolean()
+    cps = marshmallow.fields.Boolean()
 
 
-pt.register_custom_type(
+paramtools.register_custom_type(
     "compatible_data",
-    ma.fields.Nested(CompatibleDataSchema())
+    marshmallow.fields.Nested(CompatibleDataSchema())
 )
 
 
-class Parameters(pt.Parameters):
+class Parameters(paramtools.Parameters):
     """
     Base class that wraps ParamTools, providing parameter indexing
     for tax policy in the ``adjust`` method and convenience methods
@@ -183,7 +183,7 @@ class Parameters(pt.Parameters):
                 return self.adjust_with_indexing(
                     params_or_path, raise_errors=True, **kwargs
                 )
-        except pt.ValidationError as ve:
+        except paramtools.ValidationError as ve:
             if self.errors and raise_errors:
                 raise ve
             if self.errors and not raise_errors:
@@ -398,7 +398,7 @@ class Parameters(pt.Parameters):
                 base_param = param.split("-indexed")[0]
                 if not self._data[base_param].get("indexable", None):
                     msg = f"Parameter {base_param} is not indexable."
-                    raise pt.ValidationError(
+                    raise paramtools.ValidationError(
                         {"errors": {base_param: msg}}, labels=None
                     )
                 index_affected |= {param, base_param}
@@ -415,7 +415,7 @@ class Parameters(pt.Parameters):
                         "Index adjustment parameter must be a boolean or "
                         "list."
                     )
-                    raise pt.ValidationError(
+                    raise paramtools.ValidationError(
                         {"errors": {base_param: msg}}, labels=None
                     )
                 # 2.a Adjust values less than first year in which index status
@@ -593,7 +593,7 @@ class Parameters(pt.Parameters):
         """
         # pylint: disable=too-many-branches
         if not isinstance(revision, dict):
-            raise pt.ValidationError(
+            raise paramtools.ValidationError(
                 {"errors": {"schema": "Revision must be a dictionary."}},
                 None
             )
@@ -601,7 +601,7 @@ class Parameters(pt.Parameters):
         for param, val in revision.items():
             if not isinstance(param, str):
                 msg = f"Parameter {param} is not a string."
-                raise pt.ValidationError(
+                raise paramtools.ValidationError(
                     {"errors": {"schema": msg}},
                     None
                 )
@@ -617,7 +617,7 @@ class Parameters(pt.Parameters):
                     msg = self._redefined_params[param]
                 else:
                     msg = f"Parameter {param} does not exist."
-                raise pt.ValidationError(
+                raise paramtools.ValidationError(
                     {"errors": {"schema": msg}},
                     None
                 )
@@ -656,7 +656,7 @@ class Parameters(pt.Parameters):
                                 f"{param} is an array parameter with "
                                 f"{exp_dims[0]} elements."
                             )
-                        raise pt.ValidationError(
+                        raise paramtools.ValidationError(
                             {"errors": {"schema": msg}},
                             None
                         )
@@ -672,7 +672,7 @@ class Parameters(pt.Parameters):
                     f"{param} must be a year:value dictionary "
                     f"if you are not using the new adjust method."
                 )
-                raise pt.ValidationError(
+                raise paramtools.ValidationError(
                     {"errors": {"schema": msg}},
                     None
                 )
@@ -765,7 +765,7 @@ class Parameters(pt.Parameters):
         if obj is None:
             return {}
 
-        full_dict = pt.read_json(obj)
+        full_dict = paramtools.read_json(obj)
 
         # check top-level key contents of dictionary
         if topkey in full_dict.keys():
@@ -818,7 +818,7 @@ class Parameters(pt.Parameters):
 
 
 TaxcalcReform = Union[str, Mapping[int, Any]]
-ParamToolsAdjustment = Union[str, List[pt.ValueObject]]
+ParamToolsAdjustment = Union[str, List[paramtools.ValueObject]]
 
 
 def is_paramtools_format(params: Union[TaxcalcReform, ParamToolsAdjustment]):
