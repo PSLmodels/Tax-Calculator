@@ -1544,3 +1544,133 @@ def test_two_sets_of_tax_brackets():
                 emsg += f'  PT_brk{bnum} is {pt_val}\n'
     if emsg:
         raise ValueError(emsg)
+
+
+def test_ext_plus_ctc1_reform(tests_path):
+    """
+    Test ext.json plus ctc1 compound reform relative to ext.json baseline.
+    """
+    # specify baseline policy, bas, as the extend-TCJA reform
+    bas = Policy()
+    filename = os.path.join(tests_path, '..', 'reforms', 'ext.json')
+    with open(filename, 'r', encoding='utf-8') as rfile:
+        ext_text = rfile.read()
+    bas.implement_reform(Policy.read_json_reform(ext_text))
+    assert not bas.parameter_errors
+    # specify reform policy, ref, as extend-TCJA plus liberalization of CTC
+    ref = Policy()
+    ref.implement_reform(Policy.read_json_reform(ext_text))
+    ctc1_reform = {
+        # one possible child-tax-credit revision to the extend-TCJA reform
+        'CTC_c': {
+            2026: 2500.00,
+            2027: 2500.00,
+            2028: 2500.00,
+            2029: 2000.00,
+        },
+        'CTC_c-indexed': {2029: True},
+    }
+    ref.implement_reform(ctc1_reform)
+    assert not ref.parameter_errors
+    # check bas and ref parameter values against expected parameter values
+    exp_ctc_c_bas = {
+        2025: 2000,
+        2026: 2000,
+        2027: 2000,
+        2028: 2000,
+        2029: 2000,
+        2030: 2000,
+    }
+    exp_ctc_c_ref = {
+        2025: 2000,
+        2026: 2500,
+        2027: 2500,
+        2028: 2500,
+        2029: 2000,
+        2030: 2044.80,
+    }
+    exp_actc_c = {
+        2025: 1700,
+        2026: 1776.67,
+        2027: 1819.84,
+        2028: 1861.88,
+        2029: 1903.96,
+        2030: 1946.61,
+    }
+    for year in range(2025, 2031):
+        bas.set_year(year)
+        assert np.allclose([bas.CTC_c], [exp_ctc_c_bas[year]])
+        assert np.allclose([bas.ACTC_c], [exp_actc_c[year]])
+        ref.set_year(year)
+        assert np.allclose([ref.CTC_c], [exp_ctc_c_ref[year]])
+        assert np.allclose([ref.ACTC_c], [exp_actc_c[year]])
+
+
+def test_ext_plus_ctc2_reform(tests_path):
+    """
+    Test ext.json plus ctc2 compound reform relative to ext.json baseline.
+    """
+    # specify baseline policy, bas, as the extend-TCJA reform
+    bas = Policy()
+    filename = os.path.join(tests_path, '..', 'reforms', 'ext.json')
+    with open(filename, 'r', encoding='utf-8') as rfile:
+        ext_text = rfile.read()
+    bas.implement_reform(Policy.read_json_reform(ext_text))
+    assert not bas.parameter_errors
+    # specify reform policy, ref, as extend-TCJA plus liberalization of CTC
+    ref = Policy()
+    ref.implement_reform(Policy.read_json_reform(ext_text))
+    ctc2_reform = {
+        # one possible child-tax-credit revision to the extend-TCJA reform
+        'CTC_c': {
+            2026: 2500.00,
+            2027: 2500.00,
+            2028: 2500.00,
+            2029: 2000.00,
+        },
+        'CTC_c-indexed': {2029: True},
+        'ACTC_c': {2029: 1750},
+        'ACTC_c-indexed': {2029: False},
+    }
+    ref.implement_reform(ctc2_reform)
+    assert not ref.parameter_errors
+    # check bas and ref parameter values against expected parameter values
+    exp_ctc_c_bas = {
+        2025: 2000,
+        2026: 2000,
+        2027: 2000,
+        2028: 2000,
+        2029: 2000,
+        2030: 2000,
+    }
+    exp_ctc_c_ref = {
+        2025: 2000,
+        2026: 2500,
+        2027: 2500,
+        2028: 2500,
+        2029: 2000,
+        2030: 2044.80,
+    }
+    exp_actc_c_bas = {
+        2025: 1700,
+        2026: 1776.67,
+        2027: 1819.84,
+        2028: 1861.88,
+        2029: 1903.96,
+        2030: 1946.61,
+    }
+    exp_actc_c_ref = {
+        2025: 1700,
+        2026: 1776.67,
+        2027: 1819.84,
+        2028: 1861.88,
+        2029: 1750,
+        2030: 1750,
+    }
+    for year in range(2025, 2031):
+        bas.set_year(year)
+        assert np.allclose([bas.CTC_c], [exp_ctc_c_bas[year]])
+        assert np.allclose([bas.ACTC_c], [exp_actc_c_bas[year]])
+        ref.set_year(year)
+        assert np.allclose([ref.CTC_c], [exp_ctc_c_ref[year]])
+        assert np.allclose([ref.ACTC_c], [exp_actc_c_ref[year]])
