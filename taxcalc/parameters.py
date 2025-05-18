@@ -382,6 +382,7 @@ class Parameters(paramtools.Parameters):
                     #   the singleton value True, or
                     #   'bool(self.sel[param]['_auto'])' if testing for
                     #   truthiness
+                    # NOTE: following either pylint suggestion causes errors
                     # pylint: enable=singleton-comparison
                     needs_reset.append(param)
 
@@ -688,17 +689,17 @@ class Parameters(paramtools.Parameters):
     @property
     def current_year(self):
         """Propery docstring"""
-        return self.label_grid["year"][0]
+        return self.label_grid['year'][0]
 
     @property
     def start_year(self):
         """Propery docstring"""
-        return self._stateless_label_grid["year"][0]
+        return self._stateless_label_grid['year'][0]
 
     @property
     def end_year(self):
         """Propery docstring"""
-        return self._stateless_label_grid["year"][-1]
+        return self._stateless_label_grid['year'][-1]
 
     @property
     def num_years(self):
@@ -807,13 +808,13 @@ class Parameters(paramtools.Parameters):
         ``pol.EITC_c``.
         """
         if (
-            attr.startswith("_") and
-            attr[1:] in super().__getattribute__("_data")
+            attr.startswith('_') and
+            attr[1:] in super().__getattribute__('_data')
         ):
             return self.to_array(
                 attr[1:], year=list(range(self.start_year, self.end_year + 1))
             )
-        raise AttributeError(f"{attr} is not defined.")
+        raise AttributeError(f'{attr} is not defined')
 
 
 TaxcalcReform = Union[str, Mapping[int, Any]]
