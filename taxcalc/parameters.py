@@ -243,7 +243,7 @@ class Parameters(paramtools.Parameters):
         3. Update all parameters that are not indexing related, i.e. they are
            not "parameter_indexing_CPI_offset" or do not end with "-indexed".
 
-        4. Return parsed adjustment with all adjustments, including "-indexed"
+        4. Returns parsed adjustment with all adjustments, including "-indexed"
            parameters.
 
         Notable side-effects:
@@ -397,7 +397,7 @@ class Parameters(paramtools.Parameters):
             if param.endswith("-indexed"):
                 base_param = param.split("-indexed")[0]
                 if not self._data[base_param].get("indexable", None):
-                    msg = f"Parameter {base_param} is not indexable."
+                    msg = f"Parameter {base_param} is not indexable"
                     raise paramtools.ValidationError(
                         {"errors": {base_param: msg}}, labels=None
                     )
@@ -411,10 +411,7 @@ class Parameters(paramtools.Parameters):
                             "value"
                         ]
                 else:
-                    msg = (
-                        "Index adjustment parameter must be a boolean or "
-                        "list."
-                    )
+                    msg = "Index adjustment parameter must be boolean or list"
                     raise paramtools.ValidationError(
                         {"errors": {base_param: msg}}, labels=None
                     )
@@ -525,7 +522,7 @@ class Parameters(paramtools.Parameters):
 
     def wage_growth_rates(self, year=None):
         """
-        Return wage growth rates used in parameter indexing.
+        Returns wage growth rates used in parameter indexing.
         """
         if year is not None:
             syr = max(self.start_year, self._gfactors.first_year)
@@ -534,7 +531,7 @@ class Parameters(paramtools.Parameters):
 
     def inflation_rates(self, year=None):
         """
-        Return price inflation rates used in parameter indexing.
+        Returns price inflation rates used in parameter indexing.
         """
         if year is not None:
             syr = max(self.start_year, self._gfactors.first_year)
@@ -594,13 +591,13 @@ class Parameters(paramtools.Parameters):
         # pylint: disable=too-many-branches
         if not isinstance(revision, dict):
             raise paramtools.ValidationError(
-                {"errors": {"schema": "Revision must be a dictionary."}},
+                {"errors": {"schema": "Revision must be a dictionary"}},
                 None
             )
         new_params = defaultdict(list)
         for param, val in revision.items():
             if not isinstance(param, str):
-                msg = f"Parameter {param} is not a string."
+                msg = f"Parameter {param} is not a string"
                 raise paramtools.ValidationError(
                     {"errors": {"schema": msg}},
                     None
@@ -616,7 +613,7 @@ class Parameters(paramtools.Parameters):
                 ):
                     msg = self._redefined_params[param]
                 else:
-                    msg = f"Parameter {param} does not exist."
+                    msg = f"Parameter {param} does not exist"
                 raise paramtools.ValidationError(
                     {"errors": {"schema": msg}},
                     None
@@ -641,20 +638,16 @@ class Parameters(paramtools.Parameters):
                     ):
                         exp_dims = val[0].shape
                         if exp_dims == tuple():
-                            msg = (
-                                f"{param} is not an array "
-                                f"parameter."
-                            )
+                            msg = f"{param} is not an array parameter"
                         elif yearval.shape:
                             msg = (
                                 f"{param} has {yearval.shape[0]} elements "
-                                f"but should only have {exp_dims[0]} "
-                                f"elements."
+                                f"but should only have {exp_dims[0]} elements"
                             )
                         else:
                             msg = (
                                 f"{param} is an array parameter with "
-                                f"{exp_dims[0]} elements."
+                                f"{exp_dims[0]} elements"
                             )
                         raise paramtools.ValidationError(
                             {"errors": {"schema": msg}},
@@ -670,7 +663,7 @@ class Parameters(paramtools.Parameters):
             else:
                 msg = (
                     f"{param} must be a year:value dictionary "
-                    f"if you are not using the new adjust method."
+                    f"if you are not using the new adjust method"
                 )
                 raise paramtools.ValidationError(
                     {"errors": {"schema": msg}},
@@ -781,14 +774,14 @@ class Parameters(paramtools.Parameters):
 
     def metadata(self):
         """
-        Return parameter specification.
+        Returns parameter specification.
         """
         return self.specification(meta_data=True, use_state=False)
 
     @staticmethod
     def years_in_revision(revision):
         """
-        Return list of years in specified revision dictionary, which is
+        Returns list of years in specified revision dictionary, which is
         assumed to have a param:year:value format.
         """
         assert isinstance(revision, dict)
@@ -827,7 +820,7 @@ class Parameters(paramtools.Parameters):
         """
         Method for applying indexing rates to extended parameter values.
         Returns:
-          `extend_vo`: New `paramtools.ValueObject`.
+        - `extend_vo`: New `paramtools.ValueObject`.
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         if not self.uses_extend_func or not self._data[param].get(
@@ -836,7 +829,7 @@ class Parameters(paramtools.Parameters):
             return extend_vo
 
         trace = False
-        if trace:
+        if trace:  # pragma: no cover
             print('param,label=', param, label)
 
         known_val = known_vo[label]
@@ -845,21 +838,21 @@ class Parameters(paramtools.Parameters):
         toext_val = extend_vo[label]
         toext_ix = extend_grid.index(toext_val)
 
-        if trace and param in ['CTC_c', 'ACTC_c']:
+        if trace and param in ['CTC_c', 'ACTC_c']:  # pragma: no cover
             print('known_val,toext_val=', known_val, toext_val)
             print('extend_vo[value]=', extend_vo['value'])
 
         if toext_ix > known_ix:
-            # grow value according to the index rate supplied by
-            # the user defined self.indexing_rate method
+            # grow value according to the indexing rate supplied by
+            # the user defined self.get_index_rate method
             for ix in range(known_ix, toext_ix):
                 v = extend_vo['value'] * (
                     1 + self.get_index_rate(param, extend_grid[ix])
                 )
                 extend_vo['value'] = np.round(v, 2) if v < 9e99 else 9e99
-        else:
-            # shrink value according to the index rate supplied by
-            # the user defined self.indexing_rate method
+        else:  # pragma: no cover
+            # shrink value according to the indexing rate supplied by
+            # the user defined self.get_index_rate method
             for ix in reversed(range(toext_ix, known_ix)):
                 v = (
                     extend_vo['value']
@@ -897,11 +890,11 @@ def is_paramtools_format(params: Union[TaxcalcReform, ParamToolsAdjustment]):
                 "ss_rate": [{"year": 2024, "value": 0.2}]}
             }
 
-    Returns
+    Returns:
     -------
     bool:
-        Whether ``params`` is likely to be a ParamTools formatted adjustment or
-        not.
+      Whether ``params`` is likely to be a ParamTools formatted
+      adjustment or not.
     """
     for data in params.values():
         if isinstance(data, dict):
