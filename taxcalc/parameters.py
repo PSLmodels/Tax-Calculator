@@ -823,14 +823,11 @@ class Parameters(paramtools.Parameters):
         - `extend_vo`: New `paramtools.ValueObject`.
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # pylint: disable=too-many-locals
         if not self.uses_extend_func or not self._data[param].get(
             'indexed', False
         ):
             return extend_vo
-
-        trace = False
-        if trace:  # pragma: no cover
-            print('param,label=', param, label)
 
         known_val = known_vo[label]
         known_ix = extend_grid.index(known_val)
@@ -838,9 +835,30 @@ class Parameters(paramtools.Parameters):
         toext_val = extend_vo[label]
         toext_ix = extend_grid.index(toext_val)
 
-        if trace and param in ['CTC_c', 'ACTC_c']:  # pragma: no cover
-            print('known_val,toext_val=', known_val, toext_val)
-            print('extend_vo[value]=', extend_vo['value'])
+        trace = False
+        # params_to_trace = ['II_em']
+        # params_to_trace = ['II_brk3']
+        params_to_trace = ['EITC_c']
+        # params_to_trace = ['ID_AmountCap_Switch']
+        if trace and param in params_to_trace:  # pragma: no cover
+            vlabel = None
+            vvalue = None
+            if len(extend_vo) > 2:
+                extend_vo_keys = extend_vo.keys()
+                vo_labels = ['MARS', 'EIC', 'idedtype']
+                for vo_label in vo_labels:
+                    if vo_label in extend_vo_keys:
+                        vlabel = vo_label
+                        vvalue = extend_vo[vlabel]
+                        break
+                assert vlabel, f'{param} has no valid vector label'
+            print(
+                '***param,yr0,yr1,vlabel,vvalue=',
+                param, known_val, toext_val, vlabel, vvalue,
+            )
+            # print('extend_vo=', extend_vo)
+            # print('known_vo=', known_vo)
+            print('before:extend_vo[value]=', extend_vo['value'])
 
         if toext_ix > known_ix:
             # grow value according to the indexing rate supplied by
@@ -859,6 +877,10 @@ class Parameters(paramtools.Parameters):
                     * (1 + self.get_index_rate(param, extend_grid[ix])) ** -1
                 )
                 extend_vo['value'] = np.round(v, 2) if v < 9e99 else 9e99
+
+        if trace and param in params_to_trace:  # pragma: no cover
+            print('after:extend_vo[value]=', extend_vo['value'])
+
         return extend_vo
 
 
