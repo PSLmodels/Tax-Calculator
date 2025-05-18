@@ -816,6 +816,58 @@ class Parameters(paramtools.Parameters):
             )
         raise AttributeError(f'{attr} is not defined')
 
+    def extend_func(
+        self,
+        param: str,
+        extend_vo: paramtools.ValueObject,
+        known_vo: paramtools.ValueObject,
+        extend_grid: List,
+        label: str,
+    ):
+        """
+        Method for applying indexing rates to extended parameter values.
+        Returns:
+          `extend_vo`: New `paramtools.ValueObject`.
+        """
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        if not self.uses_extend_func or not self._data[param].get(
+            'indexed', False
+        ):
+            return extend_vo
+
+        trace = False
+        if trace:
+            print('param,label=', param, label)
+
+        known_val = known_vo[label]
+        known_ix = extend_grid.index(known_val)
+
+        toext_val = extend_vo[label]
+        toext_ix = extend_grid.index(toext_val)
+
+        if trace and param in ['CTC_c', 'ACTC_c']:
+            print('known_val,toext_val=', known_val, toext_val)
+            print('extend_vo[value]=', extend_vo['value'])
+
+        if toext_ix > known_ix:
+            # grow value according to the index rate supplied by
+            # the user defined self.indexing_rate method
+            for ix in range(known_ix, toext_ix):
+                v = extend_vo['value'] * (
+                    1 + self.get_index_rate(param, extend_grid[ix])
+                )
+                extend_vo['value'] = np.round(v, 2) if v < 9e99 else 9e99
+        else:
+            # shrink value according to the index rate supplied by
+            # the user defined self.indexing_rate method
+            for ix in reversed(range(toext_ix, known_ix)):
+                v = (
+                    extend_vo['value']
+                    * (1 + self.get_index_rate(param, extend_grid[ix])) ** -1
+                )
+                extend_vo['value'] = np.round(v, 2) if v < 9e99 else 9e99
+        return extend_vo
+
 
 TaxcalcReform = Union[str, Mapping[int, Any]]
 ParamToolsAdjustment = Union[str, List[paramtools.ValueObject]]
