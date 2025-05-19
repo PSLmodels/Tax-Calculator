@@ -13,7 +13,7 @@ import paramtools
 
 class CompatibleDataSchema(marshmallow.Schema):
     """
-    Schema for Compatible data object
+    Schema for compatible_data object
 
     .. code-block :: json
 
@@ -880,6 +880,9 @@ class Parameters(paramtools.Parameters):
 
         if trace and param in params_to_trace:  # pragma: no cover
             print('after:extend_vo[value]=', extend_vo['value'])
+            if toext_val == 2035:
+                for pname in params_to_trace:
+                    print(f'data[{pname}]=', self._data[pname])
 
         return extend_vo
 
