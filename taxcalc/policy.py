@@ -8,6 +8,7 @@ Tax-Calculator federal tax policy Policy class.
 import os
 import json
 from pathlib import Path
+import paramtools
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
 
@@ -131,13 +132,33 @@ class Policy(Parameters):
         """
         return Parameters._read_json_revision(obj, 'policy')
 
-    def implement_reform(self, reform,
+    def implement_reform(self, reform: dict,
                          print_warnings=True, raise_errors=True):
         """
-        Implement reform using Tax-Calculator syled reforms/adjustments. Users
-        may also use the adjust method with ParamTools styled reforms.
+        Implement reform using a Tax-Calculator-style reform dictionary.
         """
-        # need to do conversion:
+        if not isinstance(reform, dict):
+            raise paramtools.ValidationError(
+                {'errors': {'schema': 'reform must be a dictionary'}},
+                None
+            )
+        deprecated_parameters = [
+            'ID_AmountCap_Switch',
+            'ID_AmountCap_rt',
+            'ID_BenefitCap_Switch',
+            'ID_BenefitCap_rt',
+            'ID_BenefitSurtax_Switch',
+            'ID_BenefitSurtax_crt',
+            'ID_BenefitSurtax_em',
+        ]
+        for param in reform.keys():
+            if param in deprecated_parameters:
+                print(
+                    f'DEPRECATION WARNING: the {param} policy parameter\n'
+                    'is scheduled to be removed in Tax-Calculator 5.0.0;\n'
+                    'if you think this removal should not happen, open an\n'
+                    'issue on GitHub to make your case for non-removal.'
+                )
         return self._update(reform, print_warnings, raise_errors)
 
     @staticmethod

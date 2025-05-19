@@ -543,17 +543,6 @@
   },
 
   "55": {
-      "baseline": "2017_law.json",
-      "start_year": 2017,
-      "value": {"ID_AmountCap_rt": 0.02,
-                "ID_AmountCap_Switch":
-                [false, true, true, false, false, false, false]},
-      "name": "Limit amount of S&L deduction to 2% AGI",
-      "output_type": "iitax",
-      "compare_with": {"Budget Options": [44.1, 86.6, 87.1, 91.2]}
-  },
-
-  "56": {
       "baseline": "policy_current_law.json",
       "start_year": 2017,
       "value": {"parameter_indexing_CPI_offset": 0},
@@ -562,7 +551,7 @@
       "compare_with": {}
   },
 
-  "57": {
+  "56": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"PT_rt7": 0.35,
@@ -572,7 +561,7 @@
       "compare_with": {}
   },
 
-  "58": {
+  "57": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"PT_wages_active_income": true,
@@ -583,7 +572,7 @@
       "compare_with": {}
   },
 
-  "59": {
+  "58": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"CTC_new_c": 1000,
@@ -595,7 +584,7 @@
       "compare_with": {}
   },
 
-  "60": {
+  "59": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"CTC_new_c": 1000,
@@ -608,7 +597,7 @@
       "compare_with": {}
   },
 
-  "61": {
+  "60": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"ID_Charity_hc": 1,
@@ -619,7 +608,7 @@
       "compare_with": {}
   },
 
-  "62": {
+  "61": {
       "baseline": "2017_law.json",
       "start_year": 2019,
       "value": {"EITC_basic_frac": 0.5},
@@ -628,7 +617,7 @@
       "compare_with": {}
   },
 
-  "63": {
+  "62": {
       "baseline": "policy_current_law.json",
       "start_year": 2019,
       "value": {"EITC_indiv": true},
@@ -637,7 +626,7 @@
       "compare_with": {}
   },
 
-  "64": {
+  "63": {
       "baseline": "policy_current_law.json",
       "start_year": 2019,
       "value": {"RPTC_rt": 0.062,
