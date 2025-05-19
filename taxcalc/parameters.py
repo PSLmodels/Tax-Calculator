@@ -823,17 +823,15 @@ class Parameters(paramtools.Parameters):
         - `extend_vo`: New `paramtools.ValueObject`.
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
-        # pylint: disable=too-many-locals
+        # pylint: disable=too-many-locals,too-many-branches
         if not self.uses_extend_func or not self._data[param].get(
             'indexed', False
         ):
             return extend_vo
-
         known_val = known_vo[label]
-        known_ix = extend_grid.index(known_val)
-
         toext_val = extend_vo[label]
-        toext_ix = extend_grid.index(toext_val)
+        if toext_val == known_val:
+            return extend_vo
 
         trace = False
         # params_to_trace = ['II_em']
@@ -860,6 +858,8 @@ class Parameters(paramtools.Parameters):
             # print('known_vo=', known_vo)
             print('before:extend_vo[value]=', extend_vo['value'])
 
+        known_ix = extend_grid.index(known_val)
+        toext_ix = extend_grid.index(toext_val)
         if toext_ix > known_ix:
             # grow value according to the indexing rate supplied by
             # the user defined self.get_index_rate method
