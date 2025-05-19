@@ -350,7 +350,7 @@ class Parameters(paramtools.Parameters):
                 # only revert param in 2026 if it's not in revision
                 if params.get(param) is None:
                     # grab param values from 2017
-                    vos = self.sel[param]["year"] == pyear
+                    vos = self.sel[param]['year'] == pyear
                     # use final_ifactor to inflate from 2017 to 2026
                     for vo in vos:
                         long_param_vals[param].append(
@@ -358,7 +358,7 @@ class Parameters(paramtools.Parameters):
                             dict(
                                 vo,
                                 value=min(9e99, round(
-                                    vo["value"] * final_ifactor, 0)),
+                                    vo['value'] * final_ifactor, 0)),
                                 year=fyear,
                             )
                         )
@@ -369,13 +369,13 @@ class Parameters(paramtools.Parameters):
             for param in self._data:
                 if (
                     param in params or
-                    param == "parameter_indexing_CPI_offset" or
+                    param == 'parameter_indexing_CPI_offset' or
                     param in self._wage_indexed
                 ):
                     continue
-                if self._data[param].get("indexed", False):
+                if self._data[param].get('indexed', False):
                     # pylint: disable=singleton-comparison
-                    to_delete[param] = self.sel[param]["_auto"] == True
+                    to_delete[param] = self.sel[param]['_auto'] == True
                     # pylint warning message:
                     #   Comparison 'self.sel[param]['_auto'] == True' should
                     #   be 'self.sel[param]['_auto'] is True' if checking for
@@ -388,7 +388,7 @@ class Parameters(paramtools.Parameters):
 
             self.delete(to_delete, **kwargs)
 
-            self.extend(label="year")
+            self.extend(label='year')
 
         # 2. Handle -indexed parameters.
         self.label_to_extend = None
