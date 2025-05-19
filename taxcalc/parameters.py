@@ -394,12 +394,12 @@ class Parameters(paramtools.Parameters):
         self.label_to_extend = None
         index_affected = set([])
         for param, values in params.items():
-            if param.endswith("-indexed"):
-                base_param = param.split("-indexed")[0]
-                if not self._data[base_param].get("indexable", None):
-                    msg = f"Parameter {base_param} is not indexable"
+            if param.endswith('-indexed'):
+                base_param = param.split('-indexed')[0]
+                if not self._data[base_param].get('indexable', None):
+                    msg = f'Parameter {base_param} is not indexable'
                     raise paramtools.ValidationError(
-                        {"errors": {base_param: msg}}, labels=None
+                        {'errors': {base_param: msg}}, labels=None
                     )
                 index_affected |= {param, base_param}
                 indexed_changes = {}
@@ -407,36 +407,36 @@ class Parameters(paramtools.Parameters):
                     indexed_changes[self.start_year] = values
                 elif isinstance(values, list):
                     for vo in values:
-                        indexed_changes[vo.get("year", self.start_year)] = vo[
-                            "value"
-                        ]
+                        indexed_changes[
+                            vo.get('year', self.start_year)
+                        ] = vo['value']
                 else:
-                    msg = "Index adjustment parameter must be boolean or list"
+                    msg = 'Index adjustment parameter must be boolean or list'
                     raise paramtools.ValidationError(
-                        {"errors": {base_param: msg}}, labels=None
+                        {'errors': {base_param: msg}}, labels=None
                     )
                 # 2.a Adjust values less than first year in which index status
                 # was changed.
                 if base_param in params:
                     min_index_change_year = min(indexed_changes.keys())
-                    vos = self.sel[params[base_param]]["year"].lt(
+                    vos = self.sel[params[base_param]]['year'].lt(
                         min_index_change_year, strict=False
                     )
 
                     if list(vos):
-                        min_adj_year = min(vos, key=lambda vo: vo["year"])[
-                            "year"
-                        ]
+                        min_adj_year = min(
+                            vos, key=lambda vo: vo['year']
+                        )['year']
                         self.delete(
                             {
                                 base_param:
-                                self.sel[base_param]["year"] > min_adj_year
+                                self.sel[base_param]['year'] > min_adj_year
                             }
                         )
                         super().adjust({base_param: vos}, **kwargs)
                         self.extend(
                             params=[base_param],
-                            label="year",
+                            label='year',
                             label_values=list(
                                 range(self.start_year, min_index_change_year)
                             ),
@@ -447,7 +447,7 @@ class Parameters(paramtools.Parameters):
                     # Get and delete all default values after year where
                     # indexed status changed.
                     self.delete(
-                        {base_param: self.sel[base_param]["year"] > year}
+                        {base_param: self.sel[base_param]['year'] > year}
                     )
 
                     # 2.b Extend values for this parameter to the year where
@@ -455,25 +455,25 @@ class Parameters(paramtools.Parameters):
                     if year > self.start_year:
                         self.extend(
                             params=[base_param],
-                            label="year",
+                            label='year',
                             label_values=list(
                                 range(self.start_year, year + 1)
                             ),
                         )
 
                     # 2.c Set indexed status.
-                    self._data[base_param]["indexed"] = indexed_val
+                    self._data[base_param]['indexed'] = indexed_val
 
                     # 2.d Adjust with values greater than or equal to current
                     # year in params
                     if base_param in params:
-                        vos = self.sel[params[base_param]]["year"].gte(
+                        vos = self.sel[params[base_param]]['year'].gte(
                             year, strict=False
                         )
                         super().adjust({base_param: vos}, **kwargs)
 
                     # 2.e Extend values through remaining years.
-                    self.extend(params=[base_param], label="year")
+                    self.extend(params=[base_param], label='year')
 
                 needs_reset.append(base_param)
         # Re-instate ops.
@@ -549,7 +549,7 @@ class Parameters(paramtools.Parameters):
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # Handle case where project hasn't been initialized yet
-        if getattr(self, "_data", None) is None:
+        if getattr(self, '_data', None) is None:
             return Parameters.__init__(
                 self, start_year, num_years, last_known_year=last_known_year,
                 removed=removed, redefined=redefined,
@@ -591,66 +591,66 @@ class Parameters(paramtools.Parameters):
         # pylint: disable=too-many-branches
         if not isinstance(revision, dict):
             raise paramtools.ValidationError(
-                {"errors": {"schema": "Revision must be a dictionary"}},
+                {'errors': {'schema': 'Revision must be a dictionary'}},
                 None
             )
         new_params = defaultdict(list)
         for param, val in revision.items():
             if not isinstance(param, str):
-                msg = f"Parameter {param} is not a string"
+                msg = f'Parameter {param} is not a string'
                 raise paramtools.ValidationError(
-                    {"errors": {"schema": msg}},
+                    {'errors': {'schema': msg}},
                     None
                 )
             if (
                 param not in self._data and
-                param.split("-indexed")[0] not in self._data
+                param.split('-indexed')[0] not in self._data
             ):
                 if self._removed_params and param in self._removed_params:
-                    msg = f"{param} {self._removed_params[param]}"
+                    msg = f'{param} {self._removed_params[param]}'
                 elif (
                     self._redefined_params and param in self._redefined_params
                 ):
                     msg = self._redefined_params[param]
                 else:
-                    msg = f"Parameter {param} does not exist"
+                    msg = f'Parameter {param} does not exist'
                 raise paramtools.ValidationError(
-                    {"errors": {"schema": msg}},
+                    {'errors': {'schema': msg}},
                     None
                 )
-            if param.endswith("-indexed"):
+            if param.endswith('-indexed'):
                 for year, yearval in val.items():
-                    new_params[param] += [{"year": year, "value": yearval}]
+                    new_params[param] += [{'year': year, 'value': yearval}]
             elif isinstance(val, dict):
                 for year, yearval in val.items():
                     val = getattr(self, param)
                     if (
-                        self._data[param].get("type", None) == "str" and
+                        self._data[param].get('type', None) == 'str' and
                         isinstance(yearval, str)
                     ):
-                        new_params[param] += [{"value": yearval}]
+                        new_params[param] += [{'value': yearval}]
                         continue
 
                     yearval = np.array(yearval)
                     if (
-                        getattr(val, "shape", None) and
+                        getattr(val, 'shape', None) and
                         yearval.shape != val[0].shape
                     ):
                         exp_dims = val[0].shape
                         if exp_dims == tuple():
-                            msg = f"{param} is not an array parameter"
+                            msg = f'{param} is not an array parameter'
                         elif yearval.shape:
                             msg = (
-                                f"{param} has {yearval.shape[0]} elements "
-                                f"but should only have {exp_dims[0]} elements"
+                                f'{param} has {yearval.shape[0]} elements '
+                                f'but should only have {exp_dims[0]} elements'
                             )
                         else:
                             msg = (
-                                f"{param} is an array parameter with "
-                                f"{exp_dims[0]} elements"
+                                f'{param} is an array parameter with '
+                                f'{exp_dims[0]} elements'
                             )
                         raise paramtools.ValidationError(
-                            {"errors": {"schema": msg}},
+                            {'errors': {'schema': msg}},
                             None
                         )
 
@@ -662,11 +662,11 @@ class Parameters(paramtools.Parameters):
                     new_params[param] += value_objects
             else:
                 msg = (
-                    f"{param} must be a year:value dictionary "
-                    f"if you are not using the new adjust method"
+                    f'{param} must be a year:value dictionary '
+                    'if you are not using the new adjust method'
                 )
                 raise paramtools.ValidationError(
-                    {"errors": {"schema": msg}},
+                    {'errors': {'schema': msg}},
                     None
                 )
         return self.adjust(
