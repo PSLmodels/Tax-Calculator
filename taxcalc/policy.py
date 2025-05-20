@@ -149,6 +149,7 @@ class Policy(Parameters):
             'ID_BenefitCap_rt',
             'ID_BenefitSurtax_Switch',
             'ID_BenefitSurtax_crt',
+            'ID_BenefitSurtax_trt',
             'ID_BenefitSurtax_em',
         ]
         for param in reform.keys():
