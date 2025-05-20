@@ -34,8 +34,6 @@ in this section.
 
 - [2016 Trump Campaign Tax Plan](Trump2016.json)
 
-- [2016 Clinton Campaign Tax Plan](Clinton2016.json)
-
 - [2017 Trump Administration Tax Plan](Trump2017.json)
 
 - [2017 Brown-Khanna GAIN Act](BrownKhanna.json)
