@@ -415,6 +415,7 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">paramtools</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameters</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.growfactors</span><span class="w"> </span><span class="kn">import</span> <span class="n">GrowFactors</span>
 
@@ -545,13 +546,34 @@ document.write(`
 
 <div class="viewcode-block" id="Policy.implement_reform">
 <a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.implement_reform">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">implement_reform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">implement_reform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reform</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
                          <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Implement reform using Tax-Calculator syled reforms/adjustments. Users</span>
-<span class="sd">        may also use the adjust method with ParamTools styled reforms.</span>
+<span class="sd">        Implement reform using a Tax-Calculator-style reform dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># need to do conversion:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;schema&#39;</span><span class="p">:</span> <span class="s1">&#39;reform must be a dictionary&#39;</span><span class="p">}},</span>
+                <span class="kc">None</span>
+            <span class="p">)</span>
+        <span class="n">deprecated_parameters</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;ID_AmountCap_Switch&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ID_AmountCap_rt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ID_BenefitCap_rt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ID_BenefitSurtax_Switch&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ID_BenefitSurtax_crt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ID_BenefitSurtax_trt&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ID_BenefitSurtax_em&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">reform</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">deprecated_parameters</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;DEPRECATION WARNING: the </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1"> policy parameter</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39;is scheduled to be removed in Tax-Calculator 5.0.0;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39;if you think this removal should not happen, open an</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39;issue on GitHub to make your case for non-removal.&#39;</span>
+                <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="n">print_warnings</span><span class="p">,</span> <span class="n">raise_errors</span><span class="p">)</span></div>
 
 
