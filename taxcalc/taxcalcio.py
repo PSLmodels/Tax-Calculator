@@ -235,9 +235,9 @@ class TaxCalcIO():
         Delete all output files derived from self.output_filename.
         """
         extensions = [
-            '-params.bas',
-            '-params.ref',
-            '-tables.text',
+            '-params.baseline',
+            '-params.reform',
+            '.tables',
             '-atr.html',
             '-mtr.html',
             '-pch.html',
@@ -571,7 +571,7 @@ class TaxCalcIO():
         Write baseline and reform policy parameter values to separate files.
         """
         param_names = Policy.parameter_list()
-        fname = self.output_filename.replace('.xxx', '-params.bas')
+        fname = self.output_filename.replace('.xxx', '-params.baseline')
         with open(fname, 'w', encoding='utf-8') as pfile:
             for pname in param_names:
                 pval = self.calc_bas.policy_param(pname)
@@ -580,7 +580,7 @@ class TaxCalcIO():
             print(  # pragma: no cover
                 f'Write baseline policy parameter values to file {fname}'
             )
-        fname = self.output_filename.replace('.xxx', '-params.ref')
+        fname = self.output_filename.replace('.xxx', '-params.reform')
         with open(fname, 'w', encoding='utf-8') as pfile:
             for pname in param_names:
                 pval = self.calc_ref.policy_param(pname)
@@ -595,7 +595,7 @@ class TaxCalcIO():
         Write tables to text file.
         """
         # pylint: disable=too-many-locals
-        tab_fname = self.output_filename.replace('.xxx', '-tables.text')
+        tab_fname = self.output_filename.replace('.xxx', '.tables')
         # skip tables if there are not some positive weights
         if self.calc_bas.total_weight() <= 0.:
             with open(tab_fname, 'w', encoding='utf-8') as tfile:
