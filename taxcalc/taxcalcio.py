@@ -54,6 +54,9 @@ class TaxCalcIO():
         None implies economic assumptions are standard assumptions,
         or string is name of optional ASSUMP file.
 
+    runid: int
+        run id value to use for simpler output file names
+
     silent: boolean
         whether or not to suppress action messages.
 
@@ -64,7 +67,7 @@ class TaxCalcIO():
     # pylint: disable=too-many-instance-attributes
 
     def __init__(self, input_data, tax_year, baseline, reform, assump,
-                 silent=True):
+                 runid=0, silent=True):
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-statements,too-many-locals
         self.silent = silent
@@ -225,6 +228,9 @@ class TaxCalcIO():
             self.errmsg += f'ERROR: {msg}\n'
         # create OUTPUT file name and delete any existing output files
         self.output_filename = f'{inp}{bas}{ref}{asm}.xxx'
+        self.runid = runid
+        if runid > 0:
+            self.output_filename = f'run{runid}-{str(tax_year)[2:]}.xxx'
         self.delete_output_files()
         # initialize variables whose values are set in init method
         self.calc_ref = None
@@ -478,7 +484,12 @@ class TaxCalcIO():
         """
         # update self.output_filename and delete output files
         parts = self.output_filename.split('-')
-        parts[1] = str(year)[2:]
+        if self.runid == 0:  # if using legacy output file names
+            parts[1] = str(year)[2:]
+        else:  # if using simpler output file names (runN-YY.xxx)
+            subparts = parts[1].split('.')
+            subparts[0] = str(year)[2:]
+            parts[1] = '.'.join(subparts)
         self.output_filename = '-'.join(parts)
         self.delete_output_files()
         # advance baseline and reform Calculator objects to specified year

@@ -43,7 +43,7 @@ def cli_tc_main():
         ),
         (
             '          '
-            '[--silent] [--test] [--version] [--usage]'
+            '[--runid N] [--silent] [--test] [--version] [--usage]'
         )
     )
     parser = argparse.ArgumentParser(
@@ -75,20 +75,20 @@ def cli_tc_main():
     parser.add_argument('--baseline',
                         help=('BASELINE is name of optional JSON reform file. '
                               'A compound reform can be specified using 2+ '
-                              'file names separated by plus (+) character(s). '
+                              'file names connected by plus (+) character(s). '
                               'No --baseline implies baseline policy is '
                               'current-law policy.'),
                         default=None)
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
                               'A compound reform can be specified using 2+ '
-                              'file names separated by plus (+) character(s). '
+                              'file names connected by plus (+) character(s). '
                               'No --reform implies reform policy is '
                               'current-law policy).'),
                         default=None)
     parser.add_argument('--assump',
                         help=('ASSUMP is name of optional JSON economic '
-                              'assumptions file.  No --assump implies use '
+                              'assumptions file. No --assump implies use '
                               'of no customized assumptions.'),
                         default=None)
     parser.add_argument('--exact',
@@ -125,12 +125,19 @@ def cli_tc_main():
     parser.add_argument('--dumpvars',
                         help=('DUMPVARS is name of optional file containing a '
                               'space-delimited list of variables to include '
-                              'in the dump database.  No --dumpvars '
-                              'implies a minimal set of variables.  Valid '
-                              'variable names include all variables in the '
+                              'in the dump database. No --dumpvars implies '
+                              'a minimal set of variables.  Valid variable '
+                              'names include all variables in the '
                               'records_variables.json file plus mtr_itax and '
                               'mtr_ptax (MTRs wrt taxpayer earnings).'),
                         default=None)
+    parser.add_argument('--runid', metavar='N',
+                        help=('N is a positive integer run id that is used '
+                              'to construct simpler output file names. '
+                              'No --runid implies legacy output file names '
+                              'are used.'),
+                        type=int,
+                        default=0)
     parser.add_argument('--silent',
                         help=('optional flag that suppresses messages about '
                               'input and output actions.'),
@@ -224,6 +231,11 @@ def cli_tc_main():
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
             return 1
+    if args.runid < 0:
+        msg = 'ERROR: --runid parameter N is less than zero\n'
+        sys.stderr.write(msg)
+        sys.stderr.write('USAGE: tc --help\n')
+        return 1
     # do calculations for taxyear
     # ... initialize TaxCalcIO object for taxyear
     tcio = tc.TaxCalcIO(
@@ -232,6 +244,7 @@ def cli_tc_main():
         baseline=args.baseline,
         reform=args.reform,
         assump=args.assump,
+        runid=args.runid,
         silent=args.silent,
     )
     if tcio.errmsg:

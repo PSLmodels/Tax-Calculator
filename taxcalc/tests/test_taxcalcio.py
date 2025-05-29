@@ -522,7 +522,7 @@ def test_write_policy_param_files(reformfile1):
     assert not tcio.errmsg
     tcio.write_policy_params_files()
     outfilepath = tcio.output_filepath()
-    for ext in ['-params.bas', '-params.ref']:
+    for ext in ['-params.baseline', '-params.reform']:
         filepath = outfilepath.replace('.xxx', ext)
         if os.path.isfile(filepath):
             os.remove(filepath)
