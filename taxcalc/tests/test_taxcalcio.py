@@ -370,16 +370,19 @@ def test_ctor_init_with_cps_files():
     """
     # specify valid tax_year for cps.csv input data
     txyr = 2020
-    tcio = TaxCalcIO('cps.csv', txyr, None, None, None, runid=99)
-    tcio.init('cps.csv', txyr, None, None, None,
-              aging_input_data=True,
-              exact_calculations=False)
-    assert not tcio.errmsg
-    assert tcio.tax_year() == txyr
-    # test advance_to_year method
-    tcio.silent = False
-    tcio.advance_to_year(txyr + 1, True)
-    assert tcio.tax_year() == txyr + 1
+    for rid in [0, 99]:
+        tcio = TaxCalcIO('cps.csv', txyr, None, None, None, runid=rid)
+        tcio.init(
+            'cps.csv', txyr, None, None, None,
+            aging_input_data=True,
+            exact_calculations=False,
+        )
+        assert not tcio.errmsg
+        assert tcio.tax_year() == txyr
+        # test advance_to_year method
+        tcio.silent = False
+        tcio.advance_to_year(txyr + 1, True)
+        assert tcio.tax_year() == txyr + 1
     # specify invalid tax_year for cps.csv input data
     txyr = 2013
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
