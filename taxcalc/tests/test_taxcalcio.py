@@ -370,16 +370,19 @@ def test_ctor_init_with_cps_files():
     """
     # specify valid tax_year for cps.csv input data
     txyr = 2020
-    tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
-    tcio.init('cps.csv', txyr, None, None, None,
-              aging_input_data=True,
-              exact_calculations=False)
-    assert not tcio.errmsg
-    assert tcio.tax_year() == txyr
-    # test advance_to_year method
-    tcio.silent = False
-    tcio.advance_to_year(txyr + 1, True)
-    assert tcio.tax_year() == txyr + 1
+    for rid in [0, 99]:
+        tcio = TaxCalcIO('cps.csv', txyr, None, None, None, runid=rid)
+        tcio.init(
+            'cps.csv', txyr, None, None, None,
+            aging_input_data=True,
+            exact_calculations=False,
+        )
+        assert not tcio.errmsg
+        assert tcio.tax_year() == txyr
+        # test advance_to_year method
+        tcio.silent = False
+        tcio.advance_to_year(txyr + 1, True)
+        assert tcio.tax_year() == txyr + 1
     # specify invalid tax_year for cps.csv input data
     txyr = 2013
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
@@ -522,7 +525,7 @@ def test_write_policy_param_files(reformfile1):
     assert not tcio.errmsg
     tcio.write_policy_params_files()
     outfilepath = tcio.output_filepath()
-    for ext in ['-params.bas', '-params.ref']:
+    for ext in ['-params.baseline', '-params.reform']:
         filepath = outfilepath.replace('.xxx', ext)
         if os.path.isfile(filepath):
             os.remove(filepath)

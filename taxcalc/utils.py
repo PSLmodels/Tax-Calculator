@@ -931,8 +931,8 @@ def mtr_graph_data(vdf, year,
     ).values[:, 1]
     # construct DataFrame containing the two mtr?_series
     lines = pd.DataFrame()
-    lines['base'] = mtr1_series
-    lines['reform'] = mtr2_series
+    lines['base'] = np.round(mtr1_series, decimals=4)
+    lines['reform'] = np.round(mtr2_series, decimals=4)
     # construct dictionary containing merged data and auto-generated labels
     data = {}
     data['lines'] = lines
@@ -1065,8 +1065,8 @@ def atr_graph_data(vdf, year,
         where=avginc_series[included] != 0)
     # construct DataFrame containing the two atr?_series
     lines = pd.DataFrame()
-    lines['base'] = atr1_series
-    lines['reform'] = atr2_series
+    lines['base'] = np.round(atr1_series, decimals=4)
+    lines['reform'] = np.round(atr2_series, decimals=4)
     # include only percentiles with average income no less than min_avginc
     lines = lines[included]
     # construct dictionary containing plot lines and auto-generated labels
@@ -1237,7 +1237,7 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
         where=avginc_series[included] != 0)
     # construct DataFrame containing the pch_series expressed as percent
     line = pd.DataFrame()
-    line['pch'] = pch_series * 100
+    line['pch'] = np.round(pch_series * 100, decimals=2)
     # include only percentiles with average income no less than min_avginc
     line = line[included]
     # construct dictionary containing plot line and auto-generated labels
