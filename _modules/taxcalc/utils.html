@@ -1364,8 +1364,8 @@ document.write(`
     <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="c1"># construct DataFrame containing the two mtr?_series</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-    <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mtr1_series</span>
-    <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;reform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mtr2_series</span>
+    <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">mtr1_series</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;reform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">mtr2_series</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
     <span class="c1"># construct dictionary containing merged data and auto-generated labels</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">data</span><span class="p">[</span><span class="s1">&#39;lines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lines</span>
@@ -1501,8 +1501,8 @@ document.write(`
         <span class="n">where</span><span class="o">=</span><span class="n">avginc_series</span><span class="p">[</span><span class="n">included</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
     <span class="c1"># construct DataFrame containing the two atr?_series</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-    <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atr1_series</span>
-    <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;reform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atr2_series</span>
+    <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">atr1_series</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">lines</span><span class="p">[</span><span class="s1">&#39;reform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">atr2_series</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
     <span class="c1"># include only percentiles with average income no less than min_avginc</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">included</span><span class="p">]</span>
     <span class="c1"># construct dictionary containing plot lines and auto-generated labels</span>
@@ -1679,7 +1679,7 @@ document.write(`
         <span class="n">where</span><span class="o">=</span><span class="n">avginc_series</span><span class="p">[</span><span class="n">included</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
     <span class="c1"># construct DataFrame containing the pch_series expressed as percent</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-    <span class="n">line</span><span class="p">[</span><span class="s1">&#39;pch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pch_series</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="n">line</span><span class="p">[</span><span class="s1">&#39;pch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">pch_series</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1"># include only percentiles with average income no less than min_avginc</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">included</span><span class="p">]</span>
     <span class="c1"># construct dictionary containing plot line and auto-generated labels</span>

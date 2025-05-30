@@ -463,6 +463,9 @@ document.write(`
 <span class="sd">        None implies economic assumptions are standard assumptions,</span>
 <span class="sd">        or string is name of optional ASSUMP file.</span>
 
+<span class="sd">    runid: int</span>
+<span class="sd">        run id value to use for simpler output file names</span>
+
 <span class="sd">    silent: boolean</span>
 <span class="sd">        whether or not to suppress action messages.</span>
 
@@ -473,7 +476,7 @@ document.write(`
     <span class="c1"># pylint: disable=too-many-instance-attributes</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">tax_year</span><span class="p">,</span> <span class="n">baseline</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span> <span class="n">assump</span><span class="p">,</span>
-                 <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                 <span class="n">runid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
         <span class="c1"># pylint: disable=too-many-branches,too-many-statements,too-many-locals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">silent</span> <span class="o">=</span> <span class="n">silent</span>
@@ -634,6 +637,9 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;ERROR: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="c1"># create OUTPUT file name and delete any existing output files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">inp</span><span class="si">}{</span><span class="n">bas</span><span class="si">}{</span><span class="n">ref</span><span class="si">}{</span><span class="n">asm</span><span class="si">}</span><span class="s1">.xxx&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runid</span> <span class="o">=</span> <span class="n">runid</span>
+        <span class="k">if</span> <span class="n">runid</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;run</span><span class="si">{</span><span class="n">runid</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">tax_year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="si">}</span><span class="s1">.xxx&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">delete_output_files</span><span class="p">()</span>
         <span class="c1"># initialize variables whose values are set in init method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span> <span class="o">=</span> <span class="kc">None</span>
@@ -644,9 +650,9 @@ document.write(`
 <span class="sd">        Delete all output files derived from self.output_filename.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s1">&#39;-params.bas&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;-params.ref&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;-tables.text&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;-params.baseline&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;-params.reform&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;.tables&#39;</span><span class="p">,</span>
             <span class="s1">&#39;-atr.html&#39;</span><span class="p">,</span>
             <span class="s1">&#39;-mtr.html&#39;</span><span class="p">,</span>
             <span class="s1">&#39;-pch.html&#39;</span><span class="p">,</span>
@@ -893,7 +899,12 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># update self.output_filename and delete output files</span>
         <span class="n">parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
-        <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">runid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># if using legacy output file names</span>
+            <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if using simpler output file names (runN-YY.xxx)</span>
+            <span class="n">subparts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">subparts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subparts</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">delete_output_files</span><span class="p">()</span>
         <span class="c1"># advance baseline and reform Calculator objects to specified year</span>
@@ -989,7 +1000,7 @@ document.write(`
 <span class="sd">        Write baseline and reform policy parameter values to separate files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">param_names</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">parameter_list</span><span class="p">()</span>
-        <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;-params.bas&#39;</span><span class="p">)</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;-params.baseline&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
                 <span class="n">pval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
@@ -998,7 +1009,7 @@ document.write(`
             <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
                 <span class="sa">f</span><span class="s1">&#39;Write baseline policy parameter values to file </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
-        <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;-params.ref&#39;</span><span class="p">)</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;-params.reform&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
                 <span class="n">pval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
@@ -1015,7 +1026,7 @@ document.write(`
 <span class="sd">        Write tables to text file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=too-many-locals</span>
-        <span class="n">tab_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;-tables.text&#39;</span><span class="p">)</span>
+        <span class="n">tab_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;.tables&#39;</span><span class="p">)</span>
         <span class="c1"># skip tables if there are not some positive weights</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">total_weight</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tab_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tfile</span><span class="p">:</span>
