@@ -370,7 +370,7 @@ def test_ctor_init_with_cps_files():
     """
     # specify valid tax_year for cps.csv input data
     txyr = 2020
-    tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
+    tcio = TaxCalcIO('cps.csv', txyr, None, None, None, runid=99)
     tcio.init('cps.csv', txyr, None, None, None,
               aging_input_data=True,
               exact_calculations=False)
