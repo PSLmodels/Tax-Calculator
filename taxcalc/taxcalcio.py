@@ -581,12 +581,13 @@ class TaxCalcIO():
         """
         Write baseline and reform policy parameter values to separate files.
         """
+        year = self.calc_bas.current_year
         param_names = Policy.parameter_list()
         fname = self.output_filename.replace('.xxx', '-params.baseline')
         with open(fname, 'w', encoding='utf-8') as pfile:
             for pname in param_names:
                 pval = self.calc_bas.policy_param(pname)
-                pfile.write(f'{pname} {pval}\n')
+                pfile.write(f'{year} {pname} {pval}\n')
         if not self.silent:
             print(  # pragma: no cover
                 f'Write baseline policy parameter values to file {fname}'
@@ -595,7 +596,7 @@ class TaxCalcIO():
         with open(fname, 'w', encoding='utf-8') as pfile:
             for pname in param_names:
                 pval = self.calc_ref.policy_param(pname)
-                pfile.write(f'{pname} {pval}\n')
+                pfile.write(f'{year} {pname} {pval}\n')
         if not self.silent:
             print(  # pragma: no cover
                 f'Write reform policy parameter values to file {fname}'
