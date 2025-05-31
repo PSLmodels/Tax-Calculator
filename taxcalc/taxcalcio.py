@@ -631,10 +631,21 @@ class TaxCalcIO():
         diff = nontax + change  # using expanded_income under baseline policy
         diffdf = pd.DataFrame(data=np.column_stack(diff), columns=all_vars)
         # write each kind of distributional table
+        year = self.calc_bas.current_year
         with open(tab_fname, 'w', encoding='utf-8') as tfile:
-            TaxCalcIO.write_decile_table(distdf, tfile, tkind='Reform Totals')
+            TaxCalcIO.write_decile_table(
+                distdf,
+                tfile,
+                year,
+                tkind='Reform Totals',
+            )
             tfile.write('\n')
-            TaxCalcIO.write_decile_table(diffdf, tfile, tkind='Differences')
+            TaxCalcIO.write_decile_table(
+                diffdf,
+                tfile,
+                year,
+                tkind='Differences',
+            )
         # delete intermediate DataFrame objects
         del distdf
         del diffdf
@@ -645,7 +656,7 @@ class TaxCalcIO():
             )
 
     @staticmethod
-    def write_decile_table(dfx, tfile, tkind='Totals'):
+    def write_decile_table(dfx, tfile, year, tkind='Totals'):
         """
         Write to tfile the tkind decile table using dfx DataFrame.
         """
@@ -673,7 +684,10 @@ class TaxCalcIO():
             weighted_sum, 'combined', include_groups=False
         ).values[:, 1]
         # write decile table to text file
-        row = f'Weighted Tax {tkind} by Baseline Expanded-Income Decile\n'
+        row = (
+            f'Weighted {year} Tax {tkind} by '
+            'Baseline Expanded-Income Decile\n'
+        )
         tfile.write(row)
         # pylint: disable=consider-using-f-string
         rowfmt = '{}{}{}{}{}{}\n'
