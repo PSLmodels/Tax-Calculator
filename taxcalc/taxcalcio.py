@@ -876,7 +876,21 @@ class TaxCalcIO():
         outdf = pd.DataFrame()
         for var in TaxCalcIO.BASE_DUMPVARS:
             outdf[var] = self.calc_bas.array(var)
-        outdf['income_group'] = 0
+        expanded_income_bin_edges = [  # default income_group definition
+            -np.inf,
+            50e3,
+            100e3,
+            250e3,
+            500e3,
+            1e6,
+            np.inf,
+        ]
+        outdf['income_group'] = 1 + pd.cut(
+            outdf['expanded_income'],
+            expanded_income_bin_edges,
+            right=True,  # bins are defined as (lo_edge, hi_edge]
+            labels=False,  # cut returns bins numbered 0,1,2,...
+        )
         assert len(outdf.index) == self.calc_bas.array_len
         outdf.to_sql('base', dbcon, index=False)
         del outdf
