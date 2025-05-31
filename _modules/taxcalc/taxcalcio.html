@@ -999,12 +999,13 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write baseline and reform policy parameter values to separate files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">current_year</span>
         <span class="n">param_names</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">parameter_list</span><span class="p">()</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;-params.baseline&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
                 <span class="n">pval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
-                <span class="n">pfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pval</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">pfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pval</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
                 <span class="sa">f</span><span class="s1">&#39;Write baseline policy parameter values to file </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -1013,7 +1014,7 @@ document.write(`
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
                 <span class="n">pval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
-                <span class="n">pfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pval</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">pfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pval</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
                 <span class="sa">f</span><span class="s1">&#39;Write reform policy parameter values to file </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -1051,10 +1052,21 @@ document.write(`
         <span class="n">diff</span> <span class="o">=</span> <span class="n">nontax</span> <span class="o">+</span> <span class="n">change</span>  <span class="c1"># using expanded_income under baseline policy</span>
         <span class="n">diffdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">diff</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">all_vars</span><span class="p">)</span>
         <span class="c1"># write each kind of distributional table</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">current_year</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tab_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tfile</span><span class="p">:</span>
-            <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_decile_table</span><span class="p">(</span><span class="n">distdf</span><span class="p">,</span> <span class="n">tfile</span><span class="p">,</span> <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Reform Totals&#39;</span><span class="p">)</span>
+            <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_decile_table</span><span class="p">(</span>
+                <span class="n">distdf</span><span class="p">,</span>
+                <span class="n">tfile</span><span class="p">,</span>
+                <span class="n">year</span><span class="p">,</span>
+                <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Reform Totals&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_decile_table</span><span class="p">(</span><span class="n">diffdf</span><span class="p">,</span> <span class="n">tfile</span><span class="p">,</span> <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Differences&#39;</span><span class="p">)</span>
+            <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_decile_table</span><span class="p">(</span>
+                <span class="n">diffdf</span><span class="p">,</span>
+                <span class="n">tfile</span><span class="p">,</span>
+                <span class="n">year</span><span class="p">,</span>
+                <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Differences&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="c1"># delete intermediate DataFrame objects</span>
         <span class="k">del</span> <span class="n">distdf</span>
         <span class="k">del</span> <span class="n">diffdf</span>
@@ -1068,7 +1080,7 @@ document.write(`
 <div class="viewcode-block" id="TaxCalcIO.write_decile_table">
 <a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_decile_table">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">write_decile_table</span><span class="p">(</span><span class="n">dfx</span><span class="p">,</span> <span class="n">tfile</span><span class="p">,</span> <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Totals&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_decile_table</span><span class="p">(</span><span class="n">dfx</span><span class="p">,</span> <span class="n">tfile</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Totals&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write to tfile the tkind decile table using dfx DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1096,7 +1108,10 @@ document.write(`
             <span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;combined&#39;</span><span class="p">,</span> <span class="n">include_groups</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="c1"># write decile table to text file</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Weighted Tax </span><span class="si">{</span><span class="n">tkind</span><span class="si">}</span><span class="s1"> by Baseline Expanded-Income Decile</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Weighted </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1"> Tax </span><span class="si">{</span><span class="n">tkind</span><span class="si">}</span><span class="s1"> by &#39;</span>
+            <span class="s1">&#39;Baseline Expanded-Income Decile</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
         <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
         <span class="c1"># pylint: disable=consider-using-f-string</span>
         <span class="n">rowfmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}{}{}{}{}</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -1291,7 +1306,21 @@ document.write(`
         <span class="n">outdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">BASE_DUMPVARS</span><span class="p">:</span>
             <span class="n">outdf</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
-        <span class="n">outdf</span><span class="p">[</span><span class="s1">&#39;income_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">expanded_income_bin_edges</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># default income_group definition</span>
+            <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+            <span class="mf">50e3</span><span class="p">,</span>
+            <span class="mf">100e3</span><span class="p">,</span>
+            <span class="mf">250e3</span><span class="p">,</span>
+            <span class="mf">500e3</span><span class="p">,</span>
+            <span class="mf">1e6</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">outdf</span><span class="p">[</span><span class="s1">&#39;income_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span>
+            <span class="n">outdf</span><span class="p">[</span><span class="s1">&#39;expanded_income&#39;</span><span class="p">],</span>
+            <span class="n">expanded_income_bin_edges</span><span class="p">,</span>
+            <span class="n">right</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># bins are defined as (lo_edge, hi_edge]</span>
+            <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># cut returns bins numbered 0,1,2,...</span>
+        <span class="p">)</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">array_len</span>
         <span class="n">outdf</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="n">dbcon</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">outdf</span>
