@@ -897,7 +897,9 @@ class TaxCalcIO():
         # write income_group_definition table
         num_groups = len(expanded_income_bin_edges) - 1
         outdf = pd.DataFrame()
-        outdf['group'] = np.array([1 + grp for grp in range(0, num_groups)])
+        outdf['income_group'] = np.array([
+            1 + grp for grp in range(0, num_groups)
+        ])
         outdf['income_lower'] = np.array(expanded_income_bin_edges[:-1])
         outdf['income_up_to'] = np.array(expanded_income_bin_edges[1:])
         assert len(outdf.index) == num_groups
