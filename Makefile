@@ -49,19 +49,19 @@ rm -f tmp??????-??-#-tmp*
 endef
 
 .PHONY=pytest-cps
-pytest-cps:
+pytest-cps: clean
 	@$(pytest-setup)
 	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m "not requires_pufcsv and not pre_release"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
-pytest:
+pytest: clean
 	@$(pytest-setup)
 	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m "not pre_release"
 	@$(pytest-cleanup)
 
 .PHONY=pytest-all
-pytest-all:
+pytest-all: clean
 	@$(pytest-setup)
 	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m ""
 	@$(pytest-cleanup)

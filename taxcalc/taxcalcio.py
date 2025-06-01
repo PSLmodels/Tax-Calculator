@@ -877,22 +877,31 @@ class TaxCalcIO():
         for var in TaxCalcIO.BASE_DUMPVARS:
             outdf[var] = self.calc_bas.array(var)
         expanded_income_bin_edges = [  # default income_group definition
-            -np.inf,
+            -1e300,  # essentially -infinity
             50e3,
             100e3,
             250e3,
             500e3,
             1e6,
-            np.inf,
+            1e300,  # essentially +infinity
         ]
         outdf['income_group'] = 1 + pd.cut(
             outdf['expanded_income'],
             expanded_income_bin_edges,
-            right=True,  # bins are defined as (lo_edge, hi_edge]
-            labels=False,  # cut returns bins numbered 0,1,2,...
+            right=False,  # bins are defined as [lo_edge, hi_edge)
+            labels=False,  # pd.cut returns bins numbered 0,1,2,...
         )
         assert len(outdf.index) == self.calc_bas.array_len
         outdf.to_sql('base', dbcon, index=False)
+        del outdf
+        # write income_group_definition table
+        num_groups = len(expanded_income_bin_edges) - 1
+        outdf = pd.DataFrame()
+        outdf['group'] = np.array([1 + grp for grp in range(0, num_groups)])
+        outdf['income_lower'] = np.array(expanded_income_bin_edges[:-1])
+        outdf['income_up_to'] = np.array(expanded_income_bin_edges[1:])
+        assert len(outdf.index) == num_groups
+        outdf.to_sql('income_group_definition', dbcon, index=False)
         del outdf
         # write baseline table
         outdf = dump_output(
