@@ -686,8 +686,8 @@ class TaxCalcIO():
         ).values[:, 1]
         # write decile table to text file
         row = (
-            f'Weighted {year} Tax {tkind} by '
-            'Baseline Expanded-Income Decile\n'
+            f'Weighted Tax {tkind} by '
+            f'Baseline Expanded-Income Decile for {year}\n'
         )
         tfile.write(row)
         # pylint: disable=consider-using-f-string
