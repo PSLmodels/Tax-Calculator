@@ -1109,8 +1109,8 @@ document.write(`
         <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="c1"># write decile table to text file</span>
         <span class="n">row</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;Weighted </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1"> Tax </span><span class="si">{</span><span class="n">tkind</span><span class="si">}</span><span class="s1"> by &#39;</span>
-            <span class="s1">&#39;Baseline Expanded-Income Decile</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Weighted Tax </span><span class="si">{</span><span class="n">tkind</span><span class="si">}</span><span class="s1"> by &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Baseline Expanded-Income Decile for </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="p">)</span>
         <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
         <span class="c1"># pylint: disable=consider-using-f-string</span>
@@ -1307,22 +1307,33 @@ document.write(`
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">BASE_DUMPVARS</span><span class="p">:</span>
             <span class="n">outdf</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
         <span class="n">expanded_income_bin_edges</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># default income_group definition</span>
-            <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+            <span class="o">-</span><span class="mf">1e300</span><span class="p">,</span>  <span class="c1"># essentially -infinity</span>
             <span class="mf">50e3</span><span class="p">,</span>
             <span class="mf">100e3</span><span class="p">,</span>
             <span class="mf">250e3</span><span class="p">,</span>
             <span class="mf">500e3</span><span class="p">,</span>
             <span class="mf">1e6</span><span class="p">,</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+            <span class="mf">1e300</span><span class="p">,</span>  <span class="c1"># essentially +infinity</span>
         <span class="p">]</span>
-        <span class="n">outdf</span><span class="p">[</span><span class="s1">&#39;income_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span>
+        <span class="n">outdf</span><span class="p">[</span><span class="s1">&#39;income_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span>  <span class="c1"># default base.income_group values</span>
             <span class="n">outdf</span><span class="p">[</span><span class="s1">&#39;expanded_income&#39;</span><span class="p">],</span>
             <span class="n">expanded_income_bin_edges</span><span class="p">,</span>
-            <span class="n">right</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># bins are defined as (lo_edge, hi_edge]</span>
-            <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># cut returns bins numbered 0,1,2,...</span>
+            <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># bins are defined as [lo_edge, hi_edge)</span>
+            <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># pd.cut returns bins numbered 0,1,2,...</span>
         <span class="p">)</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">array_len</span>
         <span class="n">outdf</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="n">dbcon</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">outdf</span>
+        <span class="c1"># write income_group_definition table</span>
+        <span class="n">num_groups</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">expanded_income_bin_edges</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">outdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">outdf</span><span class="p">[</span><span class="s1">&#39;income_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="mi">1</span> <span class="o">+</span> <span class="n">grp</span> <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_groups</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="n">outdf</span><span class="p">[</span><span class="s1">&#39;income_lower&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">expanded_income_bin_edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">outdf</span><span class="p">[</span><span class="s1">&#39;income_up_to&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">expanded_income_bin_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="n">num_groups</span>
+        <span class="n">outdf</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;income_group_definition&#39;</span><span class="p">,</span> <span class="n">dbcon</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">outdf</span>
         <span class="c1"># write baseline table</span>
         <span class="n">outdf</span> <span class="o">=</span> <span class="n">dump_output</span><span class="p">(</span>
