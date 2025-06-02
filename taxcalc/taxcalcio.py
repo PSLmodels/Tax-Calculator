@@ -885,7 +885,7 @@ class TaxCalcIO():
             1e6,
             1e300,  # essentially +infinity
         ]
-        outdf['income_group'] = 1 + pd.cut(
+        outdf['income_group'] = 1 + pd.cut(  # default base.income_group values
             outdf['expanded_income'],
             expanded_income_bin_edges,
             right=False,  # bins are defined as [lo_edge, hi_edge)
