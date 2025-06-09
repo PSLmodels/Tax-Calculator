@@ -161,11 +161,7 @@ def cli_tc_main():
                         action="store_true")
     args = parser.parse_args()
     using_error_file = args.silent and args.runid != 0
-    error_file = None
-    if using_error_file:
-        error_file = open(  # pylint: disable=consider-using-with
-            f'run{args.runid}.errors', 'w', encoding='utf-8',
-        )
+    efilename = f'run{args.runid}.errors'
     # check Python version
     pyv = sys.version_info
     pymin = tc.__min_python3_version__
@@ -177,8 +173,8 @@ def cli_tc_main():
             f'       but Python {pyv[0]}.{pyv[1]} is installed\n'
         )
         if using_error_file:
-            error_file.write(msg)
-            error_file.close()
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
             sys.stderr.write(msg)
         return 1
@@ -205,8 +201,8 @@ def cli_tc_main():
     if taxyear > tc.Policy.LAST_BUDGET_YEAR:
         msg = f'ERROR: TAXYEAR is greater than {tc.Policy.LAST_BUDGET_YEAR}\n'
         if using_error_file:
-            error_file.write(msg)
-            error_file.close()
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
@@ -215,8 +211,8 @@ def cli_tc_main():
     if args.numyears < 1:
         msg = 'ERROR: --numyears parameter N is less than one\n'
         if using_error_file:
-            error_file.write(msg)
-            error_file.close()
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
@@ -225,8 +221,8 @@ def cli_tc_main():
     if args.numyears > max_numyears:
         msg = f'ERROR: --numyears parameter N is greater than {max_numyears}\n'
         if using_error_file:
-            error_file.write(msg)
-            error_file.close()
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
@@ -241,8 +237,8 @@ def cli_tc_main():
     if not args.dumpdb and args.dumpvars:
         msg = 'ERROR: DUMPVARS file specified without --dumpdb option\n'
         if using_error_file:
-            error_file.write(msg)
-            error_file.close()
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
@@ -256,8 +252,8 @@ def cli_tc_main():
         else:
             msg = f'ERROR: DUMPVARS file {args.dumpvars} does not exist\n'
             if using_error_file:
-                error_file.write(msg)
-                error_file.close()
+                with open(efilename, 'w', encoding='utf-8') as efile:
+                    efile.write(msg)
             else:
                 sys.stderr.write(msg)
                 sys.stderr.write('USAGE: tc --help\n')
@@ -265,8 +261,8 @@ def cli_tc_main():
     if args.runid < 0:
         msg = 'ERROR: --runid parameter N is less than zero\n'
         if using_error_file:
-            error_file.write(msg)
-            error_file.close()
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
@@ -287,8 +283,8 @@ def cli_tc_main():
         if not msg.endswith('\n'):
             msg += '\n'
         if using_error_file:
-            error_file.write(msg)
-            error_file.close()
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
@@ -307,8 +303,8 @@ def cli_tc_main():
         if not msg.endswith('\n'):
             msg += '\n'
         if using_error_file:
-            error_file.write(msg)
-            error_file.close()
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
@@ -320,8 +316,8 @@ def cli_tc_main():
         if not msg.endswith('\n'):
             msg += '\n'
         if using_error_file:
-            error_file.write(msg)
-            error_file.close()
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
