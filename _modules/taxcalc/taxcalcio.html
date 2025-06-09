@@ -655,8 +655,8 @@ document.write(`
             <span class="s1">&#39;.tables&#39;</span><span class="p">,</span>
             <span class="s1">&#39;-atr.html&#39;</span><span class="p">,</span>
             <span class="s1">&#39;-mtr.html&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;-pch.html&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;.db&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;-chg.html&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;.dumpdb&#39;</span><span class="p">,</span>
         <span class="p">]</span>
         <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
             <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="n">ext</span><span class="p">))</span>
@@ -1168,7 +1168,7 @@ document.write(`
         <span class="n">pos_wght_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="o">.</span><span class="n">total_weight</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># percentage-aftertax-income-change graph</span>
-        <span class="n">pch_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;-pch.html&#39;</span><span class="p">)</span>
+        <span class="n">pch_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;-chg.html&#39;</span><span class="p">)</span>
         <span class="n">pch_title</span> <span class="o">=</span> <span class="s1">&#39;PCH by Income Percentile&#39;</span>
         <span class="k">if</span> <span class="n">pos_wght_sum</span><span class="p">:</span>
             <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">pch_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="p">,</span> <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1300,7 +1300,7 @@ document.write(`
         <span class="c1"># begin main logic</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dump_varlist</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">dump_varlist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="n">db_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;.db&#39;</span><span class="p">)</span>
+        <span class="n">db_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;.dumpdb&#39;</span><span class="p">)</span>
         <span class="n">dbcon</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_fname</span><span class="p">)</span>
         <span class="c1"># write base table</span>
         <span class="n">outdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
