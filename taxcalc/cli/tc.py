@@ -160,16 +160,23 @@ def cli_tc_main():
                         default=False,
                         action="store_true")
     args = parser.parse_args()
+    using_error_file = args.silent and args.runid != 0
+    efilename = f'run{args.runid}.errors'
     # check Python version
     pyv = sys.version_info
     pymin = tc.__min_python3_version__
     pymax = tc.__max_python3_version__
     if pyv[0] != 3 or pyv[1] < pymin or pyv[1] > pymax:  # pragma: no cover
         pyreq = f'at least Python 3.{pymin} and at most Python 3.{pymax}'
-        sys.stderr.write(
+        msg = (
             f'ERROR: Tax-Calculator requires {pyreq}\n'
             f'       but Python {pyv[0]}.{pyv[1]} is installed\n'
         )
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
         return 1
     # show Tax-Calculator version and quit if --version option is specified
     if args.version:
@@ -193,20 +200,32 @@ def cli_tc_main():
     # check taxyear value
     if taxyear > tc.Policy.LAST_BUDGET_YEAR:
         msg = f'ERROR: TAXYEAR is greater than {tc.Policy.LAST_BUDGET_YEAR}\n'
-        sys.stderr.write(msg)
-        sys.stderr.write('USAGE: tc --help\n')
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
         return 1
     # check numyears value
     if args.numyears < 1:
         msg = 'ERROR: --numyears parameter N is less than one\n'
-        sys.stderr.write(msg)
-        sys.stderr.write('USAGE: tc --help\n')
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
         return 1
     max_numyears = tc.Policy.LAST_BUDGET_YEAR - taxyear + 1
     if args.numyears > max_numyears:
         msg = f'ERROR: --numyears parameter N is greater than {max_numyears}\n'
-        sys.stderr.write(msg)
-        sys.stderr.write('USAGE: tc --help\n')
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
         return 1
     # specify if aging input data
     aging_data = (
@@ -217,8 +236,12 @@ def cli_tc_main():
     # check args.dumpdb and args.dumpvars consistency
     if not args.dumpdb and args.dumpvars:
         msg = 'ERROR: DUMPVARS file specified without --dumpdb option\n'
-        sys.stderr.write(msg)
-        sys.stderr.write('USAGE: tc --help\n')
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
         return 1
     # specify dumpvars_str from args.dumpvars file
     dumpvars_str = ''
@@ -228,13 +251,21 @@ def cli_tc_main():
                 dumpvars_str = dfile.read()
         else:
             msg = f'ERROR: DUMPVARS file {args.dumpvars} does not exist\n'
-            sys.stderr.write(msg)
-            sys.stderr.write('USAGE: tc --help\n')
+            if using_error_file:
+                with open(efilename, 'w', encoding='utf-8') as efile:
+                    efile.write(msg)
+            else:
+                sys.stderr.write(msg)
+                sys.stderr.write('USAGE: tc --help\n')
             return 1
     if args.runid < 0:
         msg = 'ERROR: --runid parameter N is less than zero\n'
-        sys.stderr.write(msg)
-        sys.stderr.write('USAGE: tc --help\n')
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
         return 1
     # do calculations for taxyear
     # ... initialize TaxCalcIO object for taxyear
@@ -248,11 +279,15 @@ def cli_tc_main():
         silent=args.silent,
     )
     if tcio.errmsg:
-        if tcio.errmsg.endswith('\n'):
-            sys.stderr.write(tcio.errmsg)
+        msg = tcio.errmsg
+        if not msg.endswith('\n'):
+            msg += '\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
-            sys.stderr.write(tcio.errmsg + '\n')
-        sys.stderr.write('USAGE: tc --help\n')
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
         return 1
     tcio.init(
         input_data=inputfn,
@@ -264,19 +299,27 @@ def cli_tc_main():
         exact_calculations=args.exact,
     )
     if tcio.errmsg:
-        if tcio.errmsg.endswith('\n'):
-            sys.stderr.write(tcio.errmsg)
+        msg = tcio.errmsg
+        if not msg.endswith('\n'):
+            msg += '\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
-            sys.stderr.write(tcio.errmsg + '\n')
-        sys.stderr.write('USAGE: tc --help\n')
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
         return 1
     # ... conduct tax analysis for taxyear
     dumpvars_list = tcio.dump_variables(dumpvars_str)
     if tcio.errmsg:
-        if tcio.errmsg.endswith('\n'):
-            sys.stderr.write(tcio.errmsg)
+        msg = tcio.errmsg
+        if not msg.endswith('\n'):
+            msg += '\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
-            sys.stderr.write(tcio.errmsg + '\n')
+            sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
         return 1
     tcio.analyze(
@@ -326,7 +369,7 @@ EXPECTED_TEST_OUTPUT = (
     '1|131.88\n'
     '2|28879.00\n'
 )
-TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.db'
+TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.dumpdb'
 TEST_SQLITE_QUERY = """
 SELECT
   RECID           AS id,

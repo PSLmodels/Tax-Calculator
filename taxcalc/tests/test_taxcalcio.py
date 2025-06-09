@@ -448,7 +448,7 @@ def test_output_options_min(reformfile1, assumpfile1):
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
-    dumppath = tcio.output_filepath().replace('.xxx', '.db')
+    dumppath = tcio.output_filepath().replace('.xxx', '.dumpdb')
     # minimal dump output
     dumpvars = TaxCalcIO.MINIMAL_DUMPVARS
     try:
@@ -483,7 +483,7 @@ def test_output_options_mtr(reformfile1, assumpfile1):
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
-    dumppath = tcio.output_filepath().replace('.xxx', '.db')
+    dumppath = tcio.output_filepath().replace('.xxx', '.dumpdb')
     # minimal+mtr_* dump output
     dumpvars = TaxCalcIO.MINIMAL_DUMPVARS
     for var in TaxCalcIO.MTR_DUMPVARS:
