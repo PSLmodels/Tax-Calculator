@@ -246,8 +246,8 @@ class TaxCalcIO():
             '.tables',
             '-atr.html',
             '-mtr.html',
-            '-pch.html',
-            '.db',
+            '-chg.html',
+            '.dumpdb',
         ]
         for ext in extensions:
             delete_file(self.output_filename.replace('.xxx', ext))
@@ -742,7 +742,7 @@ class TaxCalcIO():
         pos_wght_sum = self.calc_ref.total_weight() > 0.0
         fig = None
         # percentage-aftertax-income-change graph
-        pch_fname = self.output_filename.replace('.xxx', '-pch.html')
+        pch_fname = self.output_filename.replace('.xxx', '-chg.html')
         pch_title = 'PCH by Income Percentile'
         if pos_wght_sum:
             fig = self.calc_bas.pch_graph(self.calc_ref, pop_quantiles=False)
@@ -870,7 +870,7 @@ class TaxCalcIO():
         # begin main logic
         assert isinstance(dump_varlist, list)
         assert len(dump_varlist) > 0
-        db_fname = self.output_filename.replace('.xxx', '.db')
+        db_fname = self.output_filename.replace('.xxx', '.dumpdb')
         dbcon = sqlite3.connect(db_fname)
         # write base table
         outdf = pd.DataFrame()
