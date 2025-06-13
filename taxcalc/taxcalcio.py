@@ -743,7 +743,7 @@ class TaxCalcIO():
         fig = None
         # percentage-aftertax-income-change graph
         pch_fname = self.output_filename.replace('.xxx', '-chg.html')
-        pch_title = 'PCH by Income Percentile'
+        pch_title = 'CHG by Income Percentile'
         if pos_wght_sum:
             fig = self.calc_bas.pch_graph(self.calc_ref, pop_quantiles=False)
             write_graph_file(fig, pch_fname, pch_title)
