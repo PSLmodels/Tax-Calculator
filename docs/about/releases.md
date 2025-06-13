@@ -4,6 +4,33 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2025-06-xx Release 4.6.3
+------------------------
+(last merged pull request is
+[#2915](https://github.com/PSLmodels/Tax-Calculator/pull/2915))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Update CLI documentation
+[[#2907](https://github.com/PSLmodels/Tax-Calculator/pull/2907) by Martin Holmer]
+- Add deprecation warnings for planned Tax-Calculator 5.0.0 changes, add two tests, and remove one obsolete test
+[[#2908](https://github.com/PSLmodels/Tax-Calculator/pull/2908),
+ [#2909](https://github.com/PSLmodels/Tax-Calculator/pull/2909), and
+ [#2910](https://github.com/PSLmodels/Tax-Calculator/pull/2910) by Martin Holmer]
+- Add optional `--runid N` CLI option that simplifies output file names
+[[#2912](https://github.com/PSLmodels/Tax-Calculator/pull/2912) by Martin Holmer]
+- Add a default `income_group` definition to the CLI --dumpdb output
+[[#2913](https://github.com/PSLmodels/Tax-Calculator/pull/2913) and
+ [#2914](https://github.com/PSLmodels/Tax-Calculator/pull/2914) by Martin Holmer]
+- Standardize CLI output file name extensions
+[[#2915](https://github.com/PSLmodels/Tax-Calculator/pull/2915) by Martin Holmer]
+
+**Bug Fixes**
+
+
 2025-05-16 Release 4.6.2
 ------------------------
 (last merged pull request is
