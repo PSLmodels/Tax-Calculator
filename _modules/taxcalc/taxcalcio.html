@@ -1169,7 +1169,7 @@ document.write(`
         <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># percentage-aftertax-income-change graph</span>
         <span class="n">pch_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;-chg.html&#39;</span><span class="p">)</span>
-        <span class="n">pch_title</span> <span class="o">=</span> <span class="s1">&#39;PCH by Income Percentile&#39;</span>
+        <span class="n">pch_title</span> <span class="o">=</span> <span class="s1">&#39;CHG by Income Percentile&#39;</span>
         <span class="k">if</span> <span class="n">pos_wght_sum</span><span class="p">:</span>
             <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="o">.</span><span class="n">pch_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="p">,</span> <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">write_graph_file</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">pch_fname</span><span class="p">,</span> <span class="n">pch_title</span><span class="p">)</span>
