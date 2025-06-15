@@ -1407,10 +1407,6 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
 
 @JIT(nopython=True)
 def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
-           PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-           PT_rt6, PT_rt7, PT_rt8,
-           PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
-           PT_brk6, PT_brk7,
            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
            II_rt6, II_rt7, II_rt8,
            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
@@ -1436,36 +1432,6 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
         etc, income/loss
     e00200: float
         Wages, salaries, and tips for filing unit net of pension contributions
-    PT_rt1: float
-        Pass through income tax rate 1
-    PT_rt2: float
-        Pass through income tax rate 2
-    PT_rt3: float
-        Pass through income tax rate 3
-    PT_rt4: float
-        Pass through income tax rate 4
-    PT_rt5: float
-        Pass through income tax rate 5
-    PT_rt6: float
-        Pass through income tax rate 6
-    PT_rt7: float
-        Pass through income tax rate 7
-    PT_rt8: float
-        Pass through income tax rate 8
-    PT_brk1: list
-        Pass through income tax bracket (upper threshold) 1
-    PT_brk2: list
-        Pass through income tax bracket (upper threshold) 2
-    PT_brk3: list
-        Pass through income tax bracket (upper threshold) 3
-    PT_brk4: list
-        Pass through income tax bracket (upper threshold) 4
-    PT_brk5: list
-        Pass through income tax bracket (upper threshold) 5
-    PT_brk6: list
-        Pass through income tax bracket (upper threshold) 6
-    PT_brk7: list
-        Pass through income tax bracket (upper threshold) 7
     II_rt1: float
         Personal income (regular/non-AMT/non-pass-through) tax rate 1
     II_rt2: float
@@ -1542,14 +1508,15 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
     else:
         reg_tbase = pt_taxinc
         pt_tbase = 0.
-    # compute Schedule X,Y,Z tax using the two components of taxable income
-    if reg_taxinc > 0.:
-        reg_tax = Taxes(reg_taxinc, MARS, reg_tbase,
+    # compute Schedule X,Y,Z tax using taxable income
+    if taxable_income > 0.:
+        reg_tax = Taxes(taxable_income, MARS, 0.0,
                         II_rt1, II_rt2, II_rt3, II_rt4,
                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
     else:
         reg_tax = 0.
+    """
     if pt_taxinc > 0.:
         pt_tax = Taxes(pt_taxinc, MARS, pt_tbase,
                        PT_rt1, PT_rt2, PT_rt3, PT_rt4,
@@ -1557,15 +1524,12 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
                        PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
     else:
         pt_tax = 0.
-    return reg_tax + pt_tax
+    """
+    return reg_tax
 
 
 @iterate_jit(nopython=True)
 def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
-              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-              PT_rt6, PT_rt7, PT_rt8,
-              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
-              PT_brk6, PT_brk7,
               II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
               II_rt6, II_rt7, II_rt8,
               II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
@@ -1590,36 +1554,6 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
         Farm net income/loss for filing unit from Schedule F
     e00200: float
         Farm net income/loss for filing unit from Schedule F
-    PT_rt1: float
-        Pass through income tax rate 1
-    PT_rt2: float
-        Pass through income tax rate 2
-    PT_rt3: float
-        Pass through income tax rate 3
-    PT_rt4: float
-        Pass through income tax rate 4
-    PT_rt5: float
-        Pass through income tax rate 5
-    PT_rt6: float
-        Pass through income tax rate 6
-    PT_rt7: float
-        Pass through income tax rate 7
-    PT_rt8: float
-        Pass through income tax rate 8
-    PT_brk1: list
-        Pass through income tax bracket (upper threshold) 1
-    PT_brk2: list
-        Pass through income tax bracket (upper threshold) 2
-    PT_brk3: list
-        Pass through income tax bracket (upper threshold) 3
-    PT_brk4: list
-        Pass through income tax bracket (upper threshold) 4
-    PT_brk5: list
-        Pass through income tax bracket (upper threshold) 5
-    PT_brk6: list
-        Pass through income tax bracket (upper threshold) 6
-    PT_brk7: list
-        Pass through income tax bracket (upper threshold) 7
     II_rt1: float
         Personal income (regular/non-AMT/non-pass-through) tax rate 1
     II_rt2: float
@@ -1671,13 +1605,9 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
     Returns
     -------
     c05200: float
-        Tax aount from Schedule X, Y, Z tables
+        Tax amount from Schedule X, Y, Z tables
     """
     c05200 = SchXYZ(c04800, MARS, e00900, e26270, e02000, e00200,
-                    PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-                    PT_rt6, PT_rt7, PT_rt8,
-                    PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
-                    PT_brk6, PT_brk7,
                     II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                     II_rt6, II_rt7, II_rt8,
                     II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
@@ -1692,8 +1622,6 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
              e24515, e24518, MARS, c04800, c05200, e00900, e26270, e02000,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
-             PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
-             PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
              CG_nodiff, PT_EligibleRate_active, PT_EligibleRate_passive,
              PT_wages_active_income, PT_top_stacking,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
@@ -1774,36 +1702,6 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     II_brk7: list
         Personal income (regular/non-AMT/non-pass/through)
         tax bracket (upper threshold) 7
-    PT_rt1: float
-        Pass through income tax rate 1
-    PT_rt2: float
-        Pass through income tax rate 2
-    PT_rt3: float
-        Pass through income tax rate 3
-    PT_rt4: float
-        Pass through income tax rate 4
-    PT_rt5: float
-        Pass through income tax rate 5
-    PT_rt6: float
-        Pass through income tax rate 6
-    PT_rt7: float
-        Pass through income tax rate 7
-    PT_rt8: float
-        Pass through income tax rate 8
-    PT_brk1: list
-        Pass through income tax bracket (upper threshold) 1
-    PT_brk2: list
-        Pass through income tax bracket (upper threshold) 2
-    PT_brk3: list
-        Pass through income tax bracket (upper threshold) 3
-    PT_brk4: list
-        Pass through income tax bracket (upper threshold) 4
-    PT_brk5: list
-        Pass through income tax bracket (upper threshold) 5
-    PT_brk6: list
-        Pass through income tax bracket (upper threshold) 6
-    PT_brk7: list
-        Pass through income tax bracket (upper threshold) 7
     CG_nodiff: bool
         Long term capital gains and qualified dividends taxed no differently
         than regular taxable income
@@ -1930,10 +1828,6 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         dwks40 = dwks1 - dwks39
         dwks41 = 0.28 * dwks40
         dwks42 = SchXYZ(dwks19, MARS, e00900, e26270, e02000, e00200,
-                        PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-                        PT_rt6, PT_rt7, PT_rt8,
-                        PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
-                        PT_brk6, PT_brk7,
                         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                         II_rt6, II_rt7, II_rt8,
                         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
