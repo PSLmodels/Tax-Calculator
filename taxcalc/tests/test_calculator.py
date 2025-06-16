@@ -181,40 +181,6 @@ def test_calculator_mtr(cps_subsample):
     assert np.allclose(calc.array('c00100'), c00100x)
 
 
-def test_calculator_mtr_when_PT_rates_differ():
-    """
-    Test Calculator mtr method in special case.
-    """
-    reform = {
-        'II_rt1': {2013: 0.40},
-        'II_rt2': {2013: 0.40},
-        'II_rt3': {2013: 0.40},
-        'II_rt4': {2013: 0.40},
-        'II_rt5': {2013: 0.40},
-        'II_rt6': {2013: 0.40},
-        'II_rt7': {2013: 0.40},
-        'PT_rt1': {2013: 0.30},
-        'PT_rt2': {2013: 0.30},
-        'PT_rt3': {2013: 0.30},
-        'PT_rt4': {2013: 0.30},
-        'PT_rt5': {2013: 0.30},
-        'PT_rt6': {2013: 0.30},
-        'PT_rt7': {2013: 0.30}
-    }
-    funit = (
-        'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p,extraneous\n'
-        '1,    1,   2009,  200000,200000, 100000,100000, 9999999999\n'
-    )
-    rec = Records(pd.read_csv(StringIO(funit)))
-    pol = Policy()
-    calc1 = Calculator(policy=pol, records=rec)
-    (_, mtr1, _) = calc1.mtr(variable_str='p23250')
-    pol.implement_reform(reform)
-    calc2 = Calculator(policy=pol, records=rec)
-    (_, mtr2, _) = calc2.mtr(variable_str='p23250')
-    assert np.allclose(mtr1, mtr2, rtol=0.0, atol=1e-06)
-
-
 def test_make_calculator_increment_years_first(cps_subsample):
     """
     Test Calculator inflation indexing of policy parameters.

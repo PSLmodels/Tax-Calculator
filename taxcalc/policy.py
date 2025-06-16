@@ -75,7 +75,27 @@ class Policy(Parameters):
         'CTC_c_under5_bonus': 'was renamed CTC_c_under6_bonus.',
         'ACTC_rt_bonus_under5family':
         'was renamed ACTC_rt_bonus_under6family.',
-        'CTC_new_c_under5_bonus': 'was renamed CTC_new_c_under6_bonus.'
+        'CTC_new_c_under5_bonus': 'was renamed CTC_new_c_under6_bonus.',
+        # following ?? parameters removed in PR 2??? merged on 2025-06-?? <<<<<
+        'PT_rt1': 'is a removed parameter name',
+        'PT_rt2': 'is a removed parameter name',
+        'PT_rt3': 'is a removed parameter name',
+        'PT_rt4': 'is a removed parameter name',
+        'PT_rt5': 'is a removed parameter name',
+        'PT_rt6': 'is a removed parameter name',
+        'PT_rt7': 'is a removed parameter name',
+        'PT_rt8': 'is a removed parameter name',
+        'PT_brk1': 'is a removed parameter name',
+        'PT_brk2': 'is a removed parameter name',
+        'PT_brk3': 'is a removed parameter name',
+        'PT_brk4': 'is a removed parameter name',
+        'PT_brk5': 'is a removed parameter name',
+        'PT_brk6': 'is a removed parameter name',
+        'PT_brk7': 'is a removed parameter name',
+        'PT_EligibleRate_active': 'is a removed parameter name',
+        'PT_EligibleRate_passive': 'is a removed parameter name',
+        'PT_wages_active_income': 'is a removed parameter name',
+        'PT_top_stacking': 'is a removed parameter name',
     }
     # (2) specify which Policy parameters have been redefined recently
     REDEFINED_PARAMS = {}

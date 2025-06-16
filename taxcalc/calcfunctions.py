@@ -1474,13 +1474,12 @@ def SchXYZ(taxable_income, MARS,
         Individual income tax liability on all taxable income
     """
     # compute Schedule X,Y,Z tax using taxable income
+    reg_tax = 0.
     if taxable_income > 0.:
         reg_tax = Taxes(taxable_income, MARS, 0.0,
                         II_rt1, II_rt2, II_rt3, II_rt4,
                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    else:
-        reg_tax = 0.
     return reg_tax
 
 
