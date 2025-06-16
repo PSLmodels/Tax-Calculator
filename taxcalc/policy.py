@@ -57,26 +57,23 @@ class Policy(Parameters):
     # NOTE: the following three data structures use internal parameter names:
     # (1) specify which Policy parameters have been removed or renamed
     REMOVED_PARAMS = {
-        # following five parameters removed in PR 2223 merged on 2019-02-06
+        # following parameters were removed in PR 2223
         'DependentCredit_Child_c': 'is a removed parameter name',
         'DependentCredit_Nonchild_c': 'is a removed parameter name',
         'DependentCredit_before_CTC': 'is a removed parameter name',
         'FilerCredit_c': 'is a removed parameter name',
         'ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
-        # following parameters renamed in PR 2345 merged on 2019-06-24
-        'PT_excl_rt':
-        'was renamed PT_qbid_rt in release 2.4.0',
-        'PT_excl_wagelim_thd':
-        'was renamed PT_qbid_taxinc_thd in release 2.4.0',
-        'PT_excl_wagelim_prt':
-        'was renamed PT_qbid_taxinc_gap in release 2.4.0',
-        'PT_excl_wagelim_rt':
-        'was renamed PT_qbid_w2_wages_rt in release 2.4.0',
-        'CTC_c_under5_bonus': 'was renamed CTC_c_under6_bonus.',
+        # following parameters were renamed in PR 2345
+        'PT_excl_rt': 'has been renamed PT_qbid_rt',
+        'PT_excl_wagelim_thd': 'has been renamed PT_qbid_taxinc_thd',
+        'PT_excl_wagelim_prt': 'has been renamed PT_qbid_taxinc_gap',
+        'PT_excl_wagelim_rt': 'has been renamed PT_qbid_w2_wages_rt',
+        # following parameters were renamed in PR 2444
+        'CTC_c_under5_bonus': 'has been renamed CTC_c_under6_bonus',
+        'CTC_new_c_under5_bonus': 'has been renamed CTC_new_c_under6_bonus',
         'ACTC_rt_bonus_under5family':
-        'was renamed ACTC_rt_bonus_under6family.',
-        'CTC_new_c_under5_bonus': 'was renamed CTC_new_c_under6_bonus.',
-        # following ?? parameters removed in PR 2??? merged on 2025-06-?? <<<<<
+            'has been renamed ACTC_rt_bonus_under6family',
+        # following parameters were removed in PR 2619
         'PT_rt1': 'is a removed parameter name',
         'PT_rt2': 'is a removed parameter name',
         'PT_rt3': 'is a removed parameter name',
