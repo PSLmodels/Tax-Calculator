@@ -261,16 +261,6 @@
   "29": {
       "baseline": "2017_law.json",
       "start_year": 2015,
-      "value": {"ID_BenefitSurtax_crt": 0.06,
-                "ID_BenefitSurtax_trt": 1},
-      "name": "Limit tax value of itemded to 6% of AGI",
-      "output_type": "iitax",
-      "compare_with": {"Budget Options": [11, 9, 8, 7]}
-  },
-
-  "30": {
-      "baseline": "2017_law.json",
-      "start_year": 2015,
       "value": {"CG_rt1": 0.02,
                 "CG_rt2": 0.17,
                 "CG_rt3": 0.22,
@@ -282,7 +272,7 @@
       "compare_with": {}
   },
 
-  "31": {
+  "30": {
       "baseline": "policy_current_law.json",
       "start_year": 2016,
       "value": {"ODC_c": 600},
@@ -291,7 +281,7 @@
       "compare_with": {}
   },
 
-  "32": {
+  "31": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"II_rt1": 0.11,
@@ -306,7 +296,7 @@
       "compare_with": {"Budget Options": [56, 60, 65, 69]}
   },
 
-  "33": {
+  "32": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"II_rt1": 0.10,
@@ -321,7 +311,7 @@
       "compare_with": {"Budget Options": [11, 12, 14, 15]}
   },
 
-  "34": {
+  "33": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"II_rt1": 0.10,
@@ -336,7 +326,7 @@
       "compare_with": {"Budget Options": [7, 8, 9, 10]}
   },
 
-  "35": {
+  "34": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"AMT_em": [54600, 84400, 42700, 54600, 84400]},
@@ -345,7 +335,7 @@
       "compare_with": {}
   },
 
-  "36": {
+  "35": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"AMT_em_ps": [129200, 168900, 89450, 129200, 168900]},
@@ -354,7 +344,7 @@
       "compare_with": {}
   },
 
-  "37": {
+  "36": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"AMT_prt": 0.27},
@@ -363,7 +353,7 @@
       "compare_with": {}
   },
 
-  "38": {
+  "37": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"AMT_rt1": 0.28},
@@ -372,7 +362,7 @@
       "compare_with": {}
   },
 
-  "39": {
+  "38": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"AMT_rt2": 0.04},
@@ -381,7 +371,7 @@
       "compare_with": {}
   },
 
-  "40": {
+  "39": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"AMT_brk1": 195400},
@@ -390,7 +380,7 @@
       "compare_with": {}
   },
 
-  "41": {
+  "40": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"CTC_c": 0, "ACTC_c": 0},
@@ -399,7 +389,7 @@
       "compare_with": {"Tax Expenditure": [57.3, 57.0, 57.1, 56.8]}
   },
 
-  "42": {
+  "41": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"CTC_prt": 0.06},
@@ -408,7 +398,7 @@
       "compare_with": {}
   },
 
-  "43": {
+  "42": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"CTC_ps": [76000, 111000, 56000, 76000, 76000]},
@@ -417,7 +407,7 @@
       "compare_with": {}
   },
 
-  "44": {
+  "43": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"EITC_rt": [0, 0, 0, 0]},
@@ -426,7 +416,7 @@
       "compare_with": {"Tax Expenditure": [70.4, 71.1, 72.2, 69.9]}
   },
 
-  "45": {
+  "44": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"EITC_prt": [0.0865, 0.1698, 0.2206, 0.2206]},
@@ -435,7 +425,7 @@
       "compare_with": {}
   },
 
-  "46": {
+  "45": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"EITC_ps": [9240, 19110, 19110, 19110]},
@@ -444,7 +434,7 @@
       "compare_with": {}
   },
 
-  "47": {
+  "46": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"EITC_c": [603, 3459, 5648, 6342]},
@@ -453,7 +443,7 @@
       "compare_with": {}
   },
 
-  "48": {
+  "47": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"ACTC_rt": 0.17},
@@ -462,7 +452,7 @@
       "compare_with": {}
   },
 
-  "49": {
+  "48": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"ACTC_ChildNum": 2},
@@ -471,7 +461,7 @@
       "compare_with": {}
   },
 
-  "50": {
+  "49": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"NIIT_rt": 0},
@@ -480,7 +470,7 @@
       "compare_with": {"Tax Expenditure": [-32.6, -34.7, -36.6, -38.9]}
   },
 
-  "51": {
+  "50": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"NIIT_thd": [210000, 260000, 135000, 210000, 260000]},
@@ -489,7 +479,7 @@
       "compare_with": {}
   },
 
-  "52": {
+  "51": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"II_credit": [1000, 1000, 1000, 1000, 1000]},
@@ -498,7 +488,7 @@
       "compare_with": {}
   },
 
-  "53": {
+  "52": {
       "baseline": "2017_law.json",
       "start_year": 2015,
       "value": {"II_credit": [1000, 1000, 1000, 1000, 1000],
@@ -509,7 +499,7 @@
       "compare_with": {}
   },
 
-  "54": {
+  "53": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"FST_AGI_trt": 0.3,
@@ -521,7 +511,7 @@
                                           "static", "estimate"]}
   },
 
-  "55": {
+  "54": {
       "baseline": "policy_current_law.json",
       "start_year": 2017,
       "value": {"parameter_indexing_CPI_offset": 0},
@@ -530,7 +520,7 @@
       "compare_with": {}
   },
 
-  "56": {
+  "55": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"CTC_new_c": 1000,
@@ -542,7 +532,7 @@
       "compare_with": {}
   },
 
-  "57": {
+  "56": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"CTC_new_c": 1000,
@@ -555,7 +545,7 @@
       "compare_with": {}
   },
 
-  "58": {
+  "57": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"ID_Charity_hc": 1,
@@ -566,7 +556,7 @@
       "compare_with": {}
   },
 
-  "59": {
+  "58": {
       "baseline": "2017_law.json",
       "start_year": 2019,
       "value": {"EITC_basic_frac": 0.5},
@@ -575,7 +565,7 @@
       "compare_with": {}
   },
 
-  "60": {
+  "59": {
       "baseline": "policy_current_law.json",
       "start_year": 2019,
       "value": {"EITC_indiv": true},
@@ -584,7 +574,7 @@
       "compare_with": {}
   },
 
-  "61": {
+  "60": {
       "baseline": "policy_current_law.json",
       "start_year": 2019,
       "value": {"RPTC_rt": 0.062,

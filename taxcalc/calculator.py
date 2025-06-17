@@ -14,7 +14,7 @@ import paramtools
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                    DependentCare, ALD_InvInc_ec_base, CapGains,
-                                   SSBenefits, UBI, AGI, ItemDedCap, ItemDed,
+                                   SSBenefits, UBI, AGI, ItemDed,
                                    StdDed, AdditionalMedicareTax, F2441, EITC,
                                    RefundablePayrollTaxCredit,
                                    ChildDepTaxCredit, AdditionalCTC, CTC_new,
@@ -22,7 +22,6 @@ from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    AmOppCreditParts, EducationTaxCredit,
                                    CharityCredit,
                                    NonrefundableCredits, C1040, IITAX,
-                                   BenefitSurtax, BenefitLimitation,
                                    FairShareTax, LumpSumTax, BenefitPrograms,
                                    ExpandIncome, AfterTaxIncome)
 from taxcalc.policy import Policy
@@ -171,8 +170,6 @@ class Calculator():
         UBI(self.__policy, self.__records)
         BenefitPrograms(self)
         self._calc_one_year(zero_out_calc_vars)
-        BenefitSurtax(self)
-        BenefitLimitation(self)
         FairShareTax(self.__policy, self.__records)
         LumpSumTax(self.__policy, self.__records)
         ExpandIncome(self.__policy, self.__records)
@@ -1388,7 +1385,6 @@ class Calculator():
         CapGains(self.__policy, self.__records)
         SSBenefits(self.__policy, self.__records)
         AGI(self.__policy, self.__records)
-        ItemDedCap(self.__policy, self.__records)
         ItemDed(self.__policy, self.__records)
         AdditionalMedicareTax(self.__policy, self.__records)
         StdDed(self.__policy, self.__records)

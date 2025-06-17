@@ -640,8 +640,6 @@ def test_section_titles(tests_path):
         return sdict
     # begin main logic of test_section_titles
     # specify expected section titles ordered as on the Tax-Brain webapp
-    ided_ceiling_pct = ('Ceiling On The Benefit Of Itemized Deductions '
-                        'As A Percent Of Deductible Expenses')
     cgqd_tax_same = ('Tax All Capital Gains And Dividends The Same '
                      'As Regular Taxable Income')
     valid_dict = {
@@ -694,10 +692,8 @@ def test_section_titles(tests_path):
             'Charity': 0,
             'Casualty': 0,
             'Miscellaneous': 0,
-            'Itemized Deduction Limitation': 0,
-            'Surtax On Itemized Deduction Benefits Above An AGI Threshold': 0,
-            ided_ceiling_pct: 0,
-            'Ceiling On The Amount Of Itemized Deductions Allowed': 0
+            'Itemized Deduction Limitation': 0,  # Pease
+            'Ceiling On The Amount Of Itemized Deductions Allowed': 0  # ID_c
         },
         'Capital Gains And Dividends': {
             'Regular - Long Term Capital Gains And Qualified Dividends': 0,
