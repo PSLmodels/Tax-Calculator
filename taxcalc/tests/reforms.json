@@ -49,8 +49,8 @@
   "6": {
       "baseline": "2017_law.json",
       "start_year": 2015,
-      "value": {"SS_thd50": [0, 0, 0, 0, 0],
-                "SS_thd85": [0, 0, 0, 0, 0],
+      "value": {"SS_thd1": [0, 0, 0, 0, 0],
+                "SS_thd2": [0, 0, 0, 0, 0],
                 "SS_percentage1": 1,
                 "SS_percentage2": 1},
       "name": "All OASDI benefits included in AGI",

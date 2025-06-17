@@ -450,7 +450,7 @@
             "cps": true
         }
     },
-    "SS_thd50": {
+    "SS_thd1": {
         "title": "Threshold for Social Security benefit taxability 1",
         "description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to rate 1 of their Social Security benefit will be subject to tax under current law.",
         "notes": "",
@@ -489,7 +489,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": "SS_thd85"
+                "max": "SS_thd2"
             }
         },
         "compatible_data": {
@@ -523,7 +523,7 @@
             "cps": true
         }
     },
-    "SS_thd85": {
+    "SS_thd2": {
         "title": "Threshold for Social Security benefit taxability 2",
         "description": "The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to rate 2 of their Social Security benefit will be subject to tax under current law.",
         "notes": "",
@@ -561,7 +561,7 @@
         ],
         "validators": {
             "range": {
-                "min": "SS_thd50",
+                "min": "SS_thd1",
                 "max": 9e+99
             }
         },
