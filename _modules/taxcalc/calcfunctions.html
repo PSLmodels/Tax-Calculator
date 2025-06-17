@@ -1016,7 +1016,7 @@ document.write(`
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">SSBenefits</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">SS_all_in_agi</span><span class="p">,</span> <span class="n">SS_thd50</span><span class="p">,</span> <span class="n">SS_thd85</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">SSBenefits</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">SS_all_in_agi</span><span class="p">,</span> <span class="n">SS_thd1</span><span class="p">,</span> <span class="n">SS_thd2</span><span class="p">,</span>
                <span class="n">SS_percentage1</span><span class="p">,</span> <span class="n">SS_percentage2</span><span class="p">,</span> <span class="n">c02500</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates OASDI benefits included in AGI, c02500.</span>
@@ -1032,9 +1032,9 @@ document.write(`
 <span class="sd">        Total social security (OASDI) benefits</span>
 <span class="sd">    SS_all_in_agi: bool</span>
 <span class="sd">        Whether all social security benefits are included in AGI</span>
-<span class="sd">    SS_thd50: list</span>
+<span class="sd">    SS_thd1: list</span>
 <span class="sd">        Threshold for social security benefit taxability (1)</span>
-<span class="sd">    SS_thd85: list</span>
+<span class="sd">    SS_thd2: list</span>
 <span class="sd">        Threshold for social security benefit taxability (2)</span>
 <span class="sd">    SS_percentage1: float</span>
 <span class="sd">        Social security taxable income decimal fraction (1)</span>
@@ -1048,15 +1048,15 @@ document.write(`
 <span class="sd">    c02500: float</span>
 <span class="sd">        Social security (OASDI) benefits included in AGI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">ymod</span> <span class="o">&lt;</span> <span class="n">SS_thd50</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">ymod</span> <span class="o">&lt;</span> <span class="n">SS_thd1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
         <span class="n">c02500</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">elif</span> <span class="n">ymod</span> <span class="o">&lt;</span> <span class="n">SS_thd85</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-        <span class="n">c02500</span> <span class="o">=</span> <span class="n">SS_percentage1</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">ymod</span> <span class="o">-</span> <span class="n">SS_thd50</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">e02400</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">ymod</span> <span class="o">&lt;</span> <span class="n">SS_thd2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="n">c02500</span> <span class="o">=</span> <span class="n">SS_percentage1</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">ymod</span> <span class="o">-</span> <span class="n">SS_thd1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">e02400</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">c02500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">SS_percentage2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ymod</span> <span class="o">-</span> <span class="n">SS_thd85</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span>
+        <span class="n">c02500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">SS_percentage2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ymod</span> <span class="o">-</span> <span class="n">SS_thd2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span>
                      <span class="n">SS_percentage1</span> <span class="o">*</span>
-                     <span class="nb">min</span><span class="p">(</span><span class="n">e02400</span><span class="p">,</span> <span class="n">SS_thd85</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
-                         <span class="n">SS_thd50</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">SS_percentage2</span> <span class="o">*</span> <span class="n">e02400</span><span class="p">)</span>
+                     <span class="nb">min</span><span class="p">(</span><span class="n">e02400</span><span class="p">,</span> <span class="n">SS_thd2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                         <span class="n">SS_thd1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">SS_percentage2</span> <span class="o">*</span> <span class="n">e02400</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">SS_all_in_agi</span><span class="p">:</span>
         <span class="n">c02500</span> <span class="o">=</span> <span class="n">e02400</span>
     <span class="k">return</span> <span class="n">c02500</span>
