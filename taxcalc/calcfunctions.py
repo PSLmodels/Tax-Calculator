@@ -606,7 +606,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
 
 
 @iterate_jit(nopython=True)
-def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd50, SS_thd85,
+def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd1, SS_thd2,
                SS_percentage1, SS_percentage2, c02500):
     """
     Calculates OASDI benefits included in AGI, c02500.
@@ -622,9 +622,9 @@ def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd50, SS_thd85,
         Total social security (OASDI) benefits
     SS_all_in_agi: bool
         Whether all social security benefits are included in AGI
-    SS_thd50: list
+    SS_thd1: list
         Threshold for social security benefit taxability (1)
-    SS_thd85: list
+    SS_thd2: list
         Threshold for social security benefit taxability (2)
     SS_percentage1: float
         Social security taxable income decimal fraction (1)
@@ -638,15 +638,15 @@ def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd50, SS_thd85,
     c02500: float
         Social security (OASDI) benefits included in AGI
     """
-    if ymod < SS_thd50[MARS - 1]:
+    if ymod < SS_thd1[MARS - 1]:
         c02500 = 0.
-    elif ymod < SS_thd85[MARS - 1]:
-        c02500 = SS_percentage1 * min(ymod - SS_thd50[MARS - 1], e02400)
+    elif ymod < SS_thd2[MARS - 1]:
+        c02500 = SS_percentage1 * min(ymod - SS_thd1[MARS - 1], e02400)
     else:
-        c02500 = min(SS_percentage2 * (ymod - SS_thd85[MARS - 1]) +
+        c02500 = min(SS_percentage2 * (ymod - SS_thd2[MARS - 1]) +
                      SS_percentage1 *
-                     min(e02400, SS_thd85[MARS - 1] -
-                         SS_thd50[MARS - 1]), SS_percentage2 * e02400)
+                     min(e02400, SS_thd2[MARS - 1] -
+                         SS_thd1[MARS - 1]), SS_percentage2 * e02400)
     if SS_all_in_agi:
         c02500 = e02400
     return c02500

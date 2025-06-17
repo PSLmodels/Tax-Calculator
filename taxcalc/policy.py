@@ -63,6 +63,9 @@ class Policy(Parameters):
         'DependentCredit_before_CTC': 'is a removed parameter name',
         'FilerCredit_c': 'is a removed parameter name',
         'ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
+        # following parameters were renamed in PR 2918
+        'SS_thd50': 'has been renamed SS_thd1',
+        'SS_thd85': 'has been renamed SS_thd2',
         # following parameters renamed in PR 2345 merged on 2019-06-24
         'PT_excl_rt':
         'was renamed PT_qbid_rt in release 2.4.0',
