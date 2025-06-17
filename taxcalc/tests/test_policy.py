@@ -835,7 +835,7 @@ def test_reform_with_out_of_range_error():
     Try to use out-of-range values versus other parameter values in a reform.
     """
     pol = Policy()
-    reform = {'SS_thd85': {2020: [20000, 20000, 20000, 20000, 20000]}}
+    reform = {'SS_thd2': {2020: [20000, 20000, 20000, 20000, 20000]}}
     pol.implement_reform(reform, raise_errors=False)
     assert pol.parameter_errors
 
@@ -868,7 +868,7 @@ def test_reform_with_scalar_vector_errors():
     Test catching scalar-vector confusion.
     """
     policy1 = Policy()
-    reform1 = {'SS_thd85': {2020: 30000}}
+    reform1 = {'SS_thd2': {2020: 30000}}
     with pytest.raises(paramtools.ValidationError):
         policy1.implement_reform(reform1)
 

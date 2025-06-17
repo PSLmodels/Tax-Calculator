@@ -8,12 +8,12 @@
 // - Make wage and self-employment income above $400,000 subject to FICA taxes (2)
 // - Phase in an increase to the contribution rate starting in 2020 (3)
 // Reform_Parameter_Map:
-// - 1: SS_thd50, SS_thd85
+// - 1: SS_thd1, SS_thd2
 // - 2: SS_Earnings_thd
 // - 3: FICA_ss_trt_employer, FICA_ss_trt_employee
 {
-    "SS_thd50": {"2019": [50000, 100000, 50000, 50000, 50000]},
-    "SS_thd85": {"2019": [50000, 100000, 50000, 50000, 50000]},
+    "SS_thd1": {"2019": [50000, 100000, 50000, 50000, 50000]},
+    "SS_thd2": {"2019": [50000, 100000, 50000, 50000, 50000]},
     "SS_Earnings_thd": {"2019": 400000},
     "FICA_ss_trt_employer": {"2020": 0.0625,
                              "2021": 0.063,
