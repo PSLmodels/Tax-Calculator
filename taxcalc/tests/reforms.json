@@ -300,14 +300,7 @@
                 "II_rt4": 0.29,
                 "II_rt5": 0.34,
                 "II_rt6": 0.36,
-                "II_rt7": 0.406,
-                "PT_rt1": 0.11,
-                "PT_rt2": 0.16,
-                "PT_rt3": 0.26,
-                "PT_rt4": 0.29,
-                "PT_rt5": 0.34,
-                "PT_rt6": 0.36,
-                "PT_rt7": 0.406},
+                "II_rt7": 0.406},
       "name": "Increase tax rate in each bracket by 1 pts",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [56, 60, 65, 69]}
@@ -322,14 +315,7 @@
                 "II_rt4": 0.29,
                 "II_rt5": 0.34,
                 "II_rt6": 0.36,
-                "II_rt7": 0.406,
-                "PT_rt1": 0.10,
-                "PT_rt2": 0.15,
-                "PT_rt3": 0.25,
-                "PT_rt4": 0.29,
-                "PT_rt5": 0.34,
-                "PT_rt6": 0.36,
-                "PT_rt7": 0.406},
+                "II_rt7": 0.406},
       "name": "Increase top four rates by 1 pts",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [11, 12, 14, 15]}
@@ -344,14 +330,7 @@
                 "II_rt4": 0.28,
                 "II_rt5": 0.33,
                 "II_rt6": 0.36,
-                "II_rt7": 0.406,
-                "PT_rt1": 0.10,
-                "PT_rt2": 0.15,
-                "PT_rt3": 0.25,
-                "PT_rt4": 0.28,
-                "PT_rt5": 0.33,
-                "PT_rt6": 0.36,
-                "PT_rt7": 0.406},
+                "II_rt7": 0.406},
       "name": "Increase top two rates by 1 pts",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [7, 8, 9, 10]}
@@ -554,27 +533,6 @@
   "56": {
       "baseline": "2017_law.json",
       "start_year": 2017,
-      "value": {"PT_rt7": 0.35,
-                "PT_EligibleRate_active": 0.7},
-      "name": "Top pass through rate at 0.35 AND 70% of active business inc eligible for lower rate",
-      "output_type": "iitax",
-      "compare_with": {}
-  },
-
-  "57": {
-      "baseline": "2017_law.json",
-      "start_year": 2017,
-      "value": {"PT_wages_active_income": true,
-                "PT_EligibleRate_active": 0.7,
-                "PT_rt7": 0.35},
-      "name": "Top pass through rate at 0.35 AND 70% of active business inc eligible for lower rate AND wages included in (positive) active business income eligible for PT rates",
-      "output_type": "iitax",
-      "compare_with": {}
-  },
-
-  "58": {
-      "baseline": "2017_law.json",
-      "start_year": 2017,
       "value": {"CTC_new_c": 1000,
                 "CTC_new_rt": 0.153,
                 "CTC_new_refund_limited": true,
@@ -584,7 +542,7 @@
       "compare_with": {}
   },
 
-  "59": {
+  "57": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"CTC_new_c": 1000,
@@ -597,7 +555,7 @@
       "compare_with": {}
   },
 
-  "60": {
+  "58": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"ID_Charity_hc": 1,
@@ -608,7 +566,7 @@
       "compare_with": {}
   },
 
-  "61": {
+  "59": {
       "baseline": "2017_law.json",
       "start_year": 2019,
       "value": {"EITC_basic_frac": 0.5},
@@ -617,7 +575,7 @@
       "compare_with": {}
   },
 
-  "62": {
+  "60": {
       "baseline": "policy_current_law.json",
       "start_year": 2019,
       "value": {"EITC_indiv": true},
@@ -626,7 +584,7 @@
       "compare_with": {}
   },
 
-  "63": {
+  "61": {
       "baseline": "policy_current_law.json",
       "start_year": 2019,
       "value": {"RPTC_rt": 0.062,

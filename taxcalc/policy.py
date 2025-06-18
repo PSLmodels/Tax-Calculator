@@ -55,32 +55,35 @@ class Policy(Parameters):
         return last_budget_year - Policy.JSON_START_YEAR + 1
 
     # NOTE: the following three data structures use internal parameter names:
-    # (1) specify which Policy parameters have been removed or renamed
+    # (1) specify which Policy parameters have been removed or renamed recently
+    #     where "recently" means in the last major release
     REMOVED_PARAMS = {
-        # following five parameters removed in PR 2223 merged on 2019-02-06
-        'DependentCredit_Child_c': 'is a removed parameter name',
-        'DependentCredit_Nonchild_c': 'is a removed parameter name',
-        'DependentCredit_before_CTC': 'is a removed parameter name',
-        'FilerCredit_c': 'is a removed parameter name',
-        'ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
         # following parameters were renamed in PR 2918
-        'SS_thd50': 'has been renamed SS_thd1',
-        'SS_thd85': 'has been renamed SS_thd2',
-        # following parameters renamed in PR 2345 merged on 2019-06-24
-        'PT_excl_rt':
-        'was renamed PT_qbid_rt in release 2.4.0',
-        'PT_excl_wagelim_thd':
-        'was renamed PT_qbid_taxinc_thd in release 2.4.0',
-        'PT_excl_wagelim_prt':
-        'was renamed PT_qbid_taxinc_gap in release 2.4.0',
-        'PT_excl_wagelim_rt':
-        'was renamed PT_qbid_w2_wages_rt in release 2.4.0',
-        'CTC_c_under5_bonus': 'was renamed CTC_c_under6_bonus.',
-        'ACTC_rt_bonus_under5family':
-        'was renamed ACTC_rt_bonus_under6family.',
-        'CTC_new_c_under5_bonus': 'was renamed CTC_new_c_under6_bonus.'
+        'SS_thd50': 'was renamed SS_thd1 in Tax-Calculator 5.0.0',
+        'SS_thd85': 'was renamed SS_thd2 in Tax-Calculator 5.0.0',
+        # following parameters were removed in PR 2619
+        'PT_rt1': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt2': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt3': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt4': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt5': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt6': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt7': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt8': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk1': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk2': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk3': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk4': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk5': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk6': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk7': 'was removed in Tax-Calculator 5.0.0',
+        'PT_EligibleRate_active': 'was removed in Tax-Calculator 5.0.0',
+        'PT_EligibleRate_passive': 'was removed in Tax-Calculator 5.0.0',
+        'PT_wages_active_income': 'was removed in Tax-Calculator 5.0.0',
+        'PT_top_stacking': 'was removed in Tax-Calculator 5.0.0',
     }
     # (2) specify which Policy parameters have been redefined recently
+    #     where "recently" means in the last major release
     REDEFINED_PARAMS = {}
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
