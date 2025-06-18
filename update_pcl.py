@@ -525,7 +525,6 @@ NEW_KNOWN_ITEMS = {
     'ID_Casualty_c': LIST_MARS_INF,
     'ID_Miscellaneous_c': LIST_MARS_INF,
     'ID_ps': LIST_MARS_INF,
-    'ID_BenefitSurtax_em': LIST_MARS_ZERO,
     'ID_c': LIST_MARS_INF,
     'CG_ec': LIST_SCALAR_ZERO,
     'PT_qbid_ps': LIST_MARS_INF,

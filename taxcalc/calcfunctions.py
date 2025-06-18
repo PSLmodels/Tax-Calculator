@@ -787,145 +787,8 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
 
 
 @iterate_jit(nopython=True)
-def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
-               c00100, ID_AmountCap_rt, ID_AmountCap_Switch, e17500_capped,
-               e18400_capped, e18500_capped, e19200_capped, e19800_capped,
-               e20100_capped, e20400_capped, g20500_capped):
-    """
-    Applies a cap to gross itemized deductions.
-
-    Parameters
-    ----------
-    e17500: float
-        Itemizable medical and dental expenses
-    e18400: float
-        Itemizable state and local income/sales taxes
-    e18500: float
-        Itemizable real-estate taxes paid
-    e19200: float
-        Itemizable interest paid
-    e19800: float
-        Itemizable charitable giving: cash/check contributions
-    e20100: float
-        Itemizable charitable giving: other than cash/check contributions
-    e20400: float
-        Itemizable gross (before 10% AGI disregard) casualty or theft loss
-    g20500: float
-        Itemizable gross (before 10% AGI disregard) casualty or theft loss
-    c00100: float
-        Adjusted gross income (AGI)
-    ID_AmountCap_rt: float
-        Ceiling on the gross amount of itemized deductions allowed;
-        expressed as decimal fraction of AGI
-    ID_AmountCap_Switch: list
-        Deductions subject to the cap on itemized deduction benefits
-    e17500_capped: float
-        Schedule A: medical expenses, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18400_capped: float
-        Schedule A: state and local income taxes deductlbe, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18500_capped: float
-        Schedule A: state and local real estate taxes deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e19200_capped: float
-        Schedule A: interest deduction deductible, capped by
-        ItemDedCap as decimal fraction of AGI
-    e19800_capped: float
-        Schedule A: charity cash contributions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e20100_capped: float
-        Schedule A: charity noncash contributions deductible, capped by
-        ItemDedCap s a decimal fraction of AGI
-    e20400_capped: float
-        Schedule A: gross miscellaneous deductions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    g20500_capped: float
-        Schedule A: gross casualty or theft loss deductible, capped by
-        ItemDedCap s a decimal fraction of AGI
-
-    Returns
-    -------
-    e17500_capped: float
-        Schedule A: medical expenses, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18400_capped: float
-        Schedule A: state and local income taxes deductlbe, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18500_capped: float
-        Schedule A: state and local real estate taxes deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e19200_capped: float
-        Schedule A: interest deduction deductible, capped by
-        ItemDedCap as decimal fraction of AGI
-    e19800_capped: float
-        Schedule A: charity cash contributions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e20100_capped: float
-        Schedule A: charity noncash contributions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e20400_capped: float
-        Schedule A: gross miscellaneous deductions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    g20500_capped: float
-        Schedule A: gross casualty or theft loss deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    """
-    # pylint: disable=too-many-branches
-
-    cap = max(0., ID_AmountCap_rt * c00100)
-
-    gross_ded_amt = 0
-    if ID_AmountCap_Switch[0]:  # medical
-        gross_ded_amt += e17500
-    if ID_AmountCap_Switch[1]:  # statelocal
-        gross_ded_amt += e18400
-    if ID_AmountCap_Switch[2]:  # realestate
-        gross_ded_amt += e18500
-    if ID_AmountCap_Switch[3]:  # casualty
-        gross_ded_amt += g20500
-    if ID_AmountCap_Switch[4]:  # misc
-        gross_ded_amt += e20400
-    if ID_AmountCap_Switch[5]:  # interest
-        gross_ded_amt += e19200
-    if ID_AmountCap_Switch[6]:  # charity
-        gross_ded_amt += e19800 + e20100
-
-    overage = max(0., gross_ded_amt - cap)
-
-    e17500_capped = e17500
-    e18400_capped = e18400
-    e18500_capped = e18500
-    g20500_capped = g20500
-    e20400_capped = e20400
-    e19200_capped = e19200
-    e19800_capped = e19800
-    e20100_capped = e20100
-
-    if overage > 0. and c00100 > 0.:
-        if ID_AmountCap_Switch[0]:  # medical
-            e17500_capped -= (e17500 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[1]:  # statelocal
-            e18400_capped -= (e18400 / (gross_ded_amt) * overage)
-        if ID_AmountCap_Switch[2]:  # realestate
-            e18500_capped -= (e18500 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[3]:  # casualty
-            g20500_capped -= (g20500 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[4]:  # misc
-            e20400_capped -= (e20400 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[5]:  # interest
-            e19200_capped -= (e19200 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[6]:  # charity
-            e19800_capped -= (e19800 / gross_ded_amt) * overage
-            e20100_capped -= (e20100 / gross_ded_amt) * overage
-
-    return (e17500_capped, e18400_capped, e18500_capped, g20500_capped,
-            e20400_capped, e19200_capped, e19800_capped, e20100_capped)
-
-
-@iterate_jit(nopython=True)
-def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
-            e19800_capped, e20100_capped, e20400_capped, g20500_capped,
+def ItemDed(e17500, e18400, e18500, e19200,
+            e19800, e20100, e20400, g20500,
             MARS, age_head, age_spouse, c00100, c04470, c21040, c21060,
             c17000, c18300, c19200, c19700, c20500, c20800,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
@@ -942,30 +805,22 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
 
     Parameters
     ----------
-    e17500_capped: float
-        Schedule A: medical expenses, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18400_capped: float
-        Schedule A: state and local income taxes deductlbe, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18500_capped: float
-        Schedule A: state and local real estate taxes deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e19200_capped: float
-        Schedule A: interest deduction deductible, capped by
-        ItemDedCap as decimal fraction of AGI
-    e19800_capped: float
-        Schedule A: charity cash contributions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e20100_capped: float
-        Schedule A: charity noncash contributions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e20400_capped: float
-        Schedule A: gross miscellaneous deductions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    g20500_capped: float
-        Schedule A: gross casualty or theft loss deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
+    e17500: float
+        Schedule A: medical expenses
+    e18400: float
+        Schedule A: state and local income taxes deductlbe
+    e18500: float
+        Schedule A: state and local real estate taxes deductible
+    e19200: float
+        Schedule A: interest deduction deductible
+    e19800: float
+        Schedule A: charity cash contributions deductible
+    e20100: float
+        Schedule A: charity noncash contributions deductible
+    e20400: float
+        Schedule A: gross miscellaneous deductions deductible
+    g20500: float
+        Schedule A: gross casualty or theft loss deductible
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate,
                                4=household-head, 5=widow(er))
@@ -1093,12 +948,12 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         medical_frt += ID_Medical_frt_add4aged
     c17750 = medical_frt * posagi
-    c17000 = max(0., e17500_capped - c17750) * (1. - ID_Medical_hc)
+    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_hc)
     c17000 = min(c17000, ID_Medical_c[MARS - 1])
     # State and local taxes
-    c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400_capped, 0.),
+    c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400, 0.),
                  ID_StateLocalTax_c[MARS - 1])
-    c18500 = min((1. - ID_RealEstate_hc) * e18500_capped,
+    c18500 = min((1. - ID_RealEstate_hc) * e18500,
                  ID_RealEstate_c[MARS - 1])
     # following two statements implement a cap on c18400 and c18500 in a way
     # that those with negative AGI, c00100, are not capped under current law,
@@ -1108,22 +963,22 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     c18300 = (c18400 + c18500) * (1. - ID_AllTaxes_hc)
     c18300 = min(c18300, ID_AllTaxes_c[MARS - 1])
     # Interest paid
-    c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
+    c19200 = e19200 * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
     # Charity
-    charity_ded_cash = min(ID_Charity_crt_cash * posagi, e19800_capped)
-    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, e20100_capped)
+    charity_ded_cash = min(ID_Charity_crt_cash * posagi, e19800)
+    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, e20100)
     c19700 = charity_ded_cash + charity_ded_noncash
     # charity floor is zero in present law
     charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # Casualty
-    c20500 = (max(0., g20500_capped - ID_Casualty_frt * posagi) *
+    c20500 = (max(0., g20500 - ID_Casualty_frt * posagi) *
               (1. - ID_Casualty_hc))
     c20500 = min(c20500, ID_Casualty_c[MARS - 1])
     # Miscellaneous
-    c20400 = e20400_capped
+    c20400 = e20400
     c20750 = ID_Miscellaneous_frt * posagi
     c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_hc)
     c20800 = min(c20800, ID_Miscellaneous_c[MARS - 1])
@@ -3470,84 +3325,6 @@ def ComputeBenefit(calc, ID_switch):
     diff_iitax = no_ID_calc.array('iitax') - calc.array('iitax')
     benefit = np.where(diff_iitax > 0., diff_iitax, 0.)
     return benefit
-
-
-def BenefitSurtax(calc):
-    """
-    Computes itemized-deduction-benefit surtax and adds the surtax amount
-    to income tax, combined tax, and surtax liabilities.
-
-    Parameters
-    ----------
-    calc: Calculator object
-        calc represents the reform while self represents the baseline
-
-    Returns
-    -------
-    None:
-        The function modifies calc
-    """
-    if calc.policy_param('ID_BenefitSurtax_crt') != 1.:
-        ben = ComputeBenefit(calc,
-                             calc.policy_param('ID_BenefitSurtax_Switch'))
-        agi = calc.array('c00100')
-        ben_deduct = calc.policy_param('ID_BenefitSurtax_crt') * agi
-        ben_exempt_array = calc.policy_param('ID_BenefitSurtax_em')
-        ben_exempt = ben_exempt_array[calc.array('MARS') - 1]
-        ben_dedem = ben_deduct + ben_exempt
-        ben_surtax = (calc.policy_param('ID_BenefitSurtax_trt') *
-                      np.where(ben > ben_dedem, ben - ben_dedem, 0.))
-        # add ben_surtax to income & combined taxes and to surtax subtotal
-        calc.incarray('iitax', ben_surtax)
-        calc.incarray('combined', ben_surtax)
-        calc.incarray('surtax', ben_surtax)
-
-
-def BenefitLimitation(calc):
-    """
-    Limits the benefits of select itemized deductions to a fraction of
-    deductible expenses.
-
-    Parameters
-    ----------
-    calc: Calculator object
-        calc represents the reform while self represents the baseline
-
-    Returns
-    -------
-    None:
-        The function modifies calc
-    """
-    if calc.policy_param('ID_BenefitCap_rt') != 1.:
-        benefit = ComputeBenefit(calc,
-                                 calc.policy_param('ID_BenefitCap_Switch'))
-        # Calculate total deductible expenses under the cap
-        deduct_exps = 0.
-        if calc.policy_param('ID_BenefitCap_Switch')[0]:  # medical
-            deduct_exps += calc.array('c17000')
-        if calc.policy_param('ID_BenefitCap_Switch')[1]:  # statelocal
-            one_minus_hc = 1. - calc.policy_param('ID_StateLocalTax_hc')
-            deduct_exps += (one_minus_hc *
-                            np.maximum(calc.array('e18400_capped'), 0.))
-        if calc.policy_param('ID_BenefitCap_Switch')[2]:  # realestate
-            one_minus_hc = 1. - calc.policy_param('ID_RealEstate_hc')
-            deduct_exps += one_minus_hc * calc.array('e18500_capped')
-        if calc.policy_param('ID_BenefitCap_Switch')[3]:  # casualty
-            deduct_exps += calc.array('c20500')
-        if calc.policy_param('ID_BenefitCap_Switch')[4]:  # misc
-            deduct_exps += calc.array('c20800')
-        if calc.policy_param('ID_BenefitCap_Switch')[5]:  # interest
-            deduct_exps += calc.array('c19200')
-        if calc.policy_param('ID_BenefitCap_Switch')[6]:  # charity
-            deduct_exps += calc.array('c19700')
-        # Calculate cap value for itemized deductions
-        benefit_limit = deduct_exps * calc.policy_param('ID_BenefitCap_rt')
-        # Add the difference between the actual benefit and capped benefit
-        # to income tax and combined tax liabilities.
-        excess_benefit = np.maximum(benefit - benefit_limit, 0)
-        calc.incarray('iitax', excess_benefit)
-        calc.incarray('surtax', excess_benefit)
-        calc.incarray('combined', excess_benefit)
 
 
 @iterate_jit(nopython=True)

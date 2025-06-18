@@ -835,7 +835,6 @@ class Parameters(paramtools.Parameters):
         # params_to_trace = ['II_em']
         # params_to_trace = ['II_brk3']
         params_to_trace = ['EITC_c']
-        # params_to_trace = ['ID_AmountCap_Switch']
         if trace and param in params_to_trace:  # pragma: no cover
             vlabel = None
             vvalue = None

@@ -81,6 +81,15 @@ class Policy(Parameters):
         'PT_EligibleRate_passive': 'was removed in Tax-Calculator 5.0.0',
         'PT_wages_active_income': 'was removed in Tax-Calculator 5.0.0',
         'PT_top_stacking': 'was removed in Tax-Calculator 5.0.0',
+        # following parameters were removed in PR 2620
+        'ID_AmountCap_Switch': 'was removed in Tax-Calculator 5.0.0',
+        'ID_AmountCap_rt': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitCap_Switch': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitCap_rt': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitSurtax_Switch': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitSurtax_crt': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitSurtax_trt': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitSurtax_em': 'was removed in Tax-Calculator 5.0.0',
     }
     # (2) specify which Policy parameters have been redefined recently
     #     where "recently" means in the last major release
@@ -149,20 +158,12 @@ class Policy(Parameters):
                 None
             )
         deprecated_parameters = [
-            'ID_AmountCap_Switch',
-            'ID_AmountCap_rt',
-            'ID_BenefitCap_Switch',
-            'ID_BenefitCap_rt',
-            'ID_BenefitSurtax_Switch',
-            'ID_BenefitSurtax_crt',
-            'ID_BenefitSurtax_trt',
-            'ID_BenefitSurtax_em',
         ]
         for param in reform.keys():
             if param in deprecated_parameters:
-                print(
+                print(  # pragma: no cover
                     f'DEPRECATION WARNING: the {param} policy parameter\n'
-                    'is scheduled to be removed in Tax-Calculator 5.0.0;\n'
+                    'is scheduled to be removed in Tax-Calculator 6.0.0;\n'
                     'if you think this removal should not happen, open an\n'
                     'issue on GitHub to make your case for non-removal.'
                 )

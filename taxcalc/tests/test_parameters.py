@@ -113,6 +113,7 @@ def fixture_params_json_file():
     ({'str_param': {2004: ['nonlinear']}}, "raise"),
     ({'real_param': {2004: 'linear'}}, "raise"),
     ({'real_param': {2004: [0.2, 0.3]}}, "raise"),
+    ({'removed_param': {2004: 0.1}}, "raise"),
     ({'real_param-indexed': {2004: True}}, "raise"),
     ({'unknown_param-indexed': {2004: False}}, "raise")
 ])
@@ -132,6 +133,9 @@ def test_params_class(revision, expect, params_json_file):
         START_YEAR = 2001
         LAST_YEAR = 2010
         NUM_YEARS = LAST_YEAR - START_YEAR + 1
+        REMOVED_PARAMS = {
+            'removed_param': 'has been removed'
+        }
 
         def __init__(self):
             super().__init__()

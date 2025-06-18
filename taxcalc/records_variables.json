@@ -936,24 +936,9 @@
       "desc": "Sch A: Medical expenses deducted (component of pre-limitation c21060 total)",
       "form": {"2013-20??": "calculated variable"}
     },
-    "e17500_capped": {
-      "type": "float",
-      "desc": "Sch A: Medical expenses, capped as a decimal fraction of AGI",
-      "form": {"2013-20??": "calculated variable"}
-    },
     "c18300": {
       "type": "float",
       "desc": "Sch A: State and local taxes plus real estate taxes deducted (component of pre-limitation c21060 total)",
-      "form": {"2013-20??": "calculated variable"}
-    },
-    "e18400_capped": {
-      "type": "float",
-      "desc": "Sch A: State and local income taxes deductible, capped as a decimal fraction of AGI",
-      "form": {"2013-20??": "calculated variable"}
-    },
-    "e18500_capped": {
-      "type": "float",
-      "desc": "Sch A: State and local real estate taxes deductible, capped as a decimal fraction of AGI",
       "form": {"2013-20??": "calculated variable"}
     },
     "c19200": {
@@ -961,24 +946,9 @@
       "desc": "Sch A: Interest deducted (component of pre-limitation c21060 total)",
       "form": {"2013-20??": "calculated variable"}
     },
-    "e19200_capped": {
-      "type": "float",
-      "desc": "Sch A: Interest deduction deductible, capped as a decimal fraction of AGI",
-      "form": {"2013-20??": "calculated variable"}
-    },
     "c19700": {
       "type": "float",
       "desc": "Sch A: Charity contributions deducted (component of pre-limitation c21060 total)",
-      "form": {"2013-20??": "calculated variable"}
-    },
-    "e19800_capped": {
-      "type": "float",
-      "desc": "Sch A: Charity cash contributions deductible, capped as a decimal fraction of AGI",
-      "form": {"2013-20??": "calculated variable"}
-    },
-    "e20100_capped": {
-      "type": "float",
-      "desc": "Sch A: Charity noncash contributions deductible, capped as a decimal fraction of AGI",
       "form": {"2013-20??": "calculated variable"}
     },
     "c20500": {
@@ -986,19 +956,9 @@
       "desc": "Sch A: Net casualty or theft loss deducted (component of pre-limitation c21060 total)",
       "form": {"2013-20??": "calculated variable"}
     },
-    "g20500_capped": {
-      "type": "float",
-      "desc": "Sch A: Gross casualty or theft loss deductible, capped as a decimal fraction of AGI",
-      "form": {"2013-20??": "calculated variable"}
-    },
     "c20800": {
       "type": "float",
       "desc": "Sch A: Net limited miscellaneous deductions deducted (component of pre-limitation c21060 total)",
-      "form": {"2013-20??": "calculated variable"}
-    },
-    "e20400_capped": {
-      "type": "float",
-      "desc": "Sch A: Gross miscellaneous deductions deductible, capped as a decimal fraction of AGI",
       "form": {"2013-20??": "calculated variable"}
     },
     "c21040": {
