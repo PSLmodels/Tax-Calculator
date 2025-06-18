@@ -273,11 +273,11 @@ def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
 RAWINPUT_FUNITS = 4
 RAWINPUT_YEAR = 2015
 RAWINPUT_CONTENTS = (
-    'RECID,MARS,unknown\n'
-    '    1,   2,      9\n'
-    '    2,   1,      9\n'
-    '    3,   4,      9\n'
-    '    4,   3,      9\n'
+    'RECID,MARS,unknown,e00300\n'
+    '    1,   2,      9,     0\n'
+    '    2,   1,      9,     0\n'
+    '    3,   4,      9,     0\n'
+    '    4,   3,      9,     0\n'
 )
 
 
@@ -312,6 +312,9 @@ def test_calculator_using_nonstd_input():
     exp_mtr_ptax = np.zeros((nonstd.array_length,))
     exp_mtr_ptax.fill(0.153)
     assert np.allclose(mtr_ptax, exp_mtr_ptax)
+    # misc calls for code coverage
+    calc.incarray('e00300', np.ones_like(calc.array('e00300')))
+    calc.policy_param('ID_c', param_value=50e3)
 
 
 def test_bad_json_names(tests_path):
@@ -808,7 +811,7 @@ def test_qbid_calculation():
     assert calc.current_year == TPC_YEAR
     calc.calc_all()
     varlist = ['RECID', 'c00100', 'standard', 'c04470', 'qbided']
-    tc_df = calc.dataframe(varlist)
+    tc_df = calc.dataframe(varlist, all_vars=True)
     # compare actual amounts with expected amounts from TPC publication
     act_taxinc = tc_df.c00100 - np.maximum(tc_df.standard, tc_df.c04470)
     exp_taxinc = tpc_df.pre_qbid_taxinc

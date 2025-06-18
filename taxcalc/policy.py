@@ -161,7 +161,7 @@ class Policy(Parameters):
         ]
         for param in reform.keys():
             if param in deprecated_parameters:
-                print(
+                print(  # pragma: no cover
                     f'DEPRECATION WARNING: the {param} policy parameter\n'
                     'is scheduled to be removed in Tax-Calculator 6.0.0;\n'
                     'if you think this removal should not happen, open an\n'

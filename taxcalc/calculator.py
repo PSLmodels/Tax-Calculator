@@ -1204,7 +1204,10 @@ class Calculator():
                         pval = getattr(updated, pname).tolist()[0]
                         if mdata_base[pname]['type'] == 'bool':
                             if isinstance(pval, list):
-                                pval = [bool(item) for item in pval]
+                                pval = (  # pragma: no cover
+                                    # there are no bool list parameters
+                                    [bool(item) for item in pval]
+                                )
                             else:
                                 pval = bool(pval)
                         doc += f' {pname} : {pval}\n'
@@ -1242,7 +1245,10 @@ class Calculator():
                             ptype = mdata_base[pname]['type']
                             if isinstance(pval, list):
                                 if ptype == 'bool':
-                                    pval = [bool(item) for item in pval]
+                                    pval = (  # pragma: no cover
+                                        # there are no bool list parameters
+                                        [bool(item) for item in pval]
+                                    )
                             elif ptype == 'bool':
                                 pval = bool(pval)
                             doc += f'  baseline_value: {pval}\n'

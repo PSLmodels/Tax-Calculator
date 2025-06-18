@@ -132,6 +132,7 @@ def test_params_class(revision, expect, params_json_file):
         START_YEAR = 2001
         LAST_YEAR = 2010
         NUM_YEARS = LAST_YEAR - START_YEAR + 1
+        REMOVED_PARAMS = {}
 
         def __init__(self):
             super().__init__()
