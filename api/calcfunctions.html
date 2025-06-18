@@ -478,9 +478,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.Adj"><code class="docutils literal notranslate"><span class="pre">Adj()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.AfterTaxIncome"><code class="docutils literal notranslate"><span class="pre">AfterTaxIncome()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.AmOppCreditParts"><code class="docutils literal notranslate"><span class="pre">AmOppCreditParts()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.BenefitLimitation"><code class="docutils literal notranslate"><span class="pre">BenefitLimitation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.BenefitPrograms"><code class="docutils literal notranslate"><span class="pre">BenefitPrograms()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.BenefitSurtax"><code class="docutils literal notranslate"><span class="pre">BenefitSurtax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.C1040"><code class="docutils literal notranslate"><span class="pre">C1040()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.CTC_new"><code class="docutils literal notranslate"><span class="pre">CTC_new()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.CapGains"><code class="docutils literal notranslate"><span class="pre">CapGains()</span></code></a></li>
@@ -498,7 +496,6 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.GainsTax"><code class="docutils literal notranslate"><span class="pre">GainsTax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.IITAX"><code class="docutils literal notranslate"><span class="pre">IITAX()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.ItemDed"><code class="docutils literal notranslate"><span class="pre">ItemDed()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.ItemDedCap"><code class="docutils literal notranslate"><span class="pre">ItemDedCap()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.LumpSumTax"><code class="docutils literal notranslate"><span class="pre">LumpSumTax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.NetInvIncTax"><code class="docutils literal notranslate"><span class="pre">NetInvIncTax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.NonrefundableCredits"><code class="docutils literal notranslate"><span class="pre">NonrefundableCredits()</span></code></a></li>
@@ -597,46 +594,10 @@ in iterate_jit decorator.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="taxcalc.calcfunctions.BenefitLimitation">
-<span class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></span><span class="sig-name descname"><span class="pre">BenefitLimitation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calcfunctions.html#BenefitLimitation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calcfunctions.BenefitLimitation" title="Link to this definition">#</a></dt>
-<dd><p>Limits the benefits of select itemized deductions to a fraction of
-deductible expenses.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The function modifies calc</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="taxcalc.calcfunctions.BenefitPrograms">
 <span class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></span><span class="sig-name descname"><span class="pre">BenefitPrograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calcfunctions.html#BenefitPrograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calcfunctions.BenefitPrograms" title="Link to this definition">#</a></dt>
 <dd><p>Calculate total government cost and consumption value of benefits
 delivered by non-repealed benefit programs.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The function modifies calc</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="taxcalc.calcfunctions.BenefitSurtax">
-<span class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></span><span class="sig-name descname"><span class="pre">BenefitSurtax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calcfunctions.html#BenefitSurtax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calcfunctions.BenefitSurtax" title="Link to this definition">#</a></dt>
-<dd><p>Computes itemized-deduction-benefit surtax and adds the surtax amount
-to income tax, combined tax, and surtax liabilities.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p>
@@ -799,13 +760,6 @@ in iterate_jit decorator.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="taxcalc.calcfunctions.ItemDed">
 <span class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></span><span class="sig-name descname"><span class="pre">ItemDed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#taxcalc.calcfunctions.ItemDed" title="Link to this definition">#</a></dt>
-<dd><p>wrapper function nested in make_wrapper function nested
-in iterate_jit decorator.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="taxcalc.calcfunctions.ItemDedCap">
-<span class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></span><span class="sig-name descname"><span class="pre">ItemDedCap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#taxcalc.calcfunctions.ItemDedCap" title="Link to this definition">#</a></dt>
 <dd><p>wrapper function nested in make_wrapper function nested
 in iterate_jit decorator.</p>
 </dd></dl>
@@ -1054,9 +1008,7 @@ in iterate_jit decorator.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.Adj"><code class="docutils literal notranslate"><span class="pre">Adj()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.AfterTaxIncome"><code class="docutils literal notranslate"><span class="pre">AfterTaxIncome()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.AmOppCreditParts"><code class="docutils literal notranslate"><span class="pre">AmOppCreditParts()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.BenefitLimitation"><code class="docutils literal notranslate"><span class="pre">BenefitLimitation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.BenefitPrograms"><code class="docutils literal notranslate"><span class="pre">BenefitPrograms()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.BenefitSurtax"><code class="docutils literal notranslate"><span class="pre">BenefitSurtax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.C1040"><code class="docutils literal notranslate"><span class="pre">C1040()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.CTC_new"><code class="docutils literal notranslate"><span class="pre">CTC_new()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.CapGains"><code class="docutils literal notranslate"><span class="pre">CapGains()</span></code></a></li>
@@ -1074,7 +1026,6 @@ in iterate_jit decorator.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.GainsTax"><code class="docutils literal notranslate"><span class="pre">GainsTax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.IITAX"><code class="docutils literal notranslate"><span class="pre">IITAX()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.ItemDed"><code class="docutils literal notranslate"><span class="pre">ItemDed()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.ItemDedCap"><code class="docutils literal notranslate"><span class="pre">ItemDedCap()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.LumpSumTax"><code class="docutils literal notranslate"><span class="pre">LumpSumTax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.NetInvIncTax"><code class="docutils literal notranslate"><span class="pre">NetInvIncTax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.calcfunctions.NonrefundableCredits"><code class="docutils literal notranslate"><span class="pre">NonrefundableCredits()</span></code></a></li>

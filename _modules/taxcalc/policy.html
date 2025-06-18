@@ -490,6 +490,15 @@ document.write(`
         <span class="s1">&#39;PT_EligibleRate_passive&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
         <span class="s1">&#39;PT_wages_active_income&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
         <span class="s1">&#39;PT_top_stacking&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="c1"># following parameters were removed in PR 2620</span>
+        <span class="s1">&#39;ID_AmountCap_Switch&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ID_AmountCap_rt&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ID_BenefitCap_rt&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ID_BenefitSurtax_Switch&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ID_BenefitSurtax_crt&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ID_BenefitSurtax_trt&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ID_BenefitSurtax_em&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="c1"># (2) specify which Policy parameters have been redefined recently</span>
     <span class="c1">#     where &quot;recently&quot; means in the last major release</span>
@@ -563,20 +572,12 @@ document.write(`
                 <span class="kc">None</span>
             <span class="p">)</span>
         <span class="n">deprecated_parameters</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s1">&#39;ID_AmountCap_Switch&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;ID_AmountCap_rt&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;ID_BenefitCap_rt&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;ID_BenefitSurtax_Switch&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;ID_BenefitSurtax_crt&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;ID_BenefitSurtax_trt&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;ID_BenefitSurtax_em&#39;</span><span class="p">,</span>
         <span class="p">]</span>
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">reform</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">deprecated_parameters</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span>
+                <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
                     <span class="sa">f</span><span class="s1">&#39;DEPRECATION WARNING: the </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1"> policy parameter</span><span class="se">\n</span><span class="s1">&#39;</span>
-                    <span class="s1">&#39;is scheduled to be removed in Tax-Calculator 5.0.0;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39;is scheduled to be removed in Tax-Calculator 6.0.0;</span><span class="se">\n</span><span class="s1">&#39;</span>
                     <span class="s1">&#39;if you think this removal should not happen, open an</span><span class="se">\n</span><span class="s1">&#39;</span>
                     <span class="s1">&#39;issue on GitHub to make your case for non-removal.&#39;</span>
                 <span class="p">)</span>

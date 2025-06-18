@@ -1197,145 +1197,8 @@ document.write(`
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">ItemDedCap</span><span class="p">(</span><span class="n">e17500</span><span class="p">,</span> <span class="n">e18400</span><span class="p">,</span> <span class="n">e18500</span><span class="p">,</span> <span class="n">e19200</span><span class="p">,</span> <span class="n">e19800</span><span class="p">,</span> <span class="n">e20100</span><span class="p">,</span> <span class="n">e20400</span><span class="p">,</span> <span class="n">g20500</span><span class="p">,</span>
-               <span class="n">c00100</span><span class="p">,</span> <span class="n">ID_AmountCap_rt</span><span class="p">,</span> <span class="n">ID_AmountCap_Switch</span><span class="p">,</span> <span class="n">e17500_capped</span><span class="p">,</span>
-               <span class="n">e18400_capped</span><span class="p">,</span> <span class="n">e18500_capped</span><span class="p">,</span> <span class="n">e19200_capped</span><span class="p">,</span> <span class="n">e19800_capped</span><span class="p">,</span>
-               <span class="n">e20100_capped</span><span class="p">,</span> <span class="n">e20400_capped</span><span class="p">,</span> <span class="n">g20500_capped</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Applies a cap to gross itemized deductions.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    e17500: float</span>
-<span class="sd">        Itemizable medical and dental expenses</span>
-<span class="sd">    e18400: float</span>
-<span class="sd">        Itemizable state and local income/sales taxes</span>
-<span class="sd">    e18500: float</span>
-<span class="sd">        Itemizable real-estate taxes paid</span>
-<span class="sd">    e19200: float</span>
-<span class="sd">        Itemizable interest paid</span>
-<span class="sd">    e19800: float</span>
-<span class="sd">        Itemizable charitable giving: cash/check contributions</span>
-<span class="sd">    e20100: float</span>
-<span class="sd">        Itemizable charitable giving: other than cash/check contributions</span>
-<span class="sd">    e20400: float</span>
-<span class="sd">        Itemizable gross (before 10% AGI disregard) casualty or theft loss</span>
-<span class="sd">    g20500: float</span>
-<span class="sd">        Itemizable gross (before 10% AGI disregard) casualty or theft loss</span>
-<span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted gross income (AGI)</span>
-<span class="sd">    ID_AmountCap_rt: float</span>
-<span class="sd">        Ceiling on the gross amount of itemized deductions allowed;</span>
-<span class="sd">        expressed as decimal fraction of AGI</span>
-<span class="sd">    ID_AmountCap_Switch: list</span>
-<span class="sd">        Deductions subject to the cap on itemized deduction benefits</span>
-<span class="sd">    e17500_capped: float</span>
-<span class="sd">        Schedule A: medical expenses, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e18400_capped: float</span>
-<span class="sd">        Schedule A: state and local income taxes deductlbe, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e18500_capped: float</span>
-<span class="sd">        Schedule A: state and local real estate taxes deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e19200_capped: float</span>
-<span class="sd">        Schedule A: interest deduction deductible, capped by</span>
-<span class="sd">        ItemDedCap as decimal fraction of AGI</span>
-<span class="sd">    e19800_capped: float</span>
-<span class="sd">        Schedule A: charity cash contributions deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e20100_capped: float</span>
-<span class="sd">        Schedule A: charity noncash contributions deductible, capped by</span>
-<span class="sd">        ItemDedCap s a decimal fraction of AGI</span>
-<span class="sd">    e20400_capped: float</span>
-<span class="sd">        Schedule A: gross miscellaneous deductions deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    g20500_capped: float</span>
-<span class="sd">        Schedule A: gross casualty or theft loss deductible, capped by</span>
-<span class="sd">        ItemDedCap s a decimal fraction of AGI</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    e17500_capped: float</span>
-<span class="sd">        Schedule A: medical expenses, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e18400_capped: float</span>
-<span class="sd">        Schedule A: state and local income taxes deductlbe, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e18500_capped: float</span>
-<span class="sd">        Schedule A: state and local real estate taxes deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e19200_capped: float</span>
-<span class="sd">        Schedule A: interest deduction deductible, capped by</span>
-<span class="sd">        ItemDedCap as decimal fraction of AGI</span>
-<span class="sd">    e19800_capped: float</span>
-<span class="sd">        Schedule A: charity cash contributions deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e20100_capped: float</span>
-<span class="sd">        Schedule A: charity noncash contributions deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e20400_capped: float</span>
-<span class="sd">        Schedule A: gross miscellaneous deductions deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    g20500_capped: float</span>
-<span class="sd">        Schedule A: gross casualty or theft loss deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># pylint: disable=too-many-branches</span>
-
-    <span class="n">cap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ID_AmountCap_rt</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">)</span>
-
-    <span class="n">gross_ded_amt</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># medical</span>
-        <span class="n">gross_ded_amt</span> <span class="o">+=</span> <span class="n">e17500</span>
-    <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># statelocal</span>
-        <span class="n">gross_ded_amt</span> <span class="o">+=</span> <span class="n">e18400</span>
-    <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>  <span class="c1"># realestate</span>
-        <span class="n">gross_ded_amt</span> <span class="o">+=</span> <span class="n">e18500</span>
-    <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>  <span class="c1"># casualty</span>
-        <span class="n">gross_ded_amt</span> <span class="o">+=</span> <span class="n">g20500</span>
-    <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span>  <span class="c1"># misc</span>
-        <span class="n">gross_ded_amt</span> <span class="o">+=</span> <span class="n">e20400</span>
-    <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>  <span class="c1"># interest</span>
-        <span class="n">gross_ded_amt</span> <span class="o">+=</span> <span class="n">e19200</span>
-    <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">6</span><span class="p">]:</span>  <span class="c1"># charity</span>
-        <span class="n">gross_ded_amt</span> <span class="o">+=</span> <span class="n">e19800</span> <span class="o">+</span> <span class="n">e20100</span>
-
-    <span class="n">overage</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">gross_ded_amt</span> <span class="o">-</span> <span class="n">cap</span><span class="p">)</span>
-
-    <span class="n">e17500_capped</span> <span class="o">=</span> <span class="n">e17500</span>
-    <span class="n">e18400_capped</span> <span class="o">=</span> <span class="n">e18400</span>
-    <span class="n">e18500_capped</span> <span class="o">=</span> <span class="n">e18500</span>
-    <span class="n">g20500_capped</span> <span class="o">=</span> <span class="n">g20500</span>
-    <span class="n">e20400_capped</span> <span class="o">=</span> <span class="n">e20400</span>
-    <span class="n">e19200_capped</span> <span class="o">=</span> <span class="n">e19200</span>
-    <span class="n">e19800_capped</span> <span class="o">=</span> <span class="n">e19800</span>
-    <span class="n">e20100_capped</span> <span class="o">=</span> <span class="n">e20100</span>
-
-    <span class="k">if</span> <span class="n">overage</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># medical</span>
-            <span class="n">e17500_capped</span> <span class="o">-=</span> <span class="p">(</span><span class="n">e17500</span> <span class="o">/</span> <span class="n">gross_ded_amt</span><span class="p">)</span> <span class="o">*</span> <span class="n">overage</span>
-        <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># statelocal</span>
-            <span class="n">e18400_capped</span> <span class="o">-=</span> <span class="p">(</span><span class="n">e18400</span> <span class="o">/</span> <span class="p">(</span><span class="n">gross_ded_amt</span><span class="p">)</span> <span class="o">*</span> <span class="n">overage</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>  <span class="c1"># realestate</span>
-            <span class="n">e18500_capped</span> <span class="o">-=</span> <span class="p">(</span><span class="n">e18500</span> <span class="o">/</span> <span class="n">gross_ded_amt</span><span class="p">)</span> <span class="o">*</span> <span class="n">overage</span>
-        <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>  <span class="c1"># casualty</span>
-            <span class="n">g20500_capped</span> <span class="o">-=</span> <span class="p">(</span><span class="n">g20500</span> <span class="o">/</span> <span class="n">gross_ded_amt</span><span class="p">)</span> <span class="o">*</span> <span class="n">overage</span>
-        <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span>  <span class="c1"># misc</span>
-            <span class="n">e20400_capped</span> <span class="o">-=</span> <span class="p">(</span><span class="n">e20400</span> <span class="o">/</span> <span class="n">gross_ded_amt</span><span class="p">)</span> <span class="o">*</span> <span class="n">overage</span>
-        <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>  <span class="c1"># interest</span>
-            <span class="n">e19200_capped</span> <span class="o">-=</span> <span class="p">(</span><span class="n">e19200</span> <span class="o">/</span> <span class="n">gross_ded_amt</span><span class="p">)</span> <span class="o">*</span> <span class="n">overage</span>
-        <span class="k">if</span> <span class="n">ID_AmountCap_Switch</span><span class="p">[</span><span class="mi">6</span><span class="p">]:</span>  <span class="c1"># charity</span>
-            <span class="n">e19800_capped</span> <span class="o">-=</span> <span class="p">(</span><span class="n">e19800</span> <span class="o">/</span> <span class="n">gross_ded_amt</span><span class="p">)</span> <span class="o">*</span> <span class="n">overage</span>
-            <span class="n">e20100_capped</span> <span class="o">-=</span> <span class="p">(</span><span class="n">e20100</span> <span class="o">/</span> <span class="n">gross_ded_amt</span><span class="p">)</span> <span class="o">*</span> <span class="n">overage</span>
-
-    <span class="k">return</span> <span class="p">(</span><span class="n">e17500_capped</span><span class="p">,</span> <span class="n">e18400_capped</span><span class="p">,</span> <span class="n">e18500_capped</span><span class="p">,</span> <span class="n">g20500_capped</span><span class="p">,</span>
-            <span class="n">e20400_capped</span><span class="p">,</span> <span class="n">e19200_capped</span><span class="p">,</span> <span class="n">e19800_capped</span><span class="p">,</span> <span class="n">e20100_capped</span><span class="p">)</span>
-
-
-<span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">ItemDed</span><span class="p">(</span><span class="n">e17500_capped</span><span class="p">,</span> <span class="n">e18400_capped</span><span class="p">,</span> <span class="n">e18500_capped</span><span class="p">,</span> <span class="n">e19200_capped</span><span class="p">,</span>
-            <span class="n">e19800_capped</span><span class="p">,</span> <span class="n">e20100_capped</span><span class="p">,</span> <span class="n">e20400_capped</span><span class="p">,</span> <span class="n">g20500_capped</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ItemDed</span><span class="p">(</span><span class="n">e17500</span><span class="p">,</span> <span class="n">e18400</span><span class="p">,</span> <span class="n">e18500</span><span class="p">,</span> <span class="n">e19200</span><span class="p">,</span>
+            <span class="n">e19800</span><span class="p">,</span> <span class="n">e20100</span><span class="p">,</span> <span class="n">e20400</span><span class="p">,</span> <span class="n">g20500</span><span class="p">,</span>
             <span class="n">MARS</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">c21060</span><span class="p">,</span>
             <span class="n">c17000</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">c19200</span><span class="p">,</span> <span class="n">c19700</span><span class="p">,</span> <span class="n">c20500</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span>
             <span class="n">ID_ps</span><span class="p">,</span> <span class="n">ID_Medical_frt</span><span class="p">,</span> <span class="n">ID_Medical_frt_add4aged</span><span class="p">,</span> <span class="n">ID_Medical_hc</span><span class="p">,</span>
@@ -1352,30 +1215,22 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    e17500_capped: float</span>
-<span class="sd">        Schedule A: medical expenses, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e18400_capped: float</span>
-<span class="sd">        Schedule A: state and local income taxes deductlbe, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e18500_capped: float</span>
-<span class="sd">        Schedule A: state and local real estate taxes deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e19200_capped: float</span>
-<span class="sd">        Schedule A: interest deduction deductible, capped by</span>
-<span class="sd">        ItemDedCap as decimal fraction of AGI</span>
-<span class="sd">    e19800_capped: float</span>
-<span class="sd">        Schedule A: charity cash contributions deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e20100_capped: float</span>
-<span class="sd">        Schedule A: charity noncash contributions deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    e20400_capped: float</span>
-<span class="sd">        Schedule A: gross miscellaneous deductions deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
-<span class="sd">    g20500_capped: float</span>
-<span class="sd">        Schedule A: gross casualty or theft loss deductible, capped by</span>
-<span class="sd">        ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e17500: float</span>
+<span class="sd">        Schedule A: medical expenses</span>
+<span class="sd">    e18400: float</span>
+<span class="sd">        Schedule A: state and local income taxes deductlbe</span>
+<span class="sd">    e18500: float</span>
+<span class="sd">        Schedule A: state and local real estate taxes deductible</span>
+<span class="sd">    e19200: float</span>
+<span class="sd">        Schedule A: interest deduction deductible</span>
+<span class="sd">    e19800: float</span>
+<span class="sd">        Schedule A: charity cash contributions deductible</span>
+<span class="sd">    e20100: float</span>
+<span class="sd">        Schedule A: charity noncash contributions deductible</span>
+<span class="sd">    e20400: float</span>
+<span class="sd">        Schedule A: gross miscellaneous deductions deductible</span>
+<span class="sd">    g20500: float</span>
+<span class="sd">        Schedule A: gross casualty or theft loss deductible</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                               4=household-head, 5=widow(er))</span>
@@ -1503,12 +1358,12 @@ document.write(`
     <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span> <span class="ow">or</span> <span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">):</span>
         <span class="n">medical_frt</span> <span class="o">+=</span> <span class="n">ID_Medical_frt_add4aged</span>
     <span class="n">c17750</span> <span class="o">=</span> <span class="n">medical_frt</span> <span class="o">*</span> <span class="n">posagi</span>
-    <span class="n">c17000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e17500_capped</span> <span class="o">-</span> <span class="n">c17750</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Medical_hc</span><span class="p">)</span>
+    <span class="n">c17000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e17500</span> <span class="o">-</span> <span class="n">c17750</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Medical_hc</span><span class="p">)</span>
     <span class="n">c17000</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="n">ID_Medical_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="c1"># State and local taxes</span>
-    <span class="n">c18400</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_StateLocalTax_hc</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">e18400_capped</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
+    <span class="n">c18400</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_StateLocalTax_hc</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">e18400</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
                  <span class="n">ID_StateLocalTax_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">c18500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_RealEstate_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e18500_capped</span><span class="p">,</span>
+    <span class="n">c18500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_RealEstate_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e18500</span><span class="p">,</span>
                  <span class="n">ID_RealEstate_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="c1"># following two statements implement a cap on c18400 and c18500 in a way</span>
     <span class="c1"># that those with negative AGI, c00100, are not capped under current law,</span>
@@ -1518,22 +1373,22 @@ document.write(`
     <span class="n">c18300</span> <span class="o">=</span> <span class="p">(</span><span class="n">c18400</span> <span class="o">+</span> <span class="n">c18500</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_AllTaxes_hc</span><span class="p">)</span>
     <span class="n">c18300</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18300</span><span class="p">,</span> <span class="n">ID_AllTaxes_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="c1"># Interest paid</span>
-    <span class="n">c19200</span> <span class="o">=</span> <span class="n">e19200_capped</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_InterestPaid_hc</span><span class="p">)</span>
+    <span class="n">c19200</span> <span class="o">=</span> <span class="n">e19200</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_InterestPaid_hc</span><span class="p">)</span>
     <span class="n">c19200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19200</span><span class="p">,</span> <span class="n">ID_InterestPaid_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="c1"># Charity</span>
-    <span class="n">charity_ded_cash</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_cash</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">e19800_capped</span><span class="p">)</span>
-    <span class="n">charity_ded_noncash</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_noncash</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">e20100_capped</span><span class="p">)</span>
+    <span class="n">charity_ded_cash</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_cash</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">e19800</span><span class="p">)</span>
+    <span class="n">charity_ded_noncash</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_noncash</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">e20100</span><span class="p">)</span>
     <span class="n">c19700</span> <span class="o">=</span> <span class="n">charity_ded_cash</span> <span class="o">+</span> <span class="n">charity_ded_noncash</span>
     <span class="c1"># charity floor is zero in present law</span>
     <span class="n">charity_floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ID_Charity_frt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">c19700</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c19700</span> <span class="o">-</span> <span class="n">charity_floor</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Charity_hc</span><span class="p">)</span>
     <span class="n">c19700</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19700</span><span class="p">,</span> <span class="n">ID_Charity_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="c1"># Casualty</span>
-    <span class="n">c20500</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">g20500_capped</span> <span class="o">-</span> <span class="n">ID_Casualty_frt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">)</span> <span class="o">*</span>
+    <span class="n">c20500</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">g20500</span> <span class="o">-</span> <span class="n">ID_Casualty_frt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">)</span> <span class="o">*</span>
               <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Casualty_hc</span><span class="p">))</span>
     <span class="n">c20500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c20500</span><span class="p">,</span> <span class="n">ID_Casualty_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="c1"># Miscellaneous</span>
-    <span class="n">c20400</span> <span class="o">=</span> <span class="n">e20400_capped</span>
+    <span class="n">c20400</span> <span class="o">=</span> <span class="n">e20400</span>
     <span class="n">c20750</span> <span class="o">=</span> <span class="n">ID_Miscellaneous_frt</span> <span class="o">*</span> <span class="n">posagi</span>
     <span class="n">c20800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c20400</span> <span class="o">-</span> <span class="n">c20750</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Miscellaneous_hc</span><span class="p">)</span>
     <span class="n">c20800</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c20800</span><span class="p">,</span> <span class="n">ID_Miscellaneous_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
@@ -3891,90 +3746,6 @@ document.write(`
     <span class="n">diff_iitax</span> <span class="o">=</span> <span class="n">no_ID_calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
     <span class="n">benefit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff_iitax</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">diff_iitax</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">benefit</span></div>
-
-
-
-<div class="viewcode-block" id="BenefitSurtax">
-<a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.BenefitSurtax">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">BenefitSurtax</span><span class="p">(</span><span class="n">calc</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes itemized-deduction-benefit surtax and adds the surtax amount</span>
-<span class="sd">    to income tax, combined tax, and surtax liabilities.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    calc: Calculator object</span>
-<span class="sd">        calc represents the reform while self represents the baseline</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    None:</span>
-<span class="sd">        The function modifies calc</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitSurtax_crt&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
-        <span class="n">ben</span> <span class="o">=</span> <span class="n">ComputeBenefit</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span>
-                             <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitSurtax_Switch&#39;</span><span class="p">))</span>
-        <span class="n">agi</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c00100&#39;</span><span class="p">)</span>
-        <span class="n">ben_deduct</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitSurtax_crt&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">agi</span>
-        <span class="n">ben_exempt_array</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitSurtax_em&#39;</span><span class="p">)</span>
-        <span class="n">ben_exempt</span> <span class="o">=</span> <span class="n">ben_exempt_array</span><span class="p">[</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;MARS&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">ben_dedem</span> <span class="o">=</span> <span class="n">ben_deduct</span> <span class="o">+</span> <span class="n">ben_exempt</span>
-        <span class="n">ben_surtax</span> <span class="o">=</span> <span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitSurtax_trt&#39;</span><span class="p">)</span> <span class="o">*</span>
-                      <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ben</span> <span class="o">&gt;</span> <span class="n">ben_dedem</span><span class="p">,</span> <span class="n">ben</span> <span class="o">-</span> <span class="n">ben_dedem</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
-        <span class="c1"># add ben_surtax to income &amp; combined taxes and to surtax subtotal</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">,</span> <span class="n">ben_surtax</span><span class="p">)</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span> <span class="n">ben_surtax</span><span class="p">)</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;surtax&#39;</span><span class="p">,</span> <span class="n">ben_surtax</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="BenefitLimitation">
-<a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.BenefitLimitation">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">BenefitLimitation</span><span class="p">(</span><span class="n">calc</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Limits the benefits of select itemized deductions to a fraction of</span>
-<span class="sd">    deductible expenses.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    calc: Calculator object</span>
-<span class="sd">        calc represents the reform while self represents the baseline</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    None:</span>
-<span class="sd">        The function modifies calc</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_rt&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
-        <span class="n">benefit</span> <span class="o">=</span> <span class="n">ComputeBenefit</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span>
-                                 <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">))</span>
-        <span class="c1"># Calculate total deductible expenses under the cap</span>
-        <span class="n">deduct_exps</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>  <span class="c1"># medical</span>
-            <span class="n">deduct_exps</span> <span class="o">+=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c17000&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># statelocal</span>
-            <span class="n">one_minus_hc</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_StateLocalTax_hc&#39;</span><span class="p">)</span>
-            <span class="n">deduct_exps</span> <span class="o">+=</span> <span class="p">(</span><span class="n">one_minus_hc</span> <span class="o">*</span>
-                            <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e18400_capped&#39;</span><span class="p">),</span> <span class="mf">0.</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]:</span>  <span class="c1"># realestate</span>
-            <span class="n">one_minus_hc</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_RealEstate_hc&#39;</span><span class="p">)</span>
-            <span class="n">deduct_exps</span> <span class="o">+=</span> <span class="n">one_minus_hc</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e18500_capped&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]:</span>  <span class="c1"># casualty</span>
-            <span class="n">deduct_exps</span> <span class="o">+=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c20500&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]:</span>  <span class="c1"># misc</span>
-            <span class="n">deduct_exps</span> <span class="o">+=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c20800&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">)[</span><span class="mi">5</span><span class="p">]:</span>  <span class="c1"># interest</span>
-            <span class="n">deduct_exps</span> <span class="o">+=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c19200&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]:</span>  <span class="c1"># charity</span>
-            <span class="n">deduct_exps</span> <span class="o">+=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c19700&#39;</span><span class="p">)</span>
-        <span class="c1"># Calculate cap value for itemized deductions</span>
-        <span class="n">benefit_limit</span> <span class="o">=</span> <span class="n">deduct_exps</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_rt&#39;</span><span class="p">)</span>
-        <span class="c1"># Add the difference between the actual benefit and capped benefit</span>
-        <span class="c1"># to income tax and combined tax liabilities.</span>
-        <span class="n">excess_benefit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">benefit</span> <span class="o">-</span> <span class="n">benefit_limit</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">,</span> <span class="n">excess_benefit</span><span class="p">)</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;surtax&#39;</span><span class="p">,</span> <span class="n">excess_benefit</span><span class="p">)</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span> <span class="n">excess_benefit</span><span class="p">)</span></div>
 
 
 

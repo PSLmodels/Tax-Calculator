@@ -36,15 +36,15 @@ calc2 = tc.Calculator(policy=pol, records=recs)
 [32m----> [39m[32m1[39m [43mpol[49m[43m.[49m[43mimplement_reform[49m[43m([49m[43mparams[49m[43m[[49m[33;43m'[39;49m[33;43mpolicy[39;49m[33;43m'[39;49m[43m][49m[43m)[49m
 [32m      2[39m calc2 = tc.Calculator(policy=pol, records=recs)
 
-[36mFile [39m[32m~/work/Tax-Calculator/Tax-Calculator/taxcalc/policy.py:169[39m, in [36mPolicy.implement_reform[39m[34m(self, reform, print_warnings, raise_errors)[39m
-[32m    162[39m     [38;5;28;01mif[39;00m param [38;5;129;01min[39;00m deprecated_parameters:
-[32m    163[39m         [38;5;28mprint[39m(
-[32m    164[39m             [33mf[39m[33m'[39m[33mDEPRECATION WARNING: the [39m[38;5;132;01m{[39;00mparam[38;5;132;01m}[39;00m[33m policy parameter[39m[38;5;130;01m\n[39;00m[33m'[39m
-[32m    165[39m             [33m'[39m[33mis scheduled to be removed in Tax-Calculator 5.0.0;[39m[38;5;130;01m\n[39;00m[33m'[39m
-[32m    166[39m             [33m'[39m[33mif you think this removal should not happen, open an[39m[38;5;130;01m\n[39;00m[33m'[39m
-[32m    167[39m             [33m'[39m[33missue on GitHub to make your case for non-removal.[39m[33m'[39m
-[32m    168[39m         )
-[32m--> [39m[32m169[39m [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43m_update[49m[43m([49m[43mreform[49m[43m,[49m[43m [49m[43mprint_warnings[49m[43m,[49m[43m [49m[43mraise_errors[49m[43m)[49m
+[36mFile [39m[32m~/work/Tax-Calculator/Tax-Calculator/taxcalc/policy.py:170[39m, in [36mPolicy.implement_reform[39m[34m(self, reform, print_warnings, raise_errors)[39m
+[32m    163[39m     [38;5;28;01mif[39;00m param [38;5;129;01min[39;00m deprecated_parameters:
+[32m    164[39m         [38;5;28mprint[39m(  [38;5;66;03m# pragma: no cover[39;00m
+[32m    165[39m             [33mf[39m[33m'[39m[33mDEPRECATION WARNING: the [39m[38;5;132;01m{[39;00mparam[38;5;132;01m}[39;00m[33m policy parameter[39m[38;5;130;01m\n[39;00m[33m'[39m
+[32m    166[39m             [33m'[39m[33mis scheduled to be removed in Tax-Calculator 6.0.0;[39m[38;5;130;01m\n[39;00m[33m'[39m
+[32m    167[39m             [33m'[39m[33mif you think this removal should not happen, open an[39m[38;5;130;01m\n[39;00m[33m'[39m
+[32m    168[39m             [33m'[39m[33missue on GitHub to make your case for non-removal.[39m[33m'[39m
+[32m    169[39m         )
+[32m--> [39m[32m170[39m [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43m_update[49m[43m([49m[43mreform[49m[43m,[49m[43m [49m[43mprint_warnings[49m[43m,[49m[43m [49m[43mraise_errors[49m[43m)[49m
 
 [36mFile [39m[32m~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py:615[39m, in [36mParameters._update[39m[34m(self, revision, print_warnings, raise_errors)[39m
 [32m    613[39m     [38;5;28;01melse[39;00m:
