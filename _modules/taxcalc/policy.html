@@ -464,32 +464,35 @@ document.write(`
         <span class="k">return</span> <span class="n">last_budget_year</span> <span class="o">-</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="c1"># NOTE: the following three data structures use internal parameter names:</span>
-    <span class="c1"># (1) specify which Policy parameters have been removed or renamed</span>
+    <span class="c1"># (1) specify which Policy parameters have been removed or renamed recently</span>
+    <span class="c1">#     where &quot;recently&quot; means in the last major release</span>
     <span class="n">REMOVED_PARAMS</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="c1"># following five parameters removed in PR 2223 merged on 2019-02-06</span>
-        <span class="s1">&#39;DependentCredit_Child_c&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;DependentCredit_Nonchild_c&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;DependentCredit_before_CTC&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;FilerCredit_c&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;ALD_InvInc_ec_base_RyanBrady&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
         <span class="c1"># following parameters were renamed in PR 2918</span>
-        <span class="s1">&#39;SS_thd50&#39;</span><span class="p">:</span> <span class="s1">&#39;has been renamed SS_thd1&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;SS_thd85&#39;</span><span class="p">:</span> <span class="s1">&#39;has been renamed SS_thd2&#39;</span><span class="p">,</span>
-        <span class="c1"># following parameters renamed in PR 2345 merged on 2019-06-24</span>
-        <span class="s1">&#39;PT_excl_rt&#39;</span><span class="p">:</span>
-        <span class="s1">&#39;was renamed PT_qbid_rt in release 2.4.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_excl_wagelim_thd&#39;</span><span class="p">:</span>
-        <span class="s1">&#39;was renamed PT_qbid_taxinc_thd in release 2.4.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_excl_wagelim_prt&#39;</span><span class="p">:</span>
-        <span class="s1">&#39;was renamed PT_qbid_taxinc_gap in release 2.4.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_excl_wagelim_rt&#39;</span><span class="p">:</span>
-        <span class="s1">&#39;was renamed PT_qbid_w2_wages_rt in release 2.4.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;CTC_c_under5_bonus&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed CTC_c_under6_bonus.&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;ACTC_rt_bonus_under5family&#39;</span><span class="p">:</span>
-        <span class="s1">&#39;was renamed ACTC_rt_bonus_under6family.&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;CTC_new_c_under5_bonus&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed CTC_new_c_under6_bonus.&#39;</span>
+        <span class="s1">&#39;SS_thd50&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed SS_thd1 in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;SS_thd85&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed SS_thd2 in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="c1"># following parameters were removed in PR 2619</span>
+        <span class="s1">&#39;PT_rt1&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_rt2&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_rt3&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_rt4&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_rt5&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_rt6&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_rt7&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_rt8&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_brk1&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_brk2&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_brk3&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_brk4&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_brk5&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_brk6&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_brk7&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_EligibleRate_active&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_EligibleRate_passive&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_wages_active_income&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_top_stacking&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="c1"># (2) specify which Policy parameters have been redefined recently</span>
+    <span class="c1">#     where &quot;recently&quot; means in the last major release</span>
     <span class="n">REDEFINED_PARAMS</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># (3) specify which Policy parameters are wage (rather than price) indexed</span>
     <span class="n">WAGE_INDEXED_PARAMS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SS_Earnings_c&#39;</span><span class="p">,</span> <span class="s1">&#39;SS_Earnings_thd&#39;</span><span class="p">]</span>
