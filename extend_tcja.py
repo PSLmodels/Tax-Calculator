@@ -23,35 +23,22 @@ TCJA_PARAMETERS = {
     # category 1 ...
     "II_rt1": {"indexed": False, "category": 1},
     "II_brk1": {"indexed": True, "category": 1},
-    "PT_rt1": {"indexed": False, "category": 1},
-    "PT_brk1": {"indexed": True, "category": 1},
     "II_rt2": {"indexed": False, "category": 1},
     "II_brk2": {"indexed": True, "category": 1},
-    "PT_rt2": {"indexed": False, "category": 1},
-    "PT_brk2": {"indexed": True, "category": 1},
     "II_rt3": {"indexed": False, "category": 1},
     "II_brk3": {"indexed": True, "category": 1},
-    "PT_rt3": {"indexed": False, "category": 1},
-    "PT_brk3": {"indexed": True, "category": 1},
     "II_rt4": {"indexed": False, "category": 1},
     "II_brk4": {"indexed": True, "category": 1},
-    "PT_rt4": {"indexed": False, "category": 1},
-    "PT_brk4": {"indexed": True, "category": 1},
     "II_rt5": {"indexed": False, "category": 1},
     "II_brk5": {"indexed": True, "category": 1},
-    "PT_rt5": {"indexed": False, "category": 1},
-    "PT_brk5": {"indexed": True, "category": 1},
     "II_rt6": {"indexed": False, "category": 1},
     "II_brk6": {"indexed": True, "category": 1},
-    "PT_rt6": {"indexed": False, "category": 1},
-    "PT_brk6": {"indexed": True, "category": 1},
     "II_rt7": {"indexed": False, "category": 1},
     "II_brk7": {"indexed": True, "category": 1},
-    "PT_rt7": {"indexed": False, "category": 1},
-    "PT_brk7": {"indexed": True, "category": 1},
     # category 2 ...
     "CTC_c": {"indexed": False, "category": 2},
     "ACTC_c": {"indexed": True, "category": 2},
+    "ACTC_c-indexed": {"indexed": False, "category": 2},
     "ODC_c": {"indexed": False, "category": 2},
     "CTC_ps": {"indexed": False, "category": 2},
     "ACTC_Income_thd": {"indexed": False, "category": 2},
@@ -88,7 +75,7 @@ def main():
     """
     High-level script logic.
     """
-    # pylint: disable=too-many-statements
+    # pylint: disable=too-many-statements,too-many-branches
 
     # identify last parameter name in TCJA_PARAMETERS
     last_pname = list(TCJA_PARAMETERS.keys())[-1]
@@ -117,6 +104,13 @@ def main():
     for pname, pinfo in TCJA_PARAMETERS.items():
         if TCJA_CATEGORY and pinfo['category'] != TCJA_CATEGORY:
             continue  # skip this parameter
+        if pname == 'ACTC_c-indexed':
+            year = 2026
+            sys.stdout.write(f'    "{pname}": ')
+            sys.stdout.write(f'{left_brace}"{year}": ')
+            sys.stdout.write('true')
+            sys.stdout.write(f'{right_brace}{trailing_comma}\n')
+            continue  # to top of the for pname, pinfo loop
         if pname == 'ALD_BusinessLosses_c':
             ifactor = ifactor28
             year = 2029

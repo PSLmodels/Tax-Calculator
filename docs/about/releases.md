@@ -4,6 +4,26 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2025-06-23 Release 5.0.0
+------------------------
+(last merged pull request is
+[#2920](https://github.com/PSLmodels/Tax-Calculator/pull/2920))
+
+**This is a major release with changes that make Tax-Calculator incompatible with earlier releases.**
+
+**API Changes**
+- Rename two OASDI benefit taxation policy parameters
+[[#2918](https://github.com/PSLmodels/Tax-Calculator/pull/2918) by Martin Holmer]
+- Remove `PT_rt?` and `PT_brk?` and four associated `PT_*` parameters
+[[#2919](https://github.com/PSLmodels/Tax-Calculator/pull/2919) by Martin Holmer]
+- Remove several, but not all, policy parameters that limit itemized deductions
+[[#2920](https://github.com/PSLmodels/Tax-Calculator/pull/2920) by Martin Holmer]
+
+**New Features**
+
+**Bug Fixes**
+
+
 2025-06-13 Release 4.6.3
 ------------------------
 (last merged pull request is
