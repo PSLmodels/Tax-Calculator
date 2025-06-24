@@ -1334,10 +1334,11 @@ def SchXYZ(taxable_income, MARS,
     # compute Schedule X,Y,Z tax using taxable income
     reg_tax = 0.
     if taxable_income > 0.:
-        reg_tax = Taxes(taxable_income, MARS, 0.0,
+        reg_tax = Taxes(taxable_income, MARS,
                         II_rt1, II_rt2, II_rt3, II_rt4,
-                        II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+                        II_rt5, II_rt6, II_rt7, II_rt8,
+                        II_brk1, II_brk2, II_brk3, II_brk4,
+                        II_brk5, II_brk6, II_brk7)
     return reg_tax
 
 
@@ -3213,13 +3214,13 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
 
 
 @JIT(nopython=True)
-def Taxes(income, MARS, tbrk_base,
-          rate1, rate2, rate3, rate4, rate5, rate6, rate7, rate8,
-          tbrk1, tbrk2, tbrk3, tbrk4, tbrk5, tbrk6, tbrk7):
+def Taxes(income, MARS,
+          II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
+          II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7):
     """
     Taxes function returns tax amount given the progressive tax rate
-    schedule specified by the rate* and (upper) tbrk* parameters and
-    given income, filing status (MARS), and tax bracket base (tbrk_base).
+    schedule specified by the II_rt? and (upper) II_brk? parameters and
+    given taxable income and filing status (MARS).
 
     Parameters
     ----------
@@ -3228,67 +3229,74 @@ def Taxes(income, MARS, tbrk_base,
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
-    tbrk_base: float
-        Amount of income used to determine the braket the filer is in
-    rate1: list
+    II_rt1: float
         Income tax rate 1
-    rate2: list
+    II_rt2: float
         Income tax rate 2
-    rate3: list
+    II_rt3: float
         Income tax rate 3
-    rate4: list
+    II_rt4: float
         Income tax rate 4
-    rate5: list
+    II_rt5: float
         Income tax rate 5
-    rate6: list
+    II_rt6: float
         Income tax rate 6
-    rate7: list
+    II_rt7: float
         Income tax rate 7
-    rate8: list
+    II_rt8: float
         Income tax rate 8
-    tbrk1: list
-        Income tax bracket (upper threshold) 1
-    tbrk2: list
-        Income tax bracket (upper threshold) 2
-    tbrk3: list
-        Income tax bracket (upper threshold) 3
-    tbrk4: list
-        Income tax bracket (upper threshold) 4
-    tbrk5: list
-        Income tax bracket (upper threshold) 5
-    tbrk6: list
-        Income tax bracket (upper threshold) 6
-    tbrk7: list
-        Income tax bracket (upper threshold) 7
+    II_brk1: list
+        Upper threshold of income tax bracket 1
+    II_brk2: list
+        Upper threshold of income tax bracket 2
+    II_brk3: list
+        Upper threshold of income tax bracket 3
+    II_brk4: list
+        Upper threshold of income tax bracket 4
+    II_brk5: list
+        Upper threshold of income tax bracket 5
+    II_brk6: list
+        Upper threshold of income tax bracket 6
+    II_brk7: list
+        Upper threshold of income tax bracket 7
 
     Returns
     -------
-    None
+    Calculate income tax amount
     """
-    if tbrk_base > 0.:
-        brk1 = max(tbrk1[MARS - 1] - tbrk_base, 0.)
-        brk2 = max(tbrk2[MARS - 1] - tbrk_base, 0.)
-        brk3 = max(tbrk3[MARS - 1] - tbrk_base, 0.)
-        brk4 = max(tbrk4[MARS - 1] - tbrk_base, 0.)
-        brk5 = max(tbrk5[MARS - 1] - tbrk_base, 0.)
-        brk6 = max(tbrk6[MARS - 1] - tbrk_base, 0.)
-        brk7 = max(tbrk7[MARS - 1] - tbrk_base, 0.)
-    else:
-        brk1 = tbrk1[MARS - 1]
-        brk2 = tbrk2[MARS - 1]
-        brk3 = tbrk3[MARS - 1]
-        brk4 = tbrk4[MARS - 1]
-        brk5 = tbrk5[MARS - 1]
-        brk6 = tbrk6[MARS - 1]
-        brk7 = tbrk7[MARS - 1]
-    return (rate1 * min(income, brk1) +
-            rate2 * min(brk2 - brk1, max(0., income - brk1)) +
-            rate3 * min(brk3 - brk2, max(0., income - brk2)) +
-            rate4 * min(brk4 - brk3, max(0., income - brk3)) +
-            rate5 * min(brk5 - brk4, max(0., income - brk4)) +
-            rate6 * min(brk6 - brk5, max(0., income - brk5)) +
-            rate7 * min(brk7 - brk6, max(0., income - brk6)) +
-            rate8 * max(0., income - brk7))
+    # pylint: disable=too-many-return-statements
+    if income <= 0.:
+        return 0.
+    tax = 0.
+    brk0 = 0.
+    brk1 = II_brk1[MARS - 1]
+    if income <= brk1:
+        return tax + II_rt1 * (income - brk0)
+    tax = tax + II_rt1 * (brk1 - brk0)
+    brk2 = II_brk2[MARS - 1]
+    if income <= brk2:
+        return tax + II_rt2 * (income - brk1)
+    tax = tax + II_rt2 * (brk2 - brk1)
+    brk3 = II_brk3[MARS - 1]
+    if income <= brk3:
+        return tax + II_rt3 * (income - brk2)
+    tax = tax + II_rt3 * (brk3 - brk2)
+    brk4 = II_brk4[MARS - 1]
+    if income <= brk4:
+        return tax + II_rt4 * (income - brk3)
+    tax = tax + II_rt4 * (brk4 - brk3)
+    brk5 = II_brk5[MARS - 1]
+    if income <= brk5:
+        return tax + II_rt5 * (income - brk4)
+    tax = tax + II_rt5 * (brk5 - brk4)
+    brk6 = II_brk6[MARS - 1]
+    if income <= brk6:
+        return tax + II_rt6 * (income - brk5)
+    tax = tax + II_rt6 * (brk6 - brk5)
+    brk7 = II_brk7[MARS - 1]
+    if income <= brk7:
+        return tax + II_rt7 * (income - brk6)
+    return tax + II_rt8 * (income - brk7)
 
 
 def ComputeBenefit(calc, ID_switch):

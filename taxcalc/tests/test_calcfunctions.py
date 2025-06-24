@@ -16,7 +16,7 @@ from taxcalc import calcfunctions
 
 class GetFuncDefs(ast.NodeVisitor):
     """
-    Return information about each function defined in the functions.py file.
+    Return information about each function defined in calcfunctions.py file.
     """
     def __init__(self):
         """
@@ -39,6 +39,8 @@ class GetFuncDefs(ast.NodeVisitor):
         """
         visit the specified FunctionDef node
         """
+        if node.name == 'Taxes':
+            return  # skipping Taxes function that has multiple returns
         self.fname = node.name
         self.fnames.append(self.fname)
         self.fargs[self.fname] = []
