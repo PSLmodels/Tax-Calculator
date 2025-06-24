@@ -3262,7 +3262,7 @@ def Taxes(income, MARS,
 
     Returns
     -------
-    Calculate income tax amount
+    Calculated income tax amount
     """
     # pylint: disable=too-many-return-statements
     if income <= 0.:
