@@ -1134,7 +1134,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
            e02100, e27200, e00650, c01000, PT_SSTB_income,
-           PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
+           PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt, PT_qbid_limited,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
            PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
            PT_qbid_ps, PT_qbid_prt, qbided):
@@ -1182,6 +1182,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         pass-through business
     PT_qbid_rt: float
         Pass-through qualified business income deduction rate
+    PT_qbid_limited: bool
+        Whether or not TCJA QBID limits are active
     PT_qbid_taxinc_thd: list
         Lower threshold of pre-QBID taxable income
     PT_qbid_taxinc_gap: list
@@ -1213,8 +1215,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     # calculate qualified business income deduction
     qbided = 0.
     qbinc = max(0., e00900 - c03260 + e26270 + e02100 + e27200)
-    if qbinc > 0. and PT_qbid_rt > 0.:
-        qbid_before_limits = qbinc * PT_qbid_rt
+    qbid_before_limits = qbinc * PT_qbid_rt
+    if PT_qbid_limited:
         lower_thd = PT_qbid_taxinc_thd[MARS - 1]
         if pre_qbid_taxinc <= lower_thd:
             qbided = qbid_before_limits
@@ -1244,16 +1246,17 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
                     prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
                     adj = prt * (qbid_adjusted - cap_adjusted)
                     qbided = qbid_adjusted - adj
-
         # apply taxinc cap (assuming cap rate is equal to PT_qbid_rt)
-        net_cg = e00650 + c01000  # per line 34 in 2018 Pub 535 Worksheet 12-A
+        #   net_cg is defined on line 34 of 2018 Pub 535 Worksheet 12-A
+        net_cg = e00650 + c01000
         taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
         qbided = min(qbided, taxinc_cap)
-
         # apply qbid phaseout
         if qbided > 0. and pre_qbid_taxinc > PT_qbid_ps[MARS - 1]:
             excess = pre_qbid_taxinc - PT_qbid_ps[MARS - 1]
             qbided = max(0., qbided - PT_qbid_prt * excess)
+    else:  # if PT_qbid_limited is false
+        qbided = qbid_before_limits
 
     # calculate taxable income after qualified business income deduction
     c04800 = max(0., pre_qbid_taxinc - qbided)
