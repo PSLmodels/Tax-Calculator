@@ -39,8 +39,8 @@ class GetFuncDefs(ast.NodeVisitor):
         """
         visit the specified FunctionDef node
         """
-        if node.name == 'Taxes':
-            return  # skipping Taxes function that has multiple returns
+        if node.name == 'SchXYZ':
+            return  # skipping SchXYZ function that has multiple returns
         self.fname = node.name
         self.fnames.append(self.fname)
         self.fargs[self.fname] = []
@@ -94,8 +94,6 @@ def test_calc_and_used_vars(tests_path):
     # .. create set of vars that are actually calculated in calcfunctions.py
     all_cvars = set()
     for fname in fnames:
-        if fname == 'BenefitSurtax':
-            continue  # because BenefitSurtax is not really a function
         all_cvars.update(set(cvars[fname]))
     # .. add to all_cvars set variables calculated in Records class
     all_cvars.update(set(['num', 'sep', 'exact']))
@@ -112,8 +110,7 @@ def test_calc_and_used_vars(tests_path):
             found_error1 = True
             msg1 += f'VAR NOT CALCULATED: {var}\n'
     # Test (2):
-    faux_functions = ['EITCamount', 'ComputeBenefit', 'BenefitPrograms',
-                      'BenefitSurtax', 'BenefitLimitation', 'SchXYZ']
+    faux_functions = ['EITCamount', 'SchXYZ', 'BenefitPrograms']
     found_error2 = False
     msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:
@@ -159,8 +156,6 @@ def test_function_args_usage(tests_path):
         fname = match.group(1)
         fargs = match.group(2).split(',')  # list of function arguments
         fbody = match.group(3)
-        if fname == 'Taxes':
-            continue  # because Taxes has part of fbody in return statement
         for farg in fargs:
             arg = farg.strip()
             if fbody.find(arg) < 0:
