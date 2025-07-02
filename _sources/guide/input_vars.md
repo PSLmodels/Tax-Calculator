@@ -8,6 +8,7 @@ The Availability information indicates which input data files contain the variab
 
 
 ##  `DSI`  
+**_Required Input Variable_**  
 _Description_: 1 if claimed as dependent on another return; otherwise 0  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -16,6 +17,7 @@ _IRS Form Location:_
 
 
 ##  `EIC`  
+**_Required Input Variable_**  
 _Description_: number of EIC qualifying children (range: 0 to 3)  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -24,6 +26,7 @@ _IRS Form Location:_
 
 
 ##  `FLPDYR`  
+**_Required Input Variable_**  
 _Description_: Calendar year for which taxes are calculated  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -41,6 +44,7 @@ _IRS Form Location:_
 
 
 ##  `MIDR`  
+**_Required Input Variable_**  
 _Description_: 1 if separately filing spouse itemizes; otherwise 0  
 _Datatype_: int  
 _Availability_: taxdata_puf  
@@ -50,7 +54,7 @@ _IRS Form Location:_
 
 ##  `RECID`  
 **_Required Input Variable_**  
-_Description_: Unique numeric identifier for filing unit  
+_Description_: Unique numeric identifier for filing unit; appears as RECID variable in tc CLI minimal output  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
 _IRS Form Location:_  
@@ -58,6 +62,7 @@ _IRS Form Location:_
 
 
 ##  `XTOT`  
+**_Required Input Variable_**  
 _Description_: Total number of exemptions for filing unit  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -66,6 +71,7 @@ _IRS Form Location:_
 
 
 ##  `age_head`  
+**_Required Input Variable_**  
 _Description_: Age in years of taxpayer (i.e. primary adult)  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -74,6 +80,7 @@ _IRS Form Location:_
 
 
 ##  `age_spouse`  
+**_Required Input Variable_**  
 _Description_: Age in years of spouse (i.e. secondary adult if present)  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -82,6 +89,7 @@ _IRS Form Location:_
 
 
 ##  `agi_bin`  
+**_Required Input Variable_**  
 _Description_: Historical AGI category used in data extrapolation  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -90,22 +98,25 @@ _IRS Form Location:_
 
 
 ##  `blind_head`  
+**_Required Input Variable_**  
 _Description_: 1 if taxpayer is blind; otherwise 0  
 _Datatype_: int  
-_Availability_: taxdata_cps  
+_Availability_: taxdata_puf, taxdata_cps  
 _IRS Form Location:_  
 2013-2016: 1040 line 39a  
 
 
 ##  `blind_spouse`  
+**_Required Input Variable_**  
 _Description_: 1 if spouse is blind; otherwise 0  
 _Datatype_: int  
-_Availability_: taxdata_cps  
+_Availability_: taxdata_puf, taxdata_cps  
 _IRS Form Location:_  
 2013-2016: 1040 line 39a  
 
 
 ##  `cmbtp`  
+**_Required Input Variable_**  
 _Description_: Estimate of income on (AMT) Form 6251 but not in AGI  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -114,6 +125,7 @@ _IRS Form Location:_
 
 
 ##  `e00200`  
+**_Required Input Variable_**  
 _Description_: Wages, salaries, and tips for filing unit net of pension contributions  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -122,6 +134,7 @@ _IRS Form Location:_
 
 
 ##  `e00200p`  
+**_Required Input Variable_**  
 _Description_: Wages, salaries, and tips for taxpayer net of pension contributions (pencon_p)  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -130,6 +143,7 @@ _IRS Form Location:_
 
 
 ##  `e00200s`  
+**_Required Input Variable_**  
 _Description_: Wages, salaries, and tips for spouse net of pension contributions (pencon_s)  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -138,6 +152,7 @@ _IRS Form Location:_
 
 
 ##  `pencon_p`  
+**_Required Input Variable_**  
 _Description_: Contributions to defined-contribution pension plans for taxpayer  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -146,6 +161,7 @@ _IRS Form Location:_
 
 
 ##  `pencon_s`  
+**_Required Input Variable_**  
 _Description_: Contributions to defined-contribution pension plans for spouse  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -154,6 +170,7 @@ _IRS Form Location:_
 
 
 ##  `e00300`  
+**_Required Input Variable_**  
 _Description_: Taxable interest income  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -162,6 +179,7 @@ _IRS Form Location:_
 
 
 ##  `e00400`  
+**_Required Input Variable_**  
 _Description_: Tax-exempt interest income  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -170,6 +188,7 @@ _IRS Form Location:_
 
 
 ##  `e00600`  
+**_Required Input Variable_**  
 _Description_: Ordinary dividends included in AGI  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -178,6 +197,7 @@ _IRS Form Location:_
 
 
 ##  `e00650`  
+**_Required Input Variable_**  
 _Description_: Qualified dividends included in ordinary dividends  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -186,6 +206,7 @@ _IRS Form Location:_
 
 
 ##  `e00700`  
+**_Required Input Variable_**  
 _Description_: Taxable refunds of state and local income taxes  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -194,6 +215,7 @@ _IRS Form Location:_
 
 
 ##  `e00800`  
+**_Required Input Variable_**  
 _Description_: Alimony received  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -202,6 +224,7 @@ _IRS Form Location:_
 
 
 ##  `e00900`  
+**_Required Input Variable_**  
 _Description_: Sch C business net profit/loss for filing unit  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -210,6 +233,7 @@ _IRS Form Location:_
 
 
 ##  `e00900p`  
+**_Required Input Variable_**  
 _Description_: Sch C business net profit/loss for taxpayer  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -218,6 +242,7 @@ _IRS Form Location:_
 
 
 ##  `e00900s`  
+**_Required Input Variable_**  
 _Description_: Sch C business net profit/loss for spouse  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -226,6 +251,7 @@ _IRS Form Location:_
 
 
 ##  `e01100`  
+**_Required Input Variable_**  
 _Description_: Capital gain distributions not reported on Sch D  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -234,6 +260,7 @@ _IRS Form Location:_
 
 
 ##  `e01200`  
+**_Required Input Variable_**  
 _Description_: Other net gain/loss from Form 4797  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -242,6 +269,7 @@ _IRS Form Location:_
 
 
 ##  `e01400`  
+**_Required Input Variable_**  
 _Description_: Taxable IRA distributions  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -250,6 +278,7 @@ _IRS Form Location:_
 
 
 ##  `e01500`  
+**_Required Input Variable_**  
 _Description_: Total pensions and annuities  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -258,6 +287,7 @@ _IRS Form Location:_
 
 
 ##  `e01700`  
+**_Required Input Variable_**  
 _Description_: Taxable pensions and annuities  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -266,6 +296,7 @@ _IRS Form Location:_
 
 
 ##  `e02000`  
+**_Required Input Variable_**  
 _Description_: Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200)  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -274,6 +305,7 @@ _IRS Form Location:_
 
 
 ##  `e02100`  
+**_Required Input Variable_**  
 _Description_: Farm net income/loss for filing unit from Sch F  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -282,6 +314,7 @@ _IRS Form Location:_
 
 
 ##  `e02100p`  
+**_Required Input Variable_**  
 _Description_: Farm net income/loss for taxpayer  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -290,6 +323,7 @@ _IRS Form Location:_
 
 
 ##  `e02100s`  
+**_Required Input Variable_**  
 _Description_: Farm net income/loss for spouse  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -298,6 +332,7 @@ _IRS Form Location:_
 
 
 ##  `e02300`  
+**_Required Input Variable_**  
 _Description_: Unemployment insurance benefits  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -306,6 +341,7 @@ _IRS Form Location:_
 
 
 ##  `e02400`  
+**_Required Input Variable_**  
 _Description_: Total social security (OASDI) benefits  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -314,6 +350,7 @@ _IRS Form Location:_
 
 
 ##  `e03150`  
+**_Required Input Variable_**  
 _Description_: Total deductible IRA contributions  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -322,6 +359,7 @@ _IRS Form Location:_
 
 
 ##  `e03210`  
+**_Required Input Variable_**  
 _Description_: Student loan interest  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -330,6 +368,7 @@ _IRS Form Location:_
 
 
 ##  `e03220`  
+**_Required Input Variable_**  
 _Description_: Educator expenses  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -338,6 +377,7 @@ _IRS Form Location:_
 
 
 ##  `e03230`  
+**_Required Input Variable_**  
 _Description_: Tuition and fees from Form 8917  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -346,6 +386,7 @@ _IRS Form Location:_
 
 
 ##  `e03240`  
+**_Required Input Variable_**  
 _Description_: Domestic production activities from Form 8903  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -354,6 +395,7 @@ _IRS Form Location:_
 
 
 ##  `e03270`  
+**_Required Input Variable_**  
 _Description_: Self-employed health insurance deduction  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -362,6 +404,7 @@ _IRS Form Location:_
 
 
 ##  `e03290`  
+**_Required Input Variable_**  
 _Description_: Health savings account deduction from Form 8889  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -370,6 +413,7 @@ _IRS Form Location:_
 
 
 ##  `e03300`  
+**_Required Input Variable_**  
 _Description_: Contributions to SEP, SIMPLE and qualified plans  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -378,6 +422,7 @@ _IRS Form Location:_
 
 
 ##  `e03400`  
+**_Required Input Variable_**  
 _Description_: Penalty on early withdrawal of savings  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -386,6 +431,7 @@ _IRS Form Location:_
 
 
 ##  `e03500`  
+**_Required Input Variable_**  
 _Description_: Alimony paid  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -394,6 +440,7 @@ _IRS Form Location:_
 
 
 ##  `e07240`  
+**_Required Input Variable_**  
 _Description_: Retirement savings contributions credit from Form 8880  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -403,6 +450,7 @@ _IRS Form Location:_
 
 
 ##  `e07260`  
+**_Required Input Variable_**  
 _Description_: Residential energy credit from Form 5695  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -412,6 +460,7 @@ _IRS Form Location:_
 
 
 ##  `e07300`  
+**_Required Input Variable_**  
 _Description_: Foreign tax credit from Form 1116  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -421,6 +470,7 @@ _IRS Form Location:_
 
 
 ##  `e07400`  
+**_Required Input Variable_**  
 _Description_: General business credit from Form 3800  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -430,6 +480,7 @@ _IRS Form Location:_
 
 
 ##  `e07600`  
+**_Required Input Variable_**  
 _Description_: Prior year minimum tax credit from Form 8801  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -439,6 +490,7 @@ _IRS Form Location:_
 
 
 ##  `e09700`  
+**_Required Input Variable_**  
 _Description_: Recapture of Investment Credit  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -448,6 +500,7 @@ _IRS Form Location:_
 
 
 ##  `e09800`  
+**_Required Input Variable_**  
 _Description_: Unreported payroll taxes from Form 4137 or 8919  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -457,6 +510,7 @@ _IRS Form Location:_
 
 
 ##  `e09900`  
+**_Required Input Variable_**  
 _Description_: Penalty tax on qualified retirement plans  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -466,6 +520,7 @@ _IRS Form Location:_
 
 
 ##  `e11200`  
+**_Required Input Variable_**  
 _Description_: Excess payroll (FICA/RRTA) tax withheld  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -475,6 +530,7 @@ _IRS Form Location:_
 
 
 ##  `e17500`  
+**_Required Input Variable_**  
 _Description_: Itemizable medical and dental expenses.  WARNING: this variable is zero below the floor in PUF data.  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -483,6 +539,7 @@ _IRS Form Location:_
 
 
 ##  `e18400`  
+**_Required Input Variable_**  
 _Description_: Itemizable state and local income/sales taxes  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -491,6 +548,7 @@ _IRS Form Location:_
 
 
 ##  `e18500`  
+**_Required Input Variable_**  
 _Description_: Itemizable real-estate taxes paid  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -499,6 +557,7 @@ _IRS Form Location:_
 
 
 ##  `e19200`  
+**_Required Input Variable_**  
 _Description_: Itemizable interest paid  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -507,6 +566,7 @@ _IRS Form Location:_
 
 
 ##  `e19800`  
+**_Required Input Variable_**  
 _Description_: Itemizable charitable giving: cash/check contributions.  WARNING: this variable is already capped in PUF data.  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -515,6 +575,7 @@ _IRS Form Location:_
 
 
 ##  `e20100`  
+**_Required Input Variable_**  
 _Description_: Itemizable charitable giving: other than cash/check contributions.  WARNING: this variable is already capped in PUF data.  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -523,6 +584,7 @@ _IRS Form Location:_
 
 
 ##  `e20400`  
+**_Required Input Variable_**  
 _Description_: Itemizable miscellaneous deductions.  WARNING: this variable is zero below the floor in PUF data.  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -531,6 +593,7 @@ _IRS Form Location:_
 
 
 ##  `g20500`  
+**_Required Input Variable_**  
 _Description_: Itemizable gross (before 10% AGI disregard) casualty or theft loss  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -539,6 +602,7 @@ _IRS Form Location:_
 
 
 ##  `e24515`  
+**_Required Input Variable_**  
 _Description_: Sch D: Un-Recaptured Section 1250 Gain  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -547,6 +611,7 @@ _IRS Form Location:_
 
 
 ##  `e24518`  
+**_Required Input Variable_**  
 _Description_: Sch D: 28% Rate Gain or Loss  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -555,6 +620,7 @@ _IRS Form Location:_
 
 
 ##  `e26270`  
+**_Required Input Variable_**  
 _Description_: Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts and is included in e02000)  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -563,6 +629,7 @@ _IRS Form Location:_
 
 
 ##  `e27200`  
+**_Required Input Variable_**  
 _Description_: Sch E: Farm rent net income or loss (included in e02000)  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -571,6 +638,7 @@ _IRS Form Location:_
 
 
 ##  `e32800`  
+**_Required Input Variable_**  
 _Description_: Child/dependent-care expenses for qualifying persons from Form 2441  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -579,6 +647,7 @@ _IRS Form Location:_
 
 
 ##  `e58990`  
+**_Required Input Variable_**  
 _Description_: Investment income elected amount from Form 4952  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -587,6 +656,7 @@ _IRS Form Location:_
 
 
 ##  `e62900`  
+**_Required Input Variable_**  
 _Description_: Alternative Minimum Tax foreign tax credit from Form 6251  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -595,6 +665,7 @@ _IRS Form Location:_
 
 
 ##  `e87530`  
+**_Required Input Variable_**  
 _Description_: Adjusted qualified lifetime learning expenses for all students  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -603,6 +674,7 @@ _IRS Form Location:_
 
 
 ##  `elderly_dependents`  
+**_Required Input Variable_**  
 _Description_: number of dependents age 65+ in filing unit excluding taxpayer and spouse  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -611,6 +683,7 @@ _IRS Form Location:_
 
 
 ##  `f2441`  
+**_Required Input Variable_**  
 _Description_: number of child/dependent-care qualifying persons  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -619,6 +692,7 @@ _IRS Form Location:_
 
 
 ##  `f6251`  
+**_Required Input Variable_**  
 _Description_: 1 if Form 6251 (AMT) attached to return; otherwise 0  
 _Datatype_: int  
 _Availability_: taxdata_puf  
@@ -627,38 +701,43 @@ _IRS Form Location:_
 
 
 ##  `a_lineno`  
+**_Required Input Variable_**  
 _Description_: CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)  
-_Datatype_: int  
-_Availability_: taxdata_cps  
-_IRS Form Location:_  
-2013-2016: sample construction info  
-
-
-##  `ffpos`  
-_Description_: CPS family identifier within household (not used in tax-calculation logic)  
-_Datatype_: int  
-_Availability_: taxdata_cps  
-_IRS Form Location:_  
-2013-2016: sample construction info  
-
-
-##  `fips`  
-_Description_: FIPS state code (not used in tax-calculation logic)  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
 _IRS Form Location:_  
 2013-2016: sample construction info  
 
 
+##  `ffpos`  
+**_Required Input Variable_**  
+_Description_: CPS family identifier within household (not used in tax-calculation logic)  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxdata_cps  
+_IRS Form Location:_  
+2013-2016: sample construction info  
+
+
+##  `fips`  
+**_Required Input Variable_**  
+_Description_: FIPS state code (not used in tax-calculation logic)  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxdata_puf, taxdata_cps  
+_IRS Form Location:_  
+2013-2016: sample construction info  
+
+
 ##  `h_seq`  
+**_Required Input Variable_**  
 _Description_: CPS household sequence number (not used in tax-calculation logic)  
 _Datatype_: int  
-_Availability_: taxdata_cps  
+_Availability_: taxdata_puf, taxdata_cps  
 _IRS Form Location:_  
 2013-2016: sample construction info  
 
 
 ##  `data_source`  
+**_Required Input Variable_**  
 _Description_: 1 if unit is created primarily from IRS-SOI PUF data; 0 if created primarily from CPS data (not used in tax-calculation logic)  
 _Datatype_: int  
 _Availability_: taxdata_puf  
@@ -667,6 +746,7 @@ _IRS Form Location:_
 
 
 ##  `k1bx14p`  
+**_Required Input Variable_**  
 _Description_: Partner self-employment earnings/loss for taxpayer (included in e26270 total)  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -675,6 +755,7 @@ _IRS Form Location:_
 
 
 ##  `k1bx14s`  
+**_Required Input Variable_**  
 _Description_: Partner self-employment earnings/loss for spouse (included in e26270 total)  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -683,6 +764,7 @@ _IRS Form Location:_
 
 
 ##  `mcaid_ben`  
+**_Required Input Variable_**  
 _Description_: Imputed Medicaid benefits expressed as the actuarial value of Medicaid health insurance  
 _Datatype_: float  
 _Availability_: taxdata_cps  
@@ -691,6 +773,7 @@ _IRS Form Location:_
 
 
 ##  `mcare_ben`  
+**_Required Input Variable_**  
 _Description_: Imputed Medicare benefits expressed as the actuarial value of Medicare health insurance  
 _Datatype_: float  
 _Availability_: taxdata_cps  
@@ -699,6 +782,7 @@ _IRS Form Location:_
 
 
 ##  `n24`  
+**_Required Input Variable_**  
 _Description_: Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -707,6 +791,7 @@ _IRS Form Location:_
 
 
 ##  `nu06`  
+**_Required Input Variable_**  
 _Description_: Number of dependents under 6 years old  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -715,6 +800,7 @@ _IRS Form Location:_
 
 
 ##  `nu13`  
+**_Required Input Variable_**  
 _Description_: Number of dependents under 13 years old  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -723,6 +809,7 @@ _IRS Form Location:_
 
 
 ##  `nu18`  
+**_Required Input Variable_**  
 _Description_: Number of people under 18 years old in the filing unit  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -731,6 +818,7 @@ _IRS Form Location:_
 
 
 ##  `n1820`  
+**_Required Input Variable_**  
 _Description_: Number of people age 18-20 years old in the filing unit  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -739,6 +827,7 @@ _IRS Form Location:_
 
 
 ##  `n21`  
+**_Required Input Variable_**  
 _Description_: Number of people 21 years old or older in the filing unit  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
@@ -747,6 +836,7 @@ _IRS Form Location:_
 
 
 ##  `other_ben`  
+**_Required Input Variable_**  
 _Description_: Non-imputed benefits  
 _Datatype_: float  
 _Availability_: taxdata_cps  
@@ -755,6 +845,7 @@ _IRS Form Location:_
 
 
 ##  `p08000`  
+**_Required Input Variable_**  
 _Description_: Other tax credits (but not including Sch R credit)  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -764,6 +855,7 @@ _IRS Form Location:_
 
 
 ##  `p22250`  
+**_Required Input Variable_**  
 _Description_: Sch D: Net short-term capital gains/losses  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -772,6 +864,7 @@ _IRS Form Location:_
 
 
 ##  `p23250`  
+**_Required Input Variable_**  
 _Description_: Sch D: Net long-term capital gains/losses  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -780,6 +873,7 @@ _IRS Form Location:_
 
 
 ##  `e87521`  
+**_Required Input Variable_**  
 _Description_: Total tentative AmOppCredit amount for all students  
 _Datatype_: float  
 _Availability_: taxdata_puf  
@@ -788,7 +882,8 @@ _IRS Form Location:_
 
 
 ##  `s006`  
-_Description_: Filing unit sampling weight 
+**_Required Input Variable_**  
+_Description_: Filing unit sampling weight; appears as WEIGHT variable in tc CLI minimal output  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps  
 _IRS Form Location:_  
@@ -796,6 +891,7 @@ _IRS Form Location:_
 
 
 ##  `snap_ben`  
+**_Required Input Variable_**  
 _Description_: Imputed SNAP benefits  
 _Datatype_: float  
 _Availability_: taxdata_cps  
@@ -804,6 +900,7 @@ _IRS Form Location:_
 
 
 ##  `housing_ben`  
+**_Required Input Variable_**  
 _Description_: Imputed housing benefits  
 _Datatype_: float  
 _Availability_: taxdata_cps  
@@ -812,6 +909,7 @@ _IRS Form Location:_
 
 
 ##  `ssi_ben`  
+**_Required Input Variable_**  
 _Description_: Imputed SSI benefits  
 _Datatype_: float  
 _Availability_: taxdata_cps  
@@ -820,6 +918,7 @@ _IRS Form Location:_
 
 
 ##  `tanf_ben`  
+**_Required Input Variable_**  
 _Description_: Imputed TANF benefits  
 _Datatype_: float  
 _Availability_: taxdata_cps  
@@ -828,6 +927,7 @@ _IRS Form Location:_
 
 
 ##  `vet_ben`  
+**_Required Input Variable_**  
 _Description_: Imputed Veteran's benefits  
 _Datatype_: float  
 _Availability_: taxdata_cps  
@@ -836,6 +936,7 @@ _IRS Form Location:_
 
 
 ##  `wic_ben`  
+**_Required Input Variable_**  
 _Description_: Imputed WIC benefits  
 _Datatype_: float  
 _Availability_: taxdata_cps  
@@ -844,6 +945,7 @@ _IRS Form Location:_
 
 
 ##  `PT_SSTB_income`  
+**_Required Input Variable_**  
 _Description_: Value of one implies business income is from a specified service trade or business (SSTB); value of zero implies business income is from a qualified trade or business  
 _Datatype_: int  
 _Availability_:   
@@ -852,6 +954,7 @@ _IRS Form Location:_
 
 
 ##  `PT_binc_w2_wages`  
+**_Required Input Variable_**  
 _Description_: Filing unit's share of total W-2 wages paid by the pass-through business  
 _Datatype_: float  
 _Availability_:   
@@ -860,6 +963,7 @@ _IRS Form Location:_
 
 
 ##  `PT_ubia_property`  
+**_Required Input Variable_**  
 _Description_: Filing unit's share of total business property owned by the pass-through business  
 _Datatype_: float  
 _Availability_:   
