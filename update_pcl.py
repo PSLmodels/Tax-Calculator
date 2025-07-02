@@ -535,8 +535,6 @@ NEW_KNOWN_ITEMS = {
     'UBI_1820': LIST_SCALAR_ZERO,
     'UBI_21': LIST_SCALAR_ZERO,
 }
-for num in range(1, 7 + 1):
-    NEW_KNOWN_ITEMS[f'PT_brk{num}'] = NEW_KNOWN_ITEMS[f'II_brk{num}']
 for num in range(1, 3 + 1):
     NEW_KNOWN_ITEMS[f'AMT_CG_brk{num}'] = NEW_KNOWN_ITEMS[f'CG_brk{num}']
 
