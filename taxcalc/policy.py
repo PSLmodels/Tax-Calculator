@@ -8,6 +8,7 @@ Tax-Calculator federal tax policy Policy class.
 import os
 import json
 from pathlib import Path
+import paramtools
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
 
@@ -54,29 +55,44 @@ class Policy(Parameters):
         return last_budget_year - Policy.JSON_START_YEAR + 1
 
     # NOTE: the following three data structures use internal parameter names:
-    # (1) specify which Policy parameters have been removed or renamed
+    # (1) specify which Policy parameters have been removed or renamed recently
+    #     where "recently" means in the last major release
     REMOVED_PARAMS = {
-        # following five parameters removed in PR 2223 merged on 2019-02-06
-        'DependentCredit_Child_c': 'is a removed parameter name',
-        'DependentCredit_Nonchild_c': 'is a removed parameter name',
-        'DependentCredit_before_CTC': 'is a removed parameter name',
-        'FilerCredit_c': 'is a removed parameter name',
-        'ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
-        # following parameters renamed in PR 2345 merged on 2019-06-24
-        'PT_excl_rt':
-        'was renamed PT_qbid_rt in release 2.4.0',
-        'PT_excl_wagelim_thd':
-        'was renamed PT_qbid_taxinc_thd in release 2.4.0',
-        'PT_excl_wagelim_prt':
-        'was renamed PT_qbid_taxinc_gap in release 2.4.0',
-        'PT_excl_wagelim_rt':
-        'was renamed PT_qbid_w2_wages_rt in release 2.4.0',
-        'CTC_c_under5_bonus': 'was renamed CTC_c_under6_bonus.',
-        'ACTC_rt_bonus_under5family':
-        'was renamed ACTC_rt_bonus_under6family.',
-        'CTC_new_c_under5_bonus': 'was renamed CTC_new_c_under6_bonus.'
+        # following parameters were renamed in PR 2918
+        'SS_thd50': 'was renamed SS_thd1 in Tax-Calculator 5.0.0',
+        'SS_thd85': 'was renamed SS_thd2 in Tax-Calculator 5.0.0',
+        # following parameters were removed in PR 2619
+        'PT_rt1': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt2': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt3': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt4': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt5': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt6': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt7': 'was removed in Tax-Calculator 5.0.0',
+        'PT_rt8': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk1': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk2': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk3': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk4': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk5': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk6': 'was removed in Tax-Calculator 5.0.0',
+        'PT_brk7': 'was removed in Tax-Calculator 5.0.0',
+        'PT_EligibleRate_active': 'was removed in Tax-Calculator 5.0.0',
+        'PT_EligibleRate_passive': 'was removed in Tax-Calculator 5.0.0',
+        'PT_wages_active_income': 'was removed in Tax-Calculator 5.0.0',
+        'PT_top_stacking': 'was removed in Tax-Calculator 5.0.0',
+        # following parameters were removed in PR 2620
+        'ID_AmountCap_Switch': 'was removed in Tax-Calculator 5.0.0',
+        'ID_AmountCap_rt': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitCap_Switch': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitCap_rt': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitSurtax_Switch': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitSurtax_crt': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitSurtax_trt': 'was removed in Tax-Calculator 5.0.0',
+        'ID_BenefitSurtax_em': 'was removed in Tax-Calculator 5.0.0',
     }
     # (2) specify which Policy parameters have been redefined recently
+    #     where "recently" means in the last major release
     REDEFINED_PARAMS = {}
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
@@ -131,13 +147,26 @@ class Policy(Parameters):
         """
         return Parameters._read_json_revision(obj, 'policy')
 
-    def implement_reform(self, reform,
+    def implement_reform(self, reform: dict,
                          print_warnings=True, raise_errors=True):
         """
-        Implement reform using Tax-Calculator syled reforms/adjustments. Users
-        may also use the adjust method with ParamTools styled reforms.
+        Implement reform using a Tax-Calculator-style reform dictionary.
         """
-        # need to do conversion:
+        if not isinstance(reform, dict):
+            raise paramtools.ValidationError(
+                {'errors': {'schema': 'reform must be a dictionary'}},
+                None
+            )
+        deprecated_parameters = [
+        ]
+        for param in reform.keys():
+            if param in deprecated_parameters:
+                print(  # pragma: no cover
+                    f'DEPRECATION WARNING: the {param} policy parameter\n'
+                    'is scheduled to be removed in Tax-Calculator 6.0.0;\n'
+                    'if you think this removal should not happen, open an\n'
+                    'issue on GitHub to make your case for non-removal.'
+                )
         return self._update(reform, print_warnings, raise_errors)
 
     @staticmethod

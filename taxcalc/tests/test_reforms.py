@@ -37,7 +37,7 @@ def test_2017_law_reform(tests_path):
         # relation '>' implies asserting that actual > expect
         # ... parameters not affected by TCJA and that are not indexed
         'AMEDT_ec': {'relation': '=', 'value': 200000},
-        'SS_thd85': {'relation': '=', 'value': 34000},
+        'SS_thd2': {'relation': '=', 'value': 34000},
         # ... parameters not affected by TCJA and that are indexed
         'STD_Dep': {'relation': '>', 'value': 1050},
         'CG_brk2': {'relation': '>', 'value': 425400},
@@ -338,7 +338,7 @@ def fixture_reforms_dict(tests_path):
     return json.loads(rjson)
 
 
-NUM_REFORMS = 64  # when changing this also change num_reforms in conftest.py
+NUM_REFORMS = 60  # when changing this also change num_reforms in conftest.py
 
 
 @pytest.mark.requires_pufcsv
@@ -386,4 +386,4 @@ def test_ext_reform(tests_path):
     iitax_ext = calc_ext.array('iitax')
     rdiff = iitax_ext - iitax_end
     weighted_sum_rdiff = (rdiff * calc_end.array('s006')).sum() * 1.0e-9
-    assert np.allclose([weighted_sum_rdiff], [-205.769], rtol=0.0, atol=0.01)
+    assert np.allclose([weighted_sum_rdiff], [-214.393], rtol=0.0, atol=0.01)

@@ -606,7 +606,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
 
 
 @iterate_jit(nopython=True)
-def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd50, SS_thd85,
+def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd1, SS_thd2,
                SS_percentage1, SS_percentage2, c02500):
     """
     Calculates OASDI benefits included in AGI, c02500.
@@ -622,9 +622,9 @@ def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd50, SS_thd85,
         Total social security (OASDI) benefits
     SS_all_in_agi: bool
         Whether all social security benefits are included in AGI
-    SS_thd50: list
+    SS_thd1: list
         Threshold for social security benefit taxability (1)
-    SS_thd85: list
+    SS_thd2: list
         Threshold for social security benefit taxability (2)
     SS_percentage1: float
         Social security taxable income decimal fraction (1)
@@ -638,15 +638,15 @@ def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd50, SS_thd85,
     c02500: float
         Social security (OASDI) benefits included in AGI
     """
-    if ymod < SS_thd50[MARS - 1]:
+    if ymod < SS_thd1[MARS - 1]:
         c02500 = 0.
-    elif ymod < SS_thd85[MARS - 1]:
-        c02500 = SS_percentage1 * min(ymod - SS_thd50[MARS - 1], e02400)
+    elif ymod < SS_thd2[MARS - 1]:
+        c02500 = SS_percentage1 * min(ymod - SS_thd1[MARS - 1], e02400)
     else:
-        c02500 = min(SS_percentage2 * (ymod - SS_thd85[MARS - 1]) +
+        c02500 = min(SS_percentage2 * (ymod - SS_thd2[MARS - 1]) +
                      SS_percentage1 *
-                     min(e02400, SS_thd85[MARS - 1] -
-                         SS_thd50[MARS - 1]), SS_percentage2 * e02400)
+                     min(e02400, SS_thd2[MARS - 1] -
+                         SS_thd1[MARS - 1]), SS_percentage2 * e02400)
     if SS_all_in_agi:
         c02500 = e02400
     return c02500
@@ -787,145 +787,8 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
 
 
 @iterate_jit(nopython=True)
-def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
-               c00100, ID_AmountCap_rt, ID_AmountCap_Switch, e17500_capped,
-               e18400_capped, e18500_capped, e19200_capped, e19800_capped,
-               e20100_capped, e20400_capped, g20500_capped):
-    """
-    Applies a cap to gross itemized deductions.
-
-    Parameters
-    ----------
-    e17500: float
-        Itemizable medical and dental expenses
-    e18400: float
-        Itemizable state and local income/sales taxes
-    e18500: float
-        Itemizable real-estate taxes paid
-    e19200: float
-        Itemizable interest paid
-    e19800: float
-        Itemizable charitable giving: cash/check contributions
-    e20100: float
-        Itemizable charitable giving: other than cash/check contributions
-    e20400: float
-        Itemizable gross (before 10% AGI disregard) casualty or theft loss
-    g20500: float
-        Itemizable gross (before 10% AGI disregard) casualty or theft loss
-    c00100: float
-        Adjusted gross income (AGI)
-    ID_AmountCap_rt: float
-        Ceiling on the gross amount of itemized deductions allowed;
-        expressed as decimal fraction of AGI
-    ID_AmountCap_Switch: list
-        Deductions subject to the cap on itemized deduction benefits
-    e17500_capped: float
-        Schedule A: medical expenses, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18400_capped: float
-        Schedule A: state and local income taxes deductlbe, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18500_capped: float
-        Schedule A: state and local real estate taxes deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e19200_capped: float
-        Schedule A: interest deduction deductible, capped by
-        ItemDedCap as decimal fraction of AGI
-    e19800_capped: float
-        Schedule A: charity cash contributions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e20100_capped: float
-        Schedule A: charity noncash contributions deductible, capped by
-        ItemDedCap s a decimal fraction of AGI
-    e20400_capped: float
-        Schedule A: gross miscellaneous deductions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    g20500_capped: float
-        Schedule A: gross casualty or theft loss deductible, capped by
-        ItemDedCap s a decimal fraction of AGI
-
-    Returns
-    -------
-    e17500_capped: float
-        Schedule A: medical expenses, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18400_capped: float
-        Schedule A: state and local income taxes deductlbe, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18500_capped: float
-        Schedule A: state and local real estate taxes deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e19200_capped: float
-        Schedule A: interest deduction deductible, capped by
-        ItemDedCap as decimal fraction of AGI
-    e19800_capped: float
-        Schedule A: charity cash contributions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e20100_capped: float
-        Schedule A: charity noncash contributions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e20400_capped: float
-        Schedule A: gross miscellaneous deductions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    g20500_capped: float
-        Schedule A: gross casualty or theft loss deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    """
-    # pylint: disable=too-many-branches
-
-    cap = max(0., ID_AmountCap_rt * c00100)
-
-    gross_ded_amt = 0
-    if ID_AmountCap_Switch[0]:  # medical
-        gross_ded_amt += e17500
-    if ID_AmountCap_Switch[1]:  # statelocal
-        gross_ded_amt += e18400
-    if ID_AmountCap_Switch[2]:  # realestate
-        gross_ded_amt += e18500
-    if ID_AmountCap_Switch[3]:  # casualty
-        gross_ded_amt += g20500
-    if ID_AmountCap_Switch[4]:  # misc
-        gross_ded_amt += e20400
-    if ID_AmountCap_Switch[5]:  # interest
-        gross_ded_amt += e19200
-    if ID_AmountCap_Switch[6]:  # charity
-        gross_ded_amt += e19800 + e20100
-
-    overage = max(0., gross_ded_amt - cap)
-
-    e17500_capped = e17500
-    e18400_capped = e18400
-    e18500_capped = e18500
-    g20500_capped = g20500
-    e20400_capped = e20400
-    e19200_capped = e19200
-    e19800_capped = e19800
-    e20100_capped = e20100
-
-    if overage > 0. and c00100 > 0.:
-        if ID_AmountCap_Switch[0]:  # medical
-            e17500_capped -= (e17500 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[1]:  # statelocal
-            e18400_capped -= (e18400 / (gross_ded_amt) * overage)
-        if ID_AmountCap_Switch[2]:  # realestate
-            e18500_capped -= (e18500 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[3]:  # casualty
-            g20500_capped -= (g20500 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[4]:  # misc
-            e20400_capped -= (e20400 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[5]:  # interest
-            e19200_capped -= (e19200 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[6]:  # charity
-            e19800_capped -= (e19800 / gross_ded_amt) * overage
-            e20100_capped -= (e20100 / gross_ded_amt) * overage
-
-    return (e17500_capped, e18400_capped, e18500_capped, g20500_capped,
-            e20400_capped, e19200_capped, e19800_capped, e20100_capped)
-
-
-@iterate_jit(nopython=True)
-def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
-            e19800_capped, e20100_capped, e20400_capped, g20500_capped,
+def ItemDed(e17500, e18400, e18500, e19200,
+            e19800, e20100, e20400, g20500,
             MARS, age_head, age_spouse, c00100, c04470, c21040, c21060,
             c17000, c18300, c19200, c19700, c20500, c20800,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
@@ -942,30 +805,22 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
 
     Parameters
     ----------
-    e17500_capped: float
-        Schedule A: medical expenses, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18400_capped: float
-        Schedule A: state and local income taxes deductlbe, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e18500_capped: float
-        Schedule A: state and local real estate taxes deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e19200_capped: float
-        Schedule A: interest deduction deductible, capped by
-        ItemDedCap as decimal fraction of AGI
-    e19800_capped: float
-        Schedule A: charity cash contributions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e20100_capped: float
-        Schedule A: charity noncash contributions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    e20400_capped: float
-        Schedule A: gross miscellaneous deductions deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
-    g20500_capped: float
-        Schedule A: gross casualty or theft loss deductible, capped by
-        ItemDedCap as a decimal fraction of AGI
+    e17500: float
+        Schedule A: medical expenses
+    e18400: float
+        Schedule A: state and local income taxes deductlbe
+    e18500: float
+        Schedule A: state and local real estate taxes deductible
+    e19200: float
+        Schedule A: interest deduction deductible
+    e19800: float
+        Schedule A: charity cash contributions deductible
+    e20100: float
+        Schedule A: charity noncash contributions deductible
+    e20400: float
+        Schedule A: gross miscellaneous deductions deductible
+    g20500: float
+        Schedule A: gross casualty or theft loss deductible
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate,
                                4=household-head, 5=widow(er))
@@ -1093,12 +948,12 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         medical_frt += ID_Medical_frt_add4aged
     c17750 = medical_frt * posagi
-    c17000 = max(0., e17500_capped - c17750) * (1. - ID_Medical_hc)
+    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_hc)
     c17000 = min(c17000, ID_Medical_c[MARS - 1])
     # State and local taxes
-    c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400_capped, 0.),
+    c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400, 0.),
                  ID_StateLocalTax_c[MARS - 1])
-    c18500 = min((1. - ID_RealEstate_hc) * e18500_capped,
+    c18500 = min((1. - ID_RealEstate_hc) * e18500,
                  ID_RealEstate_c[MARS - 1])
     # following two statements implement a cap on c18400 and c18500 in a way
     # that those with negative AGI, c00100, are not capped under current law,
@@ -1108,22 +963,22 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     c18300 = (c18400 + c18500) * (1. - ID_AllTaxes_hc)
     c18300 = min(c18300, ID_AllTaxes_c[MARS - 1])
     # Interest paid
-    c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
+    c19200 = e19200 * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
     # Charity
-    charity_ded_cash = min(ID_Charity_crt_cash * posagi, e19800_capped)
-    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, e20100_capped)
+    charity_ded_cash = min(ID_Charity_crt_cash * posagi, e19800)
+    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, e20100)
     c19700 = charity_ded_cash + charity_ded_noncash
     # charity floor is zero in present law
     charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # Casualty
-    c20500 = (max(0., g20500_capped - ID_Casualty_frt * posagi) *
+    c20500 = (max(0., g20500 - ID_Casualty_frt * posagi) *
               (1. - ID_Casualty_hc))
     c20500 = min(c20500, ID_Casualty_c[MARS - 1])
     # Miscellaneous
-    c20400 = e20400_capped
+    c20400 = e20400
     c20750 = ID_Miscellaneous_frt * posagi
     c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_hc)
     c20800 = min(c20800, ID_Miscellaneous_c[MARS - 1])
@@ -1406,17 +1261,11 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
 
 
 @JIT(nopython=True)
-def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
-           PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-           PT_rt6, PT_rt7, PT_rt8,
-           PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
-           PT_brk6, PT_brk7,
+def SchXYZ(taxable_income, MARS,
            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
            II_rt6, II_rt7, II_rt8,
            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-           II_brk6, II_brk7, PT_EligibleRate_active,
-           PT_EligibleRate_passive, PT_wages_active_income,
-           PT_top_stacking):
+           II_brk6, II_brk7):
     """
     Returns Schedule X, Y, Z tax amount for specified taxable_income.
 
@@ -1436,36 +1285,6 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
         etc, income/loss
     e00200: float
         Wages, salaries, and tips for filing unit net of pension contributions
-    PT_rt1: float
-        Pass through income tax rate 1
-    PT_rt2: float
-        Pass through income tax rate 2
-    PT_rt3: float
-        Pass through income tax rate 3
-    PT_rt4: float
-        Pass through income tax rate 4
-    PT_rt5: float
-        Pass through income tax rate 5
-    PT_rt6: float
-        Pass through income tax rate 6
-    PT_rt7: float
-        Pass through income tax rate 7
-    PT_rt8: float
-        Pass through income tax rate 8
-    PT_brk1: list
-        Pass through income tax bracket (upper threshold) 1
-    PT_brk2: list
-        Pass through income tax bracket (upper threshold) 2
-    PT_brk3: list
-        Pass through income tax bracket (upper threshold) 3
-    PT_brk4: list
-        Pass through income tax bracket (upper threshold) 4
-    PT_brk5: list
-        Pass through income tax bracket (upper threshold) 5
-    PT_brk6: list
-        Pass through income tax bracket (upper threshold) 6
-    PT_brk7: list
-        Pass through income tax bracket (upper threshold) 7
     II_rt1: float
         Personal income (regular/non-AMT/non-pass-through) tax rate 1
     II_rt2: float
@@ -1503,75 +1322,28 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
     II_brk7: list
         Personal income (regular/non-AMT/non-pass/through)
         tax bracket (upper threshold) 7
-    PT_EligibleRate_active: float
-        Share of active business income eligible for PT rate schedule
-    PT_EligibleRate_passive: float
-        Share of passive business income eligible for PT rate schedule
-    PT_wages_active_income: bool
-        Wages included in (positive) active business eligible for PT rates
-    PT_top_stacking: bool
-        PT taxable income stacked on top of regular taxable income
 
     Returns
     -------
     reg_tax: float
-        Individual income tax liability on non-pass-through income
-    pt_tax: float
-        Individual income tax liability from pass-through income
+        Individual income tax liability on all taxable income
     """
-    # separate non-negative taxable income into two non-negative components,
-    # doing this in a way so that the components add up to taxable income
-    # define pass-through income eligible for PT schedule
-    pt_passive = PT_EligibleRate_passive * (e02000 - e26270)
-    pt_active_gross = e00900 + e26270
-    if (pt_active_gross > 0) and PT_wages_active_income:
-        pt_active_gross = pt_active_gross + e00200
-    pt_active = PT_EligibleRate_active * pt_active_gross
-    pt_active = min(pt_active, e00900 + e26270)
-    pt_taxinc = max(0., pt_passive + pt_active)
-    if pt_taxinc >= taxable_income:
-        pt_taxinc = taxable_income
-        reg_taxinc = 0.
-    else:
-        # pt_taxinc is unchanged
-        reg_taxinc = taxable_income - pt_taxinc
-    # determine stacking order
-    if PT_top_stacking:
-        reg_tbase = 0.
-        pt_tbase = reg_taxinc
-    else:
-        reg_tbase = pt_taxinc
-        pt_tbase = 0.
-    # compute Schedule X,Y,Z tax using the two components of taxable income
-    if reg_taxinc > 0.:
-        reg_tax = Taxes(reg_taxinc, MARS, reg_tbase,
+    # compute Schedule X,Y,Z tax using taxable income
+    reg_tax = 0.
+    if taxable_income > 0.:
+        reg_tax = Taxes(taxable_income, MARS, 0.0,
                         II_rt1, II_rt2, II_rt3, II_rt4,
                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    else:
-        reg_tax = 0.
-    if pt_taxinc > 0.:
-        pt_tax = Taxes(pt_taxinc, MARS, pt_tbase,
-                       PT_rt1, PT_rt2, PT_rt3, PT_rt4,
-                       PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
-                       PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
-    else:
-        pt_tax = 0.
-    return reg_tax + pt_tax
+    return reg_tax
 
 
 @iterate_jit(nopython=True)
-def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
-              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-              PT_rt6, PT_rt7, PT_rt8,
-              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
-              PT_brk6, PT_brk7,
+def SchXYZTax(c04800, MARS,
               II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
               II_rt6, II_rt7, II_rt8,
               II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-              II_brk6, II_brk7, PT_EligibleRate_active,
-              PT_EligibleRate_passive, PT_wages_active_income,
-              PT_top_stacking, c05200):
+              II_brk6, II_brk7, c05200):
     """
     SchXYZTax calls SchXYZ function and sets c05200 to returned amount.
 
@@ -1582,44 +1354,6 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
-    e00900: float
-        Schedule C business net profit/loss for filing unit
-    e26270: float
-        Schedule E: combined partnership and S-corporation net income/loss
-    e02000: float
-        Farm net income/loss for filing unit from Schedule F
-    e00200: float
-        Farm net income/loss for filing unit from Schedule F
-    PT_rt1: float
-        Pass through income tax rate 1
-    PT_rt2: float
-        Pass through income tax rate 2
-    PT_rt3: float
-        Pass through income tax rate 3
-    PT_rt4: float
-        Pass through income tax rate 4
-    PT_rt5: float
-        Pass through income tax rate 5
-    PT_rt6: float
-        Pass through income tax rate 6
-    PT_rt7: float
-        Pass through income tax rate 7
-    PT_rt8: float
-        Pass through income tax rate 8
-    PT_brk1: list
-        Pass through income tax bracket (upper threshold) 1
-    PT_brk2: list
-        Pass through income tax bracket (upper threshold) 2
-    PT_brk3: list
-        Pass through income tax bracket (upper threshold) 3
-    PT_brk4: list
-        Pass through income tax bracket (upper threshold) 4
-    PT_brk5: list
-        Pass through income tax bracket (upper threshold) 5
-    PT_brk6: list
-        Pass through income tax bracket (upper threshold) 6
-    PT_brk7: list
-        Pass through income tax bracket (upper threshold) 7
     II_rt1: float
         Personal income (regular/non-AMT/non-pass-through) tax rate 1
     II_rt2: float
@@ -1657,45 +1391,28 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
     II_brk7: list
         Personal income (regular/non-AMT/non-pass/through)
         tax bracket (upper threshold) 7
-    PT_EligibleRate_active: float
-        Share of active business income eligible for PT rate schedule
-    PT_EligibleRate_passive: float
-        Share of passive business income eligible for PT rate schedule
-    PT_wages_active_income: bool
-        Wages included in (positive) active business eligible for PT rates
-    PT_top_stacking: bool
-        PT taxable income stacked on top of regular taxable income
     c05200: float
         Tax amount from Schedule X,Y,Z tables
 
     Returns
     -------
     c05200: float
-        Tax aount from Schedule X, Y, Z tables
+        Tax amount from Schedule X, Y, Z tables
     """
-    c05200 = SchXYZ(c04800, MARS, e00900, e26270, e02000, e00200,
-                    PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-                    PT_rt6, PT_rt7, PT_rt8,
-                    PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
-                    PT_brk6, PT_brk7,
+    c05200 = SchXYZ(c04800, MARS,
                     II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                     II_rt6, II_rt7, II_rt8,
                     II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                    II_brk6, II_brk7, PT_EligibleRate_active,
-                    PT_EligibleRate_passive, PT_wages_active_income,
-                    PT_top_stacking)
+                    II_brk6, II_brk7)
     return c05200
 
 
 @iterate_jit(nopython=True)
-def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
-             e24515, e24518, MARS, c04800, c05200, e00900, e26270, e02000,
+def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
+             e24515, e24518, MARS, c04800, c05200,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
-             PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
-             PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
-             CG_nodiff, PT_EligibleRate_active, PT_EligibleRate_passive,
-             PT_wages_active_income, PT_top_stacking,
+             CG_nodiff,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
              dwks10, dwks13, dwks14, dwks19, dwks43, c05700, taxbc):
     """
@@ -1774,47 +1491,9 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     II_brk7: list
         Personal income (regular/non-AMT/non-pass/through)
         tax bracket (upper threshold) 7
-    PT_rt1: float
-        Pass through income tax rate 1
-    PT_rt2: float
-        Pass through income tax rate 2
-    PT_rt3: float
-        Pass through income tax rate 3
-    PT_rt4: float
-        Pass through income tax rate 4
-    PT_rt5: float
-        Pass through income tax rate 5
-    PT_rt6: float
-        Pass through income tax rate 6
-    PT_rt7: float
-        Pass through income tax rate 7
-    PT_rt8: float
-        Pass through income tax rate 8
-    PT_brk1: list
-        Pass through income tax bracket (upper threshold) 1
-    PT_brk2: list
-        Pass through income tax bracket (upper threshold) 2
-    PT_brk3: list
-        Pass through income tax bracket (upper threshold) 3
-    PT_brk4: list
-        Pass through income tax bracket (upper threshold) 4
-    PT_brk5: list
-        Pass through income tax bracket (upper threshold) 5
-    PT_brk6: list
-        Pass through income tax bracket (upper threshold) 6
-    PT_brk7: list
-        Pass through income tax bracket (upper threshold) 7
     CG_nodiff: bool
         Long term capital gains and qualified dividends taxed no differently
         than regular taxable income
-    PT_EligibleRate_active: float
-        Share of active business income eligible for PT rate schedule
-    PT_EligibleRate_passive: float
-        Share of passive business income eligible for PT rate schedule
-    PT_wages_active_income: bool
-        Wages included in (positive) active business eligible for PT rates
-    PT_top_stacking: bool
-        PT taxable income stacked on top of regular taxable income
     CG_rt1: float
         Long term capital gain and qualified dividends (regular/non-AMT) rate 1
     CG_rt2: float
@@ -1929,17 +1608,11 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
         dwks40 = dwks1 - dwks39
         dwks41 = 0.28 * dwks40
-        dwks42 = SchXYZ(dwks19, MARS, e00900, e26270, e02000, e00200,
-                        PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-                        PT_rt6, PT_rt7, PT_rt8,
-                        PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
-                        PT_brk6, PT_brk7,
+        dwks42 = SchXYZ(dwks19, MARS,
                         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                         II_rt6, II_rt7, II_rt8,
                         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                        II_brk6, II_brk7, PT_EligibleRate_active,
-                        PT_EligibleRate_passive, PT_wages_active_income,
-                        PT_top_stacking)
+                        II_brk6, II_brk7)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
                   lowest_rate_tax + highest_rate_incremental_tax)
         dwks44 = c05200
@@ -3190,7 +2863,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 @iterate_jit(nopython=True)
 def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
                   ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
-                  CTC_is_refundable, CTC_include17,
+                  CTC_is_refundable, CTC_include17, CTC_c,
                   age_head, age_spouse, MARS, nu18,
                   ptax_was, c03260, e09800, c59660, e11200,
                   c11070):
@@ -3251,7 +2924,7 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
             childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
         else:
             childnum = n24
-        line4 = ACTC_c * childnum
+        line4 = min(ACTC_c, CTC_c) * childnum
     c11070 = 0.  # line15
     if line3 > 0. and line4 > 0.:
         line5 = min(line3, line4)
@@ -3652,84 +3325,6 @@ def ComputeBenefit(calc, ID_switch):
     diff_iitax = no_ID_calc.array('iitax') - calc.array('iitax')
     benefit = np.where(diff_iitax > 0., diff_iitax, 0.)
     return benefit
-
-
-def BenefitSurtax(calc):
-    """
-    Computes itemized-deduction-benefit surtax and adds the surtax amount
-    to income tax, combined tax, and surtax liabilities.
-
-    Parameters
-    ----------
-    calc: Calculator object
-        calc represents the reform while self represents the baseline
-
-    Returns
-    -------
-    None:
-        The function modifies calc
-    """
-    if calc.policy_param('ID_BenefitSurtax_crt') != 1.:
-        ben = ComputeBenefit(calc,
-                             calc.policy_param('ID_BenefitSurtax_Switch'))
-        agi = calc.array('c00100')
-        ben_deduct = calc.policy_param('ID_BenefitSurtax_crt') * agi
-        ben_exempt_array = calc.policy_param('ID_BenefitSurtax_em')
-        ben_exempt = ben_exempt_array[calc.array('MARS') - 1]
-        ben_dedem = ben_deduct + ben_exempt
-        ben_surtax = (calc.policy_param('ID_BenefitSurtax_trt') *
-                      np.where(ben > ben_dedem, ben - ben_dedem, 0.))
-        # add ben_surtax to income & combined taxes and to surtax subtotal
-        calc.incarray('iitax', ben_surtax)
-        calc.incarray('combined', ben_surtax)
-        calc.incarray('surtax', ben_surtax)
-
-
-def BenefitLimitation(calc):
-    """
-    Limits the benefits of select itemized deductions to a fraction of
-    deductible expenses.
-
-    Parameters
-    ----------
-    calc: Calculator object
-        calc represents the reform while self represents the baseline
-
-    Returns
-    -------
-    None:
-        The function modifies calc
-    """
-    if calc.policy_param('ID_BenefitCap_rt') != 1.:
-        benefit = ComputeBenefit(calc,
-                                 calc.policy_param('ID_BenefitCap_Switch'))
-        # Calculate total deductible expenses under the cap
-        deduct_exps = 0.
-        if calc.policy_param('ID_BenefitCap_Switch')[0]:  # medical
-            deduct_exps += calc.array('c17000')
-        if calc.policy_param('ID_BenefitCap_Switch')[1]:  # statelocal
-            one_minus_hc = 1. - calc.policy_param('ID_StateLocalTax_hc')
-            deduct_exps += (one_minus_hc *
-                            np.maximum(calc.array('e18400_capped'), 0.))
-        if calc.policy_param('ID_BenefitCap_Switch')[2]:  # realestate
-            one_minus_hc = 1. - calc.policy_param('ID_RealEstate_hc')
-            deduct_exps += one_minus_hc * calc.array('e18500_capped')
-        if calc.policy_param('ID_BenefitCap_Switch')[3]:  # casualty
-            deduct_exps += calc.array('c20500')
-        if calc.policy_param('ID_BenefitCap_Switch')[4]:  # misc
-            deduct_exps += calc.array('c20800')
-        if calc.policy_param('ID_BenefitCap_Switch')[5]:  # interest
-            deduct_exps += calc.array('c19200')
-        if calc.policy_param('ID_BenefitCap_Switch')[6]:  # charity
-            deduct_exps += calc.array('c19700')
-        # Calculate cap value for itemized deductions
-        benefit_limit = deduct_exps * calc.policy_param('ID_BenefitCap_rt')
-        # Add the difference between the actual benefit and capped benefit
-        # to income tax and combined tax liabilities.
-        excess_benefit = np.maximum(benefit - benefit_limit, 0)
-        calc.incarray('iitax', excess_benefit)
-        calc.incarray('surtax', excess_benefit)
-        calc.incarray('combined', excess_benefit)
 
 
 @iterate_jit(nopython=True)

@@ -30,7 +30,7 @@ def cli_tc_main():
 
     # parse command-line arguments:
     usage_str = 'tc INPUT TAXYEAR {}{}{}{}'.format(
-        '[--help]\n',
+        '[--help] [--numyears N]\n',
         (
             '          '
             '[--baseline BASELINE] [--reform REFORM] '
@@ -43,7 +43,7 @@ def cli_tc_main():
         ),
         (
             '          '
-            '[--silent] [--test] [--version] [--usage]'
+            '[--runid N] [--silent] [--test] [--version] [--usage]'
         )
     )
     parser = argparse.ArgumentParser(
@@ -63,23 +63,32 @@ def cli_tc_main():
                               'are computed.'),
                         type=int,
                         default=0)
+    parser.add_argument('--numyears', metavar='N',
+                        help=('N is an integer indicating for how many '
+                              'years taxes are calculated. No --numyears '
+                              'implies calculations are done only for '
+                              'TAXYEAR. N greater than one implies output '
+                              'is written to separate files for each year '
+                              'beginning with TAXYEAR.'),
+                        type=int,
+                        default=1)
     parser.add_argument('--baseline',
                         help=('BASELINE is name of optional JSON reform file. '
                               'A compound reform can be specified using 2+ '
-                              'file names separated by plus (+) character(s). '
+                              'file names connected by plus (+) character(s). '
                               'No --baseline implies baseline policy is '
                               'current-law policy.'),
                         default=None)
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
                               'A compound reform can be specified using 2+ '
-                              'file names separated by plus (+) character(s). '
+                              'file names connected by plus (+) character(s). '
                               'No --reform implies reform policy is '
                               'current-law policy).'),
                         default=None)
     parser.add_argument('--assump',
                         help=('ASSUMP is name of optional JSON economic '
-                              'assumptions file.  No --assump implies use '
+                              'assumptions file. No --assump implies use '
                               'of no customized assumptions.'),
                         default=None)
     parser.add_argument('--exact',
@@ -116,12 +125,19 @@ def cli_tc_main():
     parser.add_argument('--dumpvars',
                         help=('DUMPVARS is name of optional file containing a '
                               'space-delimited list of variables to include '
-                              'in the dump database.  No --dumpvars '
-                              'implies a minimal set of variables.  Valid '
-                              'variable names include all variables in the '
+                              'in the dump database. No --dumpvars implies '
+                              'a minimal set of variables.  Valid variable '
+                              'names include all variables in the '
                               'records_variables.json file plus mtr_itax and '
                               'mtr_ptax (MTRs wrt taxpayer earnings).'),
                         default=None)
+    parser.add_argument('--runid', metavar='N',
+                        help=('N is a positive integer run id that is used '
+                              'to construct simpler output file names. '
+                              'No --runid implies legacy output file names '
+                              'are used.'),
+                        type=int,
+                        default=0)
     parser.add_argument('--silent',
                         help=('optional flag that suppresses messages about '
                               'input and output actions.'),
@@ -144,16 +160,23 @@ def cli_tc_main():
                         default=False,
                         action="store_true")
     args = parser.parse_args()
+    using_error_file = args.silent and args.runid != 0
+    efilename = f'run{args.runid}.errors'
     # check Python version
     pyv = sys.version_info
     pymin = tc.__min_python3_version__
     pymax = tc.__max_python3_version__
     if pyv[0] != 3 or pyv[1] < pymin or pyv[1] > pymax:  # pragma: no cover
         pyreq = f'at least Python 3.{pymin} and at most Python 3.{pymax}'
-        sys.stderr.write(
+        msg = (
             f'ERROR: Tax-Calculator requires {pyreq}\n'
             f'       but Python {pyv[0]}.{pyv[1]} is installed\n'
         )
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
         return 1
     # show Tax-Calculator version and quit if --version option is specified
     if args.version:
@@ -169,53 +192,58 @@ def cli_tc_main():
         _write_test_files()
         inputfn = TEST_INPUT_FILENAME
         taxyear = TEST_TAXYEAR
+        args.numyears = 1
         args.dumpdb = True
     else:
         inputfn = args.INPUT
         taxyear = args.TAXYEAR
-    # instantiate TaxCalcIO object and do tax analysis
-    tcio = tc.TaxCalcIO(
-        input_data=inputfn,
-        tax_year=taxyear,
-        baseline=args.baseline,
-        reform=args.reform,
-        assump=args.assump,
-        silent=args.silent,
-    )
-    if tcio.errmsg:
-        if tcio.errmsg.endswith('\n'):
-            sys.stderr.write(tcio.errmsg)
+    # check taxyear value
+    if taxyear > tc.Policy.LAST_BUDGET_YEAR:
+        msg = f'ERROR: TAXYEAR is greater than {tc.Policy.LAST_BUDGET_YEAR}\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
-            sys.stderr.write(tcio.errmsg + '\n')
-        sys.stderr.write('USAGE: tc --help\n')
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
         return 1
-    aging = (
+    # check numyears value
+    if args.numyears < 1:
+        msg = 'ERROR: --numyears parameter N is less than one\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
+        return 1
+    max_numyears = tc.Policy.LAST_BUDGET_YEAR - taxyear + 1
+    if args.numyears > max_numyears:
+        msg = f'ERROR: --numyears parameter N is greater than {max_numyears}\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
+        return 1
+    # specify if aging input data
+    aging_data = (
         inputfn.endswith('puf.csv') or
         inputfn.endswith('cps.csv') or
         inputfn.endswith('tmd.csv')
     )
-    tcio.init(
-        input_data=inputfn,
-        tax_year=taxyear,
-        baseline=args.baseline,
-        reform=args.reform, assump=args.assump,
-        aging_input_data=aging,
-        exact_calculations=args.exact,
-    )
-    if tcio.errmsg:
-        if tcio.errmsg.endswith('\n'):
-            sys.stderr.write(tcio.errmsg)
-        else:
-            sys.stderr.write(tcio.errmsg + '\n')
-        sys.stderr.write('USAGE: tc --help\n')
-        return 1
     # check args.dumpdb and args.dumpvars consistency
     if not args.dumpdb and args.dumpvars:
         msg = 'ERROR: DUMPVARS file specified without --dumpdb option\n'
-        sys.stderr.write(msg)
-        sys.stderr.write('USAGE: tc --help\n')
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
         return 1
-    # construct dumpvars set from dumpvars_str
+    # specify dumpvars_str from args.dumpvars file
     dumpvars_str = ''
     if args.dumpvars:
         if os.path.exists(args.dumpvars):
@@ -223,18 +251,77 @@ def cli_tc_main():
                 dumpvars_str = dfile.read()
         else:
             msg = f'ERROR: DUMPVARS file {args.dumpvars} does not exist\n'
+            if using_error_file:
+                with open(efilename, 'w', encoding='utf-8') as efile:
+                    efile.write(msg)
+            else:
+                sys.stderr.write(msg)
+                sys.stderr.write('USAGE: tc --help\n')
+            return 1
+    if args.runid < 0:
+        msg = 'ERROR: --runid parameter N is less than zero\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
-            return 1
-    dumpvars_list = tcio.dump_variables(dumpvars_str)
+        return 1
+    # do calculations for taxyear
+    # ... initialize TaxCalcIO object for taxyear
+    tcio = tc.TaxCalcIO(
+        input_data=inputfn,
+        tax_year=taxyear,
+        baseline=args.baseline,
+        reform=args.reform,
+        assump=args.assump,
+        runid=args.runid,
+        silent=args.silent,
+    )
     if tcio.errmsg:
-        if tcio.errmsg.endswith('\n'):
-            sys.stderr.write(tcio.errmsg)
+        msg = tcio.errmsg
+        if not msg.endswith('\n'):
+            msg += '\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
         else:
-            sys.stderr.write(tcio.errmsg + '\n')
+            sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
         return 1
-    # conduct tax analysis
+    tcio.init(
+        input_data=inputfn,
+        tax_year=taxyear,
+        baseline=args.baseline,
+        reform=args.reform,
+        assump=args.assump,
+        aging_input_data=aging_data,
+        exact_calculations=args.exact,
+    )
+    if tcio.errmsg:
+        msg = tcio.errmsg
+        if not msg.endswith('\n'):
+            msg += '\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
+        return 1
+    # ... conduct tax analysis for taxyear
+    dumpvars_list = tcio.dump_variables(dumpvars_str)
+    if tcio.errmsg:
+        msg = tcio.errmsg
+        if not msg.endswith('\n'):
+            msg += '\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
+        return 1
     tcio.analyze(
         output_params=args.params,
         output_tables=args.tables,
@@ -246,6 +333,23 @@ def cli_tc_main():
     if args.test:
         retcode = _compare_test_output_files()
         return retcode
+    # quit if args.numyears is equal to one
+    if args.numyears == 1:
+        if not args.silent:
+            print(  # pragma: no cover
+                f'Execution time is {(time.time() - start_time):.1f} seconds'
+            )
+        return 0
+    # analyze years after taxyear if args.numyears is greater than one
+    for xyear in range(1, args.numyears):
+        tcio.advance_to_year(taxyear + xyear, aging_data)
+        tcio.analyze(
+            output_params=args.params,
+            output_tables=args.tables,
+            output_graphs=args.graphs,
+            output_dump=args.dumpdb,
+            dump_varlist=dumpvars_list,
+        )
     if not args.silent:
         print(  # pragma: no cover
             f'Execution time is {(time.time() - start_time):.1f} seconds'
@@ -265,7 +369,7 @@ EXPECTED_TEST_OUTPUT = (
     '1|131.88\n'
     '2|28879.00\n'
 )
-TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.db'
+TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.dumpdb'
 TEST_SQLITE_QUERY = """
 SELECT
   RECID           AS id,

@@ -153,6 +153,24 @@ def fixture_errorreformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
+@pytest.fixture(scope='session', name='ereformfile')
+def fixture_ereformfile():
+    """
+    Temporary reform file with .json extension.
+    """
+    contents = '{"II_em": {"2022": 1000},}'
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as rfile:
+        rfile.write(contents)
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
 @pytest.fixture(scope='session', name='errorassumpfile')
 def fixture_errorassumpfile():
     """
@@ -249,6 +267,7 @@ def fixture_assumpfile2():
      'no-dot-json-filename'),
     ([], [], [], [],),
     ('no-exist.csv', 'no-exist.json', 'no-exist.json', 'no-exist.json'),
+    ('cps.csv', 'ereformfile', 'ereformfile', 'no-exist.json'),
 ])
 def test_ctor_errors(input_data, baseline, reform, assump):
     """
@@ -351,12 +370,19 @@ def test_ctor_init_with_cps_files():
     """
     # specify valid tax_year for cps.csv input data
     txyr = 2020
-    tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
-    tcio.init('cps.csv', txyr, None, None, None,
-              aging_input_data=True,
-              exact_calculations=False)
-    assert not tcio.errmsg
-    assert tcio.tax_year() == txyr
+    for rid in [0, 99]:
+        tcio = TaxCalcIO('cps.csv', txyr, None, None, None, runid=rid)
+        tcio.init(
+            'cps.csv', txyr, None, None, None,
+            aging_input_data=True,
+            exact_calculations=False,
+        )
+        assert not tcio.errmsg
+        assert tcio.tax_year() == txyr
+        # test advance_to_year method
+        tcio.silent = False
+        tcio.advance_to_year(txyr + 1, True)
+        assert tcio.tax_year() == txyr + 1
     # specify invalid tax_year for cps.csv input data
     txyr = 2013
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
@@ -422,7 +448,7 @@ def test_output_options_min(reformfile1, assumpfile1):
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
-    dumppath = tcio.output_filepath().replace('.xxx', '.db')
+    dumppath = tcio.output_filepath().replace('.xxx', '.dumpdb')
     # minimal dump output
     dumpvars = TaxCalcIO.MINIMAL_DUMPVARS
     try:
@@ -457,7 +483,7 @@ def test_output_options_mtr(reformfile1, assumpfile1):
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
-    dumppath = tcio.output_filepath().replace('.xxx', '.db')
+    dumppath = tcio.output_filepath().replace('.xxx', '.dumpdb')
     # minimal+mtr_* dump output
     dumpvars = TaxCalcIO.MINIMAL_DUMPVARS
     for var in TaxCalcIO.MTR_DUMPVARS:
@@ -499,7 +525,7 @@ def test_write_policy_param_files(reformfile1):
     assert not tcio.errmsg
     tcio.write_policy_params_files()
     outfilepath = tcio.output_filepath()
-    for ext in ['-params.bas', '-params.ref']:
+    for ext in ['-params.baseline', '-params.reform']:
         filepath = outfilepath.replace('.xxx', ext)
         if os.path.isfile(filepath):
             os.remove(filepath)
@@ -539,19 +565,7 @@ def test_no_tables_or_graphs(reformfile1):
                  output_tables=True,
                  output_graphs=True)
     # delete tables and graph files
-    output_filename = tcio.output_filepath()
-    extensions = [
-        '-params.bas',
-        '-params.ref',
-        '-tables.text',
-        '-atr.html',
-        '-mtr.html',
-        '-pch.html',
-    ]
-    for ext in extensions:
-        fname = output_filename.replace('.xxx', ext)
-        if os.path.isfile(fname):
-            os.remove(fname)
+    tcio.delete_output_files()
 
 
 def test_tables(reformfile1):
@@ -584,11 +598,7 @@ def test_tables(reformfile1):
     assert not tcio.errmsg
     # create TaxCalcIO tables file
     tcio.analyze(output_tables=True)
-    # delete tables file
-    output_filename = tcio.output_filepath()
-    fname = output_filename.replace('.xxx', '-tables.text')
-    if os.path.isfile(fname):
-        os.remove(fname)
+    tcio.delete_output_files()
 
 
 def test_graphs(reformfile1):
@@ -622,16 +632,7 @@ def test_graphs(reformfile1):
     assert not tcio.errmsg
     tcio.analyze(output_graphs=True)
     # delete graph files
-    output_filename = tcio.output_filepath()
-    fname = output_filename.replace('.xxx', '-atr.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
-    fname = output_filename.replace('.xxx', '-mtr.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
-    fname = output_filename.replace('.xxx', '-pch.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
+    tcio.delete_output_files()
 
 
 @pytest.fixture(scope='session', name='warnreformfile')

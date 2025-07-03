@@ -12,7 +12,7 @@ import os
 import json
 import numpy as np
 import pytest
-import paramtools as pt
+import paramtools
 from taxcalc.policy import Policy
 
 
@@ -45,21 +45,20 @@ def test_incorrect_class_instantiation():
         Policy(gfactors=[])
 
 
-def test_correct_class_instantiation():
+def test_incorrect_implement_reform_usage():
     """
-    Test correct instantiation of Policy class object.
+    Test for incorrect implement_reform usage.
     """
     pol = Policy()
     assert pol
-    pol.implement_reform({})
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         pol.implement_reform([])
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         pol.implement_reform({2099: {'II_em': 99000}})
     pol.set_year(2019)
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         pol.implement_reform({2018: {'II_em': 99000}})
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         pol.implement_reform({2020: {'II_em': -1000}})
 
 
@@ -142,7 +141,7 @@ REFORM_JSON = """
 """
 
 
-# pylint: disable=protected-access,no-member
+# pylint: disable=protected-access
 
 
 @pytest.mark.parametrize("set_year", [False, True])
@@ -156,7 +155,6 @@ def test_read_json_reform_file_and_implement_reform(set_year):
         pol.set_year(2015)
     pol.implement_reform(Policy.read_json_reform(REFORM_JSON))
     syr = pol.start_year
-    # pylint: disable=protected-access
     amt_brk1 = pol._AMT_brk1
     assert amt_brk1[2015 - syr] == 200000
     assert amt_brk1[2016 - syr] > 200000
@@ -414,7 +412,7 @@ def test_implement_reform_raises_on_no_year():
     """
     reform = {'STD_Aged': [1400, 1200, 1400, 1400, 1400]}
     ppo = Policy()
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         ppo.implement_reform(reform)
 
 
@@ -424,7 +422,7 @@ def test_implement_reform_raises_on_early_year():
     """
     ppo = Policy()
     reform = {'STD_Aged': {2010: [1400, 1100, 1100, 1400, 1400]}}
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         ppo.implement_reform(reform)
 
 
@@ -642,8 +640,6 @@ def test_section_titles(tests_path):
         return sdict
     # begin main logic of test_section_titles
     # specify expected section titles ordered as on the Tax-Brain webapp
-    ided_ceiling_pct = ('Ceiling On The Benefit Of Itemized Deductions '
-                        'As A Percent Of Deductible Expenses')
     cgqd_tax_same = ('Tax All Capital Gains And Dividends The Same '
                      'As Regular Taxable Income')
     valid_dict = {
@@ -696,10 +692,8 @@ def test_section_titles(tests_path):
             'Charity': 0,
             'Casualty': 0,
             'Miscellaneous': 0,
-            'Itemized Deduction Limitation': 0,
-            'Surtax On Itemized Deduction Benefits Above An AGI Threshold': 0,
-            ided_ceiling_pct: 0,
-            'Ceiling On The Amount Of Itemized Deductions Allowed': 0
+            'Itemized Deduction Limitation': 0,  # Pease
+            'Ceiling On The Amount Of Itemized Deductions Allowed': 0  # ID_c
         },
         'Capital Gains And Dividends': {
             'Regular - Long Term Capital Gains And Qualified Dividends': 0,
@@ -811,37 +805,24 @@ def test_get_index_rate():
     assert pol.wage_growth_rates() == pol._wage_growth_rates
 
 
-def test_reform_with_bad_ctc_levels():
-    """
-    Implement a reform with _ACTC > _CTC_c values.
-    """
-    pol = Policy()
-    child_credit_reform = {
-        'CTC_c': {2020: 2200},
-        'ACTC_c': {2020: 2500}
-    }
-    with pytest.raises(pt.ValidationError):
-        pol.implement_reform(child_credit_reform)
-
-
 def test_reform_with_removed_parameter(monkeypatch):
     """
     Try to use removed parameter in a reform.
     """
     policy1 = Policy()
     reform1 = {'FilerCredit_c': {2020: 1000}}
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         policy1.implement_reform(reform1)
     policy2 = Policy()
     reform2 = {'FilerCredit_c-indexed': {2020: True}}
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         policy2.implement_reform(reform2)
 
     redefined_msg = {"some_redefined": "some_redefined was redefined."}
     monkeypatch.setattr(Policy, "REDEFINED_PARAMS", redefined_msg)
 
     pol = Policy()
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         pol.implement_reform({"some_redefined": "hello world"})
 
 
@@ -850,7 +831,7 @@ def test_reform_with_out_of_range_error():
     Try to use out-of-range values versus other parameter values in a reform.
     """
     pol = Policy()
-    reform = {'SS_thd85': {2020: [20000, 20000, 20000, 20000, 20000]}}
+    reform = {'SS_thd2': {2020: [20000, 20000, 20000, 20000, 20000]}}
     pol.implement_reform(reform, raise_errors=False)
     assert pol.parameter_errors
 
@@ -883,29 +864,29 @@ def test_reform_with_scalar_vector_errors():
     Test catching scalar-vector confusion.
     """
     policy1 = Policy()
-    reform1 = {'SS_thd85': {2020: 30000}}
-    with pytest.raises(pt.ValidationError):
+    reform1 = {'SS_thd2': {2020: 30000}}
+    with pytest.raises(paramtools.ValidationError):
         policy1.implement_reform(reform1)
 
     policy2 = Policy()
     reform2 = {'ID_Medical_frt': {2020: [0.08]}}
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         policy2.implement_reform(reform2)
 
     policy3 = Policy()
     reform3 = {'ID_Medical_frt': [{"year": 2020, "value": [0.08]}]}
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         policy3.adjust(reform3)
 
     # Check that error is thrown if there are extra elements in array.
     policy4 = Policy()
     ref4 = {"II_brk1": {2020: [9700, 19400, 9700, 13850, 19400, 19400]}}
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         policy4.implement_reform(ref4)
 
     policy5 = Policy()
     ref5 = {"II_rt1": {2029: [.2, .3]}}
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         policy5.implement_reform(ref5)
 
 
@@ -1416,10 +1397,7 @@ def test_multiple_cpi_swaps2():
     )
 
 
-# pylint: disable=invalid-name
-
-
-def test_adj_CPI_offset_and_index_status():
+def test_adj_cpi_offset_and_index_status():
     """
     Test changing parameter_indexing_CPI_offset and another
     parameter simultaneously.
@@ -1491,10 +1469,10 @@ def test_adj_related_parameters_and_index_status():
     )
     assert res.isel[0]["value"] == [445400]
 
-    II_brk7 = pol.to_array("II_brk7", year=[2021, 2022])
-    II_brk7_single = II_brk7[:, 0]
+    ii_brk7 = pol.to_array("II_brk7", year=[2021, 2022])
+    ii_brk7_single = ii_brk7[:, 0]
     np.testing.assert_equal(
-        (II_brk7_single[1] / II_brk7_single[0] - 1).round(4),
+        (ii_brk7_single[1] / ii_brk7_single[0] - 1).round(4),
         pol.inflation_rates(year=2021),
     )
 
@@ -1509,7 +1487,7 @@ def test_indexed_status_parsing():
     pol2.adjust({"EITC_c-indexed": False})
     cmp_policy_objs(pol1, pol2)
 
-    with pytest.raises(pt.ValidationError):
+    with pytest.raises(paramtools.ValidationError):
         pol2.adjust({"EITC_c-indexed": 123})
 
 
@@ -1537,23 +1515,131 @@ def test_cpi_offset_does_not_affect_wage_indexed_params():
     np.testing.assert_equal(act_before_2025, exp_before_2025)
 
 
-def test_two_sets_of_tax_brackets():
+def test_ext_plus_ctc1_reform(tests_path):
     """
-    Test that II_brk? and PT_brk? values are the same under current law.
+    Test ext.json plus ctc1 compound reform relative to ext.json baseline.
     """
-    pol = Policy()
-    brackets = range(1, 7 + 1)
-    years = range(Policy.JSON_START_YEAR, Policy.LAST_KNOWN_YEAR + 1)
-    emsg = ''
-    for year in years:
-        pol.set_year(year)
-        pdata = dict(pol.items())
-        for bnum in brackets:
-            ii_val = pdata[f'II_brk{bnum}']
-            pt_val = pdata[f'PT_brk{bnum}']
-            if not np.allclose(ii_val, pt_val):
-                emsg += f'II_brk{bnum} != PT_brk{bnum} for year {year}\n'
-                emsg += f'  II_brk{bnum} is {ii_val}\n'
-                emsg += f'  PT_brk{bnum} is {pt_val}\n'
-    if emsg:
-        raise ValueError(emsg)
+    # specify baseline policy, bas, as the extend-TCJA reform
+    bas = Policy()
+    filename = os.path.join(tests_path, '..', 'reforms', 'ext.json')
+    with open(filename, 'r', encoding='utf-8') as rfile:
+        ext_text = rfile.read()
+    bas.implement_reform(Policy.read_json_reform(ext_text))
+    assert not bas.parameter_errors
+    # specify reform policy, ref, as extend-TCJA plus liberalization of CTC
+    ref = Policy()
+    ref.implement_reform(Policy.read_json_reform(ext_text))
+    ctc1_reform = {
+        # one possible child-tax-credit revision to the extend-TCJA reform
+        'CTC_c': {
+            2026: 2500.00,
+            2027: 2500.00,
+            2028: 2500.00,
+            2029: 2000.00,
+        },
+        'CTC_c-indexed': {2029: True},
+    }
+    ref.implement_reform(ctc1_reform)
+    assert not ref.parameter_errors
+    # check bas and ref parameter values against expected parameter values
+    exp_ctc_c_bas = {
+        2025: 2000,
+        2026: 2000,
+        2027: 2000,
+        2028: 2000,
+        2029: 2000,
+        2030: 2000,
+    }
+    exp_ctc_c_ref = {
+        2025: 2000,
+        2026: 2500,
+        2027: 2500,
+        2028: 2500,
+        2029: 2000,
+        2030: 2044.80,
+    }
+    exp_actc_c = {
+        2025: 1700,
+        2026: 1776.67,
+        2027: 1819.84,
+        2028: 1861.88,
+        2029: 1903.96,
+        2030: 1946.61,
+    }
+    for year in range(2025, 2031):
+        bas.set_year(year)
+        assert np.allclose([bas.CTC_c], [exp_ctc_c_bas[year]])
+        assert np.allclose([bas.ACTC_c], [exp_actc_c[year]])
+        ref.set_year(year)
+        assert np.allclose([ref.CTC_c], [exp_ctc_c_ref[year]])
+        assert np.allclose([ref.ACTC_c], [exp_actc_c[year]])
+
+
+def test_ext_plus_ctc2_reform(tests_path):
+    """
+    Test ext.json plus ctc2 compound reform relative to ext.json baseline.
+    """
+    # specify baseline policy, bas, as the extend-TCJA reform
+    bas = Policy()
+    filename = os.path.join(tests_path, '..', 'reforms', 'ext.json')
+    with open(filename, 'r', encoding='utf-8') as rfile:
+        ext_text = rfile.read()
+    bas.implement_reform(Policy.read_json_reform(ext_text))
+    assert not bas.parameter_errors
+    # specify reform policy, ref, as extend-TCJA plus liberalization of CTC
+    ref = Policy()
+    ref.implement_reform(Policy.read_json_reform(ext_text))
+    ctc2_reform = {
+        # one possible child-tax-credit revision to the extend-TCJA reform
+        'CTC_c': {
+            2026: 2500.00,
+            2027: 2500.00,
+            2028: 2500.00,
+            2029: 2000.00,
+        },
+        'CTC_c-indexed': {2029: True},
+        'ACTC_c': {2029: 1750},
+        'ACTC_c-indexed': {2029: False},
+    }
+    ref.implement_reform(ctc2_reform)
+    assert not ref.parameter_errors
+    # check bas and ref parameter values against expected parameter values
+    exp_ctc_c_bas = {
+        2025: 2000,
+        2026: 2000,
+        2027: 2000,
+        2028: 2000,
+        2029: 2000,
+        2030: 2000,
+    }
+    exp_ctc_c_ref = {
+        2025: 2000,
+        2026: 2500,
+        2027: 2500,
+        2028: 2500,
+        2029: 2000,
+        2030: 2044.80,
+    }
+    exp_actc_c_bas = {
+        2025: 1700,
+        2026: 1776.67,
+        2027: 1819.84,
+        2028: 1861.88,
+        2029: 1903.96,
+        2030: 1946.61,
+    }
+    exp_actc_c_ref = {
+        2025: 1700,
+        2026: 1776.67,
+        2027: 1819.84,
+        2028: 1861.88,
+        2029: 1750,
+        2030: 1750,
+    }
+    for year in range(2025, 2031):
+        bas.set_year(year)
+        assert np.allclose([bas.CTC_c], [exp_ctc_c_bas[year]])
+        assert np.allclose([bas.ACTC_c], [exp_actc_c_bas[year]])
+        ref.set_year(year)
+        assert np.allclose([ref.CTC_c], [exp_ctc_c_ref[year]])
+        assert np.allclose([ref.ACTC_c], [exp_actc_c_ref[year]])

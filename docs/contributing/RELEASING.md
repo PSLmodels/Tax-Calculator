@@ -16,7 +16,7 @@ In the top-level Tax-Calculator directory, do the following:
 
 --> on branch X-Y-Z, edit docs/about/releases.md to finalize X.Y.Z info
 
---> specify release X.Y.Z in setup.py and taxcalc/__init__.py and docs/index.md
+--> specify release X.Y.Z in setup.py, taxcalc/__init__.py, docs/index.md
 
 --> run `python update_pcl.py`  [to update policy_current_law.json if needed]
 
@@ -24,7 +24,7 @@ In the top-level Tax-Calculator directory, do the following:
 
 --> run `python extend_tcja.py > ext.json`  [to update reforms/ext.json]
 
---> run `make cstest`  [to make confirm project coding style is being followed]
+--> run `make cstest`  [to confirm project coding style is being followed]
 
 --> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc subdir]
 

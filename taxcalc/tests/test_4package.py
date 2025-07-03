@@ -68,7 +68,6 @@ def test_for_consistency(tests_path):
         'coverage',
         "pip",
         "jupyter-book",
-        "marshmallow>=3.22, <4.0",  # TODO: drop this after ParamTools is fixed
         "setuptools"
     ])
     # read conda.recipe/meta.yaml requirements

@@ -525,7 +525,6 @@ NEW_KNOWN_ITEMS = {
     'ID_Casualty_c': LIST_MARS_INF,
     'ID_Miscellaneous_c': LIST_MARS_INF,
     'ID_ps': LIST_MARS_INF,
-    'ID_BenefitSurtax_em': LIST_MARS_ZERO,
     'ID_c': LIST_MARS_INF,
     'CG_ec': LIST_SCALAR_ZERO,
     'PT_qbid_ps': LIST_MARS_INF,
@@ -536,8 +535,6 @@ NEW_KNOWN_ITEMS = {
     'UBI_1820': LIST_SCALAR_ZERO,
     'UBI_21': LIST_SCALAR_ZERO,
 }
-for num in range(1, 7 + 1):
-    NEW_KNOWN_ITEMS[f'PT_brk{num}'] = NEW_KNOWN_ITEMS[f'II_brk{num}']
 for num in range(1, 3 + 1):
     NEW_KNOWN_ITEMS[f'AMT_CG_brk{num}'] = NEW_KNOWN_ITEMS[f'CG_brk{num}']
 

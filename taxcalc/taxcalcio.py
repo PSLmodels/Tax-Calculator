@@ -18,7 +18,7 @@ from taxcalc.consumption import Consumption
 from taxcalc.growdiff import GrowDiff
 from taxcalc.growfactors import GrowFactors
 from taxcalc.calculator import Calculator
-from taxcalc.utils import (delete_file, write_graph_file,
+from taxcalc.utils import (json_to_dict, delete_file, write_graph_file,
                            add_quantile_table_row_variable,
                            unweighted_sum, weighted_sum)
 
@@ -54,6 +54,9 @@ class TaxCalcIO():
         None implies economic assumptions are standard assumptions,
         or string is name of optional ASSUMP file.
 
+    runid: int
+        run id value to use for simpler output file names
+
     silent: boolean
         whether or not to suppress action messages.
 
@@ -64,7 +67,7 @@ class TaxCalcIO():
     # pylint: disable=too-many-instance-attributes
 
     def __init__(self, input_data, tax_year, baseline, reform, assump,
-                 silent=True):
+                 runid=0, silent=True):
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-statements,too-many-locals
         self.silent = silent
@@ -133,7 +136,17 @@ class TaxCalcIO():
                     msg = f'{fname} does not end in .json'
                     self.errmsg += f'ERROR: BASELINE file name {msg}\n'
                 # check existence of BASELINE file
-                if not os.path.isfile(bas):
+                if os.path.isfile(bas):
+                    # check validity of JSON text
+                    with open(bas, 'r', encoding='utf-8') as jfile:
+                        json_text = jfile.read()
+                        try:
+                            _ = json_to_dict(json_text)
+                        except ValueError as valerr:  # pragma: no cover
+                            msg = f'{bas} contains invalid JSON'
+                            self.errmsg += f'ERROR: BASELINE file {msg}\n'
+                            self.errmsg += f'{valerr}'
+                else:
                     msg = f'{bas} could not be found'
                     self.errmsg += f'ERROR: BASELINE file {msg}\n'
                 # add fname to list of basnames used in output file names
@@ -167,7 +180,17 @@ class TaxCalcIO():
                     msg = f'{fname} does not end in .json'
                     self.errmsg += f'ERROR: REFORM file name {msg}\n'
                 # check existence of REFORM file
-                if not os.path.isfile(rfm):
+                if os.path.isfile(rfm):
+                    # check validity of JSON text
+                    with open(rfm, 'r', encoding='utf-8') as jfile:
+                        json_text = jfile.read()
+                        try:
+                            _ = json_to_dict(json_text)
+                        except ValueError as valerr:  # pragma: no cover
+                            msg = f'{rfm} contains invalid JSON'
+                            self.errmsg += f'ERROR: REFORM file {msg}\n'
+                            self.errmsg += f'{valerr}'
+                else:
                     msg = f'{rfm} could not be found'
                     self.errmsg += f'ERROR: REFORM file {msg}\n'
                 # add fname to list of refnames used in output file names
@@ -205,20 +228,29 @@ class TaxCalcIO():
             self.errmsg += f'ERROR: {msg}\n'
         # create OUTPUT file name and delete any existing output files
         self.output_filename = f'{inp}{bas}{ref}{asm}.xxx'
-        extensions = [
-            '-params.bas',
-            '-params.ref',
-            '-tables.text',
-            '-atr.html',
-            '-mtr.html',
-            '-pch.html',
-            '.db',
-        ]
-        for ext in extensions:
-            delete_file(self.output_filename.replace('.xxx', ext))
+        self.runid = runid
+        if runid > 0:
+            self.output_filename = f'run{runid}-{str(tax_year)[2:]}.xxx'
+        self.delete_output_files()
         # initialize variables whose values are set in init method
         self.calc_ref = None
         self.calc_bas = None
+
+    def delete_output_files(self):
+        """
+        Delete all output files derived from self.output_filename.
+        """
+        extensions = [
+            '-params.baseline',
+            '-params.reform',
+            '.tables',
+            '-atr.html',
+            '-mtr.html',
+            '-chg.html',
+            '.dumpdb',
+        ]
+        for ext in extensions:
+            delete_file(self.output_filename.replace('.xxx', ext))
 
     def init(self, input_data, tax_year, baseline, reform, assump,
              aging_input_data, exact_calculations):
@@ -446,6 +478,27 @@ class TaxCalcIO():
         dirpath = os.path.abspath(os.path.dirname(__file__))
         return os.path.join(dirpath, self.output_filename)
 
+    def advance_to_year(self, year, aging_data):
+        """
+        Update self.output_filename and advance Calculator objects to year.
+        """
+        # update self.output_filename and delete output files
+        parts = self.output_filename.split('-')
+        if self.runid == 0:  # if using legacy output file names
+            parts[1] = str(year)[2:]
+        else:  # if using simpler output file names (runN-YY.xxx)
+            subparts = parts[1].split('.')
+            subparts[0] = str(year)[2:]
+            parts[1] = '.'.join(subparts)
+        self.output_filename = '-'.join(parts)
+        self.delete_output_files()
+        # advance baseline and reform Calculator objects to specified year
+        self.calc_bas.advance_to_year(year)
+        self.calc_ref.advance_to_year(year)
+        idata = 'Advance input data and' if aging_data else 'Advance'
+        if not self.silent:
+            print(f'{idata} policy to {year}')
+
     def analyze(
             self,
             output_params=False,
@@ -528,21 +581,22 @@ class TaxCalcIO():
         """
         Write baseline and reform policy parameter values to separate files.
         """
+        year = self.calc_bas.current_year
         param_names = Policy.parameter_list()
-        fname = self.output_filename.replace('.xxx', '-params.bas')
+        fname = self.output_filename.replace('.xxx', '-params.baseline')
         with open(fname, 'w', encoding='utf-8') as pfile:
             for pname in param_names:
                 pval = self.calc_bas.policy_param(pname)
-                pfile.write(f'{pname} {pval}\n')
+                pfile.write(f'{year} {pname} {pval}\n')
         if not self.silent:
             print(  # pragma: no cover
                 f'Write baseline policy parameter values to file {fname}'
             )
-        fname = self.output_filename.replace('.xxx', '-params.ref')
+        fname = self.output_filename.replace('.xxx', '-params.reform')
         with open(fname, 'w', encoding='utf-8') as pfile:
             for pname in param_names:
                 pval = self.calc_ref.policy_param(pname)
-                pfile.write(f'{pname} {pval}\n')
+                pfile.write(f'{year} {pname} {pval}\n')
         if not self.silent:
             print(  # pragma: no cover
                 f'Write reform policy parameter values to file {fname}'
@@ -553,7 +607,7 @@ class TaxCalcIO():
         Write tables to text file.
         """
         # pylint: disable=too-many-locals
-        tab_fname = self.output_filename.replace('.xxx', '-tables.text')
+        tab_fname = self.output_filename.replace('.xxx', '.tables')
         # skip tables if there are not some positive weights
         if self.calc_bas.total_weight() <= 0.:
             with open(tab_fname, 'w', encoding='utf-8') as tfile:
@@ -578,10 +632,21 @@ class TaxCalcIO():
         diff = nontax + change  # using expanded_income under baseline policy
         diffdf = pd.DataFrame(data=np.column_stack(diff), columns=all_vars)
         # write each kind of distributional table
+        year = self.calc_bas.current_year
         with open(tab_fname, 'w', encoding='utf-8') as tfile:
-            TaxCalcIO.write_decile_table(distdf, tfile, tkind='Reform Totals')
+            TaxCalcIO.write_decile_table(
+                distdf,
+                tfile,
+                year,
+                tkind='Reform Totals',
+            )
             tfile.write('\n')
-            TaxCalcIO.write_decile_table(diffdf, tfile, tkind='Differences')
+            TaxCalcIO.write_decile_table(
+                diffdf,
+                tfile,
+                year,
+                tkind='Differences',
+            )
         # delete intermediate DataFrame objects
         del distdf
         del diffdf
@@ -592,7 +657,7 @@ class TaxCalcIO():
             )
 
     @staticmethod
-    def write_decile_table(dfx, tfile, tkind='Totals'):
+    def write_decile_table(dfx, tfile, year, tkind='Totals'):
         """
         Write to tfile the tkind decile table using dfx DataFrame.
         """
@@ -620,7 +685,10 @@ class TaxCalcIO():
             weighted_sum, 'combined', include_groups=False
         ).values[:, 1]
         # write decile table to text file
-        row = f'Weighted Tax {tkind} by Baseline Expanded-Income Decile\n'
+        row = (
+            f'Weighted Tax {tkind} by '
+            f'Baseline Expanded-Income Decile for {year}\n'
+        )
         tfile.write(row)
         # pylint: disable=consider-using-f-string
         rowfmt = '{}{}{}{}{}{}\n'
@@ -674,8 +742,8 @@ class TaxCalcIO():
         pos_wght_sum = self.calc_ref.total_weight() > 0.0
         fig = None
         # percentage-aftertax-income-change graph
-        pch_fname = self.output_filename.replace('.xxx', '-pch.html')
-        pch_title = 'PCH by Income Percentile'
+        pch_fname = self.output_filename.replace('.xxx', '-chg.html')
+        pch_title = 'CHG by Income Percentile'
         if pos_wght_sum:
             fig = self.calc_bas.pch_graph(self.calc_ref, pop_quantiles=False)
             write_graph_file(fig, pch_fname, pch_title)
@@ -747,7 +815,7 @@ class TaxCalcIO():
 
     def dump_variables(self, dumpvars_str):
         """
-        Return set of variable names extracted from dumpvars_str, plus
+        Return list of variable names extracted from dumpvars_str, plus
         minimal baseline/reform variables even if not in dumpvars_str.
         Also, builds self.errmsg if any specified variables are not valid.
         """
@@ -802,15 +870,40 @@ class TaxCalcIO():
         # begin main logic
         assert isinstance(dump_varlist, list)
         assert len(dump_varlist) > 0
-        db_fname = self.output_filename.replace('.xxx', '.db')
+        db_fname = self.output_filename.replace('.xxx', '.dumpdb')
         dbcon = sqlite3.connect(db_fname)
         # write base table
         outdf = pd.DataFrame()
         for var in TaxCalcIO.BASE_DUMPVARS:
             outdf[var] = self.calc_bas.array(var)
-        outdf['income_group'] = 0
+        expanded_income_bin_edges = [  # default income_group definition
+            -1e300,  # essentially -infinity
+            50e3,
+            100e3,
+            250e3,
+            500e3,
+            1e6,
+            1e300,  # essentially +infinity
+        ]
+        outdf['income_group'] = 1 + pd.cut(  # default base.income_group values
+            outdf['expanded_income'],
+            expanded_income_bin_edges,
+            right=False,  # bins are defined as [lo_edge, hi_edge)
+            labels=False,  # pd.cut returns bins numbered 0,1,2,...
+        )
         assert len(outdf.index) == self.calc_bas.array_len
         outdf.to_sql('base', dbcon, index=False)
+        del outdf
+        # write income_group_definition table
+        num_groups = len(expanded_income_bin_edges) - 1
+        outdf = pd.DataFrame()
+        outdf['income_group'] = np.array([
+            1 + grp for grp in range(0, num_groups)
+        ])
+        outdf['income_lower'] = np.array(expanded_income_bin_edges[:-1])
+        outdf['income_up_to'] = np.array(expanded_income_bin_edges[1:])
+        assert len(outdf.index) == num_groups
+        outdf.to_sql('income_group_definition', dbcon, index=False)
         del outdf
         # write baseline table
         outdf = dump_output(

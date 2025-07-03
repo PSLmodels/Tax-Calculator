@@ -4,6 +4,94 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2025-06-23 Release 5.0.0
+------------------------
+(last merged pull request is
+[#2920](https://github.com/PSLmodels/Tax-Calculator/pull/2920))
+
+**This is a major release with changes that make Tax-Calculator incompatible with earlier releases.**
+
+**API Changes**
+- Rename two OASDI benefit taxation policy parameters
+[[#2918](https://github.com/PSLmodels/Tax-Calculator/pull/2918) by Martin Holmer]
+- Remove `PT_rt?` and `PT_brk?` and four associated `PT_*` parameters
+[[#2919](https://github.com/PSLmodels/Tax-Calculator/pull/2919) by Martin Holmer]
+- Remove several, but not all, policy parameters that limit itemized deductions
+[[#2920](https://github.com/PSLmodels/Tax-Calculator/pull/2920) by Martin Holmer]
+
+**New Features**
+
+**Bug Fixes**
+
+
+2025-06-13 Release 4.6.3
+------------------------
+(last merged pull request is
+[#2915](https://github.com/PSLmodels/Tax-Calculator/pull/2915))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Update CLI documentation
+[[#2907](https://github.com/PSLmodels/Tax-Calculator/pull/2907) by Martin Holmer]
+- Add deprecation warnings for planned Tax-Calculator 5.0.0 changes, add two tests, and remove one obsolete test
+[[#2908](https://github.com/PSLmodels/Tax-Calculator/pull/2908),
+ [#2909](https://github.com/PSLmodels/Tax-Calculator/pull/2909), and
+ [#2910](https://github.com/PSLmodels/Tax-Calculator/pull/2910) by Martin Holmer]
+- Add optional `--runid N` CLI option that simplifies output file names
+[[#2912](https://github.com/PSLmodels/Tax-Calculator/pull/2912) by Martin Holmer]
+- Add a default `income_group` definition to the CLI --dumpdb output
+[[#2913](https://github.com/PSLmodels/Tax-Calculator/pull/2913) and
+ [#2914](https://github.com/PSLmodels/Tax-Calculator/pull/2914) by Martin Holmer]
+- Standardize CLI output file name extensions
+[[#2915](https://github.com/PSLmodels/Tax-Calculator/pull/2915) by Martin Holmer]
+
+**Bug Fixes**
+
+
+2025-05-16 Release 4.6.2
+------------------------
+(last merged pull request is
+[#2905](https://github.com/PSLmodels/Tax-Calculator/pull/2905))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+- Work around multiple-indexing-change limitations in `parameters.py` code
+[[#2904](https://github.com/PSLmodels/Tax-Calculator/pull/2904) by Martin Holmer]
+- Require `paramtools` 0.20.0 that works with the current `marshmallow` 4.0.0
+[[#2905](https://github.com/PSLmodels/Tax-Calculator/pull/2905) by Martin Holmer]
+
+
+2025-05-09 Release 4.6.1
+------------------------
+(last merged pull request is
+[#2900](https://github.com/PSLmodels/Tax-Calculator/pull/2900))
+
+**This is a minor enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Add ability to specify compound reforms when using the CLI tool's
+`--baseline` option
+[[#2896](https://github.com/PSLmodels/Tax-Calculator/pull/2896) by Martin Holmer]
+- Improve documentation of the `parameter_indexing_CPI_offset` policy parameter
+[[#2897](https://github.com/PSLmodels/Tax-Calculator/pull/2897) by Martin Holmer]
+- Add CLI `--numyears N` option that allows faster multiple-year runs with `tc`
+[[#2900](https://github.com/PSLmodels/Tax-Calculator/pull/2900) by Martin Holmer]
+
+**Bug Fixes**
+- Remove redundant Parameters class property
+[[#2898](https://github.com/PSLmodels/Tax-Calculator/pull/2898) by Martin Holmer]
+
+
 2025-04-30 Release 4.6.0
 ------------------------
 (last merged pull request is

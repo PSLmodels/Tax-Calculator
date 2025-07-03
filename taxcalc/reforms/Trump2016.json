@@ -3,8 +3,7 @@
 // Reform_Reference: https://www.donaldjtrump.com/policies/tax-plan   
 // Reform_Baseline: 2017_law.json
 // Reform_Description:
-// - New personal income tax schedule (regular/non-AMT/non-pass-through) (1) 
-// - New pass-through income tax schedule (2) 
+// - New personal income tax schedule (on regular taxable income) (1) 
 // - New long-term capital gains and qualified dividends tax schedule (3) 
 // - Repeal Alternative Minimum Tax (4) 
 // - Repeal Net Investment Income Tax (5) 
@@ -14,7 +13,6 @@
 // - Cap itemized deductions (9) 
 // Reform_Parameter_Map:
 // - 1: II_rt*, II_brk*
-// - 2: PT_*
 // - 3: CG_*
 // - 4: AMT_*
 // - 5: NIIT_rt
@@ -36,19 +34,6 @@
     "II_rt6": {"2017": 0.25},
     "II_brk6": {"2017": [112500, 225000, 112500, 112500, 225000]},
     "II_rt7": {"2017": 0.33},
-    "PT_rt1": {"2017": 0.12},
-    "PT_brk1": {"2017": [37500, 75000, 37500, 37500, 75000]},
-    "PT_rt2": {"2017": 0.15},
-    "PT_brk2": {"2017": [112500, 225000, 112500, 112500, 225000]},
-    "PT_rt3": {"2017": 0.15},
-    "PT_brk3": {"2017": [112500, 225000, 112500, 112500, 225000]},
-    "PT_rt4": {"2017": 0.15},
-    "PT_brk4": {"2017": [112500, 225000, 112500, 112500, 225000]},
-    "PT_rt5": {"2017": 0.15},
-    "PT_brk5": {"2017": [112500, 225000, 112500, 112500, 225000]},
-    "PT_rt6": {"2017": 0.15},
-    "PT_brk6": {"2017": [112500, 225000, 112500, 112500, 225000]},
-    "PT_rt7": {"2017": 0.15},
     "CG_brk1": {"2017": [37500, 75000, 37500, 37500, 75000]},
     "CG_brk2": {"2017": [112500, 225000, 112500, 112500, 225000]},
     "AMT_rt1": {"2017": 0},

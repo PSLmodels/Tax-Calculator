@@ -14,7 +14,7 @@ import paramtools
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                    DependentCare, ALD_InvInc_ec_base, CapGains,
-                                   SSBenefits, UBI, AGI, ItemDedCap, ItemDed,
+                                   SSBenefits, UBI, AGI, ItemDed,
                                    StdDed, AdditionalMedicareTax, F2441, EITC,
                                    RefundablePayrollTaxCredit,
                                    ChildDepTaxCredit, AdditionalCTC, CTC_new,
@@ -22,7 +22,6 @@ from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    AmOppCreditParts, EducationTaxCredit,
                                    CharityCredit,
                                    NonrefundableCredits, C1040, IITAX,
-                                   BenefitSurtax, BenefitLimitation,
                                    FairShareTax, LumpSumTax, BenefitPrograms,
                                    ExpandIncome, AfterTaxIncome)
 from taxcalc.policy import Policy
@@ -171,8 +170,6 @@ class Calculator():
         UBI(self.__policy, self.__records)
         BenefitPrograms(self)
         self._calc_one_year(zero_out_calc_vars)
-        BenefitSurtax(self)
-        BenefitLimitation(self)
         FairShareTax(self.__policy, self.__records)
         LumpSumTax(self.__policy, self.__records)
         ExpandIncome(self.__policy, self.__records)
@@ -1207,7 +1204,10 @@ class Calculator():
                         pval = getattr(updated, pname).tolist()[0]
                         if mdata_base[pname]['type'] == 'bool':
                             if isinstance(pval, list):
-                                pval = [bool(item) for item in pval]
+                                pval = (  # pragma: no cover
+                                    # there are no bool list parameters
+                                    [bool(item) for item in pval]
+                                )
                             else:
                                 pval = bool(pval)
                         doc += f' {pname} : {pval}\n'
@@ -1245,7 +1245,10 @@ class Calculator():
                             ptype = mdata_base[pname]['type']
                             if isinstance(pval, list):
                                 if ptype == 'bool':
-                                    pval = [bool(item) for item in pval]
+                                    pval = (  # pragma: no cover
+                                        # there are no bool list parameters
+                                        [bool(item) for item in pval]
+                                    )
                             elif ptype == 'bool':
                                 pval = bool(pval)
                             doc += f'  baseline_value: {pval}\n'
@@ -1388,7 +1391,6 @@ class Calculator():
         CapGains(self.__policy, self.__records)
         SSBenefits(self.__policy, self.__records)
         AGI(self.__policy, self.__records)
-        ItemDedCap(self.__policy, self.__records)
         ItemDed(self.__policy, self.__records)
         AdditionalMedicareTax(self.__policy, self.__records)
         StdDed(self.__policy, self.__records)

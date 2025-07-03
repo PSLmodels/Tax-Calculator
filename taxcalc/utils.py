@@ -8,6 +8,7 @@ PUBLIC low-level utility functions for Tax-Calculator.
 # pylint: disable=too-many-lines
 
 import os
+import re
 import math
 import json
 import copy
@@ -930,8 +931,8 @@ def mtr_graph_data(vdf, year,
     ).values[:, 1]
     # construct DataFrame containing the two mtr?_series
     lines = pd.DataFrame()
-    lines['base'] = mtr1_series
-    lines['reform'] = mtr2_series
+    lines['base'] = np.round(mtr1_series, decimals=4)
+    lines['reform'] = np.round(mtr2_series, decimals=4)
     # construct dictionary containing merged data and auto-generated labels
     data = {}
     data['lines'] = lines
@@ -1064,8 +1065,8 @@ def atr_graph_data(vdf, year,
         where=avginc_series[included] != 0)
     # construct DataFrame containing the two atr?_series
     lines = pd.DataFrame()
-    lines['base'] = atr1_series
-    lines['reform'] = atr2_series
+    lines['base'] = np.round(atr1_series, decimals=4)
+    lines['reform'] = np.round(atr2_series, decimals=4)
     # include only percentiles with average income no less than min_avginc
     lines = lines[included]
     # construct dictionary containing plot lines and auto-generated labels
@@ -1236,7 +1237,7 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
         where=avginc_series[included] != 0)
     # construct DataFrame containing the pch_series expressed as percent
     line = pd.DataFrame()
-    line['pch'] = pch_series * 100
+    line['pch'] = np.round(pch_series * 100, decimals=2)
     # include only percentiles with average income no less than min_avginc
     line = line[included]
     # construct dictionary containing plot line and auto-generated labels
@@ -1574,25 +1575,45 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def json_to_dict(json_text):
+def json_to_dict(jsontext):
     """
     Convert specified JSON text into an ordered Python dictionary.
 
     Parameters
     ----------
-    json_text: string
-        JSON text.
+    jsontext: string
+        JSON text that may contain comments, which will be removed
 
     Raises
     ------
     ValueError:
-        if json_text contains a JSON syntax error.
+        if jsontext contains a JSON syntax error after comments are removed
 
     Returns
     -------
     dictionary: collections.OrderedDict
-        JSON data expressed as an ordered Python dictionary.
+        JSON data expressed as an ordered Python dictionary
     """
+    def remove_comments(string):
+        """
+        Remove single and multiline comments from JSON.
+        Logic follows https://stackoverflow.com/a/18381470/9100772
+        """
+        def _replacer(match):
+            # if the 2nd group (capturing comments) is not None,
+            # it means we have captured a non-quoted (real) comment string.
+            if match.group(2) is not None:
+                return "\n"  # preserve line numbers
+            # otherwise, we will return the 1st group
+            return match.group(1)  # captured quoted-string
+        # begin main remove_comments function logic
+        pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
+        # first group captures quoted strings (double or single)
+        # second group captures comments (//single-line or /* multi-line */)
+        regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
+        return regex.sub(_replacer, string)
+    # begin main json_to_dict function logic
+    json_text = remove_comments(jsontext)
     try:
         ordered_dict = json.loads(json_text,
                                   object_pairs_hook=collections.OrderedDict)
@@ -1610,5 +1631,6 @@ def json_to_dict(json_text):
             linenum += 1
             msg += f'{linenum:04d}{line}\n'
         msg += bline + '\n'
+        msg += 'If still puzzled, try using JSONLint online.\n'
         raise ValueError(msg) from valerr
     return ordered_dict
