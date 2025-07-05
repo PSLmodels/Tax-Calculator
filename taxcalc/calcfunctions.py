@@ -1296,26 +1296,19 @@ def SchXYZ(taxable_income, MARS,
     II_rt8: float
         Personal income (regular/non-AMT) tax rate 8
     II_brk1: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 1
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 1
     II_brk2: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 2
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 2
     II_brk3: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 3
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 3
     II_brk4: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 4
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 4
     II_brk5: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 5
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 5
     II_brk6: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 6
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 6
     II_brk7: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 7
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 7
 
     Returns
     -------
