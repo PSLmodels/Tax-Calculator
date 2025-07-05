@@ -16,7 +16,6 @@ Note: the parameter_indexing_CPI_offset parameter is no longer used.
 # pylint: disable=too-many-locals
 
 import math
-import copy
 import numpy as np
 from taxcalc.decorators import iterate_jit, JIT
 
@@ -1134,7 +1133,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
            e02100, e27200, e00650, c01000, PT_SSTB_income,
-           PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
+           PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt, PT_qbid_limited,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
            PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
            PT_qbid_ps, PT_qbid_prt, qbided):
@@ -1182,6 +1181,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         pass-through business
     PT_qbid_rt: float
         Pass-through qualified business income deduction rate
+    PT_qbid_limited: bool
+        Whether or not TCJA QBID limits are active
     PT_qbid_taxinc_thd: list
         Lower threshold of pre-QBID taxable income
     PT_qbid_taxinc_gap: list
@@ -1211,10 +1212,9 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     # calculate taxable income before qualified business income deduction
     pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
     # calculate qualified business income deduction
-    qbided = 0.
     qbinc = max(0., e00900 - c03260 + e26270 + e02100 + e27200)
-    if qbinc > 0. and PT_qbid_rt > 0.:
-        qbid_before_limits = qbinc * PT_qbid_rt
+    qbid_before_limits = qbinc * PT_qbid_rt
+    if PT_qbid_limited:
         lower_thd = PT_qbid_taxinc_thd[MARS - 1]
         if pre_qbid_taxinc <= lower_thd:
             qbided = qbid_before_limits
@@ -1244,16 +1244,17 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
                     prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
                     adj = prt * (qbid_adjusted - cap_adjusted)
                     qbided = qbid_adjusted - adj
-
         # apply taxinc cap (assuming cap rate is equal to PT_qbid_rt)
-        net_cg = e00650 + c01000  # per line 34 in 2018 Pub 535 Worksheet 12-A
+        #   net_cg is defined on line 34 of 2018 Pub 535 Worksheet 12-A
+        net_cg = e00650 + c01000
         taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
         qbided = min(qbided, taxinc_cap)
-
         # apply qbid phaseout
         if qbided > 0. and pre_qbid_taxinc > PT_qbid_ps[MARS - 1]:
             excess = pre_qbid_taxinc - PT_qbid_ps[MARS - 1]
             qbided = max(0., qbided - PT_qbid_prt * excess)
+    else:  # if PT_qbid_limited is false
+        qbided = qbid_before_limits
 
     # calculate taxable income after qualified business income deduction
     c04800 = max(0., pre_qbid_taxinc - qbided)
@@ -1267,75 +1268,85 @@ def SchXYZ(taxable_income, MARS,
            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
            II_brk6, II_brk7):
     """
-    Returns Schedule X, Y, Z tax amount for specified taxable_income.
+    Taxes function returns tax amount given the progressive tax rate
+    schedule specified by the II_rt? and (upper) II_brk? parameters and
+    given taxable income and filing status (MARS).
 
     Parameters
     ----------
     taxable_income: float
-        Taxable income
+        Regular taxable income
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
-    e00900: float
-        Schedule C business net profit/loss for filing unit
-    e26270: float
-        Schedule E: combined partnership and S-corporation net income/loss
-    e02000: float
-        Schedule E total rental, royalty, parternship, S-corporation,
-        etc, income/loss
-    e00200: float
-        Wages, salaries, and tips for filing unit net of pension contributions
     II_rt1: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 1
+        Personal income (regular/non-AMT) tax rate 1
     II_rt2: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 2
+        Personal income (regular/non-AMT) tax rate 2
     II_rt3: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 3
+        Personal income (regular/non-AMT) tax rate 3
     II_rt4: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 4
+        Personal income (regular/non-AMT) tax rate 4
     II_rt5: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 5
+        Personal income (regular/non-AMT) tax rate 5
     II_rt6: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 6
+        Personal income (regular/non-AMT) tax rate 6
     II_rt7: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 7
+        Personal income (regular/non-AMT) tax rate 7
     II_rt8: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 8
+        Personal income (regular/non-AMT) tax rate 8
     II_brk1: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 1
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 1
     II_brk2: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 2
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 2
     II_brk3: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 3
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 3
     II_brk4: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 4
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 4
     II_brk5: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 5
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 5
     II_brk6: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 6
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 6
     II_brk7: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 7
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 7
 
     Returns
     -------
-    reg_tax: float
-        Individual income tax liability on all taxable income
+    Regular individual income tax liability on all taxable income
     """
-    # compute Schedule X,Y,Z tax using taxable income
-    reg_tax = 0.
-    if taxable_income > 0.:
-        reg_tax = Taxes(taxable_income, MARS, 0.0,
-                        II_rt1, II_rt2, II_rt3, II_rt4,
-                        II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    return reg_tax
+    # pylint: disable=too-many-return-statements
+    if taxable_income <= 0.:
+        return 0.
+    tax = 0.
+    brk0 = 0.
+    brk1 = II_brk1[MARS - 1]
+    if taxable_income <= brk1:
+        return tax + II_rt1 * (taxable_income - brk0)
+    tax = tax + II_rt1 * (brk1 - brk0)
+    brk2 = II_brk2[MARS - 1]
+    if taxable_income <= brk2:
+        return tax + II_rt2 * (taxable_income - brk1)
+    tax = tax + II_rt2 * (brk2 - brk1)
+    brk3 = II_brk3[MARS - 1]
+    if taxable_income <= brk3:
+        return tax + II_rt3 * (taxable_income - brk2)
+    tax = tax + II_rt3 * (brk3 - brk2)
+    brk4 = II_brk4[MARS - 1]
+    if taxable_income <= brk4:
+        return tax + II_rt4 * (taxable_income - brk3)
+    tax = tax + II_rt4 * (brk4 - brk3)
+    brk5 = II_brk5[MARS - 1]
+    if taxable_income <= brk5:
+        return tax + II_rt5 * (taxable_income - brk4)
+    tax = tax + II_rt5 * (brk5 - brk4)
+    brk6 = II_brk6[MARS - 1]
+    if taxable_income <= brk6:
+        return tax + II_rt6 * (taxable_income - brk5)
+    tax = tax + II_rt6 * (brk6 - brk5)
+    brk7 = II_brk7[MARS - 1]
+    if taxable_income <= brk7:
+        return tax + II_rt7 * (taxable_income - brk6)
+    return tax + II_rt8 * (taxable_income - brk7)
 
 
 @iterate_jit(nopython=True)
@@ -1355,41 +1366,41 @@ def SchXYZTax(c04800, MARS,
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     II_rt1: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 1
+        Personal income (regular/non-AMT) tax rate 1
     II_rt2: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 2
+        Personal income (regular/non-AMT) tax rate 2
     II_rt3: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 3
+        Personal income (regular/non-AMT) tax rate 3
     II_rt4: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 4
+        Personal income (regular/non-AMT) tax rate 4
     II_rt5: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 5
+        Personal income (regular/non-AMT) tax rate 5
     II_rt6: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 6
+        Personal income (regular/non-AMT) tax rate 6
     II_rt7: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 7
+        Personal income (regular/non-AMT) tax rate 7
     II_rt8: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 8
+        Personal income (regular/non-AMT) tax rate 8
     II_brk1: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 1
     II_brk2: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 2
     II_brk3: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 3
     II_brk4: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 4
     II_brk5: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 5
     II_brk6: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 6
     II_brk7: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 7
     c05200: float
         Tax amount from Schedule X,Y,Z tables
@@ -1399,11 +1410,11 @@ def SchXYZTax(c04800, MARS,
     c05200: float
         Tax amount from Schedule X, Y, Z tables
     """
-    c05200 = SchXYZ(c04800, MARS,
-                    II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                    II_rt6, II_rt7, II_rt8,
-                    II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                    II_brk6, II_brk7)
+    c05200 = SchXYZ(
+        c04800, MARS,
+        II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
+        II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7
+    )
     return c05200
 
 
@@ -1434,8 +1445,6 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         Capital gains distributions not reported on Schedule D
     e58990: float
         Investment income elected amount from Form 4952
-    e00200: float
-        Wages, salaries, and tips for filing unit net of pension contributions
     e24515: float
         Schedule D: un-recaptured section 1250 Gain
     e24518: float
@@ -1447,49 +1456,42 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         Regular taxable income
     c05200: float
         Tax amount from Schedule X,Y,Z tables
-    e00900: float
-        Schedule C business net profit/loss for filing unit
-    e26270: float
-        Schedule E: combined partnership and S-corporation net income/loss
-    e02000: float
-        Schedule E total rental, royalty, partnership, S-corporation,
-        etc, income/loss
     II_rt1: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 1
+        Personal income (regular/non-AMT) tax rate 1
     II_rt2: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 2
+        Personal income (regular/non-AMT) tax rate 2
     II_rt3: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 3
+        Personal income (regular/non-AMT) tax rate 3
     II_rt4: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 4
+        Personal income (regular/non-AMT) tax rate 4
     II_rt5: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 5
+        Personal income (regular/non-AMT) tax rate 5
     II_rt6: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 6
+        Personal income (regular/non-AMT) tax rate 6
     II_rt7: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 7
+        Personal income (regular/non-AMT) tax rate 7
     II_rt8: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 8
+        Personal income (regular/non-AMT) tax rate 8
     II_brk1: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 1
     II_brk2: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 2
     II_brk3: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 3
     II_brk4: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 4
     II_brk5: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 5
     II_brk6: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 6
     II_brk7: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 7
     CG_nodiff: bool
         Long term capital gains and qualified dividends taxed no differently
@@ -3207,124 +3209,6 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     combined = iitax + payrolltax
     return (eitc, refund, ctc_total, ctc_refundable, ctc_nonrefundable,
             iitax, combined)
-
-
-@JIT(nopython=True)
-def Taxes(income, MARS, tbrk_base,
-          rate1, rate2, rate3, rate4, rate5, rate6, rate7, rate8,
-          tbrk1, tbrk2, tbrk3, tbrk4, tbrk5, tbrk6, tbrk7):
-    """
-    Taxes function returns tax amount given the progressive tax rate
-    schedule specified by the rate* and (upper) tbrk* parameters and
-    given income, filing status (MARS), and tax bracket base (tbrk_base).
-
-    Parameters
-    ----------
-    income: float
-        Taxable income
-    MARS: int
-        Filing (marital) status. (1=single, 2=joint, 3=separate,
-                                  4=household-head, 5=widow(er))
-    tbrk_base: float
-        Amount of income used to determine the braket the filer is in
-    rate1: list
-        Income tax rate 1
-    rate2: list
-        Income tax rate 2
-    rate3: list
-        Income tax rate 3
-    rate4: list
-        Income tax rate 4
-    rate5: list
-        Income tax rate 5
-    rate6: list
-        Income tax rate 6
-    rate7: list
-        Income tax rate 7
-    rate8: list
-        Income tax rate 8
-    tbrk1: list
-        Income tax bracket (upper threshold) 1
-    tbrk2: list
-        Income tax bracket (upper threshold) 2
-    tbrk3: list
-        Income tax bracket (upper threshold) 3
-    tbrk4: list
-        Income tax bracket (upper threshold) 4
-    tbrk5: list
-        Income tax bracket (upper threshold) 5
-    tbrk6: list
-        Income tax bracket (upper threshold) 6
-    tbrk7: list
-        Income tax bracket (upper threshold) 7
-
-    Returns
-    -------
-    None
-    """
-    if tbrk_base > 0.:
-        brk1 = max(tbrk1[MARS - 1] - tbrk_base, 0.)
-        brk2 = max(tbrk2[MARS - 1] - tbrk_base, 0.)
-        brk3 = max(tbrk3[MARS - 1] - tbrk_base, 0.)
-        brk4 = max(tbrk4[MARS - 1] - tbrk_base, 0.)
-        brk5 = max(tbrk5[MARS - 1] - tbrk_base, 0.)
-        brk6 = max(tbrk6[MARS - 1] - tbrk_base, 0.)
-        brk7 = max(tbrk7[MARS - 1] - tbrk_base, 0.)
-    else:
-        brk1 = tbrk1[MARS - 1]
-        brk2 = tbrk2[MARS - 1]
-        brk3 = tbrk3[MARS - 1]
-        brk4 = tbrk4[MARS - 1]
-        brk5 = tbrk5[MARS - 1]
-        brk6 = tbrk6[MARS - 1]
-        brk7 = tbrk7[MARS - 1]
-    return (rate1 * min(income, brk1) +
-            rate2 * min(brk2 - brk1, max(0., income - brk1)) +
-            rate3 * min(brk3 - brk2, max(0., income - brk2)) +
-            rate4 * min(brk4 - brk3, max(0., income - brk3)) +
-            rate5 * min(brk5 - brk4, max(0., income - brk4)) +
-            rate6 * min(brk6 - brk5, max(0., income - brk5)) +
-            rate7 * min(brk7 - brk6, max(0., income - brk6)) +
-            rate8 * max(0., income - brk7))
-
-
-def ComputeBenefit(calc, ID_switch):
-    """
-    Calculates the value of the benefits accrued from itemizing.
-
-    Parameters
-    ----------
-    calc: Calculator object
-        calc represents the reform while self represents the baseline
-    ID_switch: list
-        Deductions subject to the surtax on itemized deduction benefits
-
-    Returns
-    -------
-    benefit: float
-        Imputed benefits from itemizing deductions
-    """
-    # compute income tax liability with no itemized deductions allowed for
-    # the types of itemized deductions covered under the BenefitSurtax
-    no_ID_calc = copy.deepcopy(calc)
-    if ID_switch[0]:
-        no_ID_calc.policy_param('ID_Medical_hc', [1.])
-    if ID_switch[1]:
-        no_ID_calc.policy_param('ID_StateLocalTax_hc', [1.])
-    if ID_switch[2]:
-        no_ID_calc.policy_param('ID_RealEstate_hc', [1.])
-    if ID_switch[3]:
-        no_ID_calc.policy_param('ID_Casualty_hc', [1.])
-    if ID_switch[4]:
-        no_ID_calc.policy_param('ID_Miscellaneous_hc', [1.])
-    if ID_switch[5]:
-        no_ID_calc.policy_param('ID_InterestPaid_hc', [1.])
-    if ID_switch[6]:
-        no_ID_calc.policy_param('ID_Charity_hc', [1.])
-    no_ID_calc._calc_one_year()  # pylint: disable=protected-access
-    diff_iitax = no_ID_calc.array('iitax') - calc.array('iitax')
-    benefit = np.where(diff_iitax > 0., diff_iitax, 0.)
-    return benefit
 
 
 @iterate_jit(nopython=True)

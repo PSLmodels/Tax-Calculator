@@ -24,22 +24,6 @@
                     }
                 }
             },
-            "idedtype": {
-                "type": "str",
-                "validators": {
-                    "choice": {
-                        "choices": [
-                            "med",
-                            "sltx",
-                            "retx",
-                            "cas",
-                            "misc",
-                            "int",
-                            "char"
-                        ]
-                    }
-                }
-            },
             "EIC": {
                 "type": "str",
                 "validators": {
@@ -14751,6 +14735,32 @@
             "range": {
                 "min": 0,
                 "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "PT_qbid_limited": {
+        "title": "Whether qualified business income deduction is limited",
+        "description": "If true, various TCJA-like limitations are active, otherwise all those limitations (all PT_qbid_* parameters other than PT_qbid_rt) are inactive.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": false,
+        "indexed": false,
+        "type": "bool",
+        "value": [
+            {
+                "year": 2013,
+                "value": true
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": false,
+                "max": true
             }
         },
         "compatible_data": {

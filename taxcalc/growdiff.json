@@ -24,22 +24,6 @@
                     }
                 }
             },
-            "idedtype": {
-                "type": "str",
-                "validators": {
-                    "choice": {
-                        "choices": [
-                            "med",
-                            "sltx",
-                            "retx",
-                            "cas",
-                            "misc",
-                            "int",
-                            "char"
-                        ]
-                    }
-                }
-            },
             "EIC": {
                 "type": "str",
                 "validators": {
