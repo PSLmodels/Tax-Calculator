@@ -348,7 +348,12 @@ def Adj(e03150, e03210, c03260,
         ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
         ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
         ALD_DomesticProduction_hc, ALD_Tuition_hc,
-        c02900):
+        MARS, earned,
+        overtime_income, ALD_OvertimeIncome_hc, ALD_OvertimeIncome_c,
+        ALD_OvertimeIncome_ps, ALD_OvertimeIncome_po_rate,
+        tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
+        ALD_TipIncome_ps, ALD_TipIncome_po_rate,
+        c02900, ALD_OvertimeIncome, ALD_TipIncome):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
 
@@ -402,11 +407,40 @@ def Adj(e03150, e03210, c03260,
         Domestic production haircut
     ALD_Tuition_hc: float
         Tuition and fees haircut
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate,
+                               4=household-head, 5=widow(er))
+    earned: float
+        Earned income used to phase-out ALD_OvertimeIncome and ALD_TipIncome
+    overtime_income: float
+        Overtime income qualified for an above-the-line deduction
+    ALD_OvertimeIncome_hc: float
+        ALD_OvertimeIncome haircut
+    ALD_OvertimeIncome_c: float
+        ALD_OvertimeIncome cap
+    ALD_OvertimeIncome_ps: float
+        ALD_OvertimeIncome phase-out earned income start
+    ALD_OvertimeIncome_po_rate: float
+        ALD_OvertimeIncome phase-out rate
+    tip_income: float
+        Tip income qualified for an above-the-line deduction
+    ALD_TipIncome_hc: float
+        ALD_TipIncome haircut
+    ALD_TipIncome_c: float
+        ALD_TipIncome cap
+    ALD_TipIncome_ps: float
+        ALD_TipIncome phase-out earned income start
+    ALD_TipIncome_po_rate: float
+        ALD_TipIncome phase-out rate
 
     Returns
     -------
     c02900: float
         Total of all "above the line" income adjustments to get AGI
+    ALD_OvertimeIncome: float
+        Overtime ALD amount included in c02900
+    ALD_TipIncome: float
+        Tip ALD amount included in c02900
     """
     # Form 2555 foreign earned income exclusion is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
@@ -423,7 +457,29 @@ def Adj(e03150, e03210, c03260,
               (1. - ALD_IRAContributions_hc) * e03150 +
               (1. - ALD_KEOGH_SEP_hc) * e03300 +
               care_deduction)
-    return c02900
+    # calculate ALD_OvertimeIncome
+    ALD_OvertimeIncome = 0.
+    if overtime_income > 0. and ALD_OvertimeIncome_hc < 1.0:
+        ded = min(overtime_income, ALD_OvertimeIncome_c[MARS - 1])
+        po_start = ALD_OvertimeIncome_ps[MARS - 1]
+        if earned > po_start:
+            excess = earned - po_start
+            po_amount = excess * ALD_OvertimeIncome_po_rate
+            ded = max(0., ded - po_amount)
+        ALD_OvertimeIncome = ded
+    # calculate ALD_TipIncome
+    ALD_TipIncome = 0.
+    if tip_income > 0. and ALD_TipIncome_hc < 1.0:
+        ded = min(tip_income, ALD_TipIncome_c[MARS - 1])
+        po_start = ALD_TipIncome_ps[MARS - 1]
+        if earned > po_start:
+            excess = earned - po_start
+            po_amount = excess * ALD_TipIncome_po_rate
+            ded = max(0., ded - po_amount)
+        ALD_TipIncome = ded
+    # return results
+    c02900 += ALD_OvertimeIncome + ALD_TipIncome
+    return (c02900, ALD_OvertimeIncome, ALD_TipIncome)
 
 
 @iterate_jit(nopython=True)

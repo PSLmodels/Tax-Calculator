@@ -1154,6 +1154,16 @@
       "desc": "Deduction for payment of qualified auto loan interest",
       "form": {"2025-20??": "calculated variable"}
     },
+    "ALD_OvertimeIncome": {
+      "type": "float",
+      "desc": "Above-the-line deduction for qualified overtime income",
+      "form": {"2025-20??": "calculated variable"}
+    },
+    "ALD_TipIncome": {
+      "type": "float",
+      "desc": "Above-the-line deduction for qualified tip income",
+      "form": {"2025-20??": "calculated variable"}
+    },
     "ubi": {
       "type": "float",
       "desc": "Universal Basic Income benefit for filing unit",
