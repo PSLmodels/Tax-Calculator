@@ -786,6 +786,63 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
 
 
 @iterate_jit(nopython=True)
+def AutoLoanInterestDed(auto_loan_interest, MARS, c00100, exact,
+                        AutoLoanInterestDed_c,
+                        AutoLoanInterestDed_ps,
+                        AutoLoanInterestDed_po_step_size,
+                        AutoLoanInterestDed_po_rate_per_step,
+                        auto_loan_interest_deduction):
+    """
+    Calculates below-the-line deduction on qualified auto loan interest paid.
+
+    Parameters
+    ----------
+    auto_loan_interest: float
+        Qualified auto loan interest paid
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate,
+                               4=household-head, 5=widow(er))
+    c00100: float
+        Adjusted gross income
+    exact: int
+        Whether or not to smooth the deduction phase out
+    AutoLoanInterestDed_c: float
+        Deduction cap
+    AutoLoanInterestDed_ps: float
+        Deduction phase-out starts above this AGI
+    AutoLoanInterestDed_po_step_size: float
+        Deduction phase-out AGI step size
+    AutoLoanInterestDed_po_rate_per_step: float
+        Deduction phase-out rate per AGI step
+    auto_loan_interest_deduction: float
+        Deduction available to both itemizers and nonitemizers
+
+    Returns
+    -------
+    auto_loan_interest_deduction: float
+        Deduction available to both itemizers and nonitemizers
+    """
+    auto_loan_interest_deduction = 0.
+    if AutoLoanInterestDed_c > 0. and auto_loan_interest > 0.:
+        # cap deduction
+        ded = min(auto_loan_interest, AutoLoanInterestDed_c)
+        po_start = AutoLoanInterestDed_ps[MARS - 1]
+        if c00100 > po_start:
+            # phase out deduction
+            excess_agi = c00100 - po_start
+            po_rate = AutoLoanInterestDed_po_rate_per_step
+            if exact == 1:  # exact calculation as on tax forms
+                step_size = AutoLoanInterestDed_po_step_size
+                steps = math.ceil(excess_agi / step_size)
+                po_amount = steps * step_size * po_rate
+            else:  # smoothed calculation needed for sensible mtr calculation
+                po_amount = excess_agi * po_rate
+            ded = max(0., ded - po_amount)
+        auto_loan_interest_deduction = ded
+    return auto_loan_interest_deduction
+
+
+@iterate_jit(nopython=True)
 def ItemDed(e17500, e18400, e18500, e19200,
             e19800, e20100, e20400, g20500,
             MARS, age_head, age_spouse, c00100, c04470, c21040, c21060,
@@ -1132,8 +1189,9 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
-           e02100, e27200, e00650, c01000, PT_SSTB_income,
-           PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt, PT_qbid_limited,
+           e02100, e27200, e00650, c01000, auto_loan_interest_deduction,
+           PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
+           PT_qbid_rt, PT_qbid_limited,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
            PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
            PT_qbid_ps, PT_qbid_prt, qbided):
@@ -1168,6 +1226,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         Qualified dividends included in ordinary dividends
     c01000: float
         Limitation on capital losses
+    auto_loan_interest_deduction: float
+        Deduction for qualified auto loan interest paid
     PT_SSTB_income: int
         Value of one implies business income is from a specified service
           trade or business (SSTB)
@@ -1257,7 +1317,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         qbided = qbid_before_limits
 
     # calculate taxable income after qualified business income deduction
-    c04800 = max(0., pre_qbid_taxinc - qbided)
+    c04800 = max(0., pre_qbid_taxinc - qbided - auto_loan_interest_deduction)
     return (c04800, qbided)
 
 

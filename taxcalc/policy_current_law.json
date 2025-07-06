@@ -11597,11 +11597,11 @@
         }
     },
     "II_rt1": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 1",
+        "title": "Personal income (regular/non-AMT) tax rate 1",
         "description": "The lowest tax rate, applied to the portion of taxable income below tax bracket 1.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -11663,11 +11663,11 @@
         }
     },
     "II_brk1": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 1",
+        "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 1",
         "description": "Taxable income below this threshold is taxed at tax rate 1.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -12035,11 +12035,11 @@
         }
     },
     "II_rt2": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 2",
+        "title": "Personal income (regular/non-AMT) tax rate 2",
         "description": "The second lowest tax rate, applied to the portion of taxable income below tax bracket 2 and above tax bracket 1.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -12101,11 +12101,11 @@
         }
     },
     "II_brk2": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 2",
+        "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 2",
         "description": "Income below this threshold and above tax bracket 1 is taxed at tax rate 2.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -12473,11 +12473,11 @@
         }
     },
     "II_rt3": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 3",
+        "title": "Personal income (regular/non-AMT) tax rate 3",
         "description": "The third lowest tax rate, applied to the portion of taxable income below tax bracket 3 and above tax bracket 2.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -12539,11 +12539,11 @@
         }
     },
     "II_brk3": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 3",
+        "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 3",
         "description": "Income below this threshold and above tax bracket 2 is taxed at tax rate 3.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -12911,11 +12911,11 @@
         }
     },
     "II_rt4": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 4",
+        "title": "Personal income (regular/non-AMT) tax rate 4",
         "description": "The tax rate applied to the portion of taxable income below tax bracket 4 and above tax bracket 3.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -12977,11 +12977,11 @@
         }
     },
     "II_brk4": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 4",
+        "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 4",
         "description": "Income below this threshold and above tax bracket 3 is taxed at tax rate 4.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -13349,11 +13349,11 @@
         }
     },
     "II_rt5": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 5",
+        "title": "Personal income (regular/non-AMT) tax rate 5",
         "description": "The third highest tax rate, applied to the portion of taxable income below tax bracket 5 and above tax bracket 4.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -13415,11 +13415,11 @@
         }
     },
     "II_brk5": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 5",
+        "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 5",
         "description": "Income below this threshold and above tax bracket 4 is taxed at tax rate 5.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -13787,11 +13787,11 @@
         }
     },
     "II_rt6": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 6",
+        "title": "Personal income (regular/non-AMT) tax rate 6",
         "description": "The second higher tax rate, applied to the portion of taxable income below tax bracket 6 and above tax bracket 5.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -13853,11 +13853,11 @@
         }
     },
     "II_brk6": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket 6",
+        "title": "Personal income (regular/non-AMT) tax bracket 6",
         "description": "Income below this threshold and above tax bracket 5 is taxed at tax rate 6.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -14225,11 +14225,11 @@
         }
     },
     "II_rt7": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 7",
+        "title": "Personal income (regular/non-AMT) tax rate 7",
         "description": "The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -14291,11 +14291,11 @@
         }
     },
     "II_brk7": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket 7",
+        "title": "Personal income (regular/non-AMT) tax bracket 7",
         "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -14663,11 +14663,11 @@
         }
     },
     "II_rt8": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 8",
+        "title": "Personal income (regular/non-AMT) tax rate 8",
         "description": "The tax rate applied to the portion of taxable income above tax bracket 7.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -22186,6 +22186,147 @@
             {
                 "year": 2013,
                 "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "AutoLoanInterestDed_c": {
+        "title": "Maximum amount of auto loan interest that is deductible",
+        "description": "Auto loan interest in excess of this amount may not be deducted from AGI.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2024,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "value": 10000.0
+            },
+            {
+                "year": 2028,
+                "value": 10000.0
+            },
+            {
+                "year": 2029,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "AutoLoanInterestDed_ps": {
+        "title": "Auto loan interest deduction phase-out start AGI",
+        "description": "Auto loan interest deduction is phased-out if AGI exceeds this amount.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 100000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 200000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 100000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 100000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 200000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "AutoLoanInterestDed_po_step_size": {
+        "title": "Auto loan interest deduction phase-out AGI step size",
+        "description": "Auto loan interest deduction is phased-out in AGI steps of this size.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 1000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "AutoLoanInterestDed_po_rate_per_step": {
+        "title": "Auto loan interest deduction phase-out rate per phase-out step",
+        "description": "Auto loan interest deduction is phased-out at this rate for each AGI step.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.20
             }
         ],
         "validators": {
