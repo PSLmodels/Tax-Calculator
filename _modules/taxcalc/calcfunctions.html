@@ -423,7 +423,6 @@ document.write(`
 <span class="c1"># pylint: disable=too-many-locals</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">iterate_jit</span><span class="p">,</span> <span class="n">JIT</span>
 
@@ -1544,7 +1543,7 @@ document.write(`
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">TaxInc</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c04600</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span>
            <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">PT_SSTB_income</span><span class="p">,</span>
-           <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span> <span class="n">PT_qbid_rt</span><span class="p">,</span>
+           <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span> <span class="n">PT_qbid_rt</span><span class="p">,</span> <span class="n">PT_qbid_limited</span><span class="p">,</span>
            <span class="n">PT_qbid_taxinc_thd</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">,</span> <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span>
            <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span> <span class="n">c04800</span><span class="p">,</span>
            <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">qbided</span><span class="p">):</span>
@@ -1592,6 +1591,8 @@ document.write(`
 <span class="sd">        pass-through business</span>
 <span class="sd">    PT_qbid_rt: float</span>
 <span class="sd">        Pass-through qualified business income deduction rate</span>
+<span class="sd">    PT_qbid_limited: bool</span>
+<span class="sd">        Whether or not TCJA QBID limits are active</span>
 <span class="sd">    PT_qbid_taxinc_thd: list</span>
 <span class="sd">        Lower threshold of pre-QBID taxable income</span>
 <span class="sd">    PT_qbid_taxinc_gap: list</span>
@@ -1621,10 +1622,9 @@ document.write(`
     <span class="c1"># calculate taxable income before qualified business income deduction</span>
     <span class="n">pre_qbid_taxinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">c04470</span><span class="p">,</span> <span class="n">standard</span><span class="p">)</span> <span class="o">-</span> <span class="n">c04600</span><span class="p">)</span>
     <span class="c1"># calculate qualified business income deduction</span>
-    <span class="n">qbided</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">qbinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00900</span> <span class="o">-</span> <span class="n">c03260</span> <span class="o">+</span> <span class="n">e26270</span> <span class="o">+</span> <span class="n">e02100</span> <span class="o">+</span> <span class="n">e27200</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">qbinc</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">PT_qbid_rt</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="n">qbid_before_limits</span> <span class="o">=</span> <span class="n">qbinc</span> <span class="o">*</span> <span class="n">PT_qbid_rt</span>
+    <span class="n">qbid_before_limits</span> <span class="o">=</span> <span class="n">qbinc</span> <span class="o">*</span> <span class="n">PT_qbid_rt</span>
+    <span class="k">if</span> <span class="n">PT_qbid_limited</span><span class="p">:</span>
         <span class="n">lower_thd</span> <span class="o">=</span> <span class="n">PT_qbid_taxinc_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">pre_qbid_taxinc</span> <span class="o">&lt;=</span> <span class="n">lower_thd</span><span class="p">:</span>
             <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_before_limits</span>
@@ -1654,16 +1654,17 @@ document.write(`
                     <span class="n">prt</span> <span class="o">=</span> <span class="p">(</span><span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">lower_thd</span><span class="p">)</span> <span class="o">/</span> <span class="n">pre_qbid_taxinc_gap</span>
                     <span class="n">adj</span> <span class="o">=</span> <span class="n">prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">qbid_adjusted</span> <span class="o">-</span> <span class="n">cap_adjusted</span><span class="p">)</span>
                     <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_adjusted</span> <span class="o">-</span> <span class="n">adj</span>
-
         <span class="c1"># apply taxinc cap (assuming cap rate is equal to PT_qbid_rt)</span>
-        <span class="n">net_cg</span> <span class="o">=</span> <span class="n">e00650</span> <span class="o">+</span> <span class="n">c01000</span>  <span class="c1"># per line 34 in 2018 Pub 535 Worksheet 12-A</span>
+        <span class="c1">#   net_cg is defined on line 34 of 2018 Pub 535 Worksheet 12-A</span>
+        <span class="n">net_cg</span> <span class="o">=</span> <span class="n">e00650</span> <span class="o">+</span> <span class="n">c01000</span>
         <span class="n">taxinc_cap</span> <span class="o">=</span> <span class="n">PT_qbid_rt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">net_cg</span><span class="p">)</span>
         <span class="n">qbided</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">qbided</span><span class="p">,</span> <span class="n">taxinc_cap</span><span class="p">)</span>
-
         <span class="c1"># apply qbid phaseout</span>
         <span class="k">if</span> <span class="n">qbided</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">pre_qbid_taxinc</span> <span class="o">&gt;</span> <span class="n">PT_qbid_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
             <span class="n">excess</span> <span class="o">=</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">PT_qbid_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
             <span class="n">qbided</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">PT_qbid_prt</span> <span class="o">*</span> <span class="n">excess</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># if PT_qbid_limited is false</span>
+        <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_before_limits</span>
 
     <span class="c1"># calculate taxable income after qualified business income deduction</span>
     <span class="n">c04800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">qbided</span><span class="p">)</span>
@@ -1679,75 +1680,85 @@ document.write(`
            <span class="n">II_brk1</span><span class="p">,</span> <span class="n">II_brk2</span><span class="p">,</span> <span class="n">II_brk3</span><span class="p">,</span> <span class="n">II_brk4</span><span class="p">,</span> <span class="n">II_brk5</span><span class="p">,</span>
            <span class="n">II_brk6</span><span class="p">,</span> <span class="n">II_brk7</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns Schedule X, Y, Z tax amount for specified taxable_income.</span>
+<span class="sd">    Taxes function returns tax amount given the progressive tax rate</span>
+<span class="sd">    schedule specified by the II_rt? and (upper) II_brk? parameters and</span>
+<span class="sd">    given taxable income and filing status (MARS).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    taxable_income: float</span>
-<span class="sd">        Taxable income</span>
+<span class="sd">        Regular taxable income</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                                  4=household-head, 5=widow(er))</span>
-<span class="sd">    e00900: float</span>
-<span class="sd">        Schedule C business net profit/loss for filing unit</span>
-<span class="sd">    e26270: float</span>
-<span class="sd">        Schedule E: combined partnership and S-corporation net income/loss</span>
-<span class="sd">    e02000: float</span>
-<span class="sd">        Schedule E total rental, royalty, parternship, S-corporation,</span>
-<span class="sd">        etc, income/loss</span>
-<span class="sd">    e00200: float</span>
-<span class="sd">        Wages, salaries, and tips for filing unit net of pension contributions</span>
 <span class="sd">    II_rt1: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 1</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 1</span>
 <span class="sd">    II_rt2: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 2</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 2</span>
 <span class="sd">    II_rt3: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 3</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 3</span>
 <span class="sd">    II_rt4: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 4</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 4</span>
 <span class="sd">    II_rt5: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 5</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 5</span>
 <span class="sd">    II_rt6: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 6</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 6</span>
 <span class="sd">    II_rt7: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 7</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 7</span>
 <span class="sd">    II_rt8: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 8</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 8</span>
 <span class="sd">    II_brk1: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
-<span class="sd">        tax bracket (upper threshold) 1</span>
+<span class="sd">        Personal income (regular/non-AMT) tax bracket (upper threshold) 1</span>
 <span class="sd">    II_brk2: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
-<span class="sd">        tax bracket (upper threshold) 2</span>
+<span class="sd">        Personal income (regular/non-AMT) tax bracket (upper threshold) 2</span>
 <span class="sd">    II_brk3: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
-<span class="sd">        tax bracket (upper threshold) 3</span>
+<span class="sd">        Personal income (regular/non-AMT) tax bracket (upper threshold) 3</span>
 <span class="sd">    II_brk4: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
-<span class="sd">        tax bracket (upper threshold) 4</span>
+<span class="sd">        Personal income (regular/non-AMT) tax bracket (upper threshold) 4</span>
 <span class="sd">    II_brk5: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
-<span class="sd">        tax bracket (upper threshold) 5</span>
+<span class="sd">        Personal income (regular/non-AMT) tax bracket (upper threshold) 5</span>
 <span class="sd">    II_brk6: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
-<span class="sd">        tax bracket (upper threshold) 6</span>
+<span class="sd">        Personal income (regular/non-AMT) tax bracket (upper threshold) 6</span>
 <span class="sd">    II_brk7: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
-<span class="sd">        tax bracket (upper threshold) 7</span>
+<span class="sd">        Personal income (regular/non-AMT) tax bracket (upper threshold) 7</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    reg_tax: float</span>
-<span class="sd">        Individual income tax liability on all taxable income</span>
+<span class="sd">    Regular individual income tax liability on all taxable income</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># compute Schedule X,Y,Z tax using taxable income</span>
-    <span class="n">reg_tax</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="n">reg_tax</span> <span class="o">=</span> <span class="n">Taxes</span><span class="p">(</span><span class="n">taxable_income</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
-                        <span class="n">II_rt1</span><span class="p">,</span> <span class="n">II_rt2</span><span class="p">,</span> <span class="n">II_rt3</span><span class="p">,</span> <span class="n">II_rt4</span><span class="p">,</span>
-                        <span class="n">II_rt5</span><span class="p">,</span> <span class="n">II_rt6</span><span class="p">,</span> <span class="n">II_rt7</span><span class="p">,</span> <span class="n">II_rt8</span><span class="p">,</span> <span class="n">II_brk1</span><span class="p">,</span> <span class="n">II_brk2</span><span class="p">,</span>
-                        <span class="n">II_brk3</span><span class="p">,</span> <span class="n">II_brk4</span><span class="p">,</span> <span class="n">II_brk5</span><span class="p">,</span> <span class="n">II_brk6</span><span class="p">,</span> <span class="n">II_brk7</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">reg_tax</span></div>
+    <span class="c1"># pylint: disable=too-many-return-statements</span>
+    <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">brk0</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">brk1</span> <span class="o">=</span> <span class="n">II_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="n">brk1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt1</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk0</span><span class="p">)</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt1</span> <span class="o">*</span> <span class="p">(</span><span class="n">brk1</span> <span class="o">-</span> <span class="n">brk0</span><span class="p">)</span>
+    <span class="n">brk2</span> <span class="o">=</span> <span class="n">II_brk2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="n">brk2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt2</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk1</span><span class="p">)</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt2</span> <span class="o">*</span> <span class="p">(</span><span class="n">brk2</span> <span class="o">-</span> <span class="n">brk1</span><span class="p">)</span>
+    <span class="n">brk3</span> <span class="o">=</span> <span class="n">II_brk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="n">brk3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt3</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk2</span><span class="p">)</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt3</span> <span class="o">*</span> <span class="p">(</span><span class="n">brk3</span> <span class="o">-</span> <span class="n">brk2</span><span class="p">)</span>
+    <span class="n">brk4</span> <span class="o">=</span> <span class="n">II_brk4</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="n">brk4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt4</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk3</span><span class="p">)</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt4</span> <span class="o">*</span> <span class="p">(</span><span class="n">brk4</span> <span class="o">-</span> <span class="n">brk3</span><span class="p">)</span>
+    <span class="n">brk5</span> <span class="o">=</span> <span class="n">II_brk5</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="n">brk5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt5</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk4</span><span class="p">)</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt5</span> <span class="o">*</span> <span class="p">(</span><span class="n">brk5</span> <span class="o">-</span> <span class="n">brk4</span><span class="p">)</span>
+    <span class="n">brk6</span> <span class="o">=</span> <span class="n">II_brk6</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="n">brk6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt6</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk5</span><span class="p">)</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt6</span> <span class="o">*</span> <span class="p">(</span><span class="n">brk6</span> <span class="o">-</span> <span class="n">brk5</span><span class="p">)</span>
+    <span class="n">brk7</span> <span class="o">=</span> <span class="n">II_brk7</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="n">brk7</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt7</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt8</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk7</span><span class="p">)</span></div>
 
 
 
@@ -1768,41 +1779,41 @@ document.write(`
 <span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                                  4=household-head, 5=widow(er))</span>
 <span class="sd">    II_rt1: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 1</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 1</span>
 <span class="sd">    II_rt2: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 2</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 2</span>
 <span class="sd">    II_rt3: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 3</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 3</span>
 <span class="sd">    II_rt4: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 4</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 4</span>
 <span class="sd">    II_rt5: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 5</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 5</span>
 <span class="sd">    II_rt6: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 6</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 6</span>
 <span class="sd">    II_rt7: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 7</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 7</span>
 <span class="sd">    II_rt8: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 8</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 8</span>
 <span class="sd">    II_brk1: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 1</span>
 <span class="sd">    II_brk2: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 2</span>
 <span class="sd">    II_brk3: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 3</span>
 <span class="sd">    II_brk4: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 4</span>
 <span class="sd">    II_brk5: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 5</span>
 <span class="sd">    II_brk6: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 6</span>
 <span class="sd">    II_brk7: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 7</span>
 <span class="sd">    c05200: float</span>
 <span class="sd">        Tax amount from Schedule X,Y,Z tables</span>
@@ -1812,11 +1823,11 @@ document.write(`
 <span class="sd">    c05200: float</span>
 <span class="sd">        Tax amount from Schedule X, Y, Z tables</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">c05200</span> <span class="o">=</span> <span class="n">SchXYZ</span><span class="p">(</span><span class="n">c04800</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
-                    <span class="n">II_rt1</span><span class="p">,</span> <span class="n">II_rt2</span><span class="p">,</span> <span class="n">II_rt3</span><span class="p">,</span> <span class="n">II_rt4</span><span class="p">,</span> <span class="n">II_rt5</span><span class="p">,</span>
-                    <span class="n">II_rt6</span><span class="p">,</span> <span class="n">II_rt7</span><span class="p">,</span> <span class="n">II_rt8</span><span class="p">,</span>
-                    <span class="n">II_brk1</span><span class="p">,</span> <span class="n">II_brk2</span><span class="p">,</span> <span class="n">II_brk3</span><span class="p">,</span> <span class="n">II_brk4</span><span class="p">,</span> <span class="n">II_brk5</span><span class="p">,</span>
-                    <span class="n">II_brk6</span><span class="p">,</span> <span class="n">II_brk7</span><span class="p">)</span>
+    <span class="n">c05200</span> <span class="o">=</span> <span class="n">SchXYZ</span><span class="p">(</span>
+        <span class="n">c04800</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
+        <span class="n">II_rt1</span><span class="p">,</span> <span class="n">II_rt2</span><span class="p">,</span> <span class="n">II_rt3</span><span class="p">,</span> <span class="n">II_rt4</span><span class="p">,</span> <span class="n">II_rt5</span><span class="p">,</span> <span class="n">II_rt6</span><span class="p">,</span> <span class="n">II_rt7</span><span class="p">,</span> <span class="n">II_rt8</span><span class="p">,</span>
+        <span class="n">II_brk1</span><span class="p">,</span> <span class="n">II_brk2</span><span class="p">,</span> <span class="n">II_brk3</span><span class="p">,</span> <span class="n">II_brk4</span><span class="p">,</span> <span class="n">II_brk5</span><span class="p">,</span> <span class="n">II_brk6</span><span class="p">,</span> <span class="n">II_brk7</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">c05200</span>
 
 
@@ -1847,8 +1858,6 @@ document.write(`
 <span class="sd">        Capital gains distributions not reported on Schedule D</span>
 <span class="sd">    e58990: float</span>
 <span class="sd">        Investment income elected amount from Form 4952</span>
-<span class="sd">    e00200: float</span>
-<span class="sd">        Wages, salaries, and tips for filing unit net of pension contributions</span>
 <span class="sd">    e24515: float</span>
 <span class="sd">        Schedule D: un-recaptured section 1250 Gain</span>
 <span class="sd">    e24518: float</span>
@@ -1860,49 +1869,42 @@ document.write(`
 <span class="sd">        Regular taxable income</span>
 <span class="sd">    c05200: float</span>
 <span class="sd">        Tax amount from Schedule X,Y,Z tables</span>
-<span class="sd">    e00900: float</span>
-<span class="sd">        Schedule C business net profit/loss for filing unit</span>
-<span class="sd">    e26270: float</span>
-<span class="sd">        Schedule E: combined partnership and S-corporation net income/loss</span>
-<span class="sd">    e02000: float</span>
-<span class="sd">        Schedule E total rental, royalty, partnership, S-corporation,</span>
-<span class="sd">        etc, income/loss</span>
 <span class="sd">    II_rt1: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 1</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 1</span>
 <span class="sd">    II_rt2: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 2</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 2</span>
 <span class="sd">    II_rt3: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 3</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 3</span>
 <span class="sd">    II_rt4: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 4</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 4</span>
 <span class="sd">    II_rt5: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 5</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 5</span>
 <span class="sd">    II_rt6: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 6</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 6</span>
 <span class="sd">    II_rt7: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 7</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 7</span>
 <span class="sd">    II_rt8: float</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 8</span>
+<span class="sd">        Personal income (regular/non-AMT) tax rate 8</span>
 <span class="sd">    II_brk1: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 1</span>
 <span class="sd">    II_brk2: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 2</span>
 <span class="sd">    II_brk3: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 3</span>
 <span class="sd">    II_brk4: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 4</span>
 <span class="sd">    II_brk5: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 5</span>
 <span class="sd">    II_brk6: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 6</span>
 <span class="sd">    II_brk7: list</span>
-<span class="sd">        Personal income (regular/non-AMT/non-pass/through)</span>
+<span class="sd">        Personal income (regular/non-AMT)</span>
 <span class="sd">        tax bracket (upper threshold) 7</span>
 <span class="sd">    CG_nodiff: bool</span>
 <span class="sd">        Long term capital gains and qualified dividends taxed no differently</span>
@@ -3623,130 +3625,6 @@ document.write(`
     <span class="n">combined</span> <span class="o">=</span> <span class="n">iitax</span> <span class="o">+</span> <span class="n">payrolltax</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span>
             <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="Taxes">
-<a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.Taxes">[docs]</a>
-<span class="nd">@JIT</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">Taxes</span><span class="p">(</span><span class="n">income</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">tbrk_base</span><span class="p">,</span>
-          <span class="n">rate1</span><span class="p">,</span> <span class="n">rate2</span><span class="p">,</span> <span class="n">rate3</span><span class="p">,</span> <span class="n">rate4</span><span class="p">,</span> <span class="n">rate5</span><span class="p">,</span> <span class="n">rate6</span><span class="p">,</span> <span class="n">rate7</span><span class="p">,</span> <span class="n">rate8</span><span class="p">,</span>
-          <span class="n">tbrk1</span><span class="p">,</span> <span class="n">tbrk2</span><span class="p">,</span> <span class="n">tbrk3</span><span class="p">,</span> <span class="n">tbrk4</span><span class="p">,</span> <span class="n">tbrk5</span><span class="p">,</span> <span class="n">tbrk6</span><span class="p">,</span> <span class="n">tbrk7</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Taxes function returns tax amount given the progressive tax rate</span>
-<span class="sd">    schedule specified by the rate* and (upper) tbrk* parameters and</span>
-<span class="sd">    given income, filing status (MARS), and tax bracket base (tbrk_base).</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    income: float</span>
-<span class="sd">        Taxable income</span>
-<span class="sd">    MARS: int</span>
-<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
-<span class="sd">                                  4=household-head, 5=widow(er))</span>
-<span class="sd">    tbrk_base: float</span>
-<span class="sd">        Amount of income used to determine the braket the filer is in</span>
-<span class="sd">    rate1: list</span>
-<span class="sd">        Income tax rate 1</span>
-<span class="sd">    rate2: list</span>
-<span class="sd">        Income tax rate 2</span>
-<span class="sd">    rate3: list</span>
-<span class="sd">        Income tax rate 3</span>
-<span class="sd">    rate4: list</span>
-<span class="sd">        Income tax rate 4</span>
-<span class="sd">    rate5: list</span>
-<span class="sd">        Income tax rate 5</span>
-<span class="sd">    rate6: list</span>
-<span class="sd">        Income tax rate 6</span>
-<span class="sd">    rate7: list</span>
-<span class="sd">        Income tax rate 7</span>
-<span class="sd">    rate8: list</span>
-<span class="sd">        Income tax rate 8</span>
-<span class="sd">    tbrk1: list</span>
-<span class="sd">        Income tax bracket (upper threshold) 1</span>
-<span class="sd">    tbrk2: list</span>
-<span class="sd">        Income tax bracket (upper threshold) 2</span>
-<span class="sd">    tbrk3: list</span>
-<span class="sd">        Income tax bracket (upper threshold) 3</span>
-<span class="sd">    tbrk4: list</span>
-<span class="sd">        Income tax bracket (upper threshold) 4</span>
-<span class="sd">    tbrk5: list</span>
-<span class="sd">        Income tax bracket (upper threshold) 5</span>
-<span class="sd">    tbrk6: list</span>
-<span class="sd">        Income tax bracket (upper threshold) 6</span>
-<span class="sd">    tbrk7: list</span>
-<span class="sd">        Income tax bracket (upper threshold) 7</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    None</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">tbrk_base</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="n">brk1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tbrk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tbrk_base</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">brk2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tbrk2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tbrk_base</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">brk3</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tbrk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tbrk_base</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">brk4</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tbrk4</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tbrk_base</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">brk5</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tbrk5</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tbrk_base</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">brk6</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tbrk6</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tbrk_base</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">brk7</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tbrk7</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tbrk_base</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">brk1</span> <span class="o">=</span> <span class="n">tbrk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">brk2</span> <span class="o">=</span> <span class="n">tbrk2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">brk3</span> <span class="o">=</span> <span class="n">tbrk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">brk4</span> <span class="o">=</span> <span class="n">tbrk4</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">brk5</span> <span class="o">=</span> <span class="n">tbrk5</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">brk6</span> <span class="o">=</span> <span class="n">tbrk6</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">brk7</span> <span class="o">=</span> <span class="n">tbrk7</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">rate1</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">income</span><span class="p">,</span> <span class="n">brk1</span><span class="p">)</span> <span class="o">+</span>
-            <span class="n">rate2</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">brk2</span> <span class="o">-</span> <span class="n">brk1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">income</span> <span class="o">-</span> <span class="n">brk1</span><span class="p">))</span> <span class="o">+</span>
-            <span class="n">rate3</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">brk3</span> <span class="o">-</span> <span class="n">brk2</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">income</span> <span class="o">-</span> <span class="n">brk2</span><span class="p">))</span> <span class="o">+</span>
-            <span class="n">rate4</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">brk4</span> <span class="o">-</span> <span class="n">brk3</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">income</span> <span class="o">-</span> <span class="n">brk3</span><span class="p">))</span> <span class="o">+</span>
-            <span class="n">rate5</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">brk5</span> <span class="o">-</span> <span class="n">brk4</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">income</span> <span class="o">-</span> <span class="n">brk4</span><span class="p">))</span> <span class="o">+</span>
-            <span class="n">rate6</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">brk6</span> <span class="o">-</span> <span class="n">brk5</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">income</span> <span class="o">-</span> <span class="n">brk5</span><span class="p">))</span> <span class="o">+</span>
-            <span class="n">rate7</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">brk7</span> <span class="o">-</span> <span class="n">brk6</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">income</span> <span class="o">-</span> <span class="n">brk6</span><span class="p">))</span> <span class="o">+</span>
-            <span class="n">rate8</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">income</span> <span class="o">-</span> <span class="n">brk7</span><span class="p">))</span></div>
-
-
-
-<div class="viewcode-block" id="ComputeBenefit">
-<a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.ComputeBenefit">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">ComputeBenefit</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span> <span class="n">ID_switch</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates the value of the benefits accrued from itemizing.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    calc: Calculator object</span>
-<span class="sd">        calc represents the reform while self represents the baseline</span>
-<span class="sd">    ID_switch: list</span>
-<span class="sd">        Deductions subject to the surtax on itemized deduction benefits</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    benefit: float</span>
-<span class="sd">        Imputed benefits from itemizing deductions</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># compute income tax liability with no itemized deductions allowed for</span>
-    <span class="c1"># the types of itemized deductions covered under the BenefitSurtax</span>
-    <span class="n">no_ID_calc</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ID_switch</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-        <span class="n">no_ID_calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_Medical_hc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">ID_switch</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-        <span class="n">no_ID_calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_StateLocalTax_hc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">ID_switch</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
-        <span class="n">no_ID_calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_RealEstate_hc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">ID_switch</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
-        <span class="n">no_ID_calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_Casualty_hc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">ID_switch</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span>
-        <span class="n">no_ID_calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_Miscellaneous_hc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">ID_switch</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span>
-        <span class="n">no_ID_calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_InterestPaid_hc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">ID_switch</span><span class="p">[</span><span class="mi">6</span><span class="p">]:</span>
-        <span class="n">no_ID_calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_Charity_hc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">])</span>
-    <span class="n">no_ID_calc</span><span class="o">.</span><span class="n">_calc_one_year</span><span class="p">()</span>  <span class="c1"># pylint: disable=protected-access</span>
-    <span class="n">diff_iitax</span> <span class="o">=</span> <span class="n">no_ID_calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
-    <span class="n">benefit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff_iitax</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">diff_iitax</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">benefit</span></div>
-
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
