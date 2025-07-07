@@ -16,7 +16,7 @@ from taxcalc import calcfunctions
 
 class GetFuncDefs(ast.NodeVisitor):
     """
-    Return information about each function defined in the functions.py file.
+    Return information about each function defined in calcfunctions.py file.
     """
     def __init__(self):
         """
@@ -39,6 +39,8 @@ class GetFuncDefs(ast.NodeVisitor):
         """
         visit the specified FunctionDef node
         """
+        if node.name == 'SchXYZ':
+            return  # skipping SchXYZ function that has multiple returns
         self.fname = node.name
         self.fnames.append(self.fname)
         self.fargs[self.fname] = []
@@ -92,8 +94,6 @@ def test_calc_and_used_vars(tests_path):
     # .. create set of vars that are actually calculated in calcfunctions.py
     all_cvars = set()
     for fname in fnames:
-        if fname == 'BenefitSurtax':
-            continue  # because BenefitSurtax is not really a function
         all_cvars.update(set(cvars[fname]))
     # .. add to all_cvars set variables calculated in Records class
     all_cvars.update(set(['num', 'sep', 'exact']))
@@ -110,8 +110,7 @@ def test_calc_and_used_vars(tests_path):
             found_error1 = True
             msg1 += f'VAR NOT CALCULATED: {var}\n'
     # Test (2):
-    faux_functions = ['EITCamount', 'ComputeBenefit', 'BenefitPrograms',
-                      'BenefitSurtax', 'BenefitLimitation', 'SchXYZ']
+    faux_functions = ['EITCamount', 'SchXYZ', 'BenefitPrograms']
     found_error2 = False
     msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:
@@ -157,8 +156,6 @@ def test_function_args_usage(tests_path):
         fname = match.group(1)
         fargs = match.group(2).split(',')  # list of function arguments
         fbody = match.group(3)
-        if fname == 'Taxes':
-            continue  # because Taxes has part of fbody in return statement
         for farg in fargs:
             arg = farg.strip()
             if fbody.find(arg) < 0:
@@ -558,6 +555,7 @@ def test_EITC(test_tuple, expected_value, skip_jit):
 
 # Parameter values for tests
 PT_qbid_rt = 0.2
+PT_qbid_limited = True
 PT_qbid_taxinc_thd = [160700.0, 321400.0, 160725.0, 160700.0, 321400.0]
 PT_qbid_taxinc_gap = [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]
 PT_qbid_w2_wages_rt = 0.5
@@ -589,7 +587,7 @@ tuple0 = (
     c00100[0], standard[0], c04470[0], c04600[0], MARS[0], e00900[0],
     c03260[0], e26270[0],
     e02100[0], e27200[0], e00650[0], c01000[0], PT_SSTB_income[0],
-    PT_binc_w2_wages[0], PT_ubia_property[0], PT_qbid_rt,
+    PT_binc_w2_wages[0], PT_ubia_property[0], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[0],
     PT_qbid_ps, PT_qbid_prt, qbided[0])
@@ -598,7 +596,7 @@ tuple1 = (
     c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1],
     c03260[1], e26270[1],
     e02100[1], e27200[1], e00650[1], c01000[1], PT_SSTB_income[1],
-    PT_binc_w2_wages[1], PT_ubia_property[1], PT_qbid_rt,
+    PT_binc_w2_wages[1], PT_ubia_property[1], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[1],
     PT_qbid_ps, PT_qbid_prt, qbided[1])
@@ -607,7 +605,7 @@ tuple2 = (
     c00100[2], standard[2], c04470[2], c04600[2], MARS[2], e00900[2],
     c03260[2], e26270[2],
     e02100[2], e27200[2], e00650[2], c01000[2], PT_SSTB_income[2],
-    PT_binc_w2_wages[2], PT_ubia_property[2], PT_qbid_rt,
+    PT_binc_w2_wages[2], PT_ubia_property[2], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[2],
     PT_qbid_ps, PT_qbid_prt, qbided[2])
@@ -615,9 +613,8 @@ expected2 = (579300.00, 0)
 tuple3 = (
     c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3],
     c03260[3], e26270[3],
-
     e02100[3], e27200[3], e00650[3], c01000[3], PT_SSTB_income[3],
-    PT_binc_w2_wages[3], PT_ubia_property[3], PT_qbid_rt,
+    PT_binc_w2_wages[3], PT_ubia_property[3], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[3],
     PT_qbid_ps, PT_qbid_prt, qbided[3])

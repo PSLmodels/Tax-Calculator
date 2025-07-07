@@ -840,7 +840,7 @@ class Parameters(paramtools.Parameters):
             vvalue = None
             if len(extend_vo) > 2:
                 extend_vo_keys = extend_vo.keys()
-                vo_labels = ['MARS', 'EIC', 'idedtype']
+                vo_labels = ['MARS', 'EIC']
                 for vo_label in vo_labels:
                     if vo_label in extend_vo_keys:
                         vlabel = vo_label

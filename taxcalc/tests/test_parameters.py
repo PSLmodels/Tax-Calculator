@@ -323,10 +323,17 @@ class ArrayParams(Parameters):
                         }
                     }
                 },
-                "idedtype": {
+                "EIC": {
                     "type": "str",
                     "validators": {
-                        "choice": {"choices": ["med", "sltx", "retx"]}
+                        "choice": {
+                            "choices": [
+                                "0kids",
+                                "1kid",
+                                "2kids",
+                                "3+kids"
+                            ]
+                        }
                     }
                 }
             },
@@ -344,23 +351,24 @@ class ArrayParams(Parameters):
             }
         },
         "one_dim": {
-            "title": "One dimension parameter",
+            "title": "One dimensional parameter",
             "description": "",
             "type": "float",
             "indexed": True,
             "indexable": True,
             "value": [{"year": 2013, "value": 5}]
         },
-        "two_dim": {
-            "title": "Two dimension parameter",
+        "EITC_c": {
+            "title": "Two dimensional parameter",
             "description": "",
             "type": "float",
             "indexed": True,
             "indexable": True,
             "value": [
-                {"year": 2013, "idedtype": "med", "value": 1},
-                {"year": 2013, "idedtype": "sltx", "value": 2},
-                {"year": 2013, "idedtype": "retx", "value": 3}
+                {"year": 2013, "EIC": "0kids", "value": 1},
+                {"year": 2013, "EIC": "1kid", "value": 2},
+                {"year": 2013, "EIC": "2kids", "value": 3},
+                {"year": 2013, "EIC": "3+kids", "value": 4}
             ]
         },
         "II_brk2": {
@@ -454,21 +462,21 @@ def test_expand_2d_short_array():
     """
     One of several _expand_?D tests.
     """
-    val = np.array([1., 2., 3.])
+    val = np.array([1., 2., 3., 4.])
     exp2 = np.array([val * math.pow(1.02, i) for i in range(1, 5)])
-    exp1 = np.array([1., 2., 3.])
-    exp = np.zeros((5, 3))
+    exp1 = np.array([1., 2., 3., 4.])
+    exp = np.zeros((5, 4))
     exp[:1] = exp1
     exp[1:] = exp2
 
     params = ArrayParams(array_first=False, label_to_extend=None)
     years = [2013, 2014, 2015, 2016, 2017]
     params.extend(
-        params=["two_dim"],
+        params=["EITC_c"],
         label="year",
         label_values=years,
     )
-    res = params.to_array("two_dim", year=years)
+    res = params.to_array("EITC_c", year=years)
     assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
@@ -476,8 +484,8 @@ def test_expand_2d_variable_rates():
     """
     One of several _expand_?D tests.
     """
-    ary = np.array([[1., 2., 3.]])
-    cur = np.array([1., 2., 3.])
+    ary = np.array([[1., 2., 3., 4.]])
+    cur = np.array([1., 2., 3., 4.])
     irates = [0.02, 0.02, 0.02, 0.03, 0.035]
     exp2 = []
     for i in range(0, 4):
@@ -485,16 +493,16 @@ def test_expand_2d_variable_rates():
         cur = np.array(cur * (1.0 + irates[idx]))
         print('cur is ', cur)
         exp2.append(cur)
-    exp1 = np.array([1., 2., 3.])
-    exp = np.zeros((5, 3))
+    exp1 = np.array([1., 2., 3., 4.])
+    exp = np.zeros((5, 4))
     exp[:1] = exp1
     exp[1:] = exp2
 
     params = ArrayParams(array_first=False, label_to_extend=None)
     params._inflation_rates = irates
     years = [2013, 2014, 2015, 2016, 2017]
-    params.extend(params=["two_dim"], label="year", label_values=years)
-    res = params.to_array("two_dim", year=years)
+    params.extend(params=["EITC_c"], label="year", label_values=years)
+    res = params.to_array("EITC_c", year=years)
     assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
