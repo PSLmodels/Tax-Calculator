@@ -348,7 +348,12 @@ def Adj(e03150, e03210, c03260,
         ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
         ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
         ALD_DomesticProduction_hc, ALD_Tuition_hc,
-        c02900):
+        MARS, earned,
+        overtime_income, ALD_OvertimeIncome_hc, ALD_OvertimeIncome_c,
+        ALD_OvertimeIncome_ps, ALD_OvertimeIncome_po_rate,
+        tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
+        ALD_TipIncome_ps, ALD_TipIncome_po_rate,
+        c02900, ALD_OvertimeIncome, ALD_TipIncome):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
 
@@ -402,11 +407,40 @@ def Adj(e03150, e03210, c03260,
         Domestic production haircut
     ALD_Tuition_hc: float
         Tuition and fees haircut
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate,
+                               4=household-head, 5=widow(er))
+    earned: float
+        Earned income used to phase-out ALD_OvertimeIncome and ALD_TipIncome
+    overtime_income: float
+        Overtime income qualified for an above-the-line deduction
+    ALD_OvertimeIncome_hc: float
+        ALD_OvertimeIncome haircut
+    ALD_OvertimeIncome_c: list[float]
+        ALD_OvertimeIncome cap
+    ALD_OvertimeIncome_ps: list[float]
+        ALD_OvertimeIncome phase-out earned income start
+    ALD_OvertimeIncome_po_rate: float
+        ALD_OvertimeIncome phase-out rate
+    tip_income: float
+        Tip income qualified for an above-the-line deduction
+    ALD_TipIncome_hc: float
+        ALD_TipIncome haircut
+    ALD_TipIncome_c: list[float]
+        ALD_TipIncome cap
+    ALD_TipIncome_ps: list[float]
+        ALD_TipIncome phase-out earned income start
+    ALD_TipIncome_po_rate: float
+        ALD_TipIncome phase-out rate
 
     Returns
     -------
     c02900: float
         Total of all "above the line" income adjustments to get AGI
+    ALD_OvertimeIncome: float
+        Overtime ALD amount included in c02900
+    ALD_TipIncome: float
+        Tip ALD amount included in c02900
     """
     # Form 2555 foreign earned income exclusion is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
@@ -423,7 +457,29 @@ def Adj(e03150, e03210, c03260,
               (1. - ALD_IRAContributions_hc) * e03150 +
               (1. - ALD_KEOGH_SEP_hc) * e03300 +
               care_deduction)
-    return c02900
+    # calculate ALD_OvertimeIncome
+    ALD_OvertimeIncome = 0.
+    if overtime_income > 0. and ALD_OvertimeIncome_hc < 1.0:
+        ded = min(overtime_income, ALD_OvertimeIncome_c[MARS - 1])
+        po_start = ALD_OvertimeIncome_ps[MARS - 1]
+        if earned > po_start:
+            excess = earned - po_start
+            po_amount = excess * ALD_OvertimeIncome_po_rate
+            ded = max(0., ded - po_amount)
+        ALD_OvertimeIncome = ded
+    # calculate ALD_TipIncome
+    ALD_TipIncome = 0.
+    if tip_income > 0. and ALD_TipIncome_hc < 1.0:
+        ded = min(tip_income, ALD_TipIncome_c[MARS - 1])
+        po_start = ALD_TipIncome_ps[MARS - 1]
+        if earned > po_start:
+            excess = earned - po_start
+            po_amount = excess * ALD_TipIncome_po_rate
+            ded = max(0., ded - po_amount)
+        ALD_TipIncome = ded
+    # return results
+    c02900 += ALD_OvertimeIncome + ALD_TipIncome
+    return (c02900, ALD_OvertimeIncome, ALD_TipIncome)
 
 
 @iterate_jit(nopython=True)
@@ -786,6 +842,63 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
 
 
 @iterate_jit(nopython=True)
+def AutoLoanInterestDed(auto_loan_interest, MARS, c00100, exact,
+                        AutoLoanInterestDed_c,
+                        AutoLoanInterestDed_ps,
+                        AutoLoanInterestDed_po_step_size,
+                        AutoLoanInterestDed_po_rate_per_step,
+                        auto_loan_interest_deduction):
+    """
+    Calculates below-the-line deduction on qualified auto loan interest paid.
+
+    Parameters
+    ----------
+    auto_loan_interest: float
+        Qualified auto loan interest paid
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate,
+                               4=household-head, 5=widow(er))
+    c00100: float
+        Adjusted gross income
+    exact: int
+        Whether or not to smooth the deduction phase out
+    AutoLoanInterestDed_c: float
+        Deduction cap
+    AutoLoanInterestDed_ps: float
+        Deduction phase-out starts above this AGI
+    AutoLoanInterestDed_po_step_size: float
+        Deduction phase-out AGI step size
+    AutoLoanInterestDed_po_rate_per_step: float
+        Deduction phase-out rate per AGI step
+    auto_loan_interest_deduction: float
+        Deduction available to both itemizers and nonitemizers
+
+    Returns
+    -------
+    auto_loan_interest_deduction: float
+        Deduction available to both itemizers and nonitemizers
+    """
+    auto_loan_interest_deduction = 0.
+    if AutoLoanInterestDed_c > 0. and auto_loan_interest > 0.:
+        # cap deduction
+        ded = min(auto_loan_interest, AutoLoanInterestDed_c)
+        po_start = AutoLoanInterestDed_ps[MARS - 1]
+        if c00100 > po_start:
+            # phase out deduction
+            excess_agi = c00100 - po_start
+            po_rate = AutoLoanInterestDed_po_rate_per_step
+            if exact == 1:  # exact calculation as on tax forms
+                step_size = AutoLoanInterestDed_po_step_size
+                steps = math.ceil(excess_agi / step_size)
+                po_amount = steps * step_size * po_rate
+            else:  # smoothed calculation needed for sensible mtr calculation
+                po_amount = excess_agi * po_rate
+            ded = max(0., ded - po_amount)
+        auto_loan_interest_deduction = ded
+    return auto_loan_interest_deduction
+
+
+@iterate_jit(nopython=True)
 def ItemDed(e17500, e18400, e18500, e19200,
             e19800, e20100, e20400, g20500,
             MARS, age_head, age_spouse, c00100, c04470, c21040, c21060,
@@ -1132,8 +1245,9 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
-           e02100, e27200, e00650, c01000, PT_SSTB_income,
-           PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt, PT_qbid_limited,
+           e02100, e27200, e00650, c01000, auto_loan_interest_deduction,
+           PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
+           PT_qbid_rt, PT_qbid_limited,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
            PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
            PT_qbid_ps, PT_qbid_prt, qbided):
@@ -1168,6 +1282,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         Qualified dividends included in ordinary dividends
     c01000: float
         Limitation on capital losses
+    auto_loan_interest_deduction: float
+        Deduction for qualified auto loan interest paid
     PT_SSTB_income: int
         Value of one implies business income is from a specified service
           trade or business (SSTB)
@@ -1257,7 +1373,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         qbided = qbid_before_limits
 
     # calculate taxable income after qualified business income deduction
-    c04800 = max(0., pre_qbid_taxinc - qbided)
+    c04800 = max(0., pre_qbid_taxinc - qbided - auto_loan_interest_deduction)
     return (c04800, qbided)
 
 

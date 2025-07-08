@@ -701,7 +701,7 @@ def test_section_titles(tests_path):
             cgqd_tax_same: 0
         },
         'Personal Income': {
-            'Regular: Non-AMT, Non-Pass-Through': 0,
+            'Regular: Non-AMT': 0,
             'Pass-Through': 0,
             'Alternative Minimum Tax': 0
         },
