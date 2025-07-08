@@ -758,7 +758,12 @@ document.write(`
         <span class="n">ALD_EarlyWithdraw_hc</span><span class="p">,</span> <span class="n">ALD_AlimonyPaid_hc</span><span class="p">,</span> <span class="n">ALD_AlimonyReceived_hc</span><span class="p">,</span>
         <span class="n">ALD_EducatorExpenses_hc</span><span class="p">,</span> <span class="n">ALD_HSADeduction_hc</span><span class="p">,</span> <span class="n">ALD_IRAContributions_hc</span><span class="p">,</span>
         <span class="n">ALD_DomesticProduction_hc</span><span class="p">,</span> <span class="n">ALD_Tuition_hc</span><span class="p">,</span>
-        <span class="n">c02900</span><span class="p">):</span>
+        <span class="n">MARS</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span>
+        <span class="n">overtime_income</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome_hc</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome_c</span><span class="p">,</span>
+        <span class="n">ALD_OvertimeIncome_ps</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome_po_rate</span><span class="p">,</span>
+        <span class="n">tip_income</span><span class="p">,</span> <span class="n">ALD_TipIncome_hc</span><span class="p">,</span> <span class="n">ALD_TipIncome_c</span><span class="p">,</span>
+        <span class="n">ALD_TipIncome_ps</span><span class="p">,</span> <span class="n">ALD_TipIncome_po_rate</span><span class="p">,</span>
+        <span class="n">c02900</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome</span><span class="p">,</span> <span class="n">ALD_TipIncome</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).</span>
 
@@ -812,11 +817,40 @@ document.write(`
 <span class="sd">        Domestic production haircut</span>
 <span class="sd">    ALD_Tuition_hc: float</span>
 <span class="sd">        Tuition and fees haircut</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
+<span class="sd">                               4=household-head, 5=widow(er))</span>
+<span class="sd">    earned: float</span>
+<span class="sd">        Earned income used to phase-out ALD_OvertimeIncome and ALD_TipIncome</span>
+<span class="sd">    overtime_income: float</span>
+<span class="sd">        Overtime income qualified for an above-the-line deduction</span>
+<span class="sd">    ALD_OvertimeIncome_hc: float</span>
+<span class="sd">        ALD_OvertimeIncome haircut</span>
+<span class="sd">    ALD_OvertimeIncome_c: list[float]</span>
+<span class="sd">        ALD_OvertimeIncome cap</span>
+<span class="sd">    ALD_OvertimeIncome_ps: list[float]</span>
+<span class="sd">        ALD_OvertimeIncome phase-out earned income start</span>
+<span class="sd">    ALD_OvertimeIncome_po_rate: float</span>
+<span class="sd">        ALD_OvertimeIncome phase-out rate</span>
+<span class="sd">    tip_income: float</span>
+<span class="sd">        Tip income qualified for an above-the-line deduction</span>
+<span class="sd">    ALD_TipIncome_hc: float</span>
+<span class="sd">        ALD_TipIncome haircut</span>
+<span class="sd">    ALD_TipIncome_c: list[float]</span>
+<span class="sd">        ALD_TipIncome cap</span>
+<span class="sd">    ALD_TipIncome_ps: list[float]</span>
+<span class="sd">        ALD_TipIncome phase-out earned income start</span>
+<span class="sd">    ALD_TipIncome_po_rate: float</span>
+<span class="sd">        ALD_TipIncome phase-out rate</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c02900: float</span>
 <span class="sd">        Total of all &quot;above the line&quot; income adjustments to get AGI</span>
+<span class="sd">    ALD_OvertimeIncome: float</span>
+<span class="sd">        Overtime ALD amount included in c02900</span>
+<span class="sd">    ALD_TipIncome: float</span>
+<span class="sd">        Tip ALD amount included in c02900</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Form 2555 foreign earned income exclusion is assumed to be zero</span>
     <span class="c1"># Form 1040 adjustments that are included in expanded income:</span>
@@ -833,7 +867,29 @@ document.write(`
               <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_IRAContributions_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03150</span> <span class="o">+</span>
               <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_KEOGH_SEP_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03300</span> <span class="o">+</span>
               <span class="n">care_deduction</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">c02900</span>
+    <span class="c1"># calculate ALD_OvertimeIncome</span>
+    <span class="n">ALD_OvertimeIncome</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">overtime_income</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">ALD_OvertimeIncome_hc</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">overtime_income</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">po_start</span> <span class="o">=</span> <span class="n">ALD_OvertimeIncome_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">earned</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
+            <span class="n">excess</span> <span class="o">=</span> <span class="n">earned</span> <span class="o">-</span> <span class="n">po_start</span>
+            <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess</span> <span class="o">*</span> <span class="n">ALD_OvertimeIncome_po_rate</span>
+            <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
+        <span class="n">ALD_OvertimeIncome</span> <span class="o">=</span> <span class="n">ded</span>
+    <span class="c1"># calculate ALD_TipIncome</span>
+    <span class="n">ALD_TipIncome</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">tip_income</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">ALD_TipIncome_hc</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tip_income</span><span class="p">,</span> <span class="n">ALD_TipIncome_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">po_start</span> <span class="o">=</span> <span class="n">ALD_TipIncome_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">earned</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
+            <span class="n">excess</span> <span class="o">=</span> <span class="n">earned</span> <span class="o">-</span> <span class="n">po_start</span>
+            <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess</span> <span class="o">*</span> <span class="n">ALD_TipIncome_po_rate</span>
+            <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
+        <span class="n">ALD_TipIncome</span> <span class="o">=</span> <span class="n">ded</span>
+    <span class="c1"># return results</span>
+    <span class="n">c02900</span> <span class="o">+=</span> <span class="n">ALD_OvertimeIncome</span> <span class="o">+</span> <span class="n">ALD_TipIncome</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">c02900</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome</span><span class="p">,</span> <span class="n">ALD_TipIncome</span><span class="p">)</span>
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1196,6 +1252,63 @@ document.write(`
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AutoLoanInterestDed</span><span class="p">(</span><span class="n">auto_loan_interest</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span>
+                        <span class="n">AutoLoanInterestDed_c</span><span class="p">,</span>
+                        <span class="n">AutoLoanInterestDed_ps</span><span class="p">,</span>
+                        <span class="n">AutoLoanInterestDed_po_step_size</span><span class="p">,</span>
+                        <span class="n">AutoLoanInterestDed_po_rate_per_step</span><span class="p">,</span>
+                        <span class="n">auto_loan_interest_deduction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates below-the-line deduction on qualified auto loan interest paid.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    auto_loan_interest: float</span>
+<span class="sd">        Qualified auto loan interest paid</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
+<span class="sd">                               4=household-head, 5=widow(er))</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted gross income</span>
+<span class="sd">    exact: int</span>
+<span class="sd">        Whether or not to smooth the deduction phase out</span>
+<span class="sd">    AutoLoanInterestDed_c: float</span>
+<span class="sd">        Deduction cap</span>
+<span class="sd">    AutoLoanInterestDed_ps: float</span>
+<span class="sd">        Deduction phase-out starts above this AGI</span>
+<span class="sd">    AutoLoanInterestDed_po_step_size: float</span>
+<span class="sd">        Deduction phase-out AGI step size</span>
+<span class="sd">    AutoLoanInterestDed_po_rate_per_step: float</span>
+<span class="sd">        Deduction phase-out rate per AGI step</span>
+<span class="sd">    auto_loan_interest_deduction: float</span>
+<span class="sd">        Deduction available to both itemizers and nonitemizers</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    auto_loan_interest_deduction: float</span>
+<span class="sd">        Deduction available to both itemizers and nonitemizers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">auto_loan_interest_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">AutoLoanInterestDed_c</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">auto_loan_interest</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="c1"># cap deduction</span>
+        <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">auto_loan_interest</span><span class="p">,</span> <span class="n">AutoLoanInterestDed_c</span><span class="p">)</span>
+        <span class="n">po_start</span> <span class="o">=</span> <span class="n">AutoLoanInterestDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
+            <span class="c1"># phase out deduction</span>
+            <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">po_start</span>
+            <span class="n">po_rate</span> <span class="o">=</span> <span class="n">AutoLoanInterestDed_po_rate_per_step</span>
+            <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
+                <span class="n">step_size</span> <span class="o">=</span> <span class="n">AutoLoanInterestDed_po_step_size</span>
+                <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">excess_agi</span> <span class="o">/</span> <span class="n">step_size</span><span class="p">)</span>
+                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">step_size</span> <span class="o">*</span> <span class="n">po_rate</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation needed for sensible mtr calculation</span>
+                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">po_rate</span>
+            <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
+        <span class="n">auto_loan_interest_deduction</span> <span class="o">=</span> <span class="n">ded</span>
+    <span class="k">return</span> <span class="n">auto_loan_interest_deduction</span>
+
+
+<span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">ItemDed</span><span class="p">(</span><span class="n">e17500</span><span class="p">,</span> <span class="n">e18400</span><span class="p">,</span> <span class="n">e18500</span><span class="p">,</span> <span class="n">e19200</span><span class="p">,</span>
             <span class="n">e19800</span><span class="p">,</span> <span class="n">e20100</span><span class="p">,</span> <span class="n">e20400</span><span class="p">,</span> <span class="n">g20500</span><span class="p">,</span>
             <span class="n">MARS</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">c21060</span><span class="p">,</span>
@@ -1542,8 +1655,9 @@ document.write(`
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">TaxInc</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c04600</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span>
-           <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">PT_SSTB_income</span><span class="p">,</span>
-           <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span> <span class="n">PT_qbid_rt</span><span class="p">,</span> <span class="n">PT_qbid_limited</span><span class="p">,</span>
+           <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">auto_loan_interest_deduction</span><span class="p">,</span>
+           <span class="n">PT_SSTB_income</span><span class="p">,</span> <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span>
+           <span class="n">PT_qbid_rt</span><span class="p">,</span> <span class="n">PT_qbid_limited</span><span class="p">,</span>
            <span class="n">PT_qbid_taxinc_thd</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">,</span> <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span>
            <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span> <span class="n">c04800</span><span class="p">,</span>
            <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">qbided</span><span class="p">):</span>
@@ -1578,6 +1692,8 @@ document.write(`
 <span class="sd">        Qualified dividends included in ordinary dividends</span>
 <span class="sd">    c01000: float</span>
 <span class="sd">        Limitation on capital losses</span>
+<span class="sd">    auto_loan_interest_deduction: float</span>
+<span class="sd">        Deduction for qualified auto loan interest paid</span>
 <span class="sd">    PT_SSTB_income: int</span>
 <span class="sd">        Value of one implies business income is from a specified service</span>
 <span class="sd">          trade or business (SSTB)</span>
@@ -1667,7 +1783,7 @@ document.write(`
         <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_before_limits</span>
 
     <span class="c1"># calculate taxable income after qualified business income deduction</span>
-    <span class="n">c04800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">qbided</span><span class="p">)</span>
+    <span class="n">c04800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">auto_loan_interest_deduction</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c04800</span><span class="p">,</span> <span class="n">qbided</span><span class="p">)</span>
 
 
