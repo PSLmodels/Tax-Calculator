@@ -416,9 +416,9 @@ def Adj(e03150, e03210, c03260,
         Overtime income qualified for an above-the-line deduction
     ALD_OvertimeIncome_hc: float
         ALD_OvertimeIncome haircut
-    ALD_OvertimeIncome_c: float
+    ALD_OvertimeIncome_c: list[float]
         ALD_OvertimeIncome cap
-    ALD_OvertimeIncome_ps: float
+    ALD_OvertimeIncome_ps: list[float]
         ALD_OvertimeIncome phase-out earned income start
     ALD_OvertimeIncome_po_rate: float
         ALD_OvertimeIncome phase-out rate
@@ -426,9 +426,9 @@ def Adj(e03150, e03210, c03260,
         Tip income qualified for an above-the-line deduction
     ALD_TipIncome_hc: float
         ALD_TipIncome haircut
-    ALD_TipIncome_c: float
+    ALD_TipIncome_c: list[float]
         ALD_TipIncome cap
-    ALD_TipIncome_ps: float
+    ALD_TipIncome_ps: list[float]
         ALD_TipIncome phase-out earned income start
     ALD_TipIncome_po_rate: float
         ALD_TipIncome phase-out rate
