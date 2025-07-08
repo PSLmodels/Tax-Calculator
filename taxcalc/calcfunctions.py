@@ -2036,9 +2036,10 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
 
 
 @iterate_jit(nopython=True)
-def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
-          exact, c00100, CDCC_ps, CDCC_ps2, CDCC_crt, CDCC_frt,
-          CDCC_po_step_size, CDCC_po_rate_per_step, CDCC_refundable,
+def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
+          CDCC_ps1, CDCC_ps2, CDCC_po1_rate_max, CDCC_po1_rate_min,
+          CDCC_po2_rate_min, CDCC_po1_step_size, CDCC_po2_step_size,
+          CDCC_po_rate_per_step, CDCC_refundable,
           c05800, e07300, c32800, c07180, CDCC_refund):
     """
     Calculates Form 2441 child and dependent care expense credit, c07180.
@@ -2062,16 +2063,20 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         Whether or not to do rounding of phaseout fraction
     c00100: float
         Adjusted Gross Income (AGI)
-    CDCC_ps: float
+    CDCC_ps1: float
         Child/dependent care credit first phaseout start
-    CDCC_ps2: float
+    CDCC_ps2: list[float]
         Child/dependent care credit second phaseout start
-    CDCC_crt: float
-        Child/dependent care credit phaseout rate ceiling
-    CDCC_frt: float
-        Child/dependent care credit phaseout rate floor
-    CDCC_po_step_size: float
-        Child/dependent care credit phaseout AGI step size
+    CDCC_po1_rate_max: float
+        Child/dependent care credit first phaseout rate maximum
+    CDCC_po1_rate_min: float
+        Child/dependent care credit first phaseout rate minimum
+    CDCC_po2_rate_min: float
+        Child/dependent care credit second phaseout rate minimum
+    CDCC_po1_step_size: float
+        Child/dependent care credit first phaseout AGI step size
+    CDCC_po2_step_size: float
+        Child/dependent care credit second phaseout AGI step size
     CDCC_po_rate_per_step: float
         Child/dependent care credit phaseout rate per step size
     CDCC_refundable: bool
@@ -2105,21 +2110,30 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         c32890 = earned_p
     c33000 = max(0., min(c32800, c32880, c32890))
     # credit rate is limited at high AGI
-    # ... first phase-down from CDCC_crt to CDCC_frt
-    steps_fractional = max(0., c00100 - CDCC_ps) / CDCC_po_step_size
-    if exact == 1:  # exact calculation as on tax forms
-        steps = math.ceil(steps_fractional)
-    else:
-        steps = steps_fractional
-    crate = max(CDCC_frt, CDCC_crt - steps * CDCC_po_rate_per_step)
-    # ... second phase-down from CDCC_frt to zero
-    if c00100 > CDCC_ps2:
-        steps_fractional = (c00100 - CDCC_ps2) / CDCC_po_step_size
+    crate = CDCC_po1_rate_max
+    if c00100 > CDCC_ps1:
+        # ... first phase-down from CDCC_po1_rate_max to CDCC_po1_rate_min
+        steps_fractional = (c00100 - CDCC_ps1) / CDCC_po1_step_size
         if exact == 1:  # exact calculation as on tax forms
             steps = math.ceil(steps_fractional)
         else:
             steps = steps_fractional
-        crate = max(0., CDCC_frt - steps * CDCC_po_rate_per_step)
+        crate = max(
+            CDCC_po1_rate_min,
+            CDCC_po1_rate_max - steps * CDCC_po_rate_per_step
+        )
+        # ... second phase-down from CDCC_po1_rate_min to CDCC_po2_rate_min
+        ps2 = CDCC_ps2[MARS - 1]
+        if c00100 > ps2:
+            steps_fractional = (c00100 - ps2) / CDCC_po2_step_size[MARS - 1]
+            if exact == 1:  # exact calculation as on tax forms
+                steps = math.ceil(steps_fractional)
+            else:
+                steps = steps_fractional
+            crate = max(
+                CDCC_po2_rate_min,
+                CDCC_po1_rate_min - steps * CDCC_po_rate_per_step
+            )
     c33200 = c33000 * crate
     # credit is limited by tax liability if not refundable
     if CDCC_refundable:
