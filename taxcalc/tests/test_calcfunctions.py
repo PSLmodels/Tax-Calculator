@@ -922,12 +922,12 @@ overtime_income = 13000
 ALD_OvertimeIncome_hc = 0.
 ALD_OvertimeIncome_c = [12500, 25000, 12500, 12500, 12500]
 ALD_OvertimeIncome_ps = [150000, 300000, 150000, 150000, 150000]
-ALD_OvertimeIncome_po_rate = 0.10
+ALD_OvertimeIncome_prt = 0.10
 tip_income = 30000
 ALD_TipIncome_hc = 0.
 ALD_TipIncome_c = [25000, 25000, 25000, 25000, 25000]
 ALD_TipIncome_ps = [150000, 300000, 150000, 150000, 150000]
-ALD_TipIncome_po_rate = 0.10
+ALD_TipIncome_prt = 0.10
 c02900 = 0  # calculated in function
 ALD_OvertimeIncome = 0  # calculated in function
 ALD_TipIncome = 0  # calculated in function
@@ -942,9 +942,9 @@ tuple0 = (
     ALD_DomesticProduction_hc, ALD_Tuition_hc,
     MARS, earned,
     overtime_income, ALD_OvertimeIncome_hc, ALD_OvertimeIncome_c,
-    ALD_OvertimeIncome_ps, ALD_OvertimeIncome_po_rate,
+    ALD_OvertimeIncome_ps, ALD_OvertimeIncome_prt,
     tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
-    ALD_TipIncome_ps, ALD_TipIncome_po_rate,
+    ALD_TipIncome_ps, ALD_TipIncome_prt,
     c02900, ALD_OvertimeIncome, ALD_TipIncome
 )
 ovr = 12500 - (200000 - 150000) * 0.10

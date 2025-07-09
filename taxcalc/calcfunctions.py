@@ -350,9 +350,9 @@ def Adj(e03150, e03210, c03260,
         ALD_DomesticProduction_hc, ALD_Tuition_hc,
         MARS, earned,
         overtime_income, ALD_OvertimeIncome_hc, ALD_OvertimeIncome_c,
-        ALD_OvertimeIncome_ps, ALD_OvertimeIncome_po_rate,
+        ALD_OvertimeIncome_ps, ALD_OvertimeIncome_prt,
         tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
-        ALD_TipIncome_ps, ALD_TipIncome_po_rate,
+        ALD_TipIncome_ps, ALD_TipIncome_prt,
         c02900, ALD_OvertimeIncome, ALD_TipIncome):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
@@ -420,7 +420,7 @@ def Adj(e03150, e03210, c03260,
         ALD_OvertimeIncome cap
     ALD_OvertimeIncome_ps: list[float]
         ALD_OvertimeIncome phase-out earned income start
-    ALD_OvertimeIncome_po_rate: float
+    ALD_OvertimeIncome_prt: float
         ALD_OvertimeIncome phase-out rate
     tip_income: float
         Tip income qualified for an above-the-line deduction
@@ -430,7 +430,7 @@ def Adj(e03150, e03210, c03260,
         ALD_TipIncome cap
     ALD_TipIncome_ps: list[float]
         ALD_TipIncome phase-out earned income start
-    ALD_TipIncome_po_rate: float
+    ALD_TipIncome_prt: float
         ALD_TipIncome phase-out rate
 
     Returns
@@ -464,7 +464,7 @@ def Adj(e03150, e03210, c03260,
         po_start = ALD_OvertimeIncome_ps[MARS - 1]
         if earned > po_start:
             excess = earned - po_start
-            po_amount = excess * ALD_OvertimeIncome_po_rate
+            po_amount = excess * ALD_OvertimeIncome_prt
             ded = max(0., ded - po_amount)
         ALD_OvertimeIncome = ded
     # calculate ALD_TipIncome
@@ -474,7 +474,7 @@ def Adj(e03150, e03210, c03260,
         po_start = ALD_TipIncome_ps[MARS - 1]
         if earned > po_start:
             excess = earned - po_start
-            po_amount = excess * ALD_TipIncome_po_rate
+            po_amount = excess * ALD_TipIncome_prt
             ded = max(0., ded - po_amount)
         ALD_TipIncome = ded
     # return results
@@ -2111,9 +2111,10 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
     c33000 = max(0., min(c32800, c32880, c32890))
     # credit rate is limited at high AGI
     crate = CDCC_po1_rate_max
-    if c00100 > CDCC_ps1:
+    ps1 = CDCC_ps1
+    if c00100 > ps1:
         # ... first phase-down from CDCC_po1_rate_max to CDCC_po1_rate_min
-        steps_fractional = (c00100 - CDCC_ps1) / CDCC_po1_step_size
+        steps_fractional = (c00100 - ps1) / CDCC_po1_step_size
         if exact == 1:  # exact calculation as on tax forms
             steps = math.ceil(steps_fractional)
         else:
@@ -2124,6 +2125,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
         )
         # ... second phase-down from CDCC_po1_rate_min to CDCC_po2_rate_min
         ps2 = CDCC_ps2[MARS - 1]
+        assert ps2 >= ps1, "CDCC_ps2 must be no less than CDCC_ps1"
         if c00100 > ps2:
             steps_fractional = (c00100 - ps2) / CDCC_po2_step_size[MARS - 1]
             if exact == 1:  # exact calculation as on tax forms

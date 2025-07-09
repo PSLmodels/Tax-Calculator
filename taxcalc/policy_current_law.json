@@ -22450,10 +22450,6 @@
                 "value": 0.0
             },
             {
-                "year": 2024,
-                "value": 0.0
-            },
-            {
                 "year": 2025,
                 "value": 10000.0
             },
@@ -22591,10 +22587,6 @@
                 "value": 1.0
             },
             {
-                "year": 2024,
-                "value": 1.0
-            },
-            {
                 "year": 2025,
                 "value": 0.0
             },
@@ -22712,7 +22704,7 @@
             "cps": true
         }
     },
-    "ALD_OvertimeIncome_po_rate": {
+    "ALD_OvertimeIncome_prt": {
         "title": "Overtime ALD phase-out rate",
         "description": "Overtime ALD is phased-out at this rate on earned income exceeding ALD_OvertimeIncome_ps.",
         "notes": "",
@@ -22750,10 +22742,6 @@
         "value": [
             {
                 "year": 2013,
-                "value": 1.0
-            },
-            {
-                "year": 2024,
                 "value": 1.0
             },
             {
@@ -22874,7 +22862,7 @@
             "cps": true
         }
     },
-    "ALD_TipIncome_po_rate": {
+    "ALD_TipIncome_prt": {
         "title": "Tip ALD phase-out rate",
         "description": "Tip ALD is phased-out at this rate on earned income exceeding ALD_TipIncome_ps.",
         "notes": "",
