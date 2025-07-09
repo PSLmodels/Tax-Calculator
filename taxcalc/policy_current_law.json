@@ -17210,9 +17210,9 @@
             "cps": true
         }
     },
-    "CDCC_ps": {
-        "title": "Child & dependent care credit phaseout start",
-        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.",
+    "CDCC_ps1": {
+        "title": "Child & dependent care credit first phaseout start",
+        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by CDCC_po_rate_per_step for each CDCC_po1_step_size of excess AGI.",
         "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
@@ -17246,8 +17246,8 @@
     },
     "CDCC_ps2": {
         "title": "Child & dependent care credit second phaseout start",
-        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.",
-        "notes": "For 2021, the American Rescue Plan Act set this to $400,000. In other years, this phase-out does not apply.",
+        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by CDCC_po_rate_per_step for each CDCC_po2_step_size of excess AGI.",
+        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": true,
@@ -17256,14 +17256,102 @@
         "value": [
             {
                 "year": 2013,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
                 "value": 9e+99
             },
             {
                 "year": 2021,
+                "MARS": "single",
+                "value": 400000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 400000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 400000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 400000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
                 "value": 400000.0
             },
             {
                 "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
                 "value": 9e+99
             }
         ],
@@ -17278,9 +17366,9 @@
             "cps": true
         }
     },
-    "CDCC_crt": {
-        "title": "Child & dependent care credit phaseout rate ceiling",
-        "description": "The maximum rate for the CDCC; this rate decreases as AGI rises above the CDCC_ps level.",
+    "CDCC_po1_rate_max": {
+        "title": "Child & dependent care credit maximum rate",
+        "description": "The maximum rate for the CDCC; this rate decreases as AGI rises above the CDCC_ps1 and CDCC_ps2 levels.",
         "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
@@ -17312,8 +17400,8 @@
             "cps": true
         }
     },
-    "CDCC_frt": {
-        "title": "Child & dependent care credit phaseout rate floor",
+    "CDCC_po1_rate_min": {
+        "title": "Child & dependent care credit first phaseout rate minimum",
         "description": "The minimum rate for the first AGI phaseout of the CDCC.",
         "notes": "",
         "section_1": "Nonrefundable Credits",
@@ -17338,10 +17426,36 @@
             "cps": true
         }
     },
-    "CDCC_po_step_size": {
-        "title": "Child & dependent care credit phaseout step size",
-        "description": "The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the phase-out start thresholds.",
-        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the phase-out start thresholds",
+    "CDCC_po2_rate_min": {
+        "title": "Child & dependent care credit second phaseout rate minimum",
+        "description": "The minimum rate for the second AGI phaseout of the CDCC.",
+        "notes": "",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child And Dependent Care",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CDCC_po1_step_size": {
+        "title": "Child & dependent care credit first phaseout step size",
+        "description": "The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the first phase-out start threshold.",
+        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": true,
@@ -17364,10 +17478,132 @@
             "cps": true
         }
     },
+    "CDCC_po2_step_size": {
+        "title": "Child & dependent care credit second phaseout step size",
+        "description": "The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the second phase-out start threshold.",
+        "notes": "",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child And Dependent Care",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 2000
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 2000
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 2000
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 2000
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 2000
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "CDCC_po_rate_per_step": {
         "title": "Child & dependent care credit phaseout rate per step",
         "description": "The CDCC credit rate is reduced by this rate for for each step (including fractional steps) above the phase-out start thresholds.",
-        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the phase-out start thresholds",
+        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
