@@ -7,7 +7,7 @@ from setuptools import setup
 with open("README.md", "r", encoding="utf-8") as f:
     longdesc = f.read()
 
-VERSION = "5.0.4"
+VERSION = "5.0.5"
 
 config = {
     "description": "Tax-Calculator",
