@@ -2449,9 +2449,10 @@ document.write(`
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">F2441</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">f2441</span><span class="p">,</span> <span class="n">CDCC_c</span><span class="p">,</span> <span class="n">e32800</span><span class="p">,</span>
-          <span class="n">exact</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CDCC_ps</span><span class="p">,</span> <span class="n">CDCC_ps2</span><span class="p">,</span> <span class="n">CDCC_crt</span><span class="p">,</span> <span class="n">CDCC_frt</span><span class="p">,</span>
-          <span class="n">CDCC_po_step_size</span><span class="p">,</span> <span class="n">CDCC_po_rate_per_step</span><span class="p">,</span> <span class="n">CDCC_refundable</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">F2441</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">f2441</span><span class="p">,</span> <span class="n">CDCC_c</span><span class="p">,</span> <span class="n">e32800</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span>
+          <span class="n">CDCC_ps1</span><span class="p">,</span> <span class="n">CDCC_ps2</span><span class="p">,</span> <span class="n">CDCC_po1_rate_max</span><span class="p">,</span> <span class="n">CDCC_po1_rate_min</span><span class="p">,</span>
+          <span class="n">CDCC_po2_rate_min</span><span class="p">,</span> <span class="n">CDCC_po1_step_size</span><span class="p">,</span> <span class="n">CDCC_po2_step_size</span><span class="p">,</span>
+          <span class="n">CDCC_po_rate_per_step</span><span class="p">,</span> <span class="n">CDCC_refundable</span><span class="p">,</span>
           <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c32800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates Form 2441 child and dependent care expense credit, c07180.</span>
@@ -2475,16 +2476,20 @@ document.write(`
 <span class="sd">        Whether or not to do rounding of phaseout fraction</span>
 <span class="sd">    c00100: float</span>
 <span class="sd">        Adjusted Gross Income (AGI)</span>
-<span class="sd">    CDCC_ps: float</span>
+<span class="sd">    CDCC_ps1: float</span>
 <span class="sd">        Child/dependent care credit first phaseout start</span>
-<span class="sd">    CDCC_ps2: float</span>
+<span class="sd">    CDCC_ps2: list[float]</span>
 <span class="sd">        Child/dependent care credit second phaseout start</span>
-<span class="sd">    CDCC_crt: float</span>
-<span class="sd">        Child/dependent care credit phaseout rate ceiling</span>
-<span class="sd">    CDCC_frt: float</span>
-<span class="sd">        Child/dependent care credit phaseout rate floor</span>
-<span class="sd">    CDCC_po_step_size: float</span>
-<span class="sd">        Child/dependent care credit phaseout AGI step size</span>
+<span class="sd">    CDCC_po1_rate_max: float</span>
+<span class="sd">        Child/dependent care credit first phaseout rate maximum</span>
+<span class="sd">    CDCC_po1_rate_min: float</span>
+<span class="sd">        Child/dependent care credit first phaseout rate minimum</span>
+<span class="sd">    CDCC_po2_rate_min: float</span>
+<span class="sd">        Child/dependent care credit second phaseout rate minimum</span>
+<span class="sd">    CDCC_po1_step_size: float</span>
+<span class="sd">        Child/dependent care credit first phaseout AGI step size</span>
+<span class="sd">    CDCC_po2_step_size: float</span>
+<span class="sd">        Child/dependent care credit second phaseout AGI step size</span>
 <span class="sd">    CDCC_po_rate_per_step: float</span>
 <span class="sd">        Child/dependent care credit phaseout rate per step size</span>
 <span class="sd">    CDCC_refundable: bool</span>
@@ -2518,21 +2523,30 @@ document.write(`
         <span class="n">c32890</span> <span class="o">=</span> <span class="n">earned_p</span>
     <span class="n">c33000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c32800</span><span class="p">,</span> <span class="n">c32880</span><span class="p">,</span> <span class="n">c32890</span><span class="p">))</span>
     <span class="c1"># credit rate is limited at high AGI</span>
-    <span class="c1"># ... first phase-down from CDCC_crt to CDCC_frt</span>
-    <span class="n">steps_fractional</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps</span><span class="p">)</span> <span class="o">/</span> <span class="n">CDCC_po_step_size</span>
-    <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
-        <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">steps_fractional</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">steps</span> <span class="o">=</span> <span class="n">steps_fractional</span>
-    <span class="n">crate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">CDCC_frt</span><span class="p">,</span> <span class="n">CDCC_crt</span> <span class="o">-</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">CDCC_po_rate_per_step</span><span class="p">)</span>
-    <span class="c1"># ... second phase-down from CDCC_frt to zero</span>
-    <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">CDCC_ps2</span><span class="p">:</span>
-        <span class="n">steps_fractional</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps2</span><span class="p">)</span> <span class="o">/</span> <span class="n">CDCC_po_step_size</span>
+    <span class="n">crate</span> <span class="o">=</span> <span class="n">CDCC_po1_rate_max</span>
+    <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">CDCC_ps1</span><span class="p">:</span>
+        <span class="c1"># ... first phase-down from CDCC_po1_rate_max to CDCC_po1_rate_min</span>
+        <span class="n">steps_fractional</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps1</span><span class="p">)</span> <span class="o">/</span> <span class="n">CDCC_po1_step_size</span>
         <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
             <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">steps_fractional</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">steps</span> <span class="o">=</span> <span class="n">steps_fractional</span>
-        <span class="n">crate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">CDCC_frt</span> <span class="o">-</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">CDCC_po_rate_per_step</span><span class="p">)</span>
+        <span class="n">crate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="n">CDCC_po1_rate_min</span><span class="p">,</span>
+            <span class="n">CDCC_po1_rate_max</span> <span class="o">-</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">CDCC_po_rate_per_step</span>
+        <span class="p">)</span>
+        <span class="c1"># ... second phase-down from CDCC_po1_rate_min to CDCC_po2_rate_min</span>
+        <span class="n">ps2</span> <span class="o">=</span> <span class="n">CDCC_ps2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">ps2</span><span class="p">:</span>
+            <span class="n">steps_fractional</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">ps2</span><span class="p">)</span> <span class="o">/</span> <span class="n">CDCC_po2_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
+                <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">steps_fractional</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">steps</span> <span class="o">=</span> <span class="n">steps_fractional</span>
+            <span class="n">crate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="n">CDCC_po2_rate_min</span><span class="p">,</span>
+                <span class="n">CDCC_po1_rate_min</span> <span class="o">-</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">CDCC_po_rate_per_step</span>
+            <span class="p">)</span>
     <span class="n">c33200</span> <span class="o">=</span> <span class="n">c33000</span> <span class="o">*</span> <span class="n">crate</span>
     <span class="c1"># credit is limited by tax liability if not refundable</span>
     <span class="k">if</span> <span class="n">CDCC_refundable</span><span class="p">:</span>
