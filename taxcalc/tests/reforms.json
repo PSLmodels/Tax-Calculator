@@ -134,7 +134,7 @@
   "15": {
       "baseline": "2017_law.json",
       "start_year": 2015,
-      "value": {"II_prt": 0.03},
+      "value": {"II_em_prt": 0.03},
       "name": "Increase personal exemption phaseout rate by 1 pts",
       "output_type": "iitax",
       "compare_with": {}

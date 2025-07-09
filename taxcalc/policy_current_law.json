@@ -2097,7 +2097,7 @@
             "cps": true
         }
     },
-    "II_prt": {
+    "II_em_prt": {
         "title": "Personal exemption phaseout rate",
         "description": "Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.",
         "notes": "",
