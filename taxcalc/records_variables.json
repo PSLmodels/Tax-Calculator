@@ -1149,6 +1149,11 @@
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
+    "senior_deduction": {
+      "type": "float",
+      "desc": "Deduction for elderly head and/or spouse",
+      "form": {"2025-20??": "calculated variable"}
+    },
     "auto_loan_interest_deduction": {
       "type": "float",
       "desc": "Deduction for payment of qualified auto loan interest",

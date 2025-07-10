@@ -15963,7 +15963,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 9e+99
+                "max": 1
             }
         },
         "compatible_data": {
@@ -18928,7 +18928,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 9e+99
+                "max": 1
             }
         },
         "compatible_data": {
@@ -20623,7 +20623,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 9e+99
+                "max": 1
             }
         },
         "compatible_data": {
@@ -22435,6 +22435,113 @@
             "cps": true
         }
     },
+    "SeniorDed_c": {
+        "title": "Senior deduction amount per elderly head/spouse",
+        "description": "Senior deduction is capped at this level per elderly head/spouse.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "SeniorDed_ps": {
+        "title": "Senior deduction phase-out start AGI level",
+        "description": "Senior deduction is phased-out if AGI exceeds this amount.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 75000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 150000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 75000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 75000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 75000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "SeniorDed_prt": {
+        "title": "Senior deduction phase-out rate",
+        "description": "Senior deduction is phased-out at this rate on AGI exceeding SeniorDed_ps.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.06
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "AutoLoanInterestDed_c": {
         "title": "Maximum amount of auto loan interest that is deductible",
         "description": "Auto loan interest in excess of this amount may not be deducted from AGI.",
@@ -22722,7 +22829,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 9e+99
+                "max": 1
             }
         },
         "compatible_data": {
@@ -22880,7 +22987,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 9e+99
+                "max": 1
             }
         },
         "compatible_data": {

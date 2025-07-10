@@ -14,7 +14,7 @@ import paramtools
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                    DependentCare, ALD_InvInc_ec_base, CapGains,
-                                   SSBenefits, UBI, AGI, AutoLoanInterestDed,
+                                   SSBenefits, UBI, AGI, MiscDed,
                                    ItemDed, StdDed, AdditionalMedicareTax,
                                    F2441, EITC, RefundablePayrollTaxCredit,
                                    ChildDepTaxCredit, AdditionalCTC, CTC_new,
@@ -1391,7 +1391,7 @@ class Calculator():
         CapGains(self.__policy, self.__records)
         SSBenefits(self.__policy, self.__records)
         AGI(self.__policy, self.__records)
-        AutoLoanInterestDed(self.__policy, self.__records)
+        MiscDed(self.__policy, self.__records)
         ItemDed(self.__policy, self.__records)
         AdditionalMedicareTax(self.__policy, self.__records)
         StdDed(self.__policy, self.__records)

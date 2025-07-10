@@ -842,26 +842,39 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
 
 
 @iterate_jit(nopython=True)
-def AutoLoanInterestDed(auto_loan_interest, MARS, c00100, exact,
-                        AutoLoanInterestDed_c,
-                        AutoLoanInterestDed_ps,
-                        AutoLoanInterestDed_po_step_size,
-                        AutoLoanInterestDed_po_rate_per_step,
-                        auto_loan_interest_deduction):
+def MiscDed(age_head, age_spouse, MARS, c00100, exact,
+            SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
+            auto_loan_interest,
+            AutoLoanInterestDed_c,
+            AutoLoanInterestDed_ps,
+            AutoLoanInterestDed_po_step_size,
+            AutoLoanInterestDed_po_rate_per_step,
+            senior_deduction, auto_loan_interest_deduction):
     """
-    Calculates below-the-line deduction on qualified auto loan interest paid.
+    Calculates below-the-line deduction for elderly head/spouse and
+    deduction on qualified auto loan interest paid.
 
     Parameters
     ----------
-    auto_loan_interest: float
-        Qualified auto loan interest paid
+    age_head: int
+        Age of tax unit head
+    age_head: int
+        Age of tax unit spouse
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate,
                                4=household-head, 5=widow(er))
     c00100: float
         Adjusted gross income
     exact: int
-        Whether or not to smooth the deduction phase out
+        Whether or not to smooth deduction phase out
+    SeniorDed_c: float
+        Maximum amount of senior deduction per head/spouse aged 65+
+    SeniorDed_ps: list[float]
+        Senior deduction AGI phase-out start level
+    SeniorDed_prt: float
+        Senior deduction phase-out rate
+    auto_loan_interest: float
+        Qualified auto loan interest paid
     AutoLoanInterestDed_c: float
         Deduction cap
     AutoLoanInterestDed_ps: float
@@ -875,9 +888,28 @@ def AutoLoanInterestDed(auto_loan_interest, MARS, c00100, exact,
 
     Returns
     -------
+    senior_deduction: float
+        Deduction available to both itemizers and nonitemizers
     auto_loan_interest_deduction: float
         Deduction available to both itemizers and nonitemizers
     """
+    # calculate senior deduction
+    senior_deduction = 0.
+    if SeniorDed_c > 0.:
+        seniors = 0
+        if age_head >= 65:
+            seniors += 1
+        if MARS == 2 and age_spouse >= 65:
+            seniors += 1
+        if seniors > 0:
+            ded = seniors * SeniorDed_c
+            po_start = SeniorDed_ps[MARS - 1]
+            if c00100 > po_start:
+                excess_agi = c00100 - po_start
+                po_amount = excess_agi * SeniorDed_prt
+                ded = max(0., ded - po_amount)
+            senior_deduction = ded
+    # calculate auto loan interest deduction
     auto_loan_interest_deduction = 0.
     if AutoLoanInterestDed_c > 0. and auto_loan_interest > 0.:
         # cap deduction
@@ -895,7 +927,7 @@ def AutoLoanInterestDed(auto_loan_interest, MARS, c00100, exact,
                 po_amount = excess_agi * po_rate
             ded = max(0., ded - po_amount)
         auto_loan_interest_deduction = ded
-    return auto_loan_interest_deduction
+    return (senior_deduction, auto_loan_interest_deduction)
 
 
 @iterate_jit(nopython=True)
@@ -1245,12 +1277,14 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
-           e02100, e27200, e00650, c01000, auto_loan_interest_deduction,
+           e02100, e27200, e00650, c01000,
+           senior_deduction, auto_loan_interest_deduction,
            PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
            PT_qbid_rt, PT_qbid_limited,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
-           PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
-           PT_qbid_ps, PT_qbid_prt, qbided):
+           PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
+           PT_qbid_ps, PT_qbid_prt,
+           c04800, qbided):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
@@ -1282,6 +1316,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         Qualified dividends included in ordinary dividends
     c01000: float
         Limitation on capital losses
+    senior_deduction: float
+        Deduction for elderly head/spouse
     auto_loan_interest_deduction: float
         Deduction for qualified auto loan interest paid
     PT_SSTB_income: int
@@ -1309,12 +1345,12 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         Alternative QBID cap rate on pass-through business W-2 wages paid
     PT_qbid_alt_property_rt: float
         Alternative QBID cap rate on pass-through business property owned
-    c04800: float
-        Regular taxable income
     PT_qbid_ps: list
         QBID phaseout taxable income start
     PT_qbid_prt: float
         QBID phaseout rate
+    c04800: float
+        Regular taxable income
     qbided: float
         Qualified Business Income (QBI) deduction
 
@@ -1372,8 +1408,9 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     else:  # if PT_qbid_limited is false
         qbided = qbid_before_limits
 
-    # calculate taxable income after qualified business income deduction
-    c04800 = max(0., pre_qbid_taxinc - qbided - auto_loan_interest_deduction)
+    # calculate taxable income after qbided and other deductions
+    deds = qbided + senior_deduction + auto_loan_interest_deduction
+    c04800 = max(0., pre_qbid_taxinc - deds)
     return (c04800, qbided)
 
 
