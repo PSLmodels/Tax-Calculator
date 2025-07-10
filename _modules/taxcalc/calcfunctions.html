@@ -760,9 +760,9 @@ document.write(`
         <span class="n">ALD_DomesticProduction_hc</span><span class="p">,</span> <span class="n">ALD_Tuition_hc</span><span class="p">,</span>
         <span class="n">MARS</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span>
         <span class="n">overtime_income</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome_hc</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome_c</span><span class="p">,</span>
-        <span class="n">ALD_OvertimeIncome_ps</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome_po_rate</span><span class="p">,</span>
+        <span class="n">ALD_OvertimeIncome_ps</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome_prt</span><span class="p">,</span>
         <span class="n">tip_income</span><span class="p">,</span> <span class="n">ALD_TipIncome_hc</span><span class="p">,</span> <span class="n">ALD_TipIncome_c</span><span class="p">,</span>
-        <span class="n">ALD_TipIncome_ps</span><span class="p">,</span> <span class="n">ALD_TipIncome_po_rate</span><span class="p">,</span>
+        <span class="n">ALD_TipIncome_ps</span><span class="p">,</span> <span class="n">ALD_TipIncome_prt</span><span class="p">,</span>
         <span class="n">c02900</span><span class="p">,</span> <span class="n">ALD_OvertimeIncome</span><span class="p">,</span> <span class="n">ALD_TipIncome</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).</span>
@@ -830,7 +830,7 @@ document.write(`
 <span class="sd">        ALD_OvertimeIncome cap</span>
 <span class="sd">    ALD_OvertimeIncome_ps: list[float]</span>
 <span class="sd">        ALD_OvertimeIncome phase-out earned income start</span>
-<span class="sd">    ALD_OvertimeIncome_po_rate: float</span>
+<span class="sd">    ALD_OvertimeIncome_prt: float</span>
 <span class="sd">        ALD_OvertimeIncome phase-out rate</span>
 <span class="sd">    tip_income: float</span>
 <span class="sd">        Tip income qualified for an above-the-line deduction</span>
@@ -840,7 +840,7 @@ document.write(`
 <span class="sd">        ALD_TipIncome cap</span>
 <span class="sd">    ALD_TipIncome_ps: list[float]</span>
 <span class="sd">        ALD_TipIncome phase-out earned income start</span>
-<span class="sd">    ALD_TipIncome_po_rate: float</span>
+<span class="sd">    ALD_TipIncome_prt: float</span>
 <span class="sd">        ALD_TipIncome phase-out rate</span>
 
 <span class="sd">    Returns</span>
@@ -874,7 +874,7 @@ document.write(`
         <span class="n">po_start</span> <span class="o">=</span> <span class="n">ALD_OvertimeIncome_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">earned</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
             <span class="n">excess</span> <span class="o">=</span> <span class="n">earned</span> <span class="o">-</span> <span class="n">po_start</span>
-            <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess</span> <span class="o">*</span> <span class="n">ALD_OvertimeIncome_po_rate</span>
+            <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess</span> <span class="o">*</span> <span class="n">ALD_OvertimeIncome_prt</span>
             <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
         <span class="n">ALD_OvertimeIncome</span> <span class="o">=</span> <span class="n">ded</span>
     <span class="c1"># calculate ALD_TipIncome</span>
@@ -884,7 +884,7 @@ document.write(`
         <span class="n">po_start</span> <span class="o">=</span> <span class="n">ALD_TipIncome_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">earned</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
             <span class="n">excess</span> <span class="o">=</span> <span class="n">earned</span> <span class="o">-</span> <span class="n">po_start</span>
-            <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess</span> <span class="o">*</span> <span class="n">ALD_TipIncome_po_rate</span>
+            <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess</span> <span class="o">*</span> <span class="n">ALD_TipIncome_prt</span>
             <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
         <span class="n">ALD_TipIncome</span> <span class="o">=</span> <span class="n">ded</span>
     <span class="c1"># return results</span>
@@ -1163,7 +1163,7 @@ document.write(`
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">AGI</span><span class="p">(</span><span class="n">ymod1</span><span class="p">,</span> <span class="n">c02500</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span>
-        <span class="n">II_em</span><span class="p">,</span> <span class="n">II_em_ps</span><span class="p">,</span> <span class="n">II_prt</span><span class="p">,</span> <span class="n">II_no_em_nu18</span><span class="p">,</span>
+        <span class="n">II_em</span><span class="p">,</span> <span class="n">II_em_ps</span><span class="p">,</span> <span class="n">II_em_prt</span><span class="p">,</span> <span class="n">II_no_em_nu18</span><span class="p">,</span>
         <span class="n">e02300</span><span class="p">,</span> <span class="n">UI_thd</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">pre_c04600</span><span class="p">,</span> <span class="n">c04600</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Adjusted Gross Income (AGI), c00100, and</span>
@@ -1196,7 +1196,7 @@ document.write(`
 <span class="sd">        Personal and dependent exemption amount</span>
 <span class="sd">    II_em_ps: list</span>
 <span class="sd">        Personal exemption phaseout starting income</span>
-<span class="sd">    II_prt: float</span>
+<span class="sd">    II_em_prt: float</span>
 <span class="sd">        Personal exemption phaseout rate</span>
 <span class="sd">    II_no_em_nu18: float</span>
 <span class="sd">        Repeal personal exemptions for dependents under age 18</span>
@@ -1241,10 +1241,10 @@ document.write(`
     <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
         <span class="n">line5</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">II_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">line6</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">line5</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2500.</span> <span class="o">/</span> <span class="n">sep</span><span class="p">))</span>
-        <span class="n">line7</span> <span class="o">=</span> <span class="n">II_prt</span> <span class="o">*</span> <span class="n">line6</span>
+        <span class="n">line7</span> <span class="o">=</span> <span class="n">II_em_prt</span> <span class="o">*</span> <span class="n">line6</span>
         <span class="n">c04600</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_c04600</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">line7</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation needed for sensible mtr calculation</span>
-        <span class="n">dispc_numer</span> <span class="o">=</span> <span class="n">II_prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">II_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">dispc_numer</span> <span class="o">=</span> <span class="n">II_em_prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">II_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">dispc_denom</span> <span class="o">=</span> <span class="mf">2500.</span> <span class="o">/</span> <span class="n">sep</span>
         <span class="n">dispc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dispc_numer</span> <span class="o">/</span> <span class="n">dispc_denom</span><span class="p">))</span>
         <span class="n">c04600</span> <span class="o">=</span> <span class="n">pre_c04600</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">dispc</span><span class="p">)</span>
@@ -2524,9 +2524,10 @@ document.write(`
     <span class="n">c33000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c32800</span><span class="p">,</span> <span class="n">c32880</span><span class="p">,</span> <span class="n">c32890</span><span class="p">))</span>
     <span class="c1"># credit rate is limited at high AGI</span>
     <span class="n">crate</span> <span class="o">=</span> <span class="n">CDCC_po1_rate_max</span>
-    <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">CDCC_ps1</span><span class="p">:</span>
+    <span class="n">ps1</span> <span class="o">=</span> <span class="n">CDCC_ps1</span>
+    <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">ps1</span><span class="p">:</span>
         <span class="c1"># ... first phase-down from CDCC_po1_rate_max to CDCC_po1_rate_min</span>
-        <span class="n">steps_fractional</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps1</span><span class="p">)</span> <span class="o">/</span> <span class="n">CDCC_po1_step_size</span>
+        <span class="n">steps_fractional</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">ps1</span><span class="p">)</span> <span class="o">/</span> <span class="n">CDCC_po1_step_size</span>
         <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
             <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">steps_fractional</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2537,6 +2538,7 @@ document.write(`
         <span class="p">)</span>
         <span class="c1"># ... second phase-down from CDCC_po1_rate_min to CDCC_po2_rate_min</span>
         <span class="n">ps2</span> <span class="o">=</span> <span class="n">CDCC_ps2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">ps2</span> <span class="o">&gt;=</span> <span class="n">ps1</span><span class="p">,</span> <span class="s2">&quot;CDCC_ps2 must be no less than CDCC_ps1&quot;</span>
         <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">ps2</span><span class="p">:</span>
             <span class="n">steps_fractional</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">ps2</span><span class="p">)</span> <span class="o">/</span> <span class="n">CDCC_po2_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
