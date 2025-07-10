@@ -305,6 +305,8 @@ class Records(Data):
         self.e00200s *= gfv['AWAGE']
         self.pencon_p *= gfv['AWAGE']
         self.pencon_s *= gfv['AWAGE']
+        self.overtime_income *= gfv['AWAGE']
+        self.tip_income *= gfv['AWAGE']
         self.e00300 *= gfv['AINTS']
         self.e00400 *= gfv['AINTS']
         self.e00600 *= gfv['ADIVS']
@@ -377,6 +379,7 @@ class Records(Data):
         self.e87530 *= gfv['ATXPY']
         self.e87521 *= gfv['ATXPY']
         self.cmbtp *= gfv['ATXPY']
+        self.auto_loan_interest *= gfv['ATXPY']
         # BENEFITS
         self.other_ben *= gfv['ABENOTHER']
         self.mcare_ben *= gfv['ABENMCARE']

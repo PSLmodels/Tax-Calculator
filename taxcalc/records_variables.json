@@ -647,6 +647,25 @@
       "desc": "Filing unit's share of total business property owned by the pass-through business",
       "form": {"2018-20??": "specified in custom data"},
       "availability": ""
+    },
+
+    "auto_loan_interest": {
+      "type": "float",
+      "desc": "Filing unit's interest payments on OBBBA-qualified auto loans",
+      "form": {"2025-20??": "specified in custom data"},
+      "availability": ""
+    },
+    "overtime_income": {
+      "type": "float",
+      "desc": "Filing unit's OBBBA-qualified overtime income",
+      "form": {"2025-20??": "specified in custom data"},
+      "availability": ""
+    },
+    "tip_income": {
+      "type": "float",
+      "desc": "Filing unit's OBBBA-qualified tip income",
+      "form": {"2025-20??": "specified in custom data"},
+      "availability": ""
     }
   },
   "calc": {
@@ -1129,6 +1148,21 @@
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
+    },
+    "auto_loan_interest_deduction": {
+      "type": "float",
+      "desc": "Deduction for payment of qualified auto loan interest",
+      "form": {"2025-20??": "calculated variable"}
+    },
+    "ALD_OvertimeIncome": {
+      "type": "float",
+      "desc": "Above-the-line deduction for qualified overtime income",
+      "form": {"2025-20??": "calculated variable"}
+    },
+    "ALD_TipIncome": {
+      "type": "float",
+      "desc": "Above-the-line deduction for qualified tip income",
+      "form": {"2025-20??": "calculated variable"}
     },
     "ubi": {
       "type": "float",

@@ -90,6 +90,14 @@ class Policy(Parameters):
         'ID_BenefitSurtax_crt': 'was removed in Tax-Calculator 5.0.0',
         'ID_BenefitSurtax_trt': 'was removed in Tax-Calculator 5.0.0',
         'ID_BenefitSurtax_em': 'was removed in Tax-Calculator 5.0.0',
+        # following parameters were renamed in PR 2628
+        'CDCC_ps': 'was renamed CDCC_ps1 in Tax-Calculator 5.1.0',
+        'CDCC_crt': 'was renamed CDCC_po1_rate_max in Tax-Calculator 5.1.0',
+        'CDCC_frt': 'was renamed CDCC_po1_rate_min in Tax-Calculator 5.1.0',
+        'CDCC_po_step_size': (
+            'was renamed CDCC_po1_step_size'
+            'in Tax-Calculator 5.1.0'
+        ),
     }
     # (2) specify which Policy parameters have been redefined recently
     #     where "recently" means in the last major release

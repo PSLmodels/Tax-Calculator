@@ -2590,7 +2590,7 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error
 
 
-### Regular: Non-AMT, Non-Pass-Through
+### Regular: Non-AMT
 
 ####  `II_rt1`
 _Description:_ The lowest tax rate, applied to the portion of taxable income below tax bracket 1.

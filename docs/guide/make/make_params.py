@@ -142,8 +142,6 @@ def paramtextdf(df, ptype):
             txt += ' for: [single, mjoint, mseparate, headhh, widow]  \n'
         elif nvalues == 4:
             txt += ' for: [0kids, 1kid, 2kids, 3+kids]  \n'
-        elif nvalues == 7:
-            txt += ' for: [med, sltx, retx, cas, misc, int, char]  \n'
         for cyr, val in zip(row['years'], row['values']):
             if nvalues == 1:
                 val = val[0]
