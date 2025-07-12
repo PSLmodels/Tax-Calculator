@@ -578,7 +578,7 @@ e02100 = [0.00, 0.00, 0.00, 0.00]
 e27200 = [0.00, 0.00, 0.00, 0.00]
 e00650 = [5000.00, 8000.00, 3000.00, 9000.00]
 c01000 = [7000.00, 4000.00, -3000.00, -3000.00]
-senior_deduction = [0.00, 0.00, 0.00, 0.00]
+senior_deduction = [0.00, 0.00, 1000.00, 0.00]
 auto_loan_interest_deduction = [0.00, 0.00, 0.00, 1000.00]
 PT_SSTB_income = [0, 1, 1, 1]
 PT_binc_w2_wages = [0.00, 0.00, 0.00, 0.00]
@@ -615,7 +615,7 @@ tuple2 = (
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
     PT_qbid_ps, PT_qbid_prt, c04800[2], qbided[2])
-expected2 = (579300.00, 0)
+expected2 = (578300.00, 0)
 tuple3 = (
     c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3],
     c03260[3], e26270[3],

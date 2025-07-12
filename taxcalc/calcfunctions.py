@@ -1361,8 +1361,10 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     qbided: float
         Qualified Business Income (QBI) deduction
     """
-    # calculate taxable income before qualified business income deduction
-    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
+    # calculate taxable income before qualified business income deduction,
+    # which is assumed to be stacked last in the list of deductions
+    odeds = senior_deduction + auto_loan_interest_deduction
+    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600 - odeds)
     # calculate qualified business income deduction
     qbinc = max(0., e00900 - c03260 + e26270 + e02100 + e27200)
     qbid_before_limits = qbinc * PT_qbid_rt
@@ -1408,9 +1410,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     else:  # if PT_qbid_limited is false
         qbided = qbid_before_limits
 
-    # calculate taxable income after qbided and other deductions
-    deds = qbided + senior_deduction + auto_loan_interest_deduction
-    c04800 = max(0., pre_qbid_taxinc - deds)
+    # calculate taxable income after qbided
+    c04800 = max(0., pre_qbid_taxinc - qbided)
     return (c04800, qbided)
 
 
