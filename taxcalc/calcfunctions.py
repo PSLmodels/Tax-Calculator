@@ -1414,7 +1414,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     else:  # if PT_qbid_limited is false
         qbided = qbid_before_limits
     # apply minimum QBID logic
-    if qbided < PT_qbid_min_ded and qbinc >= PT_qbid_min_qbi:
+    if qbinc >= PT_qbid_min_qbi and qbided < PT_qbid_min_ded:
         qbided = PT_qbid_min_ded
 
     # calculate taxable income after qbided

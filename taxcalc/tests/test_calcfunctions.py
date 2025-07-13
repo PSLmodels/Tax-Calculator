@@ -564,8 +564,8 @@ PT_qbid_alt_w2_wages_rt = 0.25
 PT_qbid_alt_property_rt = 0.025
 PT_qbid_ps = [9e99, 9e99, 9e99, 9e99, 9e99]
 PT_qbid_prt = 0.0
-PT_qbid_min_ded = 0.0
-PT_qbid_min_qbi = 0.0
+PT_qbid_min_ded = 400.0  # OBBBA value in 2026
+PT_qbid_min_qbi = 1000.0  # OBBBA value in 2026
 
 # Input variable values for tests
 c00100 = [527860.66, 337675.10, 603700.00, 90700.00]
@@ -598,7 +598,7 @@ tuple0 = (
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
     PT_qbid_ps, PT_qbid_prt, PT_qbid_min_ded, PT_qbid_min_qbi,
     c04800[0], qbided[0])
-expected0 = (490860.66, 0)
+expected0 = (490460.66, 400.00)
 tuple1 = (
     c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1],
     c03260[1], e26270[1],
@@ -620,7 +620,7 @@ tuple2 = (
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
     PT_qbid_ps, PT_qbid_prt, PT_qbid_min_ded, PT_qbid_min_qbi,
     c04800[2], qbided[2])
-expected2 = (578300.00, 0)
+expected2 = (577900.00, 400.00)
 tuple3 = (
     c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3],
     c03260[3], e26270[3],
