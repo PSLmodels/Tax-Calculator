@@ -8786,6 +8786,66 @@
             "cps": true
         }
     },
+    "ID_reduction_salt_rate": {
+        "title": "Itemized deduction reduction rate for SALT deductions under OBBBA",
+        "description": "Itemized deductions are reduced if pre-deduction taxable income exceeds top tax bracket.",
+        "notes": "The 2026 value of 0.13513514 is about equal to 5/37.",
+        "section_1": "Itemized Deductions",
+        "section_2": "Itemized Deduction Limitation",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2026,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ID_reduction_other_rate": {
+        "title": "Itemized deduction reduction rate for non-SALT deductions under OBBBA",
+        "description": "Itemized deductions are reduced if pre-deduction taxable income exceeds top tax bracket.",
+        "notes": "The 2026 value of 0.05405405 is about equal to 2/37.",
+        "section_1": "Itemized Deductions",
+        "section_2": "Itemized Deduction Limitation",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2026,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "ID_c": {
         "title": "Ceiling on the amount of itemized deductions allowed (dollars)",
         "description": "The amount of itemized deductions is limited to this dollar amount.",
