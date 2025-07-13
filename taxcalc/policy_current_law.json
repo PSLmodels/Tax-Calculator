@@ -15971,6 +15971,66 @@
             "cps": true
         }
     },
+    "PT_qbid_min_ded": {
+        "title": "Minimum QBID amount",
+        "description": "QBID will be no less than this amount if qualified business income is not less than PT_qbid_min_qbi.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2026,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "PT_qbid_min_qbi": {
+        "title": "Minimum QBI amount required for receipt of PT_qbid_min_ded",
+        "description": "QBID will be no less than this PT_qbid_min_ded if qualified business income is not less than this amount.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2026,
+                "value": 1000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "UI_em": {
         "title": "Unemployment Insurance exemption amount",
         "description": "The amount of Unemployment Insurance benefits excluded from taxable income.",

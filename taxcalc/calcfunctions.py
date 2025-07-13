@@ -1283,7 +1283,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
            PT_qbid_rt, PT_qbid_limited,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
            PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
-           PT_qbid_ps, PT_qbid_prt,
+           PT_qbid_ps, PT_qbid_prt, PT_qbid_min_ded, PT_qbid_min_qbi,
            c04800, qbided):
     """
     Calculates taxable income, c04800, and
@@ -1349,6 +1349,10 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         QBID phaseout taxable income start
     PT_qbid_prt: float
         QBID phaseout rate
+    PT_qbid_min_ded: float
+        Minimum QBID amount
+    PT_qbid_min_qbi: float
+        Minimum QBI necessary to get QBID no less than PT_qbid_min_ded
     c04800: float
         Regular taxable income
     qbided: float
@@ -1409,6 +1413,9 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
             qbided = max(0., qbided - PT_qbid_prt * excess)
     else:  # if PT_qbid_limited is false
         qbided = qbid_before_limits
+    # apply minimum QBID logic
+    if qbinc >= PT_qbid_min_qbi and qbided < PT_qbid_min_ded:
+        qbided = PT_qbid_min_ded
 
     # calculate taxable income after qbided
     c04800 = max(0., pre_qbid_taxinc - qbided)
