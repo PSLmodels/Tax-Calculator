@@ -99,7 +99,7 @@ class Policy(Parameters):
         ),
         # following parameter was renamed in PR 2929
         'II_prt': 'was renamed II_em_prt in Tax-Calculator 5.1.0',
-        # following parameters were renamed in PR 2932
+        # following parameter was renamed in PR 2932
         'ID_Charity_crt_cash': (
             'was renamed ID_Charity_crt_all in Tax-Calculator 5.1.0'
         ),

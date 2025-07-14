@@ -933,8 +933,8 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
 @iterate_jit(nopython=True)
 def ItemDed(e17500, e18400, e18500, e19200,
             e19800, e20100, e20400, g20500,
-            MARS, age_head, age_spouse, c00100, c04470, c21040, c21060,
-            c17000, c18300, c19200, c19700, c20500, c20800,
+            MARS, age_head, age_spouse, c00100, c04600, c04470, c21040, c21060,
+            c17000, c18300, c19200, c19700, c20500, c20800, II_brk6,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
@@ -943,7 +943,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
             ID_InterestPaid_c, ID_Charity_c, ID_Casualty_c,
             ID_Miscellaneous_c, ID_AllTaxes_c, ID_AllTaxes_hc,
-            ID_StateLocalTax_crt, ID_RealEstate_crt, ID_Charity_f):
+            ID_StateLocalTax_crt, ID_RealEstate_crt, ID_Charity_f,
+            ID_reduction_salt_rate, ID_reduction_other_rate):
     """
     Calculates itemized deductions, Form 1040, Schedule A.
 
@@ -974,12 +975,14 @@ def ItemDed(e17500, e18400, e18500, e19200,
         Age in years of spouse
     c00100: float
         Adjusted gross income (AGI)
+    c04600: float
+        Personal exemptions after phase out
     c04470: float
-        Itemized deductions after phase out (0 for non itemizers)
+        Itemized deductions after all limitations (0 for non-itemizers)
     c21040: float
-        Itemized deductions that are phased out
+        Itemized deductions that are limited under the Pease limitations
     c21060: float
-        Itemized deductions before phase out (0 for non itemizers)
+        Itemized deductions before limitation (0 for non-itemizers)
     c17000: float
         Schedule A: medical expenses deducted
     c18300: float
@@ -992,6 +995,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
         Schedule A: net casualty or theft loss deducted
     c20800: float
         Schedule A: net limited miscellaneous deductions deducted
+    II_brk6: list
+        Bottom of top income tax rate bracket
     ID_ps: list
         Itemized deduction phaseout AGI start (Pease)
     ID_Medical_frt: float
@@ -1064,6 +1069,10 @@ def ItemDed(e17500, e18400, e18500, e19200,
         state, local, and foreign real estate tax deductions
     ID_Charity_f: list
         Floor on the amount of charity expense deduction allowed (dollars)
+    ID_reduction_salt_rate: float
+        OBBBA reduction rate for SALT deductions
+    ID_reduction_other_rate: float
+        OBBBA reduction rate for other deductions
 
     Returns
     -------
@@ -1080,12 +1089,13 @@ def ItemDed(e17500, e18400, e18500, e19200,
     c20800: float
         Schedule A: net limited miscellaneous deductions deducted
     c21040: float
-        Itemized deductions that are phased out
+        Itemized deductions that are phased out under Pease limitation
     c21060: float
-        Itemized deductions before phase out (0 for non itemizers)
+        Itemized deductions before any limitation (0 for non-itemizers)
     c04470: float
-        Itemized deductions after phase out (0 for non itemizers)
+        Itemized deductions after all limitations (0 for non-itemizers)
     """
+    # pylint: disable=too-many-statements
     posagi = max(c00100, 0.)
     # Medical
     medical_frt = ID_Medical_frt
@@ -1129,8 +1139,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
     c20800 = min(c20800, ID_Miscellaneous_c[MARS - 1])
     # Gross total itemized deductions
     c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
-    # Limitations on total itemized deductions
-    # (no attempt to adjust c04470 components for limitations)
+    # Pease limitation on total itemized deductions
+    # (no attempt to adjust c04470 components for limitation)
     nonlimited = c17000 + c20500
     limitstart = ID_ps[MARS - 1]
     if c21060 > nonlimited and c00100 > limitstart:
@@ -1141,8 +1151,24 @@ def ItemDed(e17500, e18400, e18500, e19200,
     else:
         c21040 = 0.
         c04470 = c21060
+    # OBBBA limitation on total itemized deductions
+    # (no attempt to adjust c04470 components for limitation)
+    reduction = 0.
+    if ID_reduction_salt_rate > 0. or ID_reduction_other_rate > 0.:
+        assert c21040 <= 0.0, "Pease and OBBBA cannot both be in effect"
+        tincome = max(0., c00100 - c04600)
+        texcess = max(0., tincome - II_brk6[MARS - 1])
+        smaller_salt = min(c18300, texcess)
+        salt_reduction = ID_reduction_salt_rate * smaller_salt
+        other_deds = max(0, c04470 - c18300)
+        smaller_other = min(other_deds, texcess)
+        other_reduction = ID_reduction_other_rate * smaller_other
+        reduction = salt_reduction + other_reduction
+    c04470 = max(0., c04470 - reduction)
+    # Cap total itemized deductions
+    # (no attempt to adjust c04470 components for limitation)
     c04470 = min(c04470, ID_c[MARS - 1])
-    # Return total itemized deduction amounts and components
+    # Return total itemized deduction amounts and pre-limitation components
     return (c17000, c18300, c19200, c19700, c20500, c20800,
             c21040, c21060, c04470)
 
@@ -1869,7 +1895,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     taxbc: float
         Regular tax on regular taxable income before credits
     c04470: float
-        Itemized deductions after phase-out (zero for non itemizers)
+        Itemized deductions after phase-out (zero for non-itemizers)
     c17000: float
         Schedule A: Medical expenses deducted
     c20800: float
