@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -1252,26 +1252,39 @@ document.write(`
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">AutoLoanInterestDed</span><span class="p">(</span><span class="n">auto_loan_interest</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span>
-                        <span class="n">AutoLoanInterestDed_c</span><span class="p">,</span>
-                        <span class="n">AutoLoanInterestDed_ps</span><span class="p">,</span>
-                        <span class="n">AutoLoanInterestDed_po_step_size</span><span class="p">,</span>
-                        <span class="n">AutoLoanInterestDed_po_rate_per_step</span><span class="p">,</span>
-                        <span class="n">auto_loan_interest_deduction</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">MiscDed</span><span class="p">(</span><span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span>
+            <span class="n">SeniorDed_c</span><span class="p">,</span> <span class="n">SeniorDed_ps</span><span class="p">,</span> <span class="n">SeniorDed_prt</span><span class="p">,</span>
+            <span class="n">auto_loan_interest</span><span class="p">,</span>
+            <span class="n">AutoLoanInterestDed_c</span><span class="p">,</span>
+            <span class="n">AutoLoanInterestDed_ps</span><span class="p">,</span>
+            <span class="n">AutoLoanInterestDed_po_step_size</span><span class="p">,</span>
+            <span class="n">AutoLoanInterestDed_po_rate_per_step</span><span class="p">,</span>
+            <span class="n">senior_deduction</span><span class="p">,</span> <span class="n">auto_loan_interest_deduction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates below-the-line deduction on qualified auto loan interest paid.</span>
+<span class="sd">    Calculates below-the-line deduction for elderly head/spouse and</span>
+<span class="sd">    deduction on qualified auto loan interest paid.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    auto_loan_interest: float</span>
-<span class="sd">        Qualified auto loan interest paid</span>
+<span class="sd">    age_head: int</span>
+<span class="sd">        Age of tax unit head</span>
+<span class="sd">    age_head: int</span>
+<span class="sd">        Age of tax unit spouse</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                               4=household-head, 5=widow(er))</span>
 <span class="sd">    c00100: float</span>
 <span class="sd">        Adjusted gross income</span>
 <span class="sd">    exact: int</span>
-<span class="sd">        Whether or not to smooth the deduction phase out</span>
+<span class="sd">        Whether or not to smooth deduction phase out</span>
+<span class="sd">    SeniorDed_c: float</span>
+<span class="sd">        Maximum amount of senior deduction per head/spouse aged 65+</span>
+<span class="sd">    SeniorDed_ps: list[float]</span>
+<span class="sd">        Senior deduction AGI phase-out start level</span>
+<span class="sd">    SeniorDed_prt: float</span>
+<span class="sd">        Senior deduction phase-out rate</span>
+<span class="sd">    auto_loan_interest: float</span>
+<span class="sd">        Qualified auto loan interest paid</span>
 <span class="sd">    AutoLoanInterestDed_c: float</span>
 <span class="sd">        Deduction cap</span>
 <span class="sd">    AutoLoanInterestDed_ps: float</span>
@@ -1285,9 +1298,28 @@ document.write(`
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    senior_deduction: float</span>
+<span class="sd">        Deduction available to both itemizers and nonitemizers</span>
 <span class="sd">    auto_loan_interest_deduction: float</span>
 <span class="sd">        Deduction available to both itemizers and nonitemizers</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># calculate senior deduction</span>
+    <span class="n">senior_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">SeniorDed_c</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="n">seniors</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
+            <span class="n">seniors</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
+            <span class="n">seniors</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">seniors</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ded</span> <span class="o">=</span> <span class="n">seniors</span> <span class="o">*</span> <span class="n">SeniorDed_c</span>
+            <span class="n">po_start</span> <span class="o">=</span> <span class="n">SeniorDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
+                <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">po_start</span>
+                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">SeniorDed_prt</span>
+                <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
+            <span class="n">senior_deduction</span> <span class="o">=</span> <span class="n">ded</span>
+    <span class="c1"># calculate auto loan interest deduction</span>
     <span class="n">auto_loan_interest_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">if</span> <span class="n">AutoLoanInterestDed_c</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">auto_loan_interest</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="c1"># cap deduction</span>
@@ -1305,7 +1337,7 @@ document.write(`
                 <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">po_rate</span>
             <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
         <span class="n">auto_loan_interest_deduction</span> <span class="o">=</span> <span class="n">ded</span>
-    <span class="k">return</span> <span class="n">auto_loan_interest_deduction</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">senior_deduction</span><span class="p">,</span> <span class="n">auto_loan_interest_deduction</span><span class="p">)</span>
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1655,12 +1687,14 @@ document.write(`
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">TaxInc</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c04600</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span>
-           <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">auto_loan_interest_deduction</span><span class="p">,</span>
+           <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
+           <span class="n">senior_deduction</span><span class="p">,</span> <span class="n">auto_loan_interest_deduction</span><span class="p">,</span>
            <span class="n">PT_SSTB_income</span><span class="p">,</span> <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span>
            <span class="n">PT_qbid_rt</span><span class="p">,</span> <span class="n">PT_qbid_limited</span><span class="p">,</span>
            <span class="n">PT_qbid_taxinc_thd</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">,</span> <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span>
-           <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span> <span class="n">c04800</span><span class="p">,</span>
-           <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">qbided</span><span class="p">):</span>
+           <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span>
+           <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span>
+           <span class="n">c04800</span><span class="p">,</span> <span class="n">qbided</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates taxable income, c04800, and</span>
 <span class="sd">    qualified business income deduction, qbided.</span>
@@ -1692,6 +1726,8 @@ document.write(`
 <span class="sd">        Qualified dividends included in ordinary dividends</span>
 <span class="sd">    c01000: float</span>
 <span class="sd">        Limitation on capital losses</span>
+<span class="sd">    senior_deduction: float</span>
+<span class="sd">        Deduction for elderly head/spouse</span>
 <span class="sd">    auto_loan_interest_deduction: float</span>
 <span class="sd">        Deduction for qualified auto loan interest paid</span>
 <span class="sd">    PT_SSTB_income: int</span>
@@ -1719,12 +1755,12 @@ document.write(`
 <span class="sd">        Alternative QBID cap rate on pass-through business W-2 wages paid</span>
 <span class="sd">    PT_qbid_alt_property_rt: float</span>
 <span class="sd">        Alternative QBID cap rate on pass-through business property owned</span>
-<span class="sd">    c04800: float</span>
-<span class="sd">        Regular taxable income</span>
 <span class="sd">    PT_qbid_ps: list</span>
 <span class="sd">        QBID phaseout taxable income start</span>
 <span class="sd">    PT_qbid_prt: float</span>
 <span class="sd">        QBID phaseout rate</span>
+<span class="sd">    c04800: float</span>
+<span class="sd">        Regular taxable income</span>
 <span class="sd">    qbided: float</span>
 <span class="sd">        Qualified Business Income (QBI) deduction</span>
 
@@ -1735,8 +1771,10 @@ document.write(`
 <span class="sd">    qbided: float</span>
 <span class="sd">        Qualified Business Income (QBI) deduction</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># calculate taxable income before qualified business income deduction</span>
-    <span class="n">pre_qbid_taxinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">c04470</span><span class="p">,</span> <span class="n">standard</span><span class="p">)</span> <span class="o">-</span> <span class="n">c04600</span><span class="p">)</span>
+    <span class="c1"># calculate taxable income before qualified business income deduction,</span>
+    <span class="c1"># which is assumed to be stacked last in the list of deductions</span>
+    <span class="n">odeds</span> <span class="o">=</span> <span class="n">senior_deduction</span> <span class="o">+</span> <span class="n">auto_loan_interest_deduction</span>
+    <span class="n">pre_qbid_taxinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">c04470</span><span class="p">,</span> <span class="n">standard</span><span class="p">)</span> <span class="o">-</span> <span class="n">c04600</span> <span class="o">-</span> <span class="n">odeds</span><span class="p">)</span>
     <span class="c1"># calculate qualified business income deduction</span>
     <span class="n">qbinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00900</span> <span class="o">-</span> <span class="n">c03260</span> <span class="o">+</span> <span class="n">e26270</span> <span class="o">+</span> <span class="n">e02100</span> <span class="o">+</span> <span class="n">e27200</span><span class="p">)</span>
     <span class="n">qbid_before_limits</span> <span class="o">=</span> <span class="n">qbinc</span> <span class="o">*</span> <span class="n">PT_qbid_rt</span>
@@ -1782,8 +1820,8 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># if PT_qbid_limited is false</span>
         <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_before_limits</span>
 
-    <span class="c1"># calculate taxable income after qualified business income deduction</span>
-    <span class="n">c04800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">auto_loan_interest_deduction</span><span class="p">)</span>
+    <span class="c1"># calculate taxable income after qbided</span>
+    <span class="n">c04800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">qbided</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c04800</span><span class="p">,</span> <span class="n">qbided</span><span class="p">)</span>
 
 
