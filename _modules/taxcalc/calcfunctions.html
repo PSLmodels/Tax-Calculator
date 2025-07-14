@@ -1693,7 +1693,7 @@ document.write(`
            <span class="n">PT_qbid_rt</span><span class="p">,</span> <span class="n">PT_qbid_limited</span><span class="p">,</span>
            <span class="n">PT_qbid_taxinc_thd</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">,</span> <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span>
            <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span>
-           <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span>
+           <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">PT_qbid_min_ded</span><span class="p">,</span> <span class="n">PT_qbid_min_qbi</span><span class="p">,</span>
            <span class="n">c04800</span><span class="p">,</span> <span class="n">qbided</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates taxable income, c04800, and</span>
@@ -1759,6 +1759,10 @@ document.write(`
 <span class="sd">        QBID phaseout taxable income start</span>
 <span class="sd">    PT_qbid_prt: float</span>
 <span class="sd">        QBID phaseout rate</span>
+<span class="sd">    PT_qbid_min_ded: float</span>
+<span class="sd">        Minimum QBID amount</span>
+<span class="sd">    PT_qbid_min_qbi: float</span>
+<span class="sd">        Minimum QBI necessary to get QBID no less than PT_qbid_min_ded</span>
 <span class="sd">    c04800: float</span>
 <span class="sd">        Regular taxable income</span>
 <span class="sd">    qbided: float</span>
@@ -1819,6 +1823,9 @@ document.write(`
             <span class="n">qbided</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">PT_qbid_prt</span> <span class="o">*</span> <span class="n">excess</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># if PT_qbid_limited is false</span>
         <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_before_limits</span>
+    <span class="c1"># apply minimum QBID logic</span>
+    <span class="k">if</span> <span class="n">qbinc</span> <span class="o">&gt;=</span> <span class="n">PT_qbid_min_qbi</span> <span class="ow">and</span> <span class="n">qbided</span> <span class="o">&lt;</span> <span class="n">PT_qbid_min_ded</span><span class="p">:</span>
+        <span class="n">qbided</span> <span class="o">=</span> <span class="n">PT_qbid_min_ded</span>
 
     <span class="c1"># calculate taxable income after qbided</span>
     <span class="n">c04800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">qbided</span><span class="p">)</span>
