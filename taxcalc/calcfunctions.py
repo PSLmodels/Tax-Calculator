@@ -937,7 +937,7 @@ def ItemDed(e17500, e18400, e18500, e19200,
             c17000, c18300, c19200, c19700, c20500, c20800,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
-            ID_Miscellaneous_hc, ID_Charity_crt_cash, ID_Charity_crt_noncash,
+            ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
@@ -1010,8 +1010,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
         miscellaneous expenses
     ID_Miscellaneous_hc: float
         Miscellaneous expense deduction haircut
-    ID_Charity_crt_cash: float
-        Ceiling (as decimal fraction of AGI) for cash charitable
+    ID_Charity_crt_all: float
+        Ceiling (as decimal fraction of AGI) for all charitable
         contribution deductions
     ID_Charity_crt_noncash: float
         Ceiling (as decimal fraction of AGI) for noncash charitable
@@ -1110,12 +1110,13 @@ def ItemDed(e17500, e18400, e18500, e19200,
     c19200 = e19200 * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
     # Charity
-    charity_ded_cash = min(ID_Charity_crt_cash * posagi, e19800)
-    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, e20100)
-    c19700 = charity_ded_cash + charity_ded_noncash
-    # charity floor is zero in present law
-    charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
-    c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
+    floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
+    noncash_ded = max(0., e20100 - floor)
+    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, noncash_ded)
+    remaining_floor = max(0., floor - e20100)
+    charity_ded_cash = max(0., e19800 - remaining_floor)
+    c19700 = charity_ded_noncash + charity_ded_cash
+    c19700 = min(c19700, ID_Charity_crt_all * posagi) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # Casualty
     c20500 = (max(0., g20500 - ID_Casualty_frt * posagi) *
@@ -1197,7 +1198,7 @@ def AdditionalMedicareTax(e00200, MARS,
 @iterate_jit(nopython=True)
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            MARS, MIDR, blind_head, blind_spouse, standard,
-           STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_cash,
+           STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_all,
            c00100, STD_charity_ded_nonitemizers_max):
     """
     Calculates standard deduction, including standard deduction for
@@ -1235,8 +1236,8 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         deduction
     e19800: float
         Schedule A: cash charitable contributions
-    ID_Charity_crt_cash: float
-        Fraction of AGI cap on cash charitable deductions
+    ID_Charity_crt_all: float
+        Fraction of AGI cap on all charitable deductions
     c00100: float
         Federal AGI
     STD_charity_ded_nonitemizers_max: float
@@ -1270,7 +1271,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         standard = 0.
     # calculate CARES cash charity deduction for nonitemizers
     if STD_allow_charity_ded_nonitemizers:
-        capped_ded = min(e19800, ID_Charity_crt_cash * c00100)
+        capped_ded = min(e19800, ID_Charity_crt_all * c00100)
         standard += min(capped_ded, STD_charity_ded_nonitemizers_max[MARS - 1])
     return standard
 

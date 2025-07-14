@@ -95,11 +95,14 @@ class Policy(Parameters):
         'CDCC_crt': 'was renamed CDCC_po1_rate_max in Tax-Calculator 5.1.0',
         'CDCC_frt': 'was renamed CDCC_po1_rate_min in Tax-Calculator 5.1.0',
         'CDCC_po_step_size': (
-            'was renamed CDCC_po1_step_size'
-            'in Tax-Calculator 5.1.0'
+            'was renamed CDCC_po1_step_size in Tax-Calculator 5.1.0'
         ),
         # following parameter was renamed in PR 2929
         'II_prt': 'was renamed II_em_prt in Tax-Calculator 5.1.0',
+        # following parameters were renamed in PR 2932
+        'ID_Charity_crt_cash': (
+            'was renamed ID_Charity_crt_all in Tax-Calculator 5.1.0'
+        ),
     }
     # (2) specify which Policy parameters have been redefined recently
     #     where "recently" means in the last major release

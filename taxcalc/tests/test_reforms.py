@@ -48,7 +48,7 @@ def test_2017_law_reform(tests_path):
         'EITC_ps_MarriedJ': {'relation': '>', 'value': 5680},
         'EITC_InvestIncome_c': {'relation': '>', 'value': 3500},
         # ... parameters affected by TCJA and that are not indexed
-        'ID_Charity_crt_cash': {'relation': '=', 'value': 0.5},
+        'ID_Charity_crt_all': {'relation': '=', 'value': 0.5},
         'II_rt3': {'relation': '=', 'value': 0.25},
         # ... parameters affected by TCJA and that are indexed
         'II_brk3': {'relation': '>', 'value': 91900},
