@@ -4,6 +4,25 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2025-07-23 Release 5.1.0
+------------------------
+(last merged pull request is
+[#2933](https://github.com/PSLmodels/Tax-Calculator/pull/2933))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Add `PT_qbid_limited` policy parameter and associated logic
+[[#2923](https://github.com/PSLmodels/Tax-Calculator/pull/2923) by Martin Holmer]
+- Refactor tax-calculation function logic to reduce model execution time
+[[#2924](https://github.com/PSLmodels/Tax-Calculator/pull/2924) by Martin Holmer]
+- OBBBA-enhancement PRs 2927-2933 described in [issue 2926](https://github.com/PSLmodels/Tax-Calculator/issues/2926) by Martin Holmer
+
+**Bug Fixes**
+
+
 2025-07-02 Release 5.0.0
 ------------------------
 (last merged pull request is

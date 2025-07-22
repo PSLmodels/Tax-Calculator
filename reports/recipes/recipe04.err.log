@@ -31,53 +31,92 @@ import behresp
 # use publicly-available CPS input file
 recs = tc.Records.cps_constructor()
 
-# specify baseline Calculator object representing current-law policy
+# specify Calculator object for static analysis of current-law policy
 pol = tc.Policy()
 calc1 = tc.Calculator(policy=pol, records=recs)
 
 CYR = 2020
 
-# calculate aggregate current-law income tax liabilities for cyr
+# calculate current-law tax liabilities for CYR
 calc1.advance_to_year(CYR)
 calc1.calc_all()
-itax_rev1 = calc1.weighted_total('iitax')
+
+# calculate marginal tax rate wrt cash charitable giving
+(_, _, mtr1) = calc1.mtr('e19800', calc_all_already_called=True,
+                         wrt_full_compensation=False)
 
 # specify Calculator object for static analysis of reform policy
-pol.implement_reform(tc.Policy.read_json_reform('github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformA.json'))
+# TODO: Move this reform online so it can be read non-locally.
+pol.implement_reform(tc.Policy.read_json_reform('github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformB.json'))
 calc2 = tc.Calculator(policy=pol, records=recs)
 
-# calculate reform income tax liabilities for cyr under static assumptions
+# calculate reform tax liabilities for CYR
 calc2.advance_to_year(CYR)
 calc2.calc_all()
-itax_rev2sa = calc2.weighted_total('iitax')
 
-# specify assumed non-zero response-function substitution elasticity
-response_elasticities = {'sub': 0.25}
+# calculate marginal tax rate wrt cash charitable giving
+(_, _, mtr2) = calc2.mtr('e19800', calc_all_already_called=True,
+                         wrt_full_compensation=False)
 
-# specify Calculator object for analysis of reform with behavioral responses
-calc2 = tc.Calculator(policy=pol, records=recs)
-calc2.advance_to_year(CYR)
-_, df2br = behresp.response(calc1, calc2, response_elasticities)
+# extract variables needed for quantity_response function
+# (note the aftertax price is 1+mtr because mtr wrt charity is non-positive)
+vdf = calc1.dataframe(['s006', 'e19800', 'e00200'])
+vdf['price1'] = 1.0 + mtr1
+vdf['price2'] = 1.0 + mtr2
+vdf['atinc1'] = calc1.array('aftertax_income')
+vdf['atinc2'] = calc2.array('aftertax_income')
 
-# calculate reform income tax liabilities for CYR with behavioral response
-itax_rev2br = (df2br['iitax'] * df2br['s006']).sum()
+# group filing units into earnings groups with different response elasticities
+# (note earnings groups are just an example based on no empirical results)
+earnings_bins = [-9e99, 50e3, 9e99]  # two groups: below and above $50,000
+vdf = tc.add_income_table_row_variable(vdf, 'e00200', earnings_bins)
+gbydf = vdf.groupby('table_row', as_index=False)
 
-# print total income tax revenue estimates for CYR
-# (estimates in billons of dollars)
-print('{}_CURRENT_LAW_P__itax_rev($B)= {:.3f}'.format(CYR, itax_rev1 * 1e-9))
-print('{}_REFORM_STATIC__itax_rev($B)= {:.3f}'.format(CYR, itax_rev2sa * 1e-9))
-print('{}_REFORM_DYNAMIC_itax_rev($B)= {:.3f}'.format(CYR, itax_rev2br * 1e-9))
+# compute percentage response in charitable giving
+# (note elasticity values are just an example based on no empirical results)
+PRICE_ELASTICITY = [-0.1, -0.4]
+INCOME_ELASTICITY = [0.1, 0.1]
+print('\nResponse in Charitable Giving by Earnings Group')
+results = '{:18s}\t{:8.3f}\t{:8.3f}\t{:8.2f}'
+colhead = '{:18s}\t{:>8s}\t{:>8s}\t{:>8s}'
+print(colhead.format('Earnings Group', 'Num(#M)', 'Resp($B)', 'Resp(%)'))
+tot_funits = 0.
+tot_response = 0.
+tot_baseline = 0.
+idx = 0
+for grp_interval, grp in gbydf:
+    funits = grp['s006'].sum() * 1e-6
+    tot_funits += funits
+    response = behresp.quantity_response(grp['e19800'],
+                                         PRICE_ELASTICITY[idx],
+                                         grp['price1'],
+                                         grp['price2'],
+                                         INCOME_ELASTICITY[idx],
+                                         grp['atinc1'],
+                                         grp['atinc2'])
+    grp_response = (response * grp['s006']).sum() * 1e-9
+    tot_response += grp_response
+    grp_baseline = (grp['e19800'] * grp['s006']).sum() * 1e-9
+    tot_baseline += grp_baseline
+    pct_response = 100. * grp_response / grp_baseline
+    glabel = '[{:.8g}, {:.8g})'.format(grp_interval.left, grp_interval.right)
+    print(results.format(glabel, funits, grp_response, pct_response))
+    idx += 1
+pct_response = 100. * tot_response / tot_baseline
+print(results.format('ALL', tot_funits, tot_response, pct_response))
 ------------------
 
 
 [31m---------------------------------------------------------------------------[39m
 [31mHTTPError[39m                                 Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[3][39m[32m, line 19[39m
-[32m     16[39m itax_rev1 = calc1.weighted_total([33m'[39m[33miitax[39m[33m'[39m)
-[32m     18[39m [38;5;66;03m# specify Calculator object for static analysis of reform policy[39;00m
-[32m---> [39m[32m19[39m pol.implement_reform([43mtc[49m[43m.[49m[43mPolicy[49m[43m.[49m[43mread_json_reform[49m[43m([49m[33;43m'[39;49m[33;43mgithub://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformA.json[39;49m[33;43m'[39;49m[43m)[49m)
-[32m     20[39m calc2 = tc.Calculator(policy=pol, records=recs)
-[32m     22[39m [38;5;66;03m# calculate reform income tax liabilities for cyr under static assumptions[39;00m
+[36mCell[39m[36m [39m[32mIn[3][39m[32m, line 23[39m
+[32m     18[39m (_, _, mtr1) = calc1.mtr([33m'[39m[33me19800[39m[33m'[39m, calc_all_already_called=[38;5;28;01mTrue[39;00m,
+[32m     19[39m                          wrt_full_compensation=[38;5;28;01mFalse[39;00m)
+[32m     21[39m [38;5;66;03m# specify Calculator object for static analysis of reform policy[39;00m
+[32m     22[39m [38;5;66;03m# TODO: Move this reform online so it can be read non-locally.[39;00m
+[32m---> [39m[32m23[39m pol.implement_reform([43mtc[49m[43m.[49m[43mPolicy[49m[43m.[49m[43mread_json_reform[49m[43m([49m[33;43m'[39;49m[33;43mgithub://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformB.json[39;49m[33;43m'[39;49m[43m)[49m)
+[32m     24[39m calc2 = tc.Calculator(policy=pol, records=recs)
+[32m     26[39m [38;5;66;03m# calculate reform tax liabilities for CYR[39;00m
 
 [36mFile [39m[32m~/work/Tax-Calculator/Tax-Calculator/taxcalc/policy.py:161[39m, in [36mPolicy.read_json_reform[39m[34m(obj)[39m
 [32m    153[39m [38;5;129m@staticmethod[39m
