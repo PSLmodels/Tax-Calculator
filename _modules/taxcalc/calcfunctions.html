@@ -1343,8 +1343,8 @@ document.write(`
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">ItemDed</span><span class="p">(</span><span class="n">e17500</span><span class="p">,</span> <span class="n">e18400</span><span class="p">,</span> <span class="n">e18500</span><span class="p">,</span> <span class="n">e19200</span><span class="p">,</span>
             <span class="n">e19800</span><span class="p">,</span> <span class="n">e20100</span><span class="p">,</span> <span class="n">e20400</span><span class="p">,</span> <span class="n">g20500</span><span class="p">,</span>
-            <span class="n">MARS</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">c21060</span><span class="p">,</span>
-            <span class="n">c17000</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">c19200</span><span class="p">,</span> <span class="n">c19700</span><span class="p">,</span> <span class="n">c20500</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span>
+            <span class="n">MARS</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c04600</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">c21060</span><span class="p">,</span>
+            <span class="n">c17000</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">c19200</span><span class="p">,</span> <span class="n">c19700</span><span class="p">,</span> <span class="n">c20500</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span> <span class="n">II_brk6</span><span class="p">,</span>
             <span class="n">ID_ps</span><span class="p">,</span> <span class="n">ID_Medical_frt</span><span class="p">,</span> <span class="n">ID_Medical_frt_add4aged</span><span class="p">,</span> <span class="n">ID_Medical_hc</span><span class="p">,</span>
             <span class="n">ID_Casualty_frt</span><span class="p">,</span> <span class="n">ID_Casualty_hc</span><span class="p">,</span> <span class="n">ID_Miscellaneous_frt</span><span class="p">,</span>
             <span class="n">ID_Miscellaneous_hc</span><span class="p">,</span> <span class="n">ID_Charity_crt_all</span><span class="p">,</span> <span class="n">ID_Charity_crt_noncash</span><span class="p">,</span>
@@ -1353,7 +1353,8 @@ document.write(`
             <span class="n">ID_Medical_c</span><span class="p">,</span> <span class="n">ID_StateLocalTax_c</span><span class="p">,</span> <span class="n">ID_RealEstate_c</span><span class="p">,</span>
             <span class="n">ID_InterestPaid_c</span><span class="p">,</span> <span class="n">ID_Charity_c</span><span class="p">,</span> <span class="n">ID_Casualty_c</span><span class="p">,</span>
             <span class="n">ID_Miscellaneous_c</span><span class="p">,</span> <span class="n">ID_AllTaxes_c</span><span class="p">,</span> <span class="n">ID_AllTaxes_hc</span><span class="p">,</span>
-            <span class="n">ID_StateLocalTax_crt</span><span class="p">,</span> <span class="n">ID_RealEstate_crt</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">):</span>
+            <span class="n">ID_StateLocalTax_crt</span><span class="p">,</span> <span class="n">ID_RealEstate_crt</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">,</span>
+            <span class="n">ID_reduction_salt_rate</span><span class="p">,</span> <span class="n">ID_reduction_other_rate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates itemized deductions, Form 1040, Schedule A.</span>
 
@@ -1384,12 +1385,14 @@ document.write(`
 <span class="sd">        Age in years of spouse</span>
 <span class="sd">    c00100: float</span>
 <span class="sd">        Adjusted gross income (AGI)</span>
+<span class="sd">    c04600: float</span>
+<span class="sd">        Personal exemptions after phase out</span>
 <span class="sd">    c04470: float</span>
-<span class="sd">        Itemized deductions after phase out (0 for non itemizers)</span>
+<span class="sd">        Itemized deductions after all limitations (0 for non-itemizers)</span>
 <span class="sd">    c21040: float</span>
-<span class="sd">        Itemized deductions that are phased out</span>
+<span class="sd">        Itemized deductions that are limited under the Pease limitations</span>
 <span class="sd">    c21060: float</span>
-<span class="sd">        Itemized deductions before phase out (0 for non itemizers)</span>
+<span class="sd">        Itemized deductions before limitation (0 for non-itemizers)</span>
 <span class="sd">    c17000: float</span>
 <span class="sd">        Schedule A: medical expenses deducted</span>
 <span class="sd">    c18300: float</span>
@@ -1402,6 +1405,8 @@ document.write(`
 <span class="sd">        Schedule A: net casualty or theft loss deducted</span>
 <span class="sd">    c20800: float</span>
 <span class="sd">        Schedule A: net limited miscellaneous deductions deducted</span>
+<span class="sd">    II_brk6: list</span>
+<span class="sd">        Bottom of top income tax rate bracket</span>
 <span class="sd">    ID_ps: list</span>
 <span class="sd">        Itemized deduction phaseout AGI start (Pease)</span>
 <span class="sd">    ID_Medical_frt: float</span>
@@ -1474,6 +1479,10 @@ document.write(`
 <span class="sd">        state, local, and foreign real estate tax deductions</span>
 <span class="sd">    ID_Charity_f: list</span>
 <span class="sd">        Floor on the amount of charity expense deduction allowed (dollars)</span>
+<span class="sd">    ID_reduction_salt_rate: float</span>
+<span class="sd">        OBBBA reduction rate for SALT deductions</span>
+<span class="sd">    ID_reduction_other_rate: float</span>
+<span class="sd">        OBBBA reduction rate for other deductions</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1490,12 +1499,13 @@ document.write(`
 <span class="sd">    c20800: float</span>
 <span class="sd">        Schedule A: net limited miscellaneous deductions deducted</span>
 <span class="sd">    c21040: float</span>
-<span class="sd">        Itemized deductions that are phased out</span>
+<span class="sd">        Itemized deductions that are phased out under Pease limitation</span>
 <span class="sd">    c21060: float</span>
-<span class="sd">        Itemized deductions before phase out (0 for non itemizers)</span>
+<span class="sd">        Itemized deductions before any limitation (0 for non-itemizers)</span>
 <span class="sd">    c04470: float</span>
-<span class="sd">        Itemized deductions after phase out (0 for non itemizers)</span>
+<span class="sd">        Itemized deductions after all limitations (0 for non-itemizers)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-statements</span>
     <span class="n">posagi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
     <span class="c1"># Medical</span>
     <span class="n">medical_frt</span> <span class="o">=</span> <span class="n">ID_Medical_frt</span>
@@ -1539,8 +1549,8 @@ document.write(`
     <span class="n">c20800</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c20800</span><span class="p">,</span> <span class="n">ID_Miscellaneous_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="c1"># Gross total itemized deductions</span>
     <span class="n">c21060</span> <span class="o">=</span> <span class="n">c17000</span> <span class="o">+</span> <span class="n">c18300</span> <span class="o">+</span> <span class="n">c19200</span> <span class="o">+</span> <span class="n">c19700</span> <span class="o">+</span> <span class="n">c20500</span> <span class="o">+</span> <span class="n">c20800</span>
-    <span class="c1"># Limitations on total itemized deductions</span>
-    <span class="c1"># (no attempt to adjust c04470 components for limitations)</span>
+    <span class="c1"># Pease limitation on total itemized deductions</span>
+    <span class="c1"># (no attempt to adjust c04470 components for limitation)</span>
     <span class="n">nonlimited</span> <span class="o">=</span> <span class="n">c17000</span> <span class="o">+</span> <span class="n">c20500</span>
     <span class="n">limitstart</span> <span class="o">=</span> <span class="n">ID_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">c21060</span> <span class="o">&gt;</span> <span class="n">nonlimited</span> <span class="ow">and</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">limitstart</span><span class="p">:</span>
@@ -1551,8 +1561,24 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="n">c21040</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">c04470</span> <span class="o">=</span> <span class="n">c21060</span>
+    <span class="c1"># OBBBA limitation on total itemized deductions</span>
+    <span class="c1"># (no attempt to adjust c04470 components for limitation)</span>
+    <span class="n">reduction</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">ID_reduction_salt_rate</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">ID_reduction_other_rate</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">c21040</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;Pease and OBBBA cannot both be in effect&quot;</span>
+        <span class="n">tincome</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">c04600</span><span class="p">)</span>
+        <span class="n">texcess</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">tincome</span> <span class="o">-</span> <span class="n">II_brk6</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">smaller_salt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18300</span><span class="p">,</span> <span class="n">texcess</span><span class="p">)</span>
+        <span class="n">salt_reduction</span> <span class="o">=</span> <span class="n">ID_reduction_salt_rate</span> <span class="o">*</span> <span class="n">smaller_salt</span>
+        <span class="n">other_deds</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">c04470</span> <span class="o">-</span> <span class="n">c18300</span><span class="p">)</span>
+        <span class="n">smaller_other</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">other_deds</span><span class="p">,</span> <span class="n">texcess</span><span class="p">)</span>
+        <span class="n">other_reduction</span> <span class="o">=</span> <span class="n">ID_reduction_other_rate</span> <span class="o">*</span> <span class="n">smaller_other</span>
+        <span class="n">reduction</span> <span class="o">=</span> <span class="n">salt_reduction</span> <span class="o">+</span> <span class="n">other_reduction</span>
+    <span class="n">c04470</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c04470</span> <span class="o">-</span> <span class="n">reduction</span><span class="p">)</span>
+    <span class="c1"># Cap total itemized deductions</span>
+    <span class="c1"># (no attempt to adjust c04470 components for limitation)</span>
     <span class="n">c04470</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c04470</span><span class="p">,</span> <span class="n">ID_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="c1"># Return total itemized deduction amounts and components</span>
+    <span class="c1"># Return total itemized deduction amounts and pre-limitation components</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">c19200</span><span class="p">,</span> <span class="n">c19700</span><span class="p">,</span> <span class="n">c20500</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span>
             <span class="n">c21040</span><span class="p">,</span> <span class="n">c21060</span><span class="p">,</span> <span class="n">c04470</span><span class="p">)</span>
 
@@ -2282,7 +2308,7 @@ document.write(`
 <span class="sd">    taxbc: float</span>
 <span class="sd">        Regular tax on regular taxable income before credits</span>
 <span class="sd">    c04470: float</span>
-<span class="sd">        Itemized deductions after phase-out (zero for non itemizers)</span>
+<span class="sd">        Itemized deductions after phase-out (zero for non-itemizers)</span>
 <span class="sd">    c17000: float</span>
 <span class="sd">        Schedule A: Medical expenses deducted</span>
 <span class="sd">    c20800: float</span>
