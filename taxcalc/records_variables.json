@@ -817,7 +817,7 @@
     },
     "c04470": {
       "type": "float",
-      "desc": "Itemized deductions after phase-out (zero for non-itemizers)",
+      "desc": "Itemized deductions after limitations (zero for non-itemizers)",
       "form": {"2013-2017": "1040 line 40",
                "2018-20??": "1040 line 8"}
     },
