@@ -9,11 +9,24 @@ REVERT CHANGES IN taxcalc/policy_current_law.json
 """
 
 import os
+import re
 import sys
 import json
+import argparse
 
-OBBBA_CHANGE = None
-LIST_PARAMS = True
+LIST_PARAMS = False
+
+OBBBA_PARAMS = {
+    'SS_Earnings_c': {
+        "group": "X",
+        "values": [],
+    },
+    # 'SS_Earnings_c': [
+    #     {'year': 2023, 'value': 160200.0},
+    #     {'year': 2024, 'value': 168600.0},
+    #     {'year': 2025, 'value': 176100.0},
+    #  ],
+}
 
 LIST_MARS_ZERO = [
     {'year': 2023, 'MARS': 'single', 'value': 0.0},
@@ -574,6 +587,34 @@ def main():
     if LIST_PARAMS:
         list_param_info(pdict)
         return 1
+
+    # parse command line argument(s)
+    parser = argparse.ArgumentParser(
+        prog='',
+        usage='python implement.py [--group GROUP]',
+        description='Write pcl.json containing OBBBA parameter values.',
+    )
+    parser.add_argument(
+        '--group',
+        help='GROUP is optional name of paramter group.',
+        default='all',
+    )
+    args = parser.parse_args()
+    group = args.group.upper()
+    if group == 'ALL':
+        print('OBBBA/implement.py is using ALL groups')
+    else:
+        if len(group) == 1:
+            if re.match('[A-Z]', group):
+                print(f'OBBBA/implement.py is using {group} group')
+            else:
+                print(f'ERROR: GROUP={group} must be a single letter')
+                return 1
+        else:
+            print(f'ERROR: GROUP={group} is not a single character')
+            return 1
+
+    return 0  # TODO: temp code
 
     # add parameter values to dictionary
     for pname, pinfo in pdict.items():
