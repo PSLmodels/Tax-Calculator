@@ -13,7 +13,7 @@ import sys
 import json
 
 OBBBA_CHANGE = None
-LIST_INDEXED_PARAMS = True
+LIST_PARAMS = True
 
 LIST_MARS_ZERO = [
     {'year': 2023, 'MARS': 'single', 'value': 0.0},
@@ -538,16 +538,27 @@ for num in range(1, 3 + 1):
     NEW_KNOWN_ITEMS[f'AMT_CG_brk{num}'] = NEW_KNOWN_ITEMS[f'CG_brk{num}']
 
 
-def list_indexed_params(pdict):
+def list_param_info(pdict):
     """
-    Prints to sdtout all inflation-indexed parameters.
+    Prints to sdtout all information about all policy parameters.
     """
     for pname, pinfo in pdict.items():
         if pname == 'schema':
             continue
-        if not pinfo.get('indexed', False):
-            continue
-        print(f'{pname}')
+        # get inflation-indexing status of parameter
+        inf = 'indexed' if pinfo.get('indexed', False) else 'static'
+        # get vector index of parameter
+        value_list = pinfo['value']
+        assert isinstance(value_list, list)
+        val0 = value_list[0]
+        assert isinstance(val0, dict)
+        if 'MARS' in val0:
+            idx = 'MARS'
+        elif 'EIC' in val0:
+            idx = 'EIC'
+        else:
+            idx = 'scalar'
+        print(f'{pname} {inf} {idx}')
 
 
 def main():
@@ -560,8 +571,8 @@ def main():
         pdict = json.load(jfile)
 
     # optionally list inflation indexed parameters and quit
-    if LIST_INDEXED_PARAMS:
-        list_indexed_params(pdict)
+    if LIST_PARAMS:
+        list_param_info(pdict)
         return 1
 
     # add parameter values to dictionary
