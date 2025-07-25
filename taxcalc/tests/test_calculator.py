@@ -337,6 +337,7 @@ def test_bad_json_names(tests_path):
         Calculator.read_json_param_objects(None, test_url)
 
 
+@pytest.mark.local
 def test_json_assump_url():
     """
     Test reading JSON assumption file using URL.

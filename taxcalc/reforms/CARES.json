@@ -8,12 +8,12 @@
 // - Limit charitable deductions for non-itemizers to $300 (3)
 // - Provide recovery rebate credits of $1200 per adult and $500 per child (4)
 // Reform_Parameter_Map:
-// - 1: ID_Charity_crt_cash
+// - 1: ID_Charity_crt_all
 // - 2: STD_allow_charity_ded_nonitemizers
 // - 3: STD_charity_ded_nonitemizers_max
 // - 4: RRC_*
 {
-    "ID_Charity_crt_cash": {"2020": 1.0, "2022": 0.6},
+    "ID_Charity_crt_all": {"2020": 1.0, "2022": 0.6},
     "STD_allow_charity_ded_nonitemizers": {"2020": true, "2022": false},
     "STD_charity_ded_nonitemizers_max": {
         "2020": [300, 600, 300, 300, 300],

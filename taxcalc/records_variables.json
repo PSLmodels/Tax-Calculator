@@ -817,7 +817,7 @@
     },
     "c04470": {
       "type": "float",
-      "desc": "Itemized deductions after phase-out (zero for non-itemizers)",
+      "desc": "Itemized deductions after limitations (zero for non-itemizers)",
       "form": {"2013-2017": "1040 line 40",
                "2018-20??": "1040 line 8"}
     },
@@ -1148,6 +1148,11 @@
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
+    },
+    "senior_deduction": {
+      "type": "float",
+      "desc": "Deduction for elderly head and/or spouse",
+      "form": {"2025-20??": "calculated variable"}
     },
     "auto_loan_interest_deduction": {
       "type": "float",

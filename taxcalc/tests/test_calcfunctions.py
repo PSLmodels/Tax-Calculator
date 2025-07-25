@@ -564,6 +564,8 @@ PT_qbid_alt_w2_wages_rt = 0.25
 PT_qbid_alt_property_rt = 0.025
 PT_qbid_ps = [9e99, 9e99, 9e99, 9e99, 9e99]
 PT_qbid_prt = 0.0
+PT_qbid_min_ded = 400.0  # OBBBA value in 2026
+PT_qbid_min_qbi = 1000.0  # OBBBA value in 2026
 
 # Input variable values for tests
 c00100 = [527860.66, 337675.10, 603700.00, 90700.00]
@@ -578,52 +580,57 @@ e02100 = [0.00, 0.00, 0.00, 0.00]
 e27200 = [0.00, 0.00, 0.00, 0.00]
 e00650 = [5000.00, 8000.00, 3000.00, 9000.00]
 c01000 = [7000.00, 4000.00, -3000.00, -3000.00]
+senior_deduction = [0.00, 0.00, 1000.00, 0.00]
 auto_loan_interest_deduction = [0.00, 0.00, 0.00, 1000.00]
 PT_SSTB_income = [0, 1, 1, 1]
 PT_binc_w2_wages = [0.00, 0.00, 0.00, 0.00]
 PT_ubia_property = [0.00, 0.00, 0.00, 0.00]
-c04800 = [0.0, 0.0, 0.0, 0.0]  # unimportant for function
-qbided = [0.0, 0.0, 0.0, 0.0]  # unimportant for function
+c04800 = [0.0, 0.0, 0.0, 0.0]  # calculated by function
+qbided = [0.0, 0.0, 0.0, 0.0]  # calculated by function
 
 tuple0 = (
     c00100[0], standard[0], c04470[0], c04600[0], MARS[0], e00900[0],
     c03260[0], e26270[0],
     e02100[0], e27200[0], e00650[0], c01000[0],
-    auto_loan_interest_deduction[0], PT_SSTB_income[0],
+    senior_deduction[0], auto_loan_interest_deduction[0], PT_SSTB_income[0],
     PT_binc_w2_wages[0], PT_ubia_property[0], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
-    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[0],
-    PT_qbid_ps, PT_qbid_prt, qbided[0])
-expected0 = (490860.66, 0)
+    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
+    PT_qbid_ps, PT_qbid_prt, PT_qbid_min_ded, PT_qbid_min_qbi,
+    c04800[0], qbided[0])
+expected0 = (490460.66, 400.00)
 tuple1 = (
     c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1],
     c03260[1], e26270[1],
     e02100[1], e27200[1], e00650[1], c01000[1],
-    auto_loan_interest_deduction[1], PT_SSTB_income[1],
+    senior_deduction[1], auto_loan_interest_deduction[1], PT_SSTB_income[1],
     PT_binc_w2_wages[1], PT_ubia_property[1], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
-    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[1],
-    PT_qbid_ps, PT_qbid_prt, qbided[1])
+    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
+    PT_qbid_ps, PT_qbid_prt, PT_qbid_min_ded, PT_qbid_min_qbi,
+    c04800[1], qbided[1])
 expected1 = (284400.08, 4275.02)
 tuple2 = (
     c00100[2], standard[2], c04470[2], c04600[2], MARS[2], e00900[2],
     c03260[2], e26270[2],
     e02100[2], e27200[2], e00650[2], c01000[2],
-    auto_loan_interest_deduction[2], PT_SSTB_income[2],
+    senior_deduction[2], auto_loan_interest_deduction[2], PT_SSTB_income[2],
     PT_binc_w2_wages[2], PT_ubia_property[2], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
-    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[2],
-    PT_qbid_ps, PT_qbid_prt, qbided[2])
-expected2 = (579300.00, 0)
+    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
+    PT_qbid_ps, PT_qbid_prt, PT_qbid_min_ded, PT_qbid_min_qbi,
+    c04800[2], qbided[2])
+expected2 = (577900.00, 400.00)
 tuple3 = (
     c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3],
     c03260[3], e26270[3],
     e02100[3], e27200[3], e00650[3], c01000[3],
-    auto_loan_interest_deduction[3], PT_SSTB_income[3],
+    senior_deduction[3], auto_loan_interest_deduction[3], PT_SSTB_income[3],
     PT_binc_w2_wages[3], PT_ubia_property[3], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
-    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800[3],
-    PT_qbid_ps, PT_qbid_prt, qbided[3])
+    PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
+    PT_qbid_ps, PT_qbid_prt, PT_qbid_min_ded, PT_qbid_min_qbi,
+    c04800[3], qbided[3])
 expected3 = (56500.00, 1200)
 
 
@@ -922,12 +929,12 @@ overtime_income = 13000
 ALD_OvertimeIncome_hc = 0.
 ALD_OvertimeIncome_c = [12500, 25000, 12500, 12500, 12500]
 ALD_OvertimeIncome_ps = [150000, 300000, 150000, 150000, 150000]
-ALD_OvertimeIncome_po_rate = 0.10
+ALD_OvertimeIncome_prt = 0.10
 tip_income = 30000
 ALD_TipIncome_hc = 0.
 ALD_TipIncome_c = [25000, 25000, 25000, 25000, 25000]
 ALD_TipIncome_ps = [150000, 300000, 150000, 150000, 150000]
-ALD_TipIncome_po_rate = 0.10
+ALD_TipIncome_prt = 0.10
 c02900 = 0  # calculated in function
 ALD_OvertimeIncome = 0  # calculated in function
 ALD_TipIncome = 0  # calculated in function
@@ -942,9 +949,9 @@ tuple0 = (
     ALD_DomesticProduction_hc, ALD_Tuition_hc,
     MARS, earned,
     overtime_income, ALD_OvertimeIncome_hc, ALD_OvertimeIncome_c,
-    ALD_OvertimeIncome_ps, ALD_OvertimeIncome_po_rate,
+    ALD_OvertimeIncome_ps, ALD_OvertimeIncome_prt,
     tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
-    ALD_TipIncome_ps, ALD_TipIncome_po_rate,
+    ALD_TipIncome_ps, ALD_TipIncome_prt,
     c02900, ALD_OvertimeIncome, ALD_TipIncome
 )
 ovr = 12500 - (200000 - 150000) * 0.10

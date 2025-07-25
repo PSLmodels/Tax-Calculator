@@ -50,7 +50,7 @@ TCJA_PARAMETERS = {
     "STD": {"indexed": True, "category": 4},
     # category 5 ...
     "ID_AllTaxes_c": {"indexed": False, "category": 5},
-    "ID_Charity_crt_cash": {"indexed": False, "category": 5},
+    "ID_Charity_crt_all": {"indexed": False, "category": 5},
     "ID_Casualty_hc": {"indexed": False, "category": 5},
     "ID_Miscellaneous_hc": {"indexed": False, "category": 5},
     "ID_ps": {"indexed": True, "category": 5},

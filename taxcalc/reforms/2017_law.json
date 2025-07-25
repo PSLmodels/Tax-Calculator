@@ -62,7 +62,7 @@
     "ALD_DomesticProduction_hc": {"2018": 0},
     "ID_prt": {"2018": 0.03},
     "ID_crt": {"2018": 0.80},
-    "ID_Charity_crt_cash": {"2018": 0.5},
+    "ID_Charity_crt_all": {"2018": 0.5},
     "ID_Casualty_hc": {"2018": 0},
     "ID_AllTaxes_c": {"2018": [9e99, 9e99, 9e99, 9e99, 9e99]},
     "ID_Miscellaneous_hc": {"2018": 0},
