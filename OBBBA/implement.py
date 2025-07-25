@@ -551,17 +551,17 @@ for num in range(1, 3 + 1):
     NEW_KNOWN_ITEMS[f'AMT_CG_brk{num}'] = NEW_KNOWN_ITEMS[f'CG_brk{num}']
 
 
-def list_param_info(pdict):
+def list_param_info(poldict):
     """
     Prints to sdtout all information about all policy parameters.
     """
-    for pname, pinfo in pdict.items():
+    for pname, pdict in poldict.items():
         if pname == 'schema':
             continue
         # get inflation-indexing status of parameter
-        inf = 'indexed' if pinfo.get('indexed', False) else 'static'
+        inf = 'indexed' if pdict.get('indexed', False) else 'static'
         # get vector index of parameter
-        value_list = pinfo['value']
+        value_list = pdict['value']
         assert isinstance(value_list, list)
         val0 = value_list[0]
         assert isinstance(val0, dict)
@@ -578,14 +578,14 @@ def main():
     """
     High-level script logic.
     """
-    # read existing policy_current_law.json into a Python dictionary
+    # read existing policy_current_law.json into a policy dictionary
     fname = os.path.join('..', 'taxcalc', 'policy_current_law.json')
     with open(fname, 'r', encoding='utf-8') as jfile:
-        pdict = json.load(jfile)
+        poldict = json.load(jfile)
 
-    # optionally list inflation indexed parameters and quit
+    # optionally list all parameter information and quit
     if LIST_PARAMS:
-        list_param_info(pdict)
+        list_param_info(poldict)
         return 1
 
     # parse command line argument(s)
@@ -614,13 +614,12 @@ def main():
             print(f'ERROR: GROUP={group} is not a single character')
             return 1
 
-    return 0  # TODO: temp code
-
+    """
     # add parameter values to dictionary
-    for pname, pinfo in pdict.items():
+    for pname, pdict in poldict.items():
         if pname == 'schema':
             continue
-        if not pinfo['indexed']:
+        if not pdict['indexed']:
             continue
         if pname not in NEW_KNOWN_ITEMS:
             print(f'NO NEW_KNOWN_ITEMS FOR {pname}')
@@ -641,10 +640,11 @@ def main():
                 bindex += 1
             else:
                 plist.append(item)
+    """
 
-    # write updated dictionary to pcl.json file
+    # write updated policy dictionary to pcl.json file
     with open('pcl.json', 'w', encoding='utf-8') as jfile:
-        jfile.write(json.dumps(pdict, indent=4) + '\n')
+        jfile.write(json.dumps(poldict, indent=4) + '\n')
 
     # return no-error exit code
     return 0
