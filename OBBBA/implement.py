@@ -2,10 +2,10 @@
 This script implements policy parameters to reflect new OBBBA policy.
 
 USAGE: (taxcalc-dev) OBBBA% python implement.py
-THEN CHECK:             % [g]diff pcl.json pcl-510.json
+THEN CHECK:             % [g]diff pcl.json ../taxcalc/pollicy_current_law.json
 IF DIFFS OK:            % mv pcl.json taxcalc/policy_current_law.json
 MAKE PACKAGE AND EXECUTE tally.sh AND ASSESS tally.results
-REVERT CHANGES IN taxcalc/policy_current_law.json
+THEN REVERT CHANGES IN taxcalc/policy_current_law.json
 """
 
 import os
@@ -17,31 +17,50 @@ import argparse
 LIST_PARAMS = False
 
 OBBBA_PARAMS = {
-    'pname': {
+    'II_em': {
         'group': 'A',
-        'values': [
+        'changes': [
+            {'year': 2026, 'value': 0.0},
         ],
     },
-    # 'SS_Earnings_c': [
-    #     {'year': 2023, 'value': 160200.0},
-    #     {'year': 2024, 'value': 168600.0},
-    #     {'year': 2025, 'value': 176100.0},
-    #  ],
-    # 'II_brk1': [
-    #     {'year': 2023, 'MARS': 'single', 'value': 11000.0},
-    #     {'year': 2023, 'MARS': 'mjoint', 'value': 22000.0},
-    #     {'year': 2023, 'MARS': 'mseparate', 'value': 11000.0},
-    #     {'year': 2023, 'MARS': 'headhh', 'value': 15700.0},
-    #     {'year': 2023, 'MARS': 'widow', 'value': 22000.0},
-    #  ],
+    'II_em_ps': {
+        'group': 'A',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'headhh', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'widow', 'value': 9e+99},
+        ],
+    },
 }
 
 
-def list_param_info(poldict):
+def revised_value(pdict, odict):
+    """
+    Returns OBBBA-revised pdict['value'] given parameter's OBBBA odict.
+    """
+    # determine first_year of OBBBA reform in odict
+    first_year = odict['changes'][0]['year']
+
+    # remove pdict['value'] list items for first_year and subsequent years
+    while True:
+        if pdict['value'][-1]['year'] >= first_year:
+            del pdict['value'][-1]
+        else:
+            break  # out of while loop
+
+    # add OBBBA changes to end of pdict['value'] list
+    new_pdict_value = pdict['value'] + odict['changes']
+
+    return new_pdict_value
+
+
+def list_param_info(policy_dict):
     """
     Prints to sdtout information about all policy parameters.
     """
-    for pname, pdict in poldict.items():
+    for pname, pdict in policy_dict.items():
         if pname == 'schema':
             continue
         # get inflation-indexing status of parameter
@@ -67,11 +86,11 @@ def main():
     # read existing policy_current_law.json into a policy dictionary
     fname = os.path.join('..', 'taxcalc', 'policy_current_law.json')
     with open(fname, 'r', encoding='utf-8') as jfile:
-        poldict = json.load(jfile)
+        pcldict = json.load(jfile)
 
     # optionally list parameter information and quit
     if LIST_PARAMS:
-        list_param_info(poldict)
+        list_param_info(pcldict)
         return 1
 
     # parse command line argument(s)
@@ -102,7 +121,7 @@ def main():
 
     # implmment OBBBA values for parameter in specified group(s)
     pcount = 0
-    for pname, pdict in poldict.items():
+    for pname, pdict in pcldict.items():
         if pname == 'schema':
             continue
         if pname not in OBBBA_PARAMS:
@@ -110,29 +129,15 @@ def main():
         if group not in ['ALL', OBBBA_PARAMS[pname]['group']]:
             continue
         pcount += 1
-
-        """
-        plist = pdict[pname]['value']
-        # ... see if adding values before existing plist items for 2026
-        bindex = None
-        for itm in plist:
-            if itm['year'] == 2026:
-                bindex = plist.index(itm)
-                break
-        # ... add new items to plist for this pname
-        for item in NEW_KNOWN_ITEMS[pname]:
-            if item in plist:
-                continue
-            if bindex:
-                plist.insert(bindex, item)
-                bindex += 1
-            else:
-                plist.append(item)
-        """
+        odict = OBBBA_PARAMS[pname]
+        if 'indexed' in odict:
+            assert 'indexed' in pdict, f'ERROR: {pname} has no indexed item'
+            pcldict[pname]['indexed'] = odict['indexed']
+        pcldict[pname]['value'] = revised_value(pdict, odict)
 
     # write updated policy dictionary to pcl.json file
     with open('pcl.json', 'w', encoding='utf-8') as jfile:
-        jfile.write(json.dumps(poldict, indent=4) + '\n')
+        jfile.write(json.dumps(pcldict, indent=4) + '\n')
 
     print(f'Implemented OBBBA policy for {pcount} parameters in pcl.json file')
 
