@@ -198,6 +198,16 @@ OBBBA_PARAMS = {
         ],
     },
     # D group:
+    'STD': {
+        'group': 'D',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 15750},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 31500},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 15750},
+            {'year': 2025, 'MARS': 'headhh', 'value': 23625},
+            {'year': 2025, 'MARS': 'widow', 'value': 31500},
+        ],
+    },
     # E group:
     'II_em': {
         'group': 'E',
