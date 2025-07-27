@@ -144,7 +144,6 @@ OBBBA_PARAMS = {
             {'year': 2026, 'MARS': 'widow', 'value': 772750},
         ],
     },
-
     'II_rt7': {
         'group': 'B',
         'changes': [
@@ -162,6 +161,42 @@ OBBBA_PARAMS = {
         ],
     },
     # C group:
+    'CTC_c': {
+        'group': 'C',
+        'indexed': True,
+        'changes': [
+            {'year': 2025, 'value': 2200},
+        ],
+    },
+    'CTC_ps': {
+        'group': 'C',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 200000},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 400000},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 200000},
+            {'year': 2025, 'MARS': 'headhh', 'value': 200000},
+            {'year': 2025, 'MARS': 'widow', 'value': 400000},
+        ],
+    },
+    'ACTC_c': {
+        'group': 'C',
+        'indexed': True,
+        'changes': [
+            {'year': 2025, 'value': 1700},
+        ],
+    },
+    'ACTC_Income_thd': {
+        'group': 'C',
+        'changes': [
+            {'year': 2025, 'value': 2500},
+        ],
+    },
+    'ODC_c': {
+        'group': 'C',
+        'changes': [
+            {'year': 2025, 'value': 500},
+        ],
+    },
     # D group:
     # E group:
     'II_em': {
