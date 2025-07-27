@@ -1,11 +1,13 @@
 """
 This script implements policy parameters to reflect new OBBBA policy.
 
-USAGE: (taxcalc-dev) OBBBA% python implement.py
-THEN CHECK:             % [g]diff pcl.json ../taxcalc/pollicy_current_law.json
-IF DIFFS OK:            % mv pcl.json taxcalc/policy_current_law.json
-MAKE PACKAGE AND EXECUTE tally.sh AND ASSESS tally.results
-THEN REVERT CHANGES IN taxcalc/policy_current_law.json
+USAGE: (taxcalc-dev) OBBBA% ./implement.sh GROUP
+THEN CHECK                % [g]diff pcl.json pcl-510.json
+IF DIFFS OK               % mv pcl.json ../taxcalc/policy_current_law.json
+MAKE PACKAGE              % pushd .. ; make package ; popd
+EXECUTE tally.sh          % ./tally.sh
+ASSESS tally.results DIFF % [g]diff tally.res-new tally.result
+REVERT POLICY CHANGES     % git restore ../taxcalc/policy_current_law.json
 """
 
 import os
@@ -17,14 +19,45 @@ import argparse
 LIST_PARAMS = False
 
 OBBBA_PARAMS = {
-    'II_em': {
+    # A group:
+    'AMT_em': {
         'group': 'A',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 89400},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 139000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 69600},
+            {'year': 2026, 'MARS': 'headhh', 'value': 89400},
+            {'year': 2026, 'MARS': 'widow', 'value': 139000},
+        ],
+    },
+    'AMT_em_ps': {
+        'group': 'A',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 500000},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 1000000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 500000},
+            {'year': 2026, 'MARS': 'headhh', 'value': 500000},
+            {'year': 2026, 'MARS': 'widow', 'value': 1000000},
+        ],
+    },
+    'AMT_em_pe': {
+        'group': 'A',
+        'changes': [
+            {'year': 2026, 'value': 639200},
+        ],
+    },
+    # B group:
+    # C group:
+    # D group:
+    # E group:
+    'II_em': {
+        'group': 'E',
         'changes': [
             {'year': 2026, 'value': 0.0},
         ],
     },
     'II_em_ps': {
-        'group': 'A',
+        'group': 'E',
         'changes': [
             {'year': 2026, 'MARS': 'single', 'value': 9e+99},
             {'year': 2026, 'MARS': 'mjoint', 'value': 9e+99},
@@ -33,6 +66,7 @@ OBBBA_PARAMS = {
             {'year': 2026, 'MARS': 'widow', 'value': 9e+99},
         ],
     },
+    # F group:
 }
 
 
