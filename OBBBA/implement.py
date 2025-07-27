@@ -8,6 +8,7 @@ MAKE PACKAGE              % pushd .. ; make package ; popd
 EXECUTE tally.sh          % ./tally.sh
 ASSESS tally.results DIFF % [g]diff tally.res-new tally.result
 REVERT POLICY CHANGES     % git restore ../taxcalc/policy_current_law.json
+REMOVE PACKAGE            % pushd .. ; make clean ; popd
 """
 
 import os
@@ -47,6 +48,119 @@ OBBBA_PARAMS = {
         ],
     },
     # B group:
+    'II_rt1': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.1},
+        ],
+    },
+    'II_brk1': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 11925},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 23850},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 11925},
+            {'year': 2026, 'MARS': 'headhh', 'value': 17000},
+            {'year': 2026, 'MARS': 'widow', 'value': 23850},
+        ],
+    },
+    'II_rt2': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.12},
+        ],
+    },
+    'II_brk2': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 48475},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 96950},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 48475},
+            {'year': 2026, 'MARS': 'headhh', 'value': 64850},
+            {'year': 2026, 'MARS': 'widow', 'value': 96950},
+        ],
+    },
+    'II_rt3': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.22},
+        ],
+    },
+    'II_brk3': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 104900},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 208300},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 104900},
+            {'year': 2026, 'MARS': 'headhh', 'value': 104900},
+            {'year': 2026, 'MARS': 'widow', 'value': 208300},
+        ],
+    },
+    'II_rt4': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.24},
+        ],
+    },
+    'II_brk4': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 198800},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 397650},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 198800},
+            {'year': 2026, 'MARS': 'headhh', 'value': 198800},
+            {'year': 2026, 'MARS': 'widow', 'value': 397650},
+        ],
+    },
+    'II_rt5': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.32},
+        ],
+    },
+    'II_brk5': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 256450},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 512950},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 256450},
+            {'year': 2026, 'MARS': 'headhh', 'value': 256486},
+            {'year': 2026, 'MARS': 'widow', 'value': 512950},
+        ],
+    },
+    'II_rt6': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.35},
+        ],
+    },
+    'II_brk6': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 643950},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 772750},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 386350},
+            {'year': 2026, 'MARS': 'headhh', 'value': 643950},
+            {'year': 2026, 'MARS': 'widow', 'value': 772750},
+        ],
+    },
+
+    'II_rt7': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.37},
+        ],
+    },
+    'II_brk7': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'headhh', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'widow', 'value': 9e+99},
+        ],
+    },
     # C group:
     # D group:
     # E group:
