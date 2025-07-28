@@ -244,6 +244,48 @@ OBBBA_PARAMS = {
             {'year': 2029, 'value': 0},
         ],
     },
+    # H group:
+    'ID_AllTaxes_c': {
+        'group': 'H',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 40000},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 40000},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 20000},
+            {'year': 2025, 'MARS': 'headhh', 'value': 40000},
+            {'year': 2025, 'MARS': 'widow', 'value': 40000},
+            # ------
+            {'year': 2026, 'MARS': 'single', 'value': 40400},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 40400},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 20200},
+            {'year': 2026, 'MARS': 'headhh', 'value': 40400},
+            {'year': 2026, 'MARS': 'widow', 'value': 40400},
+            # ------
+            {'year': 2027, 'MARS': 'single', 'value': 40804},
+            {'year': 2027, 'MARS': 'mjoint', 'value': 40804},
+            {'year': 2027, 'MARS': 'mseparate', 'value': 20402},
+            {'year': 2027, 'MARS': 'headhh', 'value': 40804},
+            {'year': 2027, 'MARS': 'widow', 'value': 40804},
+            # ------
+            {'year': 2028, 'MARS': 'single', 'value': 41212},
+            {'year': 2028, 'MARS': 'mjoint', 'value': 41212},
+            {'year': 2028, 'MARS': 'mseparate', 'value': 20606},
+            {'year': 2028, 'MARS': 'headhh', 'value': 41212},
+            {'year': 2028, 'MARS': 'widow', 'value': 41212},
+            # ------
+            {'year': 2029, 'MARS': 'single', 'value': 41624},
+            {'year': 2029, 'MARS': 'mjoint', 'value': 41624},
+            {'year': 2029, 'MARS': 'mseparate', 'value': 20812},
+            {'year': 2029, 'MARS': 'headhh', 'value': 41624},
+            {'year': 2029, 'MARS': 'widow', 'value': 41624},
+            # ------
+            {'year': 2030, 'MARS': 'single', 'value': 10000},
+            {'year': 2030, 'MARS': 'mjoint', 'value': 10000},
+            {'year': 2030, 'MARS': 'mseparate', 'value': 5000},
+            {'year': 2030, 'MARS': 'headhh', 'value': 10000},
+            {'year': 2030, 'MARS': 'widow', 'value': 10000},
+        ],
+    },
+    # I group:
 }
 
 

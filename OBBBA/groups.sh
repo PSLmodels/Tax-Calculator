@@ -7,7 +7,9 @@
 ./implement.sh E
 ./implement.sh F
 ./implement.sh G
-#./implement.sh H
+./implement.sh H
 #./implement.sh I
+#./implement.sh J
+#./implement.sh K
 
 exit 0
