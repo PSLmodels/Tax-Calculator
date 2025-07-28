@@ -6550,6 +6550,126 @@
             "cps": true
         }
     },
+    "ID_AllTaxes_ps": {
+        "title": "AGI level beyond which itemized AllTaxes deduction begins to be phased out",
+        "description": "The amount of state and local income, sales and real estate tax deductions is phased out when AGI exceeds this amount.",
+        "notes": "",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Taxes And Real Estate Taxes",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e+99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ID_AllTaxes_po_rate": {
+        "title": "Rate at which itemized state and local income, sales and real estate tax deductions are phased-out above ID_AllTaxes_ps AGI",
+        "description": "The amount of state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_ps.",
+        "notes": "",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Taxes And Real Estate Taxes",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ID_AllTaxes_po_floor": {
+        "title": "Minimum cap on itemized state and local income, sales and real estate tax deductions that are phased-out above ID_AllTaxes_ps AGI",
+        "description": "The cap on state and local income, sales and real estate tax deductions cannot be reduced below this amount.",
+        "notes": "",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Taxes And Real Estate Taxes",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "ID_InterestPaid_hc": {
         "title": "Interest paid deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of interest paid deduction allowed.",
