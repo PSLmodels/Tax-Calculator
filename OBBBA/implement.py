@@ -226,6 +226,17 @@ OBBBA_PARAMS = {
         ],
     },
     # F group:
+    'ALD_BusinessLosses_c': {
+        'group': 'F',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 313000},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 626000},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 313000},
+            {'year': 2025, 'MARS': 'headhh', 'value': 313000},
+            {'year': 2025, 'MARS': 'widow', 'value': 626000},
+        ],
+    },
+    # G group:
 }
 
 
