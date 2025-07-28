@@ -6,7 +6,7 @@
 ./implement.sh D
 ./implement.sh E
 ./implement.sh F
-#./implement.sh G
+./implement.sh G
 #./implement.sh H
 #./implement.sh I
 

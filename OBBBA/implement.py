@@ -237,6 +237,13 @@ OBBBA_PARAMS = {
         ],
     },
     # G group:
+    'SeniorDed_c': {
+        'group': 'G',
+        'changes': [
+            {'year': 2025, 'value': 6000},
+            {'year': 2029, 'value': 0},
+        ],
+    },
 }
 
 
