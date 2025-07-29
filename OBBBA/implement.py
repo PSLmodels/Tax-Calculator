@@ -286,6 +286,38 @@ OBBBA_PARAMS = {
         ],
     },
     # I group:
+    'PT_qbid_taxinc_thd': {
+        'group': 'I',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 200300},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 400600},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 200300},
+            {'year': 2026, 'MARS': 'headhh', 'value': 200300},
+            {'year': 2026, 'MARS': 'widow', 'value': 400600},
+        ],
+    },
+    'PT_qbid_taxinc_gap': {
+        'group': 'I',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 75000},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 150000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 75000},
+            {'year': 2026, 'MARS': 'headhh', 'value': 75000},
+            {'year': 2026, 'MARS': 'widow', 'value': 150000},
+        ],
+    },
+    'PT_qbid_min_ded': {
+        'group': 'I',
+        'changes': [
+            {'year': 2026, 'value': 400},
+        ],
+    },
+    'PT_qbid_min_qbi': {
+        'group': 'I',
+        'changes': [
+            {'year': 2026, 'value': 1000},
+        ],
+    },
 }
 
 
