@@ -6254,7 +6254,7 @@
         }
     },
     "ID_AllTaxes_c": {
-        "title": "Ceiling on the amount of state and local income, sales and real estate tax deductions allowed (dollars)",
+        "title": "Cap on the amount of state and local income, sales and real estate tax deductions allowed (dollars)",
         "description": "The amount of state and local income, sales and real estate tax deductions is limited to this dollar amount.",
         "notes": "",
         "section_1": "Itemized Deductions",
@@ -6550,9 +6550,9 @@
             "cps": true
         }
     },
-    "ID_AllTaxes_ps": {
-        "title": "AGI level beyond which itemized AllTaxes deduction begins to be phased out",
-        "description": "The amount of state and local income, sales and real estate tax deductions is phased out when AGI exceeds this amount.",
+    "ID_AllTaxes_c_ps": {
+        "title": "AGI level at which ID_AllTaxes_c cap starts to be phased out",
+        "description": "The cap on state and local income, sales and real estate tax deductions is phased out when AGI exceeds this amount.",
         "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Taxes And Real Estate Taxes",
@@ -6597,9 +6597,9 @@
             "cps": true
         }
     },
-    "ID_AllTaxes_po_rate": {
-        "title": "Rate at which itemized state and local income, sales and real estate tax deductions are phased-out above ID_AllTaxes_ps AGI",
-        "description": "The amount of state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_ps.",
+    "ID_AllTaxes_c_po_rate": {
+        "title": "Rate at which ID_AllTaxes_c cap is phased-out above ID_AllTaxes_c_ps AGI",
+        "description": "The cap on state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_c_ps.",
         "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Taxes And Real Estate Taxes",
@@ -6623,7 +6623,7 @@
             "cps": true
         }
     },
-    "ID_AllTaxes_po_floor": {
+    "ID_AllTaxes_c_po_floor": {
         "title": "Minimum cap on itemized state and local income, sales and real estate tax deductions that are phased-out above ID_AllTaxes_ps AGI",
         "description": "The cap on state and local income, sales and real estate tax deductions cannot be reduced below this amount.",
         "notes": "",
