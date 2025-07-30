@@ -1353,6 +1353,7 @@ document.write(`
             <span class="n">ID_Medical_c</span><span class="p">,</span> <span class="n">ID_StateLocalTax_c</span><span class="p">,</span> <span class="n">ID_RealEstate_c</span><span class="p">,</span>
             <span class="n">ID_InterestPaid_c</span><span class="p">,</span> <span class="n">ID_Charity_c</span><span class="p">,</span> <span class="n">ID_Casualty_c</span><span class="p">,</span>
             <span class="n">ID_Miscellaneous_c</span><span class="p">,</span> <span class="n">ID_AllTaxes_c</span><span class="p">,</span> <span class="n">ID_AllTaxes_hc</span><span class="p">,</span>
+            <span class="n">ID_AllTaxes_c_ps</span><span class="p">,</span> <span class="n">ID_AllTaxes_c_po_rate</span><span class="p">,</span> <span class="n">ID_AllTaxes_c_po_floor</span><span class="p">,</span>
             <span class="n">ID_StateLocalTax_crt</span><span class="p">,</span> <span class="n">ID_RealEstate_crt</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">,</span>
             <span class="n">ID_reduction_salt_rate</span><span class="p">,</span> <span class="n">ID_reduction_other_rate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1467,10 +1468,16 @@ document.write(`
 <span class="sd">        Ceiling on the amount of miscellaneous expense deduction</span>
 <span class="sd">        allowed (dollars)</span>
 <span class="sd">    ID_AllTaxes_c: list</span>
-<span class="sd">        Ceiling on the amount of state and local income, stales, and</span>
+<span class="sd">        Cap on the amount of state and local income, sales, and</span>
 <span class="sd">        real estate deductions allowed (dollars)</span>
 <span class="sd">    ID_AllTaxes_hc: float</span>
 <span class="sd">        State and local income, sales, and real estate tax deduciton haircut</span>
+<span class="sd">    ID_AllTaxes_c_ps: float</span>
+<span class="sd">        AGI level above which ID_AllTaxes_c is reduced</span>
+<span class="sd">    ID_AllTaxes_c_po_rate: float</span>
+<span class="sd">        ID_AllTaxes_c reduction rate when AGI is above ID_AllTaxes_c_ps</span>
+<span class="sd">    ID_AllTaxes_c_po_floor: float</span>
+<span class="sd">        Floor below which ID_AllTaxes_c cannot be reduced</span>
 <span class="sd">    ID_StateLocalTax_crt: float</span>
 <span class="sd">        Ceiling (as decimal fraction of AGI) for the combination of all</span>
 <span class="sd">        state and local income and sales tax deductions</span>
@@ -1525,7 +1532,12 @@ document.write(`
     <span class="n">c18400</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18400</span><span class="p">,</span> <span class="n">ID_StateLocalTax_crt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">))</span>
     <span class="n">c18500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18500</span><span class="p">,</span> <span class="n">ID_RealEstate_crt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">))</span>
     <span class="n">c18300</span> <span class="o">=</span> <span class="p">(</span><span class="n">c18400</span> <span class="o">+</span> <span class="n">c18500</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_AllTaxes_hc</span><span class="p">)</span>
-    <span class="n">c18300</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18300</span><span class="p">,</span> <span class="n">ID_AllTaxes_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">cap</span> <span class="o">=</span> <span class="n">ID_AllTaxes_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">posagi</span> <span class="o">&gt;</span> <span class="n">ID_AllTaxes_c_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">posagi</span> <span class="o">-</span> <span class="n">ID_AllTaxes_c_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">cap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">cap</span> <span class="o">-</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">ID_AllTaxes_c_po_rate</span><span class="p">)</span>
+        <span class="n">cap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="n">ID_AllTaxes_c_po_floor</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">c18300</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18300</span><span class="p">,</span> <span class="n">cap</span><span class="p">)</span>
     <span class="c1"># Interest paid</span>
     <span class="n">c19200</span> <span class="o">=</span> <span class="n">e19200</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_InterestPaid_hc</span><span class="p">)</span>
     <span class="n">c19200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19200</span><span class="p">,</span> <span class="n">ID_InterestPaid_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
