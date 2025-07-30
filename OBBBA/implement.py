@@ -349,6 +349,23 @@ OBBBA_PARAMS = {
             {'year': 2026, 'value': 1.0},
         ],
     },
+    # K group:
+    'STD_allow_charity_ded_nonitemizers': {
+        'group': 'K',
+        'changes': [
+            {'year': 2026, 'value': True},
+        ],
+    },
+    'STD_charity_ded_nonitemizers_max': {
+        'group': 'K',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 1000},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 2000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 1000},
+            {'year': 2026, 'MARS': 'headhh', 'value': 1000},
+            {'year': 2026, 'MARS': 'widow', 'value': 1000},
+        ],
+    },
 }
 
 

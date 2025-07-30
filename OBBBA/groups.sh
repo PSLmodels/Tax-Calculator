@@ -10,7 +10,7 @@
 ./implement.sh H
 ./implement.sh I
 ./implement.sh J
-#./implement.sh K
+./implement.sh K
 #./implement.sh L
 #./implement.sh M
 #./implement.sh N
