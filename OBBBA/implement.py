@@ -318,6 +318,37 @@ OBBBA_PARAMS = {
             {'year': 2026, 'value': 1000},
         ],
     },
+    # J group:
+    'ID_Charity_crt_all': {
+        'group': 'J',
+        'changes': [
+            {'year': 2026, 'value': 0.6},
+        ],
+    },
+    'ID_Charity_crt_noncash': {
+        'group': 'J',
+        'changes': [
+            {'year': 2026, 'value': 0.5},
+        ],
+    },
+    'ID_Charity_frt': {
+        'group': 'J',
+        'changes': [
+            {'year': 2026, 'value': 0.005},
+        ],
+    },
+    'ID_Casualty_hc': {
+        'group': 'J',
+        'changes': [
+            {'year': 2026, 'value': 1.0},
+        ],
+    },
+    'ID_Miscellaneous_hc': {
+        'group': 'J',
+        'changes': [
+            {'year': 2026, 'value': 1.0},
+        ],
+    },
 }
 
 
