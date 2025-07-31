@@ -1355,7 +1355,7 @@ document.write(`
             <span class="n">ID_Miscellaneous_c</span><span class="p">,</span> <span class="n">ID_AllTaxes_c</span><span class="p">,</span> <span class="n">ID_AllTaxes_hc</span><span class="p">,</span>
             <span class="n">ID_AllTaxes_c_ps</span><span class="p">,</span> <span class="n">ID_AllTaxes_c_po_rate</span><span class="p">,</span> <span class="n">ID_AllTaxes_c_po_floor</span><span class="p">,</span>
             <span class="n">ID_StateLocalTax_crt</span><span class="p">,</span> <span class="n">ID_RealEstate_crt</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">,</span>
-            <span class="n">ID_reduction_salt_rate</span><span class="p">,</span> <span class="n">ID_reduction_other_rate</span><span class="p">):</span>
+            <span class="n">ID_reduction_rate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates itemized deductions, Form 1040, Schedule A.</span>
 
@@ -1486,10 +1486,8 @@ document.write(`
 <span class="sd">        state, local, and foreign real estate tax deductions</span>
 <span class="sd">    ID_Charity_f: list</span>
 <span class="sd">        Floor on the amount of charity expense deduction allowed (dollars)</span>
-<span class="sd">    ID_reduction_salt_rate: float</span>
-<span class="sd">        OBBBA reduction rate for SALT deductions</span>
-<span class="sd">    ID_reduction_other_rate: float</span>
-<span class="sd">        OBBBA reduction rate for other deductions</span>
+<span class="sd">    ID_reduction_rate: float</span>
+<span class="sd">        OBBBA reduction rate for all itemized deductions</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1576,16 +1574,11 @@ document.write(`
     <span class="c1"># OBBBA limitation on total itemized deductions</span>
     <span class="c1"># (no attempt to adjust c04470 components for limitation)</span>
     <span class="n">reduction</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">ID_reduction_salt_rate</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">ID_reduction_other_rate</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">ID_reduction_rate</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">c21040</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;Pease and OBBBA cannot both be in effect&quot;</span>
         <span class="n">tincome</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">c04600</span><span class="p">)</span>
         <span class="n">texcess</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">tincome</span> <span class="o">-</span> <span class="n">II_brk6</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="n">smaller_salt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18300</span><span class="p">,</span> <span class="n">texcess</span><span class="p">)</span>
-        <span class="n">salt_reduction</span> <span class="o">=</span> <span class="n">ID_reduction_salt_rate</span> <span class="o">*</span> <span class="n">smaller_salt</span>
-        <span class="n">other_deds</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">c04470</span> <span class="o">-</span> <span class="n">c18300</span><span class="p">)</span>
-        <span class="n">smaller_other</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">other_deds</span><span class="p">,</span> <span class="n">texcess</span><span class="p">)</span>
-        <span class="n">other_reduction</span> <span class="o">=</span> <span class="n">ID_reduction_other_rate</span> <span class="o">*</span> <span class="n">smaller_other</span>
-        <span class="n">reduction</span> <span class="o">=</span> <span class="n">salt_reduction</span> <span class="o">+</span> <span class="n">other_reduction</span>
+        <span class="n">reduction</span> <span class="o">=</span> <span class="n">ID_reduction_rate</span> <span class="o">*</span> <span class="n">texcess</span>
     <span class="n">c04470</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c04470</span> <span class="o">-</span> <span class="n">reduction</span><span class="p">)</span>
     <span class="c1"># Cap total itemized deductions</span>
     <span class="c1"># (no attempt to adjust c04470 components for limitation)</span>
