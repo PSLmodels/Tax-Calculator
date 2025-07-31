@@ -389,13 +389,7 @@ OBBBA_PARAMS = {
             {'year': 2026, 'value': 1.0},
         ],
     },
-    'ID_reduction_salt_rate': {
-        'group': 'L',
-        'changes': [
-            {'year': 2026, 'value': 0.13513514},  # = 5/37
-        ],
-    },
-    'ID_reduction_other_rate': {
+    'ID_reduction_rate': {
         'group': 'L',
         'changes': [
             {'year': 2026, 'value': 0.05405405},  # = 2/37
