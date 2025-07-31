@@ -366,6 +366,41 @@ OBBBA_PARAMS = {
             {'year': 2026, 'MARS': 'widow', 'value': 1000},
         ],
     },
+    # L group:
+    'ID_ps': {
+        'group': 'L',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'headhh', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'widow', 'value': 9e+99},
+        ],
+    },
+    'ID_prt': {
+        'group': 'L',
+        'changes': [
+            {'year': 2026, 'value': 0.0},
+        ],
+    },
+    'ID_crt': {
+        'group': 'L',
+        'changes': [
+            {'year': 2026, 'value': 1.0},
+        ],
+    },
+    'ID_reduction_salt_rate': {
+        'group': 'L',
+        'changes': [
+            {'year': 2026, 'value': 0.13513514},  # = 5/37
+        ],
+    },
+    'ID_reduction_other_rate': {
+        'group': 'L',
+        'changes': [
+            {'year': 2026, 'value': 0.05405405},  # = 2/37
+        ],
+    },
 }
 
 
