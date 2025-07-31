@@ -395,6 +395,46 @@ OBBBA_PARAMS = {
             {'year': 2026, 'value': 0.05405405},  # = 2/37
         ],
     },
+    # M group:
+    'ID_AllTaxes_c_ps': {
+        'group': 'M',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 500000},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 500000},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 250000},
+            {'year': 2025, 'MARS': 'headhh', 'value': 500000},
+            {'year': 2025, 'MARS': 'widow', 'value': 500000},
+            # -----
+            {'year': 2030, 'MARS': 'single', 'value': 9e+99},
+            {'year': 2030, 'MARS': 'mjoint', 'value': 9e+99},
+            {'year': 2030, 'MARS': 'mseparate', 'value': 9e+99},
+            {'year': 2030, 'MARS': 'headhh', 'value': 9e+99},
+            {'year': 2030, 'MARS': 'widow', 'value': 9e+99},
+        ],
+    },
+    'ID_AllTaxes_c_po_rate': {
+        'group': 'M',
+        'changes': [
+            {'year': 2025, 'value': 0.3},
+            {'year': 2030, 'value': 0.0},
+        ],
+    },
+    'ID_AllTaxes_c_po_floor': {
+        'group': 'M',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 10000},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 10000},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 5000},
+            {'year': 2025, 'MARS': 'headhh', 'value': 10000},
+            {'year': 2025, 'MARS': 'widow', 'value': 10000},
+            # -----
+            {'year': 2030, 'MARS': 'single', 'value': 0},
+            {'year': 2030, 'MARS': 'mjoint', 'value': 0},
+            {'year': 2030, 'MARS': 'mseparate', 'value': 0},
+            {'year': 2030, 'MARS': 'headhh', 'value': 0},
+            {'year': 2030, 'MARS': 'widow', 'value': 0},
+        ],
+    },
 }
 
 
