@@ -945,7 +945,7 @@ def ItemDed(e17500, e18400, e18500, e19200,
             ID_Miscellaneous_c, ID_AllTaxes_c, ID_AllTaxes_hc,
             ID_AllTaxes_c_ps, ID_AllTaxes_c_po_rate, ID_AllTaxes_c_po_floor,
             ID_StateLocalTax_crt, ID_RealEstate_crt, ID_Charity_f,
-            ID_reduction_salt_rate, ID_reduction_other_rate):
+            ID_reduction_rate):
     """
     Calculates itemized deductions, Form 1040, Schedule A.
 
@@ -1076,10 +1076,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
         state, local, and foreign real estate tax deductions
     ID_Charity_f: list
         Floor on the amount of charity expense deduction allowed (dollars)
-    ID_reduction_salt_rate: float
-        OBBBA reduction rate for SALT deductions
-    ID_reduction_other_rate: float
-        OBBBA reduction rate for other deductions
+    ID_reduction_rate: float
+        OBBBA reduction rate for all itemized deductions
 
     Returns
     -------
@@ -1166,16 +1164,11 @@ def ItemDed(e17500, e18400, e18500, e19200,
     # OBBBA limitation on total itemized deductions
     # (no attempt to adjust c04470 components for limitation)
     reduction = 0.
-    if ID_reduction_salt_rate > 0. or ID_reduction_other_rate > 0.:
+    if ID_reduction_rate > 0.:
         assert c21040 <= 0.0, "Pease and OBBBA cannot both be in effect"
         tincome = max(0., c00100 - c04600)
         texcess = max(0., tincome - II_brk6[MARS - 1])
-        smaller_salt = min(c18300, texcess)
-        salt_reduction = ID_reduction_salt_rate * smaller_salt
-        other_deds = max(0, c04470 - c18300)
-        smaller_other = min(other_deds, texcess)
-        other_reduction = ID_reduction_other_rate * smaller_other
-        reduction = salt_reduction + other_reduction
+        reduction = ID_reduction_rate * texcess
     c04470 = max(0., c04470 - reduction)
     # Cap total itemized deductions
     # (no attempt to adjust c04470 components for limitation)
