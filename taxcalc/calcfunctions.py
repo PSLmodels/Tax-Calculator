@@ -943,8 +943,9 @@ def ItemDed(e17500, e18400, e18500, e19200,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
             ID_InterestPaid_c, ID_Charity_c, ID_Casualty_c,
             ID_Miscellaneous_c, ID_AllTaxes_c, ID_AllTaxes_hc,
+            ID_AllTaxes_c_ps, ID_AllTaxes_c_po_rate, ID_AllTaxes_c_po_floor,
             ID_StateLocalTax_crt, ID_RealEstate_crt, ID_Charity_f,
-            ID_reduction_salt_rate, ID_reduction_other_rate):
+            ID_reduction_rate):
     """
     Calculates itemized deductions, Form 1040, Schedule A.
 
@@ -1057,10 +1058,16 @@ def ItemDed(e17500, e18400, e18500, e19200,
         Ceiling on the amount of miscellaneous expense deduction
         allowed (dollars)
     ID_AllTaxes_c: list
-        Ceiling on the amount of state and local income, stales, and
+        Cap on the amount of state and local income, sales, and
         real estate deductions allowed (dollars)
     ID_AllTaxes_hc: float
         State and local income, sales, and real estate tax deduciton haircut
+    ID_AllTaxes_c_ps: float
+        AGI level above which ID_AllTaxes_c is reduced
+    ID_AllTaxes_c_po_rate: float
+        ID_AllTaxes_c reduction rate when AGI is above ID_AllTaxes_c_ps
+    ID_AllTaxes_c_po_floor: float
+        Floor below which ID_AllTaxes_c cannot be reduced
     ID_StateLocalTax_crt: float
         Ceiling (as decimal fraction of AGI) for the combination of all
         state and local income and sales tax deductions
@@ -1069,10 +1076,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
         state, local, and foreign real estate tax deductions
     ID_Charity_f: list
         Floor on the amount of charity expense deduction allowed (dollars)
-    ID_reduction_salt_rate: float
-        OBBBA reduction rate for SALT deductions
-    ID_reduction_other_rate: float
-        OBBBA reduction rate for other deductions
+    ID_reduction_rate: float
+        OBBBA reduction rate for all itemized deductions
 
     Returns
     -------
@@ -1115,7 +1120,12 @@ def ItemDed(e17500, e18400, e18500, e19200,
     c18400 = min(c18400, ID_StateLocalTax_crt * max(c00100, 0.0001))
     c18500 = min(c18500, ID_RealEstate_crt * max(c00100, 0.0001))
     c18300 = (c18400 + c18500) * (1. - ID_AllTaxes_hc)
-    c18300 = min(c18300, ID_AllTaxes_c[MARS - 1])
+    cap = ID_AllTaxes_c[MARS - 1]
+    if posagi > ID_AllTaxes_c_ps[MARS - 1]:
+        excess_agi = posagi - ID_AllTaxes_c_ps[MARS - 1]
+        cap = max(0., cap - excess_agi * ID_AllTaxes_c_po_rate)
+        cap = max(cap, ID_AllTaxes_c_po_floor[MARS - 1])
+    c18300 = min(c18300, cap)
     # Interest paid
     c19200 = e19200 * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
@@ -1154,16 +1164,11 @@ def ItemDed(e17500, e18400, e18500, e19200,
     # OBBBA limitation on total itemized deductions
     # (no attempt to adjust c04470 components for limitation)
     reduction = 0.
-    if ID_reduction_salt_rate > 0. or ID_reduction_other_rate > 0.:
+    if ID_reduction_rate > 0.:
         assert c21040 <= 0.0, "Pease and OBBBA cannot both be in effect"
         tincome = max(0., c00100 - c04600)
         texcess = max(0., tincome - II_brk6[MARS - 1])
-        smaller_salt = min(c18300, texcess)
-        salt_reduction = ID_reduction_salt_rate * smaller_salt
-        other_deds = max(0, c04470 - c18300)
-        smaller_other = min(other_deds, texcess)
-        other_reduction = ID_reduction_other_rate * smaller_other
-        reduction = salt_reduction + other_reduction
+        reduction = ID_reduction_rate * texcess
     c04470 = max(0., c04470 - reduction)
     # Cap total itemized deductions
     # (no attempt to adjust c04470 components for limitation)

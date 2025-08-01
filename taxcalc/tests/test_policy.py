@@ -62,6 +62,7 @@ def test_incorrect_implement_reform_usage():
         pol.implement_reform({2020: {'II_em': -1000}})
 
 
+@pytest.mark.local
 def test_json_reform_url():
     """
     Test reading a JSON reform from a URL. Results from the URL are expected
