@@ -435,6 +435,75 @@ OBBBA_PARAMS = {
             {'year': 2030, 'MARS': 'widow', 'value': 0},
         ],
     },
+    # N group:
+    'CDCC_c': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 3000},
+        ],
+    },
+    'CDCC_ps1': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 15000},
+        ],
+    },
+    'CDCC_ps2': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 75000},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 150000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 75000},
+            {'year': 2026, 'MARS': 'headhh', 'value': 75000},
+            {'year': 2026, 'MARS': 'widow', 'value': 75000},
+        ],
+    },
+    'CDCC_po1_rate_max': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 0.5},
+        ],
+    },
+    'CDCC_po1_rate_min': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 0.35},
+        ],
+    },
+    'CDCC_po2_rate_min': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 0.2},
+        ],
+    },
+    'CDCC_po1_step_size': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 2000},
+        ],
+    },
+    'CDCC_po2_step_size': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 2000},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 4000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 2000},
+            {'year': 2026, 'MARS': 'headhh', 'value': 2000},
+            {'year': 2026, 'MARS': 'widow', 'value': 2000},
+        ],
+    },
+    'CDCC_po_rate_per_step': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 0.01},
+        ],
+    },
+    'CDCC_refundable': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': False},
+        ],
+    },
 }
 
 
