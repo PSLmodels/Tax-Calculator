@@ -504,6 +504,31 @@ OBBBA_PARAMS = {
             {'year': 2026, 'value': False},
         ],
     },
+    # O group:
+    'PT_qbid_rt': {
+        'group': 'O',
+        'changes': [
+            {'year': 2026, 'value': 0.2},
+        ],
+    },
+    'PT_qbid_w2_wages_rt': {
+        'group': 'O',
+        'changes': [
+            {'year': 2026, 'value': 0.5},
+        ],
+    },
+    'PT_qbid_alt_w2_wages_rt': {
+        'group': 'O',
+        'changes': [
+            {'year': 2026, 'value': 0.25},
+        ],
+    },
+    'PT_qbid_alt_property_rt': {
+        'group': 'O',
+        'changes': [
+            {'year': 2026, 'value': 0.025},
+        ],
+    },
 }
 
 
