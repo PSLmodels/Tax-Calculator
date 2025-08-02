@@ -328,7 +328,7 @@ OBBBA_PARAMS = {
     'ID_Charity_crt_noncash': {
         'group': 'J',
         'changes': [
-            {'year': 2026, 'value': 0.5},
+            {'year': 2026, 'value': 0.3},
         ],
     },
     'ID_Charity_frt': {
