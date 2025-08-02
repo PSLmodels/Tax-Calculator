@@ -529,6 +529,19 @@ OBBBA_PARAMS = {
             {'year': 2026, 'value': 0.025},
         ],
     },
+    # P group:
+    'ALD_AlimonyPaid_hc': {
+        'group': 'P',
+        'changes': [
+            {'year': 2026, 'value': 1.0},
+        ],
+    },
+    'ALD_AlimonyReceived_hc': {
+        'group': 'P',
+        'changes': [
+            {'year': 2026, 'value': 0.0},
+        ],
+    },
 }
 
 
