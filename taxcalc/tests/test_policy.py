@@ -1497,9 +1497,9 @@ def test_cpi_offset_does_not_affect_wage_indexed_params():
     np.testing.assert_equal(act_before_2025, exp_before_2025)
 
 
-def test_ext_plus_ctc1_reform(tests_path):
+def test_ext_plus_odc1_reform(tests_path):
     """
-    Test ext.json plus ctc1 compound reform relative to ext.json baseline.
+    Test ext.json plus odc1 compound reform relative to ext.json baseline.
     """
     # specify baseline policy, bas, as the extend-TCJA reform
     bas = Policy()
@@ -1508,37 +1508,37 @@ def test_ext_plus_ctc1_reform(tests_path):
         ext_text = rfile.read()
     bas.implement_reform(Policy.read_json_reform(ext_text))
     assert not bas.parameter_errors
-    # specify reform policy, ref, as extend-TCJA plus liberalization of CTC
+    # specify reform policy, ref, as extend-TCJA plus liberalization of ODC
     ref = Policy()
     ref.implement_reform(Policy.read_json_reform(ext_text))
-    ctc1_reform = {
-        # one possible child-tax-credit revision to the extend-TCJA reform
-        'CTC_c': {
-            2026: 2500.00,
-            2027: 2500.00,
-            2028: 2500.00,
-            2029: 2000.00,
+    odc1_reform = {
+        # one possible other-dependent-credit revision to extend-TCJA reform
+        'ODC_c': {
+            2026: 1000.00,
+            2027: 1000.00,
+            2028: 1000.00,
+            2029: 1000.00,
         },
-        'CTC_c-indexed': {2029: True},
+        'ODC_c-indexed': {2029: True},
     }
-    ref.implement_reform(ctc1_reform)
+    ref.implement_reform(odc1_reform)
     assert not ref.parameter_errors
     # check bas and ref parameter values against expected parameter values
-    exp_ctc_c_bas = {
-        2025: 2000,
-        2026: 2000,
-        2027: 2000,
-        2028: 2000,
-        2029: 2000,
-        2030: 2000,
+    exp_odc_c_bas = {
+        2025: 500,
+        2026: 500,
+        2027: 500,
+        2028: 500,
+        2029: 500,
+        2030: 500,
     }
-    exp_ctc_c_ref = {
-        2025: 2000,
-        2026: 2500,
-        2027: 2500,
-        2028: 2500,
-        2029: 2000,
-        2030: 2044.80,
+    exp_odc_c_ref = {
+        2025: 500,
+        2026: 1000,
+        2027: 1000,
+        2028: 1000,
+        2029: 1000,
+        2030: 1022.4,
     }
     exp_actc_c = {
         2025: 1700,
@@ -1550,10 +1550,12 @@ def test_ext_plus_ctc1_reform(tests_path):
     }
     for year in range(2025, 2031):
         bas.set_year(year)
-        assert np.allclose([bas.CTC_c], [exp_ctc_c_bas[year]])
+        print('year,bas_exp_ODC,ACTC=', year, bas.ODC_c, bas.ACTC_c)
+        assert np.allclose([bas.ODC_c], [exp_odc_c_bas[year]])
         assert np.allclose([bas.ACTC_c], [exp_actc_c[year]])
         ref.set_year(year)
-        assert np.allclose([ref.CTC_c], [exp_ctc_c_ref[year]])
+        print('year,ref_exp_ODC,ACTC=', year, ref.ODC_c, ref.ACTC_c)
+        assert np.allclose([ref.ODC_c], [exp_odc_c_ref[year]])
         assert np.allclose([ref.ACTC_c], [exp_actc_c[year]])
 
 
