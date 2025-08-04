@@ -875,22 +875,22 @@ def test_index_offset_reform():
     policy0.implement_reform({'parameter_indexing_CPI_offset': {2017: 0}})
     cpiu_rates = policy0.inflation_rates()
 
-    reform1 = {'CTC_c-indexed': {2020: True}}
+    reform1 = {'ODC_c-indexed': {2020: True}}
     policy1 = Policy()
     policy1.implement_reform(reform1)
     offset = -0.005
-    reform2 = {'CTC_c-indexed': {2020: True},
+    reform2 = {'ODC_c-indexed': {2020: True},
                'parameter_indexing_CPI_offset': {2020: offset}}
     policy2 = Policy()
-    policy2.implement_reform(reform2)  # caused T-C crash before PR#2364
-    # extract from policy1 and policy2 the parameter values of CTC_c
+    policy2.implement_reform(reform2)
+    # extract from policy1 and policy2 the parameter values of ODC_c
     pvalue1 = {}
     pvalue2 = {}
     for cyr in [2019, 2020, 2021]:
         policy1.set_year(cyr)
-        pvalue1[cyr] = policy1.CTC_c[0]
+        pvalue1[cyr] = policy1.ODC_c[0]
         policy2.set_year(cyr)
-        pvalue2[cyr] = policy2.CTC_c[0]
+        pvalue2[cyr] = policy2.ODC_c[0]
     # check that pvalue1 and pvalue2 dictionaries contain the expected values
     assert pvalue2[2019] == pvalue1[2019]
     assert pvalue2[2020] == pvalue1[2020]
