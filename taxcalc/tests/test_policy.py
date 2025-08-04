@@ -1386,7 +1386,7 @@ def test_adj_cpi_offset_and_index_status():
     """
     pol1 = Policy()
     pol1.implement_reform({
-        "CTC_c-indexed": {2020: True},
+        "ODC_c-indexed": {2020: True},
         "parameter_indexing_CPI_offset": {2020: -0.005}},
     )
     pol2 = Policy()
@@ -1394,7 +1394,7 @@ def test_adj_cpi_offset_and_index_status():
         {
             "parameter_indexing_CPI_offset":
             [{"year": 2020, "value": -0.005}],
-            "CTC_c-indexed": [{"year": 2020, "value": True}],
+            "ODC_c-indexed": [{"year": 2020, "value": True}],
         }
     )
     cmp_policy_objs(pol1, pol2)
@@ -1411,7 +1411,7 @@ def test_adj_cpi_offset_and_index_status():
 
     pol2.set_state(year=[2021, 2022])
     np.testing.assert_equal(
-        (pol2.CTC_c[1] / pol2.CTC_c[0] - 1).round(4),
+        (pol2.ODC_c[1] / pol2.ODC_c[0] - 1).round(4),
         round(pol0.inflation_rates(year=2021) + (-0.005), 4),
     )
 
