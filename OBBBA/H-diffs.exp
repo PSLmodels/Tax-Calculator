@@ -1,0 +1,147 @@
+6515,6524d6514
+<             },
+<             {
+<                 "year": 2025,
+<                 "MARS": "single",
+<                 "value": 40000
+<             },
+<             {
+<                 "year": 2025,
+<                 "MARS": "mjoint",
+<                 "value": 40000
+6527,6541d6516
+<                 "year": 2025,
+<                 "MARS": "mseparate",
+<                 "value": 20000
+<             },
+<             {
+<                 "year": 2025,
+<                 "MARS": "headhh",
+<                 "value": 40000
+<             },
+<             {
+<                 "year": 2025,
+<                 "MARS": "widow",
+<                 "value": 40000
+<             },
+<             {
+6544c6519
+<                 "value": 40400
+---
+>                 "value": 9e+99
+6549c6524
+<                 "value": 40400
+---
+>                 "value": 9e+99
+6554c6529
+<                 "value": 20200
+---
+>                 "value": 9e+99
+6559c6534
+<                 "value": 40400
+---
+>                 "value": 9e+99
+6564,6664c6539
+<                 "value": 40400
+<             },
+<             {
+<                 "year": 2027,
+<                 "MARS": "single",
+<                 "value": 40804
+<             },
+<             {
+<                 "year": 2027,
+<                 "MARS": "mjoint",
+<                 "value": 40804
+<             },
+<             {
+<                 "year": 2027,
+<                 "MARS": "mseparate",
+<                 "value": 20402
+<             },
+<             {
+<                 "year": 2027,
+<                 "MARS": "headhh",
+<                 "value": 40804
+<             },
+<             {
+<                 "year": 2027,
+<                 "MARS": "widow",
+<                 "value": 40804
+<             },
+<             {
+<                 "year": 2028,
+<                 "MARS": "single",
+<                 "value": 41212
+<             },
+<             {
+<                 "year": 2028,
+<                 "MARS": "mjoint",
+<                 "value": 41212
+<             },
+<             {
+<                 "year": 2028,
+<                 "MARS": "mseparate",
+<                 "value": 20606
+<             },
+<             {
+<                 "year": 2028,
+<                 "MARS": "headhh",
+<                 "value": 41212
+<             },
+<             {
+<                 "year": 2028,
+<                 "MARS": "widow",
+<                 "value": 41212
+<             },
+<             {
+<                 "year": 2029,
+<                 "MARS": "single",
+<                 "value": 41624
+<             },
+<             {
+<                 "year": 2029,
+<                 "MARS": "mjoint",
+<                 "value": 41624
+<             },
+<             {
+<                 "year": 2029,
+<                 "MARS": "mseparate",
+<                 "value": 20812
+<             },
+<             {
+<                 "year": 2029,
+<                 "MARS": "headhh",
+<                 "value": 41624
+<             },
+<             {
+<                 "year": 2029,
+<                 "MARS": "widow",
+<                 "value": 41624
+<             },
+<             {
+<                 "year": 2030,
+<                 "MARS": "single",
+<                 "value": 10000
+<             },
+<             {
+<                 "year": 2030,
+<                 "MARS": "mjoint",
+<                 "value": 10000
+<             },
+<             {
+<                 "year": 2030,
+<                 "MARS": "mseparate",
+<                 "value": 5000
+<             },
+<             {
+<                 "year": 2030,
+<                 "MARS": "headhh",
+<                 "value": 10000
+<             },
+<             {
+<                 "year": 2030,
+<                 "MARS": "widow",
+<                 "value": 10000
+---
+>                 "value": 9e+99

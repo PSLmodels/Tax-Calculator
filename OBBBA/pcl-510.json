@@ -6254,7 +6254,7 @@
         }
     },
     "ID_AllTaxes_c": {
-        "title": "Ceiling on the amount of state and local income, sales and real estate tax deductions allowed (dollars)",
+        "title": "Cap on the amount of state and local income, sales and real estate tax deductions allowed (dollars)",
         "description": "The amount of state and local income, sales and real estate tax deductions is limited to this dollar amount.",
         "notes": "",
         "section_1": "Itemized Deductions",
@@ -6537,6 +6537,126 @@
                 "year": 2026,
                 "MARS": "widow",
                 "value": 9e+99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ID_AllTaxes_c_ps": {
+        "title": "AGI level at which ID_AllTaxes_c cap starts to be phased out",
+        "description": "The cap on state and local income, sales and real estate tax deductions is phased out when AGI exceeds this amount.",
+        "notes": "",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Taxes And Real Estate Taxes",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e+99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ID_AllTaxes_c_po_rate": {
+        "title": "Rate at which ID_AllTaxes_c cap is phased-out above ID_AllTaxes_c_ps AGI",
+        "description": "The cap on state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_c_ps.",
+        "notes": "",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Taxes And Real Estate Taxes",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ID_AllTaxes_c_po_floor": {
+        "title": "Minimum cap on itemized state and local income, sales and real estate tax deductions that are phased-out above ID_AllTaxes_ps AGI",
+        "description": "The cap on state and local income, sales and real estate tax deductions cannot be reduced below this amount.",
+        "notes": "",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Taxes And Real Estate Taxes",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 0
             }
         ],
         "validators": {
@@ -8786,40 +8906,10 @@
             "cps": true
         }
     },
-    "ID_reduction_salt_rate": {
-        "title": "Itemized deduction reduction rate for SALT deductions under OBBBA",
+    "ID_reduction_rate": {
+        "title": "Itemized deduction reduction rate under OBBBA",
         "description": "Itemized deductions are reduced if pre-deduction taxable income exceeds top tax bracket.",
-        "notes": "The 2026 value of 0.13513514 is about equal to 5/37.",
-        "section_1": "Itemized Deductions",
-        "section_2": "Itemized Deduction Limitation",
-        "indexable": false,
-        "indexed": false,
-        "type": "float",
-        "value": [
-            {
-                "year": 2013,
-                "value": 0.0
-            },
-            {
-                "year": 2026,
-                "value": 0.0
-            }
-        ],
-        "validators": {
-            "range": {
-                "min": 0,
-                "max": 1
-            }
-        },
-        "compatible_data": {
-            "puf": true,
-            "cps": true
-        }
-    },
-    "ID_reduction_other_rate": {
-        "title": "Itemized deduction reduction rate for non-SALT deductions under OBBBA",
-        "description": "Itemized deductions are reduced if pre-deduction taxable income exceeds top tax bracket.",
-        "notes": "The 2026 value of 0.05405405 is about equal to 2/37.",
+        "notes": "The 2026+ value of 0.05405405 is about equal to 2/37.",
         "section_1": "Itemized Deductions",
         "section_2": "Itemized Deduction Limitation",
         "indexable": false,
@@ -17828,6 +17918,18 @@
             },
             {
                 "year": 2022,
+                "value": 2000.0
+            },
+            {
+                "year": 2023,
+                "value": 2000.0
+            },
+            {
+                "year": 2024,
+                "value": 2000.0
+            },
+            {
+                "year": 2025,
                 "value": 2000.0
             },
             {
