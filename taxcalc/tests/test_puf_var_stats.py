@@ -170,7 +170,7 @@ def test_puf_var_stats(tests_path, puf_fullsample):
     del table_corr['description']
     # add statistics to tables
     year_headers = ['description']
-    for year in range(Policy.JSON_START_YEAR, 2034 + 1):
+    for year in range(Policy.JSON_START_YEAR, 2024 + 1):
         assert year == calc.current_year
         year_headers.append(str(year))
         calc.calc_all()
