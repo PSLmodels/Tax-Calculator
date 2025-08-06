@@ -978,18 +978,14 @@ def test_raise_errors_regression():
           in the errors attribute.
     """
     ref = {
-        "II_brk7-indexed": [{"value": True}],
+        "II_brk7-indexed": [{"value": False}],
         "II_brk6": [{"value": 316700, "MARS": "single", "year": 2020}],
-        "II_brk7": [{"value": 445400, "MARS": "single", "year": 2020}],
+        "II_brk7": [{"value": 320700, "MARS": "single", "year": 2020}],
 
     }
-    # MRH COMMENT ON 2025-08-04:
-    # I don't understand this test because the ref dictionary above seems OK
     pol = Policy()
     pol.adjust(ref, raise_errors=False)
-    print(pol.errors)
-    # assert pol.errors  # fails because pol.error is equal to {}
-    assert not pol.errors
+    assert pol.errors
 
 
 def test_simple_adj():
