@@ -25,6 +25,7 @@ from taxcalc.calculator import Calculator
 
 
 START_YEAR = 2017
+NUM_YEARS = 19
 
 
 @pytest.mark.cpscsv_agg
@@ -33,7 +34,7 @@ def test_agg(tests_path, cps_fullsample):
     Test current-law aggregate taxes using cps.csv file.
     """
     # pylint: disable=too-many-statements,too-many-locals
-    nyrs = 10
+    nyrs = NUM_YEARS
     # create a baseline Policy object with current-law policy parameters
     baseline_policy = Policy()
     # create a Records object (rec) containing all cps.csv input records
