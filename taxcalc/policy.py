@@ -103,6 +103,13 @@ class Policy(Parameters):
         'ID_Charity_crt_cash': (
             'was renamed ID_Charity_crt_all in Tax-Calculator 5.1.0'
         ),
+        # following parameters were renamed in PR 2939
+        'ID_reduction_salt_rate': (
+            'was renamed ID_reduction_rate in Tax-Calculator 5.1.0'
+        ),
+        'ID_reduction_other_rate': (
+            'was renamed ID_reduction_rate in Tax-Calculator 5.1.0'
+        ),
     }
     # (2) specify which Policy parameters have been redefined recently
     #     where "recently" means in the last major release

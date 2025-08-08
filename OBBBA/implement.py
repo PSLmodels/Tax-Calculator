@@ -1,11 +1,14 @@
 """
 This script implements policy parameters to reflect new OBBBA policy.
 
-USAGE: (taxcalc-dev) OBBBA% python implement.py
-THEN CHECK:             % [g]diff pcl.json ../taxcalc/pollicy_current_law.json
-IF DIFFS OK:            % mv pcl.json taxcalc/policy_current_law.json
-MAKE PACKAGE AND EXECUTE tally.sh AND ASSESS tally.results
-THEN REVERT CHANGES IN taxcalc/policy_current_law.json
+USAGE: (taxcalc-dev) OBBBA% ./implement.sh GROUP
+THEN CHECK                % [g]diff pcl.json pcl-510.json
+IF DIFFS OK               % mv pcl.json ../taxcalc/policy_current_law.json
+MAKE PACKAGE              % pushd .. ; make package ; popd
+EXECUTE tally.sh          % ./tally.sh
+ASSESS tally.results DIFF % [g]diff tally.res-new tally.result
+REVERT POLICY CHANGES     % git restore ../taxcalc/policy_current_law.json
+REMOVE PACKAGE            % pushd .. ; make clean ; popd
 """
 
 import os
@@ -17,20 +20,526 @@ import argparse
 LIST_PARAMS = False
 
 OBBBA_PARAMS = {
-    'II_em': {
+    # A group:
+    'AMT_em': {
         'group': 'A',
         'changes': [
-            {'year': 2026, 'value': 0.0},
+            {'year': 2026, 'MARS': 'single', 'value': 89400},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 139000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 69600},
+            {'year': 2026, 'MARS': 'headhh', 'value': 89400},
+            {'year': 2026, 'MARS': 'widow', 'value': 139000},
         ],
     },
-    'II_em_ps': {
+    'AMT_em_ps': {
         'group': 'A',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 500000},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 1000000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 500000},
+            {'year': 2026, 'MARS': 'headhh', 'value': 500000},
+            {'year': 2026, 'MARS': 'widow', 'value': 1000000},
+        ],
+    },
+    'AMT_em_pe': {
+        'group': 'A',
+        'changes': [
+            {'year': 2026, 'value': 639200},
+        ],
+    },
+    # B group:
+    'II_rt1': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.1},
+        ],
+    },
+    'II_brk1': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 11925},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 23850},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 11925},
+            {'year': 2026, 'MARS': 'headhh', 'value': 17000},
+            {'year': 2026, 'MARS': 'widow', 'value': 23850},
+        ],
+    },
+    'II_rt2': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.12},
+        ],
+    },
+    'II_brk2': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 48475},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 96950},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 48475},
+            {'year': 2026, 'MARS': 'headhh', 'value': 64850},
+            {'year': 2026, 'MARS': 'widow', 'value': 96950},
+        ],
+    },
+    'II_rt3': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.22},
+        ],
+    },
+    'II_brk3': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 104900},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 208300},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 104900},
+            {'year': 2026, 'MARS': 'headhh', 'value': 104900},
+            {'year': 2026, 'MARS': 'widow', 'value': 208300},
+        ],
+    },
+    'II_rt4': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.24},
+        ],
+    },
+    'II_brk4': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 198800},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 397650},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 198800},
+            {'year': 2026, 'MARS': 'headhh', 'value': 198800},
+            {'year': 2026, 'MARS': 'widow', 'value': 397650},
+        ],
+    },
+    'II_rt5': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.32},
+        ],
+    },
+    'II_brk5': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 256450},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 512950},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 256450},
+            {'year': 2026, 'MARS': 'headhh', 'value': 256486},
+            {'year': 2026, 'MARS': 'widow', 'value': 512950},
+        ],
+    },
+    'II_rt6': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.35},
+        ],
+    },
+    'II_brk6': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 643950},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 772750},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 386350},
+            {'year': 2026, 'MARS': 'headhh', 'value': 643950},
+            {'year': 2026, 'MARS': 'widow', 'value': 772750},
+        ],
+    },
+    'II_rt7': {
+        'group': 'B',
+        'changes': [
+            {'year': 2026, 'value': 0.37},
+        ],
+    },
+    'II_brk7': {
+        'group': 'B',
         'changes': [
             {'year': 2026, 'MARS': 'single', 'value': 9e+99},
             {'year': 2026, 'MARS': 'mjoint', 'value': 9e+99},
             {'year': 2026, 'MARS': 'mseparate', 'value': 9e+99},
             {'year': 2026, 'MARS': 'headhh', 'value': 9e+99},
             {'year': 2026, 'MARS': 'widow', 'value': 9e+99},
+        ],
+    },
+    # C group:
+    'CTC_c': {
+        'group': 'C',
+        'indexed': True,
+        'changes': [
+            {'year': 2025, 'value': 2200},
+        ],
+    },
+    'CTC_ps': {
+        'group': 'C',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 200000},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 400000},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 200000},
+            {'year': 2025, 'MARS': 'headhh', 'value': 200000},
+            {'year': 2025, 'MARS': 'widow', 'value': 400000},
+        ],
+    },
+    'ACTC_c': {
+        'group': 'C',
+        'indexed': True,
+        'changes': [
+            {'year': 2025, 'value': 1700},
+        ],
+    },
+    'ACTC_Income_thd': {
+        'group': 'C',
+        'changes': [
+            {'year': 2025, 'value': 2500},
+        ],
+    },
+    'ODC_c': {
+        'group': 'C',
+        'changes': [
+            {'year': 2025, 'value': 500},
+        ],
+    },
+    # D group:
+    'STD': {
+        'group': 'D',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 15750},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 31500},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 15750},
+            {'year': 2025, 'MARS': 'headhh', 'value': 23625},
+            {'year': 2025, 'MARS': 'widow', 'value': 31500},
+        ],
+    },
+    # E group:
+    'II_em': {
+        'group': 'E',
+        'changes': [
+            {'year': 2026, 'value': 0.0},
+        ],
+    },
+    'II_em_ps': {
+        'group': 'E',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'headhh', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'widow', 'value': 9e+99},
+        ],
+    },
+    # F group:
+    'ALD_BusinessLosses_c': {
+        'group': 'F',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 313000},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 626000},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 313000},
+            {'year': 2025, 'MARS': 'headhh', 'value': 313000},
+            {'year': 2025, 'MARS': 'widow', 'value': 626000},
+        ],
+    },
+    # G group:
+    'SeniorDed_c': {
+        'group': 'G',
+        'changes': [
+            {'year': 2025, 'value': 6000},
+            {'year': 2029, 'value': 0},
+        ],
+    },
+    # H group:
+    'ID_AllTaxes_c': {
+        'group': 'H',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 40000},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 40000},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 20000},
+            {'year': 2025, 'MARS': 'headhh', 'value': 40000},
+            {'year': 2025, 'MARS': 'widow', 'value': 40000},
+            # ------
+            {'year': 2026, 'MARS': 'single', 'value': 40400},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 40400},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 20200},
+            {'year': 2026, 'MARS': 'headhh', 'value': 40400},
+            {'year': 2026, 'MARS': 'widow', 'value': 40400},
+            # ------
+            {'year': 2027, 'MARS': 'single', 'value': 40804},
+            {'year': 2027, 'MARS': 'mjoint', 'value': 40804},
+            {'year': 2027, 'MARS': 'mseparate', 'value': 20402},
+            {'year': 2027, 'MARS': 'headhh', 'value': 40804},
+            {'year': 2027, 'MARS': 'widow', 'value': 40804},
+            # ------
+            {'year': 2028, 'MARS': 'single', 'value': 41212},
+            {'year': 2028, 'MARS': 'mjoint', 'value': 41212},
+            {'year': 2028, 'MARS': 'mseparate', 'value': 20606},
+            {'year': 2028, 'MARS': 'headhh', 'value': 41212},
+            {'year': 2028, 'MARS': 'widow', 'value': 41212},
+            # ------
+            {'year': 2029, 'MARS': 'single', 'value': 41624},
+            {'year': 2029, 'MARS': 'mjoint', 'value': 41624},
+            {'year': 2029, 'MARS': 'mseparate', 'value': 20812},
+            {'year': 2029, 'MARS': 'headhh', 'value': 41624},
+            {'year': 2029, 'MARS': 'widow', 'value': 41624},
+            # ------
+            {'year': 2030, 'MARS': 'single', 'value': 10000},
+            {'year': 2030, 'MARS': 'mjoint', 'value': 10000},
+            {'year': 2030, 'MARS': 'mseparate', 'value': 5000},
+            {'year': 2030, 'MARS': 'headhh', 'value': 10000},
+            {'year': 2030, 'MARS': 'widow', 'value': 10000},
+        ],
+    },
+    # I group:
+    'PT_qbid_taxinc_thd': {
+        'group': 'I',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 200300},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 400600},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 200300},
+            {'year': 2026, 'MARS': 'headhh', 'value': 200300},
+            {'year': 2026, 'MARS': 'widow', 'value': 400600},
+        ],
+    },
+    'PT_qbid_taxinc_gap': {
+        'group': 'I',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 75000},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 150000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 75000},
+            {'year': 2026, 'MARS': 'headhh', 'value': 75000},
+            {'year': 2026, 'MARS': 'widow', 'value': 150000},
+        ],
+    },
+    'PT_qbid_min_ded': {
+        'group': 'I',
+        'changes': [
+            {'year': 2026, 'value': 400},
+        ],
+    },
+    'PT_qbid_min_qbi': {
+        'group': 'I',
+        'changes': [
+            {'year': 2026, 'value': 1000},
+        ],
+    },
+    # J group:
+    'ID_Charity_crt_all': {
+        'group': 'J',
+        'changes': [
+            {'year': 2026, 'value': 0.6},
+        ],
+    },
+    'ID_Charity_crt_noncash': {
+        'group': 'J',
+        'changes': [
+            {'year': 2026, 'value': 0.3},
+        ],
+    },
+    'ID_Charity_frt': {
+        'group': 'J',
+        'changes': [
+            {'year': 2026, 'value': 0.005},
+        ],
+    },
+    'ID_Casualty_hc': {
+        'group': 'J',
+        'changes': [
+            {'year': 2026, 'value': 1.0},
+        ],
+    },
+    'ID_Miscellaneous_hc': {
+        'group': 'J',
+        'changes': [
+            {'year': 2026, 'value': 1.0},
+        ],
+    },
+    # K group:
+    'STD_allow_charity_ded_nonitemizers': {
+        'group': 'K',
+        'changes': [
+            {'year': 2026, 'value': True},
+        ],
+    },
+    'STD_charity_ded_nonitemizers_max': {
+        'group': 'K',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 1000},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 2000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 1000},
+            {'year': 2026, 'MARS': 'headhh', 'value': 1000},
+            {'year': 2026, 'MARS': 'widow', 'value': 1000},
+        ],
+    },
+    # L group:
+    'ID_ps': {
+        'group': 'L',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'headhh', 'value': 9e+99},
+            {'year': 2026, 'MARS': 'widow', 'value': 9e+99},
+        ],
+    },
+    'ID_prt': {
+        'group': 'L',
+        'changes': [
+            {'year': 2026, 'value': 0.0},
+        ],
+    },
+    'ID_crt': {
+        'group': 'L',
+        'changes': [
+            {'year': 2026, 'value': 1.0},
+        ],
+    },
+    'ID_reduction_rate': {
+        'group': 'L',
+        'changes': [
+            {'year': 2026, 'value': 0.05405405},  # = 2/37
+        ],
+    },
+    # M group:
+    'ID_AllTaxes_c_ps': {
+        'group': 'M',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 500000},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 500000},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 250000},
+            {'year': 2025, 'MARS': 'headhh', 'value': 500000},
+            {'year': 2025, 'MARS': 'widow', 'value': 500000},
+            # -----
+            {'year': 2030, 'MARS': 'single', 'value': 9e+99},
+            {'year': 2030, 'MARS': 'mjoint', 'value': 9e+99},
+            {'year': 2030, 'MARS': 'mseparate', 'value': 9e+99},
+            {'year': 2030, 'MARS': 'headhh', 'value': 9e+99},
+            {'year': 2030, 'MARS': 'widow', 'value': 9e+99},
+        ],
+    },
+    'ID_AllTaxes_c_po_rate': {
+        'group': 'M',
+        'changes': [
+            {'year': 2025, 'value': 0.3},
+            {'year': 2030, 'value': 0.0},
+        ],
+    },
+    'ID_AllTaxes_c_po_floor': {
+        'group': 'M',
+        'changes': [
+            {'year': 2025, 'MARS': 'single', 'value': 10000},
+            {'year': 2025, 'MARS': 'mjoint', 'value': 10000},
+            {'year': 2025, 'MARS': 'mseparate', 'value': 5000},
+            {'year': 2025, 'MARS': 'headhh', 'value': 10000},
+            {'year': 2025, 'MARS': 'widow', 'value': 10000},
+            # -----
+            {'year': 2030, 'MARS': 'single', 'value': 0},
+            {'year': 2030, 'MARS': 'mjoint', 'value': 0},
+            {'year': 2030, 'MARS': 'mseparate', 'value': 0},
+            {'year': 2030, 'MARS': 'headhh', 'value': 0},
+            {'year': 2030, 'MARS': 'widow', 'value': 0},
+        ],
+    },
+    # N group:
+    'CDCC_c': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 3000},
+        ],
+    },
+    'CDCC_ps1': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 15000},
+        ],
+    },
+    'CDCC_ps2': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 75000},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 150000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 75000},
+            {'year': 2026, 'MARS': 'headhh', 'value': 75000},
+            {'year': 2026, 'MARS': 'widow', 'value': 75000},
+        ],
+    },
+    'CDCC_po1_rate_max': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 0.5},
+        ],
+    },
+    'CDCC_po1_rate_min': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 0.35},
+        ],
+    },
+    'CDCC_po2_rate_min': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 0.2},
+        ],
+    },
+    'CDCC_po1_step_size': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 2000},
+        ],
+    },
+    'CDCC_po2_step_size': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'MARS': 'single', 'value': 2000},
+            {'year': 2026, 'MARS': 'mjoint', 'value': 4000},
+            {'year': 2026, 'MARS': 'mseparate', 'value': 2000},
+            {'year': 2026, 'MARS': 'headhh', 'value': 2000},
+            {'year': 2026, 'MARS': 'widow', 'value': 2000},
+        ],
+    },
+    'CDCC_po_rate_per_step': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': 0.01},
+        ],
+    },
+    'CDCC_refundable': {
+        'group': 'N',
+        'changes': [
+            {'year': 2026, 'value': False},
+        ],
+    },
+    # O group:
+    'PT_qbid_rt': {
+        'group': 'O',
+        'changes': [
+            {'year': 2026, 'value': 0.2},
+        ],
+    },
+    'PT_qbid_w2_wages_rt': {
+        'group': 'O',
+        'changes': [
+            {'year': 2026, 'value': 0.5},
+        ],
+    },
+    'PT_qbid_alt_w2_wages_rt': {
+        'group': 'O',
+        'changes': [
+            {'year': 2026, 'value': 0.25},
+        ],
+    },
+    'PT_qbid_alt_property_rt': {
+        'group': 'O',
+        'changes': [
+            {'year': 2026, 'value': 0.025},
+        ],
+    },
+    # P group:
+    'ALD_AlimonyPaid_hc': {
+        'group': 'P',
+        'changes': [
+            {'year': 2026, 'value': 1.0},
+        ],
+    },
+    'ALD_AlimonyReceived_hc': {
+        'group': 'P',
+        'changes': [
+            {'year': 2026, 'value': 0.0},
         ],
     },
 }
