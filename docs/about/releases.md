@@ -4,6 +4,25 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2025-08-08 Release 5.2.0
+------------------------
+(last merged pull request is
+[#2944](https://github.com/PSLmodels/Tax-Calculator/pull/2944))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Make OBBBA reform be current-law policy in several PRs described in
+  [issue
+  2926](https://github.com/PSLmodels/Tax-Calculator/issues/2926) by
+  Martin Holmer
+- Extend CPS and PUF aggregate tests through 2035
+  [[#2944](https://github.com/PSLmodels/Tax-Calculator/pull/2944) by
+  Martin Holmer]
+
+
 2025-07-22 Release 5.1.0
 ------------------------
 (last merged pull request is
