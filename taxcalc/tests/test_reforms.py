@@ -73,6 +73,17 @@ def test_2017_law_reform(tests_path):
             assert act == exp, f'{name} a={act} != e={exp}'
 
 
+def _apply_reform(policy, reform_path):
+    """
+    Helper function to apply a reform and assert no errors.
+    """
+    with open(reform_path, 'r', encoding='utf-8') as rfile:
+        rtext = rfile.read()
+    policy.implement_reform(Policy.read_json_reform(rtext))
+    assert not policy.parameter_errors
+    assert not policy.errors
+
+
 @pytest.mark.rtr
 @pytest.mark.parametrize('fyear', [2019, 2020, 2021, 2022, 2023, 2024, 2025])
 def test_round_trip_reforms(fyear, tests_path):
@@ -97,55 +108,20 @@ def test_round_trip_reforms(fyear, tests_path):
     clp_mdata = dict(clp_pol.items())
     # create rtr metadata dictionary for round-trip reform in fyear
     rtr_pol = Policy()
-    # Revert to 2017 law
-    reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
-    # Layer on TCJA
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
-    # Layer on the CARES Act
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'CARES.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    # Layer on the Consolidated Appropriations Act of 2021
-    reform_file = os.path.join(
-        tests_path, '..', 'reforms', 'ConsolidatedAppropriationsAct2021.json'
-    )
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
-    # Layer on ARPA
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'ARPA.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
-    # Layer on OBBBA
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'OBBBA.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
-    # Layer on rounding from IRS through 2025
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'rounding.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
+
+    reform_files_to_apply = [
+        '2017_law.json',
+        'TCJA.json',
+        'CARES.json',
+        'ConsolidatedAppropriationsAct2021.json',
+        'ARPA.json',
+        'OBBBA.json',
+        'rounding.json'
+    ]
+    for reform_filename in reform_files_to_apply:
+        reform_file_path = os.path.join(tests_path, '..', 'reforms', reform_filename)
+        _apply_reform(rtr_pol, reform_file_path)
+
     rtr_pol.set_year(fyear)
     rtr_mdata = dict(rtr_pol.items())
     # compare fyear policy parameter values
