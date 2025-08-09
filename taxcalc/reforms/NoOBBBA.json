@@ -108,5 +108,7 @@
     "AutoLoanInterestDed_c": {"2025": 0},
     "ALD_OvertimeIncome_hc": {"2025": 1.0},
     "ALD_TipIncome_hc": {"2025": 1.0},
+
+    // Additional OBBBA parameters
     "ID_Medical_frt": {"2026": 0.075}
 }

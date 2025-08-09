@@ -107,5 +107,10 @@
 
     // Group P: Alimony
     "ALD_AlimonyPaid_hc": {"2026": 1.0},
-    "ALD_AlimonyReceived_hc": {"2026": 0.0}
+    "ALD_AlimonyReceived_hc": {"2026": 0.0},
+
+    // New OBBBA parameters
+    "AutoLoanInterestDed_c": {"2025": 10000, "2029": 0},
+    "ALD_OvertimeIncome_hc": {"2025": 0.0, "2029": 1.0},
+    "ALD_TipIncome_hc": {"2025": 0.0, "2029": 1.0}
 }
