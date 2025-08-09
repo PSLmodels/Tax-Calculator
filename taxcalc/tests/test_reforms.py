@@ -152,8 +152,23 @@ def test_round_trip_reforms(fyear, tests_path):
         raise ValueError(msg)
 
 
+REFORM_DIR = os.path.join(os.path.dirname(__file__), '..', 'reforms')
+REFORM_FILES = glob.glob(os.path.join(REFORM_DIR, '*.json'))
+REFORM_YEARS = {
+    "ARPA.json": 2022,
+    "ext.json": 2026,
+    "NoOBBBA.json": 2026,
+    "OBBBA.json": 2026,
+}
+
+
 @pytest.mark.reforms
-def test_reform_json_and_output(tests_path):
+@pytest.mark.parametrize(
+    "reform_file,tax_year",
+    [(os.path.basename(f), REFORM_YEARS.get(os.path.basename(f), 2020)) 
+     for f in REFORM_FILES],
+)
+def test_reform_json_and_output(reform_file, tax_year, tests_path):
     """
     Check that each JSON reform file can be converted into a reform dictionary
     that can then be passed to the Policy class implement_reform method that
@@ -196,7 +211,6 @@ def test_reform_json_and_output(tests_path):
         return not diffs
 
     # specify Records object containing cases data
-    tax_year = 2020
     cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')
     cases = Records(data=cases_path,
                     start_year=tax_year,  # set raw input data year
@@ -209,9 +223,10 @@ def test_reform_json_and_output(tests_path):
     calc = Calculator(policy=Policy(), records=cases, verbose=False)
     calc.advance_to_year(tax_year)
     calc.calc_all()
-    res_path = cases_path.replace('cases.csv', 'clp.res.csv')
+    clp_base = cases_path.replace('cases.csv', f'clp-{tax_year}')
+    res_path = clp_base + '.res.csv'
     write_res_file(calc, res_path)
-    if res_and_out_are_same(res_path.replace('.res.csv', '')):
+    if res_and_out_are_same(clp_base):
         os.remove(res_path)
     else:
         failures.append(res_path)
@@ -220,34 +235,29 @@ def test_reform_json_and_output(tests_path):
     pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
     pre_tcja = Policy.read_json_reform(pre_tcja_jrf)
     # check reform file contents and reform results for each reform
-    reforms_path = os.path.join(tests_path, '..', 'reforms', '*.json')
-    json_reform_files = glob.glob(reforms_path)
-    for jrf in json_reform_files:
-        # skip reforms that are not tested in this function
-        if jrf.endswith(('ext.json', 'OBBBA.json', 'NoOBBBA.json')):
-            continue
-        # determine reform's baseline by reading contents of jrf
-        with open(jrf, 'r', encoding='utf-8') as rfile:
-            jrf_text = rfile.read()
-        pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
-        # implement the reform relative to its baseline
-        reform = Policy.read_json_reform(jrf_text)
-        pol = Policy()  # current-law policy
-        if pre_tcja_baseline:
-            pol.implement_reform(pre_tcja)
-            assert not pol.parameter_errors
-        pol.implement_reform(reform)
+    jrf = os.path.join(tests_path, '..', 'reforms', reform_file)
+    # determine reform's baseline by reading contents of jrf
+    with open(jrf, 'r', encoding='utf-8') as rfile:
+        jrf_text = rfile.read()
+    pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
+    # implement the reform relative to its baseline
+    reform = Policy.read_json_reform(jrf_text)
+    pol = Policy()  # current-law policy
+    if pre_tcja_baseline:
+        pol.implement_reform(pre_tcja)
         assert not pol.parameter_errors
-        calc = Calculator(policy=pol, records=cases, verbose=False)
-        calc.advance_to_year(tax_year)
-        calc.calc_all()
-        res_path = jrf.replace('.json', '.res.csv')
-        write_res_file(calc, res_path)
-        if res_and_out_are_same(res_path.replace('.res.csv', '')):
-            os.remove(res_path)
-        else:
-            failures.append(res_path)
-        del calc
+    pol.implement_reform(reform)
+    assert not pol.parameter_errors
+    calc = Calculator(policy=pol, records=cases, verbose=False)
+    calc.advance_to_year(tax_year)
+    calc.calc_all()
+    res_path = jrf.replace('.json', '.res.csv')
+    write_res_file(calc, res_path)
+    if res_and_out_are_same(res_path.replace('.res.csv', '')):
+        os.remove(res_path)
+    else:
+        failures.append(res_path)
+    del calc
     if failures:
         msg = 'Following reforms have res-vs-out differences:\n'
         for ref in failures:
