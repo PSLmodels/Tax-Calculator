@@ -7,14 +7,13 @@ THEN CHECK:             % diff pcl.json taxcalc/policy_current_law.json
 IF DIFFS OK:            % mv pcl.json taxcalc/policy_current_law.json
 
 WHEN TO USE: use this script to update taxcalc/policy_current_law.json
-whenever post-2016 inflation rates in the growfactors.csv files are changed,
-or whenever new known policy parameter values are published.
+whenever inflation rates in the growfactors.csv files are changed, or
+whenever new known policy parameter values are published.
 """
 
 import os
 import sys
 import json
-
 
 LIST_MARS_ZERO = [
     {'year': 2023, 'MARS': 'single', 'value': 0.0},
@@ -35,6 +34,13 @@ LIST_MARS_ZERO = [
     {'year': 2025, 'MARS': 'headhh', 'value': 0.0},
     {'year': 2025, 'MARS': 'widow', 'value': 0.0},
 ]
+MARS_ZERO_2026 = [
+    {'year': 2026, 'MARS': 'single', 'value': 0.0},
+    {'year': 2026, 'MARS': 'mjoint', 'value': 0.0},
+    {'year': 2026, 'MARS': 'mseparate', 'value': 0.0},
+    {'year': 2026, 'MARS': 'headhh', 'value': 0.0},
+    {'year': 2026, 'MARS': 'widow', 'value': 0.0},
+]
 LIST_MARS_INF = [
     {'year': 2023, 'MARS': 'single', 'value': 9e99},
     {'year': 2023, 'MARS': 'mjoint', 'value': 9e99},
@@ -54,6 +60,13 @@ LIST_MARS_INF = [
     {'year': 2025, 'MARS': 'headhh', 'value': 9e99},
     {'year': 2025, 'MARS': 'widow', 'value': 9e99},
 ]
+MARS_INF_2026 = [
+    {'year': 2026, 'MARS': 'single', 'value': 9e99},
+    {'year': 2026, 'MARS': 'mjoint', 'value': 9e99},
+    {'year': 2026, 'MARS': 'mseparate', 'value': 9e99},
+    {'year': 2026, 'MARS': 'headhh', 'value': 9e99},
+    {'year': 2026, 'MARS': 'widow', 'value': 9e99},
+]
 LIST_SCALAR_ZERO = [
     {'year': 2023, 'value': 0.0},
 
@@ -61,6 +74,10 @@ LIST_SCALAR_ZERO = [
 
     {'year': 2025, 'value': 0.0},
 ]
+SCALAR_ZERO_2026 = [
+    {'year': 2026, 'value': 0.0},
+]
+
 NEW_KNOWN_ITEMS = {
     # PAYROLL TAX PARAMETER SOURCES:
     # - SSA Office of the Chief Actuary: Contribution and Benefit Base
@@ -97,6 +114,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 11925.0},
         {'year': 2025, 'MARS': 'headhh', 'value': 17000.0},
         {'year': 2025, 'MARS': 'widow', 'value': 23850.0},
+
+        {'year': 2026, 'MARS': 'single', 'value': 11925},
+        {'year': 2026, 'MARS': 'mjoint', 'value': 23850},
+        {'year': 2026, 'MARS': 'mseparate', 'value': 11925},
+        {'year': 2026, 'MARS': 'headhh', 'value': 17000},
+        {'year': 2026, 'MARS': 'widow', 'value': 23850},
     ],
     'II_brk2': [
         {'year': 2023, 'MARS': 'single', 'value': 44725.},
@@ -116,6 +139,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 48475.0},
         {'year': 2025, 'MARS': 'headhh', 'value': 64850.0},
         {'year': 2025, 'MARS': 'widow', 'value': 96950.0},
+
+        {'year': 2026, 'MARS': 'single', 'value': 48475},
+        {'year': 2026, 'MARS': 'mjoint', 'value': 96950},
+        {'year': 2026, 'MARS': 'mseparate', 'value': 48475},
+        {'year': 2026, 'MARS': 'headhh', 'value': 64850},
+        {'year': 2026, 'MARS': 'widow', 'value': 96950},
     ],
     'II_brk3': [
         {'year': 2023, 'MARS': 'single', 'value': 95375.0},
@@ -135,6 +164,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 103350.0},
         {'year': 2025, 'MARS': 'headhh', 'value': 103350.0},
         {'year': 2025, 'MARS': 'widow', 'value': 206700.0},
+
+        {'year': 2026, 'MARS': 'single', 'value': 104900},
+        {'year': 2026, 'MARS': 'mjoint', 'value': 208300},
+        {'year': 2026, 'MARS': 'mseparate', 'value': 104900},
+        {'year': 2026, 'MARS': 'headhh', 'value': 104900},
+        {'year': 2026, 'MARS': 'widow', 'value': 208300},
     ],
     'II_brk4': [
         {'year': 2023, 'MARS': 'single', 'value': 182100.0},
@@ -154,6 +189,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 197300.0},
         {'year': 2025, 'MARS': 'headhh', 'value': 197300.0},
         {'year': 2025, 'MARS': 'widow', 'value': 394600.0},
+
+        {'year': 2026, 'MARS': 'single', 'value': 198800},
+        {'year': 2026, 'MARS': 'mjoint', 'value': 397650},
+        {'year': 2026, 'MARS': 'mseparate', 'value': 198800},
+        {'year': 2026, 'MARS': 'headhh', 'value': 198800},
+        {'year': 2026, 'MARS': 'widow', 'value': 397650},
     ],
     'II_brk5': [
         {'year': 2023, 'MARS': 'single', 'value': 231250.0},
@@ -173,6 +214,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 250525.0},
         {'year': 2025, 'MARS': 'headhh', 'value': 250500.0},
         {'year': 2025, 'MARS': 'widow', 'value': 501050.0},
+
+        {'year': 2026, 'MARS': 'single', 'value': 256450},
+        {'year': 2026, 'MARS': 'mjoint', 'value': 512950},
+        {'year': 2026, 'MARS': 'mseparate', 'value': 256450},
+        {'year': 2026, 'MARS': 'headhh', 'value': 256486},
+        {'year': 2026, 'MARS': 'widow', 'value': 512950},
     ],
     'II_brk6': [
         {'year': 2023, 'MARS': 'single', 'value': 578125.0},
@@ -192,6 +239,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 375800.0},
         {'year': 2025, 'MARS': 'headhh', 'value': 626350.0},
         {'year': 2025, 'MARS': 'widow', 'value': 751600.0},
+
+        {'year': 2026, 'MARS': 'single', 'value': 643950},
+        {'year': 2026, 'MARS': 'mjoint', 'value': 772750},
+        {'year': 2026, 'MARS': 'mseparate', 'value': 386350},
+        {'year': 2026, 'MARS': 'headhh', 'value': 643950},
+        {'year': 2026, 'MARS': 'widow', 'value': 772750},
     ],
     'II_brk7': [
         {'year': 2023, 'MARS': 'single', 'value': 9e99},
@@ -211,6 +264,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 9e99},
         {'year': 2025, 'MARS': 'headhh', 'value': 9e99},
         {'year': 2025, 'MARS': 'widow', 'value': 9e99},
+
+        {'year': 2026, 'MARS': 'single', 'value': 9e99},
+        {'year': 2026, 'MARS': 'mjoint', 'value': 9e99},
+        {'year': 2026, 'MARS': 'mseparate', 'value': 9e99},
+        {'year': 2026, 'MARS': 'headhh', 'value': 9e99},
+        {'year': 2026, 'MARS': 'widow', 'value': 9e99},
     ],
     'CG_brk1': [
         {'year': 2023, 'MARS': 'single', 'value': 44625.0},
@@ -349,6 +408,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 68500.0},
         {'year': 2025, 'MARS': 'headhh', 'value': 88100.0},
         {'year': 2025, 'MARS': 'widow', 'value': 137000.0},
+
+        {'year': 2026, 'MARS': 'single', 'value': 89400},
+        {'year': 2026, 'MARS': 'mjoint', 'value': 139000},
+        {'year': 2026, 'MARS': 'mseparate', 'value': 69600},
+        {'year': 2026, 'MARS': 'headhh', 'value': 89400},
+        {'year': 2026, 'MARS': 'widow', 'value': 139000},
     ],
     'AMT_em_ps': [
         {'year': 2023, 'MARS': 'single', 'value': 578150.0},
@@ -368,6 +433,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 626350.0},
         {'year': 2025, 'MARS': 'headhh', 'value': 626350.0},
         {'year': 2025, 'MARS': 'widow', 'value': 1252700.0},
+
+        {'year': 2026, 'MARS': 'single', 'value': 500000},
+        {'year': 2026, 'MARS': 'mjoint', 'value': 1000000},
+        {'year': 2026, 'MARS': 'mseparate', 'value': 500000},
+        {'year': 2026, 'MARS': 'headhh', 'value': 500000},
+        {'year': 2026, 'MARS': 'widow', 'value': 1000000},
     ],
     'AMT_em_pe': [
         {"year": 2023, "value": 831150.0},
@@ -375,6 +446,8 @@ NEW_KNOWN_ITEMS = {
         {"year": 2024, "value": 875950.0},
 
         {"year": 2025, "value": 900350.0},
+
+        {'year': 2026, 'value': 639200},
     ],
     'AMT_child_em': [
         {'year': 2023, 'value': 8800.0},
@@ -396,11 +469,11 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'headhh', 'value': 21900.0},
         {'year': 2024, 'MARS': 'widow', 'value': 29200.0},
 
-        {'year': 2025, 'MARS': 'single', 'value': 15000.0},
-        {'year': 2025, 'MARS': 'mjoint', 'value': 30000.0},
-        {'year': 2025, 'MARS': 'mseparate', 'value': 15000.0},
-        {'year': 2025, 'MARS': 'headhh', 'value': 22500.0},
-        {'year': 2025, 'MARS': 'widow', 'value': 30000.0},
+        {'year': 2025, 'MARS': 'single', 'value': 15750},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 31500},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 15750},
+        {'year': 2025, 'MARS': 'headhh', 'value': 23625},
+        {'year': 2025, 'MARS': 'widow', 'value': 31500},
     ],
     'STD_Dep': [
         {'year': 2023, 'value': 1250.0},
@@ -446,6 +519,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 197300.0},
         {'year': 2025, 'MARS': 'headhh', 'value': 197300.0},
         {'year': 2025, 'MARS': 'widow', 'value': 197300.0},
+
+        {'year': 2026, 'MARS': 'single', 'value': 200300},
+        {'year': 2026, 'MARS': 'mjoint', 'value': 400600},
+        {'year': 2026, 'MARS': 'mseparate', 'value': 200300},
+        {'year': 2026, 'MARS': 'headhh', 'value': 200300},
+        {'year': 2026, 'MARS': 'widow', 'value': 400600},
     ],
     'ALD_BusinessLosses_c': [
         {'year': 2023, 'MARS': 'single', 'value': 289000.0},
@@ -460,11 +539,11 @@ NEW_KNOWN_ITEMS = {
         {'year': 2024, 'MARS': 'headhh', 'value': 305000.0},
         {'year': 2024, 'MARS': 'widow', 'value': 610000.0},
 
-        {'year': 2025, 'MARS': 'single', 'value': 313000.0},
-        {'year': 2025, 'MARS': 'mjoint', 'value': 626000.0},
-        {'year': 2025, 'MARS': 'mseparate', 'value': 313000.0},
-        {'year': 2025, 'MARS': 'headhh', 'value': 313000.0},
-        {'year': 2025, 'MARS': 'widow', 'value': 626000.0},
+        {'year': 2025, 'MARS': 'single', 'value': 313000},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 626000},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 313000},
+        {'year': 2025, 'MARS': 'headhh', 'value': 313000},
+        {'year': 2025, 'MARS': 'widow', 'value': 626000},
     ],
     'FST_AGI_thd_lo': [  # not part of current-law policy, but needs to be here
         {'year': 2023, 'MARS': 'single', 'value': 1000000.0},
@@ -508,11 +587,11 @@ NEW_KNOWN_ITEMS = {
 
         # each year's values are the same as for the prior year
     ],
-    # ITEMS NOT PART OF CURRENT-LAW POLICY IN 2022-2025 PERIOD:
+    # OTHER PARAMS WITH UNCHANGING VALUES:
     'ALD_Dependents_Child_c': LIST_SCALAR_ZERO,
     'ALD_Dependents_Elder_c': LIST_SCALAR_ZERO,
-    'II_em': LIST_SCALAR_ZERO,
-    'II_em_ps': LIST_MARS_INF,
+    'II_em': LIST_SCALAR_ZERO + SCALAR_ZERO_2026,
+    'II_em_ps': LIST_MARS_INF + MARS_INF_2026,
     'II_credit': LIST_MARS_ZERO,
     'II_credit_ps': LIST_MARS_ZERO,
     'II_credit_nr': LIST_MARS_ZERO,
@@ -524,7 +603,7 @@ NEW_KNOWN_ITEMS = {
     'ID_Charity_c': LIST_MARS_INF,
     'ID_Casualty_c': LIST_MARS_INF,
     'ID_Miscellaneous_c': LIST_MARS_INF,
-    'ID_ps': LIST_MARS_INF,
+    'ID_ps': LIST_MARS_INF + MARS_INF_2026,
     'ID_c': LIST_MARS_INF,
     'CG_ec': LIST_SCALAR_ZERO,
     'PT_qbid_ps': LIST_MARS_INF,
@@ -539,73 +618,42 @@ for num in range(1, 3 + 1):
     NEW_KNOWN_ITEMS[f'AMT_CG_brk{num}'] = NEW_KNOWN_ITEMS[f'CG_brk{num}']
 
 
-CHECK_FOR_MISSING = False
-
-
-def check_for_missing(pdict):
-    """
-    Prints to sdtout indexed parameters with missing values in or before 2022.
-    """
-    first_year = 2013
-    last_known_year = 2022
-    for pname, pinfo in pdict.items():
-        if pname == 'schema':
-            continue
-        if not pinfo['indexed']:
-            continue
-        years_used = []
-        plist = pinfo['value']
-        for item in plist:
-            year = item['year']
-            if year <= last_known_year:
-                if year not in years_used:
-                    years_used.append(year)
-        for year in range(first_year, last_known_year + 1):
-            if year not in years_used:
-                print(f'MISSING INDEXED VALUE FOR {pname} IN {year}')
-
-
 def main():
     """
     High-level script logic.
     """
-    # read existing policy_current_law.json into a Python dictionary
+    # read existing policy_current_law.json into pdict dictionary
     fname = os.path.join('taxcalc', 'policy_current_law.json')
     with open(fname, 'r', encoding='utf-8') as jfile:
         pdict = json.load(jfile)
 
-    # optionally check for missing indexed parameters in years <= 2022
-    if CHECK_FOR_MISSING:
-        check_for_missing(pdict)
-        return 1
-
-    # add parameter values to dictionary
+    # update indexed parameter values in pdict dictionary using NEW_KNOWN_ITEMS
+    num_indexed_params = 0
     for pname, pinfo in pdict.items():
         if pname == 'schema':
             continue
-        if not pinfo['indexed']:
+        if not pinfo.get('indexed', False):
             continue
+        num_indexed_params += 1
         if pname not in NEW_KNOWN_ITEMS:
-            print(f'NO NEW_KNOWN_ITEMS FOR {pname}')
+            print(f'NO NEW_KNOWN_ITEMS FOR INDEXED PARAMETER {pname}')
             continue
+        # specify plist as policy_current_law.json value list
         plist = pdict[pname]['value']
-        # ... see if adding values before existing plist items for 2026
-        bindex = None
-        for itm in plist:
-            if itm['year'] == 2026:
-                bindex = plist.index(itm)
-                break
-        # ... add new items to plist for this pname
-        for item in NEW_KNOWN_ITEMS[pname]:
-            if item in plist:
-                continue
-            if bindex:
-                plist.insert(bindex, item)
-                bindex += 1
+        # specify new list and its first_new_year in NEW_KNOWN_ITEMS
+        newlist = NEW_KNOWN_ITEMS[pname]
+        first_new_year = newlist[0]['year']
+        # remove plist items for years no less than first_new_year
+        while True:
+            if plist[-1]['year'] >= first_new_year:
+                del plist[-1]
             else:
-                plist.append(item)
+                break  # out of while loop
+        # add newlist to end of plist
+        pdict[pname]['value'] = plist + newlist
+    print('NUMBER OF INDEXED PARAMETERS =', num_indexed_params)
 
-    # write updated dictionary to pcl.json file
+    # write updated pdict dictionary to pcl.json file
     with open('pcl.json', 'w', encoding='utf-8') as jfile:
         jfile.write(json.dumps(pdict, indent=4) + '\n')
 
