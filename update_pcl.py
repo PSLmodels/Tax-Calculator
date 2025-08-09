@@ -9,6 +9,9 @@ IF DIFFS OK:            % mv pcl.json taxcalc/policy_current_law.json
 WHEN TO USE: use this script to update taxcalc/policy_current_law.json
 whenever inflation rates in the growfactors.csv files are changed, or
 whenever new known policy parameter values are published.
+
+IMPORTANT NOTE: when adding 2026 indexed parameter values, be sure to
+handle the *_2026 LISTS below.
 """
 
 import os
@@ -620,7 +623,7 @@ NEW_KNOWN_ITEMS = {
 
         # each year's values are the same as for the prior year
     ],
-    # OTHER PARAMS WITH UNCHANGING VALUES:
+    # OTHER PARAMS THAT ARE NOT INDEXED:
     'ALD_Dependents_Child_c': LIST_SCALAR_ZERO,
     'ALD_Dependents_Elder_c': LIST_SCALAR_ZERO,
     'II_em': LIST_SCALAR_ZERO + SCALAR_ZERO_2026,
