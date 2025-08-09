@@ -441,11 +441,11 @@ NEW_KNOWN_ITEMS = {
         {'year': 2026, 'MARS': 'widow', 'value': 1000000},
     ],
     'AMT_em_pe': [
-        {"year": 2023, "value": 831150.0},
+        {'year': 2023, 'value': 831150.0},
 
-        {"year": 2024, "value": 875950.0},
+        {'year': 2024, 'value': 875950.0},
 
-        {"year": 2025, "value": 900350.0},
+        {'year': 2025, 'value': 900350.0},
 
         {'year': 2026, 'value': 639200},
     ],
@@ -501,6 +501,19 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'headhh', 'value': 2000.0},
         {'year': 2025, 'MARS': 'widow', 'value': 1600.0},
     ],
+    'ID_AllTaxes_c_ps': [
+        {'year': 2025, 'MARS': 'single', 'value': 500000},
+        {'year': 2025, 'MARS': 'mjoint', 'value': 500000},
+        {'year': 2025, 'MARS': 'mseparate', 'value': 250000},
+        {'year': 2025, 'MARS': 'headhh', 'value': 500000},
+        {'year': 2025, 'MARS': 'widow', 'value': 500000},
+
+        {'year': 2030, 'MARS': 'single', 'value': 9e+99},
+        {'year': 2030, 'MARS': 'mjoint', 'value': 9e+99},
+        {'year': 2030, 'MARS': 'mseparate', 'value': 9e+99},
+        {'year': 2030, 'MARS': 'headhh', 'value': 9e+99},
+        {'year': 2030, 'MARS': 'widow', 'value': 9e+99},
+    ],
     'PT_qbid_taxinc_thd': [
         {'year': 2023, 'MARS': 'single', 'value': 182100.0},
         {'year': 2023, 'MARS': 'mjoint', 'value': 364200.0},
@@ -526,6 +539,12 @@ NEW_KNOWN_ITEMS = {
         {'year': 2026, 'MARS': 'headhh', 'value': 200300},
         {'year': 2026, 'MARS': 'widow', 'value': 400600},
     ],
+    'PT_qbid_min_ded': [
+        {'year': 2026, 'value': 400},
+    ],
+    'PT_qbid_min_qbi': [
+        {'year': 2026, 'value': 1000},
+    ],
     'ALD_BusinessLosses_c': [
         {'year': 2023, 'MARS': 'single', 'value': 289000.0},
         {'year': 2023, 'MARS': 'mjoint', 'value': 578000.0},
@@ -544,6 +563,20 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'MARS': 'mseparate', 'value': 313000},
         {'year': 2025, 'MARS': 'headhh', 'value': 313000},
         {'year': 2025, 'MARS': 'widow', 'value': 626000},
+    ],
+    'CTC_c': [
+        {'year': 2023, 'value': 2000.0},
+
+        {'year': 2024, 'value': 2000.0},
+
+        {'year': 2025, 'value': 2200},
+    ],
+    'ACTC_c': [
+        {'year': 2023, 'value': 1600.0},
+
+        {'year': 2024, 'value': 1700.0},
+
+        {'year': 2025, 'value': 1700},
     ],
     'FST_AGI_thd_lo': [  # not part of current-law policy, but needs to be here
         {'year': 2023, 'MARS': 'single', 'value': 1000000.0},
