@@ -74,7 +74,7 @@ def test_2017_law_reform(tests_path):
 
 
 @pytest.mark.rtr
-@pytest.mark.parametrize('fyear', [2019, 2020, 2021, 2022, 2023])
+@pytest.mark.parametrize('fyear', [2019, 2020, 2021, 2022, 2023, 2024, 2025])
 def test_round_trip_reforms(fyear, tests_path):
     """
     Check that current-law policy has the same policy parameter values in
@@ -83,7 +83,7 @@ def test_round_trip_reforms(fyear, tests_path):
     reforms that represents new tax legislation since 2017.
     This test checks that the future-year parameter values for
     current-law policy (which incorporates recent legislation such as
-    the TCJA, CARES Act, and ARPA) are the same as future-year
+    the TCJA, CARES Act, ARPA, and OBBBA) are the same as future-year
     parameter values for the compound round-trip reform.
     Doing this check ensures that the 2017_law.json
     and subsequent reform files that represent recent legislation are
@@ -132,7 +132,14 @@ def test_round_trip_reforms(fyear, tests_path):
     rtr_pol.implement_reform(Policy.read_json_reform(rtext))
     assert not rtr_pol.parameter_errors
     assert not rtr_pol.errors
-    # Layer on rounding from IRS through Policy.LAST_KNOWN_YEAR
+    # Layer on OBBBA
+    reform_file = os.path.join(tests_path, '..', 'reforms', 'OBBBA.json')
+    with open(reform_file, 'r', encoding='utf-8') as rfile:
+        rtext = rfile.read()
+    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
+    assert not rtr_pol.parameter_errors
+    assert not rtr_pol.errors
+    # Layer on rounding from IRS through 2025
     reform_file = os.path.join(tests_path, '..', 'reforms', 'rounding.json')
     with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
@@ -158,7 +165,7 @@ def test_round_trip_reforms(fyear, tests_path):
         clp_val = clp_mdata[pname]
         if not np.allclose(rtr_val, clp_val):
             fail_params.append(pname)
-            msg += '\n  {pname} in {fyear} : rtr={rtr_val} clp={clp_val}'
+            msg += f'\n  {pname} in {fyear} : rtr={rtr_val} clp={clp_val}'
             if fail_dump:
                 rtr_fails.write(f'{pname} {fyear} {rtr_val}\n')
                 clp_fails.write(f'{pname} {fyear} {clp_val}\n')
