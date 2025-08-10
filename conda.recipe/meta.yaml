@@ -8,7 +8,7 @@ build:
 
 requirements:
   build:
-    - "python>=3.10, <3.13"
+    - "python>=3.11, <3.14"
     - "numpy>=1.26"
     - "pandas>=2.2"
     - "bokeh>=3.7"
@@ -19,7 +19,7 @@ requirements:
     - behresp
 
   run:
-    - "python>=3.10, <3.13"
+    - "python>=3.11, <3.14"
     - "numpy>=1.26"
     - "pandas>=2.2"
     - "bokeh>=3.7"
