@@ -24,6 +24,7 @@ from taxcalc.calculator import Calculator
 
 
 START_YEAR = 2017
+NUM_YEARS = 19
 
 
 @pytest.mark.pufcsv_agg
@@ -34,7 +35,7 @@ def test_agg(tests_path, puf_fullsample):
     the full-sample puf.csv and a small sub-sample of puf.csv
     """
     # pylint: disable=too-many-locals,too-many-statements
-    nyrs = 10
+    nyrs = NUM_YEARS
     # create a baseline Policy object with current-law policy parameters
     baseline_policy = Policy()
     # create a Records object (rec) containing all puf.csv input records

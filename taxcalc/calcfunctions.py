@@ -16,7 +16,6 @@ Note: the parameter_indexing_CPI_offset parameter is no longer used.
 # pylint: disable=too-many-locals
 
 import math
-import copy
 import numpy as np
 from taxcalc.decorators import iterate_jit, JIT
 
@@ -349,7 +348,12 @@ def Adj(e03150, e03210, c03260,
         ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
         ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
         ALD_DomesticProduction_hc, ALD_Tuition_hc,
-        c02900):
+        MARS, earned,
+        overtime_income, ALD_OvertimeIncome_hc, ALD_OvertimeIncome_c,
+        ALD_OvertimeIncome_ps, ALD_OvertimeIncome_prt,
+        tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
+        ALD_TipIncome_ps, ALD_TipIncome_prt,
+        c02900, ALD_OvertimeIncome, ALD_TipIncome):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
 
@@ -403,11 +407,40 @@ def Adj(e03150, e03210, c03260,
         Domestic production haircut
     ALD_Tuition_hc: float
         Tuition and fees haircut
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate,
+                               4=household-head, 5=widow(er))
+    earned: float
+        Earned income used to phase-out ALD_OvertimeIncome and ALD_TipIncome
+    overtime_income: float
+        Overtime income qualified for an above-the-line deduction
+    ALD_OvertimeIncome_hc: float
+        ALD_OvertimeIncome haircut
+    ALD_OvertimeIncome_c: list[float]
+        ALD_OvertimeIncome cap
+    ALD_OvertimeIncome_ps: list[float]
+        ALD_OvertimeIncome phase-out earned income start
+    ALD_OvertimeIncome_prt: float
+        ALD_OvertimeIncome phase-out rate
+    tip_income: float
+        Tip income qualified for an above-the-line deduction
+    ALD_TipIncome_hc: float
+        ALD_TipIncome haircut
+    ALD_TipIncome_c: list[float]
+        ALD_TipIncome cap
+    ALD_TipIncome_ps: list[float]
+        ALD_TipIncome phase-out earned income start
+    ALD_TipIncome_prt: float
+        ALD_TipIncome phase-out rate
 
     Returns
     -------
     c02900: float
         Total of all "above the line" income adjustments to get AGI
+    ALD_OvertimeIncome: float
+        Overtime ALD amount included in c02900
+    ALD_TipIncome: float
+        Tip ALD amount included in c02900
     """
     # Form 2555 foreign earned income exclusion is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
@@ -424,7 +457,29 @@ def Adj(e03150, e03210, c03260,
               (1. - ALD_IRAContributions_hc) * e03150 +
               (1. - ALD_KEOGH_SEP_hc) * e03300 +
               care_deduction)
-    return c02900
+    # calculate ALD_OvertimeIncome
+    ALD_OvertimeIncome = 0.
+    if overtime_income > 0. and ALD_OvertimeIncome_hc < 1.0:
+        ded = min(overtime_income, ALD_OvertimeIncome_c[MARS - 1])
+        po_start = ALD_OvertimeIncome_ps[MARS - 1]
+        if earned > po_start:
+            excess = earned - po_start
+            po_amount = excess * ALD_OvertimeIncome_prt
+            ded = max(0., ded - po_amount)
+        ALD_OvertimeIncome = ded
+    # calculate ALD_TipIncome
+    ALD_TipIncome = 0.
+    if tip_income > 0. and ALD_TipIncome_hc < 1.0:
+        ded = min(tip_income, ALD_TipIncome_c[MARS - 1])
+        po_start = ALD_TipIncome_ps[MARS - 1]
+        if earned > po_start:
+            excess = earned - po_start
+            po_amount = excess * ALD_TipIncome_prt
+            ded = max(0., ded - po_amount)
+        ALD_TipIncome = ded
+    # return results
+    c02900 += ALD_OvertimeIncome + ALD_TipIncome
+    return (c02900, ALD_OvertimeIncome, ALD_TipIncome)
 
 
 @iterate_jit(nopython=True)
@@ -698,7 +753,7 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 
 @iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
-        II_em, II_em_ps, II_prt, II_no_em_nu18,
+        II_em, II_em_ps, II_em_prt, II_no_em_nu18,
         e02300, UI_thd, UI_em, c00100, pre_c04600, c04600):
     """
     Computes Adjusted Gross Income (AGI), c00100, and
@@ -731,7 +786,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         Personal and dependent exemption amount
     II_em_ps: list
         Personal exemption phaseout starting income
-    II_prt: float
+    II_em_prt: float
         Personal exemption phaseout rate
     II_no_em_nu18: float
         Repeal personal exemptions for dependents under age 18
@@ -776,10 +831,10 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     if exact == 1:  # exact calculation as on tax forms
         line5 = max(0., c00100 - II_em_ps[MARS - 1])
         line6 = math.ceil(line5 / (2500. / sep))
-        line7 = II_prt * line6
+        line7 = II_em_prt * line6
         c04600 = max(0., pre_c04600 * (1. - line7))
     else:  # smoothed calculation needed for sensible mtr calculation
-        dispc_numer = II_prt * (c00100 - II_em_ps[MARS - 1])
+        dispc_numer = II_em_prt * (c00100 - II_em_ps[MARS - 1])
         dispc_denom = 2500. / sep
         dispc = min(1., max(0., dispc_numer / dispc_denom))
         c04600 = pre_c04600 * (1. - dispc)
@@ -787,19 +842,110 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
 
 
 @iterate_jit(nopython=True)
+def MiscDed(age_head, age_spouse, MARS, c00100, exact,
+            SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
+            auto_loan_interest,
+            AutoLoanInterestDed_c,
+            AutoLoanInterestDed_ps,
+            AutoLoanInterestDed_po_step_size,
+            AutoLoanInterestDed_po_rate_per_step,
+            senior_deduction, auto_loan_interest_deduction):
+    """
+    Calculates below-the-line deduction for elderly head/spouse and
+    deduction on qualified auto loan interest paid.
+
+    Parameters
+    ----------
+    age_head: int
+        Age of tax unit head
+    age_head: int
+        Age of tax unit spouse
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate,
+                               4=household-head, 5=widow(er))
+    c00100: float
+        Adjusted gross income
+    exact: int
+        Whether or not to smooth deduction phase out
+    SeniorDed_c: float
+        Maximum amount of senior deduction per head/spouse aged 65+
+    SeniorDed_ps: list[float]
+        Senior deduction AGI phase-out start level
+    SeniorDed_prt: float
+        Senior deduction phase-out rate
+    auto_loan_interest: float
+        Qualified auto loan interest paid
+    AutoLoanInterestDed_c: float
+        Deduction cap
+    AutoLoanInterestDed_ps: float
+        Deduction phase-out starts above this AGI
+    AutoLoanInterestDed_po_step_size: float
+        Deduction phase-out AGI step size
+    AutoLoanInterestDed_po_rate_per_step: float
+        Deduction phase-out rate per AGI step
+    auto_loan_interest_deduction: float
+        Deduction available to both itemizers and nonitemizers
+
+    Returns
+    -------
+    senior_deduction: float
+        Deduction available to both itemizers and nonitemizers
+    auto_loan_interest_deduction: float
+        Deduction available to both itemizers and nonitemizers
+    """
+    # calculate senior deduction
+    senior_deduction = 0.
+    if SeniorDed_c > 0.:
+        seniors = 0
+        if age_head >= 65:
+            seniors += 1
+        if MARS == 2 and age_spouse >= 65:
+            seniors += 1
+        if seniors > 0:
+            ded = seniors * SeniorDed_c
+            po_start = SeniorDed_ps[MARS - 1]
+            if c00100 > po_start:
+                excess_agi = c00100 - po_start
+                po_amount = excess_agi * SeniorDed_prt
+                ded = max(0., ded - po_amount)
+            senior_deduction = ded
+    # calculate auto loan interest deduction
+    auto_loan_interest_deduction = 0.
+    if AutoLoanInterestDed_c > 0. and auto_loan_interest > 0.:
+        # cap deduction
+        ded = min(auto_loan_interest, AutoLoanInterestDed_c)
+        po_start = AutoLoanInterestDed_ps[MARS - 1]
+        if c00100 > po_start:
+            # phase out deduction
+            excess_agi = c00100 - po_start
+            po_rate = AutoLoanInterestDed_po_rate_per_step
+            if exact == 1:  # exact calculation as on tax forms
+                step_size = AutoLoanInterestDed_po_step_size
+                steps = math.ceil(excess_agi / step_size)
+                po_amount = steps * step_size * po_rate
+            else:  # smoothed calculation needed for sensible mtr calculation
+                po_amount = excess_agi * po_rate
+            ded = max(0., ded - po_amount)
+        auto_loan_interest_deduction = ded
+    return (senior_deduction, auto_loan_interest_deduction)
+
+
+@iterate_jit(nopython=True)
 def ItemDed(e17500, e18400, e18500, e19200,
             e19800, e20100, e20400, g20500,
-            MARS, age_head, age_spouse, c00100, c04470, c21040, c21060,
-            c17000, c18300, c19200, c19700, c20500, c20800,
+            MARS, age_head, age_spouse, c00100, c04600, c04470, c21040, c21060,
+            c17000, c18300, c19200, c19700, c20500, c20800, II_brk6,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
-            ID_Miscellaneous_hc, ID_Charity_crt_cash, ID_Charity_crt_noncash,
+            ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
             ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
             ID_InterestPaid_c, ID_Charity_c, ID_Casualty_c,
             ID_Miscellaneous_c, ID_AllTaxes_c, ID_AllTaxes_hc,
-            ID_StateLocalTax_crt, ID_RealEstate_crt, ID_Charity_f):
+            ID_AllTaxes_c_ps, ID_AllTaxes_c_po_rate, ID_AllTaxes_c_po_floor,
+            ID_StateLocalTax_crt, ID_RealEstate_crt, ID_Charity_f,
+            ID_reduction_rate):
     """
     Calculates itemized deductions, Form 1040, Schedule A.
 
@@ -830,12 +976,14 @@ def ItemDed(e17500, e18400, e18500, e19200,
         Age in years of spouse
     c00100: float
         Adjusted gross income (AGI)
+    c04600: float
+        Personal exemptions after phase out
     c04470: float
-        Itemized deductions after phase out (0 for non itemizers)
+        Itemized deductions after all limitations (0 for non-itemizers)
     c21040: float
-        Itemized deductions that are phased out
+        Itemized deductions that are limited under the Pease limitations
     c21060: float
-        Itemized deductions before phase out (0 for non itemizers)
+        Itemized deductions before limitation (0 for non-itemizers)
     c17000: float
         Schedule A: medical expenses deducted
     c18300: float
@@ -848,6 +996,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
         Schedule A: net casualty or theft loss deducted
     c20800: float
         Schedule A: net limited miscellaneous deductions deducted
+    II_brk6: list
+        Bottom of top income tax rate bracket
     ID_ps: list
         Itemized deduction phaseout AGI start (Pease)
     ID_Medical_frt: float
@@ -866,8 +1016,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
         miscellaneous expenses
     ID_Miscellaneous_hc: float
         Miscellaneous expense deduction haircut
-    ID_Charity_crt_cash: float
-        Ceiling (as decimal fraction of AGI) for cash charitable
+    ID_Charity_crt_all: float
+        Ceiling (as decimal fraction of AGI) for all charitable
         contribution deductions
     ID_Charity_crt_noncash: float
         Ceiling (as decimal fraction of AGI) for noncash charitable
@@ -908,10 +1058,16 @@ def ItemDed(e17500, e18400, e18500, e19200,
         Ceiling on the amount of miscellaneous expense deduction
         allowed (dollars)
     ID_AllTaxes_c: list
-        Ceiling on the amount of state and local income, stales, and
+        Cap on the amount of state and local income, sales, and
         real estate deductions allowed (dollars)
     ID_AllTaxes_hc: float
         State and local income, sales, and real estate tax deduciton haircut
+    ID_AllTaxes_c_ps: float
+        AGI level above which ID_AllTaxes_c is reduced
+    ID_AllTaxes_c_po_rate: float
+        ID_AllTaxes_c reduction rate when AGI is above ID_AllTaxes_c_ps
+    ID_AllTaxes_c_po_floor: float
+        Floor below which ID_AllTaxes_c cannot be reduced
     ID_StateLocalTax_crt: float
         Ceiling (as decimal fraction of AGI) for the combination of all
         state and local income and sales tax deductions
@@ -920,6 +1076,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
         state, local, and foreign real estate tax deductions
     ID_Charity_f: list
         Floor on the amount of charity expense deduction allowed (dollars)
+    ID_reduction_rate: float
+        OBBBA reduction rate for all itemized deductions
 
     Returns
     -------
@@ -936,12 +1094,13 @@ def ItemDed(e17500, e18400, e18500, e19200,
     c20800: float
         Schedule A: net limited miscellaneous deductions deducted
     c21040: float
-        Itemized deductions that are phased out
+        Itemized deductions that are phased out under Pease limitation
     c21060: float
-        Itemized deductions before phase out (0 for non itemizers)
+        Itemized deductions before any limitation (0 for non-itemizers)
     c04470: float
-        Itemized deductions after phase out (0 for non itemizers)
+        Itemized deductions after all limitations (0 for non-itemizers)
     """
+    # pylint: disable=too-many-statements
     posagi = max(c00100, 0.)
     # Medical
     medical_frt = ID_Medical_frt
@@ -961,17 +1120,23 @@ def ItemDed(e17500, e18400, e18500, e19200,
     c18400 = min(c18400, ID_StateLocalTax_crt * max(c00100, 0.0001))
     c18500 = min(c18500, ID_RealEstate_crt * max(c00100, 0.0001))
     c18300 = (c18400 + c18500) * (1. - ID_AllTaxes_hc)
-    c18300 = min(c18300, ID_AllTaxes_c[MARS - 1])
+    cap = ID_AllTaxes_c[MARS - 1]
+    if posagi > ID_AllTaxes_c_ps[MARS - 1]:
+        excess_agi = posagi - ID_AllTaxes_c_ps[MARS - 1]
+        cap = max(0., cap - excess_agi * ID_AllTaxes_c_po_rate)
+        cap = max(cap, ID_AllTaxes_c_po_floor[MARS - 1])
+    c18300 = min(c18300, cap)
     # Interest paid
     c19200 = e19200 * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
     # Charity
-    charity_ded_cash = min(ID_Charity_crt_cash * posagi, e19800)
-    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, e20100)
-    c19700 = charity_ded_cash + charity_ded_noncash
-    # charity floor is zero in present law
-    charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
-    c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
+    floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
+    noncash_ded = max(0., e20100 - floor)
+    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, noncash_ded)
+    remaining_floor = max(0., floor - e20100)
+    charity_ded_cash = max(0., e19800 - remaining_floor)
+    c19700 = charity_ded_noncash + charity_ded_cash
+    c19700 = min(c19700, ID_Charity_crt_all * posagi) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # Casualty
     c20500 = (max(0., g20500 - ID_Casualty_frt * posagi) *
@@ -984,8 +1149,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
     c20800 = min(c20800, ID_Miscellaneous_c[MARS - 1])
     # Gross total itemized deductions
     c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
-    # Limitations on total itemized deductions
-    # (no attempt to adjust c04470 components for limitations)
+    # Pease limitation on total itemized deductions
+    # (no attempt to adjust c04470 components for limitation)
     nonlimited = c17000 + c20500
     limitstart = ID_ps[MARS - 1]
     if c21060 > nonlimited and c00100 > limitstart:
@@ -996,8 +1161,19 @@ def ItemDed(e17500, e18400, e18500, e19200,
     else:
         c21040 = 0.
         c04470 = c21060
+    # OBBBA limitation on total itemized deductions
+    # (no attempt to adjust c04470 components for limitation)
+    reduction = 0.
+    if ID_reduction_rate > 0.:
+        assert c21040 <= 0.0, "Pease and OBBBA cannot both be in effect"
+        tincome = max(0., c00100 - c04600)
+        texcess = max(0., tincome - II_brk6[MARS - 1])
+        reduction = ID_reduction_rate * texcess
+    c04470 = max(0., c04470 - reduction)
+    # Cap total itemized deductions
+    # (no attempt to adjust c04470 components for limitation)
     c04470 = min(c04470, ID_c[MARS - 1])
-    # Return total itemized deduction amounts and components
+    # Return total itemized deduction amounts and pre-limitation components
     return (c17000, c18300, c19200, c19700, c20500, c20800,
             c21040, c21060, c04470)
 
@@ -1053,7 +1229,7 @@ def AdditionalMedicareTax(e00200, MARS,
 @iterate_jit(nopython=True)
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            MARS, MIDR, blind_head, blind_spouse, standard,
-           STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_cash,
+           STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_all,
            c00100, STD_charity_ded_nonitemizers_max):
     """
     Calculates standard deduction, including standard deduction for
@@ -1091,8 +1267,8 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         deduction
     e19800: float
         Schedule A: cash charitable contributions
-    ID_Charity_crt_cash: float
-        Fraction of AGI cap on cash charitable deductions
+    ID_Charity_crt_all: float
+        Fraction of AGI cap on all charitable deductions
     c00100: float
         Federal AGI
     STD_charity_ded_nonitemizers_max: float
@@ -1126,18 +1302,21 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         standard = 0.
     # calculate CARES cash charity deduction for nonitemizers
     if STD_allow_charity_ded_nonitemizers:
-        capped_ded = min(e19800, ID_Charity_crt_cash * c00100)
+        capped_ded = min(e19800, ID_Charity_crt_all * c00100)
         standard += min(capped_ded, STD_charity_ded_nonitemizers_max[MARS - 1])
     return standard
 
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
-           e02100, e27200, e00650, c01000, PT_SSTB_income,
-           PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
+           e02100, e27200, e00650, c01000,
+           senior_deduction, auto_loan_interest_deduction,
+           PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
+           PT_qbid_rt, PT_qbid_limited,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
-           PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
-           PT_qbid_ps, PT_qbid_prt, qbided):
+           PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
+           PT_qbid_ps, PT_qbid_prt, PT_qbid_min_ded, PT_qbid_min_qbi,
+           c04800, qbided):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
@@ -1169,6 +1348,10 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         Qualified dividends included in ordinary dividends
     c01000: float
         Limitation on capital losses
+    senior_deduction: float
+        Deduction for elderly head/spouse
+    auto_loan_interest_deduction: float
+        Deduction for qualified auto loan interest paid
     PT_SSTB_income: int
         Value of one implies business income is from a specified service
           trade or business (SSTB)
@@ -1182,6 +1365,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         pass-through business
     PT_qbid_rt: float
         Pass-through qualified business income deduction rate
+    PT_qbid_limited: bool
+        Whether or not TCJA QBID limits are active
     PT_qbid_taxinc_thd: list
         Lower threshold of pre-QBID taxable income
     PT_qbid_taxinc_gap: list
@@ -1192,12 +1377,16 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         Alternative QBID cap rate on pass-through business W-2 wages paid
     PT_qbid_alt_property_rt: float
         Alternative QBID cap rate on pass-through business property owned
-    c04800: float
-        Regular taxable income
     PT_qbid_ps: list
         QBID phaseout taxable income start
     PT_qbid_prt: float
         QBID phaseout rate
+    PT_qbid_min_ded: float
+        Minimum QBID amount
+    PT_qbid_min_qbi: float
+        Minimum QBI necessary to get QBID no less than PT_qbid_min_ded
+    c04800: float
+        Regular taxable income
     qbided: float
         Qualified Business Income (QBI) deduction
 
@@ -1208,13 +1397,14 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     qbided: float
         Qualified Business Income (QBI) deduction
     """
-    # calculate taxable income before qualified business income deduction
-    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
+    # calculate taxable income before qualified business income deduction,
+    # which is assumed to be stacked last in the list of deductions
+    odeds = senior_deduction + auto_loan_interest_deduction
+    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600 - odeds)
     # calculate qualified business income deduction
-    qbided = 0.
     qbinc = max(0., e00900 - c03260 + e26270 + e02100 + e27200)
-    if qbinc > 0. and PT_qbid_rt > 0.:
-        qbid_before_limits = qbinc * PT_qbid_rt
+    qbid_before_limits = qbinc * PT_qbid_rt
+    if PT_qbid_limited:
         lower_thd = PT_qbid_taxinc_thd[MARS - 1]
         if pre_qbid_taxinc <= lower_thd:
             qbided = qbid_before_limits
@@ -1244,18 +1434,22 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
                     prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
                     adj = prt * (qbid_adjusted - cap_adjusted)
                     qbided = qbid_adjusted - adj
-
         # apply taxinc cap (assuming cap rate is equal to PT_qbid_rt)
-        net_cg = e00650 + c01000  # per line 34 in 2018 Pub 535 Worksheet 12-A
+        #   net_cg is defined on line 34 of 2018 Pub 535 Worksheet 12-A
+        net_cg = e00650 + c01000
         taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
         qbided = min(qbided, taxinc_cap)
-
         # apply qbid phaseout
         if qbided > 0. and pre_qbid_taxinc > PT_qbid_ps[MARS - 1]:
             excess = pre_qbid_taxinc - PT_qbid_ps[MARS - 1]
             qbided = max(0., qbided - PT_qbid_prt * excess)
+    else:  # if PT_qbid_limited is false
+        qbided = qbid_before_limits
+    # apply minimum QBID logic
+    if qbinc >= PT_qbid_min_qbi and qbided < PT_qbid_min_ded:
+        qbided = PT_qbid_min_ded
 
-    # calculate taxable income after qualified business income deduction
+    # calculate taxable income after qbided
     c04800 = max(0., pre_qbid_taxinc - qbided)
     return (c04800, qbided)
 
@@ -1267,75 +1461,85 @@ def SchXYZ(taxable_income, MARS,
            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
            II_brk6, II_brk7):
     """
-    Returns Schedule X, Y, Z tax amount for specified taxable_income.
+    Taxes function returns tax amount given the progressive tax rate
+    schedule specified by the II_rt? and (upper) II_brk? parameters and
+    given taxable income and filing status (MARS).
 
     Parameters
     ----------
     taxable_income: float
-        Taxable income
+        Regular taxable income
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
-    e00900: float
-        Schedule C business net profit/loss for filing unit
-    e26270: float
-        Schedule E: combined partnership and S-corporation net income/loss
-    e02000: float
-        Schedule E total rental, royalty, parternship, S-corporation,
-        etc, income/loss
-    e00200: float
-        Wages, salaries, and tips for filing unit net of pension contributions
     II_rt1: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 1
+        Personal income (regular/non-AMT) tax rate 1
     II_rt2: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 2
+        Personal income (regular/non-AMT) tax rate 2
     II_rt3: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 3
+        Personal income (regular/non-AMT) tax rate 3
     II_rt4: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 4
+        Personal income (regular/non-AMT) tax rate 4
     II_rt5: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 5
+        Personal income (regular/non-AMT) tax rate 5
     II_rt6: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 6
+        Personal income (regular/non-AMT) tax rate 6
     II_rt7: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 7
+        Personal income (regular/non-AMT) tax rate 7
     II_rt8: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 8
+        Personal income (regular/non-AMT) tax rate 8
     II_brk1: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 1
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 1
     II_brk2: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 2
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 2
     II_brk3: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 3
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 3
     II_brk4: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 4
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 4
     II_brk5: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 5
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 5
     II_brk6: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 6
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 6
     II_brk7: list
-        Personal income (regular/non-AMT/non-pass/through)
-        tax bracket (upper threshold) 7
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 7
 
     Returns
     -------
-    reg_tax: float
-        Individual income tax liability on all taxable income
+    Regular individual income tax liability on all taxable income
     """
-    # compute Schedule X,Y,Z tax using taxable income
-    reg_tax = 0.
-    if taxable_income > 0.:
-        reg_tax = Taxes(taxable_income, MARS, 0.0,
-                        II_rt1, II_rt2, II_rt3, II_rt4,
-                        II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    return reg_tax
+    # pylint: disable=too-many-return-statements
+    if taxable_income <= 0.:
+        return 0.
+    tax = 0.
+    brk0 = 0.
+    brk1 = II_brk1[MARS - 1]
+    if taxable_income <= brk1:
+        return tax + II_rt1 * (taxable_income - brk0)
+    tax = tax + II_rt1 * (brk1 - brk0)
+    brk2 = II_brk2[MARS - 1]
+    if taxable_income <= brk2:
+        return tax + II_rt2 * (taxable_income - brk1)
+    tax = tax + II_rt2 * (brk2 - brk1)
+    brk3 = II_brk3[MARS - 1]
+    if taxable_income <= brk3:
+        return tax + II_rt3 * (taxable_income - brk2)
+    tax = tax + II_rt3 * (brk3 - brk2)
+    brk4 = II_brk4[MARS - 1]
+    if taxable_income <= brk4:
+        return tax + II_rt4 * (taxable_income - brk3)
+    tax = tax + II_rt4 * (brk4 - brk3)
+    brk5 = II_brk5[MARS - 1]
+    if taxable_income <= brk5:
+        return tax + II_rt5 * (taxable_income - brk4)
+    tax = tax + II_rt5 * (brk5 - brk4)
+    brk6 = II_brk6[MARS - 1]
+    if taxable_income <= brk6:
+        return tax + II_rt6 * (taxable_income - brk5)
+    tax = tax + II_rt6 * (brk6 - brk5)
+    brk7 = II_brk7[MARS - 1]
+    if taxable_income <= brk7:
+        return tax + II_rt7 * (taxable_income - brk6)
+    return tax + II_rt8 * (taxable_income - brk7)
 
 
 @iterate_jit(nopython=True)
@@ -1355,41 +1559,41 @@ def SchXYZTax(c04800, MARS,
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     II_rt1: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 1
+        Personal income (regular/non-AMT) tax rate 1
     II_rt2: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 2
+        Personal income (regular/non-AMT) tax rate 2
     II_rt3: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 3
+        Personal income (regular/non-AMT) tax rate 3
     II_rt4: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 4
+        Personal income (regular/non-AMT) tax rate 4
     II_rt5: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 5
+        Personal income (regular/non-AMT) tax rate 5
     II_rt6: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 6
+        Personal income (regular/non-AMT) tax rate 6
     II_rt7: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 7
+        Personal income (regular/non-AMT) tax rate 7
     II_rt8: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 8
+        Personal income (regular/non-AMT) tax rate 8
     II_brk1: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 1
     II_brk2: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 2
     II_brk3: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 3
     II_brk4: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 4
     II_brk5: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 5
     II_brk6: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 6
     II_brk7: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 7
     c05200: float
         Tax amount from Schedule X,Y,Z tables
@@ -1399,11 +1603,11 @@ def SchXYZTax(c04800, MARS,
     c05200: float
         Tax amount from Schedule X, Y, Z tables
     """
-    c05200 = SchXYZ(c04800, MARS,
-                    II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                    II_rt6, II_rt7, II_rt8,
-                    II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                    II_brk6, II_brk7)
+    c05200 = SchXYZ(
+        c04800, MARS,
+        II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
+        II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7
+    )
     return c05200
 
 
@@ -1434,8 +1638,6 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         Capital gains distributions not reported on Schedule D
     e58990: float
         Investment income elected amount from Form 4952
-    e00200: float
-        Wages, salaries, and tips for filing unit net of pension contributions
     e24515: float
         Schedule D: un-recaptured section 1250 Gain
     e24518: float
@@ -1447,49 +1649,42 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         Regular taxable income
     c05200: float
         Tax amount from Schedule X,Y,Z tables
-    e00900: float
-        Schedule C business net profit/loss for filing unit
-    e26270: float
-        Schedule E: combined partnership and S-corporation net income/loss
-    e02000: float
-        Schedule E total rental, royalty, partnership, S-corporation,
-        etc, income/loss
     II_rt1: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 1
+        Personal income (regular/non-AMT) tax rate 1
     II_rt2: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 2
+        Personal income (regular/non-AMT) tax rate 2
     II_rt3: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 3
+        Personal income (regular/non-AMT) tax rate 3
     II_rt4: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 4
+        Personal income (regular/non-AMT) tax rate 4
     II_rt5: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 5
+        Personal income (regular/non-AMT) tax rate 5
     II_rt6: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 6
+        Personal income (regular/non-AMT) tax rate 6
     II_rt7: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 7
+        Personal income (regular/non-AMT) tax rate 7
     II_rt8: float
-        Personal income (regular/non-AMT/non-pass-through) tax rate 8
+        Personal income (regular/non-AMT) tax rate 8
     II_brk1: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 1
     II_brk2: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 2
     II_brk3: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 3
     II_brk4: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 4
     II_brk5: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 5
     II_brk6: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 6
     II_brk7: list
-        Personal income (regular/non-AMT/non-pass/through)
+        Personal income (regular/non-AMT)
         tax bracket (upper threshold) 7
     CG_nodiff: bool
         Long term capital gains and qualified dividends taxed no differently
@@ -1705,7 +1900,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     taxbc: float
         Regular tax on regular taxable income before credits
     c04470: float
-        Itemized deductions after phase-out (zero for non itemizers)
+        Itemized deductions after phase-out (zero for non-itemizers)
     c17000: float
         Schedule A: Medical expenses deducted
     c20800: float
@@ -1918,9 +2113,10 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
 
 
 @iterate_jit(nopython=True)
-def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
-          exact, c00100, CDCC_ps, CDCC_ps2, CDCC_crt, CDCC_frt,
-          CDCC_po_step_size, CDCC_po_rate_per_step, CDCC_refundable,
+def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
+          CDCC_ps1, CDCC_ps2, CDCC_po1_rate_max, CDCC_po1_rate_min,
+          CDCC_po2_rate_min, CDCC_po1_step_size, CDCC_po2_step_size,
+          CDCC_po_rate_per_step, CDCC_refundable,
           c05800, e07300, c32800, c07180, CDCC_refund):
     """
     Calculates Form 2441 child and dependent care expense credit, c07180.
@@ -1944,16 +2140,20 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         Whether or not to do rounding of phaseout fraction
     c00100: float
         Adjusted Gross Income (AGI)
-    CDCC_ps: float
+    CDCC_ps1: float
         Child/dependent care credit first phaseout start
-    CDCC_ps2: float
+    CDCC_ps2: list[float]
         Child/dependent care credit second phaseout start
-    CDCC_crt: float
-        Child/dependent care credit phaseout rate ceiling
-    CDCC_frt: float
-        Child/dependent care credit phaseout rate floor
-    CDCC_po_step_size: float
-        Child/dependent care credit phaseout AGI step size
+    CDCC_po1_rate_max: float
+        Child/dependent care credit first phaseout rate maximum
+    CDCC_po1_rate_min: float
+        Child/dependent care credit first phaseout rate minimum
+    CDCC_po2_rate_min: float
+        Child/dependent care credit second phaseout rate minimum
+    CDCC_po1_step_size: float
+        Child/dependent care credit first phaseout AGI step size
+    CDCC_po2_step_size: float
+        Child/dependent care credit second phaseout AGI step size
     CDCC_po_rate_per_step: float
         Child/dependent care credit phaseout rate per step size
     CDCC_refundable: bool
@@ -1987,21 +2187,32 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         c32890 = earned_p
     c33000 = max(0., min(c32800, c32880, c32890))
     # credit rate is limited at high AGI
-    # ... first phase-down from CDCC_crt to CDCC_frt
-    steps_fractional = max(0., c00100 - CDCC_ps) / CDCC_po_step_size
-    if exact == 1:  # exact calculation as on tax forms
-        steps = math.ceil(steps_fractional)
-    else:
-        steps = steps_fractional
-    crate = max(CDCC_frt, CDCC_crt - steps * CDCC_po_rate_per_step)
-    # ... second phase-down from CDCC_frt to zero
-    if c00100 > CDCC_ps2:
-        steps_fractional = (c00100 - CDCC_ps2) / CDCC_po_step_size
+    crate = CDCC_po1_rate_max
+    ps1 = CDCC_ps1
+    if c00100 > ps1:
+        # ... first phase-down from CDCC_po1_rate_max to CDCC_po1_rate_min
+        steps_fractional = (c00100 - ps1) / CDCC_po1_step_size
         if exact == 1:  # exact calculation as on tax forms
             steps = math.ceil(steps_fractional)
         else:
             steps = steps_fractional
-        crate = max(0., CDCC_frt - steps * CDCC_po_rate_per_step)
+        crate = max(
+            CDCC_po1_rate_min,
+            CDCC_po1_rate_max - steps * CDCC_po_rate_per_step
+        )
+        # ... second phase-down from CDCC_po1_rate_min to CDCC_po2_rate_min
+        ps2 = CDCC_ps2[MARS - 1]
+        assert ps2 >= ps1, "CDCC_ps2 must be no less than CDCC_ps1"
+        if c00100 > ps2:
+            steps_fractional = (c00100 - ps2) / CDCC_po2_step_size[MARS - 1]
+            if exact == 1:  # exact calculation as on tax forms
+                steps = math.ceil(steps_fractional)
+            else:
+                steps = steps_fractional
+            crate = max(
+                CDCC_po2_rate_min,
+                CDCC_po1_rate_min - steps * CDCC_po_rate_per_step
+            )
     c33200 = c33000 * crate
     # credit is limited by tax liability if not refundable
     if CDCC_refundable:
@@ -3207,124 +3418,6 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     combined = iitax + payrolltax
     return (eitc, refund, ctc_total, ctc_refundable, ctc_nonrefundable,
             iitax, combined)
-
-
-@JIT(nopython=True)
-def Taxes(income, MARS, tbrk_base,
-          rate1, rate2, rate3, rate4, rate5, rate6, rate7, rate8,
-          tbrk1, tbrk2, tbrk3, tbrk4, tbrk5, tbrk6, tbrk7):
-    """
-    Taxes function returns tax amount given the progressive tax rate
-    schedule specified by the rate* and (upper) tbrk* parameters and
-    given income, filing status (MARS), and tax bracket base (tbrk_base).
-
-    Parameters
-    ----------
-    income: float
-        Taxable income
-    MARS: int
-        Filing (marital) status. (1=single, 2=joint, 3=separate,
-                                  4=household-head, 5=widow(er))
-    tbrk_base: float
-        Amount of income used to determine the braket the filer is in
-    rate1: list
-        Income tax rate 1
-    rate2: list
-        Income tax rate 2
-    rate3: list
-        Income tax rate 3
-    rate4: list
-        Income tax rate 4
-    rate5: list
-        Income tax rate 5
-    rate6: list
-        Income tax rate 6
-    rate7: list
-        Income tax rate 7
-    rate8: list
-        Income tax rate 8
-    tbrk1: list
-        Income tax bracket (upper threshold) 1
-    tbrk2: list
-        Income tax bracket (upper threshold) 2
-    tbrk3: list
-        Income tax bracket (upper threshold) 3
-    tbrk4: list
-        Income tax bracket (upper threshold) 4
-    tbrk5: list
-        Income tax bracket (upper threshold) 5
-    tbrk6: list
-        Income tax bracket (upper threshold) 6
-    tbrk7: list
-        Income tax bracket (upper threshold) 7
-
-    Returns
-    -------
-    None
-    """
-    if tbrk_base > 0.:
-        brk1 = max(tbrk1[MARS - 1] - tbrk_base, 0.)
-        brk2 = max(tbrk2[MARS - 1] - tbrk_base, 0.)
-        brk3 = max(tbrk3[MARS - 1] - tbrk_base, 0.)
-        brk4 = max(tbrk4[MARS - 1] - tbrk_base, 0.)
-        brk5 = max(tbrk5[MARS - 1] - tbrk_base, 0.)
-        brk6 = max(tbrk6[MARS - 1] - tbrk_base, 0.)
-        brk7 = max(tbrk7[MARS - 1] - tbrk_base, 0.)
-    else:
-        brk1 = tbrk1[MARS - 1]
-        brk2 = tbrk2[MARS - 1]
-        brk3 = tbrk3[MARS - 1]
-        brk4 = tbrk4[MARS - 1]
-        brk5 = tbrk5[MARS - 1]
-        brk6 = tbrk6[MARS - 1]
-        brk7 = tbrk7[MARS - 1]
-    return (rate1 * min(income, brk1) +
-            rate2 * min(brk2 - brk1, max(0., income - brk1)) +
-            rate3 * min(brk3 - brk2, max(0., income - brk2)) +
-            rate4 * min(brk4 - brk3, max(0., income - brk3)) +
-            rate5 * min(brk5 - brk4, max(0., income - brk4)) +
-            rate6 * min(brk6 - brk5, max(0., income - brk5)) +
-            rate7 * min(brk7 - brk6, max(0., income - brk6)) +
-            rate8 * max(0., income - brk7))
-
-
-def ComputeBenefit(calc, ID_switch):
-    """
-    Calculates the value of the benefits accrued from itemizing.
-
-    Parameters
-    ----------
-    calc: Calculator object
-        calc represents the reform while self represents the baseline
-    ID_switch: list
-        Deductions subject to the surtax on itemized deduction benefits
-
-    Returns
-    -------
-    benefit: float
-        Imputed benefits from itemizing deductions
-    """
-    # compute income tax liability with no itemized deductions allowed for
-    # the types of itemized deductions covered under the BenefitSurtax
-    no_ID_calc = copy.deepcopy(calc)
-    if ID_switch[0]:
-        no_ID_calc.policy_param('ID_Medical_hc', [1.])
-    if ID_switch[1]:
-        no_ID_calc.policy_param('ID_StateLocalTax_hc', [1.])
-    if ID_switch[2]:
-        no_ID_calc.policy_param('ID_RealEstate_hc', [1.])
-    if ID_switch[3]:
-        no_ID_calc.policy_param('ID_Casualty_hc', [1.])
-    if ID_switch[4]:
-        no_ID_calc.policy_param('ID_Miscellaneous_hc', [1.])
-    if ID_switch[5]:
-        no_ID_calc.policy_param('ID_InterestPaid_hc', [1.])
-    if ID_switch[6]:
-        no_ID_calc.policy_param('ID_Charity_hc', [1.])
-    no_ID_calc._calc_one_year()  # pylint: disable=protected-access
-    diff_iitax = no_ID_calc.array('iitax') - calc.array('iitax')
-    benefit = np.where(diff_iitax > 0., diff_iitax, 0.)
-    return benefit
 
 
 @iterate_jit(nopython=True)

@@ -24,22 +24,6 @@
                     }
                 }
             },
-            "idedtype": {
-                "type": "str",
-                "validators": {
-                    "choice": {
-                        "choices": [
-                            "med",
-                            "sltx",
-                            "retx",
-                            "cas",
-                            "misc",
-                            "int",
-                            "char"
-                        ]
-                    }
-                }
-            },
             "EIC": {
                 "type": "str",
                 "validators": {
@@ -778,7 +762,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.0
+                "value": 1.0
             }
         ],
         "validators": {
@@ -844,7 +828,7 @@
             },
             {
                 "year": 2026,
-                "value": 1.0
+                "value": 0.0
             }
         ],
         "validators": {
@@ -1604,52 +1588,27 @@
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 313000.0
+                "value": 313000
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 626000.0
+                "value": 626000
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 313000.0
+                "value": 313000
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 313000.0
+                "value": 313000
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 626000.0
-            },
-            {
-                "year": 2029,
-                "MARS": "single",
-                "value": 9e+99
-            },
-            {
-                "year": 2029,
-                "MARS": "mjoint",
-                "value": 9e+99
-            },
-            {
-                "year": 2029,
-                "MARS": "mseparate",
-                "value": 9e+99
-            },
-            {
-                "year": 2029,
-                "MARS": "headhh",
-                "value": 9e+99
-            },
-            {
-                "year": 2029,
-                "MARS": "widow",
-                "value": 9e+99
+                "value": 626000
             }
         ],
         "validators": {
@@ -1727,7 +1686,7 @@
             },
             {
                 "year": 2026,
-                "value": 5410.0
+                "value": 0.0
             }
         ],
         "validators": {
@@ -2079,27 +2038,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 349329.0
+                "value": 9e+99
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 419195.0
+                "value": 9e+99
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 209597.0
+                "value": 9e+99
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 384262.0
+                "value": 9e+99
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 419195.0
+                "value": 9e+99
             }
         ],
         "validators": {
@@ -2113,7 +2072,7 @@
             "cps": true
         }
     },
-    "II_prt": {
+    "II_em_prt": {
         "title": "Personal exemption phaseout rate",
         "description": "Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.",
         "notes": "",
@@ -2478,52 +2437,27 @@
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 15000.0
+                "value": 15750
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 30000.0
+                "value": 31500
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 15000.0
+                "value": 15750
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 22500.0
+                "value": 23625
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 30000.0
-            },
-            {
-                "year": 2026,
-                "MARS": "single",
-                "value": 8483.0
-            },
-            {
-                "year": 2026,
-                "MARS": "mjoint",
-                "value": 16966.0
-            },
-            {
-                "year": 2026,
-                "MARS": "mseparate",
-                "value": 8483.0
-            },
-            {
-                "year": 2026,
-                "MARS": "headhh",
-                "value": 12490.0
-            },
-            {
-                "year": 2026,
-                "MARS": "widow",
-                "value": 16966.0
+                "value": 31500
             }
         ],
         "validators": {
@@ -3007,6 +2941,10 @@
             {
                 "year": 2022,
                 "value": false
+            },
+            {
+                "year": 2026,
+                "value": true
             }
         ],
         "validators": {
@@ -3104,6 +3042,31 @@
                 "year": 2022,
                 "MARS": "widow",
                 "value": 0.0
+            },
+            {
+                "year": 2026,
+                "MARS": "single",
+                "value": 1000
+            },
+            {
+                "year": 2026,
+                "MARS": "mjoint",
+                "value": 2000
+            },
+            {
+                "year": 2026,
+                "MARS": "mseparate",
+                "value": 1000
+            },
+            {
+                "year": 2026,
+                "MARS": "headhh",
+                "value": 1000
+            },
+            {
+                "year": 2026,
+                "MARS": "widow",
+                "value": 1000
             }
         ],
         "validators": {
@@ -6270,7 +6233,7 @@
         }
     },
     "ID_AllTaxes_c": {
-        "title": "Ceiling on the amount of state and local income, sales and real estate tax deductions allowed (dollars)",
+        "title": "Cap on the amount of state and local income, sales and real estate tax deductions allowed (dollars)",
         "description": "The amount of state and local income, sales and real estate tax deductions is limited to this dollar amount.",
         "notes": "",
         "section_1": "Itemized Deductions",
@@ -6530,29 +6493,382 @@
                 "value": 10000.0
             },
             {
+                "year": 2025,
+                "MARS": "single",
+                "value": 40000
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 40000
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 20000
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 40000
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 40000
+            },
+            {
                 "year": 2026,
                 "MARS": "single",
-                "value": 9e+99
+                "value": 40400
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 9e+99
+                "value": 40400
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 9e+99
+                "value": 20200
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 9e+99
+                "value": 40400
             },
             {
                 "year": 2026,
                 "MARS": "widow",
+                "value": 40400
+            },
+            {
+                "year": 2027,
+                "MARS": "single",
+                "value": 40804
+            },
+            {
+                "year": 2027,
+                "MARS": "mjoint",
+                "value": 40804
+            },
+            {
+                "year": 2027,
+                "MARS": "mseparate",
+                "value": 20402
+            },
+            {
+                "year": 2027,
+                "MARS": "headhh",
+                "value": 40804
+            },
+            {
+                "year": 2027,
+                "MARS": "widow",
+                "value": 40804
+            },
+            {
+                "year": 2028,
+                "MARS": "single",
+                "value": 41212
+            },
+            {
+                "year": 2028,
+                "MARS": "mjoint",
+                "value": 41212
+            },
+            {
+                "year": 2028,
+                "MARS": "mseparate",
+                "value": 20606
+            },
+            {
+                "year": 2028,
+                "MARS": "headhh",
+                "value": 41212
+            },
+            {
+                "year": 2028,
+                "MARS": "widow",
+                "value": 41212
+            },
+            {
+                "year": 2029,
+                "MARS": "single",
+                "value": 41624
+            },
+            {
+                "year": 2029,
+                "MARS": "mjoint",
+                "value": 41624
+            },
+            {
+                "year": 2029,
+                "MARS": "mseparate",
+                "value": 20812
+            },
+            {
+                "year": 2029,
+                "MARS": "headhh",
+                "value": 41624
+            },
+            {
+                "year": 2029,
+                "MARS": "widow",
+                "value": 41624
+            },
+            {
+                "year": 2030,
+                "MARS": "single",
+                "value": 10000
+            },
+            {
+                "year": 2030,
+                "MARS": "mjoint",
+                "value": 10000
+            },
+            {
+                "year": 2030,
+                "MARS": "mseparate",
+                "value": 5000
+            },
+            {
+                "year": 2030,
+                "MARS": "headhh",
+                "value": 10000
+            },
+            {
+                "year": 2030,
+                "MARS": "widow",
+                "value": 10000
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ID_AllTaxes_c_ps": {
+        "title": "AGI level at which ID_AllTaxes_c cap starts to be phased out",
+        "description": "The cap on state and local income, sales and real estate tax deductions is phased out when AGI exceeds this amount.",
+        "notes": "",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Taxes And Real Estate Taxes",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
                 "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 500000
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 500000
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 250000
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 500000
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 500000
+            },
+            {
+                "year": 2030,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2030,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2030,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2030,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2030,
+                "MARS": "widow",
+                "value": 9e+99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ID_AllTaxes_c_po_rate": {
+        "title": "Rate at which ID_AllTaxes_c cap is phased-out above ID_AllTaxes_c_ps AGI",
+        "description": "The cap on state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_c_ps.",
+        "notes": "",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Taxes And Real Estate Taxes",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "value": 0.3
+            },
+            {
+                "year": 2030,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ID_AllTaxes_c_po_floor": {
+        "title": "Minimum cap on itemized state and local income, sales and real estate tax deductions that are phased-out above ID_AllTaxes_ps AGI",
+        "description": "The cap on state and local income, sales and real estate tax deductions cannot be reduced below this amount.",
+        "notes": "",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Taxes And Real Estate Taxes",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 10000
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 10000
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 5000
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 10000
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 10000
+            },
+            {
+                "year": 2030,
+                "MARS": "single",
+                "value": 0
+            },
+            {
+                "year": 2030,
+                "MARS": "mjoint",
+                "value": 0
+            },
+            {
+                "year": 2030,
+                "MARS": "mseparate",
+                "value": 0
+            },
+            {
+                "year": 2030,
+                "MARS": "headhh",
+                "value": 0
+            },
+            {
+                "year": 2030,
+                "MARS": "widow",
+                "value": 0
             }
         ],
         "validators": {
@@ -6939,9 +7255,9 @@
             "cps": true
         }
     },
-    "ID_Charity_crt_cash": {
-        "title": "Ceiling (as a decimal fraction of AGI) for cash charitable contribution deductions",
-        "description": "The cash deduction for charity is capped at this fraction of AGI.",
+    "ID_Charity_crt_all": {
+        "title": "Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions",
+        "description": "The total deduction for charity is capped at this fraction of AGI.",
         "notes": "When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
@@ -6967,7 +7283,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.5
+                "value": 0.6
             }
         ],
         "validators": {
@@ -6994,6 +7310,10 @@
         "value": [
             {
                 "year": 2013,
+                "value": 0.3
+            },
+            {
+                "year": 2026,
                 "value": 0.3
             }
         ],
@@ -7022,6 +7342,10 @@
             {
                 "year": 2013,
                 "value": 0.0
+            },
+            {
+                "year": 2026,
+                "value": 0.005
             }
         ],
         "validators": {
@@ -7521,7 +7845,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.0
+                "value": 1.0
             }
         ],
         "validators": {
@@ -7949,7 +8273,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.0
+                "value": 1.0
             }
         ],
         "validators": {
@@ -8648,27 +8972,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 349329.0
+                "value": 9e+99
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 419195.0
+                "value": 9e+99
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 209597.0
+                "value": 9e+99
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 384262.0
+                "value": 9e+99
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 419195.0
+                "value": 9e+99
             }
         ],
         "validators": {
@@ -8722,7 +9046,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.03
+                "value": 0.0
             }
         ],
         "validators": {
@@ -8788,7 +9112,37 @@
             },
             {
                 "year": 2026,
-                "value": 0.8
+                "value": 1.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ID_reduction_rate": {
+        "title": "Itemized deduction reduction rate under OBBBA",
+        "description": "Itemized deductions are reduced if pre-deduction taxable income exceeds top tax bracket.",
+        "notes": "The 2026+ value of 0.05405405 is about equal to 2/37.",
+        "section_1": "Itemized Deductions",
+        "section_2": "Itemized Deduction Limitation",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2026,
+                "value": 0.05405405
             }
         ],
         "validators": {
@@ -11613,11 +11967,11 @@
         }
     },
     "II_rt1": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 1",
+        "title": "Personal income (regular/non-AMT) tax rate 1",
         "description": "The lowest tax rate, applied to the portion of taxable income below tax bracket 1.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -11679,11 +12033,11 @@
         }
     },
     "II_brk1": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 1",
+        "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 1",
         "description": "Taxable income below this threshold is taxed at tax rate 1.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -12016,27 +12370,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 12457.0
+                "value": 11925
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 24914.0
+                "value": 23850
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 12457.0
+                "value": 11925
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 17834.0
+                "value": 17000
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 24914.0
+                "value": 23850
             }
         ],
         "validators": {
@@ -12051,11 +12405,11 @@
         }
     },
     "II_rt2": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 2",
+        "title": "Personal income (regular/non-AMT) tax rate 2",
         "description": "The second lowest tax rate, applied to the portion of taxable income below tax bracket 2 and above tax bracket 1.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -12102,7 +12456,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.15
+                "value": 0.12
             }
         ],
         "validators": {
@@ -12117,11 +12471,11 @@
         }
     },
     "II_brk2": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 2",
+        "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 2",
         "description": "Income below this threshold and above tax bracket 1 is taxed at tax rate 2.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -12454,27 +12808,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 50696.0
+                "value": 48475
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 101392.0
+                "value": 96950
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 50696.0
+                "value": 48475
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 67862.0
+                "value": 64850
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 101392.0
+                "value": 96950
             }
         ],
         "validators": {
@@ -12489,11 +12843,11 @@
         }
     },
     "II_rt3": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 3",
+        "title": "Personal income (regular/non-AMT) tax rate 3",
         "description": "The third lowest tax rate, applied to the portion of taxable income below tax bracket 3 and above tax bracket 2.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -12540,7 +12894,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.25
+                "value": 0.22
             }
         ],
         "validators": {
@@ -12555,11 +12909,11 @@
         }
     },
     "II_brk3": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 3",
+        "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 3",
         "description": "Income below this threshold and above tax bracket 2 is taxed at tax rate 3.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -12892,27 +13246,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 122766.0
+                "value": 104900
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 204521.0
+                "value": 208300
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 102261.0
+                "value": 104900
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 175266.0
+                "value": 104900
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 204521.0
+                "value": 208300
             }
         ],
         "validators": {
@@ -12927,11 +13281,11 @@
         }
     },
     "II_rt4": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 4",
+        "title": "Personal income (regular/non-AMT) tax rate 4",
         "description": "The tax rate applied to the portion of taxable income below tax bracket 4 and above tax bracket 3.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -12978,7 +13332,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.28
+                "value": 0.24
             }
         ],
         "validators": {
@@ -12993,11 +13347,11 @@
         }
     },
     "II_brk4": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 4",
+        "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 4",
         "description": "Income below this threshold and above tax bracket 3 is taxed at tax rate 4.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -13330,27 +13684,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 256019.0
+                "value": 198800
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 311724.0
+                "value": 397650
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 155862.0
+                "value": 198800
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 283872.0
+                "value": 198800
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 311724.0
+                "value": 397650
             }
         ],
         "validators": {
@@ -13365,11 +13719,11 @@
         }
     },
     "II_rt5": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 5",
+        "title": "Personal income (regular/non-AMT) tax rate 5",
         "description": "The third highest tax rate, applied to the portion of taxable income below tax bracket 5 and above tax bracket 4.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -13416,7 +13770,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.33
+                "value": 0.32
             }
         ],
         "validators": {
@@ -13431,11 +13785,11 @@
         }
     },
     "II_brk5": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 5",
+        "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 5",
         "description": "Income below this threshold and above tax bracket 4 is taxed at tax rate 5.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -13768,27 +14122,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 556656.0
+                "value": 256450
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 556656.0
+                "value": 512950
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 278328.0
+                "value": 256450
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 556656.0
+                "value": 256486
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 556656.0
+                "value": 512950
             }
         ],
         "validators": {
@@ -13803,11 +14157,11 @@
         }
     },
     "II_rt6": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 6",
+        "title": "Personal income (regular/non-AMT) tax rate 6",
         "description": "The second higher tax rate, applied to the portion of taxable income below tax bracket 6 and above tax bracket 5.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -13869,11 +14223,11 @@
         }
     },
     "II_brk6": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket 6",
+        "title": "Personal income (regular/non-AMT) tax bracket 6",
         "description": "Income below this threshold and above tax bracket 5 is taxed at tax rate 6.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -14206,27 +14560,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 558927.0
+                "value": 643950
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 628792.0
+                "value": 772750
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 314396.0
+                "value": 386350
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 593859.0
+                "value": 643950
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 628792.0
+                "value": 772750
             }
         ],
         "validators": {
@@ -14241,11 +14595,11 @@
         }
     },
     "II_rt7": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 7",
+        "title": "Personal income (regular/non-AMT) tax rate 7",
         "description": "The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -14292,7 +14646,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.396
+                "value": 0.37
             }
         ],
         "validators": {
@@ -14307,11 +14661,11 @@
         }
     },
     "II_brk7": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket 7",
+        "title": "Personal income (regular/non-AMT) tax bracket 7",
         "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -14679,11 +15033,11 @@
         }
     },
     "II_rt8": {
-        "title": "Personal income (regular/non-AMT/non-pass-through) tax rate 8",
+        "title": "Personal income (regular/non-AMT) tax rate 8",
         "description": "The tax rate applied to the portion of taxable income above tax bracket 7.",
         "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Regular: Non-AMT, Non-Pass-Through",
+        "section_2": "Regular: Non-AMT",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -14744,13 +15098,39 @@
             },
             {
                 "year": 2026,
-                "value": 0.0
+                "value": 0.2
             }
         ],
         "validators": {
             "range": {
                 "min": 0,
                 "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "PT_qbid_limited": {
+        "title": "Whether qualified business income deduction is limited",
+        "description": "If true, various TCJA-like limitations are active, otherwise all those limitations (all PT_qbid_* parameters other than PT_qbid_rt) are inactive.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": false,
+        "indexed": false,
+        "type": "bool",
+        "value": [
+            {
+                "year": 2013,
+                "value": true
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": false,
+                "max": true
             }
         },
         "compatible_data": {
@@ -15096,27 +15476,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 0.0
+                "value": 200300
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 0.0
+                "value": 400600
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 0.0
+                "value": 200300
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 0.0
+                "value": 200300
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 0.0
+                "value": 400600
             }
         ],
         "validators": {
@@ -15368,27 +15748,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 1.0
+                "value": 75000
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 1.0
+                "value": 150000
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 1.0
+                "value": 75000
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 1.0
+                "value": 75000
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 1.0
+                "value": 150000
             }
         ],
         "validators": {
@@ -15442,7 +15822,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.0
+                "value": 0.5
             }
         ],
         "validators": {
@@ -15496,7 +15876,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.0
+                "value": 0.25
             }
         ],
         "validators": {
@@ -15550,7 +15930,7 @@
             },
             {
                 "year": 2026,
-                "value": 0.0
+                "value": 0.025
             }
         ],
         "validators": {
@@ -15948,6 +16328,66 @@
             {
                 "year": 2019,
                 "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "PT_qbid_min_ded": {
+        "title": "Minimum QBID amount",
+        "description": "QBID will be no less than this amount if qualified business income is not less than PT_qbid_min_qbi.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2026,
+                "value": 400
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "PT_qbid_min_qbi": {
+        "title": "Minimum QBI amount required for receipt of PT_qbid_min_ded",
+        "description": "QBID will be no less than this PT_qbid_min_ded if qualified business income is not less than this amount.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2026,
+                "value": 1000
             }
         ],
         "validators": {
@@ -16430,27 +16870,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 72538.0
+                "value": 89400
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 112881.0
+                "value": 139000
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 56440.0
+                "value": 69600
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 72538.0
+                "value": 89400
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 112881.0
+                "value": 139000
             }
         ],
         "validators": {
@@ -16828,27 +17268,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 161239.0
+                "value": 500000
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 214941.0
+                "value": 1000000
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 107470.0
+                "value": 500000
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 161239.0
+                "value": 500000
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 214941.0
+                "value": 1000000
             }
         ],
         "validators": {
@@ -17152,7 +17592,7 @@
             },
             {
                 "year": 2026,
-                "value": 333232.0
+                "value": 639200
             }
         ],
         "validators": {
@@ -17187,6 +17627,10 @@
             {
                 "year": 2022,
                 "value": 3000.0
+            },
+            {
+                "year": 2026,
+                "value": 3000
             }
         ],
         "validators": {
@@ -17200,9 +17644,9 @@
             "cps": true
         }
     },
-    "CDCC_ps": {
-        "title": "Child & dependent care credit phaseout start",
-        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.",
+    "CDCC_ps1": {
+        "title": "Child & dependent care credit first phaseout start",
+        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by CDCC_po_rate_per_step for each CDCC_po1_step_size of excess AGI.",
         "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
@@ -17221,6 +17665,10 @@
             {
                 "year": 2022,
                 "value": 15000.0
+            },
+            {
+                "year": 2026,
+                "value": 15000
             }
         ],
         "validators": {
@@ -17236,8 +17684,8 @@
     },
     "CDCC_ps2": {
         "title": "Child & dependent care credit second phaseout start",
-        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by one percentage point each $2,000 of AGI over this amount.",
-        "notes": "For 2021, the American Rescue Plan Act set this to $400,000. In other years, this phase-out does not apply.",
+        "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by CDCC_po_rate_per_step for each CDCC_po2_step_size of excess AGI.",
+        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": true,
@@ -17246,15 +17694,128 @@
         "value": [
             {
                 "year": 2013,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
                 "value": 9e+99
             },
             {
                 "year": 2021,
+                "MARS": "single",
+                "value": 400000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 400000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 400000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 400000.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
                 "value": 400000.0
             },
             {
                 "year": 2022,
+                "MARS": "single",
                 "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2026,
+                "MARS": "single",
+                "value": 75000
+            },
+            {
+                "year": 2026,
+                "MARS": "mjoint",
+                "value": 150000
+            },
+            {
+                "year": 2026,
+                "MARS": "mseparate",
+                "value": 75000
+            },
+            {
+                "year": 2026,
+                "MARS": "headhh",
+                "value": 75000
+            },
+            {
+                "year": 2026,
+                "MARS": "widow",
+                "value": 75000
             }
         ],
         "validators": {
@@ -17268,9 +17829,9 @@
             "cps": true
         }
     },
-    "CDCC_crt": {
-        "title": "Child & dependent care credit phaseout rate ceiling",
-        "description": "The maximum rate for the CDCC; this rate decreases as AGI rises above the CDCC_ps level.",
+    "CDCC_po1_rate_max": {
+        "title": "Child & dependent care credit maximum rate",
+        "description": "The maximum rate for the CDCC; this rate decreases as AGI rises above the CDCC_ps1 and CDCC_ps2 levels.",
         "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
@@ -17289,6 +17850,10 @@
             {
                 "year": 2022,
                 "value": 0.35
+            },
+            {
+                "year": 2026,
+                "value": 0.5
             }
         ],
         "validators": {
@@ -17302,8 +17867,8 @@
             "cps": true
         }
     },
-    "CDCC_frt": {
-        "title": "Child & dependent care credit phaseout rate floor",
+    "CDCC_po1_rate_min": {
+        "title": "Child & dependent care credit first phaseout rate minimum",
         "description": "The minimum rate for the first AGI phaseout of the CDCC.",
         "notes": "",
         "section_1": "Nonrefundable Credits",
@@ -17314,6 +17879,40 @@
         "value": [
             {
                 "year": 2013,
+                "value": 0.2
+            },
+            {
+                "year": 2026,
+                "value": 0.35
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CDCC_po2_rate_min": {
+        "title": "Child & dependent care credit second phaseout rate minimum",
+        "description": "The minimum rate for the second AGI phaseout of the CDCC.",
+        "notes": "",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child And Dependent Care",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2026,
                 "value": 0.2
             }
         ],
@@ -17328,10 +17927,10 @@
             "cps": true
         }
     },
-    "CDCC_po_step_size": {
-        "title": "Child & dependent care credit phaseout step size",
-        "description": "The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the phase-out start thresholds.",
-        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the phase-out start thresholds",
+    "CDCC_po1_step_size": {
+        "title": "Child & dependent care credit first phaseout step size",
+        "description": "The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the first phase-out start threshold.",
+        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": true,
@@ -17341,6 +17940,157 @@
             {
                 "year": 2013,
                 "value": 2000.0
+            },
+            {
+                "year": 2026,
+                "value": 2000
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CDCC_po2_step_size": {
+        "title": "Child & dependent care credit second phaseout step size",
+        "description": "The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the second phase-out start threshold.",
+        "notes": "",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child And Dependent Care",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 2000
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 2000
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 2000
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 2000
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 2000
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2026,
+                "MARS": "single",
+                "value": 2000
+            },
+            {
+                "year": 2026,
+                "MARS": "mjoint",
+                "value": 4000
+            },
+            {
+                "year": 2026,
+                "MARS": "mseparate",
+                "value": 2000
+            },
+            {
+                "year": 2026,
+                "MARS": "headhh",
+                "value": 2000
+            },
+            {
+                "year": 2026,
+                "MARS": "widow",
+                "value": 2000
             }
         ],
         "validators": {
@@ -17357,7 +18107,7 @@
     "CDCC_po_rate_per_step": {
         "title": "Child & dependent care credit phaseout rate per step",
         "description": "The CDCC credit rate is reduced by this rate for for each step (including fractional steps) above the phase-out start thresholds.",
-        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2,000 of AGI over the phase-out start thresholds",
+        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -17366,6 +18116,10 @@
         "value": [
             {
                 "year": 2013,
+                "value": 0.01
+            },
+            {
+                "year": 2026,
                 "value": 0.01
             }
         ],
@@ -17401,6 +18155,10 @@
             {
                 "year": 2022,
                 "value": false
+            },
+            {
+                "year": 2026,
+                "value": false
             }
         ],
         "validators": {
@@ -17421,7 +18179,7 @@
         "section_1": "Child/Dependent Credits",
         "section_2": "Child Tax Credit",
         "indexable": true,
-        "indexed": false,
+        "indexed": true,
         "type": "float",
         "value": [
             {
@@ -17465,8 +18223,16 @@
                 "value": 2000.0
             },
             {
-                "year": 2026,
-                "value": 1000.0
+                "year": 2023,
+                "value": 2000.0
+            },
+            {
+                "year": 2024,
+                "value": 2000.0
+            },
+            {
+                "year": 2025,
+                "value": 2200
             }
         ],
         "validators": {
@@ -17869,29 +18635,29 @@
                 "value": 400000.0
             },
             {
-                "year": 2026,
+                "year": 2025,
                 "MARS": "single",
-                "value": 75000.0
+                "value": 200000
             },
             {
-                "year": 2026,
+                "year": 2025,
                 "MARS": "mjoint",
-                "value": 110000.0
+                "value": 400000
             },
             {
-                "year": 2026,
+                "year": 2025,
                 "MARS": "mseparate",
-                "value": 55000.0
+                "value": 200000
             },
             {
-                "year": 2026,
+                "year": 2025,
                 "MARS": "headhh",
-                "value": 75000.0
+                "value": 200000
             },
             {
-                "year": 2026,
+                "year": 2025,
                 "MARS": "widow",
-                "value": 75000.0
+                "value": 400000
             }
         ],
         "validators": {
@@ -17938,7 +18704,7 @@
         "section_1": "Child/Dependent Credits",
         "section_2": "Additional Child Tax Credit",
         "indexable": true,
-        "indexed": false,
+        "indexed": true,
         "type": "float",
         "value": [
             {
@@ -17991,11 +18757,7 @@
             },
             {
                 "year": 2025,
-                "value": 1700.0
-            },
-            {
-                "year": 2026,
-                "value": 1000.0
+                "value": 1700
             }
         ],
         "validators": {
@@ -18048,8 +18810,8 @@
                 "value": 500.0
             },
             {
-                "year": 2026,
-                "value": 0.0
+                "year": 2025,
+                "value": 500
             }
         ],
         "validators": {
@@ -18682,7 +19444,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 9e+99
+                "max": 1
             }
         },
         "compatible_data": {
@@ -19835,8 +20597,8 @@
                 "value": 2500.0
             },
             {
-                "year": 2026,
-                "value": 3000.0
+                "year": 2025,
+                "value": 2500
             }
         ],
         "validators": {
@@ -20377,7 +21139,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 9e+99
+                "max": 1
             }
         },
         "compatible_data": {
@@ -22176,6 +22938,566 @@
             {
                 "year": 2013,
                 "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "SeniorDed_c": {
+        "title": "Senior deduction amount per elderly head/spouse",
+        "description": "Senior deduction is capped at this level per elderly head/spouse.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "value": 6000
+            },
+            {
+                "year": 2029,
+                "value": 0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "SeniorDed_ps": {
+        "title": "Senior deduction phase-out start AGI level",
+        "description": "Senior deduction is phased-out if AGI exceeds this amount.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 75000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 150000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 75000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 75000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 75000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "SeniorDed_prt": {
+        "title": "Senior deduction phase-out rate",
+        "description": "Senior deduction is phased-out at this rate on AGI exceeding SeniorDed_ps.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.06
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "AutoLoanInterestDed_c": {
+        "title": "Maximum amount of auto loan interest that is deductible",
+        "description": "Auto loan interest in excess of this amount may not be deducted from AGI.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "value": 10000.0
+            },
+            {
+                "year": 2028,
+                "value": 10000.0
+            },
+            {
+                "year": 2029,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "AutoLoanInterestDed_ps": {
+        "title": "Auto loan interest deduction phase-out start AGI",
+        "description": "Auto loan interest deduction is phased-out if AGI exceeds this amount.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 100000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 200000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 100000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 100000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 200000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "AutoLoanInterestDed_po_step_size": {
+        "title": "Auto loan interest deduction phase-out AGI step size",
+        "description": "Auto loan interest deduction is phased-out in AGI steps of this size.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 1000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "AutoLoanInterestDed_po_rate_per_step": {
+        "title": "Auto loan interest deduction phase-out rate per phase-out step",
+        "description": "Auto loan interest deduction is phased-out at this rate for each AGI step.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.2
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ALD_OvertimeIncome_hc": {
+        "title": "Overtime income ALD haircut",
+        "description": "Overtime income ALD is subject to this haircut.",
+        "notes": "Final ALD amount is multiplied by (1-ALD_OvertimeIncome_hc).",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Exclusions",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 1.0
+            },
+            {
+                "year": 2025,
+                "value": 0.0
+            },
+            {
+                "year": 2028,
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "value": 1.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ALD_OvertimeIncome_c": {
+        "title": "Overtime ALD cap",
+        "description": "Overtime ALD is capped at this level.",
+        "notes": "",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Exclusions",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 12500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 25000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 12500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 12500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 12500.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ALD_OvertimeIncome_ps": {
+        "title": "Overtime ALD phase-out start earned income level",
+        "description": "Overtime ALD is phased-out if earned income exceeds this amount.",
+        "notes": "",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Exclusions",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 150000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 300000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 150000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 150000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 150000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ALD_OvertimeIncome_prt": {
+        "title": "Overtime ALD phase-out rate",
+        "description": "Overtime ALD is phased-out at this rate on earned income exceeding ALD_OvertimeIncome_ps.",
+        "notes": "",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Exclusions",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.1
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ALD_TipIncome_hc": {
+        "title": "Tip income ALD haircut",
+        "description": "Tip income ALD is subject to this haircut.",
+        "notes": "Final ALD amount is multiplied by (1-ALD_TipIncome_hc).",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Exclusions",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 1.0
+            },
+            {
+                "year": 2025,
+                "value": 0.0
+            },
+            {
+                "year": 2028,
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "value": 1.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ALD_TipIncome_c": {
+        "title": "Tip ALD cap",
+        "description": "Tip ALD is capped at this level.",
+        "notes": "",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Exclusions",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 25000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 25000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 25000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 25000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 25000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ALD_TipIncome_ps": {
+        "title": "Tip ALD phase-out start earned income level",
+        "description": "Tip ALD is phased-out if earned income exceeds this amount.",
+        "notes": "",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Exclusions",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 150000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 300000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 150000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 150000.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 150000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "ALD_TipIncome_prt": {
+        "title": "Tip ALD phase-out rate",
+        "description": "Tip ALD is phased-out at this rate on earned income exceeding ALD_TipIncome_ps.",
+        "notes": "",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Exclusions",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.1
             }
         ],
         "validators": {

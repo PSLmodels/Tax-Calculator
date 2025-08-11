@@ -61,7 +61,7 @@ class Policy(Parameters):
         # following parameters were renamed in PR 2918
         'SS_thd50': 'was renamed SS_thd1 in Tax-Calculator 5.0.0',
         'SS_thd85': 'was renamed SS_thd2 in Tax-Calculator 5.0.0',
-        # following parameters were removed in PR 2619
+        # following parameters were removed in PR 2919
         'PT_rt1': 'was removed in Tax-Calculator 5.0.0',
         'PT_rt2': 'was removed in Tax-Calculator 5.0.0',
         'PT_rt3': 'was removed in Tax-Calculator 5.0.0',
@@ -81,7 +81,7 @@ class Policy(Parameters):
         'PT_EligibleRate_passive': 'was removed in Tax-Calculator 5.0.0',
         'PT_wages_active_income': 'was removed in Tax-Calculator 5.0.0',
         'PT_top_stacking': 'was removed in Tax-Calculator 5.0.0',
-        # following parameters were removed in PR 2620
+        # following parameters were removed in PR 2920
         'ID_AmountCap_Switch': 'was removed in Tax-Calculator 5.0.0',
         'ID_AmountCap_rt': 'was removed in Tax-Calculator 5.0.0',
         'ID_BenefitCap_Switch': 'was removed in Tax-Calculator 5.0.0',
@@ -90,6 +90,26 @@ class Policy(Parameters):
         'ID_BenefitSurtax_crt': 'was removed in Tax-Calculator 5.0.0',
         'ID_BenefitSurtax_trt': 'was removed in Tax-Calculator 5.0.0',
         'ID_BenefitSurtax_em': 'was removed in Tax-Calculator 5.0.0',
+        # following parameters were renamed in PR 2928
+        'CDCC_ps': 'was renamed CDCC_ps1 in Tax-Calculator 5.1.0',
+        'CDCC_crt': 'was renamed CDCC_po1_rate_max in Tax-Calculator 5.1.0',
+        'CDCC_frt': 'was renamed CDCC_po1_rate_min in Tax-Calculator 5.1.0',
+        'CDCC_po_step_size': (
+            'was renamed CDCC_po1_step_size in Tax-Calculator 5.1.0'
+        ),
+        # following parameter was renamed in PR 2929
+        'II_prt': 'was renamed II_em_prt in Tax-Calculator 5.1.0',
+        # following parameter was renamed in PR 2932
+        'ID_Charity_crt_cash': (
+            'was renamed ID_Charity_crt_all in Tax-Calculator 5.1.0'
+        ),
+        # following parameters were renamed in PR 2939
+        'ID_reduction_salt_rate': (
+            'was renamed ID_reduction_rate in Tax-Calculator 5.1.0'
+        ),
+        'ID_reduction_other_rate': (
+            'was renamed ID_reduction_rate in Tax-Calculator 5.1.0'
+        ),
     }
     # (2) specify which Policy parameters have been redefined recently
     #     where "recently" means in the last major release
