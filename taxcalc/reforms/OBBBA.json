@@ -1,0 +1,116 @@
+// Title: Law Policy as of OBBBA
+// Reform_File_Author: Max Kossek and Martin Holmer
+// Reform_Reference: https://www.congress.gov/bill/119th-congress/house-bill/1/text
+// Reform_Baseline: policy_current_law.json
+// Reform_Description:
+//      This reform file implements the One Big Beautiful Bill Act (OBBBA)
+//      as passed by the 119th Congress in 2025.
+{
+    // Group A: AMT
+    "AMT_em": {"2026": [89400, 139000, 69600, 89400, 139000]},
+    "AMT_em_ps": {"2026": [500000, 1000000, 500000, 500000, 1000000]},
+    "AMT_em_pe": {"2026": 639200},
+
+    // Group B: Personal Income Tax Rates and Brackets
+    "II_rt1": {"2026": 0.1},
+    "II_rt2": {"2026": 0.12},
+    "II_rt3": {"2026": 0.22},
+    "II_rt4": {"2026": 0.24},
+    "II_rt5": {"2026": 0.32},
+    "II_rt6": {"2026": 0.35},
+    "II_rt7": {"2026": 0.37},
+    "II_brk1": {"2026": [11925, 23850, 11925, 17000, 23850]},
+    "II_brk2": {"2026": [48475, 96950, 48475, 64850, 96950]},
+    "II_brk3": {"2026": [104900, 208300, 104900, 104900, 208300]},
+    "II_brk4": {"2026": [198800, 397650, 198800, 198800, 397650]},
+    "II_brk5": {"2026": [256450, 512950, 256450, 256486, 512950]},
+    "II_brk6": {"2026": [643950, 772750, 386350, 643950, 772750]},
+    "II_brk7": {"2026": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
+
+    // Group C: Child & Dependent-Related Credits
+    "CTC_c": {"2025": 2200},
+    "CTC_ps": {"2025": [200000, 400000, 200000, 200000, 400000]},
+    "ACTC_c": {"2025": 1700},
+    "ACTC_Income_thd": {"2025": 2500},
+    "ODC_c": {"2025": 500},
+
+    // Group D: Standard Deduction
+    "STD": {"2025": [15750, 31500, 15750, 23625, 31500]},
+
+    // Group E: Personal Exemption
+    "II_em": {"2026": 0.0},
+    "II_em_ps": {"2026": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
+
+    // Group F: Above-the-Line Deductions
+    "ALD_BusinessLosses_c": {"2025": [313000, 626000, 313000, 313000, 626000]},
+
+    // Group G: Senior Deduction
+    "SeniorDed_c": {"2025": 6000, "2029": 0},
+
+    // Group H: Itemized Deductions
+    "ID_AllTaxes_c": {
+        "2025": [40000, 40000, 20000, 40000, 40000],
+        "2026": [40400, 40400, 20200, 40400, 40400],
+        "2027": [40804, 40804, 20402, 40804, 40804],
+        "2028": [41212, 41212, 20606, 41212, 41212],
+        "2029": [41624, 41624, 20812, 41624, 41624],
+        "2030": [10000, 10000, 5000, 10000, 10000]
+    },
+
+    // Group I: Qualified Business Income Deduction (QBID)
+    "PT_qbid_taxinc_thd": {"2026": [200300, 400600, 200300, 200300, 400600]},
+    "PT_qbid_taxinc_gap": {"2026": [75000, 150000, 75000, 75000, 150000]},
+    "PT_qbid_min_ded": {"2026": 400},
+    "PT_qbid_min_qbi": {"2026": 1000},
+
+    // Group J: Itemized Deductions (Charity, Casualty, Miscellaneous)
+    "ID_Charity_crt_all": {"2026": 0.6},
+    "ID_Charity_crt_noncash": {"2026": 0.3},
+    "ID_Charity_frt": {"2026": 0.005},
+    "ID_Casualty_hc": {"2026": 1.0},
+    "ID_Miscellaneous_hc": {"2026": 1.0},
+
+    // Group K: Standard Deduction (Charity for Non-Itemizers)
+    "STD_allow_charity_ded_nonitemizers": {"2026": true},
+    "STD_charity_ded_nonitemizers_max": {"2026": [1000, 2000, 1000, 1000, 1000]},
+
+    // Group L: Itemized Deductions (Pease Limitation)
+    "ID_ps": {"2026": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
+    "ID_prt": {"2026": 0.0},
+    "ID_crt": {"2026": 1.0},
+    "ID_reduction_rate": {"2026": 0.05405405},
+
+    // Group M: Itemized Deductions (SALT Cap Phaseout)
+    "ID_AllTaxes_c_ps": {"2025": [500000, 500000, 250000, 500000, 500000],
+                         "2030": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
+    "ID_AllTaxes_c_po_rate": {"2025": 0.3, "2030": 0.0},
+    "ID_AllTaxes_c_po_floor": {"2025": [10000, 10000, 5000, 10000, 10000],
+                               "2030": [0, 0, 0, 0, 0]},
+
+    // Group N: Child & Dependent Care Credit (CDCC)
+    "CDCC_c": {"2026": 3000},
+    "CDCC_ps1": {"2026": 15000},
+    "CDCC_ps2": {"2026": [75000, 150000, 75000, 75000, 75000]},
+    "CDCC_po1_rate_max": {"2026": 0.5},
+    "CDCC_po1_rate_min": {"2026": 0.35},
+    "CDCC_po2_rate_min": {"2026": 0.2},
+    "CDCC_po1_step_size": {"2026": 2000},
+    "CDCC_po2_step_size": {"2026": [2000, 4000, 2000, 2000, 2000]},
+    "CDCC_po_rate_per_step": {"2026": 0.01},
+    "CDCC_refundable": {"2026": false},
+
+    // Group O: Qualified Business Income Deduction (QBID) Rates
+    "PT_qbid_rt": {"2026": 0.2},
+    "PT_qbid_w2_wages_rt": {"2026": 0.5},
+    "PT_qbid_alt_w2_wages_rt": {"2026": 0.25},
+    "PT_qbid_alt_property_rt": {"2026": 0.025},
+
+    // Group P: Alimony
+    "ALD_AlimonyPaid_hc": {"2026": 1.0},
+    "ALD_AlimonyReceived_hc": {"2026": 0.0},
+
+    // New OBBBA parameters
+    "AutoLoanInterestDed_c": {"2025": 10000, "2029": 0},
+    "ALD_OvertimeIncome_hc": {"2025": 0.0, "2029": 1.0},
+    "ALD_TipIncome_hc": {"2025": 0.0, "2029": 1.0}
+}

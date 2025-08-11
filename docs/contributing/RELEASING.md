@@ -20,10 +20,6 @@ In the top-level Tax-Calculator directory, do the following:
 
 --> run `python update_pcl.py`  [to update policy_current_law.json if needed]
 
---> run `python ppp.py`  [to update policy_current_law.json if needed]
-
---> run `python extend_tcja.py > ext.json`  [to update reforms/ext.json]
-
 --> run `make cstest`  [to confirm project coding style is being followed]
 
 --> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc subdir]
