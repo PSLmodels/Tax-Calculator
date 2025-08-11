@@ -119,9 +119,9 @@ def test_consumption_default_data():
     pdata = consump.specification(meta_data=True, ignore_state=True)
     for pname in pdata.keys():
         if pname.startswith('MPC'):
-            assert pdata[pname]['value'] == [{"value": 0.0, "year": 2013}]
+            assert pdata[pname]['value'] == [{'value': 0.0, 'year': 2013}]
         elif pname.startswith('BEN'):
-            assert pdata[pname]['value'] == [{"value": 1.0, "year": 2013}]
+            assert pdata[pname]['value'] == [{'value': 1.0, 'year': 2013}]
 
 
 def test_consumption_response(cps_subsample):
