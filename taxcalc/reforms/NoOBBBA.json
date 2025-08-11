@@ -1,0 +1,114 @@
+// Title: Baseline with TCJA expiration, no OBBBA
+// Reform_File_Author: Max Kossek
+// Reform_Reference: 2017_law.json
+// Reform_Baseline: policy_current_law.json
+// Reform_Description:
+//      This reform file implements a counter-factual scenario where no
+//      One Big Beautiful Bill Act (OBBBA) was passed in 2025.
+//      TCJA provisions are not extended and expire as scheduled.
+{
+    // Group A: AMT
+    "AMT_em": {"2026": [73429, 114267, 57134, 73429, 114267]},
+    "AMT_em_ps": {"2026": [163220, 217581, 108790, 163220, 217581]},
+    "AMT_em_pe": {"2026": 337325},
+
+    // Group B: Personal Income Tax Rates and Brackets
+    "II_rt1": {"2026": 0.10},
+    "II_rt2": {"2026": 0.15},
+    "II_rt3": {"2026": 0.25},
+    "II_rt4": {"2026": 0.28},
+    "II_rt5": {"2026": 0.33},
+    "II_rt6": {"2026": 0.35},
+    "II_rt7": {"2026": 0.396},
+    "II_brk1": {"2026": [11925, 23850, 11925, 17000, 23850]},
+    "II_brk2": {"2026": [48475, 96950, 48475, 64850, 96950]},
+    "II_brk3": {"2026": [122179, 203543, 101705, 174428, 203543]},
+    "II_brk4": {"2026": [254795, 310234, 155117, 282514, 310234]},
+    "II_brk5": {"2026": [553994, 553994, 276997, 553994, 553994]},
+    "II_brk6": {"2026": [556254, 625786, 312893, 591020, 625786]},
+    "II_brk7": {"2026": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
+
+    // Group C: Child & Dependent-Related Credits
+    "CTC_c": {"2025": 2000, "2026": 1000},
+    "CTC_ps": {"2026": [75000, 110000, 55000, 75000, 75000]},
+    "ACTC_c": {"2026": 1000},
+    "ACTC_Income_thd": {"2026": 3000},
+    "ODC_c": {"2026": 0},
+
+    // Group D: Standard Deduction
+    "STD": {"2026": [8442, 16884, 8442, 12431, 16884]},
+
+    // Group E: Personal Exemption
+    "II_em": {"2026": 5477},
+    "II_em_ps": {"2026": [353620, 424344, 212172, 388982, 424344]},
+
+    // Group F: Above-the-Line Deductions
+    "ALD_BusinessLosses_c": {"2029": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
+
+    // Group G: Senior Deduction
+    "SeniorDed_c": {"2025": 0, "2026": 0},
+
+    // Group H: Itemized Deductions
+    "ID_AllTaxes_c": {"2025": [10000, 10000, 5000, 10000, 10000],
+                      "2026": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
+
+    // Group I: Qualified Business Income Deduction (QBID)
+    "PT_qbid_taxinc_thd": {"2026": [0, 0, 0, 0, 0]},
+    "PT_qbid_taxinc_gap": {"2026": [1, 1, 1, 1, 1]},
+    "PT_qbid_min_ded": {"2026": 0},
+    "PT_qbid_min_qbi": {"2026": 0},
+
+    // Group J: Itemized Deductions (Charity, Casualty, Miscellaneous)
+    "ID_Charity_crt_all": {"2026": 0.5},
+    "ID_Charity_crt_noncash": {"2026": 0.3},
+    "ID_Charity_frt": {"2026": 0},
+    "ID_Casualty_hc": {"2026": 0},
+    "ID_Miscellaneous_hc": {"2026": 0},
+
+    // Group K: Standard Deduction (Charity for Non-Itemizers)
+    "STD_allow_charity_ded_nonitemizers": {"2026": false},
+    "STD_charity_ded_nonitemizers_max": {"2026": [0, 0, 0, 0, 0]},
+
+    // Group L: Itemized Deductions (Pease Limitation)
+    "ID_ps": {"2026": [353620, 424344, 212172, 388982, 424344]},
+    "ID_prt": {"2026": 0.03},
+    "ID_crt": {"2026": 0.8},
+    "ID_reduction_rate": {"2026": 0.0},
+
+    // Group M: Itemized Deductions (SALT Cap Phaseout)
+    "ID_AllTaxes_c_ps": {"2025": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99],
+                       "2026": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
+    "ID_AllTaxes_c_po_rate": {"2025": 0.0, "2026": 0.0},
+    "ID_AllTaxes_c_po_floor": {"2025": [0, 0, 0, 0, 0],
+                             "2026": [0, 0, 0, 0, 0]},
+
+    // Group N: Child & Dependent Care Credit (CDCC)
+    "CDCC_c": {"2026": 3000},
+    "CDCC_ps1": {"2026": 15000},
+    "CDCC_ps2": {"2026": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
+    "CDCC_po1_rate_max": {"2026": 0.35},
+    "CDCC_po1_rate_min": {"2026": 0.2},
+    "CDCC_po2_rate_min": {"2026": 0.0},
+    "CDCC_po1_step_size": {"2026": 2000},
+    "CDCC_po2_step_size": {"2026": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
+    "CDCC_po_rate_per_step": {"2026": 0.01},
+    "CDCC_refundable": {"2026": false},
+
+    // Group O: Qualified Business Income Deduction (QBID) Rates
+    "PT_qbid_rt": {"2026": 0.0},
+    "PT_qbid_w2_wages_rt": {"2026": 0.0},
+    "PT_qbid_alt_w2_wages_rt": {"2026": 0.0},
+    "PT_qbid_alt_property_rt": {"2026": 0.0},
+
+    // Group P: Alimony
+    "ALD_AlimonyPaid_hc": {"2026": 0},
+    "ALD_AlimonyReceived_hc": {"2025": 0, "2026": 1},
+
+    // New OBBBA parameters
+    "AutoLoanInterestDed_c": {"2025": 0},
+    "ALD_OvertimeIncome_hc": {"2025": 1.0},
+    "ALD_TipIncome_hc": {"2025": 1.0},
+
+    // Additional parameters
+    "ID_Medical_frt": {"2026": 0.075}
+}

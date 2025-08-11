@@ -73,8 +73,19 @@ def test_2017_law_reform(tests_path):
             assert act == exp, f'{name} a={act} != e={exp}'
 
 
+def _apply_reform(policy, reform_path):
+    """
+    Helper function to apply a reform and assert no errors.
+    """
+    with open(reform_path, 'r', encoding='utf-8') as rfile:
+        rtext = rfile.read()
+    policy.implement_reform(Policy.read_json_reform(rtext))
+    assert not policy.parameter_errors
+    assert not policy.errors
+
+
 @pytest.mark.rtr
-@pytest.mark.parametrize('fyear', [2019, 2020, 2021, 2022, 2023])
+@pytest.mark.parametrize('fyear', [2019, 2020, 2021, 2022, 2023, 2024, 2025])
 def test_round_trip_reforms(fyear, tests_path):
     """
     Check that current-law policy has the same policy parameter values in
@@ -83,7 +94,7 @@ def test_round_trip_reforms(fyear, tests_path):
     reforms that represents new tax legislation since 2017.
     This test checks that the future-year parameter values for
     current-law policy (which incorporates recent legislation such as
-    the TCJA, CARES Act, and ARPA) are the same as future-year
+    the TCJA, CARES Act, ARPA, and OBBBA) are the same as future-year
     parameter values for the compound round-trip reform.
     Doing this check ensures that the 2017_law.json
     and subsequent reform files that represent recent legislation are
@@ -97,48 +108,21 @@ def test_round_trip_reforms(fyear, tests_path):
     clp_mdata = dict(clp_pol.items())
     # create rtr metadata dictionary for round-trip reform in fyear
     rtr_pol = Policy()
-    # Revert to 2017 law
-    reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
-    # Layer on TCJA
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
-    # Layer on the CARES Act
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'CARES.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    # Layer on the Consolidated Appropriations Act of 2021
-    reform_file = os.path.join(
-        tests_path, '..', 'reforms', 'ConsolidatedAppropriationsAct2021.json'
-    )
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
-    # Layer on ARPA
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'ARPA.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
-    # Layer on rounding from IRS through Policy.LAST_KNOWN_YEAR
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'rounding.json')
-    with open(reform_file, 'r', encoding='utf-8') as rfile:
-        rtext = rfile.read()
-    rtr_pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not rtr_pol.parameter_errors
-    assert not rtr_pol.errors
+
+    reform_files_to_apply = [
+        '2017_law.json',
+        'TCJA.json',
+        'CARES.json',
+        'ConsolidatedAppropriationsAct2021.json',
+        'ARPA.json',
+        'OBBBA.json',
+        'rounding.json'
+    ]
+    for reform_filename in reform_files_to_apply:
+        reform_file_path = os.path.join(tests_path, '..',
+                                        'reforms', reform_filename)
+        _apply_reform(rtr_pol, reform_file_path)
+
     rtr_pol.set_year(fyear)
     rtr_mdata = dict(rtr_pol.items())
     # compare fyear policy parameter values
@@ -158,7 +142,7 @@ def test_round_trip_reforms(fyear, tests_path):
         clp_val = clp_mdata[pname]
         if not np.allclose(rtr_val, clp_val):
             fail_params.append(pname)
-            msg += '\n  {pname} in {fyear} : rtr={rtr_val} clp={clp_val}'
+            msg += f'\n  {pname} in {fyear} : rtr={rtr_val} clp={clp_val}'
             if fail_dump:
                 rtr_fails.write(f'{pname} {fyear} {rtr_val}\n')
                 clp_fails.write(f'{pname} {fyear} {clp_val}\n')
@@ -169,8 +153,23 @@ def test_round_trip_reforms(fyear, tests_path):
         raise ValueError(msg)
 
 
+REFORM_DIR = os.path.join(os.path.dirname(__file__), '..', 'reforms')
+REFORM_FILES = glob.glob(os.path.join(REFORM_DIR, '*.json'))
+REFORM_YEARS = {
+    'ARPA.json': 2022,
+    'ext.json': 2026,
+    'NoOBBBA.json': 2026,
+    'OBBBA.json': 2026,
+}
+
+
 @pytest.mark.reforms
-def test_reform_json_and_output(tests_path):
+@pytest.mark.parametrize(
+    'reform_file,tax_year',
+    [(os.path.basename(f), REFORM_YEARS.get(os.path.basename(f), 2020))
+     for f in REFORM_FILES],
+)
+def test_reform_json_and_output(reform_file, tax_year, tests_path):
     """
     Check that each JSON reform file can be converted into a reform dictionary
     that can then be passed to the Policy class implement_reform method that
@@ -213,7 +212,6 @@ def test_reform_json_and_output(tests_path):
         return not diffs
 
     # specify Records object containing cases data
-    tax_year = 2020
     cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')
     cases = Records(data=cases_path,
                     start_year=tax_year,  # set raw input data year
@@ -226,9 +224,10 @@ def test_reform_json_and_output(tests_path):
     calc = Calculator(policy=Policy(), records=cases, verbose=False)
     calc.advance_to_year(tax_year)
     calc.calc_all()
-    res_path = cases_path.replace('cases.csv', 'clp.res.csv')
+    clp_base = cases_path.replace('cases.csv', f'clp-{tax_year}')
+    res_path = clp_base + '.res.csv'
     write_res_file(calc, res_path)
-    if res_and_out_are_same(res_path.replace('.res.csv', '')):
+    if res_and_out_are_same(clp_base):
         os.remove(res_path)
     else:
         failures.append(res_path)
@@ -237,33 +236,29 @@ def test_reform_json_and_output(tests_path):
     pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
     pre_tcja = Policy.read_json_reform(pre_tcja_jrf)
     # check reform file contents and reform results for each reform
-    reforms_path = os.path.join(tests_path, '..', 'reforms', '*.json')
-    json_reform_files = glob.glob(reforms_path)
-    for jrf in json_reform_files:
-        if jrf.endswith('ext.json'):
-            continue  # skip ext.json, which is tested below in test_ext_reform
-        # determine reform's baseline by reading contents of jrf
-        with open(jrf, 'r', encoding='utf-8') as rfile:
-            jrf_text = rfile.read()
-        pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
-        # implement the reform relative to its baseline
-        reform = Policy.read_json_reform(jrf_text)
-        pol = Policy()  # current-law policy
-        if pre_tcja_baseline:
-            pol.implement_reform(pre_tcja)
-            assert not pol.parameter_errors
-        pol.implement_reform(reform)
+    jrf = os.path.join(tests_path, '..', 'reforms', reform_file)
+    # determine reform's baseline by reading contents of jrf
+    with open(jrf, 'r', encoding='utf-8') as rfile:
+        jrf_text = rfile.read()
+    pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
+    # implement the reform relative to its baseline
+    reform = Policy.read_json_reform(jrf_text)
+    pol = Policy()  # current-law policy
+    if pre_tcja_baseline:
+        pol.implement_reform(pre_tcja)
         assert not pol.parameter_errors
-        calc = Calculator(policy=pol, records=cases, verbose=False)
-        calc.advance_to_year(tax_year)
-        calc.calc_all()
-        res_path = jrf.replace('.json', '.res.csv')
-        write_res_file(calc, res_path)
-        if res_and_out_are_same(res_path.replace('.res.csv', '')):
-            os.remove(res_path)
-        else:
-            failures.append(res_path)
-        del calc
+    pol.implement_reform(reform)
+    assert not pol.parameter_errors
+    calc = Calculator(policy=pol, records=cases, verbose=False)
+    calc.advance_to_year(tax_year)
+    calc.calc_all()
+    res_path = jrf.replace('.json', '.res.csv')
+    write_res_file(calc, res_path)
+    if res_and_out_are_same(res_path.replace('.res.csv', '')):
+        os.remove(res_path)
+    else:
+        failures.append(res_path)
+    del calc
     if failures:
         msg = 'Following reforms have res-vs-out differences:\n'
         for ref in failures:
@@ -358,32 +353,39 @@ def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
         afile.write(f'{actual}\n')
 
 
-@pytest.mark.extend_tcja
-def test_ext_reform(tests_path):
+@pytest.mark.cps
+@pytest.mark.parametrize('reform_filename, expected_diff', [
+    ('ext.json', 45.491),
+    ('OBBBA.json', 0.0),
+    ('NoOBBBA.json', 292.402),
+])
+def test_reforms_cps(reform_filename, expected_diff, tests_path):
     """
-    Test ext.json reform that extends TCJA beyond 2025.
+    Test reforms beyond 2025 using public CPS data.
     """
-    # test syntax of ext.json reform file
-    end = Policy()
-    end.set_year(2026)
-    ext = Policy()
-    reform_file = os.path.join(tests_path, '..', 'reforms', 'ext.json')
+    pol = Policy()
+    reform_file = os.path.join(tests_path, '..', 'reforms', reform_filename)
     with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
-    ext.implement_reform(Policy.read_json_reform(rtext))
-    assert not ext.parameter_errors
-    ext.set_year(2026)
-    assert np.allclose([ext.II_em], [end.II_em])
-    # test tax output generated by ext.json reform file using public CPS data
+    pol.implement_reform(Policy.read_json_reform(rtext))
+    assert not pol.parameter_errors
+
     recs = Records.cps_constructor()
-    calc_end = Calculator(policy=end, records=recs, verbose=False)
-    calc_end.advance_to_year(2026)
-    calc_end.calc_all()
-    iitax_end = calc_end.array('iitax')
-    calc_ext = Calculator(policy=ext, records=recs, verbose=False)
-    calc_ext.advance_to_year(2026)
-    calc_ext.calc_all()
-    iitax_ext = calc_ext.array('iitax')
-    rdiff = iitax_ext - iitax_end
-    weighted_sum_rdiff = (rdiff * calc_end.array('s006')).sum() * 1.0e-9
-    assert np.allclose([weighted_sum_rdiff], [45.491], rtol=0.0, atol=0.01)
+
+    # create a Calculator object using current-law policy
+    calc_clp = Calculator(policy=Policy(), records=recs, verbose=False)
+    calc_clp.advance_to_year(2026)
+    calc_clp.calc_all()
+    iitax_clp = calc_clp.array('iitax')
+
+    # create a Calculator object using the reform
+    calc_ref = Calculator(policy=pol, records=recs, verbose=False)
+    calc_ref.advance_to_year(2026)
+    calc_ref.calc_all()
+    iitax_ref = calc_ref.array('iitax')
+
+    # compare aggregate individual income tax liability
+    rdiff = iitax_ref - iitax_clp
+    weighted_sum_rdiff = (rdiff * calc_clp.array('s006')).sum() * 1.0e-9
+    assert np.allclose([weighted_sum_rdiff], [expected_diff],
+                       rtol=0.0, atol=0.01)
