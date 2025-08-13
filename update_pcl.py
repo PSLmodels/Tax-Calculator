@@ -581,48 +581,6 @@ NEW_KNOWN_ITEMS = {
 
         {'year': 2025, 'value': 1700},
     ],
-    'FST_AGI_thd_lo': [  # not part of current-law policy, but needs to be here
-        {'year': 2023, 'MARS': 'single', 'value': 1000000.0},
-        {'year': 2023, 'MARS': 'mjoint', 'value': 1000000.0},
-        {'year': 2023, 'MARS': 'mseparate', 'value': 500000.0},
-        {'year': 2023, 'MARS': 'headhh', 'value': 1000000.0},
-        {'year': 2023, 'MARS': 'widow', 'value': 1000000.0},
-
-        {'year': 2024, 'MARS': 'single', 'value': 1000000.0},
-        {'year': 2024, 'MARS': 'mjoint', 'value': 1000000.0},
-        {'year': 2024, 'MARS': 'mseparate', 'value': 500000.0},
-        {'year': 2024, 'MARS': 'headhh', 'value': 1000000.0},
-        {'year': 2024, 'MARS': 'widow', 'value': 1000000.0},
-
-        {'year': 2025, 'MARS': 'single', 'value': 1000000.0},
-        {'year': 2025, 'MARS': 'mjoint', 'value': 1000000.0},
-        {'year': 2025, 'MARS': 'mseparate', 'value': 500000.0},
-        {'year': 2025, 'MARS': 'headhh', 'value': 1000000.0},
-        {'year': 2025, 'MARS': 'widow', 'value': 1000000.0},
-
-        # each year's values are the same as for the prior year
-    ],
-    'FST_AGI_thd_hi': [  # not part of current-law policy, but needs to be here
-        {'year': 2023, 'MARS': 'single', 'value': 2000000.0},
-        {'year': 2023, 'MARS': 'mjoint', 'value': 2000000.0},
-        {'year': 2023, 'MARS': 'mseparate', 'value': 1000000.0},
-        {'year': 2023, 'MARS': 'headhh', 'value': 2000000.0},
-        {'year': 2023, 'MARS': 'widow', 'value': 2000000.0},
-
-        {'year': 2024, 'MARS': 'single', 'value': 2000000.0},
-        {'year': 2024, 'MARS': 'mjoint', 'value': 2000000.0},
-        {'year': 2024, 'MARS': 'mseparate', 'value': 1000000.0},
-        {'year': 2024, 'MARS': 'headhh', 'value': 2000000.0},
-        {'year': 2024, 'MARS': 'widow', 'value': 2000000.0},
-
-        {'year': 2025, 'MARS': 'single', 'value': 2000000.0},
-        {'year': 2025, 'MARS': 'mjoint', 'value': 2000000.0},
-        {'year': 2025, 'MARS': 'mseparate', 'value': 1000000.0},
-        {'year': 2025, 'MARS': 'headhh', 'value': 2000000.0},
-        {'year': 2025, 'MARS': 'widow', 'value': 2000000.0},
-
-        # each year's values are the same as for the prior year
-    ],
     # OTHER PARAMS THAT ARE NOT INDEXED:
     'ALD_Dependents_Child_c': LIST_SCALAR_ZERO,
     'ALD_Dependents_Elder_c': LIST_SCALAR_ZERO,
