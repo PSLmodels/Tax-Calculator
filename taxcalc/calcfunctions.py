@@ -1165,7 +1165,7 @@ def ItemDed(e17500, e18400, e18500, e19200,
     # (no attempt to adjust c04470 components for limitation)
     reduction = 0.
     if ID_reduction_rate > 0.:
-        assert c21040 <= 0.0, "Pease and OBBBA cannot both be in effect"
+        assert c21040 <= 0.0, 'Pease and OBBBA cannot both be in effect'
         tincome = max(0., c00100 - c04600)
         texcess = max(0., tincome - II_brk6[MARS - 1])
         reduction = ID_reduction_rate * texcess
@@ -2202,7 +2202,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
         )
         # ... second phase-down from CDCC_po1_rate_min to CDCC_po2_rate_min
         ps2 = CDCC_ps2[MARS - 1]
-        assert ps2 >= ps1, "CDCC_ps2 must be no less than CDCC_ps1"
+        assert ps2 >= ps1, 'CDCC_ps2 must be no less than CDCC_ps1'
         if c00100 > ps2:
             steps_fractional = (c00100 - ps2) / CDCC_po2_step_size[MARS - 1]
             if exact == 1:  # exact calculation as on tax forms

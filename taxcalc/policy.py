@@ -200,15 +200,15 @@ class Policy(Parameters):
         )
         with open(path, 'r', encoding='utf-8') as f:
             defaults = json.loads(f.read())  # pylint: disable=protected-access
-        return [k for k in defaults if k != "schema"]
+        return [k for k in defaults if k != 'schema']
 
     def set_rates(self):
         """
         Initialize policy parameter indexing rates.
         """
         cpi_vals = [
-            vo["value"] for
-            vo in self._data["parameter_indexing_CPI_offset"]["value"]
+            vo['value'] for
+            vo in self._data['parameter_indexing_CPI_offset']['value']
         ]
         # parameter_indexing_CPI_offset parameter is no longer used, so check:
         assert any(cpi_vals) is False, \

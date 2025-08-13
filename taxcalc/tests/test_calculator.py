@@ -26,7 +26,7 @@ def test_make_calculator(cps_subsample):
     assert pol.current_year == start_year
     rec = Records.cps_constructor(data=cps_subsample)
     consump = Consumption()
-    consump.update_consumption({'MPC_e20400': {sim_year: 0.05}})
+    consump.update_consumption({"MPC_e20400": {sim_year: 0.05}})
     assert consump.current_year == start_year
     calc = Calculator(policy=pol, records=rec,
                       consumption=consump, verbose=True)
@@ -61,10 +61,10 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     # create a Policy object and apply a policy reform
     pol = Policy()
     reform = {
-        'II_em': {2013: 4000},
-        'II_em-indexed': {2013: False},
-        'STD_Aged': {2013: [1600, 1300, 1300, 1600, 1600]},
-        'STD_Aged-indexed': {2013: False}
+        "II_em": {2013: 4000},
+        "II_em-indexed": {2013: False},
+        "STD_Aged": {2013: [1600, 1300, 1300, 1600, 1600]},
+        "STD_Aged-indexed": {2013: False}
     }
     pol.implement_reform(reform)
     # create a Calculator object using this policy reform
@@ -72,14 +72,14 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     assert calc.reform_errors == {}
     # check that Policy object embedded in Calculator object is correct
     assert calc.current_year == year
-    assert calc.policy_param('II_em') == 4000
-    assert np.allclose(calc.policy_param('_II_em'),
+    assert calc.policy_param("II_em") == 4000
+    assert np.allclose(calc.policy_param("_II_em"),
                        np.array([4000] * pol.num_years))
     exp_STD_Aged = [[1600, 1300, 1300,
                      1600, 1600]] * pol.num_years
-    assert np.allclose(calc.policy_param('_STD_Aged'),
+    assert np.allclose(calc.policy_param("_STD_Aged"),
                        np.array(exp_STD_Aged))
-    assert np.allclose(calc.policy_param('STD_Aged'),
+    assert np.allclose(calc.policy_param("STD_Aged"),
                        np.array([1600, 1300, 1300, 1600, 1600]))
 
 
@@ -92,23 +92,23 @@ def test_make_calculator_with_multiyear_reform(cps_subsample):
     # create a Policy object and apply a policy reform
     pol = Policy()
     reform = {
-        'II_em': {2015: 5000, 2016: 6000},
-        'II_em-indexed': {2015: False},
-        'STD_Aged': {2016: [1600, 1300, 1600, 1300, 1600]}
+        "II_em": {2015: 5000, 2016: 6000},
+        "II_em-indexed": {2015: False},
+        "STD_Aged": {2016: [1600, 1300, 1600, 1300, 1600]}
     }
     pol.implement_reform(reform)
     # create a Calculator object using this policy-reform
     calc = Calculator(policy=pol, records=rec)
     # check that Policy object embedded in Calculator object is correct
     assert calc.current_year == year
-    assert calc.policy_param('II_em') == 3950
+    assert calc.policy_param("II_em") == 3950
     exp_II_em = [3900, 3950, 5000] + [6000] * (pol.num_years - 3)
-    assert np.allclose(calc.policy_param('_II_em'),
+    assert np.allclose(calc.policy_param("_II_em"),
                        np.array(exp_II_em))
     calc.increment_year()
     calc.increment_year()
     assert calc.current_year == 2016
-    assert np.allclose(calc.policy_param('STD_Aged'),
+    assert np.allclose(calc.policy_param("STD_Aged"),
                        np.array([1600, 1300, 1600, 1300, 1600]))
 
 
@@ -141,44 +141,44 @@ def test_calculator_mtr(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calcx = Calculator(policy=Policy(), records=rec)
     calcx.calc_all()
-    combinedx = calcx.array('combined')
-    c00100x = calcx.array('c00100')
+    combinedx = calcx.array("combined")
+    c00100x = calcx.array("c00100")
     calc = Calculator(policy=Policy(), records=rec)
-    recs_pre_e00200p = copy.deepcopy(calc.array('e00200p'))
-    (mtr_ptx, mtr_itx, mtr_cmb) = calc.mtr(variable_str='e00200p',
+    recs_pre_e00200p = copy.deepcopy(calc.array("e00200p"))
+    (mtr_ptx, mtr_itx, mtr_cmb) = calc.mtr(variable_str="e00200p",
                                            zero_out_calculated_vars=True)
-    recs_post_e00200p = calc.array('e00200p')
+    recs_post_e00200p = calc.array("e00200p")
     assert np.allclose(recs_post_e00200p, recs_pre_e00200p)
-    assert np.allclose(calc.array('combined'), combinedx)
-    assert np.allclose(calc.array('c00100'), c00100x)
+    assert np.allclose(calc.array("combined"), combinedx)
+    assert np.allclose(calc.array("c00100"), c00100x)
     assert np.array_equal(mtr_cmb, mtr_ptx) is False
     assert np.array_equal(mtr_ptx, mtr_itx) is False
     with pytest.raises(ValueError):
-        calc.mtr(variable_str='bad_income_type')
-    (_, _, mtr_combined) = calc.mtr(variable_str='e00200s',
+        calc.mtr(variable_str="bad_income_type")
+    (_, _, mtr_combined) = calc.mtr(variable_str="e00200s",
                                     calc_all_already_called=True)
     assert isinstance(mtr_combined, np.ndarray)
-    (_, _, mtr_combined) = calc.mtr(variable_str='e00650',
+    (_, _, mtr_combined) = calc.mtr(variable_str="e00650",
                                     negative_finite_diff=True,
                                     calc_all_already_called=True)
     assert isinstance(mtr_combined, np.ndarray)
-    (_, _, mtr_combined) = calc.mtr(variable_str='e00900p',
+    (_, _, mtr_combined) = calc.mtr(variable_str="e00900p",
                                     calc_all_already_called=True)
     assert isinstance(mtr_combined, np.ndarray)
-    (_, _, mtr_combined) = calc.mtr(variable_str='e01700',
+    (_, _, mtr_combined) = calc.mtr(variable_str="e01700",
                                     calc_all_already_called=True)
     assert isinstance(mtr_combined, np.ndarray)
-    (_, _, mtr_combined) = calc.mtr(variable_str='e26270',
+    (_, _, mtr_combined) = calc.mtr(variable_str="e26270",
                                     calc_all_already_called=True)
     assert isinstance(mtr_combined, np.ndarray)
-    (_, _, mtr_combined) = calc.mtr(variable_str='k1bx14p',
+    (_, _, mtr_combined) = calc.mtr(variable_str="k1bx14p",
                                     calc_all_already_called=True)
     assert isinstance(mtr_combined, np.ndarray)
-    (_, _, mtr_combined) = calc.mtr(variable_str='e00200p',
+    (_, _, mtr_combined) = calc.mtr(variable_str="e00200p",
                                     calc_all_already_called=True)
     assert np.allclose(mtr_combined, mtr_cmb)
-    assert np.allclose(calc.array('combined'), combinedx)
-    assert np.allclose(calc.array('c00100'), c00100x)
+    assert np.allclose(calc.array("combined"), combinedx)
+    assert np.allclose(calc.array("c00100"), c00100x)
 
 
 def test_make_calculator_increment_years_first(cps_subsample):
@@ -190,10 +190,10 @@ def test_make_calculator_increment_years_first(cps_subsample):
     pol = Policy()
     std5 = 2000
     reform = {
-        'STD_Aged': {2015: [std5, std5, std5, std5, std5]},
-        'II_em': {2015: 5000,
+        "STD_Aged": {2015: [std5, std5, std5, std5, std5]},
+        "II_em": {2015: 5000,
                   2016: 6000},
-        'II_em-indexed': {2016: False}
+        "II_em-indexed": {2016: False}
     }
     pol.implement_reform(reform)
     # create Calculator object with Policy object as modified by reform
@@ -211,10 +211,10 @@ def test_make_calculator_increment_years_first(cps_subsample):
                              [std5, std5, std5, std5, std5],
                              [std6, std6, std6, std6, std6],
                              [std7, std7, std7, std7, std7]])
-    act_STD_Aged = calc.policy_param('_STD_Aged')
+    act_STD_Aged = calc.policy_param("_STD_Aged")
     assert np.allclose(act_STD_Aged[:5], exp_STD_Aged)
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
-    act_II_em = calc.policy_param('_II_em')
+    act_II_em = calc.policy_param("_II_em")
     assert np.allclose(act_II_em[:5], exp_II_em)
 
 
@@ -227,21 +227,21 @@ def test_ID_StateLocal_HC_vs_CRT(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     # specify state/local complete haircut reform policy and Calculator object
     hc_policy = Policy()
-    hc_reform = {'ID_StateLocalTax_hc': {2013: 1.0}}
+    hc_reform = {"ID_StateLocalTax_hc": {2013: 1.0}}
     hc_policy.implement_reform(hc_reform)
     hc_calc = Calculator(policy=hc_policy, records=rec)
     hc_calc.calc_all()
     # specify AGI cap reform policy and Calculator object
     crt_policy = Policy()
-    crt_reform = {'ID_StateLocalTax_crt': {2013: 0.0}}
+    crt_reform = {"ID_StateLocalTax_crt": {2013: 0.0}}
     crt_policy.implement_reform(crt_reform)
     crt_calc = Calculator(policy=crt_policy, records=rec)
     crt_calc.calc_all()
     # compare calculated tax results generated by the two reforms
-    assert np.allclose(hc_calc.array('payrolltax'),
-                       crt_calc.array('payrolltax'))
-    assert np.allclose(hc_calc.array('iitax'),
-                       crt_calc.array('iitax'))
+    assert np.allclose(hc_calc.array("payrolltax"),
+                       crt_calc.array("payrolltax"))
+    assert np.allclose(hc_calc.array("iitax"),
+                       crt_calc.array("iitax"))
 
 
 def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
@@ -253,31 +253,31 @@ def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     # specify real estate complete haircut reform policy and Calculator object
     hc_policy = Policy()
-    hc_reform = {'ID_RealEstate_hc': {2013: 1.0}}
+    hc_reform = {"ID_RealEstate_hc": {2013: 1.0}}
     hc_policy.implement_reform(hc_reform)
     hc_calc = Calculator(policy=hc_policy, records=rec)
     hc_calc.calc_all()
     # specify AGI cap reform policy and Calculator object
     crt_policy = Policy()
-    crt_reform = {'ID_RealEstate_crt': {2013: 0.0}}
+    crt_reform = {"ID_RealEstate_crt": {2013: 0.0}}
     crt_policy.implement_reform(crt_reform)
     crt_calc = Calculator(policy=crt_policy, records=rec)
     crt_calc.calc_all()
     # compare calculated tax results generated by the two reforms
-    assert np.allclose(hc_calc.array('payrolltax'),
-                       crt_calc.array('payrolltax'))
-    assert np.allclose(hc_calc.array('iitax'),
-                       crt_calc.array('iitax'))
+    assert np.allclose(hc_calc.array("payrolltax"),
+                       crt_calc.array("payrolltax"))
+    assert np.allclose(hc_calc.array("iitax"),
+                       crt_calc.array("iitax"))
 
 
 RAWINPUT_FUNITS = 4
 RAWINPUT_YEAR = 2015
 RAWINPUT_CONTENTS = (
-    'RECID,MARS,unknown,e00300\n'
-    '    1,   2,      9,     0\n'
-    '    2,   1,      9,     0\n'
-    '    3,   4,      9,     0\n'
-    '    4,   3,      9,     0\n'
+    "RECID,MARS,unknown,e00300\n"
+    "    1,   2,      9,     0\n"
+    "    2,   1,      9,     0\n"
+    "    3,   4,      9,     0\n"
+    "    4,   3,      9,     0\n"
 )
 
 
@@ -297,36 +297,36 @@ def test_calculator_using_nonstd_input():
                       sync_years=False)  # keeps raw data unchanged
     assert calc.current_year == RAWINPUT_YEAR
     calc.calc_all()
-    assert calc.weighted_total('e00200') == 0
+    assert calc.weighted_total("e00200") == 0
     assert calc.total_weight() == 0
-    varlist = ['RECID', 'MARS']
+    varlist = ["RECID", "MARS"]
     dframe = calc.dataframe(varlist)
     assert isinstance(dframe, pd.DataFrame)
     assert dframe.shape == (RAWINPUT_FUNITS, len(varlist))
-    mars = calc.array('MARS')
+    mars = calc.array("MARS")
     assert isinstance(mars, np.ndarray)
     assert mars.shape == (RAWINPUT_FUNITS,)
     exp_iitax = np.zeros((nonstd.array_length,))
-    assert np.allclose(calc.array('iitax'), exp_iitax)
+    assert np.allclose(calc.array("iitax"), exp_iitax)
     mtr_ptax, _, _ = calc.mtr(wrt_full_compensation=False)
     exp_mtr_ptax = np.zeros((nonstd.array_length,))
     exp_mtr_ptax.fill(0.153)
     assert np.allclose(mtr_ptax, exp_mtr_ptax)
     # misc calls for code coverage
-    calc.incarray('e00300', np.ones_like(calc.array('e00300')))
-    calc.policy_param('ID_c', param_value=50e3)
+    calc.incarray("e00300", np.ones_like(calc.array("e00300")))
+    calc.policy_param("ID_c", param_value=50e3)
 
 
 def test_bad_json_names(tests_path):
     """
-    Test that ValueError raised with assump or reform do not end in '.json'
+    Test that ValueError raised with assump or reform do not end in ".json"
     """
     test_url = (
-        'https://raw.githubusercontent.com/PSLmodels/'
-        'Tax-Calculator/master/taxcalc/reforms/'
-        '2017_law.out.csv'
+        "https://raw.githubusercontent.com/PSLmodels/"
+        "Tax-Calculator/master/taxcalc/reforms/"
+        "2017_law.out.csv"
     )
-    csvname = os.path.join(tests_path, '..', 'growfactors.csv')
+    csvname = os.path.join(tests_path, "..", "growfactors.csv")
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(csvname, None)
     with pytest.raises(ValueError):
@@ -418,9 +418,9 @@ def test_json_assump_url():
         }
     }
     """
-    assump_url = ('https://raw.githubusercontent.com/PSLmodels/'
-                  'Tax-Calculator/master/taxcalc/assumptions/'
-                  'economic_assumptions_template.json')
+    assump_url = ("https://raw.githubusercontent.com/PSLmodels/"
+                  "Tax-Calculator/master/taxcalc/assumptions/"
+                  "economic_assumptions_template.json")
     params_str = Calculator.read_json_param_objects(None, assump_str)
     assert params_str
     params_url = Calculator.read_json_param_objects(None, assump_url)
@@ -452,19 +452,19 @@ def test_read_bad_json_assump_file():
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, badassump1)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(None, 'unknown_file_name')
+        Calculator.read_json_param_objects(None, "unknown_file_name")
     with pytest.raises(TypeError):
         Calculator.read_json_param_objects(None, [])
 
 
 def test_json_doesnt_exist():
     """
-    Test JSON file which doesn't exist
+    Test JSON file which doesn"t exist
     """
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(None, './reforms/doesnt_exist.json')
+        Calculator.read_json_param_objects(None, "./reforms/doesnt_exist.json")
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects('./reforms/doesnt_exist.json', None)
+        Calculator.read_json_param_objects("./reforms/doesnt_exist.json", None)
 
 
 def test_calc_all():
@@ -502,13 +502,13 @@ def test_noreform_documentation():
     gfs = GrowFactors()
     actual_doc = Calculator.reform_documentation(params, gfs)
     expected_doc = (
-        'REFORM DOCUMENTATION\n'
-        'Baseline Growth-Difference Assumption Values by Year:\n'
-        'none: no baseline GrowDiff assumptions specified\n'
-        'Response Growth-Difference Assumption Values by Year:\n'
-        'none: no response GrowDiff assumptions specified\n'
-        'Policy Reform Parameter Values by Year:\n'
-        'none: using current-law policy parameters\n'
+        "REFORM DOCUMENTATION\n"
+        "Baseline Growth-Difference Assumption Values by Year:\n"
+        "none: no baseline GrowDiff assumptions specified\n"
+        "Response Growth-Difference Assumption Values by Year:\n"
+        "none: no response GrowDiff assumptions specified\n"
+        "Policy Reform Parameter Values by Year:\n"
+        "none: using current-law policy parameters\n"
     )
     assert actual_doc == expected_doc
 
@@ -551,14 +551,14 @@ def test_reform_documentation():
 """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
     assert isinstance(params, dict)
-    second_reform = {'II_em': {2019: 6500}}
+    second_reform = {"II_em": {2019: 6500}}
     gfs = GrowFactors()
     doc = Calculator.reform_documentation(params, gfs, [second_reform])
     assert isinstance(doc, str)
     dump = False  # set to True to print documentation and force test failure
     if dump:
         print(doc)
-        assert False, 'ERROR: reform_documentation above'
+        assert False, "ERROR: reform_documentation above"
 
 
 def test_distribution_tables(cps_subsample):
@@ -570,22 +570,22 @@ def test_distribution_tables(cps_subsample):
     calc1 = Calculator(policy=pol, records=recs)
     assert calc1.current_year == 2014
     calc1.calc_all()
-    dt1, dt2 = calc1.distribution_tables(None, 'weighted_deciles')
+    dt1, dt2 = calc1.distribution_tables(None, "weighted_deciles")
     assert isinstance(dt1, pd.DataFrame)
     assert dt2 is None
-    dt1, dt2 = calc1.distribution_tables(calc1, 'weighted_deciles')
+    dt1, dt2 = calc1.distribution_tables(calc1, "weighted_deciles")
     assert isinstance(dt1, pd.DataFrame)
     assert isinstance(dt2, pd.DataFrame)
     reform = {
-        'UBI_u18': {2014: 1000},
-        'UBI_1820': {2014: 1000},
-        'UBI_21': {2014: 1000}
+        "UBI_u18": {2014: 1000},
+        "UBI_1820": {2014: 1000},
+        "UBI_21": {2014: 1000}
     }
     pol.implement_reform(reform)
     assert not pol.parameter_errors
     calc2 = Calculator(policy=pol, records=recs)
     calc2.calc_all()
-    dt1, dt2 = calc1.distribution_tables(calc2, 'weighted_deciles')
+    dt1, dt2 = calc1.distribution_tables(calc2, "weighted_deciles")
     assert isinstance(dt1, pd.DataFrame)
     assert isinstance(dt2, pd.DataFrame)
 
@@ -599,13 +599,13 @@ def test_difference_table(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=recs)
     assert calc1.current_year == cyr
-    reform = {'SS_Earnings_c': {cyr: 9e99}}
+    reform = {"SS_Earnings_c": {cyr: 9e99}}
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=recs)
     assert calc2.current_year == cyr
     calc1.calc_all()
     calc2.calc_all()
-    diff = calc1.difference_table(calc2, 'weighted_deciles', 'iitax')
+    diff = calc1.difference_table(calc2, "weighted_deciles", "iitax")
     assert isinstance(diff, pd.DataFrame)
 
 
@@ -627,13 +627,13 @@ def test_mtr_graph(cps_subsample):
     calc = Calculator(policy=Policy(), records=recs)
     fig = calc.mtr_graph(calc,
                          mars=2,
-                         income_measure='wages',
-                         mtr_measure='ptax',
+                         income_measure="wages",
+                         mtr_measure="ptax",
                          pop_quantiles=False)
     assert fig
     fig = calc.mtr_graph(calc,
-                         income_measure='agi',
-                         mtr_measure='itax',
+                         income_measure="agi",
+                         mtr_measure="itax",
                          pop_quantiles=True)
     assert fig
 
@@ -644,9 +644,9 @@ def test_atr_graph(cps_subsample):
     """
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
-    fig = calc.atr_graph(calc, mars=2, atr_measure='itax')
+    fig = calc.atr_graph(calc, mars=2, atr_measure="itax")
     assert fig
-    fig = calc.atr_graph(calc, atr_measure='ptax')
+    fig = calc.atr_graph(calc, atr_measure="ptax")
     assert fig
 
 
@@ -683,7 +683,7 @@ def test_ce_aftertax_income(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
     calc1 = Calculator(policy=pol, records=rec)
-    pol.implement_reform({'SS_Earnings_c': {2013: 9e99}})
+    pol.implement_reform({"SS_Earnings_c": {2013: 9e99}})
     calc2 = Calculator(policy=pol, records=rec)
     res = calc1.ce_aftertax_income(calc2)
     assert isinstance(res, dict)
@@ -692,19 +692,19 @@ def test_ce_aftertax_income(cps_subsample):
 @pytest.mark.itmded_vars
 @pytest.mark.pre_release
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('year, cvname, hcname',
-                         [(2018, 'c17000', 'ID_Medical_hc'),
-                          (2018, 'c18300', 'ID_AllTaxes_hc'),
-                          (2018, 'c19200', 'ID_InterestPaid_hc'),
-                          (2018, 'c19700', 'ID_Charity_hc'),
-                          (2018, 'c20500', 'ID_Casualty_hc'),
-                          (2018, 'c20800', 'ID_Miscellaneous_hc'),
-                          (2017, 'c17000', 'ID_Medical_hc'),
-                          (2017, 'c18300', 'ID_AllTaxes_hc'),
-                          (2017, 'c19200', 'ID_InterestPaid_hc'),
-                          (2017, 'c19700', 'ID_Charity_hc'),
-                          (2017, 'c20500', 'ID_Casualty_hc'),
-                          (2017, 'c20800', 'ID_Miscellaneous_hc')])
+@pytest.mark.parametrize("year, cvname, hcname",
+                         [(2018, "c17000", "ID_Medical_hc"),
+                          (2018, "c18300", "ID_AllTaxes_hc"),
+                          (2018, "c19200", "ID_InterestPaid_hc"),
+                          (2018, "c19700", "ID_Charity_hc"),
+                          (2018, "c20500", "ID_Casualty_hc"),
+                          (2018, "c20800", "ID_Miscellaneous_hc"),
+                          (2017, "c17000", "ID_Medical_hc"),
+                          (2017, "c18300", "ID_AllTaxes_hc"),
+                          (2017, "c19200", "ID_InterestPaid_hc"),
+                          (2017, "c19700", "ID_Charity_hc"),
+                          (2017, "c20500", "ID_Casualty_hc"),
+                          (2017, "c20800", "ID_Miscellaneous_hc")])
 def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     """
     Check that all c04470 components are adjusted to reflect the filing
@@ -722,16 +722,16 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     # policy1 such that everybody itemizes deductions and all are allowed
     policy1 = Policy()
     reform1 = {
-        'STD_Aged': {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
-        'STD': {year: [0.0, 0.0, 0.0, 0.0, 0.0]}
+        "STD_Aged": {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
+        "STD": {year: [0.0, 0.0, 0.0, 0.0, 0.0]}
     }
     policy1.implement_reform(reform1)
     assert not policy1.parameter_errors
     # policy2 such that everybody itemizes deductions but one is disallowed
     policy2 = Policy()
     reform2 = {
-        'STD_Aged': {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
-        'STD': {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
+        "STD_Aged": {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
+        "STD": {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
         hcname: {year: 1.0}
     }
     policy2.implement_reform(reform2)
@@ -744,36 +744,36 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     calc2.advance_to_year(year)
     calc2.calc_all()
     # confirm that nobody is taking the standard deduction
-    assert np.allclose(calc1.array('standard'), 0.)
-    assert np.allclose(calc2.array('standard'), 0.)
+    assert np.allclose(calc1.array("standard"), 0.)
+    assert np.allclose(calc2.array("standard"), 0.)
     # calculate different in total itemized deductions
     if year == 2017:
         # pre-Pease limitation total itemized deductions
-        itmded1 = calc1.weighted_total('c21060') * 1e-9
-        itmded2 = calc2.weighted_total('c21060') * 1e-9
+        itmded1 = calc1.weighted_total("c21060") * 1e-9
+        itmded2 = calc2.weighted_total("c21060") * 1e-9
     elif year == 2018:
         # total itemized deductions (no Pease-like limitation)
-        itmded1 = calc1.weighted_total('c04470') * 1e-9
-        itmded2 = calc2.weighted_total('c04470') * 1e-9
+        itmded1 = calc1.weighted_total("c04470") * 1e-9
+        itmded2 = calc2.weighted_total("c04470") * 1e-9
     else:
-        raise ValueError(f'illegal year value = {year}')
+        raise ValueError(f"illegal year value = {year}")
     difference_in_total_itmded = itmded1 - itmded2
     # calculate itemized component amount
     component_amt = calc1.weighted_total(cvname) * 1e-9
     # confirm that component amount is equal to difference in total deductions
-    if year == 2017 and cvname == 'c19700':
+    if year == 2017 and cvname == "c19700":
         atol = 0.016
-    elif year == 2017 and cvname == 'c19200':
+    elif year == 2017 and cvname == "c19200":
         atol = 0.010
-    elif year == 2017 and cvname == 'c18300':
+    elif year == 2017 and cvname == "c18300":
         atol = 0.009
     else:
         atol = 0.00001
     if not np.allclose(component_amt, difference_in_total_itmded, atol=atol):
         msg = (
-            f'\n{cvname}={component_amt:.3f}  !=  '
-            f'{difference_in_total_itmded:.3f}='
-            'difference_in_total_itemized_deductions'
+            f"\n{cvname}={component_amt:.3f}  !=  "
+            f"{difference_in_total_itmded:.3f}="
+            "difference_in_total_itemized_deductions"
         )
         raise ValueError(msg)
 
@@ -793,16 +793,16 @@ def test_qbid_calculation():
     # and that the spouse has no business income and only earnings.
     TPC_YEAR = 2018
     TPC_VARS = (
-        'RECID,MARS,e00200s,e00200,e26270,e02000,PT_SSTB_income,'
-        'PT_binc_w2_wages,PT_ubia_property,pre_qbid_taxinc,qbid\n'
+        "RECID,MARS,e00200s,e00200,e26270,e02000,PT_SSTB_income,"
+        "PT_binc_w2_wages,PT_ubia_property,pre_qbid_taxinc,qbid\n"
     )
     TPC_FUNITS = (
-        '1,2, 99000, 99000,75000,75000,1,20000,90000,150000,15000.00\n'
-        '2,2,349000,349000,75000,75000,1,20000,90000,400000, 1612.50\n'
-        '3,2,524000,524000,75000,75000,1,20000,90000,575000,    0.00\n'
-        '4,2, 99000, 99000,75000,75000,0,20000,90000,150000,15000.00\n'
-        '5,2,349000,349000,75000,75000,0,20000,90000,400000,10750.00\n'
-        '6,2,524000,524000,75000,75000,0,20000,90000,575000,10000.00\n'
+        "1,2, 99000, 99000,75000,75000,1,20000,90000,150000,15000.00\n"
+        "2,2,349000,349000,75000,75000,1,20000,90000,400000, 1612.50\n"
+        "3,2,524000,524000,75000,75000,1,20000,90000,575000,    0.00\n"
+        "4,2, 99000, 99000,75000,75000,0,20000,90000,150000,15000.00\n"
+        "5,2,349000,349000,75000,75000,0,20000,90000,400000,10750.00\n"
+        "6,2,524000,524000,75000,75000,0,20000,90000,575000,10000.00\n"
     )
     # generate actual Calculator pre-qbid taxinc and qbid amounts
     tpc_df = pd.read_csv(StringIO(TPC_VARS + TPC_FUNITS))
@@ -811,7 +811,7 @@ def test_qbid_calculation():
     calc = Calculator(policy=Policy(), records=recs)
     assert calc.current_year == TPC_YEAR
     calc.calc_all()
-    varlist = ['RECID', 'c00100', 'standard', 'c04470', 'qbided']
+    varlist = ["RECID", "c00100", "standard", "c04470", "qbided"]
     tc_df = calc.dataframe(varlist, all_vars=True)
     # compare actual amounts with expected amounts from TPC publication
     act_taxinc = tc_df.c00100 - np.maximum(tc_df.standard, tc_df.c04470)
@@ -821,11 +821,11 @@ def test_qbid_calculation():
 
 
 def test_calc_all_benefits_amounts(cps_subsample):
-    '''
+    """
     Testing how benefits are handled in the calc_all method
-    '''
+    """
     # set a reform with a positive UBI amount
-    ubi_ref = {'UBI_21': {2020: 1000}}
+    ubi_ref = {"UBI_21": {2020: 1000}}
 
     # create baseline calculator
     pol = Policy()
@@ -843,14 +843,14 @@ def test_calc_all_benefits_amounts(cps_subsample):
 
     # check that differences in benefits totals are equal to diffs in
     # UBI
-    ubi_diff = (calc_ubi.weighted_total('ubi') -
-                calc_base.weighted_total('ubi')) / 1e9
+    ubi_diff = (calc_ubi.weighted_total("ubi") -
+                calc_base.weighted_total("ubi")) / 1e9
     benefit_cost_diff = (
-        calc_ubi.weighted_total('benefit_cost_total') -
-        calc_base.weighted_total('benefit_cost_total')) / 1e9
+        calc_ubi.weighted_total("benefit_cost_total") -
+        calc_base.weighted_total("benefit_cost_total")) / 1e9
     benefit_value_diff = (
-        calc_ubi.weighted_total('benefit_cost_total') -
-        calc_base.weighted_total('benefit_cost_total')) / 1e9
+        calc_ubi.weighted_total("benefit_cost_total") -
+        calc_base.weighted_total("benefit_cost_total")) / 1e9
 
     assert np.allclose(ubi_diff, benefit_cost_diff)
     assert np.allclose(ubi_diff, benefit_value_diff)
@@ -875,8 +875,8 @@ def test_cg_top_rate():
            "STD": {2019: [0, 0, 0, 0, 0]}}
 
     # create one record just below the top CG bracket and one just above
-    VARS = 'RECID,MARS,p23250\n'
-    FUNITS = '1,2,999999\n2,2,1000001\n'
+    VARS = "RECID,MARS,p23250\n"
+    FUNITS = "1,2,999999\n2,2,1000001\n"
 
     pol_base = Policy()
     pol_base.implement_reform(base)
@@ -895,23 +895,23 @@ def test_cg_top_rate():
     calc_ref.calc_all()
 
     # calculate MTRs wrt long term gains
-    mtr_base = calc_base.mtr(variable_str='p23250',
+    mtr_base = calc_base.mtr(variable_str="p23250",
                              calc_all_already_called=True,
                              wrt_full_compensation=False)
     mtr_itax_base = mtr_base[1]
 
-    cg_rt3 = pol_base.to_array('CG_rt3', year=2019)
+    cg_rt3 = pol_base.to_array("CG_rt3", year=2019)
     # check that MTR for both records is equal to CG_rt3
     assert np.allclose(mtr_itax_base, cg_rt3)
 
     # calculate MTRs under reform
-    mtr_ref = calc_ref.mtr(variable_str='p23250',
+    mtr_ref = calc_ref.mtr(variable_str="p23250",
                            calc_all_already_called=True,
                            wrt_full_compensation=False)
     mtr_itax_ref = mtr_ref[1]
 
-    cg_rt3_ref = pol_ref.to_array('CG_rt3', year=2019)
-    cg_rt4_ref = pol_ref.to_array(param='CG_rt4', year=2019)
+    cg_rt3_ref = pol_ref.to_array("CG_rt3", year=2019)
+    cg_rt4_ref = pol_ref.to_array(param="CG_rt4", year=2019)
 
     # check that MTR of houshold below top threshold is equal to
     # CG_rt3

@@ -86,13 +86,13 @@ PARAMS_JSON = json.dumps({
 })
 
 
-@pytest.fixture(scope='module', name='params_json_file')
+@pytest.fixture(scope="module", name="params_json_file")
 def fixture_params_json_file():
     """
     Define JSON DEFAULTS file for Parameters-derived Params class.
     """
-    with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
-        pfile.write(PARAMS_JSON + '\n')
+    with tempfile.NamedTemporaryFile(mode="a", delete=False) as pfile:
+        pfile.write(PARAMS_JSON + "\n")
     pfile.close()
     yield pfile
     os.remove(pfile.name)
@@ -100,22 +100,22 @@ def fixture_params_json_file():
 
 @pytest.mark.parametrize("revision, expect", [
     ({}, ""),
-    ({'real_param': {2004: 1.9}}, "error"),
-    ({'int_param': {2004: [3.6]}}, "raise"),
+    ({"real_param": {2004: 1.9}}, "error"),
+    ({"int_param": {2004: [3.6]}}, "raise"),
     ({"int_param": {2004: [3]}}, "raise"),
     ({"label_param": {2004: [1, 2]}}, "noerror"),
     ({"label_param": {2004: [[1, 2]]}}, "raise"),
     ({"label_param": {2004: [1, 2, 3]}}, "raise"),
-    ({'bool_param': {2004: [4.9]}}, "raise"),
-    ({'str_param': {2004: [9]}}, "raise"),
-    ({'str_param': {2004: 'nonlinear'}}, "noerror"),
-    ({'str_param': {2004: 'unknownvalue'}}, "error"),
-    ({'str_param': {2004: ['nonlinear']}}, "raise"),
-    ({'real_param': {2004: 'linear'}}, "raise"),
-    ({'real_param': {2004: [0.2, 0.3]}}, "raise"),
-    ({'removed_param': {2004: 0.1}}, "raise"),
-    ({'real_param-indexed': {2004: True}}, "raise"),
-    ({'unknown_param-indexed': {2004: False}}, "raise")
+    ({"bool_param": {2004: [4.9]}}, "raise"),
+    ({"str_param": {2004: [9]}}, "raise"),
+    ({"str_param": {2004: "nonlinear"}}, "noerror"),
+    ({"str_param": {2004: "unknownvalue"}}, "error"),
+    ({"str_param": {2004: ["nonlinear"]}}, "raise"),
+    ({"real_param": {2004: "linear"}}, "raise"),
+    ({"real_param": {2004: [0.2, 0.3]}}, "raise"),
+    ({"removed_param": {2004: 0.1}}, "raise"),
+    ({"real_param-indexed": {2004: True}}, "raise"),
+    ({"unknown_param-indexed": {2004: False}}, "raise")
 ])
 def test_params_class(revision, expect, params_json_file):
     """
@@ -129,12 +129,12 @@ def test_params_class(revision, expect, params_json_file):
         # pylint: disable=abstract-method
 
         DEFAULTS_FILE_NAME = params_json_file.name
-        DEFAULTS_FILE_PATH = ''
+        DEFAULTS_FILE_PATH = ""
         START_YEAR = 2001
         LAST_YEAR = 2010
         NUM_YEARS = LAST_YEAR - START_YEAR + 1
         REMOVED_PARAMS = {
-            'removed_param': 'has been removed'
+            "removed_param": "has been removed"
         }
 
         def __init__(self):
@@ -169,17 +169,17 @@ def test_params_class(revision, expect, params_json_file):
             prms.set_year(2011)
         return
 
-    if expect == 'raise':
+    if expect == "raise":
         with pytest.raises(paramtools.ValidationError):
             prms.update_params(revision)
-    elif expect == 'noerror':
+    elif expect == "noerror":
         prms.update_params(revision)
         assert not prms.errors
-    elif expect == 'error':
+    elif expect == "error":
         with pytest.raises(paramtools.ValidationError):
             prms.update_params(revision)
         assert prms.errors
-    elif expect == 'warn':
+    elif expect == "warn":
         with pytest.raises(paramtools.ValidationError):
             prms.update_params(revision)
         assert prms.warnings
@@ -198,9 +198,9 @@ def test_json_file_contents(tests_path, fname):
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     known_years = set(range(first_year, last_known_year + 1))
     # check elements in each parameter sub-dictionary
-    failures = ''
+    failures = ""
     path = os.path.join(tests_path, "..", fname)
-    with open(path, 'r', encoding='utf-8') as f:
+    with open(path, "r", encoding="utf-8") as f:
         allparams = json.loads(f.read())
     for pname in allparams:
         if pname == "schema":
@@ -208,31 +208,37 @@ def test_json_file_contents(tests_path, fname):
         # check that param contains required keys
         param = allparams[pname]
         # check that indexable and indexed are False in many files
-        if fname != 'policy_current_law.json':
-            assert param.get('indexable', False) is False
-            assert param.get('indexed', False) is False
+        if fname != "policy_current_law.json":
+            assert param.get("indexable", False) is False
+            assert param.get("indexed", False) is False
         # check that indexable is True when indexed is True
-        if param.get('indexed', False) and not param.get('indexable', False):
+        if param.get("indexed", False) and not param.get("indexable", False):
+            pindexed = param.get("indexed", False)
+            pindexable = param.get("indexable", False)
             msg = (
-                f'param:<{pname}>; '
-                f'indexed={param.get("indexed", False)}; '
-                f'indexable={param.get("indexable", False)}\n'
+                f"param:<{pname}>; "
+                f"indexed={pindexed}; "
+                f"indexable={pindexable}\n"
             )
             failures += msg
         # check that indexable param has value_type float
-        if param.get('indexable', False) and param['type'] != 'float':
+        if param.get("indexable", False) and param["type"] != "float":
+            ptype = param["type"]
+            pindexable = param.get("indexable", False)
             msg = (
-                f'param:<{pname}>; '
-                f'type={param["type"]}; '
-                f'indexable={param.get("indexable", False)}\n'
+                f"param:<{pname}>; "
+                f"type={ptype}; "
+                f"indexable={pindexable}\n"
             )
             failures += msg
         # ensure that indexable is False when value_type is not real
-        if param.get('indexable', False) and param['type'] != 'float':
+        if param.get("indexable", False) and param["type"] != "float":
+            pindexable = param.get("indexable", False)
+            ptype = param["value_type"]
             msg = (
-                f'param:<{pname}>; '
-                f'indexable={param.get("indexable", False)}; '
-                f'type={param["value_type"]}\n'
+                f"param:<{pname}>; "
+                f"indexable={pindexable}; "
+                f"type={ptype}\n"
             )
             failures += msg
     o = None
@@ -250,7 +256,7 @@ def test_json_file_contents(tests_path, fname):
         for y in known_years:
             o.set_year(y)
             if np.isnan(getattr(o, param)).any():
-                msg = f'param:<{param}>; not found in year={y}\n'
+                msg = f"param:<{param}>; not found in year={y}\n"
                 failures += msg
     if failures:
         raise ValueError(failures)
@@ -265,28 +271,28 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
     Make sure each JSON parameter is mentioned in PYTHON code file.
     """
     # read JSON parameter file into a dictionary
-    path = os.path.join(tests_path, '..', jfname)
-    with open(path, 'r', encoding='utf-8') as pfile:
+    path = os.path.join(tests_path, "..", jfname)
+    with open(path, "r", encoding="utf-8") as pfile:
         allparams = json.load(pfile)
     assert isinstance(allparams, dict)
     # read PYTHON code file text
     # pylint: disable=consider-using-join
-    if pfname == 'consumption.py':
+    if pfname == "consumption.py":
         # consumption.py does not explicitly name the parameters
-        code_text = ''
+        code_text = ""
         for var in Consumption.RESPONSE_VARS:
-            code_text += f'MPC_{var}\n'
+            code_text += f"MPC_{var}\n"
         for var in Consumption.BENEFIT_VARS:
-            code_text += f'BEN_{var}_value\n'
-    elif pfname == 'growdiff.py':
+            code_text += f"BEN_{var}_value\n"
+    elif pfname == "growdiff.py":
         # growdiff.py does not explicitly name the parameters
-        code_text = ''
+        code_text = ""
         for var in GrowFactors.VALID_NAMES:
-            code_text += f'{var}\n'
+            code_text += f"{var}\n"
     else:
         # parameters are explicitly named in PYTHON file
-        path = os.path.join(tests_path, '..', pfname)
-        with open(path, 'r', encoding='utf-8') as pfile:
+        path = os.path.join(tests_path, "..", pfname)
+        with open(path, "r", encoding="utf-8") as pfile:
             code_text = pfile.read()
     # check that each param (without leading _) is mentioned in code text
     for pname in allparams:
@@ -491,7 +497,7 @@ def test_expand_2d_variable_rates():
     for i in range(0, 4):
         idx = i + len(ary) - 1
         cur = np.array(cur * (1.0 + irates[idx]))
-        print('cur is ', cur)
+        print("cur is ", cur)
         exp2.append(cur)
     exp1 = np.array([1., 2., 3., 4.])
     exp = np.zeros((5, 4))
@@ -597,13 +603,13 @@ def test_read_json_revision(good_revision):
     # pllint: disable=private-method
     with pytest.raises(TypeError):
         # error because first obj argument is neither None nor a string
-        Parameters._read_json_revision([], '')
+        Parameters._read_json_revision([], "")
     with pytest.raises(ValueError):
         # error because second topkey argument must be a string
         Parameters._read_json_revision(good_revision, 999)
     with pytest.raises(ValueError):
         # error because second topkey argument is not in good_revision
-        Parameters._read_json_revision(good_revision, 'unknown_topkey')
+        Parameters._read_json_revision(good_revision, "unknown_topkey")
 
 
 @pytest.mark.parametrize("params,is_paramtools", [

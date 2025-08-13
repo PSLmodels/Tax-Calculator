@@ -9,12 +9,10 @@ codecov.yml
 csv_show.sh
 csv_vars.sh
 environment.yml
-extend_tcja.py
 gitpr
 gitpr.bat
 gitsync
 gitsync.bat
-ppp.py
 pyproject.toml
 pytest.ini
 setup.py
@@ -160,7 +158,6 @@ taxcalc/reforms/Trump2016.out.csv
 taxcalc/reforms/Trump2017.json
 taxcalc/reforms/Trump2017.out.csv
 taxcalc/reforms/cases.csv
-taxcalc/reforms/clp.out.csv
 taxcalc/reforms/ext.json
 taxcalc/reforms/growfactors_ext.csv
 taxcalc/reforms/ptaxes0.json

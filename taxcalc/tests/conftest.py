@@ -17,7 +17,7 @@ numpy.seterr(all='raise')
 @pytest.fixture
 def skip_jit(monkeypatch):
     """Fixture docstring"""
-    monkeypatch.setenv("TESTING", "True")
+    monkeypatch.setenv('TESTING', 'True')
     yield
 
 

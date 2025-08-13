@@ -351,9 +351,9 @@ class TaxCalcIO():
                         raise_errors=False,
                     )
                     if self.errmsg:
-                        self.errmsg += "\n"
+                        self.errmsg += '\n'
                     for _, errors in pol_bas.parameter_errors.items():
-                        self.errmsg += "\n".join(errors)
+                        self.errmsg += '\n'.join(errors)
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += str(valerr_msg)
         else:
@@ -375,9 +375,9 @@ class TaxCalcIO():
                         raise_errors=False,
                     )
                     if self.errmsg:
-                        self.errmsg += "\n"
+                        self.errmsg += '\n'
                     for _, errors in pol_ref.parameter_errors.items():
-                        self.errmsg += "\n".join(errors)
+                        self.errmsg += '\n'.join(errors)
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += str(valerr_msg)
         else:

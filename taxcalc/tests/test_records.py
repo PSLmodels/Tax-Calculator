@@ -66,7 +66,7 @@ def test_read_cps_data(cps_fullsample):
     assert data.equals(cps_fullsample)
 
 
-@pytest.mark.parametrize("csv", [
+@pytest.mark.parametrize('csv', [
     (
         'RECID,MARS,e00200,e00200p,e00200s\n'
         '1,    2,   200000, 200000,   0.03\n'
