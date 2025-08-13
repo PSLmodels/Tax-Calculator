@@ -89,7 +89,8 @@ def create_apply_function_string(sigout, sigin, parameters):
     out_args = ["x_" + str(i) for i in range(0, len(sigout))]
     in_args = ["x_" + str(i) for i in range(len(sigout), total_len)]
 
-    fstr.write(f"def ap_func({",".join(out_args + in_args)}):\n")
+    all_args = ",".join(out_args + in_args)
+    fstr.write(f"def ap_func({all_args}):\n")
     fstr.write("  for i in range(len(x_0)):\n")
     out_index = [x + "[i]" for x in out_args]
     in_index = []
