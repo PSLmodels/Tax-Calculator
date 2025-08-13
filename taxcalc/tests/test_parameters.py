@@ -213,26 +213,32 @@ def test_json_file_contents(tests_path, fname):
             assert param.get("indexed", False) is False
         # check that indexable is True when indexed is True
         if param.get("indexed", False) and not param.get("indexable", False):
+            pindexed = param.get("indexed", False)
+            pindexable = param.get("indexable", False)
             msg = (
                 f"param:<{pname}>; "
-                f"indexed={param.get("indexed", False)}; "
-                f"indexable={param.get("indexable", False)}\n"
+                f"indexed={pindexed}; "
+                f"indexable={pindexable}\n"
             )
             failures += msg
         # check that indexable param has value_type float
         if param.get("indexable", False) and param["type"] != "float":
+            ptype = param["type"]
+            pindexable = param.get("indexable", False)
             msg = (
                 f"param:<{pname}>; "
-                f"type={param["type"]}; "
-                f"indexable={param.get("indexable", False)}\n"
+                f"type={ptype}; "
+                f"indexable={pindexable}\n"
             )
             failures += msg
         # ensure that indexable is False when value_type is not real
         if param.get("indexable", False) and param["type"] != "float":
+            pindexable = param.get("indexable", False)
+            ptype = param["value_type"]
             msg = (
                 f"param:<{pname}>; "
-                f"indexable={param.get("indexable", False)}; "
-                f"type={param["value_type"]}\n"
+                f"indexable={pindexable}; "
+                f"type={ptype}\n"
             )
             failures += msg
     o = None
