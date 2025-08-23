@@ -24,20 +24,20 @@ from taxcalc.decorators import (
 def test_create_apply_function_string():
     """Test docstring"""
     ans = create_apply_function_string(['a', 'b', 'c'], ['d', 'e'], [])
-    exp = ("def ap_func(x_0,x_1,x_2,x_3,x_4):\n"
-           "  for i in range(len(x_0)):\n"
-           "    x_0[i],x_1[i],x_2[i] = jitted_f(x_3[i],x_4[i])\n"
-           "  return x_0,x_1,x_2\n")
+    exp = ('def ap_func(x_0,x_1,x_2,x_3,x_4):\n'
+           '  for i in range(len(x_0)):\n'
+           '    x_0[i],x_1[i],x_2[i] = jitted_f(x_3[i],x_4[i])\n'
+           '  return x_0,x_1,x_2\n')
     assert ans == exp
 
 
 def test_create_apply_function_string_with_params():
     """Test docstring"""
     ans = create_apply_function_string(['a', 'b', 'c'], ['d', 'e'], ['d'])
-    exp = ("def ap_func(x_0,x_1,x_2,x_3,x_4):\n"
-           "  for i in range(len(x_0)):\n"
-           "    x_0[i],x_1[i],x_2[i] = jitted_f(x_3,x_4[i])\n"
-           "  return x_0,x_1,x_2\n")
+    exp = ('def ap_func(x_0,x_1,x_2,x_3,x_4):\n'
+           '  for i in range(len(x_0)):\n'
+           '    x_0[i],x_1[i],x_2[i] = jitted_f(x_3,x_4[i])\n'
+           '  return x_0,x_1,x_2\n')
     assert ans == exp
 
 
@@ -45,24 +45,26 @@ def test_create_toplevel_function_string_mult_outputs():
     """Test docstring"""
     ans = create_toplevel_function_string(['a', 'b'], ['d', 'e'],
                                           ['pm', 'pm', 'pf', 'pm'])
-    exp = ''
-    exp = ("def hl_func(pm, pf):\n"
-           "    from pandas import DataFrame\n"
-           "    import numpy as np\n"
-           "    import pandas as pd\n"
-           "    def get_values(x):\n"
-           "        if isinstance(x, pd.Series):\n"
-           "            return x.values\n"
-           "        else:\n"
-           "            return x\n"
-           "    outputs = \\\n"
-           "        (pm.a, pm.b) = \\\n"
-           "        applied_f(get_values(pm.a[0]), get_values(pm.b[0]), "
-           "get_values(pf.d), get_values(pm.e[0]), )\n"
-           "    header = ['a', 'b']\n"
-           "    return DataFrame(data=np.column_stack(outputs),"
-           "columns=header)")
-
+    # pylint: disable=inconsistent-quotes
+    exp = (
+        "def hl_func(pm, pf):\n"
+        "    from pandas import DataFrame\n"
+        "    import numpy as np\n"
+        "    import pandas as pd\n"
+        "    def get_values(x):\n"
+        "        if isinstance(x, pd.Series):\n"
+        "            return x.values\n"
+        "        else:\n"
+        "            return x\n"
+        "    outputs = \\\n"
+        "        (pm.a, pm.b) = \\\n"
+        "        applied_f(get_values(pm.a[0]), get_values(pm.b[0]), "
+        "get_values(pf.d), get_values(pm.e[0]), )\n"
+        "    header = ['a', 'b']\n"
+        "    return DataFrame(data=np.column_stack(outputs),"
+        "columns=header)"
+    )
+    # pylint: enable=inconsistent-quotes
     assert ans == exp
 
 
@@ -70,23 +72,26 @@ def test_create_toplevel_function_string():
     """Test docstring"""
     ans = create_toplevel_function_string(['a'], ['d', 'e'],
                                           ['pm', 'pf', 'pm'])
-    exp = ''
-    exp = ("def hl_func(pm, pf):\n"
-           "    from pandas import DataFrame\n"
-           "    import numpy as np\n"
-           "    import pandas as pd\n"
-           "    def get_values(x):\n"
-           "        if isinstance(x, pd.Series):\n"
-           "            return x.values\n"
-           "        else:\n"
-           "            return x\n"
-           "    outputs = \\\n"
-           "        (pm.a) = \\\n"
-           "        applied_f(get_values(pm.a[0]), get_values(pf.d), "
-           "get_values(pm.e[0]), )\n"
-           "    header = ['a']\n"
-           "    return DataFrame(data=outputs,"
-           "columns=header)")
+    # pylint: disable=inconsistent-quotes
+    exp = (
+        "def hl_func(pm, pf):\n"
+        "    from pandas import DataFrame\n"
+        "    import numpy as np\n"
+        "    import pandas as pd\n"
+        "    def get_values(x):\n"
+        "        if isinstance(x, pd.Series):\n"
+        "            return x.values\n"
+        "        else:\n"
+        "            return x\n"
+        "    outputs = \\\n"
+        "        (pm.a) = \\\n"
+        "        applied_f(get_values(pm.a[0]), get_values(pf.d), "
+        "get_values(pm.e[0]), )\n"
+        "    header = ['a']\n"
+        "    return DataFrame(data=outputs,"
+        "columns=header)"
+    )
+    # pylint: enable=inconsistent-quotes
     assert ans == exp
 
 
@@ -107,7 +112,7 @@ def test_make_apply_function():
     assert ans_no_jit
 
 
-@apply_jit(["a", "b"], ["x", "y", "z"], nopython=True)
+@apply_jit(['a', 'b'], ['x', 'y', 'z'], nopython=True)
 def magic_calc(x, y, z):
     """Function docstring"""
     a = x + y
@@ -178,7 +183,7 @@ def test_magic_apply_jit():
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
     xx = magic(pm, pf)
-    exp = DataFrame(data=[[2.0, 3.0]] * 5, columns=["a", "b"])
+    exp = DataFrame(data=[[2.0, 3.0]] * 5, columns=['a', 'b'])
     assert_frame_equal(xx, exp)
 
 
@@ -192,7 +197,7 @@ def test_magic_apply_jit_swap():
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
     xx = magic(pf, pm)  # pylint: disable=arguments-out-of-order
-    exp = DataFrame(data=[[2.0, 3.0]] * 5, columns=["a", "b"])
+    exp = DataFrame(data=[[2.0, 3.0]] * 5, columns=['a', 'b'])
     assert_frame_equal(xx, exp)
 
 
@@ -209,7 +214,7 @@ def test_magic_iterate_jit():
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
     xx = magic_calc2(pm, pf)
-    exp = DataFrame(data=[[2.0, 3.0]] * 5, columns=["a", "b"])
+    exp = DataFrame(data=[[2.0, 3.0]] * 5, columns=['a', 'b'])
     assert_frame_equal(xx, exp)
 
 
@@ -236,7 +241,7 @@ def test_ret_everything_iterate_jit():
     pf.f = np.ones((5,))
     ans = ret_everything(pm, pf)
     exp = DataFrame(data=[[2.0, 2.0, 2.0, 2.0]] * 5,
-                    columns=["c", "d", "e", "f"])
+                    columns=['c', 'd', 'e', 'f'])
     assert_frame_equal(ans, exp)
 
 
@@ -259,7 +264,7 @@ def test_function_takes_kwarg():
     pf.z = np.ones((5,))
     ans = magic_calc3(pm, pf)
     exp = DataFrame(data=[[2.0, 3.0]] * 5,
-                    columns=["a", "b"])
+                    columns=['a', 'b'])
     assert_frame_equal(ans, exp)
 
 
@@ -282,7 +287,7 @@ def test_function_no_parameters_listed():
     pf.z = np.ones((5,))
     ans = magic_calc4(pm, pf)
     exp = DataFrame(data=[[2.0, 3.0]] * 5,
-                    columns=["a", "b"])
+                    columns=['a', 'b'])
     assert_frame_equal(ans, exp)
 
 
@@ -306,7 +311,7 @@ def test_function_parameters_optional():
     pf.z = np.ones((5,))
     ans = magic_calc5(pm, pf)
     exp = DataFrame(data=[[2.0, 4.0]] * 5,
-                    columns=["a", "b"])
+                    columns=['a', 'b'])
     assert_frame_equal(ans, exp)
 
 
@@ -377,7 +382,7 @@ def test_force_no_jit():
     pf.z = np.ones((5,))
     ans = magic_calc6_(pm, pf)
     exp = DataFrame(data=[[2.0, 4.0]] * 5,
-                    columns=["a", "b"])
+                    columns=['a', 'b'])
     assert_frame_equal(ans, exp)
     # restore normal JIT operation of decorators module
     del os.environ['NOTAXCALCJIT']
