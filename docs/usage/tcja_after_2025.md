@@ -3,7 +3,8 @@
 TCJA was replaced by OBBBA when the latter was signed into law on July
 4, 2025.  Beginning with Tax-Calculator 5.2.0, OBBBA is current-law
 policy.  How the OBBBA changes were implemented as current-law policy
-is described in detail in closed issue #2926.
+is described in detail in closed [issue
+2926](https://github.com/PSLmodels/Tax-Calculator/issues/2926).
 
 ----------------------------------------------------------------------
 
