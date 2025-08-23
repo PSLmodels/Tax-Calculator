@@ -811,7 +811,7 @@ document.write(`
         <span class="n">dist_table</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="n">topdec_row</span>
         <span class="k">del</span> <span class="n">topdec_row</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">dist_table</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;ALL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_row</span>
+        <span class="n">dist_table</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;ALL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_row</span>
     <span class="k">del</span> <span class="n">sum_row</span>
     <span class="c1"># ensure dist_table columns are in correct order</span>
     <span class="k">assert</span> <span class="n">dist_table</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="n">DIST_TABLE_COLUMNS</span>
@@ -1007,7 +1007,7 @@ document.write(`
         <span class="n">diff_table</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="n">topdec_row</span>
         <span class="k">del</span> <span class="n">topdec_row</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">diff_table</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;ALL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_row</span>
+        <span class="n">diff_table</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;ALL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_row</span>
     <span class="c1"># delete intermediate Pandas DataFrame objects</span>
     <span class="k">del</span> <span class="n">gdf</span>
     <span class="k">del</span> <span class="n">dframe</span>
@@ -2078,7 +2078,7 @@ document.write(`
             <span class="c1"># if the 2nd group (capturing comments) is not None,</span>
             <span class="c1"># it means we have captured a non-quoted (real) comment string.</span>
             <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>  <span class="c1"># preserve line numbers</span>
+                <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>  <span class="c1"># preserve line numbers</span>
             <span class="c1"># otherwise, we will return the 1st group</span>
             <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># captured quoted-string</span>
         <span class="c1"># begin main remove_comments function logic</span>

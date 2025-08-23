@@ -1575,7 +1575,7 @@ document.write(`
     <span class="c1"># (no attempt to adjust c04470 components for limitation)</span>
     <span class="n">reduction</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">if</span> <span class="n">ID_reduction_rate</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">c21040</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;Pease and OBBBA cannot both be in effect&quot;</span>
+        <span class="k">assert</span> <span class="n">c21040</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Pease and OBBBA cannot both be in effect&#39;</span>
         <span class="n">tincome</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">c04600</span><span class="p">)</span>
         <span class="n">texcess</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">tincome</span> <span class="o">-</span> <span class="n">II_brk6</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">reduction</span> <span class="o">=</span> <span class="n">ID_reduction_rate</span> <span class="o">*</span> <span class="n">texcess</span>
@@ -2615,7 +2615,7 @@ document.write(`
         <span class="p">)</span>
         <span class="c1"># ... second phase-down from CDCC_po1_rate_min to CDCC_po2_rate_min</span>
         <span class="n">ps2</span> <span class="o">=</span> <span class="n">CDCC_ps2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="k">assert</span> <span class="n">ps2</span> <span class="o">&gt;=</span> <span class="n">ps1</span><span class="p">,</span> <span class="s2">&quot;CDCC_ps2 must be no less than CDCC_ps1&quot;</span>
+        <span class="k">assert</span> <span class="n">ps2</span> <span class="o">&gt;=</span> <span class="n">ps1</span><span class="p">,</span> <span class="s1">&#39;CDCC_ps2 must be no less than CDCC_ps1&#39;</span>
         <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">ps2</span><span class="p">:</span>
             <span class="n">steps_fractional</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">ps2</span><span class="p">)</span> <span class="o">/</span> <span class="n">CDCC_po2_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>

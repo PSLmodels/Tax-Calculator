@@ -449,7 +449,7 @@ document.write(`
 
 
 
-<span class="k">if</span> <span class="n">DO_JIT</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="s1">&#39;NOTAXCALCJIT&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">DO_JIT</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="s2">&quot;NOTAXCALCJIT&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
     <span class="n">JIT</span> <span class="o">=</span> <span class="n">id_wrapper</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">JIT</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jit</span>
@@ -507,7 +507,8 @@ document.write(`
     <span class="n">out_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">))]</span>
     <span class="n">in_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">),</span> <span class="n">total_len</span><span class="p">)]</span>
 
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;def ap_func(</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_args</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">in_args</span><span class="p">)</span><span class="si">}</span><span class="s2">):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">all_args</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_args</span> <span class="o">+</span> <span class="n">in_args</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;def ap_func(</span><span class="si">{</span><span class="n">all_args</span><span class="si">}</span><span class="s2">):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;  for i in range(len(x_0)):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">out_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="s2">&quot;[i]&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">out_args</span><span class="p">]</span>
     <span class="n">in_index</span> <span class="o">=</span> <span class="p">[]</span>
@@ -618,8 +619,8 @@ document.write(`
     <span class="nb">eval</span><span class="p">(</span><span class="n">func_code</span><span class="p">,</span>  <span class="c1"># pylint: disable=eval-used</span>
          <span class="p">{</span><span class="s2">&quot;jitted_f&quot;</span><span class="p">:</span> <span class="n">jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">do_jit</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">JIT</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">fakeglobals</span><span class="p">[</span><span class="s1">&#39;ap_func&#39;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s1">&#39;ap_func&#39;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">JIT</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">fakeglobals</span><span class="p">[</span><span class="s2">&quot;ap_func&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s2">&quot;ap_func&quot;</span><span class="p">]</span></div>
 
 
 
@@ -686,7 +687,7 @@ document.write(`
         <span class="c1"># Get the input arguments from the function</span>
         <span class="n">in_args</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
         <span class="c1"># Get the numba.jit arguments</span>
-        <span class="n">jit_args_list</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">JIT</span><span class="p">)</span><span class="o">.</span><span class="n">args</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;nopython&#39;</span><span class="p">]</span>
+        <span class="n">jit_args_list</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">JIT</span><span class="p">)</span><span class="o">.</span><span class="n">args</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;nopython&quot;</span><span class="p">]</span>
         <span class="n">kwargs_for_jit</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">jit_args_list</span><span class="p">:</span>
@@ -710,7 +711,7 @@ document.write(`
         <span class="c1"># the AST of the function</span>
         <span class="n">grn</span> <span class="o">=</span> <span class="n">GetReturnNode</span><span class="p">()</span>
         <span class="n">all_out_args</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">))):</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">))):</span>
             <span class="n">all_out_args</span> <span class="o">=</span> <span class="n">grn</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">all_out_args</span><span class="p">:</span>
                 <span class="k">break</span>
@@ -731,7 +732,7 @@ document.write(`
 <span class="sd">            in iterate_jit decorator.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="c1"># os TESTING environment only accepts string arguments</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TESTING&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TESTING&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="n">in_arrays</span> <span class="o">=</span> <span class="p">[]</span>
@@ -751,7 +752,7 @@ document.write(`
             <span class="n">fakeglobals</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="nb">eval</span><span class="p">(</span><span class="n">func_code</span><span class="p">,</span>  <span class="c1"># pylint: disable=eval-used</span>
                  <span class="p">{</span><span class="s2">&quot;applied_f&quot;</span><span class="p">:</span> <span class="n">applied_jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
-            <span class="n">high_level_fn</span> <span class="o">=</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s1">&#39;hl_func&#39;</span><span class="p">]</span>
+            <span class="n">high_level_fn</span> <span class="o">=</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s2">&quot;hl_func&quot;</span><span class="p">]</span>
             <span class="n">ans</span> <span class="o">=</span> <span class="n">high_level_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ans</span>
 
