@@ -66,9 +66,9 @@ def test_for_consistency(tests_path):
         'pycodestyle',
         'pylint',
         'coverage',
-        "pip",
-        "jupyter-book",
-        "setuptools"
+        'pip',
+        'jupyter-book',
+        'setuptools'
     ])
     # read conda.recipe/meta.yaml requirements
     meta_file = os.path.join(tests_path, '..', '..',
@@ -86,10 +86,10 @@ def test_for_consistency(tests_path):
         envr = yaml.safe_load(stream)
 
     env = []
-    for dep in envr["dependencies"]:
+    for dep in envr['dependencies']:
         if isinstance(dep, dict):
-            assert list(dep.keys()) == ["pip"]
-            env += dep["pip"]
+            assert list(dep.keys()) == ['pip']
+            env += dep['pip']
         else:
             env.append(dep)
     env = set(env)
@@ -102,9 +102,8 @@ def test_for_consistency(tests_path):
     with open(setup_file, 'r', encoding='utf-8') as f:
         setup_py_content = f.read()
     setup = set(extract_install_requires(setup_py_content))
-    # confirm that setup.py
-    print("Setup packages = ", setup)
-    print("Meta packages = ", bld)
+    print('Setup packages = ', setup)
+    print('Meta packages = ', bld)
     # if package in both, confirm that the version is the same
     for pkg in setup.intersection(bld):
         assert pkg in setup

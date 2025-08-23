@@ -282,7 +282,7 @@ class Calculator():
         """
         if param_value is None:
             val = getattr(self.__policy, param_name)
-            if param_name.startswith("_"):
+            if param_name.startswith('_'):
                 return val
             return val[0]  # drop down a dimension.
         setattr(self.__policy, param_name, param_value)
@@ -1214,11 +1214,11 @@ class Calculator():
                         # ... write optional param-vector-index line
                         if isinstance(pval, list):
                             labels = paramtools.consistent_labels(
-                                [mdata_base[pname]["value"][0]]
+                                [mdata_base[pname]['value'][0]]
                             )
                             label = None
                             for _label in labels:
-                                if _label not in ("value", "year"):
+                                if _label not in ('value', 'year'):
                                     label = _label
                                     break
                             if label:
