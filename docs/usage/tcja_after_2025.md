@@ -1,4 +1,14 @@
-# TCJA after 2025
+# OBBBA: TCJA after 2025
+
+TCJA was replaced by OBBBA when the latter was signed into law on July
+4, 2025.  Beginning with Tax-Calculator 5.2.0, OBBBA is current-law
+policy.  How the OBBBA changes were implemented as current-law policy
+is described in detail in closed [issue
+2926](https://github.com/PSLmodels/Tax-Calculator/issues/2926).
+
+----------------------------------------------------------------------
+
+**THE FOLLOWING TEXT IS OF HISTORICAL INTEREST ONLY:**
 
 Many provisions of the TCJA are temporary and are scheduled to end
 after 2025 under current-law policy.  Tax policy parameters that are
@@ -331,4 +341,3 @@ added to the `policy_current_law.json` file thereby changing the
 Beginning with the 4.5.0 version, Tax-Calculator incorporates the
 January 2025 CBO economic projection and contains historical tax
 policy parameter values through 2025.
-

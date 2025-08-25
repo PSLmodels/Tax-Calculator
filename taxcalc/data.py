@@ -109,7 +109,7 @@ class Data():
                 self._read_weights(weights)
                 # ... weights must be same size as data
                 if self.array_length > len(self.WT.index):
-                    raise ValueError("Data has more records than weights.")
+                    raise ValueError('Data has more records than weights.')
                 if self.array_length < len(self.WT.index):
                     # scale-up sub-sample weights by year-specific factor
                     sum_full_weights = self.WT.sum()
