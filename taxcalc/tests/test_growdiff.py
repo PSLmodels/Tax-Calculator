@@ -67,7 +67,7 @@ def test_description_punctuation(tests_path):
         dct = json.load(jsonfile)
     all_desc_ok = True
     for param in dct.keys():
-        if param == "schema":
+        if param == 'schema':
             continue
         if not dct[param]['description'].endswith('.'):
             all_desc_ok = False
@@ -86,7 +86,7 @@ def test_boolean_value_infomation(tests_path):
     with open(path, 'r', encoding='utf-8') as gddfile:
         gdd = json.load(gddfile)
     for param in gdd.keys():
-        if param == "schema":
+        if param == 'schema':
             continue
         val = gdd[param]['value']
         if isinstance(val, list):

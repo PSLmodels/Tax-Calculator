@@ -39,7 +39,7 @@ def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
     return wrap
 
 
-if DO_JIT is False or 'NOTAXCALCJIT' in os.environ:
+if DO_JIT is False or "NOTAXCALCJIT" in os.environ:
     JIT = id_wrapper
 else:
     JIT = numba.jit
@@ -89,7 +89,8 @@ def create_apply_function_string(sigout, sigin, parameters):
     out_args = ["x_" + str(i) for i in range(0, len(sigout))]
     in_args = ["x_" + str(i) for i in range(len(sigout), total_len)]
 
-    fstr.write(f"def ap_func({','.join(out_args + in_args)}):\n")
+    all_args = ",".join(out_args + in_args)
+    fstr.write(f"def ap_func({all_args}):\n")
     fstr.write("  for i in range(len(x_0)):\n")
     out_index = [x + "[i]" for x in out_args]
     in_index = []
@@ -194,8 +195,8 @@ def make_apply_function(func, out_args, in_args, parameters,
     eval(func_code,  # pylint: disable=eval-used
          {"jitted_f": jitted_f}, fakeglobals)
     if do_jit:
-        return JIT(**kwargs)(fakeglobals['ap_func'])
-    return fakeglobals['ap_func']
+        return JIT(**kwargs)(fakeglobals["ap_func"])
+    return fakeglobals["ap_func"]
 
 
 def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
@@ -256,7 +257,7 @@ def iterate_jit(parameters=None, **kwargs):
         # Get the input arguments from the function
         in_args = inspect.getfullargspec(func).args
         # Get the numba.jit arguments
-        jit_args_list = inspect.getfullargspec(JIT).args + ['nopython']
+        jit_args_list = inspect.getfullargspec(JIT).args + ["nopython"]
         kwargs_for_jit = {}
         for key, val in kwargs.items():
             if key in jit_args_list:
@@ -280,7 +281,7 @@ def iterate_jit(parameters=None, **kwargs):
         # the AST of the function
         grn = GetReturnNode()
         all_out_args = None
-        for node in ast.walk(ast.parse(''.join(src))):
+        for node in ast.walk(ast.parse("".join(src))):
             all_out_args = grn.visit(node)
             if all_out_args:
                 break
@@ -301,7 +302,7 @@ def iterate_jit(parameters=None, **kwargs):
             in iterate_jit decorator.
             """
             # os TESTING environment only accepts string arguments
-            if os.getenv('TESTING') == 'True':
+            if os.getenv("TESTING") == "True":
                 return func(*args, **kwargs)
 
             in_arrays = []
@@ -321,7 +322,7 @@ def iterate_jit(parameters=None, **kwargs):
             fakeglobals = {}
             eval(func_code,  # pylint: disable=eval-used
                  {"applied_f": applied_jitted_f}, fakeglobals)
-            high_level_fn = fakeglobals['hl_func']
+            high_level_fn = fakeglobals["hl_func"]
             ans = high_level_fn(*args, **kwargs)
             return ans
 
