@@ -821,21 +821,26 @@ class TaxCalcIO():
         """
         assert isinstance(dumpvars_str, str)
         self.errmsg = ''
-        # change some common non-space delimiter characters into spaces
-        dumpvars_str = dumpvars_str.replace(',', ' ')
-        dumpvars_str = dumpvars_str.replace(';', ' ')
-        dumpvars_str = dumpvars_str.replace('|', ' ')
-        # split dumpvars_str into a set of dump variables
-        dumpvars = dumpvars_str.split()
-        # check that all dumpvars items are valid
+        # get read and calc Records variables
         recs_vinfo = Records(data=None)  # contains records VARINFO only
         valid_set = recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS
-        for var in dumpvars:
-            if var not in valid_set and var not in TaxCalcIO.MTR_DUMPVARS:
-                msg = f'invalid variable name {var} in DUMPVARS file'
-                self.errmsg += f'ERROR: {msg}\n'
-        if self.errmsg:
-            return []
+        # construct dumpvars list
+        if dumpvars_str == 'ALL':
+            dumpvars = list(valid_set) + TaxCalcIO.MTR_DUMPVARS
+        else:
+            # ... change some common non-space delimiter characters into spaces
+            dumpvars_str = dumpvars_str.replace(',', ' ')
+            dumpvars_str = dumpvars_str.replace(';', ' ')
+            dumpvars_str = dumpvars_str.replace('|', ' ')
+            # ... split dumpvars_str into dumpvars list
+            dumpvars = dumpvars_str.split()
+            # ... check that all dumpvars items are valid
+            for var in dumpvars:
+                if var not in valid_set and var not in TaxCalcIO.MTR_DUMPVARS:
+                    msg = f'invalid variable name {var} in DUMPVARS file'
+                    self.errmsg += f'ERROR: {msg}\n'
+            if self.errmsg:
+                return []
         # construct variable list
         dumpvars_list = TaxCalcIO.MINIMAL_DUMPVARS
         for var in dumpvars:
@@ -857,15 +862,17 @@ class TaxCalcIO():
             """
             Extract dump output from calcx and return it as Pandas DataFrame.
             """
-            odf = pd.DataFrame()
+            odict = {}
             for var in dumpvars:
                 if var in TaxCalcIO.MTR_DUMPVARS:
                     if var == 'mtr_itax':
-                        odf[var] = mtr_itax
+                        odict[var] = pd.Series(mtr_itax)
                     elif var == 'mtr_ptax':
-                        odf[var] = mtr_ptax
+                        odict[var] = pd.Series(mtr_ptax)
                 else:
-                    odf[var] = calcx.array(var)
+                    odict[var] = pd.Series(calcx.array(var))
+            odf = pd.concat(odict, axis=1)
+            del odict
             return odf
         # begin main logic
         assert isinstance(dump_varlist, list)

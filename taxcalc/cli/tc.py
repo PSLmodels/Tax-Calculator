@@ -129,7 +129,9 @@ def cli_tc_main():
                               'a minimal set of variables.  Valid variable '
                               'names include all variables in the '
                               'records_variables.json file plus mtr_itax and '
-                              'mtr_ptax (MTRs wrt taxpayer earnings).'),
+                              'mtr_ptax (MTRs wrt taxpayer earnings).  If '
+                              'DUMPVARS is ALL, then all valid variable names '
+                              'are included in the dump database.'),
                         default=None)
     parser.add_argument('--runid', metavar='N',
                         help=('N is a positive integer run id that is used '
@@ -246,7 +248,9 @@ def cli_tc_main():
     # specify dumpvars_str from args.dumpvars file
     dumpvars_str = ''
     if args.dumpvars:
-        if os.path.exists(args.dumpvars):
+        if args.dumpvars == 'ALL':
+            dumpvars_str = 'ALL'
+        elif os.path.exists(args.dumpvars):
             with open(args.dumpvars, 'r', encoding='utf-8') as dfile:
                 dumpvars_str = dfile.read()
         else:
