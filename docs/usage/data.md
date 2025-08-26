@@ -61,7 +61,7 @@ file.
 
 The [tax-microdata
 repository](https://github.com/PSLmodels/tax-microdata-benchmarking)
-produces an input variables file (`tmd.csv.gz`), a national weights
+produces an input variables file (`tmd.csv.gz`), a **national** weights
 file (`tmd_weights.csv.gz`), and a variable growth factors file
 (`tmd_growfactors.csv`) that can be used with the Tax-Calculator
 package beginning with the 3.6.0 release.  The TMD files are available
@@ -76,6 +76,21 @@ Tax-Calculator in two ways:
     object and a Policy object, or
   - with the **CLI tool**, `tc`, when the three TMD files are all in
     the same folder and the `tmd.csv.gz` file has been unzipped.
+
+The [tax-microdata
+repository](https://github.com/PSLmodels/tax-microdata-benchmarking)
+also produces state and Congressional district weights files that can
+be used to estimate federal taxes for various sub-national areas.
+The easiest way to produce sub-national federal tax estimates is to
+supply the **CLI tool** with an environmental variable that indicates
+the sub-national area.  So, for example, if you have the South Carolina
+state weights in the `sc_tmd_weights.csv.gz` file, put that file in the
+folder that contains the three national TMD files described above.
+Then, for example, execute `tc` like this:
+```
+(taxcalc-dev) myruns% TMD_AREA=sc tc tmd.csv 2024 --exact --tables
+```
+
 
 ## Using other data with Tax-Calculator
 
