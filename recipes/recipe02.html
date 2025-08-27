@@ -582,149 +582,9 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">HTTPError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">19</span>
-<span class="g g-Whitespace">     </span><span class="mi">16</span> <span class="n">itax_rev1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="c1"># specify Calculator object for static analysis of reform policy</span>
-<span class="ne">---&gt; </span><span class="mi">19</span> <span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformA.json&#39;</span><span class="p">))</span>
-<span class="g g-Whitespace">     </span><span class="mi">20</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="c1"># calculate reform income tax liabilities for cyr under static assumptions</span>
-
-<span class="nn">File ~/work/Tax-Calculator/Tax-Calculator/taxcalc/policy.py:168,</span> in <span class="ni">Policy.read_json_reform</span><span class="nt">(obj)</span>
-<span class="g g-Whitespace">    </span><span class="mi">160</span> <span class="nd">@staticmethod</span>
-<span class="g g-Whitespace">    </span><span class="mi">161</span> <span class="k">def</span><span class="w"> </span><span class="nf">read_json_reform</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">162</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">163</span><span class="sd">     Return a reform dictionary suitable for use with implement_reform</span>
-<span class="g g-Whitespace">    </span><span class="mi">164</span><span class="sd">     method generated from the specified JSON object, which can be None or</span>
-<span class="g g-Whitespace">    </span><span class="mi">165</span><span class="sd">     a string containing a local filename, a URL beginning with &#39;http&#39;</span>
-<span class="g g-Whitespace">    </span><span class="mi">166</span><span class="sd">     pointing to a valid JSON file hosted online, or a valid JSON text.</span>
-<span class="g g-Whitespace">    </span><span class="mi">167</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">168</span>     <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;policy&#39;</span><span class="p">)</span>
-
-<span class="nn">File ~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py:759,</span> in <span class="ni">Parameters._read_json_revision</span><span class="nt">(obj, topkey)</span>
-<span class="g g-Whitespace">    </span><span class="mi">756</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">757</span>     <span class="k">return</span> <span class="p">{}</span>
-<span class="ne">--&gt; </span><span class="mi">759</span> <span class="n">full_dict</span> <span class="o">=</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">761</span> <span class="c1"># check top-level key contents of dictionary</span>
-<span class="g g-Whitespace">    </span><span class="mi">762</span> <span class="k">if</span> <span class="n">topkey</span> <span class="ow">in</span> <span class="n">full_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/paramtools/utils.py:105,</span> in <span class="ni">read_json</span><span class="nt">(params_or_path, storage_options)</span>
-<span class="g g-Whitespace">     </span><span class="mi">89</span> <span class="k">def</span><span class="w"> </span><span class="nf">read_json</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">90</span>     <span class="n">params_or_path</span><span class="p">:</span> <span class="n">FileDictStringLike</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">91</span>     <span class="n">storage_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">92</span> <span class="p">):</span>
-<span class="g g-Whitespace">     </span><span class="mi">93</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">     </span><span class="mi">94</span><span class="sd">     Read JSON data of the form:</span>
-<span class="g g-Whitespace">     </span><span class="mi">95</span><span class="sd">     - Dict.</span>
-<span class="sd">   (...)    103 </span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">105</span>     <span class="n">res</span> <span class="o">=</span> <span class="n">_read</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="n">storage_options</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">106</span>     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">107</span>         <span class="k">try</span><span class="p">:</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/paramtools/utils.py:50,</span> in <span class="ni">_read</span><span class="nt">(params_or_path, storage_options)</span>
-<span class="g g-Whitespace">     </span><span class="mi">47</span>         <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">49</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_url</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">50</span>     <span class="k">with</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">storage_options</span> <span class="ow">or</span> <span class="p">{}))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span>         <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">53</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/core.py:491,</span> in <span class="ni">open</span><span class="nt">(urlpath, mode, compression, encoding, errors, protocol, newline, expand, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">433</span><span class="w"> </span><span class="sd">&quot;&quot;&quot;Given a path or paths, return one ``OpenFile`` object.</span>
-<span class="g g-Whitespace">    </span><span class="mi">434</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">435</span><span class="sd"> Parameters</span>
-<span class="sd">   (...)    488   https://filesystem-spec.readthedocs.io/en/latest/api.html#other-known-implementations</span>
-<span class="g g-Whitespace">    </span><span class="mi">489</span><span class="sd"> &quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">490</span> <span class="n">expand</span> <span class="o">=</span> <span class="n">DEFAULT_EXPAND</span> <span class="k">if</span> <span class="n">expand</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">expand</span>
-<span class="ne">--&gt; </span><span class="mi">491</span> <span class="n">out</span> <span class="o">=</span> <span class="n">open_files</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">492</span>     <span class="n">urlpath</span><span class="o">=</span><span class="p">[</span><span class="n">urlpath</span><span class="p">],</span>
-<span class="g g-Whitespace">    </span><span class="mi">493</span>     <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">494</span>     <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">495</span>     <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">496</span>     <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">497</span>     <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">498</span>     <span class="n">newline</span><span class="o">=</span><span class="n">newline</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">499</span>     <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">500</span>     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">501</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">502</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">503</span>     <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">urlpath</span><span class="p">)</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/core.py:295,</span> in <span class="ni">open_files</span><span class="nt">(urlpath, mode, compression, encoding, errors, name_function, num, protocol, newline, auto_mkdir, expand, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">216</span> <span class="k">def</span><span class="w"> </span><span class="nf">open_files</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">217</span>     <span class="n">urlpath</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">218</span>     <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>    <span class="mi">228</span>     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span> <span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">230</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Given a path or paths, return a list of ``OpenFile`` objects.</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span><span class="sd">     For writing, a str path must contain the &quot;*&quot; character, which will be filled</span>
-<span class="sd">   (...)    293       https://filesystem-spec.readthedocs.io/en/latest/api.html#other-known-implementations</span>
-<span class="g g-Whitespace">    </span><span class="mi">294</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">295</span>     <span class="n">fs</span><span class="p">,</span> <span class="n">fs_token</span><span class="p">,</span> <span class="n">paths</span> <span class="o">=</span> <span class="n">get_fs_token_paths</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">296</span>         <span class="n">urlpath</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">297</span>         <span class="n">mode</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">298</span>         <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">299</span>         <span class="n">name_function</span><span class="o">=</span><span class="n">name_function</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">300</span>         <span class="n">storage_options</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">301</span>         <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">302</span>         <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">303</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">304</span>     <span class="k">if</span> <span class="n">fs</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="s2">&quot;file&quot;</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">305</span>         <span class="n">fs</span><span class="o">.</span><span class="n">auto_mkdir</span> <span class="o">=</span> <span class="n">auto_mkdir</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/core.py:667,</span> in <span class="ni">get_fs_token_paths</span><span class="nt">(urlpath, mode, num, name_function, storage_options, protocol, expand)</span>
-<span class="g g-Whitespace">    </span><span class="mi">665</span>     <span class="n">inkwargs</span><span class="p">[</span><span class="s2">&quot;fo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">urls</span>
-<span class="g g-Whitespace">    </span><span class="mi">666</span> <span class="n">paths</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="ne">--&gt; </span><span class="mi">667</span> <span class="n">fs</span> <span class="o">=</span> <span class="n">filesystem</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="o">**</span><span class="n">inkwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">668</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">urlpath</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">)):</span>
-<span class="g g-Whitespace">    </span><span class="mi">669</span>     <span class="n">pchains</span> <span class="o">=</span> <span class="p">[</span>
-<span class="g g-Whitespace">    </span><span class="mi">670</span>         <span class="n">_un_chain</span><span class="p">(</span><span class="n">stringify_path</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">storage_options</span> <span class="ow">or</span> <span class="p">{})[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">urlpath</span>
-<span class="g g-Whitespace">    </span><span class="mi">671</span>     <span class="p">]</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/registry.py:322,</span> in <span class="ni">filesystem</span><span class="nt">(protocol, **storage_options)</span>
-<span class="g g-Whitespace">    </span><span class="mi">315</span>     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">316</span>         <span class="s2">&quot;The &#39;arrow_hdfs&#39; protocol has been deprecated and will be &quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">317</span>         <span class="s2">&quot;removed in the future. Specify it as &#39;hdfs&#39;.&quot;</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">318</span>         <span class="ne">DeprecationWarning</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">319</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">321</span> <span class="bp">cls</span> <span class="o">=</span> <span class="n">get_filesystem_class</span><span class="p">(</span><span class="n">protocol</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">322</span> <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">storage_options</span><span class="p">)</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/spec.py:81,</span> in <span class="ni">_Cached.__call__</span><span class="nt">(cls, *args, **kwargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">79</span>     <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">token</span><span class="p">]</span>
-<span class="g g-Whitespace">     </span><span class="mi">80</span> <span class="k">else</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">81</span>     <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">82</span>     <span class="c1"># Setting _fs_token here causes some static linters to complain.</span>
-<span class="g g-Whitespace">     </span><span class="mi">83</span>     <span class="n">obj</span><span class="o">.</span><span class="n">_fs_token_</span> <span class="o">=</span> <span class="n">token</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/implementations/github.py:66,</span> in <span class="ni">GithubFileSystem.__init__</span><span class="nt">(self, org, repo, sha, username, token, timeout, **kwargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">63</span>     <span class="n">sha</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;default_branch&quot;</span><span class="p">]</span>
-<span class="g g-Whitespace">     </span><span class="mi">65</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">sha</span>
-<span class="ne">---&gt; </span><span class="mi">66</span> <span class="bp">self</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">67</span> <span class="k">try</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">68</span>     <span class="kn">from</span><span class="w"> </span><span class="nn">.http</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPFileSystem</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/implementations/github.py:175,</span> in <span class="ni">GithubFileSystem.ls</span><span class="nt">(self, path, detail, sha, _sha, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">174</span>     <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">175</span> <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">176</span> <span class="n">types</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;blob&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;tree&quot;</span><span class="p">:</span> <span class="s2">&quot;directory&quot;</span><span class="p">}</span>
-<span class="g g-Whitespace">    </span><span class="mi">177</span> <span class="n">out</span> <span class="o">=</span> <span class="p">[</span>
-<span class="g g-Whitespace">    </span><span class="mi">178</span>     <span class="p">{</span>
-<span class="g g-Whitespace">    </span><span class="mi">179</span>         <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">path</span> <span class="k">else</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">],</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>    <span class="mi">186</span>     <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">types</span>
-<span class="g g-Whitespace">    </span><span class="mi">187</span> <span class="p">]</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/requests/models.py:1026,</span> in <span class="ni">Response.raise_for_status</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1021</span>     <span class="n">http_error_msg</span> <span class="o">=</span> <span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1022</span>         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> Server Error: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2"> for url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1023</span>     <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1025</span> <span class="k">if</span> <span class="n">http_error_msg</span><span class="p">:</span>
-<span class="ne">-&gt; </span><span class="mi">1026</span>     <span class="k">raise</span> <span class="n">HTTPError</span><span class="p">(</span><span class="n">http_error_msg</span><span class="p">,</span> <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-
-<span class="ne">HTTPError</span>: 403 Client Error: rate limit exceeded for url: https://api.github.com/repos/PSLmodels/Tax-Calculator/git/trees/master
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020_CURRENT_LAW_P__itax_rev($B)= 819.588
+2020_REFORM_STATIC__itax_rev($B)= 823.781
+2020_REFORM_DYNAMIC_itax_rev($B)= 811.401
 </pre></div>
 </div>
 </div>
@@ -794,32 +654,32 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     <tr>
       <th>AGI ($b)</th>
       <td>11573.238</td>
-      <td>13156.205</td>
-      <td>13723.185</td>
+      <td>13174.913</td>
+      <td>13526.351</td>
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>27.730</td>
-      <td>32.030</td>
-      <td>31.220</td>
+      <td>27.470</td>
+      <td>31.180</td>
+      <td>31.150</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>752.189</td>
-      <td>880.903</td>
-      <td>882.969</td>
+      <td>745.347</td>
+      <td>862.698</td>
+      <td>881.943</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>176.750</td>
-      <td>175.050</td>
-      <td>178.440</td>
+      <td>176.900</td>
+      <td>175.780</td>
+      <td>178.510</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>3075.468</td>
-      <td>3066.702</td>
-      <td>3229.758</td>
+      <td>3080.762</td>
+      <td>3091.912</td>
+      <td>3231.348</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
@@ -829,51 +689,51 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>8617.397</td>
-      <td>10040.159</td>
-      <td>10505.738</td>
+      <td>8615.433</td>
+      <td>10049.898</td>
+      <td>10315.188</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1505.274</td>
-      <td>1760.905</td>
-      <td>1864.719</td>
+      <td>1497.393</td>
+      <td>1762.841</td>
+      <td>1834.719</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>11012.668</td>
-      <td>12497.322</td>
-      <td>13059.342</td>
+      <td>10965.722</td>
+      <td>12473.899</td>
+      <td>12804.299</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>0.568</td>
-      <td>1.811</td>
-      <td>1.322</td>
+      <td>0.541</td>
+      <td>1.446</td>
+      <td>0.638</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.090</td>
-      <td>0.330</td>
-      <td>0.250</td>
+      <td>0.070</td>
+      <td>0.190</td>
+      <td>0.080</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1505.841</td>
-      <td>1762.716</td>
-      <td>1866.041</td>
+      <td>1497.933</td>
+      <td>1764.287</td>
+      <td>1835.357</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
-      <td>654.861</td>
-      <td>827.256</td>
-      <td>98.250</td>
+      <td>655.022</td>
+      <td>827.135</td>
+      <td>98.486</td>
     </tr>
     <tr>
       <th>Nonrefundable Credits ($b)</th>
-      <td>99.385</td>
+      <td>99.198</td>
       <td>0.005</td>
-      <td>107.651</td>
+      <td>107.732</td>
     </tr>
     <tr>
       <th>Reform Surtaxes ($b)</th>
@@ -883,39 +743,39 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Other Taxes ($b)</th>
-      <td>12.575</td>
-      <td>13.844</td>
-      <td>14.446</td>
+      <td>75.874</td>
+      <td>82.267</td>
+      <td>87.882</td>
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>764.170</td>
-      <td>949.299</td>
-      <td>1674.587</td>
+      <td>819.588</td>
+      <td>1019.414</td>
+      <td>1717.022</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
-      <td>1217.941</td>
-      <td>1318.728</td>
-      <td>1421.579</td>
+      <td>1154.642</td>
+      <td>1250.313</td>
+      <td>1348.039</td>
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>1982.111</td>
-      <td>2268.028</td>
-      <td>3096.166</td>
+      <td>1974.229</td>
+      <td>2269.727</td>
+      <td>3065.061</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>135.170</td>
-      <td>127.680</td>
-      <td>95.970</td>
+      <td>133.130</td>
+      <td>126.020</td>
+      <td>94.510</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
-      <td>98.150</td>
-      <td>97.700</td>
-      <td>67.730</td>
+      <td>98.170</td>
+      <td>97.730</td>
+      <td>67.880</td>
     </tr>
     <tr>
       <th>UBI Benefits ($b)</th>
@@ -980,86 +840,86 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     <tr>
       <th>AGI ($b)</th>
       <td>11573.238</td>
-      <td>13156.205</td>
-      <td>13723.185</td>
+      <td>13174.913</td>
+      <td>13526.351</td>
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>27.660</td>
-      <td>31.890</td>
-      <td>31.110</td>
+      <td>27.390</td>
+      <td>31.060</td>
+      <td>31.020</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>749.755</td>
-      <td>877.489</td>
-      <td>879.822</td>
+      <td>742.833</td>
+      <td>859.361</td>
+      <td>878.367</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>176.820</td>
-      <td>175.180</td>
-      <td>178.560</td>
+      <td>176.980</td>
+      <td>175.900</td>
+      <td>178.640</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>3076.756</td>
-      <td>3068.785</td>
-      <td>3231.586</td>
+      <td>3082.124</td>
+      <td>3093.960</td>
+      <td>3233.546</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
       <td>375.177</td>
-      <td>383.210</td>
-      <td>404.808</td>
+      <td>384.158</td>
+      <td>406.780</td>
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>8369.678</td>
-      <td>9776.270</td>
-      <td>10230.157</td>
+      <td>8367.731</td>
+      <td>9785.467</td>
+      <td>10038.749</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1505.595</td>
-      <td>1764.964</td>
-      <td>1871.117</td>
+      <td>1499.234</td>
+      <td>1766.802</td>
+      <td>1841.000</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>11014.938</td>
-      <td>12500.520</td>
-      <td>13062.305</td>
+      <td>10969.773</td>
+      <td>12478.674</td>
+      <td>12809.399</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>0.585</td>
-      <td>1.927</td>
-      <td>1.414</td>
+      <td>0.547</td>
+      <td>1.477</td>
+      <td>0.637</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.090</td>
-      <td>0.350</td>
-      <td>0.270</td>
+      <td>0.070</td>
+      <td>0.190</td>
+      <td>0.080</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1506.180</td>
-      <td>1766.891</td>
-      <td>1872.531</td>
+      <td>1499.782</td>
+      <td>1768.279</td>
+      <td>1841.637</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
-      <td>658.196</td>
-      <td>827.256</td>
-      <td>101.933</td>
+      <td>658.339</td>
+      <td>827.135</td>
+      <td>102.191</td>
     </tr>
     <tr>
       <th>Nonrefundable Credits ($b)</th>
-      <td>93.705</td>
+      <td>93.536</td>
       <td>0.002</td>
-      <td>102.012</td>
+      <td>102.059</td>
     </tr>
     <tr>
       <th>Reform Surtaxes ($b)</th>
@@ -1069,39 +929,39 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Other Taxes ($b)</th>
-      <td>12.575</td>
-      <td>13.844</td>
-      <td>14.446</td>
+      <td>75.874</td>
+      <td>82.267</td>
+      <td>87.882</td>
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>766.855</td>
-      <td>953.478</td>
-      <td>1683.031</td>
+      <td>823.781</td>
+      <td>1023.408</td>
+      <td>1725.270</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
-      <td>1217.941</td>
-      <td>1318.728</td>
-      <td>1421.579</td>
+      <td>1154.642</td>
+      <td>1250.313</td>
+      <td>1348.039</td>
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>1984.796</td>
-      <td>2272.206</td>
-      <td>3104.610</td>
+      <td>1978.423</td>
+      <td>2273.721</td>
+      <td>3073.309</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>137.340</td>
-      <td>129.960</td>
-      <td>98.600</td>
+      <td>135.240</td>
+      <td>128.230</td>
+      <td>96.990</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
-      <td>98.910</td>
-      <td>98.600</td>
-      <td>68.450</td>
+      <td>98.930</td>
+      <td>98.610</td>
+      <td>68.610</td>
     </tr>
     <tr>
       <th>UBI Benefits ($b)</th>
@@ -1165,87 +1025,87 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>AGI ($b)</th>
-      <td>11547.479</td>
-      <td>13123.042</td>
-      <td>13686.894</td>
+      <td>11546.617</td>
+      <td>13141.583</td>
+      <td>13491.061</td>
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>27.630</td>
-      <td>31.870</td>
-      <td>31.080</td>
+      <td>27.360</td>
+      <td>31.030</td>
+      <td>31.000</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>748.521</td>
-      <td>875.970</td>
-      <td>878.204</td>
+      <td>741.563</td>
+      <td>857.621</td>
+      <td>876.792</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>176.850</td>
-      <td>175.200</td>
-      <td>178.580</td>
+      <td>177.010</td>
+      <td>175.930</td>
+      <td>178.660</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>3077.317</td>
-      <td>3069.335</td>
-      <td>3232.059</td>
+      <td>3082.683</td>
+      <td>3094.695</td>
+      <td>3234.045</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
       <td>375.177</td>
-      <td>383.210</td>
-      <td>404.808</td>
+      <td>384.158</td>
+      <td>406.780</td>
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>8344.174</td>
-      <td>9743.507</td>
-      <td>10194.449</td>
+      <td>8341.362</td>
+      <td>9752.504</td>
+      <td>10004.156</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1494.026</td>
-      <td>1750.669</td>
-      <td>1855.496</td>
+      <td>1487.278</td>
+      <td>1752.439</td>
+      <td>1825.764</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>10990.180</td>
-      <td>12468.655</td>
-      <td>13027.447</td>
+      <td>10943.770</td>
+      <td>12446.308</td>
+      <td>12775.181</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>0.583</td>
-      <td>1.967</td>
-      <td>1.452</td>
+      <td>0.547</td>
+      <td>1.475</td>
+      <td>0.633</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.090</td>
-      <td>0.350</td>
-      <td>0.280</td>
+      <td>0.070</td>
+      <td>0.190</td>
+      <td>0.080</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1494.609</td>
-      <td>1752.636</td>
-      <td>1856.948</td>
+      <td>1487.825</td>
+      <td>1753.914</td>
+      <td>1826.398</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
-      <td>657.905</td>
-      <td>827.233</td>
-      <td>101.663</td>
+      <td>658.049</td>
+      <td>827.121</td>
+      <td>101.922</td>
     </tr>
     <tr>
       <th>Nonrefundable Credits ($b)</th>
-      <td>93.933</td>
+      <td>93.768</td>
       <td>0.002</td>
-      <td>102.266</td>
+      <td>102.309</td>
     </tr>
     <tr>
       <th>Reform Surtaxes ($b)</th>
@@ -1255,39 +1115,39 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     </tr>
     <tr>
       <th>Other Taxes ($b)</th>
-      <td>12.290</td>
-      <td>13.496</td>
-      <td>14.083</td>
+      <td>75.394</td>
+      <td>81.712</td>
+      <td>87.313</td>
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>755.060</td>
-      <td>938.897</td>
-      <td>1667.103</td>
+      <td>811.401</td>
+      <td>1008.502</td>
+      <td>1709.480</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
-      <td>1217.293</td>
-      <td>1317.688</td>
-      <td>1420.460</td>
+      <td>1154.162</td>
+      <td>1249.473</td>
+      <td>1347.161</td>
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>1972.353</td>
-      <td>2256.585</td>
-      <td>3087.563</td>
+      <td>1965.563</td>
+      <td>2257.975</td>
+      <td>3056.641</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>137.310</td>
-      <td>129.930</td>
-      <td>98.420</td>
+      <td>135.210</td>
+      <td>128.200</td>
+      <td>96.830</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
-      <td>98.880</td>
-      <td>98.570</td>
-      <td>68.270</td>
+      <td>98.910</td>
+      <td>98.580</td>
+      <td>68.420</td>
     </tr>
     <tr>
       <th>UBI Benefits ($b)</th>

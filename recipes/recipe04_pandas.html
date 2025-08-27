@@ -638,155 +638,6 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">HTTPError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">line</span> <span class="mi">25</span>
-<span class="g g-Whitespace">     </span><span class="mi">20</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mtr1</span><span class="p">)</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">21</span>                          <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">23</span> <span class="c1"># specify Calculator object for static analysis of reform policy</span>
-<span class="g g-Whitespace">     </span><span class="mi">24</span> <span class="c1"># TODO: Move this reform online so this can be run non-locally.</span>
-<span class="ne">---&gt; </span><span class="mi">25</span> <span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformB.json&#39;</span><span class="p">))</span>
-<span class="g g-Whitespace">     </span><span class="mi">26</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">28</span> <span class="c1"># calculate reform tax liabilities for cyr</span>
-
-<span class="nn">File ~/work/Tax-Calculator/Tax-Calculator/taxcalc/policy.py:168,</span> in <span class="ni">Policy.read_json_reform</span><span class="nt">(obj)</span>
-<span class="g g-Whitespace">    </span><span class="mi">160</span> <span class="nd">@staticmethod</span>
-<span class="g g-Whitespace">    </span><span class="mi">161</span> <span class="k">def</span><span class="w"> </span><span class="nf">read_json_reform</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">162</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">163</span><span class="sd">     Return a reform dictionary suitable for use with implement_reform</span>
-<span class="g g-Whitespace">    </span><span class="mi">164</span><span class="sd">     method generated from the specified JSON object, which can be None or</span>
-<span class="g g-Whitespace">    </span><span class="mi">165</span><span class="sd">     a string containing a local filename, a URL beginning with &#39;http&#39;</span>
-<span class="g g-Whitespace">    </span><span class="mi">166</span><span class="sd">     pointing to a valid JSON file hosted online, or a valid JSON text.</span>
-<span class="g g-Whitespace">    </span><span class="mi">167</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">168</span>     <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;policy&#39;</span><span class="p">)</span>
-
-<span class="nn">File ~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py:759,</span> in <span class="ni">Parameters._read_json_revision</span><span class="nt">(obj, topkey)</span>
-<span class="g g-Whitespace">    </span><span class="mi">756</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">757</span>     <span class="k">return</span> <span class="p">{}</span>
-<span class="ne">--&gt; </span><span class="mi">759</span> <span class="n">full_dict</span> <span class="o">=</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">761</span> <span class="c1"># check top-level key contents of dictionary</span>
-<span class="g g-Whitespace">    </span><span class="mi">762</span> <span class="k">if</span> <span class="n">topkey</span> <span class="ow">in</span> <span class="n">full_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/paramtools/utils.py:105,</span> in <span class="ni">read_json</span><span class="nt">(params_or_path, storage_options)</span>
-<span class="g g-Whitespace">     </span><span class="mi">89</span> <span class="k">def</span><span class="w"> </span><span class="nf">read_json</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">90</span>     <span class="n">params_or_path</span><span class="p">:</span> <span class="n">FileDictStringLike</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">91</span>     <span class="n">storage_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">92</span> <span class="p">):</span>
-<span class="g g-Whitespace">     </span><span class="mi">93</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">     </span><span class="mi">94</span><span class="sd">     Read JSON data of the form:</span>
-<span class="g g-Whitespace">     </span><span class="mi">95</span><span class="sd">     - Dict.</span>
-<span class="sd">   (...)    103 </span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">105</span>     <span class="n">res</span> <span class="o">=</span> <span class="n">_read</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="n">storage_options</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">106</span>     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">107</span>         <span class="k">try</span><span class="p">:</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/paramtools/utils.py:50,</span> in <span class="ni">_read</span><span class="nt">(params_or_path, storage_options)</span>
-<span class="g g-Whitespace">     </span><span class="mi">47</span>         <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">49</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_url</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">50</span>     <span class="k">with</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">storage_options</span> <span class="ow">or</span> <span class="p">{}))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span>         <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">53</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/core.py:491,</span> in <span class="ni">open</span><span class="nt">(urlpath, mode, compression, encoding, errors, protocol, newline, expand, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">433</span><span class="w"> </span><span class="sd">&quot;&quot;&quot;Given a path or paths, return one ``OpenFile`` object.</span>
-<span class="g g-Whitespace">    </span><span class="mi">434</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">435</span><span class="sd"> Parameters</span>
-<span class="sd">   (...)    488   https://filesystem-spec.readthedocs.io/en/latest/api.html#other-known-implementations</span>
-<span class="g g-Whitespace">    </span><span class="mi">489</span><span class="sd"> &quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">490</span> <span class="n">expand</span> <span class="o">=</span> <span class="n">DEFAULT_EXPAND</span> <span class="k">if</span> <span class="n">expand</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">expand</span>
-<span class="ne">--&gt; </span><span class="mi">491</span> <span class="n">out</span> <span class="o">=</span> <span class="n">open_files</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">492</span>     <span class="n">urlpath</span><span class="o">=</span><span class="p">[</span><span class="n">urlpath</span><span class="p">],</span>
-<span class="g g-Whitespace">    </span><span class="mi">493</span>     <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">494</span>     <span class="n">compression</span><span class="o">=</span><span class="n">compression</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">495</span>     <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">496</span>     <span class="n">errors</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">497</span>     <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">498</span>     <span class="n">newline</span><span class="o">=</span><span class="n">newline</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">499</span>     <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">500</span>     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">501</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">502</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">503</span>     <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">urlpath</span><span class="p">)</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/core.py:295,</span> in <span class="ni">open_files</span><span class="nt">(urlpath, mode, compression, encoding, errors, name_function, num, protocol, newline, auto_mkdir, expand, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">216</span> <span class="k">def</span><span class="w"> </span><span class="nf">open_files</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">217</span>     <span class="n">urlpath</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">218</span>     <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>    <span class="mi">228</span>     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span> <span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">230</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Given a path or paths, return a list of ``OpenFile`` objects.</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span><span class="sd">     For writing, a str path must contain the &quot;*&quot; character, which will be filled</span>
-<span class="sd">   (...)    293       https://filesystem-spec.readthedocs.io/en/latest/api.html#other-known-implementations</span>
-<span class="g g-Whitespace">    </span><span class="mi">294</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">295</span>     <span class="n">fs</span><span class="p">,</span> <span class="n">fs_token</span><span class="p">,</span> <span class="n">paths</span> <span class="o">=</span> <span class="n">get_fs_token_paths</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">296</span>         <span class="n">urlpath</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">297</span>         <span class="n">mode</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">298</span>         <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">299</span>         <span class="n">name_function</span><span class="o">=</span><span class="n">name_function</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">300</span>         <span class="n">storage_options</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">301</span>         <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">302</span>         <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">303</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">304</span>     <span class="k">if</span> <span class="n">fs</span><span class="o">.</span><span class="n">protocol</span> <span class="o">==</span> <span class="s2">&quot;file&quot;</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">305</span>         <span class="n">fs</span><span class="o">.</span><span class="n">auto_mkdir</span> <span class="o">=</span> <span class="n">auto_mkdir</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/core.py:667,</span> in <span class="ni">get_fs_token_paths</span><span class="nt">(urlpath, mode, num, name_function, storage_options, protocol, expand)</span>
-<span class="g g-Whitespace">    </span><span class="mi">665</span>     <span class="n">inkwargs</span><span class="p">[</span><span class="s2">&quot;fo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">urls</span>
-<span class="g g-Whitespace">    </span><span class="mi">666</span> <span class="n">paths</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="ne">--&gt; </span><span class="mi">667</span> <span class="n">fs</span> <span class="o">=</span> <span class="n">filesystem</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="o">**</span><span class="n">inkwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">668</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">urlpath</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">)):</span>
-<span class="g g-Whitespace">    </span><span class="mi">669</span>     <span class="n">pchains</span> <span class="o">=</span> <span class="p">[</span>
-<span class="g g-Whitespace">    </span><span class="mi">670</span>         <span class="n">_un_chain</span><span class="p">(</span><span class="n">stringify_path</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">storage_options</span> <span class="ow">or</span> <span class="p">{})[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">urlpath</span>
-<span class="g g-Whitespace">    </span><span class="mi">671</span>     <span class="p">]</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/registry.py:322,</span> in <span class="ni">filesystem</span><span class="nt">(protocol, **storage_options)</span>
-<span class="g g-Whitespace">    </span><span class="mi">315</span>     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">316</span>         <span class="s2">&quot;The &#39;arrow_hdfs&#39; protocol has been deprecated and will be &quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">317</span>         <span class="s2">&quot;removed in the future. Specify it as &#39;hdfs&#39;.&quot;</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">318</span>         <span class="ne">DeprecationWarning</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">319</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">321</span> <span class="bp">cls</span> <span class="o">=</span> <span class="n">get_filesystem_class</span><span class="p">(</span><span class="n">protocol</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">322</span> <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">storage_options</span><span class="p">)</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/spec.py:81,</span> in <span class="ni">_Cached.__call__</span><span class="nt">(cls, *args, **kwargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">79</span>     <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">token</span><span class="p">]</span>
-<span class="g g-Whitespace">     </span><span class="mi">80</span> <span class="k">else</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">81</span>     <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">82</span>     <span class="c1"># Setting _fs_token here causes some static linters to complain.</span>
-<span class="g g-Whitespace">     </span><span class="mi">83</span>     <span class="n">obj</span><span class="o">.</span><span class="n">_fs_token_</span> <span class="o">=</span> <span class="n">token</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/implementations/github.py:66,</span> in <span class="ni">GithubFileSystem.__init__</span><span class="nt">(self, org, repo, sha, username, token, timeout, **kwargs)</span>
-<span class="g g-Whitespace">     </span><span class="mi">63</span>     <span class="n">sha</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;default_branch&quot;</span><span class="p">]</span>
-<span class="g g-Whitespace">     </span><span class="mi">65</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">sha</span>
-<span class="ne">---&gt; </span><span class="mi">66</span> <span class="bp">self</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">67</span> <span class="k">try</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">68</span>     <span class="kn">from</span><span class="w"> </span><span class="nn">.http</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPFileSystem</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/fsspec/implementations/github.py:175,</span> in <span class="ni">GithubFileSystem.ls</span><span class="nt">(self, path, detail, sha, _sha, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">174</span>     <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">175</span> <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">176</span> <span class="n">types</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;blob&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;tree&quot;</span><span class="p">:</span> <span class="s2">&quot;directory&quot;</span><span class="p">}</span>
-<span class="g g-Whitespace">    </span><span class="mi">177</span> <span class="n">out</span> <span class="o">=</span> <span class="p">[</span>
-<span class="g g-Whitespace">    </span><span class="mi">178</span>     <span class="p">{</span>
-<span class="g g-Whitespace">    </span><span class="mi">179</span>         <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">path</span> <span class="k">else</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">],</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>    <span class="mi">186</span>     <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">types</span>
-<span class="g g-Whitespace">    </span><span class="mi">187</span> <span class="p">]</span>
-
-<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.11/site-packages/requests/models.py:1026,</span> in <span class="ni">Response.raise_for_status</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1021</span>     <span class="n">http_error_msg</span> <span class="o">=</span> <span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">1022</span>         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> Server Error: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2"> for url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1023</span>     <span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1025</span> <span class="k">if</span> <span class="n">http_error_msg</span><span class="p">:</span>
-<span class="ne">-&gt; </span><span class="mi">1026</span>     <span class="k">raise</span> <span class="n">HTTPError</span><span class="p">(</span><span class="n">http_error_msg</span><span class="p">,</span> <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-
-<span class="ne">HTTPError</span>: 403 Client Error: rate limit exceeded for url: https://api.github.com/repos/PSLmodels/Tax-Calculator/git/trees/master
-</pre></div>
-</div>
-</div>
 </div>
 <p>Result: Response in Charitable Giving by Earnings Group</p>
 <div class="cell docutils container">
@@ -825,22 +676,22 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
       <th>0</th>
       <td>[-9e+99, 50000.0)</td>
       <td>151.185</td>
-      <td>0.662</td>
-      <td>0.399</td>
+      <td>0.654</td>
+      <td>0.395</td>
     </tr>
     <tr>
       <th>1</th>
       <td>[50000.0, 9e+99)</td>
       <td>53.299</td>
-      <td>3.088</td>
-      <td>1.992</td>
+      <td>3.157</td>
+      <td>2.037</td>
     </tr>
     <tr>
       <th>2</th>
       <td>TOTAL</td>
       <td>204.484</td>
-      <td>3.749</td>
-      <td>1.169</td>
+      <td>3.811</td>
+      <td>1.189</td>
     </tr>
   </tbody>
 </table>
