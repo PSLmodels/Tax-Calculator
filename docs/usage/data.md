@@ -80,15 +80,35 @@ Tax-Calculator in two ways:
 The [tax-microdata
 repository](https://github.com/PSLmodels/tax-microdata-benchmarking)
 also produces state and Congressional district weights files that can
-be used to estimate federal taxes for various sub-national areas.
-The easiest way to produce sub-national federal tax estimates is to
-supply the **CLI tool** with an environmental variable that indicates
-the sub-national area.  So, for example, if you have the South Carolina
-state weights in the `sc_tmd_weights.csv.gz` file, put that file in the
-folder that contains the three national TMD files described above.
-Then, for example, execute `tc` like this:
+be used to estimate federal taxes for various sub-national areas.  The
+easiest way to produce sub-national federal tax estimates is to supply
+the **CLI tool** with the value of an environmental variable
+(`TMD_AREA`) that indicates the sub-national area.  So, for example,
+if you have the New Mexico state weights in the
+`nm_tmd_weights.csv.gz` file, put that file in the folder that
+contains the three national TMD files described above.  Then, execute
+this command for tabular output under 2024 current-law policy:
 ```
-(taxcalc-dev) myruns% TMD_AREA=sc tc tmd.csv 2024 --exact --tables
+(taxcalc-dev) myruns> TMD_AREA=nm tc tmd.csv 2024 --exact --tables
+Read input data for 2021; input data were extrapolated to 2024
+Write tabular output to file tmd_nm-24-#-#-#.tables
+Execution time is 8.2 seconds
+(taxcalc-dev) myruns> awk '$1~/Ret/||$1~/A/' tmd_nm-24-#-#-#.tables | head -2
+    Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
+ A     1.17      87.0       7.2       6.9       0.0      14.1
+```
+
+Or for the first Congressional district in New Mexico, put the
+`nm01_tmd_weights.csv.gz` file in the folder with the other TMD
+files and execute this command:
+```
+(taxcalc-dev) myruns> TMD_AREA=nm01 tc tmd.csv 2024 --exact --tables
+Read input data for 2021; input data were extrapolated to 2024
+Write tabular output to file tmd_nm01-24-#-#-#.tables
+Execution time is 8.3 seconds
+(taxcalc-dev) myruns> awk '$1~/Ret/||$1~/A/' tmd_nm01-24-#-#-#.tables | head -2
+    Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
+ A     0.40      31.9       2.8       2.5       0.0       5.3
 ```
 
 
