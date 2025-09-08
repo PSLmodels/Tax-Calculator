@@ -3,6 +3,45 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2025-09-08 Release 5.3.0
+------------------------
+(last merged pull request is
+[#2957](https://github.com/PSLmodels/Tax-Calculator/pull/2957))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Update new PUF weights and ratios files.
+  [[#2925](https://github.com/PSLmodels/Tax-Calculator/pull/2925) by
+  Bodi Yang], from the update in [[TaxData PR #452](https://github.com/PSLmodels/
+  taxdata/pull/452) by Bodi Yang]
+
+  Note: PUF users are required to produce new `puf.csv` file from Tax-Data model and replace the old file in the Tax-Calc directory.
+  Correct usage: Tax-Calc >= 5.3.0 versions are compatible with the newly produced `puf.csv` file; Tax-Calc <= 5.2.0 versions are compatible with the previous `puf.csv` file
+
+- Make `FST_AGI_thd` parameters to be non inflation-indexed
+  [[#2951](https://github.com/PSLmodels/Tax-Calculator/pull/2951) by
+  Martin Holmer]
+
+- Add support for Python 3.13
+  [[#2953](https://github.com/PSLmodels/Tax-Calculator/pull/2953) by
+  Martin Holmer]
+
+- Add tests for consistent quote style
+  [[#2954](https://github.com/PSLmodels/Tax-Calculator/pull/2954) by
+  Martin Holmer]
+
+- Allow CLI --dumpvars DUMPVARS to be the ALL string
+  [[#2956](https://github.com/PSLmodels/Tax-Calculator/pull/2956) by
+  Martin Holmer]
+
+- Add documentation on using sub-national TMD weights with CLI tool
+  [[#2957](https://github.com/PSLmodels/Tax-Calculator/pull/2957) by
+  Martin Holmer]
+
+
 
 2025-08-08 Release 5.2.0
 ------------------------
