@@ -1,12 +1,12 @@
 ,description,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024
-c00100,Federal AGI,   50840,   54457,   54942,   55071,   58024,   60318,   61591,   63130,   73017,   72054,   72247,   79575
+c00100,Federal AGI,   50840,   54457,   54942,   55071,   58024,   60318,   61591,   63130,   73018,   72054,   72247,   79575
 c02500,OASDI benefits in AGI,    1295,    1394,    1416,    1479,    1501,    1587,    1690,    1832,    2005,    2128,    2402,    2686
-c04470,Post-phase-out itemized deduction,    5907,    6036,    6149,    6382,    6562,    6798,    7003,    7480,    7870,    8006,    8419,    8785
+c04470,Post-phase-out itemized deduction,    5909,    6037,    6150,    6383,    6563,    6797,    7001,    7479,    7870,    8005,    8417,    8783
 c04600,Post-phase-out personal exemption,    7105,    7131,    7163,    7217,    7149,    7280,    7448,    7574,    7621,    7989,    8661,    9047
-c04800,Federal regular taxable income,   35754,   39297,   39664,   39592,   42568,   44486,   45340,   46361,   55796,   54215,   53036,   59734
+c04800,Federal regular taxable income,   35754,   39298,   39664,   39591,   42568,   44486,   45340,   46361,   55796,   54215,   53036,   59733
 c05200,Regular tax on taxable income,    7672,    8732,    8725,    8585,    9500,    9984,   10102,   10421,   13279,   12406,   11654,   13635
 c07180,Child care credit,      17,      17,      17,      17,      17,      17,      17,      17,       0,      17,      17,      17
-c07220,Child tax credit (adjusted),     158,     155,     147,     143,     139,     133,     128,     123,     359,     114,     105,      98
+c07220,Child tax credit (adjusted),     158,     155,     147,     143,     139,     133,     128,     123,     360,     114,     105,      98
 c09600,Federal AMT liability,     212,     227,     240,     251,     268,     279,     286,     315,     347,     334,     344,     361
 c11070,Extra child tax credit (refunded),     150,     144,     138,     133,     126,     123,     120,     121,       0,     110,     113,     111
 c21040,Itemized deduction that is phased out,     203,     242,     231,     219,     255,     270,     270,     283,     375,     342,     302,     380
@@ -53,22 +53,22 @@ e18400,Itemizable state and local income/sales taxes,    1669,    1768,    1803,
 e18500,Itemizable real-estate taxes paid,    1145,    1200,    1251,    1298,    1358,    1409,    1449,    1545,    1642,    1663,    1750,    1851
 e19200,Itemizable interest paid,    1878,    1841,    1817,    1844,    1884,    1965,    2032,    2177,    2327,    2368,    2504,    2662
 e19800,Itemizable charitable giving: cash/check contributions.  WARNING: this variable is already capped in PUF data.,     887,     932,     951,     979,    1018,    1054,    1082,    1153,    1226,    1242,    1307,    1381
-e20100,Itemizable charitable giving: other than cash/check contributions.  WARNING: this variable is already capped in PUF data.,     224,     235,     233,     239,     245,     253,     260,     276,     293,     296,     311,     328
-e20400,Itemizable miscellaneous deductions.  WARNING: this variable is zero below the floor in PUF data.,     713,     740,     759,     786,     811,     838,     860,     912,     967,     976,    1023,    1076
+e20100,Itemizable charitable giving: other than cash/check contributions.  WARNING: this variable is already capped in PUF data.,     224,     235,     233,     239,     245,     253,     259,     276,     293,     296,     311,     328
+e20400,Itemizable miscellaneous deductions.  WARNING: this variable is zero below the floor in PUF data.,     713,     740,     759,     786,     811,     838,     860,     912,     967,     975,    1023,    1076
 e24515,Sch D: Un-Recaptured Section 1250 Gain,      79,     110,     112,     100,     137,     147,     136,     176,     315,     193,     141,     200
 e24518,Sch D: 28% Rate Gain or Loss,      24,      34,      34,      30,      39,      41,      38,      49,      87,      53,      39,      56
-e26270,Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts and is included in e02000),    2741,    2969,    3037,    2995,    3222,    3424,    3455,    3244,    3910,    4062,    3520,    5112
+e26270,Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts and is included in e02000),    2741,    2969,    3037,    2995,    3222,    3424,    3455,    3243,    3910,    4062,    3520,    5112
 e27200,Sch E: Farm rent net income or loss (included in e02000),      35,      37,      38,      39,      44,      47,      49,      47,      58,      62,      55,      80
 e32800,Child/dependent-care expenses for qualifying persons from Form 2441,     108,     111,     113,     114,     118,     121,     123,     130,     137,     137,     143,     150
 e58990,Investment income elected amount from Form 4952,      14,      14,      15,      15,      16,      17,      17,      18,      19,      19,      20,      21
 e62900,Alternative Minimum Tax foreign tax credit from Form 6251,      78,      86,      84,      84,      90,      93,      95,     100,     106,     107,     112,     118
 e87521,Total tentative AmOppCredit amount for all students,     172,     176,     182,     184,     191,     197,     201,     213,     225,     227,     237,     249
 e87530,Adjusted qualified lifetime learning expenses for all students,      93,      92,      94,      96,      99,     102,     105,     111,     117,     118,     124,     130
-eitc,Federal EITC,     376,     369,     364,     352,     342,     343,     346,     355,     335,     348,     387,     399
+eitc,Federal EITC,     376,     369,     364,     352,     342,     343,     347,     355,     335,     348,     387,     399
 elderly_dependents,number of dependents age 65+ in filing unit excluding taxpayer and spouse,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 g20500,Itemizable gross (before 10% AGI disregard) casualty or theft loss,      29,      30,      31,      32,      33,      35,      36,      38,      40,      41,      43,      45
 iitax,Federal income tax liability,    6826,    7765,    7820,    7778,    8605,    9072,    9252,    6827,    9422,   11409,   10888,   12600
-k1bx14p,Partner self-employment earnings/loss for taxpayer (included in e26270 total),    -213,    -239,    -187,    -162,    -144,    -139,    -133,    -129,    -156,    -168,    -146,    -211
+k1bx14p,Partner self-employment earnings/loss for taxpayer (included in e26270 total),    -213,    -239,    -187,    -162,    -144,    -139,    -133,    -129,    -156,    -168,    -147,    -211
 k1bx14s,Partner self-employment earnings/loss for spouse (included in e26270 total),      -7,      -9,       0,       2,       8,      10,      11,      11,      13,      14,      11,      17
 nu06,Number of dependents under 6 years old,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 nu13,Number of dependents under 13 years old,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
@@ -76,5 +76,5 @@ p08000,Other tax credits (but not including Sch R credit),       1,       1,    
 p22250,Sch D: Net short-term capital gains/losses,    -120,    -173,    -172,    -151,    -195,    -212,    -202,    -267,    -481,    -300,    -223,    -316
 p23250,Sch D: Net long-term capital gains/losses,    2284,    3191,    3138,    2776,    3680,    3912,    3596,    4616,    8212,    5011,    3634,    5193
 payrolltax,Payroll taxes (ee+er) for OASDI+HI,    4917,    5091,    5141,    5215,    5352,    5497,    5667,    5696,    6069,    6441,    6728,    7035
-pencon_p,Contributions to defined-contribution pension plans for taxpayer,     856,     897,     916,     941,     963,     996,    1029,    1030,    1107,    1185,    1229,    1286
-pencon_s,Contributions to defined-contribution pension plans for spouse,     393,     410,     421,     424,     440,     452,     466,     466,     500,     535,     554,     579
+pencon_p,Contributions to defined-contribution pension plans for taxpayer,     858,     900,     918,     943,     965,     999,    1032,    1033,    1110,    1188,    1233,    1291
+pencon_s,Contributions to defined-contribution pension plans for spouse,     390,     407,     419,     423,     438,     451,     465,     465,     499,     534,     553,     578
