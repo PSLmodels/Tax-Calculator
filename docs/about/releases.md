@@ -18,8 +18,8 @@ for a complete commit history.
   Bodi Yang], from the update in [[TaxData PR #452](https://github.com/PSLmodels/
   taxdata/pull/452) by Bodi Yang]
 
-  Note: PUF users are required to produce new `puf.csv` file from Tax-Data model and replace the old file in the Tax-Calc directory.
-  Correct usage: Tax-Calc >= 5.3.0 versions are compatible with the newly produced `puf.csv` file; Tax-Calc <= 5.2.0 versions are compatible with the previous `puf.csv` file
+  Note: PUF users are required to produce new `puf.csv` file from TaxData repository and replace the old file in the Tax-Calculator directory.
+  Correct usage: Tax-Calculator >= 5.3.0 versions are compatible with the newly produced `puf.csv` file; Tax-Calculator <= 5.2.0 versions are compatible with the previous `puf.csv` file
 
 - Make `FST_AGI_thd` parameters to be non inflation-indexed
   [[#2951](https://github.com/PSLmodels/Tax-Calculator/pull/2951) by
