@@ -416,6 +416,15 @@ class TaxCalcIO():
                     gfactors=gfactors_bas,
                     exact_calculations=exact_calculations,
                 )
+            elif self.puf_input_data:  # pragma: no cover
+                recs_ref = Records.puf_constructor(
+                    gfactors=gfactors_ref,
+                    exact_calculations=exact_calculations,
+                )
+                recs_bas = Records.puf_constructor(
+                    gfactors=gfactors_bas,
+                    exact_calculations=exact_calculations,
+                )
             elif self.tmd_input_data:  # pragma: no cover
                 wghts = pd.read_csv(self.tmd_weights)
                 recs_ref = Records(
@@ -436,17 +445,8 @@ class TaxCalcIO():
                     exact_calculations=exact_calculations,
                     weights_scale=1.0,
                 )
-            else:  # if not {cps|tmd}_input_data but aging_input_data: puf
-                recs_ref = Records(
-                    data=input_data,
-                    gfactors=gfactors_ref,
-                    exact_calculations=exact_calculations
-                )
-                recs_bas = Records(
-                    data=input_data,
-                    gfactors=gfactors_bas,
-                    exact_calculations=exact_calculations
-                )
+            else:
+                raise ValueError('illegal input data when aging')
         else:  # input_data are raw data that are not being aged
             recs_ref = Records(
                 data=input_data,

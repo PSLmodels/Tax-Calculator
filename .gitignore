@@ -13,9 +13,9 @@ read-the-docs/_build/
 # Mac OS X
 *.DS_Store
 
-# IRS-SOI PUF data file
-puf.csv
-tmd.csv
+# Non-public IRS-SOI PUF and TMD data files
+puf*csv*
+*tmd*csv*
 
 # Jupyter notebook checkpoints
 *.ipynb_checkpoints*
