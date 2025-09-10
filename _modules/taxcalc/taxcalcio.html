@@ -682,7 +682,10 @@ document.write(`
         <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
         <span class="c1"># pylint: disable=too-many-statements,too-many-branches,too-many-locals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="c1"># instantiate base and reform GrowFactors objects</span>
+        <span class="c1"># instantiate base/reform GrowFactors objects used for param indexing</span>
+        <span class="n">policy_gfactors_bas</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+        <span class="n">policy_gfactors_ref</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+        <span class="c1"># instantiate base/reform GrowFactors objects used to extrapolate data</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>
             <span class="n">gfactors_bas</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmd_gfactor</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
             <span class="n">gfactors_ref</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmd_gfactor</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
@@ -746,10 +749,15 @@ document.write(`
         <span class="n">gdiff_response</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_ref</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gf_reform</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">gfactors_ref</span><span class="p">)</span>
         <span class="c1"># create Policy objects:</span>
+        <span class="c1"># ... apply gdiff_baseline to policy_gfactor_baseline</span>
+        <span class="n">gdiff_baseline</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">policy_gfactors_bas</span><span class="p">)</span>
+        <span class="c1"># ... apply gdiff_baseline and gdiff_response to policy_gfactor_ref</span>
+        <span class="n">gdiff_baseline</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">policy_gfactors_ref</span><span class="p">)</span>
+        <span class="n">gdiff_response</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">policy_gfactors_ref</span><span class="p">)</span>
         <span class="c1"># ... the baseline Policy object</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_baseline</span><span class="p">:</span>
             <span class="n">pol_bas</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
-                <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_bas</span><span class="p">,</span>
+                <span class="n">gfactors</span><span class="o">=</span><span class="n">policy_gfactors_bas</span><span class="p">,</span>
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">poldict</span> <span class="ow">in</span> <span class="n">poldicts_bas</span><span class="p">:</span>
@@ -767,13 +775,13 @@ document.write(`
                     <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">valerr_msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pol_bas</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
-                <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_bas</span><span class="p">,</span>
+                <span class="n">gfactors</span><span class="o">=</span><span class="n">policy_gfactors_bas</span><span class="p">,</span>
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="c1"># ... the reform Policy object</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span><span class="p">:</span>
             <span class="n">pol_ref</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
-                <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_ref</span><span class="p">,</span>
+                <span class="n">gfactors</span><span class="o">=</span><span class="n">policy_gfactors_ref</span><span class="p">,</span>
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">poldict</span> <span class="ow">in</span> <span class="n">poldicts_ref</span><span class="p">:</span>
@@ -791,7 +799,7 @@ document.write(`
                     <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">valerr_msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pol_ref</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
-                <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_bas</span><span class="p">,</span>
+                <span class="n">gfactors</span><span class="o">=</span><span class="n">policy_gfactors_bas</span><span class="p">,</span>
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="c1"># create Consumption object</span>
