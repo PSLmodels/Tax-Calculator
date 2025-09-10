@@ -22,8 +22,9 @@ class Policy(Parameters):
 
     Parameters
     ----------
-    gfactors: GrowFactors class instance
-        containing price inflation rates and wage growth rates
+    gfactors: GrowFactors class instance or None
+        containing price inflation rates and wage growth rates used
+        to index policy paramaters
 
     last_budget_year: integer
         user-defined last parameter extrapolation year

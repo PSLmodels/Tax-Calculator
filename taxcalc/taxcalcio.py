@@ -273,7 +273,10 @@ class TaxCalcIO():
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-statements,too-many-branches,too-many-locals
         self.errmsg = ''
-        # instantiate base and reform GrowFactors objects
+        # instantiate base/reform GrowFactors objects used for param indexing
+        policy_gfactors_bas = GrowFactors()
+        policy_gfactors_ref = GrowFactors()
+        # instantiate base/reform GrowFactors objects used to extrapolate data
         if self.tmd_input_data:
             gfactors_bas = GrowFactors(self.tmd_gfactor)  # pragma: no cover
             gfactors_ref = GrowFactors(self.tmd_gfactor)  # pragma: no cover
@@ -337,10 +340,13 @@ class TaxCalcIO():
         gdiff_response.apply_to(gfactors_ref)
         self.gf_reform = copy.deepcopy(gfactors_ref)
         # create Policy objects:
+        # ... apply gdiff_baseline and gdiff_response to policy_gfactor_ref
+        gdiff_baseline.apply_to(policy_gfactors_ref)
+        gdiff_response.apply_to(policy_gfactors_ref)
         # ... the baseline Policy object
         if self.specified_baseline:
             pol_bas = Policy(
-                gfactors=gfactors_bas,
+                gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
             for poldict in poldicts_bas:
@@ -358,13 +364,13 @@ class TaxCalcIO():
                     self.errmsg += str(valerr_msg)
         else:
             pol_bas = Policy(
-                gfactors=gfactors_bas,
+                gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
         # ... the reform Policy object
         if self.specified_reform:
             pol_ref = Policy(
-                gfactors=gfactors_ref,
+                gfactors=policy_gfactors_ref,
                 last_budget_year=last_b_year,
             )
             for poldict in poldicts_ref:
@@ -382,7 +388,7 @@ class TaxCalcIO():
                     self.errmsg += str(valerr_msg)
         else:
             pol_ref = Policy(
-                gfactors=gfactors_bas,
+                gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
         # create Consumption object
