@@ -340,6 +340,8 @@ class TaxCalcIO():
         gdiff_response.apply_to(gfactors_ref)
         self.gf_reform = copy.deepcopy(gfactors_ref)
         # create Policy objects:
+        # ... apply gdiff_baseline to policy_gfactor_baseline
+        gdiff_baseline.apply_to(policy_gfactors_bas)
         # ... apply gdiff_baseline and gdiff_response to policy_gfactor_ref
         gdiff_baseline.apply_to(policy_gfactors_ref)
         gdiff_response.apply_to(policy_gfactors_ref)
