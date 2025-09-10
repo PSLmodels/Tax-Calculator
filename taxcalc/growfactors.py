@@ -35,7 +35,8 @@ class GrowFactors():
     -----
     Typical usage is "gfactor = GrowFactors()", which produces an object
     containing baseline growth factors in the GrowFactors.FILE_NAME file,
-    which is for use with puf and cps data from the taxdata repository.
+    which is used to extrapolate cps and puf data from the taxdata repository,
+    and is used to index policy parameters.
     """
 
     PACKAGE_FILE_NAMES = ['growfactors.csv']
