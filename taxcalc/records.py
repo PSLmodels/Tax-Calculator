@@ -112,8 +112,6 @@ class Records(Data):
     CPSCSV_YEAR = 2014
     TMDCSV_YEAR = 2021
 
-    PUF_WEIGHTS_FILENAME = 'puf_weights.csv.gz'
-    PUF_RATIOS_FILENAME = 'puf_ratios.csv'
     CODE_PATH = os.path.abspath(os.path.dirname(__file__))
     VARINFO_FILE_NAME = 'records_variables.json'
     VARINFO_FILE_PATH = CODE_PATH

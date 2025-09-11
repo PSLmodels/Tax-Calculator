@@ -29,10 +29,11 @@ def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
         _ = Records(data=cps_subsample, gfactors=None, weights=None,
                     adjust_ratios=[])
     # test error raise when num of records is greater than num of weights
-    wghts_path = os.path.join(Records.CODE_PATH, Records.PUF_WEIGHTS_FILENAME)
-    puf_wghts = pd.read_csv(wghts_path)
+    cps_weights_path = os.path.join(Records.CODE_PATH, 'cps_weights.csv.gz')
+    weights = pd.read_csv(cps_weights_path)
+    some_wghts = weights[:100]
     with pytest.raises(ValueError):
-        _ = Records(data=cps_fullsample, weights=puf_wghts, start_year=2020)
+        _ = Records(data=cps_fullsample, weights=some_wghts, start_year=2020)
 
 
 def test_correct_records_instantiation(cps_subsample):
@@ -47,14 +48,13 @@ def test_correct_records_instantiation(cps_subsample):
     assert sum_e00200_in_cps_year_plus_one == sum_e00200_in_cps_year
     wghts_path = os.path.join(Records.CODE_PATH, 'cps_weights.csv.gz')
     wghts_df = pd.read_csv(wghts_path)
-    ratios_path = os.path.join(Records.CODE_PATH, Records.PUF_RATIOS_FILENAME)
-    ratios_df = pd.read_csv(ratios_path, index_col=0).transpose()
     rec2 = Records(data=cps_subsample,
                    start_year=Records.CPSCSV_YEAR,
                    gfactors=GrowFactors(),
                    weights=wghts_df,
-                   adjust_ratios=ratios_df,
-                   exact_calculations=False)
+                   adjust_ratios=None,
+                   exact_calculations=False,
+                   weights_scale=0.01)
     assert rec2
     assert np.all(getattr(rec2, 'MARS') != 0)
     assert getattr(rec2, 'current_year') == getattr(rec2, 'data_year')
