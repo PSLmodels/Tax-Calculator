@@ -404,11 +404,11 @@ class Records(Data):
 
     def _adjust(self, year):
         """
-        Adjust value of income variables to match SOI distributions
+        Adjust value of PUF income variables to match SOI distributions
         Note: adjustment must leave variables as numpy.ndarray type
         """
         # pylint: disable=no-member
-        if self.ADJ.size > 0:
+        if self.ADJ.size > 0:  # pragma: no cover
             # Interest income
             self.e00300 *= self.ADJ[f'INT{year}'].iloc[self.agi_bin].values
 
