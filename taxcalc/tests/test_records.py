@@ -49,6 +49,7 @@ def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
     dta['k1bx14s'] = 1000
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
+    dta = cps_subsample.copy()
     dta['e02100s'] = 1000
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
