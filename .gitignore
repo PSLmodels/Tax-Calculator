@@ -15,7 +15,9 @@ read-the-docs/_build/
 
 # Non-public IRS-SOI PUF and TMD data files
 puf*csv*
+puf*zip
 *tmd*csv*
+tmd*zip
 
 # Jupyter notebook checkpoints
 *.ipynb_checkpoints*

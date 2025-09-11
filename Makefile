@@ -24,6 +24,8 @@ help:
 	@echo "             tc --test when environment var NOTAXCALCJIT is set"
 	@echo "cstest     : generate coding-style errors using the"
 	@echo "             pycodestyle (nee pep8) and pylint tools"
+	@echo "idtest     : generate report for and cleanup after executing"
+	@echo "             taxcalc/cli/input_data_tests/tests.sh"
 	@echo "coverage   : generate test coverage report"
 	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
 	@echo "git-pr N=n : create local pr-n branch containing upstream PR"
@@ -96,6 +98,10 @@ cstest:
 	@-pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
 	@-pylint $(PYLINT_OPTIONS) --ignore-paths=$(EXCLUDED_PATHS) .
+
+.PHONY=idtest
+idtest: package
+	@cd taxcalc/cli/input_data_tests ; ./tests.sh
 
 define coverage-cleanup
 rm -f .coverage htmlcov/*
