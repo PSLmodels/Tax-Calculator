@@ -38,7 +38,7 @@ clean:
 
 .PHONY=package
 package:
-	@pip install -e .
+	@pip install -e . | tail -1
 
 define pytest-setup
 rm -f taxcalc/tests/reforms_actual_init
@@ -101,6 +101,7 @@ cstest:
 
 .PHONY=idtest
 idtest: package
+	@echo "Executing taxcalc/cli/input_data_tests"
 	@cd taxcalc/cli/input_data_tests ; ./tests.sh
 
 define coverage-cleanup
