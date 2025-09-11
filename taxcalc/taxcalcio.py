@@ -9,6 +9,7 @@ import os
 import gc
 import copy
 import sqlite3
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import paramtools
@@ -441,24 +442,17 @@ class TaxCalcIO():
                     exact_calculations=exact_calculations,
                 )
             elif self.tmd_input_data:  # pragma: no cover
-                wghts = pd.read_csv(self.tmd_weights)
-                recs_ref = Records(
-                    data=pd.read_csv(input_data),
-                    start_year=Records.TMDCSV_YEAR,
-                    weights=wghts,
-                    gfactors=gfactors_ref,
-                    adjust_ratios=None,
+                recs_ref = Records.tmd_constructor(
+                    data_path=Path(input_data),
+                    weights_path=Path(self.tmd_weights),
+                    growfactors=gfactors_ref,
                     exact_calculations=exact_calculations,
-                    weights_scale=1.0,
                 )
-                recs_bas = Records(
-                    data=pd.read_csv(input_data),
-                    start_year=Records.TMDCSV_YEAR,
-                    weights=wghts,
-                    gfactors=gfactors_bas,
-                    adjust_ratios=None,
+                recs_bas = Records.tmd_constructor(
+                    data_path=Path(input_data),
+                    weights_path=Path(self.tmd_weights),
+                    growfactors=gfactors_bas,
                     exact_calculations=exact_calculations,
-                    weights_scale=1.0,
                 )
             else:
                 raise ValueError('illegal input data when aging')

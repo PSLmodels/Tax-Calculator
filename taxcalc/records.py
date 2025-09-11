@@ -228,7 +228,7 @@ class Records(Data):
             weights='puf_weights.csv.gz',
             ratios='puf_ratios.csv',
             exact_calculations=False
-    ):
+    ):  # pragma: no cover
         """
         Static method returns a Records object instantiated with PUF
         input data.  This is a convenience method that eliminates the
