@@ -78,8 +78,6 @@ class TaxCalcIO():
         self.puf_input_data = False
         self.cps_input_data = False
         self.tmd_input_data = False
-        self.tmd_weights = None
-        self.tmd_gfactor = None
         if isinstance(input_data, str):
             # remove any leading directory path from INPUT filename
             fname = os.path.basename(input_data)
@@ -90,12 +88,23 @@ class TaxCalcIO():
                 msg = 'INPUT file name does not end in .csv'
                 self.errmsg += f'ERROR: {msg}\n'
             # check existence of INPUT file
-            self.puf_input_data = input_data.endswith('puf.csv')
             self.cps_input_data = input_data.endswith('cps.csv')
+            self.puf_input_data = input_data.endswith('puf.csv')
             self.tmd_input_data = input_data.endswith('tmd.csv')
             if not self.cps_input_data and not os.path.isfile(input_data):
                 msg = 'INPUT file could not be found'
                 self.errmsg += f'ERROR: {msg}\n'
+            # if puf_input_data is True, construct weights and ratios paths
+            if self.puf_input_data:  # pragma: no cover
+                puf_dir = os.path.dirname(input_data)
+                self.puf_weights = os.path.join(puf_dir, 'puf_weights.csv.gz')
+                self.puf_ratios = os.path.join(puf_dir, 'puf_ratios.csv')
+                if not os.path.isfile(self.puf_weights):
+                    msg = f'weights file {self.puf_weights} could not be found'
+                    self.errmsg += f'ERROR: {msg}\n'
+                if not os.path.isfile(self.puf_ratios):
+                    msg = f'gfactor file {self.puf_ratios} could not be found'
+                    self.errmsg += f'ERROR: {msg}\n'
             # if tmd_input_data is True, construct weights and gfactor paths
             if self.tmd_input_data:  # pragma: no cover
                 tmd_dir = os.path.dirname(input_data)
@@ -418,11 +427,17 @@ class TaxCalcIO():
                 )
             elif self.puf_input_data:  # pragma: no cover
                 recs_ref = Records.puf_constructor(
+                    data=input_data,
                     gfactors=gfactors_ref,
+                    weights=self.puf_weights,
+                    ratios=self.puf_ratios,
                     exact_calculations=exact_calculations,
                 )
                 recs_bas = Records.puf_constructor(
+                    data=input_data,
                     gfactors=gfactors_bas,
+                    weights=self.puf_weights,
+                    ratios=self.puf_ratios,
                     exact_calculations=exact_calculations,
                 )
             elif self.tmd_input_data:  # pragma: no cover
