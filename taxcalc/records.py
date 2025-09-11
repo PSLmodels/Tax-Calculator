@@ -426,6 +426,7 @@ class Records(Data):
             assert 'INT2013' in ratios.columns  # check for transposed
             assert ratios.index.name is None  # check for no-index
             ADJ = ratios
+            self.ADJ = pd.DataFrame()
             if ADJ.index.name != 'agi_bin':
                 ADJ.index.name = 'agi_bin'
             setattr(self, 'ADJ', ADJ.astype(np.float32))
