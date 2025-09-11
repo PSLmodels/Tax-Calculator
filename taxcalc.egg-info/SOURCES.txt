@@ -114,8 +114,6 @@ taxcalc/growfactors.py
 taxcalc/parameters.py
 taxcalc/policy.py
 taxcalc/policy_current_law.json
-taxcalc/puf_ratios.csv
-taxcalc/puf_weights.csv.gz
 taxcalc/records.py
 taxcalc/records_variables.json
 taxcalc/taxcalcio.py
