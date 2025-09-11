@@ -49,17 +49,6 @@ def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
     dta['k1bx14s'] = 1000
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
-    dta = cps_subsample.copy()
-    dta['e02100s'] = 1000
-    with pytest.raises(ValueError):
-        _ = Records(data=dta, start_year=2000)
-    dta['e00900s'] = 1000
-    with pytest.raises(ValueError):
-        _ = Records(data=dta, start_year=2000)
-    dta['e00200s'] = 1000
-    with pytest.raises(ValueError):
-        _ = Records(data=dta, start_year=2000)
-    dta = cps_subsample.copy()
     dta['e02100'] = dta['e02100p'] + dta['e02100s'] + 1000
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
@@ -73,6 +62,16 @@ def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
     dta['MARS'] = 0
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta = cps_subsample.copy()
+    dta['e02100s'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e00900s'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e00200s'] = 1000
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
 
