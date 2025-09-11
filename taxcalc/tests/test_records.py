@@ -16,6 +16,7 @@ from taxcalc import GrowFactors, Policy, Records
 
 def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
     """Test docstring"""
+    # pylint: disable=too-many-statements
     with pytest.raises(ValueError):
         _ = Records(data=[])
     with pytest.raises(ValueError):
@@ -34,6 +35,45 @@ def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
     some_wghts = weights[:100]
     with pytest.raises(ValueError):
         _ = Records(data=cps_fullsample, weights=some_wghts, start_year=2020)
+    # test incorrect data values
+    dta = cps_subsample.copy()
+    dta['PT_SSTB_income'] = 2
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e01700'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e00650'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['k1bx14s'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e02100s'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e00900s'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e00200s'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta = cps_subsample.copy()
+    dta['e02100'] = dta['e02100p'] + dta['e02100s'] + 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e00900'] = dta['e00900p'] + dta['e00900s'] + 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e00200'] = dta['e00200p'] + dta['e00200s'] + 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['EIC'] = 4
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['MARS'] = 0
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
 
 
 def test_correct_records_instantiation(cps_subsample):
