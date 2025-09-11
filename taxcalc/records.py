@@ -414,32 +414,18 @@ class Records(Data):
 
     def _read_ratios(self, ratios):
         """
-        Read Records adjustment ratios from file or
-        use specified transposed/no-index DataFrame as ratios or
-        create empty DataFrame if None
+        Read Records PUF-related adjustment ratios using
+        specified transposed/no-index DataFrame as ratios or
+        create empty DataFrame if ratios is None.
         """
+        assert ratios is None or isinstance(ratios, pd.DataFrame)
         if ratios is None:
             setattr(self, 'ADJ', pd.DataFrame({'nothing': []}))
             return
-        if isinstance(ratios, pd.DataFrame):
+        if isinstance(ratios, pd.DataFrame):  # pragma: no cover
             assert 'INT2013' in ratios.columns  # check for transposed
             assert ratios.index.name is None  # check for no-index
             ADJ = ratios
-        elif isinstance(ratios, str):
-            ratios_path = os.path.join(Records.CODE_PATH, ratios)
-            if os.path.isfile(ratios_path):
-                ADJ = pd.read_csv(ratios_path,
-                                  index_col=0)
-            else:  # find file in conda package
-                ADJ = read_egg_csv(os.path.basename(ratios_path),
-                                   index_col=0)  # pragma: no cover
-            ADJ = ADJ.transpose()
-        else:
-            msg = 'ratios is neither None nor a Pandas DataFrame nor a string'
-            raise ValueError(msg)
-        assert isinstance(ADJ, pd.DataFrame)
-        if ADJ.index.name != 'agi_bin':
-            ADJ.index.name = 'agi_bin'
-        self.ADJ = pd.DataFrame()
-        setattr(self, 'ADJ', ADJ.astype(np.float32))
-        del ADJ
+            if ADJ.index.name != 'agi_bin':
+                ADJ.index.name = 'agi_bin'
+            setattr(self, 'ADJ', ADJ.astype(np.float32))
