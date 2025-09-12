@@ -202,7 +202,7 @@ def fixture_tc_objs(request, reform_xx, puf_subsample, cps_subsample):
     p_xx = Policy()
     p_xx.implement_reform(reform_xx, raise_errors=False)
     if puftest:
-        rec_xx = Records(data=puf_subsample)
+        rec_xx = Records.puf_constructor(data=puf_subsample)
     else:
         rec_xx = Records.cps_constructor(data=cps_subsample)
     c_xx = Calculator(policy=p_xx, records=rec_xx)

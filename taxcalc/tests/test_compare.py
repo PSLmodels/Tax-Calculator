@@ -300,17 +300,19 @@ def differences(afilename, efilename):
 @pytest.mark.pre_release
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('using_puf', [True, False])
-def test_itax_compare(tests_path, using_puf, puf_fullsample, cps_fullsample):
+def test_itax_compare(tests_path, using_puf, cps_fullsample,
+                      puf_data_path, puf_weights_path, puf_ratios_path):
     """
     Conduct income tax comparisons using ITAX data.
     """
-    using_puf_adjust_ratios = True
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     # generate 2015 estimates by AGI category using Tax-Calculator
     if using_puf:
-        if using_puf_adjust_ratios:
-            recs = Records(data=puf_fullsample)
-        else:
-            recs = Records(data=puf_fullsample, adjust_ratios=None)
+        recs = Records.puf_constructor(
+            data=puf_data_path,
+            weights=puf_weights_path,
+            ratios=puf_ratios_path,
+        )
     else:
         recs = Records.cps_constructor(data=cps_fullsample)
     calc = Calculator(policy=Policy(), records=recs, verbose=False)
