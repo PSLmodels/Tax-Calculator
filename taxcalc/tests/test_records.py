@@ -16,7 +16,6 @@ from taxcalc import GrowFactors, Policy, Records
 
 def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
     """Test docstring"""
-    # pylint: disable=too-many-statements
     with pytest.raises(ValueError):
         _ = Records(data=[])
     with pytest.raises(ValueError):
@@ -35,7 +34,10 @@ def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
     some_wghts = weights[:100]
     with pytest.raises(ValueError):
         _ = Records(data=cps_fullsample, weights=some_wghts, start_year=2020)
-    # test incorrect data values
+
+
+def test_invalid_variable_values_1(cps_subsample):
+    """Test docstring"""
     dta = cps_subsample.copy()
     dta['PT_SSTB_income'] = 2
     with pytest.raises(ValueError):
@@ -64,16 +66,23 @@ def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
     dta['MARS'] = 0
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
+
+
+def test_invalid_variable_values_2(cps_subsample):
+    """Test docstring"""
     dta = cps_subsample.copy()
     dta['e02100s'] = 1000
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
+    dta = cps_subsample.copy()
     dta['e00900s'] = 1000
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
+    dta = cps_subsample.copy()
     dta['e00200s'] = 1000
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
+    #    assert 1==2
 
 
 def test_correct_records_instantiation(cps_subsample):
