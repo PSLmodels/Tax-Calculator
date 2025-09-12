@@ -266,12 +266,12 @@ def test_reform_json_and_output(reform_file, tax_year, tests_path):
         raise ValueError(msg)
 
 
-def reform_results(rid, reform_dict, puf_data, reform_2017_law):
+def reform_results(rid, reform_dict, cps_data, reform_2017_law):
     """
     Return actual results of the reform specified by rid and reform_dict.
     """
     # pylint: disable=too-many-locals
-    rec = Records(data=puf_data)
+    rec = Records.cps_constructor(data=cps_data)
     # create baseline Calculator object, calc1
     pol = Policy()
     if reform_dict['baseline'] == '2017_law.json':
@@ -336,17 +336,16 @@ def fixture_reforms_dict(tests_path):
 NUM_REFORMS = 60  # when changing this also change num_reforms in conftest.py
 
 
-@pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('rid', list(range(1, NUM_REFORMS + 1)))
 def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
-                 reforms_dict, puf_subsample):
+                 reforms_dict, cps_subsample):
     """
     Write actual reform results to files.
     """
     # pylint: disable=too-many-arguments,too-many-positional-arguments
     assert test_reforms_init == NUM_REFORMS
     actual = reform_results(rid, reforms_dict[str(rid)],
-                            puf_subsample, baseline_2017_law)
+                            cps_subsample, baseline_2017_law)
     afile_path = os.path.join(tests_path, f'reform_actual_{rid}.csv')
     with open(afile_path, 'w', encoding='utf-8') as afile:
         afile.write('rid,res1,res2,res3,res4\n')
