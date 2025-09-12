@@ -690,8 +690,6 @@ def test_ce_aftertax_income(cps_subsample):
 
 
 @pytest.mark.itmded_vars
-@pytest.mark.pre_release
-@pytest.mark.requires_pufcsv
 @pytest.mark.parametrize("year, cvname, hcname",
                          [(2018, "c17000", "ID_Medical_hc"),
                           (2018, "c18300", "ID_AllTaxes_hc"),
@@ -705,7 +703,7 @@ def test_ce_aftertax_income(cps_subsample):
                           (2017, "c19700", "ID_Charity_hc"),
                           (2017, "c20500", "ID_Casualty_hc"),
                           (2017, "c20800", "ID_Miscellaneous_hc")])
-def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
+def test_itemded_component_amounts(year, cvname, hcname, cps_fullsample):
     """
     Check that all c04470 components are adjusted to reflect the filing
     unit's standard-vs-itemized-deduction decision.  Check for 2018
@@ -718,7 +716,7 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     here use c21060, instead of c04470, as the itemized deductions total.
     """
     # pylint: disable=too-many-locals
-    recs = Records(data=puf_fullsample)
+    recs = Records.cps_constructor(data=cps_fullsample)
     # policy1 such that everybody itemizes deductions and all are allowed
     policy1 = Policy()
     reform1 = {

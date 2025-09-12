@@ -14,7 +14,6 @@ Read Tax-Calculator/TESTING.md for details.
 
 import os
 import json
-import pytest
 import numpy as np
 import pandas as pd
 from taxcalc.growfactors import GrowFactors
