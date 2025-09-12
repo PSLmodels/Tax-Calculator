@@ -100,7 +100,7 @@ define coverage-cleanup
 rm -f .coverage htmlcov/*
 endef
 
-COVMARK = "not requires_pufcsv and not pre_release"
+COVMARK = "not requires_puf and not requires_tmd"
 
 OS := $(shell uname -s)
 
