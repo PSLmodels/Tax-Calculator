@@ -318,3 +318,43 @@ def test_csv_input_vars_md_contents(tests_path):
         for var in valid_less_civ:
             msg += f'VARIABLE= {var}\n'  # pylint: disable=consider-using-join
         raise ValueError(msg)
+
+
+def test_cps_availability(tests_path, cps_data_path):
+    """
+    Cross-check records_variables.json data with variables in cps.csv file.
+    """
+    cpsdf = pd.read_csv(cps_data_path)
+    cpsvars = set(list(cpsdf))
+    # make set of variable names that are marked as cps.csv available
+    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
+        rvdict = json.load(rvfile)
+    recvars = set()
+    for vname, vdict in rvdict['read'].items():
+        if 'taxdata_cps' in vdict.get('availability', ''):
+            recvars.add(vname)
+    # check that cpsvars and recvars sets are the same
+    assert (cpsvars - recvars) == set()
+    assert (recvars - cpsvars) == set()
+
+
+@pytest.mark.requires_pufcsv
+def test_puf_availability(tests_path, puf_data_path):
+    """
+    Cross-check records_variables.json data with variables in puf.csv file
+    """
+    # make set of variable names in puf.csv file
+    pufdf = pd.read_csv(puf_data_path)
+    pufvars = set(list(pufdf))
+    # make set of variable names that are marked as puf.csv available
+    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
+        rvdict = json.load(rvfile)
+    recvars = set()
+    for vname, vdict in rvdict['read'].items():
+        if 'taxdata_puf' in vdict.get('availability', ''):
+            recvars.add(vname)
+    # check that pufvars and recvars sets are the same
+    assert (pufvars - recvars) == set()
+    assert (recvars - pufvars) == set()

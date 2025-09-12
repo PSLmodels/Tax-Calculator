@@ -27,22 +27,22 @@ def tests_path_fixture():
     return os.path.abspath(os.path.dirname(__file__))
 
 
-@pytest.fixture(scope='session', name='cps_path')
-def cps_path_fixture(tests_path):
+@pytest.fixture(scope='session', name='cps_data_path')
+def cps_data_path_fixture(tests_path):
     """Fixture docstring"""
     return os.path.join(tests_path, '..', 'cps.csv.gz')
 
 
 @pytest.fixture(scope='session', name='cps_fullsample')
-def cps_fullsample_fixture(cps_path):
+def cps_fullsample_fixture(cps_data_path):
     """Fixture docstring"""
-    return pandas.read_csv(cps_path)
+    return pandas.read_csv(cps_data_path)
 
 
 @pytest.fixture(scope='session')
 def cps_subsample(cps_fullsample):
     """Fixture docstring"""
-    # draw smaller cps.csv subsample than in test_cpscsv.py
+    # draw a small cps.csv subsample
     return cps_fullsample.sample(frac=0.01, random_state=123456789)
 
 
