@@ -68,21 +68,41 @@ def test_invalid_variable_values_1(cps_subsample):
         _ = Records(data=dta, start_year=2000)
 
 
-def test_invalid_variable_values_2(cps_subsample):
+def test_invalid_variable_values_2():
     """Test docstring"""
-    dta = cps_subsample.copy()
-    dta['e02100s'] = 1000
+    dta = pd.DataFrame(
+        {
+            'RECID': [1],
+            'MARS': [1],
+            'e00200p': [8e4],
+            'e00200s': [1e4],
+            'e00200': [9e4],
+        }
+    )
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
-    dta = cps_subsample.copy()
-    dta['e00900s'] = 1000
+    dta = pd.DataFrame(
+        {
+            'RECID': [1],
+            'MARS': [1],
+            'e00900p': [8e4],
+            'e00900s': [1e4],
+            'e00900': [9e4],
+        }
+    )
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
-    dta = cps_subsample.copy()
-    dta['e00200s'] = 1000
+    dta = pd.DataFrame(
+        {
+            'RECID': [1],
+            'MARS': [1],
+            'e02100p': [8e4],
+            'e02100s': [1e4],
+            'e02100': [9e4],
+        }
+    )
     with pytest.raises(ValueError):
         _ = Records(data=dta, start_year=2000)
-    #    assert 1==2
 
 
 def test_correct_records_instantiation(cps_subsample):
