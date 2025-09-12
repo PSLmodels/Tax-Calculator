@@ -189,8 +189,6 @@ taxcalc/tests/test_4package.py
 taxcalc/tests/test_benefits.py
 taxcalc/tests/test_calcfunctions.py
 taxcalc/tests/test_calculator.py
-taxcalc/tests/test_compare.py
-taxcalc/tests/test_compatible_data.py
 taxcalc/tests/test_consumption.py
 taxcalc/tests/test_cpscsv.py
 taxcalc/tests/test_data.py
@@ -199,8 +197,6 @@ taxcalc/tests/test_growdiff.py
 taxcalc/tests/test_growfactors.py
 taxcalc/tests/test_parameters.py
 taxcalc/tests/test_policy.py
-taxcalc/tests/test_puf_var_stats.py
-taxcalc/tests/test_pufcsv.py
 taxcalc/tests/test_records.py
 taxcalc/tests/test_reforms.py
 taxcalc/tests/test_responses.py

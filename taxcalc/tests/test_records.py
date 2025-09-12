@@ -324,9 +324,10 @@ def test_cps_availability(tests_path, cps_data_path):
     """
     Cross-check records_variables.json data with variables in cps.csv file.
     """
+    # make set of variable names that are in the cps.csv file
     cpsdf = pd.read_csv(cps_data_path)
-    cpsvars = set(list(cpsdf))
-    # make set of variable names that are marked as cps.csv available
+    cpsvars = set(sorted(list(cpsdf)))
+    # make set of variable names that are marked as cps available in r_v.json
     rvpath = os.path.join(tests_path, '..', 'records_variables.json')
     with open(rvpath, 'r', encoding='utf-8') as rvfile:
         rvdict = json.load(rvfile)
@@ -339,15 +340,15 @@ def test_cps_availability(tests_path, cps_data_path):
     assert (recvars - cpsvars) == set()
 
 
-@pytest.mark.requires_pufcsv
+@pytest.mark.requires_puf
 def test_puf_availability(tests_path, puf_data_path):
     """
     Cross-check records_variables.json data with variables in puf.csv file
     """
-    # make set of variable names in puf.csv file
+    # make set of variable names that are in the puf.csv file
     pufdf = pd.read_csv(puf_data_path)
-    pufvars = set(list(pufdf))
-    # make set of variable names that are marked as puf.csv available
+    pufvars = set(sorted(list(pufdf)))
+    # make set of variable names that are marked as puf available in r_v.json
     rvpath = os.path.join(tests_path, '..', 'records_variables.json')
     with open(rvpath, 'r', encoding='utf-8') as rvfile:
         rvdict = json.load(rvfile)
@@ -358,3 +359,24 @@ def test_puf_availability(tests_path, puf_data_path):
     # check that pufvars and recvars sets are the same
     assert (pufvars - recvars) == set()
     assert (recvars - pufvars) == set()
+
+
+@pytest.mark.requires_tmd
+def test_tmd_availability(tests_path, tmd_data_path):
+    """
+    Cross-check records_variables.json data with variables in tmd.csv file
+    """
+    # make set of variable names that are in the tmd.csv file
+    tmddf = pd.read_csv(tmd_data_path)
+    tmdvars = set(sorted(list(tmddf)))
+    # make set of variable names that are marked as tmd available in r_v.json
+    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
+        rvdict = json.load(rvfile)
+    recvars = set()
+    for vname, vdict in rvdict['read'].items():
+        if 'taxmicrodata_tmd' in vdict.get('availability', ''):
+            recvars.add(vname)
+    # check that tmdvars and recvars sets are the same
+    assert (tmdvars - recvars) == set()
+    assert (recvars - tmdvars) == set()
