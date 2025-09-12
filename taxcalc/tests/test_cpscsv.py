@@ -13,8 +13,6 @@ Read Tax-Calculator/TESTING.md for details.
 # pylint --disable=locally-disabled test_cpscsv.py
 
 import os
-import json
-import pytest
 import numpy as np
 import pandas as pd
 from taxcalc.growfactors import GrowFactors
@@ -28,7 +26,6 @@ START_YEAR = 2017
 NUM_YEARS = 19
 
 
-@pytest.mark.cpscsv_agg
 def test_agg(tests_path, cps_fullsample):
     """
     Test current-law aggregate taxes using cps.csv file.
@@ -101,25 +98,6 @@ def test_agg(tests_path, cps_fullsample):
             msg += line1 + line2 + line3
     if msg:
         raise ValueError(msg)
-
-
-def test_cps_availability(tests_path, cps_path):
-    """
-    Cross-check records_variables.json data with variables in cps.csv file.
-    """
-    cpsdf = pd.read_csv(cps_path)
-    cpsvars = set(list(cpsdf))
-    # make set of variable names that are marked as cps.csv available
-    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
-    with open(rvpath, 'r', encoding='utf-8') as rvfile:
-        rvdict = json.load(rvfile)
-    recvars = set()
-    for vname, vdict in rvdict['read'].items():
-        if 'taxdata_cps' in vdict.get('availability', ''):
-            recvars.add(vname)
-    # check that cpsvars and recvars sets are the same
-    assert (cpsvars - recvars) == set()
-    assert (recvars - cpsvars) == set()
 
 
 def nonsmall_diffs(linelist1, linelist2, small=0.0):

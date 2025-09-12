@@ -229,12 +229,6 @@ def cli_tc_main():
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
         return 1
-    # specify if aging input data
-    aging_data = (
-        inputfn.endswith('puf.csv') or
-        inputfn.endswith('cps.csv') or
-        inputfn.endswith('tmd.csv')
-    )
     # check args.dumpdb and args.dumpvars consistency
     if not args.dumpdb and args.dumpvars:
         msg = 'ERROR: DUMPVARS file specified without --dumpdb option\n'
@@ -299,7 +293,6 @@ def cli_tc_main():
         baseline=args.baseline,
         reform=args.reform,
         assump=args.assump,
-        aging_input_data=aging_data,
         exact_calculations=args.exact,
     )
     if tcio.errmsg:
@@ -346,7 +339,7 @@ def cli_tc_main():
         return 0
     # analyze years after taxyear if args.numyears is greater than one
     for xyear in range(1, args.numyears):
-        tcio.advance_to_year(taxyear + xyear, aging_data)
+        tcio.advance_to_year(taxyear + xyear)
         tcio.analyze(
             output_params=args.params,
             output_tables=args.tables,

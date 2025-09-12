@@ -23,10 +23,10 @@ class Records(Data):
 
     Parameters
     ----------
-    data: string or Pandas DataFrame
+    data: string or Pandas DataFrame or None
         string describes CSV file in which records data reside;
         DataFrame already contains records data;
-        default value is the string 'puf.csv'
+        default value is None.
         NOTE: when using custom data, set this argument to a DataFrame.
         NOTE: to use your own data for a specific year with Tax-Calculator,
         be sure to read the documentation on creating your own data file and
@@ -37,29 +37,28 @@ class Records(Data):
         NOTE: data=None is allowed but the returned instance contains only
               the data variable information in the specified VARINFO file.
 
-    start_year: integer
+    start_year: integer or None
         specifies calendar year of the input data;
-        default value is PUFCSV_YEAR.
+    default value is None.
         Note that if specifying your own data (see above NOTE) as being
         a custom data set, be sure to explicitly set start_year to the
         custom data's calendar year.
 
     gfactors: GrowFactors class instance or None
         containing record data growth (or extrapolation) factors.
+        default value is None.
 
-    weights: string or Pandas DataFrame or None
-        string describes CSV file in which weights reside;
-        DataFrame already contains weights;
-        None creates empty sample-weights DataFrame;
-        default value is filename of the PUF weights.
+    weights: Pandas DataFrame or None
+        DataFrame contains data weights;
+        None creates empty weights DataFrame;
+        default value is None
         NOTE: when using custom weights, set this argument to a DataFrame.
         NOTE: see weights_scale documentation below.
 
-    adjust_ratios: string or Pandas DataFrame or None
-        string describes CSV file in which adjustment ratios reside;
-        DataFrame already contains transposed/no-index adjustment ratios;
+    adjust_ratios: Pandas DataFrame or None
+        DataFrame contains transposed/no-index adjustment ratios;
         None creates empty adjustment-ratios DataFrame;
-        default value is filename of the PUF adjustment ratios.
+        default value is None.
         NOTE: when using custom ratios, set this argument to a DataFrame.
         NOTE: if specifying a DataFrame, set adjust_ratios to my_df defined as:
               my_df = pd.read_csv('<my_ratios.csv>', index_col=0).transpose()
@@ -75,6 +74,7 @@ class Records(Data):
         generated in the taxdata repository use a weights_scale of 0.01,
         while TMD input data generated in the tax-microdata repository
         use a 1.0 weights_scale value.
+        default value is 0.01.
 
     Raises
     ------
@@ -92,19 +92,11 @@ class Records(Data):
 
     Notes
     -----
-    Typical usage when using PUF input data is as follows::
-
-        recs = Records()
-
-    which uses all the default parameters of the constructor, and
-    therefore, imputed variables are generated to augment the data and
-    initial-year grow factors are applied to the data.  There are
-    situations in which you need to specify the values of the Record
-    constructor's arguments, but be sure you know exactly what you are
-    doing when attempting this.
-
     Use Records.cps_constructor() to get a Records object instantiated
     with CPS input data developed in the taxdata repository.
+
+    Use Records.puf_constructor() to get a Records object instantiated
+    with PUF input data developed in the taxdata repository.
 
     Use Records.tmd_constructor() to get a Records object instantiated
     with TMD input data developed in the tax-microdata repository.
@@ -120,20 +112,16 @@ class Records(Data):
     CPSCSV_YEAR = 2014
     TMDCSV_YEAR = 2021
 
-    PUF_WEIGHTS_FILENAME = 'puf_weights.csv.gz'
-    PUF_RATIOS_FILENAME = 'puf_ratios.csv'
-    CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
-    CPS_RATIOS_FILENAME = None
     CODE_PATH = os.path.abspath(os.path.dirname(__file__))
     VARINFO_FILE_NAME = 'records_variables.json'
     VARINFO_FILE_PATH = CODE_PATH
 
     def __init__(self,
-                 data='puf.csv',
-                 start_year=PUFCSV_YEAR,
-                 gfactors=GrowFactors(),
-                 weights=PUF_WEIGHTS_FILENAME,
-                 adjust_ratios=PUF_RATIOS_FILENAME,
+                 data=None,
+                 start_year=None,
+                 gfactors=None,
+                 weights=None,
+                 adjust_ratios=None,
                  exact_calculations=False,
                  weights_scale=0.01):
         # pylint: disable=too-many-positional-arguments
@@ -205,32 +193,58 @@ class Records(Data):
             raise ValueError('not all PT_SSTB_income values are 0 or 1')
 
     @staticmethod
-    def cps_constructor(data=None,
-                        gfactors=GrowFactors(),
-                        exact_calculations=False):
+    def cps_constructor(
+            data=None,
+            gfactors=GrowFactors(),
+            exact_calculations=False
+    ):
         """
         Static method returns a Records object instantiated with CPS
-        input data.  This works in a analogous way to Records(), which
-        returns a Records object instantiated with PUF input data.
-        This is a convenience method that eliminates the need to
-        specify all the details of the CPS input data just as the
-        default values of the arguments of the Records class constructor
-        eliminate the need to specify all the details of the PUF input
-        data.
+        input data.  This is a convenience method that eliminates the
+        need to specify all the details of the CPS input data.
         """
         if data is None:
             data = os.path.join(Records.CODE_PATH, 'cps.csv.gz')
         if gfactors is None:
             weights = None
         else:
-            weights = os.path.join(Records.CODE_PATH,
-                                   Records.CPS_WEIGHTS_FILENAME)
-        return Records(data=data,
-                       start_year=Records.CPSCSV_YEAR,
-                       gfactors=gfactors,
-                       weights=weights,
-                       adjust_ratios=Records.CPS_RATIOS_FILENAME,
-                       exact_calculations=exact_calculations)
+            weights = os.path.join(Records.CODE_PATH, 'cps_weights.csv.gz')
+        return Records(
+            data=data,
+            start_year=Records.CPSCSV_YEAR,
+            gfactors=gfactors,
+            weights=weights,
+            adjust_ratios=None,
+            exact_calculations=exact_calculations,
+            weights_scale=0.01,
+        )
+
+    @staticmethod
+    def puf_constructor(
+            data='puf.csv',
+            gfactors=GrowFactors(),
+            weights='puf_weights.csv.gz',
+            ratios='puf_ratios.csv',
+            exact_calculations=False
+    ):  # pragma: no cover
+        """
+        Static method returns a Records object instantiated with PUF
+        input data.  This is a convenience method that eliminates the
+        need to specify all the details of the PUF input data.
+        """
+        assert isinstance(data, str)
+        assert isinstance(gfactors, GrowFactors)
+        assert isinstance(weights, str)
+        assert isinstance(ratios, str)
+        return Records(
+            data=pd.read_csv(data),
+            start_year=Records.PUFCSV_YEAR,
+            gfactors=gfactors,
+            weights=pd.read_csv(weights),
+            adjust_ratios=pd.read_csv(ratios, index_col=0).transpose(),
+            exact_calculations=exact_calculations,
+            weights_scale=0.01,
+        )
 
     @staticmethod
     def tmd_constructor(
@@ -241,13 +255,8 @@ class Records(Data):
     ):  # pragma: no cover
         """
         Static method returns a Records object instantiated with TMD
-        input data.  This works in a analogous way to Records(), which
-        returns a Records object instantiated with PUF input data.
-        This is a convenience method that eliminates the need to
-        specify all the details of the TMD input data just as the
-        default values of the arguments of the Records class constructor
-        eliminate the need to specify all the details of the PUF input
-        data.
+        input data.  This is a convenience method that eliminates the
+        need to specify all the details of the TMD input data.
         """
         assert isinstance(data_path, Path)
         assert isinstance(weights_path, Path)
@@ -395,42 +404,29 @@ class Records(Data):
 
     def _adjust(self, year):
         """
-        Adjust value of income variables to match SOI distributions
+        Adjust value of PUF income variables to match SOI distributions
         Note: adjustment must leave variables as numpy.ndarray type
         """
         # pylint: disable=no-member
-        if self.ADJ.size > 0:
+        if self.ADJ.size > 0:  # pragma: no cover
             # Interest income
             self.e00300 *= self.ADJ[f'INT{year}'].iloc[self.agi_bin].values
 
     def _read_ratios(self, ratios):
         """
-        Read Records adjustment ratios from file or
-        use specified transposed/no-index DataFrame as ratios or
-        create empty DataFrame if None
+        Read Records PUF-related adjustment ratios using
+        specified transposed/no-index DataFrame as ratios or
+        create empty DataFrame if ratios is None.
         """
+        assert ratios is None or isinstance(ratios, pd.DataFrame)
         if ratios is None:
             setattr(self, 'ADJ', pd.DataFrame({'nothing': []}))
             return
-        if isinstance(ratios, pd.DataFrame):
+        if isinstance(ratios, pd.DataFrame):  # pragma: no cover
             assert 'INT2013' in ratios.columns  # check for transposed
             assert ratios.index.name is None  # check for no-index
             ADJ = ratios
-        elif isinstance(ratios, str):
-            ratios_path = os.path.join(Records.CODE_PATH, ratios)
-            if os.path.isfile(ratios_path):
-                ADJ = pd.read_csv(ratios_path,
-                                  index_col=0)
-            else:  # find file in conda package
-                ADJ = read_egg_csv(os.path.basename(ratios_path),
-                                   index_col=0)  # pragma: no cover
-            ADJ = ADJ.transpose()
-        else:
-            msg = 'ratios is neither None nor a Pandas DataFrame nor a string'
-            raise ValueError(msg)
-        assert isinstance(ADJ, pd.DataFrame)
-        if ADJ.index.name != 'agi_bin':
-            ADJ.index.name = 'agi_bin'
-        self.ADJ = pd.DataFrame()
-        setattr(self, 'ADJ', ADJ.astype(np.float32))
-        del ADJ
+            self.ADJ = pd.DataFrame()
+            if ADJ.index.name != 'agi_bin':
+                ADJ.index.name = 'agi_bin'
+            setattr(self, 'ADJ', ADJ.astype(np.float32))

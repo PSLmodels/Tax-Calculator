@@ -67,6 +67,7 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     """
     Specify Data-derived Recs class and test it.
     """
+    # pylint: disable=too-many-statements
 
     class Recs(Data):
         """
@@ -84,6 +85,9 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
                 self, 'e00300', val * self.gfactors.factor_value('AINTS', year)
             )
 
+    # create CPS weights DataFrame
+    wghts_path = os.path.join(GrowFactors.FILE_PATH, 'cps_weights.csv.gz')
+    wghts_df = pd.read_csv(wghts_path)
     # test Recs class for incorrect instantiation:
     with pytest.raises(ValueError):
         Recs(data=[], start_year=2000,
@@ -100,7 +104,10 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     with pytest.raises(ValueError):
         Recs(data=cps_subsample, start_year=2000,
              gfactors='', weights='')
-    # test Recs class for correct instantiation with no aging of data:
+    with pytest.raises(ValueError):
+        Recs(data=cps_subsample, start_year=2000,
+             gfactors=GrowFactors(), weights=wghts_df[:10])
+    # test Recs class for correct instantiation without aging of data:
     syr = 2014
     rec = Recs(data=cps_subsample, start_year=syr,
                gfactors=None, weights=None)
@@ -115,8 +122,6 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     assert np.allclose([sum_e00300_in_syr], [sum_e00300_in_syr_plus_one])
     del rec
     # test Recs class for correct instantiation with aging of data
-    wghts_path = os.path.join(GrowFactors.FILE_PATH, 'cps_weights.csv.gz')
-    wghts_df = pd.read_csv(wghts_path)
     rec = Recs(data=cps_subsample, start_year=syr,
                gfactors=GrowFactors(), weights=wghts_df)
     assert isinstance(rec, Recs)
@@ -138,3 +143,6 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     rec._read_weights(weights=None)
     with pytest.raises(ValueError):
         rec._read_weights(weights=[])
+    incomplete_data = pd.DataFrame({'MARS': np.array([1, 2, 3])})
+    with pytest.raises(ValueError):
+        rec._read_data(data=incomplete_data)
