@@ -352,7 +352,6 @@ def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
         afile.write(f'{actual}\n')
 
 
-@pytest.mark.cps
 @pytest.mark.parametrize('reform_filename, expected_diff', [
     ('ext.json', 45.491),
     ('OBBBA.json', 0.0),

@@ -28,7 +28,6 @@ START_YEAR = 2017
 NUM_YEARS = 19
 
 
-@pytest.mark.cpscsv_agg
 def test_agg(tests_path, cps_fullsample):
     """
     Test current-law aggregate taxes using cps.csv file.
