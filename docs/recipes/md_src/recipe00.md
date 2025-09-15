@@ -45,16 +45,7 @@ from bokeh.io import show, output_notebook
 
 ## Setup
 
-Use publicly-available CPS input file.
-
-NOTE: if you have access to the restricted-use IRS-SOI PUF-based input file
-and you have that file (named ‘puf.csv’) located in the directory
-where this script is located, then you can substitute the following
-statement for the prior statement:
-
-``
-recs = tc.Records()
-``
+Use publicly-available CPS input data included in Tax-Calculator.
 
 ```{code-cell} ipython3
 :hide-output: false
