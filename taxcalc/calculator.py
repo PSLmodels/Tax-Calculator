@@ -81,7 +81,7 @@ class Calculator():
     The most efficient way to specify current-law and reform Calculator
     objects is as follows:
          pol = Policy()
-         rec = Records()
+         rec = Records.cps_constructor()
          calc1 = Calculator(policy=pol, records=rec)  # current-law
          pol.implement_reform(...)
          calc2 = Calculator(policy=pol, records=rec)  # reform

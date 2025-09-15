@@ -41,21 +41,20 @@ validation of those data.
 
 The taxdata repository also produces a weights file and growth
 factors file for use with the 2011 IRS-SOI Public Use File (PUF).  For
-users who have purchased their own version of the 2011 PUF, the
-`puf_weights.csv.gz` and `growfactors.csv` files that are included in
-Tax-Calculator can be used along with the `taxdata` generated `puf.csv`
-file when using Tax-Calculator.
+users who have purchased their own version of the 2011 PUF, the `puf.csv`,
+`puf_weights.csv.gz` and `puf_ratios.csv` files from the taxdata repository,
+can be used by Tax-Calculator using the `Records.puf_constructor(...)`
+static method.
 
 We refer users of the PUF to the IRS limitations on the use of those
-data and their distribution.  We also refer users of the PUF weights
-file and grow factors to the
-[taxdata](https://github.com/PSLmodels/taxdata) documentation for
-details on how to use these files with the PUF and to see how well the
-resulting tax calculations hit aggregate targets published by the IRS.
-However, we do note that analysis with a PUF-based data file tends to
-be more accurate than the `cps.csv` file and that the validation of
-Tax-Calculator with other microsimulation models uses the `puf.csv`
-file.
+data and their distribution.  We also refer users of the PUF input
+data to the [taxdata](https://github.com/PSLmodels/taxdata)
+documentation for details on how to use these files with the PUF and
+to see how well the resulting tax calculations hit aggregate targets
+published by the IRS.  However, we do note that analysis with a
+PUF-based data file tends to be more accurate than the `cps.csv` file
+and that the validation of Tax-Calculator with other microsimulation
+models uses the `puf.csv` file.
 
 ### 2015 IRS public use data (`tmd.csv`)
 
@@ -71,9 +70,8 @@ tax-microdata repository.  The three TMD files can be used with
 Tax-Calculator in two ways:
   - with the **Python API** by instantiating a GrowFactors object that
     uses TMD growth factors [`gf=GrowFactors("path/to/tmd_growfactors.csv")`]
-    and by using the `Records.tmd_constructor()` and
-    `Policy.tmd_constructor()` static methods to instantiate a Records
-    object and a Policy object, or
+    and by using the `Records.tmd_constructor(...)` static method to
+    instantiate a Records object, or
   - with the **CLI tool**, `tc`, when the three TMD files are all in
     the same folder and the `tmd.csv.gz` file has been unzipped.
 

@@ -227,7 +227,7 @@ situations, in which case other contributors are here to help.
    from the command line in the Tax-Calculator directory:
    ```
    make cstest
-   make pytest-cps
+   make pytest
    ```
    Consult {doc}`testing` for more details.
 
