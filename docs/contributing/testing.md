@@ -61,11 +61,14 @@ follows at the command prompt in the Tax-Calculator directory:
 
 ```
 make pytest-all
+make idtest
 ```
 
-This will start executing a pytest suite containing hundreds of tests,
-including the tests that require the `puf.csv` file as input and the
-tests that require the `tmd.csv` file as input.
+The first command will start executing a pytest suite containing
+hundreds of tests, including the tests that require the `puf.csv` file
+as input and the tests that require the `tmd.csv` file as input.  The
+second command checks that the Tax-Calculator CLI generates expected
+results when using the CPS, PUF, and TMD input data.
 
 ## Interpreting test results
 
