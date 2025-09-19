@@ -29,10 +29,80 @@ def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
         _ = Records(data=cps_subsample, gfactors=None, weights=None,
                     adjust_ratios=[])
     # test error raise when num of records is greater than num of weights
-    wghts_path = os.path.join(Records.CODE_PATH, Records.PUF_WEIGHTS_FILENAME)
-    puf_wghts = pd.read_csv(wghts_path)
+    cps_weights_path = os.path.join(Records.CODE_PATH, 'cps_weights.csv.gz')
+    weights = pd.read_csv(cps_weights_path)
+    some_wghts = weights[:100]
     with pytest.raises(ValueError):
-        _ = Records(data=cps_fullsample, weights=puf_wghts, start_year=2020)
+        _ = Records(data=cps_fullsample, weights=some_wghts, start_year=2020)
+
+
+def test_invalid_variable_values_1(cps_subsample):
+    """Test docstring"""
+    dta = cps_subsample.copy()
+    dta['PT_SSTB_income'] = 2
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e01700'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e00650'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['k1bx14s'] = 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e02100'] = dta['e02100p'] + dta['e02100s'] + 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e00900'] = dta['e00900p'] + dta['e00900s'] + 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['e00200'] = dta['e00200p'] + dta['e00200s'] + 1000
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['EIC'] = 4
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta['MARS'] = 0
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+
+
+def test_invalid_variable_values_2():
+    """Test docstring"""
+    dta = pd.DataFrame(
+        {
+            'RECID': [1],
+            'MARS': [1],
+            'e00200p': [8e4],
+            'e00200s': [1e4],
+            'e00200': [9e4],
+        }
+    )
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta = pd.DataFrame(
+        {
+            'RECID': [1],
+            'MARS': [1],
+            'e00900p': [8e4],
+            'e00900s': [1e4],
+            'e00900': [9e4],
+        }
+    )
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
+    dta = pd.DataFrame(
+        {
+            'RECID': [1],
+            'MARS': [1],
+            'e02100p': [8e4],
+            'e02100s': [1e4],
+            'e02100': [9e4],
+        }
+    )
+    with pytest.raises(ValueError):
+        _ = Records(data=dta, start_year=2000)
 
 
 def test_correct_records_instantiation(cps_subsample):
@@ -45,16 +115,15 @@ def test_correct_records_instantiation(cps_subsample):
     rec1.increment_year()
     sum_e00200_in_cps_year_plus_one = getattr(rec1, 'e00200').sum()
     assert sum_e00200_in_cps_year_plus_one == sum_e00200_in_cps_year
-    wghts_path = os.path.join(Records.CODE_PATH, Records.CPS_WEIGHTS_FILENAME)
+    wghts_path = os.path.join(Records.CODE_PATH, 'cps_weights.csv.gz')
     wghts_df = pd.read_csv(wghts_path)
-    ratios_path = os.path.join(Records.CODE_PATH, Records.PUF_RATIOS_FILENAME)
-    ratios_df = pd.read_csv(ratios_path, index_col=0).transpose()
     rec2 = Records(data=cps_subsample,
                    start_year=Records.CPSCSV_YEAR,
                    gfactors=GrowFactors(),
                    weights=wghts_df,
-                   adjust_ratios=ratios_df,
-                   exact_calculations=False)
+                   adjust_ratios=None,
+                   exact_calculations=False,
+                   weights_scale=0.01)
     assert rec2
     assert np.all(getattr(rec2, 'MARS') != 0)
     assert getattr(rec2, 'current_year') == getattr(rec2, 'data_year')
@@ -249,3 +318,65 @@ def test_csv_input_vars_md_contents(tests_path):
         for var in valid_less_civ:
             msg += f'VARIABLE= {var}\n'  # pylint: disable=consider-using-join
         raise ValueError(msg)
+
+
+def test_cps_availability(tests_path, cps_data_path):
+    """
+    Cross-check records_variables.json data with variables in cps.csv file.
+    """
+    # make set of variable names that are in the cps.csv file
+    cpsdf = pd.read_csv(cps_data_path)
+    cpsvars = set(sorted(list(cpsdf)))
+    # make set of variable names that are marked as cps available in r_v.json
+    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
+        rvdict = json.load(rvfile)
+    recvars = set()
+    for vname, vdict in rvdict['read'].items():
+        if 'taxdata_cps' in vdict.get('availability', ''):
+            recvars.add(vname)
+    # check that cpsvars and recvars sets are the same
+    assert (cpsvars - recvars) == set()
+    assert (recvars - cpsvars) == set()
+
+
+@pytest.mark.requires_puf
+def test_puf_availability(tests_path, puf_data_path):
+    """
+    Cross-check records_variables.json data with variables in puf.csv file
+    """
+    # make set of variable names that are in the puf.csv file
+    pufdf = pd.read_csv(puf_data_path)
+    pufvars = set(sorted(list(pufdf)))
+    # make set of variable names that are marked as puf available in r_v.json
+    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
+        rvdict = json.load(rvfile)
+    recvars = set()
+    for vname, vdict in rvdict['read'].items():
+        if 'taxdata_puf' in vdict.get('availability', ''):
+            recvars.add(vname)
+    # check that pufvars and recvars sets are the same
+    assert (pufvars - recvars) == set()
+    assert (recvars - pufvars) == set()
+
+
+@pytest.mark.requires_tmd
+def test_tmd_availability(tests_path, tmd_data_path):
+    """
+    Cross-check records_variables.json data with variables in tmd.csv file
+    """
+    # make set of variable names that are in the tmd.csv file
+    tmddf = pd.read_csv(tmd_data_path)
+    tmdvars = set(sorted(list(tmddf)))
+    # make set of variable names that are marked as tmd available in r_v.json
+    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
+        rvdict = json.load(rvfile)
+    recvars = set()
+    for vname, vdict in rvdict['read'].items():
+        if 'taxmicrodata_tmd' in vdict.get('availability', ''):
+            recvars.add(vname)
+    # check that tmdvars and recvars sets are the same
+    assert (tmdvars - recvars) == set()
+    assert (recvars - tmdvars) == set()

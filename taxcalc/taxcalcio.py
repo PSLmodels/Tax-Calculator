@@ -9,6 +9,7 @@ import os
 import gc
 import copy
 import sqlite3
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import paramtools
@@ -75,11 +76,9 @@ class TaxCalcIO():
         self.errmsg = ''
         # check name and existence of INPUT file
         inp = 'x'
-        self.puf_input_data = False
         self.cps_input_data = False
+        self.puf_input_data = False
         self.tmd_input_data = False
-        self.tmd_weights = None
-        self.tmd_gfactor = None
         if isinstance(input_data, str):
             # remove any leading directory path from INPUT filename
             fname = os.path.basename(input_data)
@@ -90,12 +89,23 @@ class TaxCalcIO():
                 msg = 'INPUT file name does not end in .csv'
                 self.errmsg += f'ERROR: {msg}\n'
             # check existence of INPUT file
-            self.puf_input_data = input_data.endswith('puf.csv')
             self.cps_input_data = input_data.endswith('cps.csv')
+            self.puf_input_data = input_data.endswith('puf.csv')
             self.tmd_input_data = input_data.endswith('tmd.csv')
             if not self.cps_input_data and not os.path.isfile(input_data):
                 msg = 'INPUT file could not be found'
                 self.errmsg += f'ERROR: {msg}\n'
+            # if puf_input_data is True, construct weights and ratios paths
+            if self.puf_input_data:  # pragma: no cover
+                puf_dir = os.path.dirname(input_data)
+                self.puf_weights = os.path.join(puf_dir, 'puf_weights.csv.gz')
+                self.puf_ratios = os.path.join(puf_dir, 'puf_ratios.csv')
+                if not os.path.isfile(self.puf_weights):
+                    msg = f'weights file {self.puf_weights} could not be found'
+                    self.errmsg += f'ERROR: {msg}\n'
+                if not os.path.isfile(self.puf_ratios):
+                    msg = f'gfactor file {self.puf_ratios} could not be found'
+                    self.errmsg += f'ERROR: {msg}\n'
             # if tmd_input_data is True, construct weights and gfactor paths
             if self.tmd_input_data:  # pragma: no cover
                 tmd_dir = os.path.dirname(input_data)
@@ -253,7 +263,7 @@ class TaxCalcIO():
             delete_file(self.output_filename.replace('.xxx', ext))
 
     def init(self, input_data, tax_year, baseline, reform, assump,
-             aging_input_data, exact_calculations):
+             exact_calculations):
         """
         TaxCalcIO class post-constructor method that completes initialization.
 
@@ -261,10 +271,6 @@ class TaxCalcIO():
         ----------
         First five are same as the first five of the TaxCalcIO constructor:
             input_data, tax_year, baseline, reform, assump.
-
-        aging_input_data: boolean
-            whether or not to extrapolate Records data from data year to
-            tax_year.
 
         exact_calculations: boolean
             specifies whether or not exact tax calculations are done without
@@ -406,48 +412,46 @@ class TaxCalcIO():
         pol_ref.set_year(tax_year)
         pol_bas.set_year(tax_year)
         # read input file contents into Records objects
-        if aging_input_data:
-            if self.cps_input_data:
-                recs_ref = Records.cps_constructor(
-                    gfactors=gfactors_ref,
-                    exact_calculations=exact_calculations,
-                )
-                recs_bas = Records.cps_constructor(
-                    gfactors=gfactors_bas,
-                    exact_calculations=exact_calculations,
-                )
-            elif self.tmd_input_data:  # pragma: no cover
-                wghts = pd.read_csv(self.tmd_weights)
-                recs_ref = Records(
-                    data=pd.read_csv(input_data),
-                    start_year=Records.TMDCSV_YEAR,
-                    weights=wghts,
-                    gfactors=gfactors_ref,
-                    adjust_ratios=None,
-                    exact_calculations=exact_calculations,
-                    weights_scale=1.0,
-                )
-                recs_bas = Records(
-                    data=pd.read_csv(input_data),
-                    start_year=Records.TMDCSV_YEAR,
-                    weights=wghts,
-                    gfactors=gfactors_bas,
-                    adjust_ratios=None,
-                    exact_calculations=exact_calculations,
-                    weights_scale=1.0,
-                )
-            else:  # if not {cps|tmd}_input_data but aging_input_data: puf
-                recs_ref = Records(
-                    data=input_data,
-                    gfactors=gfactors_ref,
-                    exact_calculations=exact_calculations
-                )
-                recs_bas = Records(
-                    data=input_data,
-                    gfactors=gfactors_bas,
-                    exact_calculations=exact_calculations
-                )
+        aging_input_data = True
+        if self.cps_input_data:
+            recs_ref = Records.cps_constructor(
+                gfactors=gfactors_ref,
+                exact_calculations=exact_calculations,
+            )
+            recs_bas = Records.cps_constructor(
+                gfactors=gfactors_bas,
+                exact_calculations=exact_calculations,
+            )
+        elif self.puf_input_data:  # pragma: no cover
+            recs_ref = Records.puf_constructor(
+                data=input_data,
+                gfactors=gfactors_ref,
+                weights=self.puf_weights,
+                ratios=self.puf_ratios,
+                exact_calculations=exact_calculations,
+            )
+            recs_bas = Records.puf_constructor(
+                data=input_data,
+                gfactors=gfactors_bas,
+                weights=self.puf_weights,
+                ratios=self.puf_ratios,
+                exact_calculations=exact_calculations,
+            )
+        elif self.tmd_input_data:  # pragma: no cover
+            recs_ref = Records.tmd_constructor(
+                data_path=Path(input_data),
+                weights_path=Path(self.tmd_weights),
+                growfactors=gfactors_ref,
+                exact_calculations=exact_calculations,
+            )
+            recs_bas = Records.tmd_constructor(
+                data_path=Path(input_data),
+                weights_path=Path(self.tmd_weights),
+                growfactors=gfactors_bas,
+                exact_calculations=exact_calculations,
+            )
         else:  # input_data are raw data that are not being aged
+            aging_input_data = False
             recs_ref = Records(
                 data=input_data,
                 start_year=tax_year,
@@ -486,7 +490,7 @@ class TaxCalcIO():
         dirpath = os.path.abspath(os.path.dirname(__file__))
         return os.path.join(dirpath, self.output_filename)
 
-    def advance_to_year(self, year, aging_data):
+    def advance_to_year(self, year):
         """
         Update self.output_filename and advance Calculator objects to year.
         """
@@ -503,6 +507,11 @@ class TaxCalcIO():
         # advance baseline and reform Calculator objects to specified year
         self.calc_bas.advance_to_year(year)
         self.calc_ref.advance_to_year(year)
+        aging_data = (
+            self.cps_input_data or
+            self.puf_input_data or
+            self.tmd_input_data
+        )
         idata = 'Advance input data and' if aging_data else 'Advance'
         if not self.silent:
             print(f'{idata} policy to {year}')

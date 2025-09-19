@@ -12,10 +12,8 @@ help:
 	@echo "help       : show help message"
 	@echo "clean      : remove .pyc files and local taxcalc package"
 	@echo "package    : build and install local package"
-	@echo "pytest-cps : generate report for and cleanup after"
-	@echo "             pytest -m 'not requires_pufcsv and not pre_release'"
 	@echo "pytest     : generate report for and cleanup after"
-	@echo "             pytest -m 'not pre_release'"
+	@echo "             pytest -m 'not requires_puf and not requires_tmd'"
 	@echo "pytest-all : generate report for and cleanup after"
 	@echo "             pytest -m ''"
 	@echo "tctest     : generate report for and cleanup after"
@@ -24,6 +22,8 @@ help:
 	@echo "             tc --test when environment var NOTAXCALCJIT is set"
 	@echo "cstest     : generate coding-style errors using the"
 	@echo "             pycodestyle (nee pep8) and pylint tools"
+	@echo "idtest     : generate report for and cleanup after executing"
+	@echo "             taxcalc/cli/input_data_tests/tests.sh"
 	@echo "coverage   : generate test coverage report"
 	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
 	@echo "git-pr N=n : create local pr-n branch containing upstream PR"
@@ -36,7 +36,7 @@ clean:
 
 .PHONY=package
 package:
-	@pip install -e .
+	@pip install -e . | tail -1
 
 define pytest-setup
 rm -f taxcalc/tests/reforms_actual_init
@@ -48,19 +48,13 @@ rm -f df-??-#-*
 rm -f tmp??????-??-#-tmp*
 endef
 
-.PHONY=pytest-cps
-pytest-cps: clean
-	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m "not requires_pufcsv and not pre_release"
-	@$(pytest-cleanup)
-
 .PHONY=pytest
 pytest: clean
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m "not pre_release"
+	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m "not requires_puf and not requires_tmd"
 	@$(pytest-cleanup)
 
-.PHONY=pytest-all
+.PHONY=pytest
 pytest-all: clean
 	@$(pytest-setup)
 	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m ""
@@ -97,11 +91,16 @@ cstest:
 	@-pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
 	@-pylint $(PYLINT_OPTIONS) --ignore-paths=$(EXCLUDED_PATHS) .
 
+.PHONY=idtest
+idtest: package
+	@echo "Executing taxcalc/cli/input_data_tests"
+	@cd taxcalc/cli/input_data_tests ; ./tests.sh
+
 define coverage-cleanup
 rm -f .coverage htmlcov/*
 endef
 
-COVMARK = "not requires_pufcsv and not pre_release"
+COVMARK = "not requires_puf and not requires_tmd"
 
 OS := $(shell uname -s)
 

@@ -22,7 +22,9 @@ In the top-level Tax-Calculator directory, do the following:
 
 --> run `make cstest`  [to confirm project coding style is being followed]
 
---> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc subdir]
+--> run `make pytest-all`  [to confirm all pytest test are passing]
+
+--> run `make idtest`  [to check CLI results for CPS, PUF, TMD input data]
 
 --> run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
 

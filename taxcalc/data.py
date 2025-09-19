@@ -236,8 +236,7 @@ class Data():
                 self.IGNORED_VARS.add(varname)
         # check that MUST_READ_VARS are all present in taxdf
         if not self.MUST_READ_VARS.issubset(READ_VARS):
-            msg = 'data missing one or more MUST_READ_VARS'
-            raise ValueError(msg)
+            raise ValueError('data missing one or more MUST_READ_VARS')
         # delete intermediate taxdf object
         del taxdf
         # create other class variables that are set to all zeros

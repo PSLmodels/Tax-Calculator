@@ -626,3 +626,45 @@ def test_read_json_revision_foramts(params, is_paramtools):
     assert is_paramtools_format(result) is is_paramtools
     if is_paramtools:
         assert result == json.loads(params)["consumption"]
+
+
+def test_compatible_data_presence():
+    """
+    Test that every parameter in the policy_current_law.json file
+    has a compatible_data field that is a dictionary.
+    """
+    compatible_data_keys_set = set(["puf", "cps"])
+
+    # nested function used only in test_compatible_data_presence test
+    def valid_compatible_data(compatible_data):
+        """
+        Return True if compatible_data is a valid dictionary;
+        otherwise return False
+        """
+        if not isinstance(compatible_data, dict):
+            return False
+        if set(compatible_data.keys()) != compatible_data_keys_set:
+            return False
+        for key in compatible_data:
+            boolean = (compatible_data[key] is True or
+                       compatible_data[key] is False)
+            if not boolean:
+                return False
+        return True
+
+    # main logic of test_compatible_data_presence test
+    clp = Policy()
+    allparams = clp.metadata()
+    problem_pnames = []
+    for pname in allparams:
+        if "compatible_data" in allparams[pname]:
+            compatible_data = allparams[pname]["compatible_data"]
+        else:
+            compatible_data = None
+        if not valid_compatible_data(compatible_data):
+            problem_pnames.append(pname)
+    if problem_pnames:
+        msg = "{} has no or invalid compatible_data field"
+        for pname in problem_pnames:
+            print(msg.format(pname))
+        assert False, "ERROR: list of problem_pnames is above"

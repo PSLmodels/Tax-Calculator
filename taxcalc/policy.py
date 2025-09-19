@@ -7,7 +7,6 @@ Tax-Calculator federal tax policy Policy class.
 
 import os
 import json
-from pathlib import Path
 import paramtools
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
@@ -140,23 +139,6 @@ class Policy(Parameters):
                         Policy.REMOVED_PARAMS,
                         Policy.REDEFINED_PARAMS,
                         Policy.WAGE_INDEXED_PARAMS, **kwargs)
-
-    @staticmethod
-    def tmd_constructor(
-            growfactors: Path | GrowFactors,
-            last_budget_year=LAST_BUDGET_YEAR,
-    ):  # pragma: no cover
-        """
-        Static method returns a Policy object instantiated with TMD
-        input data.  This convenience method works in a analogous way
-        to Policy(), which returns a Policy object instantiated with
-        non-TMD input data.
-        """
-        if isinstance(growfactors, Path):
-            growfactors = GrowFactors(growfactors_filename=str(growfactors))
-        else:
-            assert isinstance(growfactors, GrowFactors)
-        return Policy(gfactors=growfactors, last_budget_year=last_budget_year)
 
     @staticmethod
     def read_json_reform(obj):
