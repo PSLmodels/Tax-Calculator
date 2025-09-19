@@ -38,55 +38,37 @@ all these coding-style tests, proceed to the second phase of testing.
 ## Testing with pytest
 
 There are two variants of this second testing phase depending on
-whether or not you have access to a file called `puf.csv` that
-contains a representative sample of tax filing units derived from the
-IRS-SOI PUF data.
+whether or not you have access to the PUF-related and TMD-related
+input data files.
 
-A brief description of the `puf.csv` file is followed by instructions
-on how to run the two variants of the second-phase tests.
-
-The Tax-Calculator `puf.csv` file has been constructed by the core
-development team by merging information from a publicly available
-IRS-SOI PUF file for 2011 and from the Census CPS file for the
-corresponding year.  If you have acquired from IRS the 2011 SOI PUF
-file and want to execute the tests that require the `puf.csv` file,
-contact the core development team to discuss your options.
-
-**NO PUF.CSV**: If you do not have access to the `puf.csv` file (or if
-you just want to do a quick test), run the second-phase of testing as
-follows at the command prompt in the Tax-Calculator directory:
-
-```
-make pytest-cps
-```
-
-This will start executing a pytest suite containing hundreds of tests,
-but will skip the tests that require the `puf.csv` file as input and
-the tests that are executed only just before a new release is being
-prepared.
-
-**HAVE PUF.CSV**: If you do have access to the `puf.csv` file, copy it
-into the Tax-Calculator directory at the top of the repository
-directory tree (but **never** add it to your repository) and run the
-second-phase of testing as follows at the command prompt in the
-Tax-Calculator directory:
+**NO PUF AND NO TMD**: If you do not have access to the PUF or TMD
+input data files, run the second-phase of testing as follows at the
+command prompt in the Tax-Calculator directory:
 
 ```
 make pytest
 ```
 
 This will start executing a pytest suite containing hundreds of tests,
-including the tests that require the `puf.csv` file as input but
-excluding the tests that are executed only just before a new release
-is being prepared.
+but will skip the tests that require the `puf.csv` file or the `tmd.csv`
+file as input.
 
-Just before releasing a new version of Tax-Calculator or just after
-adding a new parameter to `policy_current_law.json`, you should also
-execute the pre-release tests using this command:
+**HAVE PUF AND HAVE TMD**: If you do have access to the PUF-related
+files and the TMD-related files, copy them into the Tax-Calculator
+directory at the top of the repository directory tree (but **never**
+add them to your repository) and run the second-phase of testing as
+follows at the command prompt in the Tax-Calculator directory:
 
 ```
 make pytest-all
+make idtest
 ```
+
+The first command will start executing a pytest suite containing
+hundreds of tests, including the tests that require the `puf.csv` file
+as input and the tests that require the `tmd.csv` file as input.  The
+second command checks that the Tax-Calculator CLI generates expected
+results when using the CPS, PUF, and TMD input data.
 
 ## Interpreting test results
 
@@ -108,9 +90,8 @@ demonstrate that the newly-added test, which used to fail, now passes.
 
 After an enhancement or bug fix, you may be convinced that the new and
 different second-phase test results are, in fact, correct.  How do you
-eliminate the test failures?  For all but the few tests that require
-the `puf.csv` file or the `cps.csv` file as input, simply edit the
-appropriate `taxcalc/tests/test_*.py` file so that the test passes
-when you rerun pytest.  If there are failures for the tests that write
-results files, read the test error message for instructions about how
-to update the test results.
+eliminate the test failures?  Simply edit the appropriate
+`taxcalc/tests/test_*.py` file so that the test passes when you rerun
+pytest.  If there are failures for the tests that write results files,
+read the test error message for instructions about how to update the
+test results.

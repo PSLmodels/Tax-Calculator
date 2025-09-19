@@ -554,7 +554,7 @@ government cost of providing the in-kind benefits</p></li>
 objects is as follows:</p>
 <blockquote>
 <div><p>pol = Policy()
-rec = Records()
+rec = Records.cps_constructor()
 calc1 = Calculator(policy=pol, records=rec)  # current-law
 pol.implement_reform(…)
 calc2 = Calculator(policy=pol, records=rec)  # reform</p>

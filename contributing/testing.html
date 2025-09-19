@@ -515,45 +515,31 @@ all these coding-style tests, proceed to the second phase of testing.</p>
 <section id="testing-with-pytest">
 <h2>Testing with pytest<a class="headerlink" href="#testing-with-pytest" title="Link to this heading">#</a></h2>
 <p>There are two variants of this second testing phase depending on
-whether or not you have access to a file called <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> that
-contains a representative sample of tax filing units derived from the
-IRS-SOI PUF data.</p>
-<p>A brief description of the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file is followed by instructions
-on how to run the two variants of the second-phase tests.</p>
-<p>The Tax-Calculator <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file has been constructed by the core
-development team by merging information from a publicly available
-IRS-SOI PUF file for 2011 and from the Census CPS file for the
-corresponding year.  If you have acquired from IRS the 2011 SOI PUF
-file and want to execute the tests that require the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file,
-contact the core development team to discuss your options.</p>
-<p><strong>NO PUF.CSV</strong>: If you do not have access to the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file (or if
-you just want to do a quick test), run the second-phase of testing as
-follows at the command prompt in the Tax-Calculator directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">pytest</span><span class="o">-</span><span class="n">cps</span>
-</pre></div>
-</div>
-<p>This will start executing a pytest suite containing hundreds of tests,
-but will skip the tests that require the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file as input and
-the tests that are executed only just before a new release is being
-prepared.</p>
-<p><strong>HAVE PUF.CSV</strong>: If you do have access to the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file, copy it
-into the Tax-Calculator directory at the top of the repository
-directory tree (but <strong>never</strong> add it to your repository) and run the
-second-phase of testing as follows at the command prompt in the
-Tax-Calculator directory:</p>
+whether or not you have access to the PUF-related and TMD-related
+input data files.</p>
+<p><strong>NO PUF AND NO TMD</strong>: If you do not have access to the PUF or TMD
+input data files, run the second-phase of testing as follows at the
+command prompt in the Tax-Calculator directory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">pytest</span>
 </pre></div>
 </div>
 <p>This will start executing a pytest suite containing hundreds of tests,
-including the tests that require the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file as input but
-excluding the tests that are executed only just before a new release
-is being prepared.</p>
-<p>Just before releasing a new version of Tax-Calculator or just after
-adding a new parameter to <code class="docutils literal notranslate"><span class="pre">policy_current_law.json</span></code>, you should also
-execute the pre-release tests using this command:</p>
+but will skip the tests that require the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file or the <code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code>
+file as input.</p>
+<p><strong>HAVE PUF AND HAVE TMD</strong>: If you do have access to the PUF-related
+files and the TMD-related files, copy them into the Tax-Calculator
+directory at the top of the repository directory tree (but <strong>never</strong>
+add them to your repository) and run the second-phase of testing as
+follows at the command prompt in the Tax-Calculator directory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">pytest</span><span class="o">-</span><span class="nb">all</span>
+<span class="n">make</span> <span class="n">idtest</span>
 </pre></div>
 </div>
+<p>The first command will start executing a pytest suite containing
+hundreds of tests, including the tests that require the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file
+as input and the tests that require the <code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code> file as input.  The
+second command checks that the Tax-Calculator CLI generates expected
+results when using the CPS, PUF, and TMD input data.</p>
 </section>
 <section id="interpreting-test-results">
 <h2>Interpreting test results<a class="headerlink" href="#interpreting-test-results" title="Link to this heading">#</a></h2>
@@ -574,12 +560,11 @@ demonstrate that the newly-added test, which used to fail, now passes.</p>
 <h2>Updating test results<a class="headerlink" href="#updating-test-results" title="Link to this heading">#</a></h2>
 <p>After an enhancement or bug fix, you may be convinced that the new and
 different second-phase test results are, in fact, correct.  How do you
-eliminate the test failures?  For all but the few tests that require
-the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file or the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file as input, simply edit the
-appropriate <code class="docutils literal notranslate"><span class="pre">taxcalc/tests/test_*.py</span></code> file so that the test passes
-when you rerun pytest.  If there are failures for the tests that write
-results files, read the test error message for instructions about how
-to update the test results.</p>
+eliminate the test failures?  Simply edit the appropriate
+<code class="docutils literal notranslate"><span class="pre">taxcalc/tests/test_*.py</span></code> file so that the test passes when you rerun
+pytest.  If there are failures for the tests that write results files,
+read the test error message for instructions about how to update the
+test results.</p>
 </section>
 </section>
 

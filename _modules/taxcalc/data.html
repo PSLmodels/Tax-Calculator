@@ -653,8 +653,7 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">IGNORED_VARS</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">varname</span><span class="p">)</span>
         <span class="c1"># check that MUST_READ_VARS are all present in taxdf</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">MUST_READ_VARS</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">READ_VARS</span><span class="p">):</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;data missing one or more MUST_READ_VARS&#39;</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;data missing one or more MUST_READ_VARS&#39;</span><span class="p">)</span>
         <span class="c1"># delete intermediate taxdf object</span>
         <span class="k">del</span> <span class="n">taxdf</span>
         <span class="c1"># create other class variables that are set to all zeros</span>

@@ -524,20 +524,19 @@ validation of those data.</p>
 <h3>2011 IRS public use data (<code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>)<a class="headerlink" href="#irs-public-use-data-puf-csv" title="Link to this heading">#</a></h3>
 <p>The taxdata repository also produces a weights file and growth
 factors file for use with the 2011 IRS-SOI Public Use File (PUF).  For
-users who have purchased their own version of the 2011 PUF, the
-<code class="docutils literal notranslate"><span class="pre">puf_weights.csv.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">growfactors.csv</span></code> files that are included in
-Tax-Calculator can be used along with the <code class="docutils literal notranslate"><span class="pre">taxdata</span></code> generated <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>
-file when using Tax-Calculator.</p>
+users who have purchased their own version of the 2011 PUF, the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>,
+<code class="docutils literal notranslate"><span class="pre">puf_weights.csv.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code> files from the taxdata repository,
+can be used by Tax-Calculator using the <code class="docutils literal notranslate"><span class="pre">Records.puf_constructor(...)</span></code>
+static method.</p>
 <p>We refer users of the PUF to the IRS limitations on the use of those
-data and their distribution.  We also refer users of the PUF weights
-file and grow factors to the
-<a class="reference external" href="https://github.com/PSLmodels/taxdata">taxdata</a> documentation for
-details on how to use these files with the PUF and to see how well the
-resulting tax calculations hit aggregate targets published by the IRS.
-However, we do note that analysis with a PUF-based data file tends to
-be more accurate than the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file and that the validation of
-Tax-Calculator with other microsimulation models uses the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>
-file.</p>
+data and their distribution.  We also refer users of the PUF input
+data to the <a class="reference external" href="https://github.com/PSLmodels/taxdata">taxdata</a>
+documentation for details on how to use these files with the PUF and
+to see how well the resulting tax calculations hit aggregate targets
+published by the IRS.  However, we do note that analysis with a
+PUF-based data file tends to be more accurate than the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file
+and that the validation of Tax-Calculator with other microsimulation
+models uses the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file.</p>
 </section>
 <section id="irs-public-use-data-tmd-csv">
 <h3>2015 IRS public use data (<code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code>)<a class="headerlink" href="#irs-public-use-data-tmd-csv" title="Link to this heading">#</a></h3>
@@ -554,9 +553,8 @@ Tax-Calculator in two ways:</p>
 <ul class="simple">
 <li><p>with the <strong>Python API</strong> by instantiating a GrowFactors object that
 uses TMD growth factors [<code class="docutils literal notranslate"><span class="pre">gf=GrowFactors(&quot;path/to/tmd_growfactors.csv&quot;)</span></code>]
-and by using the <code class="docutils literal notranslate"><span class="pre">Records.tmd_constructor()</span></code> and
-<code class="docutils literal notranslate"><span class="pre">Policy.tmd_constructor()</span></code> static methods to instantiate a Records
-object and a Policy object, or</p></li>
+and by using the <code class="docutils literal notranslate"><span class="pre">Records.tmd_constructor(...)</span></code> static method to
+instantiate a Records object, or</p></li>
 <li><p>with the <strong>CLI tool</strong>, <code class="docutils literal notranslate"><span class="pre">tc</span></code>, when the three TMD files are all in
 the same folder and the <code class="docutils literal notranslate"><span class="pre">tmd.csv.gz</span></code> file has been unzipped.</p></li>
 </ul>

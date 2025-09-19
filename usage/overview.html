@@ -487,29 +487,29 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="structural-overview">
 <h1>Structural overview<a class="headerlink" href="#structural-overview" title="Link to this heading">#</a></h1>
-<p>Tax-Calculator has been designed using <a class="reference external" href="https://www.programiz.com/python-programming/object-oriented-programming">object-oriented programming (OOP)</a>
-principles.
-There are seven classes and a collection of global utility functions,
-but most Python programming involves using only a few methods in three classes.</p>
+<p>Tax-Calculator has been designed using <a class="reference external" href="https://www.programiz.com/python-programming/object-oriented-programming">object-oriented programming
+(OOP)</a>
+principles.  There are seven classes and a collection of global
+utility functions, but most Python programming involves using only a
+few methods in three classes.</p>
 <section id="quick-summary">
 <h2>Quick summary<a class="headerlink" href="#quick-summary" title="Link to this heading">#</a></h2>
-<p>Typical Tax-Calculator usage involves creating two Calculator class objects:
-both containing the same sample of filing units (that is, Records class object),
-but each containing a different tax policy (that is, Policy class object).
-The idea is to compare the calculated tax liabilities of the sample units under
-the two different tax policies,
-one of which is usually current-law policy and the other is a tax reform of
-interest.</p>
+<p>Typical Tax-Calculator usage involves creating two Calculator class
+objects: both containing the same sample of filing units (that is,
+Records class object), but each containing a different tax policy
+(that is, Policy class object).  The idea is to compare the calculated
+tax liabilities of the sample units under the two different tax
+policies, one of which is usually current-law policy and the other is
+a tax reform of interest.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">rec</span></code> → Records class object.<br />
-Created by <code class="docutils literal notranslate"><span class="pre">Records()</span></code> when containing IRS-SOI-PUF-derived filing-unit data
-or created by <code class="docutils literal notranslate"><span class="pre">Records.cps_constructor()</span></code> when containing CPS-derived
+Created by <code class="docutils literal notranslate"><span class="pre">Records.cps_constructor()</span></code> when containing CPS-derived
 filing-unit data.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">clp</span></code> → <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class object containing parameters that characterize
 current-law policy.<br />
 Created by <code class="docutils literal notranslate"><span class="pre">Policy()</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ref</span></code> → <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class object containing parameters that characterize a tax
-reform.<br />
+<li><p><code class="docutils literal notranslate"><span class="pre">ref</span></code> → <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class object containing parameters that
+characterize a tax reform.
 Created using a Python dictionary <code class="docutils literal notranslate"><span class="pre">refdict</span></code> representing the reform by
 using the <code class="docutils literal notranslate"><span class="pre">implement_reform(refdict)</span></code> method on a <code class="docutils literal notranslate"><span class="pre">Policy</span></code> object created
 by <code class="docutils literal notranslate"><span class="pre">Policy()</span></code>.
@@ -546,10 +546,11 @@ for Calculator class and all its methods.</p></li>
 </section>
 <section id="complete-story">
 <h2>Complete story<a class="headerlink" href="#complete-story" title="Link to this heading">#</a></h2>
-<p>Tax-Calculator contains eight basic classes, and a collection of global utility
-functions, that together provide the full range of Tax-Calculator capabilities.
-Here is a description of their role in Tax-Calculator and a link to each the
-detailed documentation and source code for each class and all its methods.</p>
+<p>Tax-Calculator contains eight basic classes, and a collection of
+global utility functions, that together provide the full range of
+Tax-Calculator capabilities.  Here is a description of their role in
+Tax-Calculator and a link to each the detailed documentation and
+source code for each class and all its methods.</p>
 <section id="classes">
 <h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
 <ul class="simple">

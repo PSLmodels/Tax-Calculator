@@ -585,12 +585,12 @@ installed package may be in conflict.</p>
 <li><p>To check that everything is working properly, run the following at
 the command line in the Tax-Calculator directory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">taxcalc</span>
-<span class="n">pytest</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;not requires_pufcsv and not pre_release&quot;</span> <span class="o">-</span><span class="n">n4</span>
+<span class="n">pytest</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;not requires_puf and not requires_tmd&quot;</span> <span class="o">-</span><span class="n">n4</span>
 </pre></div>
 </div>
-<p>If you do have a copy of the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file used by Tax-Calculator,
-then on the second line above omit the <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">requires_pufcsv</span> <span class="pre">and</span></code>
-expression so as to execute <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">-m</span> <span class="pre">&quot;not</span> <span class="pre">pre_release&quot;</span> <span class="pre">-n4</span></code>.</p>
+<p>If you do have the PUF-related files used by Tax-Calculator and
+the TMD-related files used by Tax-Calculator, then the second line
+above can be simplified to <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">-n4</span></code>.</p>
 <p>If all the tests pass, you’re good to go. If they don’t pass, enter
 the following updates at the command line and then try running the
 tests again:</p>
@@ -688,7 +688,7 @@ violate Tax-Calculator coding style, introduce bugs, or degrade the
 accuracy of Tax-Calculator.  To do this, run the following commands
 from the command line in the Tax-Calculator directory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">cstest</span>
-<span class="n">make</span> <span class="n">pytest</span><span class="o">-</span><span class="n">cps</span>
+<span class="n">make</span> <span class="n">pytest</span>
 </pre></div>
 </div>
 <p>Consult <a class="reference internal" href="testing.html"><span class="doc">Testing</span></a> for more details.</p>

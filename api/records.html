@@ -498,16 +498,16 @@ document.write(`
 <h2>taxcalc.records<a class="headerlink" href="#taxcalc-records" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="taxcalc.records.Records">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">taxcalc.records.</span></span><span class="sig-name descname"><span class="pre">Records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data='puf.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_year=2011</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfactors=&lt;taxcalc.growfactors.GrowFactors</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights='puf_weights.csv.gz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_ratios='puf_ratios.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exact_calculations=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_scale=0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.records.Records" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">taxcalc.records.</span></span><span class="sig-name descname"><span class="pre">Records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfactors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_ratios</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exact_calculations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.records.Records" title="Link to this definition">#</a></dt>
 <dd><p>Records is a subclass of the abstract Data class, and therefore,
 inherits its methods (none of which are shown here).</p>
 <p>Constructor for the tax-filing-unit Records class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>string</em><em> or </em><em>Pandas DataFrame</em>) – <p>string describes CSV file in which records data reside;
+<li><p><strong>data</strong> (<em>string</em><em> or </em><em>Pandas DataFrame</em><em> or </em><em>None</em>) – <p>string describes CSV file in which records data reside;
 DataFrame already contains records data;
-default value is the string ‘puf.csv’
+default value is None.
 NOTE: when using custom data, set this argument to a DataFrame.
 NOTE: to use your own data for a specific year with Tax-Calculator,
 be sure to read the documentation on creating your own data file and
@@ -522,22 +522,20 @@ myrec = Records(data=mydata, start_year=&lt;mydata_year&gt;,</p>
 </dd>
 </dl>
 </p></li>
-<li><p><strong>start_year</strong> (<em>integer</em>) – specifies calendar year of the input data;
-default value is PUFCSV_YEAR.
-Note that if specifying your own data (see above NOTE) as being
+<li><p><strong>start_year</strong> (<em>integer</em><em> or </em><em>None</em>) – specifies calendar year of the input data;</p></li>
+<li><p><strong>None.</strong> (<em>default value is</em>) – Note that if specifying your own data (see above NOTE) as being
 a custom data set, be sure to explicitly set start_year to the
 custom data’s calendar year.</p></li>
-<li><p><strong>gfactors</strong> (<em>GrowFactors class instance</em><em> or </em><em>None</em>) – containing record data growth (or extrapolation) factors.</p></li>
-<li><p><strong>weights</strong> (<em>string</em><em> or </em><em>Pandas DataFrame</em><em> or </em><em>None</em>) – string describes CSV file in which weights reside;
-DataFrame already contains weights;
-None creates empty sample-weights DataFrame;
-default value is filename of the PUF weights.
+<li><p><strong>gfactors</strong> (<em>GrowFactors class instance</em><em> or </em><em>None</em>) – containing record data growth (or extrapolation) factors.
+default value is None.</p></li>
+<li><p><strong>weights</strong> (<em>Pandas DataFrame</em><em> or </em><em>None</em>) – DataFrame contains data weights;
+None creates empty weights DataFrame;
+default value is None
 NOTE: when using custom weights, set this argument to a DataFrame.
 NOTE: see weights_scale documentation below.</p></li>
-<li><p><strong>adjust_ratios</strong> (<em>string</em><em> or </em><em>Pandas DataFrame</em><em> or </em><em>None</em>) – <p>string describes CSV file in which adjustment ratios reside;
-DataFrame already contains transposed/no-index adjustment ratios;
+<li><p><strong>adjust_ratios</strong> (<em>Pandas DataFrame</em><em> or </em><em>None</em>) – <p>DataFrame contains transposed/no-index adjustment ratios;
 None creates empty adjustment-ratios DataFrame;
-default value is filename of the PUF adjustment ratios.
+default value is None.
 NOTE: when using custom ratios, set this argument to a DataFrame.
 NOTE: if specifying a DataFrame, set adjust_ratios to my_df defined as:</p>
 <blockquote>
@@ -551,7 +549,8 @@ default value is false.</p></li>
 of weights file into the s006 variable.  PUF and CPS input data
 generated in the taxdata repository use a weights_scale of 0.01,
 while TMD input data generated in the tax-microdata repository
-use a 1.0 weights_scale value.</p></li>
+use a 1.0 weights_scale value.
+default value is 0.01.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -570,24 +569,16 @@ use a 1.0 weights_scale value.</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>Typical usage when using PUF input data is as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">recs</span> <span class="o">=</span> <span class="n">Records</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>which uses all the default parameters of the constructor, and
-therefore, imputed variables are generated to augment the data and
-initial-year grow factors are applied to the data.  There are
-situations in which you need to specify the values of the Record
-constructor’s arguments, but be sure you know exactly what you are
-doing when attempting this.</p>
 <p>Use Records.cps_constructor() to get a Records object instantiated
 with CPS input data developed in the taxdata repository.</p>
+<p>Use Records.puf_constructor() to get a Records object instantiated
+with PUF input data developed in the taxdata repository.</p>
 <p>Use Records.tmd_constructor() to get a Records object instantiated
 with TMD input data developed in the tax-microdata repository.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.records.Records._adjust">
 <span class="sig-name descname"><span class="pre">_adjust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._adjust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.records.Records._adjust" title="Link to this definition">#</a></dt>
-<dd><p>Adjust value of income variables to match SOI distributions
+<dd><p>Adjust value of PUF income variables to match SOI distributions
 Note: adjustment must leave variables as numpy.ndarray type</p>
 </dd></dl>
 
@@ -600,22 +591,17 @@ Note: adjustment must leave variables as numpy.ndarray type</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.records.Records._read_ratios">
 <span class="sig-name descname"><span class="pre">_read_ratios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratios</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._read_ratios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.records.Records._read_ratios" title="Link to this definition">#</a></dt>
-<dd><p>Read Records adjustment ratios from file or
-use specified transposed/no-index DataFrame as ratios or
-create empty DataFrame if None</p>
+<dd><p>Read Records PUF-related adjustment ratios using
+specified transposed/no-index DataFrame as ratios or
+create empty DataFrame if ratios is None.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="taxcalc.records.Records.cps_constructor">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cps_constructor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfactors=&lt;taxcalc.growfactors.GrowFactors</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exact_calculations=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records.cps_constructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.records.Records.cps_constructor" title="Link to this definition">#</a></dt>
 <dd><p>Static method returns a Records object instantiated with CPS
-input data.  This works in a analogous way to Records(), which
-returns a Records object instantiated with PUF input data.
-This is a convenience method that eliminates the need to
-specify all the details of the CPS input data just as the
-default values of the arguments of the Records class constructor
-eliminate the need to specify all the details of the PUF input
-data.</p>
+input data.  This is a convenience method that eliminates the
+need to specify all the details of the CPS input data.</p>
 </dd></dl>
 
 <dl class="py method">

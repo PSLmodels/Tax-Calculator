@@ -1,32 +1,32 @@
 Structural overview
 ===================
 
-Tax-Calculator has been designed using [object-oriented programming (OOP)](https://www.programiz.com/python-programming/object-oriented-programming)
-principles.
-There are seven classes and a collection of global utility functions,
-but most Python programming involves using only a few methods in three classes.
+Tax-Calculator has been designed using [object-oriented programming
+(OOP)](https://www.programiz.com/python-programming/object-oriented-programming)
+principles.  There are seven classes and a collection of global
+utility functions, but most Python programming involves using only a
+few methods in three classes.
 
 ## Quick summary
 
-Typical Tax-Calculator usage involves creating two Calculator class objects:
-both containing the same sample of filing units (that is, Records class object),
-but each containing a different tax policy (that is, Policy class object).
-The idea is to compare the calculated tax liabilities of the sample units under
-the two different tax policies,
-one of which is usually current-law policy and the other is a tax reform of
-interest.
+Typical Tax-Calculator usage involves creating two Calculator class
+objects: both containing the same sample of filing units (that is,
+Records class object), but each containing a different tax policy
+(that is, Policy class object).  The idea is to compare the calculated
+tax liabilities of the sample units under the two different tax
+policies, one of which is usually current-law policy and the other is
+a tax reform of interest.
 
 *   `rec` → Records class object.  
-    Created by `Records()` when containing IRS-SOI-PUF-derived filing-unit data
-    or created by `Records.cps_constructor()` when containing CPS-derived
-    filing-unit data.
+    Created by `Records.cps_constructor()` when containing CPS-derived
+    filing-unit data.    
 
 *   `clp` → `Policy` class object containing parameters that characterize
 current-law policy.  
     Created by `Policy()`.
 
-*   `ref` → `Policy` class object containing parameters that characterize a tax
-reform.  
+* `ref` → `Policy` class object containing parameters that
+characterize a tax reform.
     Created using a Python dictionary `refdict` representing the reform by
     using the `implement_reform(refdict)` method on a `Policy` object created
     by `Policy()`.
@@ -68,10 +68,11 @@ for Calculator class and all its methods.
 
 ## Complete story
 
-Tax-Calculator contains eight basic classes, and a collection of global utility
-functions, that together provide the full range of Tax-Calculator capabilities.
-Here is a description of their role in Tax-Calculator and a link to each the
-detailed documentation and source code for each class and all its methods.
+Tax-Calculator contains eight basic classes, and a collection of
+global utility functions, that together provide the full range of
+Tax-Calculator capabilities.  Here is a description of their role in
+Tax-Calculator and a link to each the detailed documentation and
+source code for each class and all its methods.
 
 ### Classes
 
