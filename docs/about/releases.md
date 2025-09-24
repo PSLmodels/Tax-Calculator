@@ -3,6 +3,19 @@ Release history
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2025-09-24 Release 6.0.0
+------------------------
+(last merged pull request is
+[#2961](https://github.com/PSLmodels/Tax-Calculator/pull/2961))
+
+**This is a major release with changes that make Tax-Calculator incompatible with earlier releases.**
+
+**API Changes**
+- Removes the taxdata-produced `puf_weights.csv.gz` and `puf_ratios.csv` files. Adds a new `Records.puf_constructor` method for use with PUF data. Users will need to supply their own weights and growfactors files for the PUF as they are no longer included in Tax-Calculator. [[#2961](https://github.com/PSLmodels/Tax-Calculator/pull/2961) by Martin Holmer]
+
+**New Features**
+
+
 2025-09-19 Release 5.3.0
 ------------------------
 (last merged pull request is
