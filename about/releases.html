@@ -595,18 +595,29 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="release-history">
 <h1>Release history<a class="headerlink" href="#release-history" title="Link to this heading">#</a></h1>
-<p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
+<p>Go
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
 <section id="release-6-0-0">
 <h2>2025-09-24 Release 6.0.0<a class="headerlink" href="#release-6-0-0" title="Link to this heading">#</a></h2>
 <p>(last merged pull request is
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2961">#2961</a>)</p>
-<p><strong>This is a major release with changes that make Tax-Calculator incompatible with earlier releases.</strong></p>
+<p><strong>This is a major release with changes that make Tax-Calculator
+incompatible with earlier releases.</strong></p>
 <p><strong>API Changes</strong></p>
 <ul class="simple">
-<li><p>Removes the taxdata-produced <code class="docutils literal notranslate"><span class="pre">puf_weights.csv.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code> files. Adds a new <code class="docutils literal notranslate"><span class="pre">Records.puf_constructor</span></code> method for use with PUF data. Users will need to supply their own weights and growfactors files for the PUF as they are no longer included in Tax-Calculator. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2961">#2961</a> by Martin Holmer]</p></li>
+<li><p>Remove the <a class="reference external" href="https://github.com/PSLmodels/taxdata">taxdata</a>-produced
+<code class="docutils literal notranslate"><span class="pre">puf_weights.csv.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code> files from the
+Tax-Calculator repository.  Adds a new <code class="docutils literal notranslate"><span class="pre">Records.puf_constructor</span></code>
+static method for use with PUF data.  Users will now need to supply
+those PUF weights and PUF ratios files (from the <code class="docutils literal notranslate"><span class="pre">taxdata</span></code>
+repository) just as they have always needed to supply the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>
+file from the <code class="docutils literal notranslate"><span class="pre">taxdata</span></code> repository.
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2961">#2961</a> by
+Martin Holmer]</p></li>
 </ul>
 <p><strong>New Features</strong></p>
+<p><strong>Bug Fixes</strong></p>
 </section>
 <section id="release-5-3-0">
 <h2>2025-09-19 Release 5.3.0<a class="headerlink" href="#release-5-3-0" title="Link to this heading">#</a></h2>
@@ -618,10 +629,13 @@ for a complete commit history.</p>
 <ul>
 <li><p>Update new PUF weights and ratios files.
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2925">#2925</a> by
-Bodi Yang], from the update in [[TaxData PR #452](<a class="github reference external" href="https://github.com/PSLmodels/">PSLmodels/</a>
-taxdata/pull/452) by Bodi Yang]</p>
-<p>Note: PUF users are required to produce new <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file from TaxData repository and replace the old file in the Tax-Calculator directory.
-Correct usage: Tax-Calculator &gt;= 5.3.0 versions are compatible with the newly produced <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file; Tax-Calculator &lt;= 5.2.0 versions are compatible with the previous <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file</p>
+Bodi Yang], from the update in [[TaxData PR
+#452](<a class="github reference external" href="https://github.com/PSLmodels/">PSLmodels/</a> taxdata/pull/452) by Bodi Yang]</p>
+<p>Note: PUF users are required to produce new <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file from
+TaxData repository and replace the old file in the Tax-Calculator
+directory.  Correct usage: Tax-Calculator &gt;= 5.3.0 versions are
+compatible with the newly produced <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file; Tax-Calculator &lt;=
+5.2.0 versions are compatible with the previous <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file</p>
 </li>
 <li><p>Make <code class="docutils literal notranslate"><span class="pre">FST_AGI_thd</span></code> parameters to be non inflation-indexed
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2951">#2951</a> by
@@ -639,6 +653,7 @@ Martin Holmer]</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2957">#2957</a> by
 Martin Holmer]</p></li>
 </ul>
+<p><strong>Bug Fixes</strong></p>
 </section>
 <section id="release-5-2-0">
 <h2>2025-08-08 Release 5.2.0<a class="headerlink" href="#release-5-2-0" title="Link to this heading">#</a></h2>
@@ -656,6 +671,7 @@ Martin Holmer</p></li>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2944">#2944</a> by
 Martin Holmer]</p></li>
 </ul>
+<p><strong>Bug Fixes</strong></p>
 </section>
 <section id="release-5-1-0">
 <h2>2025-07-22 Release 5.1.0<a class="headerlink" href="#release-5-1-0" title="Link to this heading">#</a></h2>
