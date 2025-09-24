@@ -1,19 +1,33 @@
 Release history
 ===============
-Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
+Go
+[here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
+
 
 2025-09-24 Release 6.0.0
 ------------------------
 (last merged pull request is
 [#2961](https://github.com/PSLmodels/Tax-Calculator/pull/2961))
 
-**This is a major release with changes that make Tax-Calculator incompatible with earlier releases.**
+**This is a major release with changes that make Tax-Calculator
+  incompatible with earlier releases.**
 
 **API Changes**
-- Removes the taxdata-produced `puf_weights.csv.gz` and `puf_ratios.csv` files. Adds a new `Records.puf_constructor` method for use with PUF data. Users will need to supply their own weights and growfactors files for the PUF as they are no longer included in Tax-Calculator. [[#2961](https://github.com/PSLmodels/Tax-Calculator/pull/2961) by Martin Holmer]
+
+- Remove the [taxdata](https://github.com/PSLmodels/taxdata)-produced
+  `puf_weights.csv.gz` and `puf_ratios.csv` files from the
+  Tax-Calculator repository.  Adds a new `Records.puf_constructor`
+  static method for use with PUF data.  Users will now need to supply
+  those PUF weights and PUF ratios files (from the `taxdata`
+  repository) just as they have always needed to supply the `puf.csv`
+  file from the `taxdata` repository.
+  [[#2961](https://github.com/PSLmodels/Tax-Calculator/pull/2961) by
+  Martin Holmer]
 
 **New Features**
+
+**Bug Fixes**
 
 
 2025-09-19 Release 5.3.0
@@ -26,13 +40,17 @@ for a complete commit history.
 **API Changes**
 
 **New Features**
+
 - Update new PUF weights and ratios files.
   [[#2925](https://github.com/PSLmodels/Tax-Calculator/pull/2925) by
-  Bodi Yang], from the update in [[TaxData PR #452](https://github.com/PSLmodels/
-  taxdata/pull/452) by Bodi Yang]
+  Bodi Yang], from the update in [[TaxData PR
+  #452](https://github.com/PSLmodels/ taxdata/pull/452) by Bodi Yang]
 
-  Note: PUF users are required to produce new `puf.csv` file from TaxData repository and replace the old file in the Tax-Calculator directory.
-  Correct usage: Tax-Calculator >= 5.3.0 versions are compatible with the newly produced `puf.csv` file; Tax-Calculator <= 5.2.0 versions are compatible with the previous `puf.csv` file
+  Note: PUF users are required to produce new `puf.csv` file from
+  TaxData repository and replace the old file in the Tax-Calculator
+  directory.  Correct usage: Tax-Calculator >= 5.3.0 versions are
+  compatible with the newly produced `puf.csv` file; Tax-Calculator <=
+  5.2.0 versions are compatible with the previous `puf.csv` file
 
 - Make `FST_AGI_thd` parameters to be non inflation-indexed
   [[#2951](https://github.com/PSLmodels/Tax-Calculator/pull/2951) by
@@ -54,6 +72,7 @@ for a complete commit history.
   [[#2957](https://github.com/PSLmodels/Tax-Calculator/pull/2957) by
   Martin Holmer]
 
+**Bug Fixes**
 
 
 2025-08-08 Release 5.2.0
@@ -73,6 +92,8 @@ for a complete commit history.
 - Extend CPS and PUF aggregate tests through 2035
   [[#2944](https://github.com/PSLmodels/Tax-Calculator/pull/2944) by
   Martin Holmer]
+
+**Bug Fixes**
 
 
 2025-07-22 Release 5.1.0
