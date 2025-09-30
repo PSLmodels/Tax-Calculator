@@ -17,6 +17,7 @@ requirements:
     - curl
     - openpyxl
     - behresp
+    - "mcp[cli]"
 
   run:
     - "python>=3.11, <3.14"
@@ -28,6 +29,7 @@ requirements:
     - curl
     - openpyxl
     - behresp
+    - "mcp[cli]"
 
 test:
   commands:
