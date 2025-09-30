@@ -63,6 +63,9 @@ def test_for_consistency(tests_path):
     dev_pkgs = set([
         'pytest',
         'pytest-xdist',
+        'pytest-asyncio',
+        'requests',
+        'aiohttp',
         'pycodestyle',
         'pylint',
         'coverage',
