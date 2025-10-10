@@ -365,7 +365,7 @@
   "38": {
       "baseline": "2017_law.json",
       "start_year": 2015,
-      "value": {"AMT_rt2": 0.04},
+      "value": {"AMT_rt2_addon": 0.04},
       "name": "Increase AMT rate above the surtax threshold by 2 pts",
       "output_type": "iitax",
       "compare_with": {}

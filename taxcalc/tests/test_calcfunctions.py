@@ -521,7 +521,7 @@ earned_s = 0
 EITC_ps = [8790, 19330, 19330, 19330]
 EITC_MinEligAge = 25
 EITC_MaxEligAge = 64
-EITC_ps_MarriedJ = [5890, 5890, 5890, 5890]
+EITC_ps_addon_MarriedJ = [5890, 5890, 5890, 5890]
 EITC_rt = [0.0765, 0.34, 0.4, 0.45]
 EITC_c = [538, 3584, 5920, 6660]
 EITC_prt = [0.0765, 0.1598, 0.2106, 0.2106]
@@ -536,7 +536,7 @@ UI_em = 10200
 c59660 = 0  # this will be 6660 after the EITC calculation
 tuple1 = (MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
           e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s,
-          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
+          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_addon_MarriedJ,
           EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
           EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
           EITC_indiv, EITC_sep_filers_elig, c59660)
