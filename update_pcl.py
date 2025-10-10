@@ -363,7 +363,7 @@ NEW_KNOWN_ITEMS = {
         {'year': 2025, 'EIC': '2kids', 'value': 23350.0},
         {'year': 2025, 'EIC': '3+kids', 'value': 23350.0},
     ],
-    'EITC_ps_MarriedJ': [
+    'EITC_ps_addon_MarriedJ': [
         {'year': 2023, 'EIC': '0kids', 'value': 6570.0},
         {'year': 2023, 'EIC': '1kid', 'value': 6560.0},
         {'year': 2023, 'EIC': '2kids', 'value': 6560.0},
