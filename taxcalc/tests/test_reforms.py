@@ -45,7 +45,7 @@ def test_2017_law_reform(tests_path):
         'AMT_brk1': {'relation': '>', 'value': 191100},
         'EITC_c': {'relation': '>', 'value': 519},
         'EITC_ps': {'relation': '>', 'value': 8490},
-        'EITC_ps_MarriedJ': {'relation': '>', 'value': 5680},
+        'EITC_ps_addon_MarriedJ': {'relation': '>', 'value': 5680},
         'EITC_InvestIncome_c': {'relation': '>', 'value': 3500},
         # ... parameters affected by TCJA and that are not indexed
         'ID_Charity_crt_all': {'relation': '=', 'value': 0.5},

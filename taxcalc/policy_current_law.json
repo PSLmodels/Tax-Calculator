@@ -17502,9 +17502,9 @@
             "cps": true
         }
     },
-    "AMT_rt2": {
+    "AMT_rt2_addon": {
         "title": "Additional AMT rate for AMT taxable income above AMT bracket 1",
-        "description": "The additional tax rate applied to the portion of AMT income above the AMT bracket 1.",
+        "description": "The additional tax rate applied to the portion of AMT income above the AMT bracket 1, which means that AMT_rt2_addon equals AMT_rt2 minus AMT_rt1.",
         "notes": "This is the additional tax rate (on top of AMT rate 1) for AMT income above AMT bracket 1.",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
@@ -17519,8 +17519,8 @@
         ],
         "validators": {
             "range": {
-                "min": 0,
-                "max": 1
+                "min": 0.0,
+                "max": 0.1
             }
         },
         "compatible_data": {
@@ -19734,9 +19734,9 @@
             "cps": true
         }
     },
-    "EITC_ps_MarriedJ": {
+    "EITC_ps_addon_MarriedJ": {
         "title": "Extra earned income credit phaseout start AGI for married filling jointly",
-        "description": "This is the additional amount added on the regular phaseout start amount for taxpayers with filling status of married filing jointly.",
+        "description": "This is the additional amount added on the regular phaseout start amount for taxpayers with filling status of married filing jointly, which means that EITC_ps_addon_MarriedJ equals EITC_ps_MarriedJ minus EITC_ps.",
         "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",

@@ -1871,7 +1871,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
         earned, cmbtp, qbided,
         AMT_child_em_c_age, AMT_brk1,
-        AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
+        AMT_em, AMT_prt, AMT_rt1, AMT_rt2_addon,
         AMT_child_em, AMT_em_ps, AMT_em_pe,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
@@ -1946,8 +1946,8 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         AMT exemption phaseout rate
     AMT_rt1: float
         AMT rate 1
-    AMT_rt2: float
-        Additional AMT rate for AMT taxable income about AMT bracket 1
+    AMT_rt2_addon: float
+        Additional AMT rate for AMT taxable income above AMT bracket 1
     AMT_child_em: float
         Child AMT exemption additional income base
     AMT_em_ps: list
@@ -1977,14 +1977,14 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     c09600: float
         Alternative Minimum Tax (AMT) liability
     c62100: float
-        Alternative Minimum Tax (AMT)
+        Alternative Minimum Tax (AMT) taxable income
 
     Returns
     -------
     c62100: float
-        Alternative Minimum Tax (AMT)
+        Alternative Minimum Tax (AMT) taxable income
     c09600: float
-        Alternative Minimum Tax (AMT) liability
+        Alternative Minimum Tax (AMT) tax liability
     c05800: float
         Total (regular + AMT) income tax liability before credits
     """
@@ -2012,7 +2012,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         line29 = min(line29, earned + AMT_child_em)
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
-                AMT_rt2 * max(0., (line30 - (AMT_brk1 / sep))))
+                AMT_rt2_addon * max(0., (line30 - (AMT_brk1 / sep))))
     if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
         # complete Form 6251, Part III (line36 is equal to line30)
         line37 = dwks13
@@ -2021,7 +2021,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         line40 = min(line30, line39)
         line41 = max(0., line30 - line40)
         line42 = (AMT_rt1 * line41 +
-                  AMT_rt2 * max(0., (line41 - (AMT_brk1 / sep))))
+                  AMT_rt2_addon * max(0., (line41 - (AMT_brk1 / sep))))
         line44 = dwks14
         line45 = max(0., AMT_CG_brk1[MARS - 1] - line44)
         line46 = min(line30, line37)
@@ -2268,7 +2268,7 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 @iterate_jit(nopython=True)
 def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s,
-         EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
+         EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_addon_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
          EITC_indiv, EITC_sep_filers_elig, c59660):
@@ -2315,7 +2315,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
         Minimum age for childless EITC eligibility
     EITC_MaxEligAge: int
         Maximum age for childless EITC eligibility
-    EITC_ps_MarriedJ: list
+    EITC_ps_addon_MarriedJ: list
         Extra earned income credit phaseout start AGI for
         married filling jointly
     EITC_rt: list
@@ -2360,7 +2360,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             c59660 = eitc
 
     if MARS == 2:
-        po_start = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
+        po_start = EITC_ps[EIC] + EITC_ps_addon_MarriedJ[EIC]
         if not EITC_indiv:
             # filing unit EITC rather than individual EITC
             eitc = EITCamount(EITC_basic_frac,

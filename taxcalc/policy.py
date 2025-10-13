@@ -55,8 +55,7 @@ class Policy(Parameters):
         return last_budget_year - Policy.JSON_START_YEAR + 1
 
     # NOTE: the following three data structures use internal parameter names:
-    # (1) specify which Policy parameters have been removed or renamed recently
-    #     where "recently" means in the last major release
+    # (1) specify which Policy parameters have been removed or renamed
     REMOVED_PARAMS = {
         # following parameters were renamed in PR 2918
         'SS_thd50': 'was renamed SS_thd1 in Tax-Calculator 5.0.0',
@@ -110,9 +109,13 @@ class Policy(Parameters):
         'ID_reduction_other_rate': (
             'was renamed ID_reduction_rate in Tax-Calculator 5.1.0'
         ),
+        # following parameters were renamed in PR 2965
+        'AMT_rt2': 'was renamed AMT_rt2_addon in Tax-Calculator 6.1.0',
+        'EITC_ps_MarriedJ': (
+            'was renamed EITC_ps_addon_MarriedJ in Tax-Calculator 6.1.0'
+        ),
     }
-    # (2) specify which Policy parameters have been redefined recently
-    #     where "recently" means in the last major release
+    # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
