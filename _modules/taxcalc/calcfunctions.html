@@ -2284,7 +2284,7 @@ document.write(`
         <span class="n">dwks14</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">e62900</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">dwks10</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span>
         <span class="n">earned</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span>
         <span class="n">AMT_child_em_c_age</span><span class="p">,</span> <span class="n">AMT_brk1</span><span class="p">,</span>
-        <span class="n">AMT_em</span><span class="p">,</span> <span class="n">AMT_prt</span><span class="p">,</span> <span class="n">AMT_rt1</span><span class="p">,</span> <span class="n">AMT_rt2</span><span class="p">,</span>
+        <span class="n">AMT_em</span><span class="p">,</span> <span class="n">AMT_prt</span><span class="p">,</span> <span class="n">AMT_rt1</span><span class="p">,</span> <span class="n">AMT_rt2_addon</span><span class="p">,</span>
         <span class="n">AMT_child_em</span><span class="p">,</span> <span class="n">AMT_em_ps</span><span class="p">,</span> <span class="n">AMT_em_pe</span><span class="p">,</span>
         <span class="n">AMT_CG_brk1</span><span class="p">,</span> <span class="n">AMT_CG_brk2</span><span class="p">,</span> <span class="n">AMT_CG_brk3</span><span class="p">,</span> <span class="n">AMT_CG_rt1</span><span class="p">,</span> <span class="n">AMT_CG_rt2</span><span class="p">,</span>
         <span class="n">AMT_CG_rt3</span><span class="p">,</span> <span class="n">AMT_CG_rt4</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span> <span class="n">c09600</span><span class="p">,</span> <span class="n">c62100</span><span class="p">):</span>
@@ -2359,8 +2359,8 @@ document.write(`
 <span class="sd">        AMT exemption phaseout rate</span>
 <span class="sd">    AMT_rt1: float</span>
 <span class="sd">        AMT rate 1</span>
-<span class="sd">    AMT_rt2: float</span>
-<span class="sd">        Additional AMT rate for AMT taxable income about AMT bracket 1</span>
+<span class="sd">    AMT_rt2_addon: float</span>
+<span class="sd">        Additional AMT rate for AMT taxable income above AMT bracket 1</span>
 <span class="sd">    AMT_child_em: float</span>
 <span class="sd">        Child AMT exemption additional income base</span>
 <span class="sd">    AMT_em_ps: list</span>
@@ -2390,14 +2390,14 @@ document.write(`
 <span class="sd">    c09600: float</span>
 <span class="sd">        Alternative Minimum Tax (AMT) liability</span>
 <span class="sd">    c62100: float</span>
-<span class="sd">        Alternative Minimum Tax (AMT)</span>
+<span class="sd">        Alternative Minimum Tax (AMT) taxable income</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c62100: float</span>
-<span class="sd">        Alternative Minimum Tax (AMT)</span>
+<span class="sd">        Alternative Minimum Tax (AMT) taxable income</span>
 <span class="sd">    c09600: float</span>
-<span class="sd">        Alternative Minimum Tax (AMT) liability</span>
+<span class="sd">        Alternative Minimum Tax (AMT) tax liability</span>
 <span class="sd">    c05800: float</span>
 <span class="sd">        Total (regular + AMT) income tax liability before credits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2425,7 +2425,7 @@ document.write(`
         <span class="n">line29</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line29</span><span class="p">,</span> <span class="n">earned</span> <span class="o">+</span> <span class="n">AMT_child_em</span><span class="p">)</span>
     <span class="n">line30</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c62100</span> <span class="o">-</span> <span class="n">line29</span><span class="p">)</span>
     <span class="n">line3163</span> <span class="o">=</span> <span class="p">(</span><span class="n">AMT_rt1</span> <span class="o">*</span> <span class="n">line30</span> <span class="o">+</span>
-                <span class="n">AMT_rt2</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">line30</span> <span class="o">-</span> <span class="p">(</span><span class="n">AMT_brk1</span> <span class="o">/</span> <span class="n">sep</span><span class="p">))))</span>
+                <span class="n">AMT_rt2_addon</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">line30</span> <span class="o">-</span> <span class="p">(</span><span class="n">AMT_brk1</span> <span class="o">/</span> <span class="n">sep</span><span class="p">))))</span>
     <span class="k">if</span> <span class="n">dwks10</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">dwks13</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">dwks14</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">dwks19</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">e24515</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="c1"># complete Form 6251, Part III (line36 is equal to line30)</span>
         <span class="n">line37</span> <span class="o">=</span> <span class="n">dwks13</span>
@@ -2434,7 +2434,7 @@ document.write(`
         <span class="n">line40</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line30</span><span class="p">,</span> <span class="n">line39</span><span class="p">)</span>
         <span class="n">line41</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line30</span> <span class="o">-</span> <span class="n">line40</span><span class="p">)</span>
         <span class="n">line42</span> <span class="o">=</span> <span class="p">(</span><span class="n">AMT_rt1</span> <span class="o">*</span> <span class="n">line41</span> <span class="o">+</span>
-                  <span class="n">AMT_rt2</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">line41</span> <span class="o">-</span> <span class="p">(</span><span class="n">AMT_brk1</span> <span class="o">/</span> <span class="n">sep</span><span class="p">))))</span>
+                  <span class="n">AMT_rt2_addon</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">line41</span> <span class="o">-</span> <span class="p">(</span><span class="n">AMT_brk1</span> <span class="o">/</span> <span class="n">sep</span><span class="p">))))</span>
         <span class="n">line44</span> <span class="o">=</span> <span class="n">dwks14</span>
         <span class="n">line45</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_CG_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">line44</span><span class="p">)</span>
         <span class="n">line46</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line30</span><span class="p">,</span> <span class="n">line37</span><span class="p">)</span>
@@ -2684,7 +2684,7 @@ document.write(`
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">EITC</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">EIC</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
          <span class="n">e02000</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span>
-         <span class="n">EITC_ps</span><span class="p">,</span> <span class="n">EITC_MinEligAge</span><span class="p">,</span> <span class="n">EITC_MaxEligAge</span><span class="p">,</span> <span class="n">EITC_ps_MarriedJ</span><span class="p">,</span>
+         <span class="n">EITC_ps</span><span class="p">,</span> <span class="n">EITC_MinEligAge</span><span class="p">,</span> <span class="n">EITC_MaxEligAge</span><span class="p">,</span> <span class="n">EITC_ps_addon_MarriedJ</span><span class="p">,</span>
          <span class="n">EITC_rt</span><span class="p">,</span> <span class="n">EITC_c</span><span class="p">,</span> <span class="n">EITC_prt</span><span class="p">,</span> <span class="n">EITC_basic_frac</span><span class="p">,</span>
          <span class="n">EITC_InvestIncome_c</span><span class="p">,</span> <span class="n">EITC_excess_InvestIncome_rt</span><span class="p">,</span>
          <span class="n">EITC_indiv</span><span class="p">,</span> <span class="n">EITC_sep_filers_elig</span><span class="p">,</span> <span class="n">c59660</span><span class="p">):</span>
@@ -2731,7 +2731,7 @@ document.write(`
 <span class="sd">        Minimum age for childless EITC eligibility</span>
 <span class="sd">    EITC_MaxEligAge: int</span>
 <span class="sd">        Maximum age for childless EITC eligibility</span>
-<span class="sd">    EITC_ps_MarriedJ: list</span>
+<span class="sd">    EITC_ps_addon_MarriedJ: list</span>
 <span class="sd">        Extra earned income credit phaseout start AGI for</span>
 <span class="sd">        married filling jointly</span>
 <span class="sd">    EITC_rt: list</span>
@@ -2776,7 +2776,7 @@ document.write(`
             <span class="n">c59660</span> <span class="o">=</span> <span class="n">eitc</span>
 
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">po_start</span> <span class="o">=</span> <span class="n">EITC_ps</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span> <span class="o">+</span> <span class="n">EITC_ps_MarriedJ</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span>
+        <span class="n">po_start</span> <span class="o">=</span> <span class="n">EITC_ps</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span> <span class="o">+</span> <span class="n">EITC_ps_addon_MarriedJ</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">EITC_indiv</span><span class="p">:</span>
             <span class="c1"># filing unit EITC rather than individual EITC</span>
             <span class="n">eitc</span> <span class="o">=</span> <span class="n">EITCamount</span><span class="p">(</span><span class="n">EITC_basic_frac</span><span class="p">,</span>

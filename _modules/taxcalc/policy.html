@@ -464,8 +464,7 @@ document.write(`
         <span class="k">return</span> <span class="n">last_budget_year</span> <span class="o">-</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="c1"># NOTE: the following three data structures use internal parameter names:</span>
-    <span class="c1"># (1) specify which Policy parameters have been removed or renamed recently</span>
-    <span class="c1">#     where &quot;recently&quot; means in the last major release</span>
+    <span class="c1"># (1) specify which Policy parameters have been removed or renamed</span>
     <span class="n">REMOVED_PARAMS</span> <span class="o">=</span> <span class="p">{</span>
         <span class="c1"># following parameters were renamed in PR 2918</span>
         <span class="s1">&#39;SS_thd50&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed SS_thd1 in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
@@ -519,9 +518,13 @@ document.write(`
         <span class="s1">&#39;ID_reduction_other_rate&#39;</span><span class="p">:</span> <span class="p">(</span>
             <span class="s1">&#39;was renamed ID_reduction_rate in Tax-Calculator 5.1.0&#39;</span>
         <span class="p">),</span>
+        <span class="c1"># following parameters were renamed in PR 2965</span>
+        <span class="s1">&#39;AMT_rt2&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed AMT_rt2_addon in Tax-Calculator 6.1.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;EITC_ps_MarriedJ&#39;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">&#39;was renamed EITC_ps_addon_MarriedJ in Tax-Calculator 6.1.0&#39;</span>
+        <span class="p">),</span>
     <span class="p">}</span>
-    <span class="c1"># (2) specify which Policy parameters have been redefined recently</span>
-    <span class="c1">#     where &quot;recently&quot; means in the last major release</span>
+    <span class="c1"># (2) specify which Policy parameters have been redefined</span>
     <span class="n">REDEFINED_PARAMS</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># (3) specify which Policy parameters are wage (rather than price) indexed</span>
     <span class="n">WAGE_INDEXED_PARAMS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SS_Earnings_c&#39;</span><span class="p">,</span> <span class="s1">&#39;SS_Earnings_thd&#39;</span><span class="p">]</span>

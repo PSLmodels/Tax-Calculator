@@ -5,6 +5,28 @@ Go
 for a complete commit history.
 
 
+2025-10-11 Release 6.1.0
+------------------------
+(last merged pull request is
+[#2965](https://github.com/PSLmodels/Tax-Calculator/pull/2965))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+
+- Rename two policy parameters to clarify they are addons not levels
+  [[#2965](https://github.com/PSLmodels/Tax-Calculator/pull/2965) by
+  Martin Holmer]
+
+- Update dependencies in `environment.yml` and `conda.recipe/meta.yaml` files
+  [[#2964](https://github.com/PSLmodels/Tax-Calculator/pull/2964) by
+  Martin Holmer]
+
+**Bug Fixes**
+
+
 2025-09-24 Release 6.0.0
 ------------------------
 (last merged pull request is
