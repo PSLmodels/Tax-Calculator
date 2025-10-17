@@ -9,9 +9,6 @@ IF DIFFS OK:            % mv pcl.json taxcalc/policy_current_law.json
 WHEN TO USE: use this script to update taxcalc/policy_current_law.json
 whenever inflation rates in the growfactors.csv files are changed, or
 whenever new known policy parameter values are published.
-
-IMPORTANT NOTE: when adding 2026 indexed parameter values, be sure to
-handle the *_2026 LISTS below.
 """
 
 import os
@@ -36,8 +33,7 @@ LIST_MARS_ZERO = [
     {'year': 2025, 'MARS': 'mseparate', 'value': 0.0},
     {'year': 2025, 'MARS': 'headhh', 'value': 0.0},
     {'year': 2025, 'MARS': 'widow', 'value': 0.0},
-]
-MARS_ZERO_2026 = [
+
     {'year': 2026, 'MARS': 'single', 'value': 0.0},
     {'year': 2026, 'MARS': 'mjoint', 'value': 0.0},
     {'year': 2026, 'MARS': 'mseparate', 'value': 0.0},
@@ -62,8 +58,7 @@ LIST_MARS_INF = [
     {'year': 2025, 'MARS': 'mseparate', 'value': 9e99},
     {'year': 2025, 'MARS': 'headhh', 'value': 9e99},
     {'year': 2025, 'MARS': 'widow', 'value': 9e99},
-]
-MARS_INF_2026 = [
+
     {'year': 2026, 'MARS': 'single', 'value': 9e99},
     {'year': 2026, 'MARS': 'mjoint', 'value': 9e99},
     {'year': 2026, 'MARS': 'mseparate', 'value': 9e99},
@@ -76,21 +71,22 @@ LIST_SCALAR_ZERO = [
     {'year': 2024, 'value': 0.0},
 
     {'year': 2025, 'value': 0.0},
-]
-SCALAR_ZERO_2026 = [
+
     {'year': 2026, 'value': 0.0},
 ]
-
 NEW_KNOWN_ITEMS = {
     # PAYROLL TAX PARAMETER SOURCES:
     # - SSA Office of the Chief Actuary: Contribution and Benefit Base
     #       https://www.ssa.gov/OACT/COLA/cbb.html
+
     'SS_Earnings_c': [
         {'year': 2023, 'value': 160200.0},
 
         {'year': 2024, 'value': 168600.0},
 
         {'year': 2025, 'value': 176100.0},
+
+        {'year': 2026, 'value': 183600.0},  # intermediate forecast, NOT ACTUAL
     ],
     # INCOME TAX PARAMETER SOURCES:
     # - IRS Rev. Proc. 2022-38 containing 2023 policy parameter values is at:
@@ -644,8 +640,8 @@ NEW_KNOWN_ITEMS = {
     # OTHER PARAMS THAT ARE NOT INDEXED:
     'ALD_Dependents_Child_c': LIST_SCALAR_ZERO,
     'ALD_Dependents_Elder_c': LIST_SCALAR_ZERO,
-    'II_em': LIST_SCALAR_ZERO + SCALAR_ZERO_2026,
-    'II_em_ps': LIST_MARS_INF + MARS_INF_2026,
+    'II_em': LIST_SCALAR_ZERO,
+    'II_em_ps': LIST_MARS_INF,
     'II_credit': LIST_MARS_ZERO,
     'II_credit_ps': LIST_MARS_ZERO,
     'II_credit_nr': LIST_MARS_ZERO,
@@ -657,7 +653,7 @@ NEW_KNOWN_ITEMS = {
     'ID_Charity_c': LIST_MARS_INF,
     'ID_Casualty_c': LIST_MARS_INF,
     'ID_Miscellaneous_c': LIST_MARS_INF,
-    'ID_ps': LIST_MARS_INF + MARS_INF_2026,
+    'ID_ps': LIST_MARS_INF,
     'ID_c': LIST_MARS_INF,
     'CG_ec': LIST_SCALAR_ZERO,
     'PT_qbid_ps': LIST_MARS_INF,
