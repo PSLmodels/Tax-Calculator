@@ -1997,19 +1997,18 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     if standard > 0.0:
         c62100 = c00100 - e00700 - qbided
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
-    if MARS == 3:
-        amtsepadd = max(0.,
-                        min(AMT_em[MARS - 1], AMT_prt * (c62100 - AMT_em_pe)))
-    else:
-        amtsepadd = 0.
-    c62100 = c62100 + amtsepadd  # AMT taxable income, which is line28
+    # c62100 is AMT taxable income, which is line28
     # Form 6251, Part II top
+    # line29 is AMT exemption amount
     line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
+    if MARS == 3 and c62100 > AMT_em_pe:
+        line29 = 0.
     young_head = age_head != 0 and age_head < AMT_child_em_c_age
     no_or_young_spouse = age_spouse < AMT_child_em_c_age
     if young_head and no_or_young_spouse:
         line29 = min(line29, earned + AMT_child_em)
+    # line30 is AMT taxable income less AMT exemption amount
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
                 AMT_rt2_addon * max(0., (line30 - (AMT_brk1 / sep))))
