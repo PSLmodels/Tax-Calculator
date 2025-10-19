@@ -483,7 +483,7 @@ def Adj(e03150, e03210, c03260,
 
 
 @iterate_jit(nopython=True)
-def ALD_InvInc_ec_base(p22250, p23250, sep,
+def ALD_InvInc_ec_base(p22250, p23250,
                        e00300, e00600, e01100, e01200, MARS,
                        invinc_ec_base, Capital_loss_limitation):
     """
@@ -495,8 +495,6 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
         Net short-term capital gails/losses (Schedule D)
     p23250: float
         Net long-term capital gains/losses (Schedule D)
-    sep: int
-        2 when MARS is 3 (married filing separately); otherwise 1
     e00300: float
         Taxable interest income
     e00600: float
@@ -520,7 +518,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
     """
     # limitation on net short-term and long-term capital losses
     cgain = max(
-        (-1 * Capital_loss_limitation[MARS - 1] / sep), p22250 + p23250
+        (-1 * Capital_loss_limitation[MARS - 1]), p22250 + p23250
     )
     # compute exclusion of investment income from AGI
     invinc_ec_base = e00300 + e00600 + cgain + e01100 + e01200
@@ -528,7 +526,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
 
 
 @iterate_jit(nopython=True)
-def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
+def CapGains(p23250, p22250, ALD_StudentLoan_hc,
              ALD_InvInc_ec_rt, invinc_ec_base,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt, Capital_loss_limitation,
@@ -545,8 +543,6 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
         Net long-term capital gains/losses (Schedule D)
     p22250: float
         Net short-term capital gails/losses (Schedule D)
-    sep: int
-        2 when MARS is 3 (married filing separately); otherwise 1
     ALD_StudentLoan_hc: float
         Student loan interest deduction haircut
     ALD_InvInc_ec_rt: float
@@ -637,7 +633,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     # net capital gain (long term + short term) before exclusion
     c23650 = p23250 + p22250
     # limitation on capital losses
-    c01000 = max((-1 * Capital_loss_limitation[MARS - 1] / sep), c23650)
+    c01000 = max((-1 * Capital_loss_limitation[MARS - 1]), c23650)
     # compute total investment income
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
     # compute exclusion of investment income from AGI
