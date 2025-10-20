@@ -5,6 +5,24 @@ Go
 for a complete commit history.
 
 
+2025-10-21 Release 6.1.1
+------------------------
+(last merged pull request is
+[#2969](https://github.com/PSLmodels/Tax-Calculator/pull/2969))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+
+- Correct 2026 `AMT_prt` value to reflect OBBBA reform
+  [[#2969](https://github.com/PSLmodels/Tax-Calculator/pull/2969) by
+  Martin Holmer]
+
+
 2025-10-11 Release 6.1.0
 ------------------------
 (last merged pull request is
