@@ -483,7 +483,7 @@ def Adj(e03150, e03210, c03260,
 
 
 @iterate_jit(nopython=True)
-def ALD_InvInc_ec_base(p22250, p23250, sep,
+def ALD_InvInc_ec_base(p22250, p23250,
                        e00300, e00600, e01100, e01200, MARS,
                        invinc_ec_base, Capital_loss_limitation):
     """
@@ -495,8 +495,6 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
         Net short-term capital gails/losses (Schedule D)
     p23250: float
         Net long-term capital gains/losses (Schedule D)
-    sep: int
-        2 when MARS is 3 (married filing separately); otherwise 1
     e00300: float
         Taxable interest income
     e00600: float
@@ -520,7 +518,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
     """
     # limitation on net short-term and long-term capital losses
     cgain = max(
-        (-1 * Capital_loss_limitation[MARS - 1] / sep), p22250 + p23250
+        (-1 * Capital_loss_limitation[MARS - 1]), p22250 + p23250
     )
     # compute exclusion of investment income from AGI
     invinc_ec_base = e00300 + e00600 + cgain + e01100 + e01200
@@ -528,7 +526,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
 
 
 @iterate_jit(nopython=True)
-def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
+def CapGains(p23250, p22250, ALD_StudentLoan_hc,
              ALD_InvInc_ec_rt, invinc_ec_base,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt, Capital_loss_limitation,
@@ -545,8 +543,6 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
         Net long-term capital gains/losses (Schedule D)
     p22250: float
         Net short-term capital gails/losses (Schedule D)
-    sep: int
-        2 when MARS is 3 (married filing separately); otherwise 1
     ALD_StudentLoan_hc: float
         Student loan interest deduction haircut
     ALD_InvInc_ec_rt: float
@@ -637,7 +633,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     # net capital gain (long term + short term) before exclusion
     c23650 = p23250 + p22250
     # limitation on capital losses
-    c01000 = max((-1 * Capital_loss_limitation[MARS - 1] / sep), c23650)
+    c01000 = max((-1 * Capital_loss_limitation[MARS - 1]), c23650)
     # compute total investment income
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
     # compute exclusion of investment income from AGI
@@ -1997,19 +1993,18 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     if standard > 0.0:
         c62100 = c00100 - e00700 - qbided
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
-    if MARS == 3:
-        amtsepadd = max(0.,
-                        min(AMT_em[MARS - 1], AMT_prt * (c62100 - AMT_em_pe)))
-    else:
-        amtsepadd = 0.
-    c62100 = c62100 + amtsepadd  # AMT taxable income, which is line28
+    # c62100 is AMT taxable income, which is line28
     # Form 6251, Part II top
+    # line29 is AMT exemption amount
     line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
+    if MARS == 3 and c62100 > AMT_em_pe:
+        line29 = 0.
     young_head = age_head != 0 and age_head < AMT_child_em_c_age
     no_or_young_spouse = age_spouse < AMT_child_em_c_age
     if young_head and no_or_young_spouse:
         line29 = min(line29, earned + AMT_child_em)
+    # line30 is AMT taxable income less AMT exemption amount
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
                 AMT_rt2_addon * max(0., (line30 - (AMT_brk1 / sep))))

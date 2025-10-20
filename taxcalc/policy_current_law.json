@@ -9526,7 +9526,7 @@
             {
                 "year": 2013,
                 "MARS": "mseparate",
-                "value": 3000.0
+                "value": 1500.0
             },
             {
                 "year": 2013,
@@ -16917,6 +16917,10 @@
             {
                 "year": 2013,
                 "value": 0.25
+            },
+            {
+                "year": 2026,
+                "value": 0.5
             }
         ],
         "validators": {

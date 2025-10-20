@@ -9,6 +9,7 @@
     // Group A: AMT
     "AMT_em": {"2026": [89400, 139000, 69600, 89400, 139000]},
     "AMT_em_ps": {"2026": [500000, 1000000, 500000, 500000, 1000000]},
+    "AMT_prt": {"2026": 0.5},
     "AMT_em_pe": {"2026": 639200},
 
     // Group B: Personal Income Tax Rates and Brackets
