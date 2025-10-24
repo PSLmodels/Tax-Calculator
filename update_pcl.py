@@ -78,7 +78,6 @@ NEW_KNOWN_ITEMS = {
     # PAYROLL TAX PARAMETER SOURCES:
     # - SSA Office of the Chief Actuary: Contribution and Benefit Base
     #       https://www.ssa.gov/OACT/COLA/cbb.html
-
     'SS_Earnings_c': [
         {'year': 2023, 'value': 160200.0},
 
@@ -86,7 +85,7 @@ NEW_KNOWN_ITEMS = {
 
         {'year': 2025, 'value': 176100.0},
 
-        {'year': 2026, 'value': 183600.0},  # intermediate forecast, NOT ACTUAL
+        {'year': 2026, 'value': 184500.0},
     ],
     # INCOME TAX PARAMETER SOURCES:
     # - IRS Rev. Proc. 2022-38 containing 2023 policy parameter values is at:
