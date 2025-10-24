@@ -100,11 +100,11 @@ _IRS Form Location:_
 
 
 ##  `iitax`  
-_Description_: Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output  
+_Description_: Total federal individual income tax liability  
 _Datatype_: float  
 _IRS Form Location:_  
-2013-2013: 1040 line 61 minus lines 56, 60a, 64a, 65, and 66  
-2014-2016: 1040 line 63 minus lines 57, 62a, 66a, 67, and 68  
+2013-2013: 1040 line 61 minus line 56 minus line 60a  
+2014-2016: 1040 line 63 minus line 57 minus line 62a  
 
 
 ##  `num`  
@@ -123,10 +123,11 @@ _IRS Form Location:_
 
 
 ##  `payrolltax`  
-_Description_: Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was)  
+_Description_: Total (employee + employer) payroll tax liability (payrolltax = ptax_was + setax + ptax_amc)  
 _Datatype_: float  
 _IRS Form Location:_  
-2013-20??: OASDI+HI FICA  
+2013-2013: OASDI+HI FICA plus 1040 lines 56 and 60a  
+2014-2016: OASDI+HI FICA plus 1040 lines 57 and 62a  
 
 
 ##  `refund`  
@@ -209,7 +210,7 @@ _IRS Form Location:_
 
 
 ##  `c04470`  
-_Description_: Itemized deductions after limitations (zero for non-itemizers)  
+_Description_: Itemized deductions after phase-out (zero for non-itemizers)  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2017: 1040 line 40  
@@ -241,7 +242,7 @@ _IRS Form Location:_
 
 
 ##  `c05200`  
-_Description_: Tax amount from Sch X,Y,Z tables  
+_Description_: Tax amount from Sch X,Y,X tables  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-20??: calculated variable  
@@ -268,14 +269,6 @@ _Datatype_: float
 _IRS Form Location:_  
 2013-2013: 1040 line 46 minus 1040 line 55  
 2014-2016: 1040 line 47 minus 1040 line 56  
-
-
-##  `c32800`  
-_Description_: Child and dependent care expenses capped by policy (not by earnings)  
-_Datatype_: float  
-_IRS Form Location:_  
-2013-2013: 1040 line 48  
-2014-2016: 1040 line 49  
 
 
 ##  `c07180`  
@@ -397,8 +390,29 @@ _IRS Form Location:_
 2013-20??: calculated variable  
 
 
+##  `e17500_capped`  
+_Description_: Sch A: Medical expenses, capped as a decimal fraction of AGI  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
 ##  `c18300`  
 _Description_: Sch A: State and local taxes plus real estate taxes deducted (component of pre-limitation c21060 total)  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `e18400_capped`  
+_Description_: Sch A: State and local income taxes deductible, capped as a decimal fraction of AGI  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `e18500_capped`  
+_Description_: Sch A: State and local real estate taxes deductible, capped as a decimal fraction of AGI  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-20??: calculated variable  
@@ -411,8 +425,29 @@ _IRS Form Location:_
 2013-20??: calculated variable  
 
 
+##  `e19200_capped`  
+_Description_: Sch A: Interest deduction deductible, capped as a decimal fraction of AGI  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
 ##  `c19700`  
 _Description_: Sch A: Charity contributions deducted (component of pre-limitation c21060 total)  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `e19800_capped`  
+_Description_: Sch A: Charity cash contributions deductible, capped as a decimal fraction of AGI  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `e20100_capped`  
+_Description_: Sch A: Charity noncash contributions deductible, capped as a decimal fraction of AGI  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-20??: calculated variable  
@@ -425,8 +460,22 @@ _IRS Form Location:_
 2013-20??: calculated variable  
 
 
+##  `g20500_capped`  
+_Description_: Sch A: Gross casualty or theft loss deductible, capped as a decimal fraction of AGI  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
 ##  `c20800`  
 _Description_: Sch A: Net limited miscellaneous deductions deducted (component of pre-limitation c21060 total)  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `e20400_capped`  
+_Description_: Sch A: Gross miscellaneous deductions deductible, capped as a decimal fraction of AGI  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-20??: calculated variable  
@@ -495,27 +544,6 @@ _IRS Form Location:_
 2013-20??: calculated variable  
 
 
-##  `ctc_total`  
-_Description_: Total CTC amount (c07220 + c11070 + odc + ctc_new)  
-_Datatype_: float  
-_IRS Form Location:_  
-2013-20??: calculated variable  
-
-
-##  `ctc_nonrefundable`  
-_Description_: Portion of total CTC amount that is nonrefundable  
-_Datatype_: float  
-_IRS Form Location:_  
-2013-20??: calculated variable  
-
-
-##  `ctc_refundable`  
-_Description_: Portion of total CTC amount that is refundable  
-_Datatype_: float  
-_IRS Form Location:_  
-2013-20??: calculated variable  
-
-
 ##  `personal_refundable_credit`  
 _Description_: Personal refundable credit  
 _Datatype_: float  
@@ -572,13 +600,6 @@ _IRS Form Location:_
 2013-20??: calculated variable  
 
 
-##  `dwks43`  
-_Description_: separate tax on long-term capital gains and qualified dividends  
-_Datatype_: float  
-_IRS Form Location:_  
-2013-20??: calculated variable  
-
-
 ##  `fstax`  
 _Description_: search taxcalc/calcfunctions.py for how calculated and used  
 _Datatype_: float  
@@ -601,7 +622,7 @@ _IRS Form Location:_
 
 
 ##  `lumpsum_tax`  
-_Description_: Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output  
+_Description_: Lumpsum (or head) tax
 _Datatype_: float  
 _IRS Form Location:_  
 2013-20??: calculated variable  
@@ -622,7 +643,7 @@ _IRS Form Location:_
 
 
 ##  `ptax_amc`  
-_Description_: Additional Medicare Tax from Form 8959 (included in othertaxes and iitax)  
+_Description_: Additional Medicare Tax from Form 8959 (included in payrolltax)  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2013: 1040 line 60a  
@@ -630,7 +651,7 @@ _IRS Form Location:_
 
 
 ##  `ptax_oasdi`  
-_Description_: Employee + employer OASDI FICA tax plus self-employment tax  
+_Description_: Employee + employer OASDI FICA tax plus self-employment tax (excludes HI FICA so positive ptax_oasdi is less than ptax_was plus setax)  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2013: OASDI FICA plus 1040 line 56  
@@ -646,7 +667,7 @@ _IRS Form Location:_
 
 
 ##  `setax`  
-_Description_: Self-employment tax (included in othertaxes and iitax)  
+_Description_: Self-employment tax  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2013: 1040 line 56  
@@ -665,34 +686,6 @@ _Description_: search taxcalc/calcfunctions.py for how calculated and used
 _Datatype_: float  
 _IRS Form Location:_  
 2013-20??: calculated variable  
-
-
-##  `senior_deduction`  
-_Description_: Deduction for elderly head and/or spouse  
-_Datatype_: float  
-_IRS Form Location:_  
-2025-20??: calculated variable  
-
-
-##  `auto_loan_interest_deduction`  
-_Description_: Deduction for payment of qualified auto loan interest  
-_Datatype_: float  
-_IRS Form Location:_  
-2025-20??: calculated variable  
-
-
-##  `ALD_OvertimeIncome`  
-_Description_: Above-the-line deduction for qualified overtime income  
-_Datatype_: float  
-_IRS Form Location:_  
-2025-20??: calculated variable  
-
-
-##  `ALD_TipIncome`  
-_Description_: Above-the-line deduction for qualified tip income  
-_Datatype_: float  
-_IRS Form Location:_  
-2025-20??: calculated variable  
 
 
 ##  `ubi`  
