@@ -30,21 +30,21 @@
     "II_brk7": {"2026": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
 
     // Group C: Child & Dependent-Related Credits
-    "CTC_c": {"2025": 2200},
+    "CTC_c": {"2026": 2200},
     "CTC_ps": {"2025": [200000, 400000, 200000, 200000, 400000]},
-    "ACTC_c": {"2025": 1700},
+    "ACTC_c": {"2026": 1700},
     "ACTC_Income_thd": {"2025": 2500},
     "ODC_c": {"2025": 500},
 
     // Group D: Standard Deduction
-    "STD": {"2025": [16100, 32200, 16100, 24150, 32200]},
+    "STD": {"2026": [16100, 32200, 16100, 24150, 32200]},
 
     // Group E: Personal Exemption
     "II_em": {"2026": 0.0},
     "II_em_ps": {"2026": [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]},
 
     // Group F: Above-the-Line Deductions
-    "ALD_BusinessLosses_c": {"2025": [256000, 512000, 256000, 256000, 512000]},
+    "ALD_BusinessLosses_c": {"2026": [256000, 512000, 256000, 256000, 512000]},
 
     // Group G: Senior Deduction
     "SeniorDed_c": {"2025": 6000, "2029": 0},
