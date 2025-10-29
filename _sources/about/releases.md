@@ -5,6 +5,23 @@ Go
 for a complete commit history.
 
 
+2025-10-29 Release 6.2.0
+------------------------
+(last merged pull request is
+[#2971](https://github.com/PSLmodels/Tax-Calculator/pull/2971))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Advance `Policy.LAST_KNOWN_YEAR` from 2025 to 2026
+  [[#2971](https://github.com/PSLmodels/Tax-Calculator/pull/2971) by
+  Martin Holmer]
+
+**Bug Fixes**
+
+
 2025-10-21 Release 6.1.1
 ------------------------
 (last merged pull request is
@@ -17,7 +34,6 @@ for a complete commit history.
 **New Features**
 
 **Bug Fixes**
-
 - Correct 2026 `AMT_prt` value to reflect OBBBA reform
   [[#2969](https://github.com/PSLmodels/Tax-Calculator/pull/2969) by
   Martin Holmer]
@@ -33,11 +49,9 @@ for a complete commit history.
 **API Changes**
 
 **New Features**
-
 - Rename two policy parameters to clarify they are addons not levels
   [[#2965](https://github.com/PSLmodels/Tax-Calculator/pull/2965) by
   Martin Holmer]
-
 - Update dependencies in `environment.yml` and `conda.recipe/meta.yaml` files
   [[#2964](https://github.com/PSLmodels/Tax-Calculator/pull/2964) by
   Martin Holmer]
@@ -54,7 +68,6 @@ for a complete commit history.
   incompatible with earlier releases.**
 
 **API Changes**
-
 - Remove the [taxdata](https://github.com/PSLmodels/taxdata)-produced
   `puf_weights.csv.gz` and `puf_ratios.csv` files from the
   Tax-Calculator repository.  Adds a new `Records.puf_constructor`
@@ -80,7 +93,6 @@ for a complete commit history.
 **API Changes**
 
 **New Features**
-
 - Update new PUF weights and ratios files.
   [[#2925](https://github.com/PSLmodels/Tax-Calculator/pull/2925) by
   Bodi Yang], from the update in [[TaxData PR
@@ -95,19 +107,15 @@ for a complete commit history.
 - Make `FST_AGI_thd` parameters to be non inflation-indexed
   [[#2951](https://github.com/PSLmodels/Tax-Calculator/pull/2951) by
   Martin Holmer]
-
 - Add support for Python 3.13
   [[#2953](https://github.com/PSLmodels/Tax-Calculator/pull/2953) by
   Martin Holmer]
-
 - Add tests for consistent quote style
   [[#2954](https://github.com/PSLmodels/Tax-Calculator/pull/2954) by
   Martin Holmer]
-
 - Allow CLI --dumpvars DUMPVARS to be the ALL string
   [[#2956](https://github.com/PSLmodels/Tax-Calculator/pull/2956) by
   Martin Holmer]
-
 - Add documentation on using sub-national TMD weights with CLI tool
   [[#2957](https://github.com/PSLmodels/Tax-Calculator/pull/2957) by
   Martin Holmer]
