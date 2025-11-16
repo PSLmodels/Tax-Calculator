@@ -107,7 +107,7 @@
     },
     "FICA_ss_trt_employer": {
         "title": "Employer side Social Security payroll tax rate",
-        "description": "Employer side Social Security FICA rate, including both employer and employee.",
+        "description": "Employer side Social Security FICA rate.",
         "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
@@ -133,7 +133,7 @@
     },
     "FICA_ss_trt_employee": {
         "title": "Employee side Social Security payroll tax rate",
-        "description": "Employee side Social Security FICA rate, including both employer and employee.",
+        "description": "Employee side Social Security FICA rate.",
         "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
@@ -289,7 +289,7 @@
     },
     "FICA_mc_trt_employer": {
         "title": "Employer side Medicare payroll tax rate",
-        "description": "Employer side Medicare FICA rate, including both employer and employee.",
+        "description": "Employer side Medicare FICA rate.",
         "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Medicare FICA",
@@ -315,7 +315,7 @@
     },
     "FICA_mc_trt_employee": {
         "title": "Employee side Medicare payroll tax rate",
-        "description": "Employee side Medicare FICA rate, including both employer and employee.",
+        "description": "Employee side Medicare FICA rate.",
         "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Medicare FICA",

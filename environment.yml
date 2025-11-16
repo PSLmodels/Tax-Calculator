@@ -21,6 +21,6 @@ dependencies:
 - openpyxl
 - pip
 - pip:
-    - jupyter-book
+    - "jupyter-book<2.0"
     - "paramtools>=0.20.0"
     - "mcp[cli]"
