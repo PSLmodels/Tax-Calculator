@@ -117,7 +117,8 @@ def paramtextdf(df, ptype):
         return '_Description:_ ' + df.description + '  \n'
 
     def notes(df):
-        return np.where(df.notes == '', '', '_Notes:_ ' + df.notes + '  \n')
+        txt = df.get('notes', '')
+        return np.where(txt == '', '', '_Notes:_ ' + txt + '  \n')
 
     def effect_puf_cps_one(row):
         return ('_Has An Effect When Using:_' +
