@@ -748,8 +748,8 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 
 
 @iterate_jit(nopython=True)
-def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
-        II_em, II_em_ps, II_em_prt, II_no_em_nu18,
+def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
+        II_em, II_em_ps, II_em_po_step_size, II_em_prt, II_no_em_nu18,
         e02300, UI_thd, UI_em, c00100, pre_c04600, c04600):
     """
     Computes Adjusted Gross Income (AGI), c00100, and
@@ -768,8 +768,6 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate,
                                4=household-head, 5=widow(er))
-    sep: int
-        2 when MARS is 3 (married filing separately); otherwise 1
     DSI: int
         1 if claimed as dependent on another return; otherwise 0
     exact: int
@@ -782,6 +780,8 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         Personal and dependent exemption amount
     II_em_ps: list
         Personal exemption phaseout starting income
+    II_em_po_step_size: list
+        Personal exemption phaseout step size
     II_em_prt: float
         Personal exemption phaseout rate
     II_no_em_nu18: float
@@ -826,12 +826,12 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     # phase-out personal exemption amount
     if exact == 1:  # exact calculation as on tax forms
         line5 = max(0., c00100 - II_em_ps[MARS - 1])
-        line6 = math.ceil(line5 / (2500. / sep))
+        line6 = math.ceil(line5 / II_em_po_step_size[MARS - 1])
         line7 = II_em_prt * line6
         c04600 = max(0., pre_c04600 * (1. - line7))
     else:  # smoothed calculation needed for sensible mtr calculation
         dispc_numer = II_em_prt * (c00100 - II_em_ps[MARS - 1])
-        dispc_denom = 2500. / sep
+        dispc_denom = II_em_po_step_size[MARS - 1]
         dispc = min(1., max(0., dispc_numer / dispc_denom))
         c04600 = pre_c04600 * (1. - dispc)
     return (c00100, pre_c04600, c04600)

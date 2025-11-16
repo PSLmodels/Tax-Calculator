@@ -642,6 +642,11 @@ _Known Values:_
 _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error
 
+### Personal Exemption Phaseout Start
+
+
+### Personal Exemption Phaseout Step Size
+
 
 ### Personal Exemption Phaseout Rate
 

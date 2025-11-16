@@ -1706,8 +1706,8 @@
     "II_em_ps": {
         "title": "Personal exemption phaseout starting income",
         "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Personal Exemptions",
+        "section_2": "Personal Exemption Phaseout Start",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -2074,9 +2074,55 @@
             "cps": true
         }
     },
+    "II_em_po_step_size": {
+        "title": "Personal exemption phaseout step size",
+        "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease for each step AGI exceeds II_em_ps.",
+        "section_1": "Personal Exemptions",
+        "section_2": "Personal Exemption Phaseout Step Size",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 2500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 2500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 1250.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 2500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 2500.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "II_em_prt": {
         "title": "Personal exemption phaseout rate",
-        "description": "Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.",
+        "description": "Personal exemption amount will decrease by this rate for each step by which AGI exceeds exemption phaseout start.",
         "section_1": "Personal Exemptions",
         "section_2": "Personal Exemption Phaseout Rate",
         "indexable": false,
