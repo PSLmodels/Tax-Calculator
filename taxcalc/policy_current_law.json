@@ -62,7 +62,6 @@
     "parameter_indexing_CPI_offset": {
         "title": "Decimal offset added to chained CPI-U inflation rate to get policy parameter indexing rate",
         "description": "Always zero in policy_current_law.json, but non-zero values are allowed in reforms.",
-        "notes": "",
         "section_1": "Parameter Indexing",
         "section_2": "Offsets",
         "indexable": false,
@@ -108,7 +107,6 @@
     "FICA_ss_trt_employer": {
         "title": "Employer side OASDI payroll tax rate",
         "description": "Employer side OASDI FICA rate.",
-        "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
         "indexable": false,
@@ -134,7 +132,6 @@
     "FICA_ss_trt_employee": {
         "title": "Employee side OASDI payroll tax rate",
         "description": "Employee side OASDI FICA rate.",
-        "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
         "indexable": false,
@@ -160,7 +157,6 @@
     "SS_Earnings_c": {
         "title": "Maximum taxable earnings for OASDI payroll taxation",
         "description": "Individual earnings below this amount are subjected to OASDI payroll tax.  Indexed by wage growth, not price inflation.",
-        "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
         "indexable": true,
@@ -238,7 +234,6 @@
     "SECA_Earnings_thd": {
         "title": "Minimum self-employment earnings before trigger SECA liability",
         "description": "Individual self-employment earnings below this amount are not subject to SECA taxes.  To compute earnings for this threshold, will multiply net self-employment by (1 - SECA_Earnings_hc).",
-        "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
         "indexable": true,
@@ -264,7 +259,6 @@
     "SS_Earnings_thd": {
         "title": "Additional taxable earnings threshold for OASDI payroll taxes",
         "description": "Individual earnings above this threshold are subjected to OASDI payroll tax, in addition to earnings below the SS_Earnings_c threshold.",
-        "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
         "indexable": true,
@@ -290,7 +284,6 @@
     "FICA_mc_trt_employer": {
         "title": "Employer side HI payroll tax rate",
         "description": "Employer side HI FICA rate.",
-        "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Medicare FICA",
         "indexable": false,
@@ -316,7 +309,6 @@
     "FICA_mc_trt_employee": {
         "title": "Employee side HI payroll tax rate",
         "description": "Employee side HI FICA rate.",
-        "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Medicare FICA",
         "indexable": false,
@@ -342,7 +334,6 @@
     "AMEDT_ec": {
         "title": "Additional Medicare Tax earnings exclusion",
         "description": "The Additional Medicare Tax rate, AMEDT_rt, applies to all earnings in excess of this excluded amount.",
-        "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Additional Medicare FICA",
         "indexable": true,
@@ -389,7 +380,6 @@
     "AMEDT_rt": {
         "title": "Additional Medicare Tax rate",
         "description": "This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding the Additional Medicare Tax earning exclusion.",
-        "notes": "",
         "section_1": "Payroll Taxes",
         "section_2": "Additional Medicare FICA",
         "indexable": false,
@@ -415,7 +405,6 @@
     "SS_all_in_agi": {
         "title": "Include all social security benefits in AGI",
         "description": "All social security benefits will be included in AGI.",
-        "notes": "",
         "section_1": "Social Security Taxability",
         "section_2": "Social Security Benefit Taxability",
         "indexable": false,
@@ -441,7 +430,6 @@
     "SS_thd1": {
         "title": "Threshold for Social Security benefit taxability 1",
         "description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to rate 1 of their Social Security benefit will be subject to tax under current law.",
-        "notes": "",
         "section_1": "Social Security Taxability",
         "section_2": "Social Security Benefit Taxability",
         "indexable": true,
@@ -488,7 +476,6 @@
     "SS_percentage1": {
         "title": "Social Security taxable income decimal fraction 1",
         "description": "Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.",
-        "notes": "",
         "section_1": "Social Security Taxability",
         "section_2": "Social Security Benefit Taxability",
         "indexable": false,
@@ -514,7 +501,6 @@
     "SS_thd2": {
         "title": "Threshold for Social Security benefit taxability 2",
         "description": "The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to rate 2 of their Social Security benefit will be subject to tax under current law.",
-        "notes": "",
         "section_1": "Social Security Taxability",
         "section_2": "Social Security Benefit Taxability",
         "indexable": true,
@@ -561,7 +547,6 @@
     "SS_percentage2": {
         "title": "Social Security taxable income decimal fraction 2",
         "description": "Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.",
-        "notes": "",
         "section_1": "Social Security Taxability",
         "section_2": "Social Security Benefit Taxability",
         "indexable": false,
@@ -587,7 +572,6 @@
     "ALD_StudentLoan_hc": {
         "title": "Adjustment for student loan interest haircut",
         "description": "This decimal fraction can be applied to limit the student loan interest adjustment allowed.  The final adjustment amount will be (1-Haircut)*StudentLoanInterest.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -613,7 +597,6 @@
     "ALD_SelfEmploymentTax_hc": {
         "title": "Adjustment for self-employment tax haircut",
         "description": "This decimal fraction, if greater than zero, reduces the employer equivalent portion of self-employment adjustment.  The final adjustment amount would be (1-Haircut)*SelfEmploymentTaxAdjustment.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -639,7 +622,6 @@
     "ALD_SelfEmp_HealthIns_hc": {
         "title": "Adjustment for self employed health insurance haircut",
         "description": "This decimal fraction, if greater than zero, reduces the health insurance adjustment for self-employed taxpayers.  The final adjustment amount would be (1-Haircut)*SelfEmployedHealthInsuranceAdjustment.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -665,7 +647,6 @@
     "ALD_KEOGH_SEP_hc": {
         "title": "Adjustment for contributions to either KEOGH or SEP plan haircut",
         "description": "Under current law, contributions to Keogh or SEP plans can be fully deducted from gross income.  This haircut can be used to limit the adjustment allowed.  The final adjustment amount is (1-Haircut)*KEOGH_SEP_Contributinos.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -691,7 +672,6 @@
     "ALD_EarlyWithdraw_hc": {
         "title": "Adjustment for early withdrawal penalty haircut",
         "description": "Under current law, early withdraw penalty can be fully deducted from gross income. This haircut can be used to limit the adjustment allowed.  The final adjustment amount is (1-Haircut)*EarlyWithdrawPenalty.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -717,7 +697,6 @@
     "ALD_AlimonyPaid_hc": {
         "title": "Adjustment for alimony-paid haircut",
         "description": "Under pre-TCJA law, the full amount of alimony paid is taken as an adjustment from gross income in arriving at AGI. This haircut can be used to change the deduction allowed.  The final adjustment amount would be (1-Haircut)*AlimonyPaid.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -783,7 +762,6 @@
     "ALD_AlimonyReceived_hc": {
         "title": "Adjustment for alimony-received haircut",
         "description": "Under pre-TCJA law, none of alimony received is taken as an adjustment from gross income in arriving at AGI. This haircut can be used to change the deduction allowed.  The final adjustment amount would be (1-Haircut)*AlimonyReceived.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -849,7 +827,6 @@
     "ALD_EducatorExpenses_hc": {
         "title": "Deduction for educator expenses haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of educator expenses that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*EducatorExpenses.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -875,7 +852,6 @@
     "ALD_HSADeduction_hc": {
         "title": "Deduction for HSA deduction haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of a taxpayer's HSA deduction that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*HSA_Deduction.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -901,7 +877,6 @@
     "ALD_IRAContributions_hc": {
         "title": "Deduction for IRA contributions haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of IRA contributions that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*IRA_Contribution.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -927,7 +902,6 @@
     "ALD_DomesticProduction_hc": {
         "title": "Deduction for domestic production activity haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of domestic production activity that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*DomesticProductionActivity.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -973,7 +947,6 @@
     "ALD_Tuition_hc": {
         "title": "Deduction for tuition and fees haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*TuitionFees.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -1035,7 +1008,6 @@
     "ALD_InvInc_ec_rt": {
         "title": "Investment income exclusion rate haircut",
         "description": "Decimal fraction of investment income base that can be excluded from AGI.  The final taxable investment income will be (1-_ALD_InvInc_ec_rt)*investment_income_base. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Exclusions",
         "indexable": false,
@@ -1061,7 +1033,6 @@
     "ALD_Dependents_hc": {
         "title": "Deduction for childcare costs haircut",
         "description": "This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI.  The final adjustment would be (1-Haircut)*AverageChildcareCosts.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Child And Elderly Care",
         "indexable": false,
@@ -1087,7 +1058,6 @@
     "ALD_Dependents_Child_c": {
         "title": "National average childcare costs: ceiling for available childcare deduction.",
         "description": "The weighted average of childcare costs in the US. 7165 is the weighted average from the 'Child Care in America: 2016 State Fact Sheets'.  This is a weighted average of childcare costs in each state.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Child And Elderly Care",
         "indexable": true,
@@ -1165,7 +1135,6 @@
     "ALD_Dependents_Elder_c": {
         "title": "Ceiling for elderly care deduction proposed in Trump's tax plan",
         "description": "A taxpayer can take an above the line deduction up to this amount if they have an elderly dependent. The Trump 2016 campaign proposal was for $5000.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Child And Elderly Care",
         "indexable": true,
@@ -1243,7 +1212,6 @@
     "ALD_Dependents_thd": {
         "title": "Maximum level of income to qualify for the dependent care deduction",
         "description": "A taxpayer can only claim the dependent care deduction if their total income is below this level. The Trump 2016 campaign proposal was for 250000 single, 500000 joint, 250000 separate, 500000 head of household].",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Child And Elderly Care",
         "indexable": true,
@@ -1290,7 +1258,6 @@
     "ALD_BusinessLosses_c": {
         "title": "Maximum amount of business losses deductible",
         "description": "Business losses in excess of this amount may not be deducted from AGI.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Exclusions",
         "indexable": true,
@@ -1662,7 +1629,6 @@
     "II_em": {
         "title": "Personal and dependent exemption amount",
         "description": "Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.",
-        "notes": "",
         "section_1": "Personal Exemptions",
         "section_2": "Personal And Dependent Exemption Amount",
         "indexable": true,
@@ -1740,7 +1706,6 @@
     "II_em_ps": {
         "title": "Personal exemption phaseout starting income",
         "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -2112,7 +2077,6 @@
     "II_em_prt": {
         "title": "Personal exemption phaseout rate",
         "description": "Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.",
-        "notes": "",
         "section_1": "Personal Exemptions",
         "section_2": "Personal Exemption Phaseout Rate",
         "indexable": false,
@@ -2138,7 +2102,6 @@
     "II_no_em_nu18": {
         "title": "Repeal personal exemptions for dependents under age 18",
         "description": "Total personal exemptions will be decreased by the number of dependents under the age of 18.",
-        "notes": "",
         "section_1": "Personal Exemptions",
         "section_2": "Repeal for Dependents Under Age 18",
         "indexable": false,
@@ -2164,7 +2127,6 @@
     "STD": {
         "title": "Standard deduction amount",
         "description": "Amount filing unit can use as a standard deduction.",
-        "notes": "",
         "section_1": "Standard Deduction",
         "section_2": "Standard Deduction Amount",
         "indexable": true,
@@ -2536,7 +2498,6 @@
     "STD_Dep": {
         "title": "Standard deduction for dependents",
         "description": "This is the maximum standard deduction for dependents.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -2614,7 +2575,6 @@
     "STD_Aged": {
         "title": "Additional standard deduction for blind and aged",
         "description": "To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction.",
-        "notes": "",
         "section_1": "Standard Deduction",
         "section_2": "Additional Standard Deduction For Blind And Aged",
         "indexable": true,
@@ -2986,7 +2946,6 @@
     "STD_allow_charity_ded_nonitemizers": {
         "title": "Allow standard deduction filers to take the charitable contributions deduction",
         "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction and make cash donations.  The same percent-of-AGI cap applied to itemized deduction for charitable contributions also apply here, as well as a max on the dollar amount for cash charitable deductions for those taking the standard deduction.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -3052,7 +3011,6 @@
     "STD_charity_ded_nonitemizers_max": {
         "title": "Ceiling amount (in dollars) for cash charitable deductions for nonitemizers",
         "description": "Puts a ceiling on the dollar of amount of cash charitable contributions deductions for taxpayers who take the standard deduction.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -3174,7 +3132,6 @@
     "II_credit": {
         "title": "Personal refundable credit maximum amount",
         "description": "This credit amount is fully refundable and is phased out based on AGI. It is available to tax units who would otherwise not file.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": true,
@@ -3546,7 +3503,6 @@
     "II_credit_ps": {
         "title": "Personal refundable credit phaseout start",
         "description": "The personal refundable credit amount will be reduced for taxpayers with AGI higher than this threshold level.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": true,
@@ -3918,7 +3874,6 @@
     "II_credit_prt": {
         "title": "Personal refundable credit phaseout rate",
         "description": "The personal refundable credit amount will be reduced at this rate for each dollar of AGI exceeding the II_credit_ps threshold.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": false,
@@ -3944,7 +3899,6 @@
     "II_credit_nr": {
         "title": "Personal nonrefundable credit maximum amount",
         "description": "This credit amount is not refundable and is phased out based on AGI.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Personal Nonrefundable Credit",
         "indexable": true,
@@ -4316,7 +4270,6 @@
     "II_credit_nr_ps": {
         "title": "Personal nonrefundable credit phaseout start",
         "description": "The personal nonrefundable credit amount will be reduced for taxpayers with AGI higher than this threshold level.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Personal Nonrefundable Credit",
         "indexable": true,
@@ -4688,7 +4641,6 @@
     "II_credit_nr_prt": {
         "title": "Personal nonrefundable credit phaseout rate",
         "description": "The personal nonrefundable credit amount will be reduced at this rate for each dollar of AGI exceeding the II_credit_nr_ps threshold.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Personal Nonrefundable Credit",
         "indexable": false,
@@ -4714,7 +4666,6 @@
     "RRC_c": {
         "title": "Recovery Rebate Credit maximum amount",
         "description": "This credit amount is fully refundable and is phased out based on AGI. It is available for each person in the filing unit, except for dependent filers.  Enacted for 2021 as part of the American Rescue Plan Act.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": true,
@@ -4748,7 +4699,6 @@
     "RRC_ps": {
         "title": "Recovery Rebate Credit phaseout start",
         "description": "The Recovery Rebate Credit amount will be reduced for taxpayers with AGI higher than this threshold level.  Enacted for 2021 as part of the American Rescue Plan Act.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": true,
@@ -4870,7 +4820,6 @@
     "RRC_pe": {
         "title": "Recovery Rebate Credit phaseout end",
         "description": "The Recovery Rebate Credit amount will be fully phased out for taxpayers with AGI higher than this threshold level.  Enacted for 2021 as part of the American Rescue Plan Act.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": true,
@@ -4967,7 +4916,6 @@
     "RRC_prt": {
         "title": "Recovery Rebate Credit phaseout rate",
         "description": "The Recovery Rebate Credit will be phased out at this rate for those with income above the phase out start and below the phase out end.  Used in 2020 as part of the CARES Act.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": false,
@@ -5002,7 +4950,6 @@
     "RRC_c_unit": {
         "title": "Maximum credit for filing unit",
         "description": "The maximum credit awarded as part of the Recovery Rebate Credit.  Used in 2020 as part of the CARES Act.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": true,
@@ -5100,7 +5047,6 @@
     "RRC_c_kids": {
         "title": "Recovery Rebate Credit amount per child",
         "description": "The credit awarded for each child in an eligible family as part of the Recovery Rebate Credit.  Used in 2020 as part of the CARES Act.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": false,
@@ -5135,7 +5081,6 @@
     "ID_Medical_frt": {
         "title": "Floor (as a decimal fraction of AGI) for deductible medical expenses.",
         "description": "Taxpayers are eligible to deduct the portion of their medical expenses exceeding this fraction of AGI.  When using PUF data, lowering this parameter value may produce unexpected results because PUF e17500 variable is zero below the floor.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "indexable": false,
@@ -5186,7 +5131,6 @@
     "ID_Medical_frt_add4aged": {
         "title": "Addon floor (as a decimal fraction of AGI) for deductible medical expenses for elderly filing units.",
         "description": "Elderly taxpayers have this fraction added to the value of the regular floor rate for deductible medical expenses.  This fraction was -0.025 from 2013 to 2016, but that was temporary and it changed to zero beginning in 2017.  When using PUF data, changing this parameter value may produce unexpected results because PUF e17500 variable is zero below the floor.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "indexable": false,
@@ -5229,7 +5173,6 @@
     "ID_Medical_hc": {
         "title": "Medical expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of medical expense deduction allowed.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "indexable": false,
@@ -5255,7 +5198,6 @@
     "ID_Medical_c": {
         "title": "Ceiling on the amount of medical expense deduction allowed (dollars)",
         "description": "The amount of medical expense deduction is limited to this dollar amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "indexable": true,
@@ -5627,7 +5569,6 @@
     "ID_StateLocalTax_hc": {
         "title": "State and local income and sales taxes deduction haircut.",
         "description": "This decimal fraction reduces the state and local income and sales tax deduction.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Income And Sales Taxes",
         "indexable": false,
@@ -5653,7 +5594,6 @@
     "ID_StateLocalTax_crt": {
         "title": "Ceiling (as a decimal fraction of AGI) for the combination of all state and local income and sales tax deductions.",
         "description": "The total deduction for state and local taxes is capped at this fraction of AGI.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Income And Sales Taxes",
         "indexable": false,
@@ -5679,7 +5619,6 @@
     "ID_StateLocalTax_c": {
         "title": "Ceiling on the amount of state and local income and sales taxes deduction allowed (dollars)",
         "description": "The amount of state and local income and sales taxes deduction is limited to this dollar amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Income And Sales Taxes",
         "indexable": true,
@@ -6051,7 +5990,6 @@
     "ID_RealEstate_hc": {
         "title": "State, local, and foreign real estate taxes deduction haircut.",
         "description": "This decimal fraction reduces real estate taxes paid eligible to deduct in itemized deduction.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State, Local, And Foreign Real Estate Taxes",
         "indexable": false,
@@ -6077,7 +6015,6 @@
     "ID_RealEstate_crt": {
         "title": "Ceiling (as a decimal fraction of AGI) for the combination of all state, local, and foreign real estate tax deductions.",
         "description": "The total deduction for all real estate taxes is capped at this fraction of AGI.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State, Local, And Foreign Real Estate Taxes",
         "indexable": false,
@@ -6103,7 +6040,6 @@
     "ID_RealEstate_c": {
         "title": "Ceiling on the amount of state, local, and foreign real estate taxes deduction allowed (dollars)",
         "description": "The amount of real estate taxes deduction is limited to this dollar amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State, Local, And Foreign Real Estate Taxes",
         "indexable": true,
@@ -6475,7 +6411,6 @@
     "ID_AllTaxes_hc": {
         "title": "State and local income, sales, and real estate tax deduction haircut.",
         "description": "This decimal fraction reduces all state and local taxes paid eligible to deduct in itemized deduction.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Taxes And Real Estate Taxes",
         "indexable": false,
@@ -6501,7 +6436,6 @@
     "ID_AllTaxes_c": {
         "title": "Cap on the amount of state and local income, sales and real estate tax deductions allowed (dollars)",
         "description": "The amount of state and local income, sales and real estate tax deductions is limited to this dollar amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Taxes And Real Estate Taxes",
         "indexable": true,
@@ -6923,7 +6857,6 @@
     "ID_AllTaxes_c_ps": {
         "title": "AGI level at which ID_AllTaxes_c cap starts to be phased out",
         "description": "The cap on state and local income, sales and real estate tax deductions is phased out when AGI exceeds this amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Taxes And Real Estate Taxes",
         "indexable": true,
@@ -7020,7 +6953,6 @@
     "ID_AllTaxes_c_po_rate": {
         "title": "Rate at which ID_AllTaxes_c cap is phased-out above ID_AllTaxes_c_ps AGI",
         "description": "The cap on state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_c_ps.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Taxes And Real Estate Taxes",
         "indexable": false,
@@ -7054,7 +6986,6 @@
     "ID_AllTaxes_c_po_floor": {
         "title": "Minimum cap on itemized state and local income, sales and real estate tax deductions that are phased-out above ID_AllTaxes_ps AGI",
         "description": "The cap on state and local income, sales and real estate tax deductions cannot be reduced below this amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Taxes And Real Estate Taxes",
         "indexable": false,
@@ -7151,7 +7082,6 @@
     "ID_InterestPaid_hc": {
         "title": "Interest paid deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of interest paid deduction allowed.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Interest Paid",
         "indexable": false,
@@ -7177,7 +7107,6 @@
     "ID_InterestPaid_c": {
         "title": "Ceiling on the amount of interest paid deduction allowed (dollars)",
         "description": "The amount of interest paid deduction is limited to this dollar amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Interest Paid",
         "indexable": true,
@@ -7549,7 +7478,6 @@
     "ID_Charity_crt_all": {
         "title": "Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions",
         "description": "The total deduction for charity is capped at this fraction of AGI.  When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "indexable": false,
@@ -7592,7 +7520,6 @@
     "ID_Charity_crt_noncash": {
         "title": "Ceiling (as a decimal fraction of AGI) for noncash charitable contribution deductions",
         "description": "The deduction for noncash charity contributions is capped at this fraction of AGI.  When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "indexable": false,
@@ -7623,7 +7550,6 @@
     "ID_Charity_frt": {
         "title": "Floor (as a decimal fraction of AGI) for deductible charitable contributions.",
         "description": "Taxpayers are eligible to deduct the portion of their charitable expense exceeding this fraction of AGI.  This parameter allows for implementation of Option 52 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "indexable": false,
@@ -7653,7 +7579,6 @@
     "ID_Charity_hc": {
         "title": "Charity expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of charity expense deduction allowed.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "indexable": false,
@@ -7679,7 +7604,6 @@
     "ID_Charity_c": {
         "title": "Ceiling on the amount of charity expense deduction allowed (dollars)",
         "description": "The amount of charity expense deduction is limited to this dollar amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "indexable": true,
@@ -8051,7 +7975,6 @@
     "ID_Charity_f": {
         "title": "Floor on the amount of charity expense deduction allowed (dollars)",
         "description": "Only charitable giving in excess of this dollar amount is eligible for a deduction.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "indexable": false,
@@ -8098,7 +8021,6 @@
     "ID_Casualty_frt": {
         "title": "Floor (as a decimal fraction of AGI) for deductible casualty loss.",
         "description": "Taxpayers are eligible to deduct the portion of their gross casualty losses exceeding this fraction of AGI.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Casualty",
         "indexable": false,
@@ -8124,7 +8046,6 @@
     "ID_Casualty_hc": {
         "title": "Casualty expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of casualty expense deduction allowed.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Casualty",
         "indexable": false,
@@ -8178,7 +8099,6 @@
     "ID_Casualty_c": {
         "title": "Ceiling on the amount of casualty expense deduction allowed (dollars)",
         "description": "The amount of casualty expense deduction is limited to this dollar amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Casualty",
         "indexable": true,
@@ -8550,7 +8470,6 @@
     "ID_Miscellaneous_frt": {
         "title": "Floor (as a decimal fraction of AGI) for deductible miscellaneous expenses.",
         "description": "Taxpayers are eligible to deduct the portion of their miscellaneous expense exceeding this fraction of AGI.  When using PUF data, lowering this parameter value may produce unexpected results because in PUF data the variable e20400 is zero below the floor.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Miscellaneous",
         "indexable": false,
@@ -8577,7 +8496,6 @@
     "ID_Miscellaneous_hc": {
         "title": "Miscellaneous expense deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of miscellaneous expense deduction allowed.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Miscellaneous",
         "indexable": false,
@@ -8631,7 +8549,6 @@
     "ID_Miscellaneous_c": {
         "title": "Ceiling on the amount of miscellaneous expense deduction allowed (dollars)",
         "description": "The amount of miscellaneous expense deduction is limited to this dollar amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Miscellaneous",
         "indexable": true,
@@ -9003,7 +8920,6 @@
     "ID_ps": {
         "title": "Itemized deduction phaseout AGI start (Pease provision)",
         "description": "The itemized deductions will be reduced for taxpayers with AGI higher than this level.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Itemized Deduction Limitation",
         "indexable": true,
@@ -9375,7 +9291,6 @@
     "ID_prt": {
         "title": "Itemized deduction phaseout rate (Pease provision)",
         "description": "Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.  This phaseout rate cannot be lower than 0.03 for each dollar, due to limited data on non-itemizers.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Itemized Deduction Limitation",
         "indexable": false,
@@ -9429,7 +9344,6 @@
     "ID_crt": {
         "title": "Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions (Pease provision)",
         "description": "The phaseout amount is capped at this fraction of the original total deduction.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Itemized Deduction Limitation",
         "indexable": false,
@@ -9495,7 +9409,6 @@
     "ID_reduction_rate": {
         "title": "Itemized deduction reduction rate under OBBBA",
         "description": "Itemized deductions are reduced if pre-deduction taxable income exceeds top tax bracket.  The 2026+ value of 0.05405405 is about equal to 2/37.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Itemized Deduction Limitation",
         "indexable": false,
@@ -9525,7 +9438,6 @@
     "ID_c": {
         "title": "Ceiling on the amount of itemized deductions allowed (dollars)",
         "description": "The amount of itemized deductions is limited to this dollar amount.",
-        "notes": "",
         "section_1": "Itemized Deductions",
         "section_2": "Ceiling On The Amount Of Itemized Deductions Allowed",
         "indexable": true,
@@ -9897,7 +9809,6 @@
     "Capital_loss_limitation": {
         "title": "Limitation on the amount of capital losses deductible ",
         "description": "The amount of capital loss deductions is limited to this dollar amount.  Note that the nature of some datasets may limit the usefulness of this parameter.  For example the IRS Public Use File (PUF) does not report capital losses in excess of the current law limitation (e.g., $,3000) and therefore setting a higher limit will not affect results.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": true,
@@ -9944,7 +9855,6 @@
     "CG_rt1": {
         "title": "Long term capital gain and qualified dividends (regular/non-AMT) rate 1",
         "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": false,
@@ -9970,7 +9880,6 @@
     "CG_brk1": {
         "title": "Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 1",
         "description": "The gains and dividends (stacked on top of regular income) below this are taxed at capital gain rate 1.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": true,
@@ -10342,7 +10251,6 @@
     "CG_rt2": {
         "title": "Long term capital gain and qualified dividends (regular/non-AMT) rate 2",
         "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 2 and above threshold 1 are taxed at this rate.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": false,
@@ -10368,7 +10276,6 @@
     "CG_brk2": {
         "title": "Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 2",
         "description": "The gains and dividends (stacked on top of regular income) below this and above top of bracket 1 are taxed at capital gain rate 2.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": true,
@@ -10740,7 +10647,6 @@
     "CG_rt3": {
         "title": "Long term capital gain and qualified dividends (regular/non-AMT) rate 3",
         "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 2 and below threshold 3 are taxed at this rate.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": false,
@@ -10766,7 +10672,6 @@
     "CG_brk3": {
         "title": "Top of long-term capital gains and qualified dividend tax (regular/non-AMT) bracket 3",
         "description": "The gains and dividends (stacked on top of regular income) below this and above top of bracket 2 are taxed at the capital gain rate 3; above this they are taxed at capital gain rate 4.  Default value is essentially infinity.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": true,
@@ -11113,7 +11018,6 @@
     "CG_rt4": {
         "title": "Long term capital gain and qualified dividends (regular/non-AMT) rate 4",
         "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": false,
@@ -11139,7 +11043,6 @@
     "AMT_CG_rt1": {
         "title": "Long term capital gain and qualified dividends (AMT) rate 1",
         "description": "Capital gain and qualified dividends (stacked on top of regular income) below threshold 1 are taxed at this rate.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "AMT - Long Term Capital Gains And Qualified Dividends",
         "indexable": false,
@@ -11165,7 +11068,6 @@
     "AMT_CG_brk1": {
         "title": "Top of long-term capital gains and qualified dividends (AMT) tax bracket 1",
         "description": "The gains and dividends, stacked last, of AMT taxable income below this are taxed at AMT capital gain rate 1.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "AMT - Long Term Capital Gains And Qualified Dividends",
         "indexable": true,
@@ -11537,7 +11439,6 @@
     "AMT_CG_rt2": {
         "title": "Long term capital gain and qualified dividends (AMT) rate 2",
         "description": "Capital gain and qualified dividend (stacked on top of regular income) below threshold 2 and above threshold 1 are taxed at this rate.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "AMT - Long Term Capital Gains And Qualified Dividends",
         "indexable": false,
@@ -11563,7 +11464,6 @@
     "AMT_CG_brk2": {
         "title": "Top of long-term capital gains and qualified dividends (AMT) tax bracket 2",
         "description": "The gains and dividends, stacked last, of AMT taxable income below this threshold and above bracket 1 are taxed at AMT capital gain rate 2.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "AMT - Long Term Capital Gains And Qualified Dividends",
         "indexable": true,
@@ -11935,7 +11835,6 @@
     "AMT_CG_rt3": {
         "title": "Long term capital gain and qualified dividends (AMT) rate 3",
         "description": "The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 and below threshold 3 are taxed at this rate.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "AMT - Long Term Capital Gains And Qualified Dividends",
         "indexable": false,
@@ -11961,7 +11860,6 @@
     "AMT_CG_brk3": {
         "title": "Long term capital gain and qualified dividends (AMT) threshold 3",
         "description": "The gains and dividends, stacked last, of AMT taxable income below this and above bracket 2 are taxed at capital gain rate 3; above thisthey are taxed at AMT capital gain rate 4.  Default value is essentially infinity.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "AMT - Long Term Capital Gains And Qualified Dividends",
         "indexable": true,
@@ -12308,7 +12206,6 @@
     "AMT_CG_rt4": {
         "title": "Long term capital gain and qualified dividends (AMT) rate 4",
         "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "AMT - Long Term Capital Gains And Qualified Dividends",
         "indexable": false,
@@ -12334,7 +12231,6 @@
     "CG_nodiff": {
         "title": "Long term capital gains and qualified dividends taxed no differently than regular taxable income",
         "description": "Specifies whether or not long term capital gains and qualified dividends are taxed like regular taxable income.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Tax All Capital Gains And Dividends The Same As Regular Taxable Income",
         "indexable": false,
@@ -12360,7 +12256,6 @@
     "CG_ec": {
         "title": "Dollar amount of all capital gains and qualified dividends that are excluded from AGI.",
         "description": "Positive value used only if long term capital gains and qualified dividends taxed no differently than regular taxable income.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Tax All Capital Gains And Dividends The Same As Regular Taxable Income",
         "indexable": true,
@@ -12438,7 +12333,6 @@
     "CG_reinvest_ec_rt": {
         "title": "Fraction of all capital gains and qualified dividends in excess of the dollar exclusion that are excluded from AGI.",
         "description": "Positive value used only if long term capital gains and qualified dividends taxed no differently than regular taxable income.  To limit the exclusion to capital gains and dividends invested within one year, set to statutory exclusion rate times the fraction of capital gains and qualified dividends in excess of the exclusion that are assumed to be reinvested within the year.",
-        "notes": "",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Tax All Capital Gains And Dividends The Same As Regular Taxable Income",
         "indexable": false,
@@ -12464,7 +12358,6 @@
     "II_rt1": {
         "title": "Personal income (regular/non-AMT) tax rate 1",
         "description": "The lowest tax rate, applied to the portion of taxable income below tax bracket 1.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": false,
@@ -12530,7 +12423,6 @@
     "II_brk1": {
         "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 1",
         "description": "Taxable income below this threshold is taxed at tax rate 1.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": true,
@@ -12902,7 +12794,6 @@
     "II_rt2": {
         "title": "Personal income (regular/non-AMT) tax rate 2",
         "description": "The second lowest tax rate, applied to the portion of taxable income below tax bracket 2 and above tax bracket 1.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": false,
@@ -12968,7 +12859,6 @@
     "II_brk2": {
         "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 2",
         "description": "Income below this threshold and above tax bracket 1 is taxed at tax rate 2.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": true,
@@ -13340,7 +13230,6 @@
     "II_rt3": {
         "title": "Personal income (regular/non-AMT) tax rate 3",
         "description": "The third lowest tax rate, applied to the portion of taxable income below tax bracket 3 and above tax bracket 2.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": false,
@@ -13406,7 +13295,6 @@
     "II_brk3": {
         "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 3",
         "description": "Income below this threshold and above tax bracket 2 is taxed at tax rate 3.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": true,
@@ -13778,7 +13666,6 @@
     "II_rt4": {
         "title": "Personal income (regular/non-AMT) tax rate 4",
         "description": "The tax rate applied to the portion of taxable income below tax bracket 4 and above tax bracket 3.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": false,
@@ -13844,7 +13731,6 @@
     "II_brk4": {
         "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 4",
         "description": "Income below this threshold and above tax bracket 3 is taxed at tax rate 4.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": true,
@@ -14216,7 +14102,6 @@
     "II_rt5": {
         "title": "Personal income (regular/non-AMT) tax rate 5",
         "description": "The third highest tax rate, applied to the portion of taxable income below tax bracket 5 and above tax bracket 4.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": false,
@@ -14282,7 +14167,6 @@
     "II_brk5": {
         "title": "Personal income (regular/non-AMT) tax bracket (upper threshold) 5",
         "description": "Income below this threshold and above tax bracket 4 is taxed at tax rate 5.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": true,
@@ -14654,7 +14538,6 @@
     "II_rt6": {
         "title": "Personal income (regular/non-AMT) tax rate 6",
         "description": "The second higher tax rate, applied to the portion of taxable income below tax bracket 6 and above tax bracket 5.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": false,
@@ -14720,7 +14603,6 @@
     "II_brk6": {
         "title": "Personal income (regular/non-AMT) tax bracket 6",
         "description": "Income below this threshold and above tax bracket 5 is taxed at tax rate 6.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": true,
@@ -15092,7 +14974,6 @@
     "II_rt7": {
         "title": "Personal income (regular/non-AMT) tax rate 7",
         "description": "The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": false,
@@ -15158,7 +15039,6 @@
     "II_brk7": {
         "title": "Personal income (regular/non-AMT) tax bracket 7",
         "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": true,
@@ -15530,7 +15410,6 @@
     "II_rt8": {
         "title": "Personal income (regular/non-AMT) tax rate 8",
         "description": "The tax rate applied to the portion of taxable income above tax bracket 7.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT",
         "indexable": false,
@@ -15556,7 +15435,6 @@
     "PT_qbid_rt": {
         "title": "Pass-through qualified business income deduction rate",
         "description": "Fraction of pass-through business income that may be excluded from taxable income.  Applies to (e00900 + e26270).",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": false,
@@ -15610,7 +15488,6 @@
     "PT_qbid_limited": {
         "title": "Whether qualified business income deduction is limited",
         "description": "If true, various TCJA-like limitations are active, otherwise all those limitations (all PT_qbid_* parameters other than PT_qbid_rt) are inactive.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": false,
@@ -15636,7 +15513,6 @@
     "PT_qbid_taxinc_thd": {
         "title": "Lower threshold of pre-QBID taxable income",
         "description": "Pre-QBID taxable income above this lower threshold implies the QBID amount begins to be limited.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": true,
@@ -16008,7 +15884,6 @@
     "PT_qbid_taxinc_gap": {
         "title": "Dollar gap between upper and lower threshold of pre-QBID taxable income",
         "description": "Pre-QBID taxable income above this upper threshold implies the QBID amount is even more limited.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": true,
@@ -16280,7 +16155,6 @@
     "PT_qbid_w2_wages_rt": {
         "title": "QBID cap rate on pass-through business W-2 wages paid",
         "description": "QBID is capped at this fraction of W-2 wages paid by the pass-through business if pre-QBID taxable income is above the QBID thresholds.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": false,
@@ -16334,7 +16208,6 @@
     "PT_qbid_alt_w2_wages_rt": {
         "title": "Alternative QBID cap rate on pass-through business W-2 wages paid",
         "description": "QBID is capped at this fraction of W-2 wages paid by the pass-through business plus some fraction of business property if pre-QBID taxable income is above the QBID thresholds and the alternative cap is higher than the main wage-only cap.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": false,
@@ -16388,7 +16261,6 @@
     "PT_qbid_alt_property_rt": {
         "title": "Alternative QBID cap rate on pass-through business property owned",
         "description": "QBID is capped at this fraction of business property owned plus some fraction of W-2 wages paid by the pass-through business if pre-QBID taxable income is above the QBID thresholds and the alternative cap is higher than the main wage-only cap.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": false,
@@ -16442,7 +16314,6 @@
     "PT_qbid_ps": {
         "title": "QBID phaseout taxable income start",
         "description": "QBID begins to decrease when pre-QBID taxable income is above this level.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": true,
@@ -16814,7 +16685,6 @@
     "PT_qbid_prt": {
         "title": "QBID phaseout rate",
         "description": "QBID will decrease at this rate for each dollar of taxable income exceeding QBID phaseout start.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": false,
@@ -16864,7 +16734,6 @@
     "PT_qbid_min_ded": {
         "title": "Minimum QBID amount",
         "description": "QBID will be no less than this amount if qualified business income is not less than PT_qbid_min_qbi.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": true,
@@ -16894,7 +16763,6 @@
     "PT_qbid_min_qbi": {
         "title": "Minimum QBI amount required for receipt of PT_qbid_min_ded",
         "description": "QBID will be no less than this PT_qbid_min_ded if qualified business income is not less than this amount.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": true,
@@ -16924,7 +16792,6 @@
     "UI_em": {
         "title": "Unemployment Insurance exemption amount",
         "description": "The amount of Unemployment Insurance benefits excluded from taxable income.  Enacted retroactively for 2020 by the American Rescue Plan Act of 2021.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -16958,7 +16825,6 @@
     "UI_thd": {
         "title": "Unemployment Insurance exemption cutoff",
         "description": "Unemployment Insurance exemption is eliminated when AGI minus Unemployment Insurance goes beyond this threshold.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -17055,7 +16921,6 @@
     "AMT_em": {
         "title": "AMT exemption amount",
         "description": "The amount of AMT taxable income exempted from AMT.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "indexable": true,
@@ -17427,7 +17292,6 @@
     "AMT_prt": {
         "title": "AMT exemption phaseout rate",
         "description": "AMT exemption will decrease at this rate for each dollar of AMT taxable income exceeding AMT phaseout start.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "indexable": false,
@@ -17457,7 +17321,6 @@
     "AMT_em_ps": {
         "title": "AMT exemption phaseout start",
         "description": "AMT exemption starts to decrease when AMT taxable income goes beyond this threshold.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "indexable": true,
@@ -17829,7 +17692,6 @@
     "AMT_child_em": {
         "title": "Child AMT exemption additional income base",
         "description": "The child's AMT exemption is capped by this amount plus the child's earned income.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -17907,7 +17769,6 @@
     "AMT_child_em_c_age": {
         "title": "Age ceiling for special AMT exemption",
         "description": "Individuals under this age must use the child AMT exemption rules.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -17933,7 +17794,6 @@
     "AMT_rt1": {
         "title": "AMT rate 1",
         "description": "The tax rate applied to the portion of AMT taxable income below the surtax threshold, AMT bracket 1.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "indexable": false,
@@ -17959,7 +17819,6 @@
     "AMT_brk1": {
         "title": "AMT bracket 1 (upper threshold)",
         "description": "AMT taxable income below this is subject to AMT rate 1 and above it is subject to AMT rate 1 + the additional AMT rate.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "indexable": true,
@@ -18037,7 +17896,6 @@
     "AMT_rt2_addon": {
         "title": "Additional AMT rate for AMT taxable income above AMT bracket 1",
         "description": "The additional tax rate applied to the portion of AMT income above the AMT bracket 1, which means that AMT_rt2_addon equals AMT_rt2 minus AMT_rt1.  This is the additional tax rate (on top of AMT rate 1) for AMT income above AMT bracket 1.",
-        "notes": "",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "indexable": false,
@@ -18063,7 +17921,6 @@
     "AMT_em_pe": {
         "title": "AMT exemption phaseout ending AMT taxable income for Married filing Separately",
         "description": "The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -18141,7 +17998,6 @@
     "CDCC_c": {
         "title": "Maximum child & dependent care expenses per dependent",
         "description": "The maximum amount of expenses allowed for each qualifying dependent.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": true,
@@ -18179,7 +18035,6 @@
     "CDCC_ps1": {
         "title": "Child & dependent care credit first phaseout start",
         "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by CDCC_po_rate_per_step for each CDCC_po1_step_size of excess AGI.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": true,
@@ -18217,7 +18072,6 @@
     "CDCC_ps2": {
         "title": "Child & dependent care credit second phaseout start",
         "description": "For taxpayers with AGI over this amount, the rate of the credit is reduced by CDCC_po_rate_per_step for each CDCC_po2_step_size of excess AGI.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": true,
@@ -18364,7 +18218,6 @@
     "CDCC_po1_rate_max": {
         "title": "Child & dependent care credit maximum rate",
         "description": "The maximum rate for the CDCC; this rate decreases as AGI rises above the CDCC_ps1 and CDCC_ps2 levels.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -18402,7 +18255,6 @@
     "CDCC_po1_rate_min": {
         "title": "Child & dependent care credit first phaseout rate minimum",
         "description": "The minimum rate for the first AGI phaseout of the CDCC.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -18432,7 +18284,6 @@
     "CDCC_po2_rate_min": {
         "title": "Child & dependent care credit second phaseout rate minimum",
         "description": "The minimum rate for the second AGI phaseout of the CDCC.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -18462,7 +18313,6 @@
     "CDCC_po1_step_size": {
         "title": "Child & dependent care credit first phaseout step size",
         "description": "The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the first phase-out start threshold.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": true,
@@ -18492,7 +18342,6 @@
     "CDCC_po2_step_size": {
         "title": "Child & dependent care credit second phaseout step size",
         "description": "The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the second phase-out start threshold.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": true,
@@ -18639,7 +18488,6 @@
     "CDCC_po_rate_per_step": {
         "title": "Child & dependent care credit phaseout rate per step",
         "description": "The CDCC credit rate is reduced by this rate for for each step (including fractional steps) above the phase-out start thresholds.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -18669,7 +18517,6 @@
     "CDCC_refundable": {
         "title": "Child & dependent care credit refundable indicator",
         "description": "If true, the CDCC is fully refundable.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": false,
@@ -18707,7 +18554,6 @@
     "CTC_c": {
         "title": "Maximum nonrefundable child tax credit per child",
         "description": "The maximum nonrefundable credit allowed for each child.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Child Tax Credit",
         "indexable": true,
@@ -18785,7 +18631,6 @@
     "CTC_c_under6_bonus": {
         "title": "Bonus child tax credit maximum for qualifying children under six",
         "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 6 years old.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Child Tax Credit",
         "indexable": true,
@@ -18811,7 +18656,6 @@
     "CTC_include17": {
         "title": "Whether children of age 17 are eligible for the child tax credit",
         "description": "If true, children eligible for the child tax credit include those of age 17.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Child Tax Credit",
         "indexable": false,
@@ -18845,7 +18689,6 @@
     "CTC_is_refundable": {
         "title": "Whether the child tax credit is fully refundable",
         "description": "If true, the child tax credit is made fully refundable and the Additional Child Tax Credit is not used.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Child Tax Credit",
         "indexable": false,
@@ -18879,7 +18722,6 @@
     "ODC_is_refundable": {
         "title": "Whether the other dependents tax credit is fully refundable",
         "description": "If true, the other dependents tax credit is made fully refundable.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Other Dependent Tax Credit",
         "indexable": false,
@@ -18913,7 +18755,6 @@
     "CTC_ps": {
         "title": "Child tax credit phaseout MAGI start",
         "description": "Child tax credit begins to decrease when MAGI is above this level; read descriptions of the dependent credit amounts for how they phase out when MAGI is above this level.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Child Tax Credit",
         "indexable": true,
@@ -19210,7 +19051,6 @@
     "CTC_prt": {
         "title": "Child and dependent tax credit phaseout rate",
         "description": "The amount of the credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Child Tax Credit",
         "indexable": false,
@@ -19236,7 +19076,6 @@
     "ACTC_c": {
         "title": "Maximum refundable additional child tax credit",
         "description": "This refundable credit is applied to child dependents and phases out exactly like the CTC amount.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Additional Child Tax Credit",
         "indexable": true,
@@ -19314,7 +19153,6 @@
     "ODC_c": {
         "title": "Maximum nonrefundable other-dependent credit",
         "description": "This nonrefundable credit is applied to non-child dependents and phases out along with the CTC amount.  Became current-law policy with passage of TCJA.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Other Dependent Tax Credit",
         "indexable": true,
@@ -19368,7 +19206,6 @@
     "NIIT_thd": {
         "title": "Net Investment Income Tax modified AGI threshold",
         "description": "If modified AGI is more than this threshold, filing unit is subject to the Net Investment Income Tax.",
-        "notes": "",
         "section_1": "Other Taxes",
         "section_2": "Net Investment Income Tax",
         "indexable": true,
@@ -19415,7 +19252,6 @@
     "NIIT_PT_taxed": {
         "title": "Whether or not partnership and S-corp income is in NIIT base",
         "description": "false ==> partnership and S-corp income excluded from NIIT base; true ==> partnership and S-corp income is in NIIT base.",
-        "notes": "",
         "section_1": "Other Taxes",
         "section_2": "Net Investment Income Tax",
         "indexable": false,
@@ -19441,7 +19277,6 @@
     "NIIT_rt": {
         "title": "Net Investment Income Tax rate",
         "description": "If modified AGI exceeds NIIT_thd, all net investment income is taxed at this rate.",
-        "notes": "",
         "section_1": "Other Taxes",
         "section_2": "Net Investment Income Tax",
         "indexable": false,
@@ -19467,7 +19302,6 @@
     "EITC_c": {
         "title": "Maximum earned income credit",
         "description": "This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": true,
@@ -19769,7 +19603,6 @@
     "EITC_rt": {
         "title": "Earned income credit phasein rate",
         "description": "Pre-phaseout credit is minimum of this rate times earnings and the maximum earned income credit.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": false,
@@ -19871,7 +19704,6 @@
     "EITC_basic_frac": {
         "title": "Fraction of maximum earned income credit paid at zero earnings",
         "description": "This fraction of EITC_c is always paid as a credit and one minus this fraction is applied to the phasein rate, EITC_rt.  This fraction is zero under current law.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": false,
@@ -19933,7 +19765,6 @@
     "EITC_prt": {
         "title": "Earned income credit phaseout rate",
         "description": "Earned income credit begins to decrease at the this rate when AGI is higher than earned income credit phaseout start AGI.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": false,
@@ -20015,7 +19846,6 @@
     "EITC_ps": {
         "title": "Earned income credit phaseout start AGI",
         "description": "If AGI is higher than this threshold, the amount of EITC will start to decrease at the phaseout rate.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": true,
@@ -20317,7 +20147,6 @@
     "EITC_ps_addon_MarriedJ": {
         "title": "Extra earned income credit phaseout start AGI for married filling jointly",
         "description": "This is the additional amount added on the regular phaseout start amount for taxpayers with filling status of married filing jointly, which means that EITC_ps_addon_MarriedJ equals EITC_ps_MarriedJ minus EITC_ps.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": true,
@@ -20619,7 +20448,6 @@
     "EITC_MinEligAge": {
         "title": "Minimum Age for Childless EITC Eligibility",
         "description": "For a childless filing unit, at least one individual's age needs to be no less than this age (but no greater than the EITC_MaxEligAge) in order to be eligible for an earned income tax credit.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": false,
@@ -20653,7 +20481,6 @@
     "EITC_MaxEligAge": {
         "title": "Maximum Age for Childless EITC Eligibility",
         "description": "For a childless filing unit, at least one individual's age needs to be no greater than this age (but no less than the EITC_MinEligAge) in order to be eligible for an earned income tax credit.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": false,
@@ -20691,7 +20518,6 @@
     "EITC_InvestIncome_c": {
         "title": "Maximum investment income before EITC reduction",
         "description": "The EITC amount is reduced when investment income exceeds this ceiling.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": true,
@@ -20769,7 +20595,6 @@
     "EITC_excess_InvestIncome_rt": {
         "title": "Rate of EITC reduction when investment income exceeds ceiling",
         "description": "The EITC amount is reduced at this rate per dollar of investment income exceeding the ceiling.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": false,
@@ -20795,7 +20620,6 @@
     "EITC_indiv": {
         "title": "EITC is computed for each spouse based on individual earnings",
         "description": "Current-law value is false implying EITC is filing-unit based; a value of true implies EITC is computed for each individual wage earner.  The additional phaseout start for joint filers is not affected by this parameter, nor are investment income and age eligibilty rules.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": false,
@@ -20821,7 +20645,6 @@
     "EITC_sep_filers_elig": {
         "title": "Separate filers are eligibile for the EITC",
         "description": "Current-law value is false, implying ineligibility.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "indexable": false,
@@ -20851,7 +20674,6 @@
     "RPTC_c": {
         "title": "Maximum refundable payroll tax credit",
         "description": "This is the maximum amount of the refundable payroll tax credit for each taxpayer/spouse.  Positive values of RPTC_c and RPTC_rt can be used to emulate a payroll tax exemption, the implied value of which is RPTC_c divided by RPTC_rt.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Refundable Payroll Tax Credit",
         "indexable": true,
@@ -20929,7 +20751,6 @@
     "RPTC_rt": {
         "title": "Refundable payroll tax credit phasein rate",
         "description": "Pre-phaseout credit is minimum of this rate times earnings and the maximum refundable payroll tax credit, where earnings is defined as in FICA and SECA.  Positive values of RPTC_c and RPTC_rt can be used to emulate a payroll tax exemption, the implied value of which is RPTC_c divided by RPTC_rt.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "Refundable Payroll Tax Credit",
         "indexable": false,
@@ -20955,7 +20776,6 @@
     "LLC_Expense_c": {
         "title": "Lifetime learning credit expense limit",
         "description": "The maximum expense eligible for lifetime learning credit, per child.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -20981,7 +20801,6 @@
     "ETC_pe_Single": {
         "title": "Education tax credit phaseout ends (single and other non-joint)",
         "description": "The education tax credit will be zero for those taxpayers of non-joint filing status with modified AGI (in thousands) higher than this level.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -21043,7 +20862,6 @@
     "ETC_pe_Married": {
         "title": "Education tax credit phaseout ends (joint)",
         "description": "The education tax credit will be zero for those taxpayers of married filing joint status with modified AGI level (in thousands) higher than this level.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -21105,7 +20923,6 @@
     "ACTC_rt": {
         "title": "Additional Child Tax Credit rate",
         "description": "This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Additional Child Tax Credit",
         "indexable": false,
@@ -21131,7 +20948,6 @@
     "ACTC_rt_bonus_under6family": {
         "title": "Bonus additional child tax credit rate for families with qualifying children under 6",
         "description": "For families with qualifying children under 6 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Additional Child Tax Credit",
         "indexable": false,
@@ -21157,7 +20973,6 @@
     "ACTC_Income_thd": {
         "title": "Additional Child Tax Credit income threshold",
         "description": "The portion of earned income below this threshold does not count as base for the Additional Child Tax Credit.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Additional Child Tax Credit",
         "indexable": true,
@@ -21223,7 +21038,6 @@
     "ACTC_ChildNum": {
         "title": "Additional Child Tax Credit minimum number of qualified children for different formula",
         "description": "Families with this number of qualified children or more may qualify for a different formula to calculate the Additional Child Tax Credit, which is a partially refundable credit that supplements the Child Tax Credit for some taxpayers.",
-        "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Additional Child Tax Credit",
         "indexable": false,
@@ -21249,7 +21063,6 @@
     "CTC_new_c": {
         "title": "New refundable child tax credit maximum amount per child",
         "description": "In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit with this maximum amount.  Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "indexable": true,
@@ -21283,7 +21096,6 @@
     "CTC_new_c_under6_bonus": {
         "title": "Bonus new refundable child tax credit maximum for qualifying children under six",
         "description": "The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 6 years old.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "indexable": true,
@@ -21317,7 +21129,6 @@
     "CTC_new_for_all": {
         "title": "Whether or not maximum amount of the new refundable child tax credit is available to all",
         "description": "The maximum amount of the new refundable child tax credit does not depend on AGI when true; otherwise, see CTC_new_rt.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "indexable": false,
@@ -21351,7 +21162,6 @@
     "CTC_new_rt": {
         "title": "New refundable child tax credit amount phasein rate",
         "description": "The maximum amount of the new child tax credit is increased at this rate per dollar of positive AGI until CTC_new_c times the number of qualified children is reached if CTC_new_for_all is false; if CTC_new_for_all is true, there is no AGI limitation to the maximum amount.  Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "indexable": false,
@@ -21377,7 +21187,6 @@
     "CTC_new_ps": {
         "title": "New refundable child tax credit phaseout starting AGI",
         "description": "The total amount of new child tax credit is reduced for taxpayers with AGI higher than this level.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "indexable": true,
@@ -21749,7 +21558,6 @@
     "CTC_new_prt": {
         "title": "New refundable child tax credit amount phaseout rate",
         "description": "The total amount of the new child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI, CTC_new_ps.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "indexable": false,
@@ -21783,7 +21591,6 @@
     "CTC_new_refund_limited": {
         "title": "New child tax credit refund limited to a decimal fraction of payroll taxes",
         "description": "Specifies whether the new child tax credit refund is limited by the new child tax credit refund limit rate (_CTC_new_refund_limit_payroll_rt).  Set this parameter to true to limit the refundability or false to allow full refundability for all taxpayers.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "indexable": false,
@@ -21809,7 +21616,6 @@
     "CTC_new_refund_limit_payroll_rt": {
         "title": "New child tax credit refund limit rate (decimal fraction of payroll taxes)",
         "description": "The fraction of payroll taxes (employee plus employer shares, but excluding all HI payroll taxes) that serves as a limit to the amount of new child tax credit that can be refunded.  Set this parameter to zero for no refundability; set it to 9e99 for unlimited refundability for taxpayers with payroll tax liabilities.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "indexable": false,
@@ -21835,7 +21641,6 @@
     "CTC_new_refund_limited_all_payroll": {
         "title": "New child tax credit refund limit applies to all FICA taxes, not just OASDI",
         "description": "Specifies whether the new child tax credit refund limit rate (CTC_new_refund_limit_payroll_rt) applies to all FICA taxes (true) or to just OASDI FICA taxes (false).  If the new CTC is limited, set this parameter to true to limit the refundability to all (OASDI+HI) FICA taxes or false to limit refundabiity to just OASDI FICA taxes.",
-        "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "indexable": false,
@@ -21861,7 +21666,6 @@
     "FST_AGI_trt": {
         "title": "New minimum tax; rate as a decimal fraction of AGI",
         "description": "Individual income taxes and the employee share of payroll taxes are credited against this minimum tax, so the surtax is the difference between the tax rate times AGI and the credited taxes. The new minimum tax is similar to the Fair Share Tax, except that no credits are exempted from the base.",
-        "notes": "",
         "section_1": "Surtaxes",
         "section_2": "New Minimum Tax",
         "indexable": false,
@@ -21887,7 +21691,6 @@
     "FST_AGI_thd_lo": {
         "title": "Minimum AGI needed to be subject to the new minimum tax",
         "description": "A taxpayer is only subject to the new minimum tax if they exceed this level of AGI.",
-        "notes": "",
         "section_1": "Surtaxes",
         "section_2": "New Minimum Tax",
         "indexable": true,
@@ -21934,7 +21737,6 @@
     "FST_AGI_thd_hi": {
         "title": "AGI level at which the New Minimum Tax is fully phased in",
         "description": "The new minimum tax will be fully phased in at this level of AGI. If there is no phase-in, this upper threshold should be set equal to the lower AGI threshold.",
-        "notes": "",
         "section_1": "Surtaxes",
         "section_2": "New Minimum Tax",
         "indexable": true,
@@ -21981,7 +21783,6 @@
     "AGI_surtax_trt": {
         "title": "New AGI surtax rate",
         "description": "The surtax rate is applied to the portion of Adjusted Gross Income above the AGI surtax threshold.",
-        "notes": "",
         "section_1": "Surtaxes",
         "section_2": "New AGI Surtax",
         "indexable": false,
@@ -22007,7 +21808,6 @@
     "AGI_surtax_thd": {
         "title": "Threshold for the new AGI surtax",
         "description": "The aggregate gross income above this AGI surtax threshold is taxed at surtax rate on AGI.",
-        "notes": "",
         "section_1": "Surtaxes",
         "section_2": "New AGI Surtax",
         "indexable": true,
@@ -22379,7 +22179,6 @@
     "LST": {
         "title": "Dollar amount of lump-sum tax",
         "description": "The lump-sum tax is levied on every member of a tax filing unit. The lump-sum tax is included only in combined taxes; it is not included in income or payroll taxes.",
-        "notes": "",
         "section_1": "Surtaxes",
         "section_2": "Lump-Sum Tax",
         "indexable": false,
@@ -22405,7 +22204,6 @@
     "UBI_u18": {
         "title": "UBI benefit for those under 18",
         "description": "UBI benefit provided to people under 18.",
-        "notes": "",
         "section_1": "Universal Basic Income",
         "section_2": "UBI Benefits",
         "indexable": true,
@@ -22483,7 +22281,6 @@
     "UBI_1820": {
         "title": "UBI benefit for those 18 through 20",
         "description": "UBI benefit provided to people 18-20 years of age.",
-        "notes": "",
         "section_1": "Universal Basic Income",
         "section_2": "UBI Benefits",
         "indexable": true,
@@ -22561,7 +22358,6 @@
     "UBI_21": {
         "title": "UBI benefit for those 21 and over",
         "description": "UBI benefit provided to people 21 and over.",
-        "notes": "",
         "section_1": "Universal Basic Income",
         "section_2": "UBI Benefits",
         "indexable": true,
@@ -22639,7 +22435,6 @@
     "UBI_ecrt": {
         "title": "Fraction of UBI benefits excluded from AGI",
         "description": "One minus this fraction of UBI benefits are taxable and will be added to AGI.",
-        "notes": "",
         "section_1": "Universal Basic Income",
         "section_2": "UBI Taxability",
         "indexable": false,
@@ -22665,7 +22460,6 @@
     "CR_RetirementSavings_hc": {
         "title": "Credit for retirement savings haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the retirement savings credit that can be claimed.  Credit claimed will be (1-Haircut)*RetirementSavingsCredit.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "indexable": false,
@@ -22691,7 +22485,6 @@
     "CR_ForeignTax_hc": {
         "title": "Credit for foreign tax haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the foreign tax credit that can be claimed.  Credit claimed will be (1-Haircut)*ForeignTaxCredit.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "indexable": false,
@@ -22717,7 +22510,6 @@
     "CR_ResidentialEnergy_hc": {
         "title": "Credit for residential energy haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the residential energy credit that can be claimed.  Credit claimed will be (1-Haircut)*ResidentialEnergyCredit.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "indexable": false,
@@ -22743,7 +22535,6 @@
     "CR_GeneralBusiness_hc": {
         "title": "Credit for general business haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the general business credit that can be claimed.  Credit claimed will be (1-Haircut)*GeneralBusinessCredit.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "indexable": false,
@@ -22769,7 +22560,6 @@
     "CR_MinimumTax_hc": {
         "title": "Credit for previous year minimum tax credit haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the previous year minimum tax credit that can be claimed.  Credit claimed will be (1-Haircut)*PreviousYearMinimumTaxCredit.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "indexable": false,
@@ -22795,7 +22585,6 @@
     "CR_AmOppRefundable_hc": {
         "title": "Refundable portion of the American Opportunity Credit haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the refundable American Opportunity credit that can be claimed.  Credit claimed will be (1-Haircut)*RefundablePortionOfAmericanOpportunityCredit.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "indexable": false,
@@ -22821,7 +22610,6 @@
     "CR_AmOppNonRefundable_hc": {
         "title": "Nonrefundable portion of the American Opportunity Credit haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of the nonrefundable American Opportunity credit that can be claimed.  Credit claimed will be (1-Haircut)*NonRefundablePortionOfAmericanOpportunityCredit.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "indexable": false,
@@ -22847,7 +22635,6 @@
     "CR_SchR_hc": {
         "title": "Schedule R Credit haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of Schedule R credit that can be claimed.  Credit claimed will be (1-Haircut)*ScheduleRCredit.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "indexable": false,
@@ -22873,7 +22660,6 @@
     "CR_OtherCredits_hc": {
         "title": "Other Credits haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of other credit that can be claimed.  Credit claimed will be (1-Haircut)*OtherCredits.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "indexable": false,
@@ -22899,7 +22685,6 @@
     "CR_Education_hc": {
         "title": "Education Credits haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of education credits that can be claimed.  Credit claimed will be (1-Haircut)*EducationCredits.",
-        "notes": "",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "indexable": false,
@@ -22925,7 +22710,6 @@
     "CR_Charity_rt": {
         "title": "Charity Credit rate",
         "description": "If greater than zero, this decimal fraction represents the portion of total charitable contributions provided as a nonrefundable tax credit.  Credit claimed will be rt*(e19800+e20100).",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -22951,7 +22735,6 @@
     "CR_Charity_f": {
         "title": "Charity Credit Floor",
         "description": "Only charitable giving in excess of this dollar amount is eligible for the charity credit.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -22998,7 +22781,6 @@
     "CR_Charity_frt": {
         "title": "Charity Credit Floor Rate",
         "description": "Only charitable giving in excess of this decimal fraction of AGI is eligible for the charity credit.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -23024,7 +22806,6 @@
     "SeniorDed_c": {
         "title": "Senior deduction amount per elderly head/spouse",
         "description": "Senior deduction is capped at this level per elderly head/spouse.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -23058,7 +22839,6 @@
     "SeniorDed_ps": {
         "title": "Senior deduction phase-out start AGI level",
         "description": "Senior deduction is phased-out if AGI exceeds this amount.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -23105,7 +22885,6 @@
     "SeniorDed_prt": {
         "title": "Senior deduction phase-out rate",
         "description": "Senior deduction is phased-out at this rate on AGI exceeding SeniorDed_ps.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -23131,7 +22910,6 @@
     "AutoLoanInterestDed_c": {
         "title": "Maximum amount of auto loan interest that is deductible",
         "description": "Auto loan interest in excess of this amount may not be deducted from AGI.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -23169,7 +22947,6 @@
     "AutoLoanInterestDed_ps": {
         "title": "Auto loan interest deduction phase-out start AGI",
         "description": "Auto loan interest deduction is phased-out if AGI exceeds this amount.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -23216,7 +22993,6 @@
     "AutoLoanInterestDed_po_step_size": {
         "title": "Auto loan interest deduction phase-out AGI step size",
         "description": "Auto loan interest deduction is phased-out in AGI steps of this size.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -23242,7 +23018,6 @@
     "AutoLoanInterestDed_po_rate_per_step": {
         "title": "Auto loan interest deduction phase-out rate per phase-out step",
         "description": "Auto loan interest deduction is phased-out at this rate for each AGI step.",
-        "notes": "",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -23268,7 +23043,6 @@
     "ALD_OvertimeIncome_hc": {
         "title": "Overtime income ALD haircut",
         "description": "Overtime income ALD is subject to this haircut.  Final ALD amount is multiplied by (1-ALD_OvertimeIncome_hc).",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Exclusions",
         "indexable": false,
@@ -23306,7 +23080,6 @@
     "ALD_OvertimeIncome_c": {
         "title": "Overtime ALD cap",
         "description": "Overtime ALD is capped at this level.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Exclusions",
         "indexable": true,
@@ -23353,7 +23126,6 @@
     "ALD_OvertimeIncome_ps": {
         "title": "Overtime ALD phase-out start earned income level",
         "description": "Overtime ALD is phased-out if earned income exceeds this amount.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Exclusions",
         "indexable": true,
@@ -23400,7 +23172,6 @@
     "ALD_OvertimeIncome_prt": {
         "title": "Overtime ALD phase-out rate",
         "description": "Overtime ALD is phased-out at this rate on earned income exceeding ALD_OvertimeIncome_ps.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Exclusions",
         "indexable": false,
@@ -23426,7 +23197,6 @@
     "ALD_TipIncome_hc": {
         "title": "Tip income ALD haircut",
         "description": "Tip income ALD is subject to this haircut.  Final ALD amount is multiplied by (1-ALD_TipIncome_hc).",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Exclusions",
         "indexable": false,
@@ -23464,7 +23234,6 @@
     "ALD_TipIncome_c": {
         "title": "Tip ALD cap",
         "description": "Tip ALD is capped at this level.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Exclusions",
         "indexable": true,
@@ -23511,7 +23280,6 @@
     "ALD_TipIncome_ps": {
         "title": "Tip ALD phase-out start earned income level",
         "description": "Tip ALD is phased-out if earned income exceeds this amount.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Exclusions",
         "indexable": true,
@@ -23558,7 +23326,6 @@
     "ALD_TipIncome_prt": {
         "title": "Tip ALD phase-out rate",
         "description": "Tip ALD is phased-out at this rate on earned income exceeding ALD_TipIncome_ps.",
-        "notes": "",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Exclusions",
         "indexable": false,
@@ -23584,7 +23351,6 @@
     "BEN_ssi_repeal": {
         "title": "SSI benefit repeal switch",
         "description": "SSI benefits can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
@@ -23610,7 +23376,6 @@
     "BEN_housing_repeal": {
         "title": "Housing benefit repeal switch",
         "description": "Housing benefits can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
@@ -23636,7 +23401,6 @@
     "BEN_snap_repeal": {
         "title": "SNAP benefit repeal switch",
         "description": "SNAP benefits can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
@@ -23662,7 +23426,6 @@
     "BEN_tanf_repeal": {
         "title": "TANF benefit repeal switch",
         "description": "TANF benefits can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
@@ -23688,7 +23451,6 @@
     "BEN_vet_repeal": {
         "title": "Veterans benefit repeal switch",
         "description": "Veterans benefits can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
@@ -23714,7 +23476,6 @@
     "BEN_wic_repeal": {
         "title": "WIC benefit repeal switch",
         "description": "WIC benefits can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
@@ -23740,7 +23501,6 @@
     "BEN_mcare_repeal": {
         "title": "Medicare benefit repeal switch",
         "description": "Medicare benefits can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
@@ -23766,7 +23526,6 @@
     "BEN_mcaid_repeal": {
         "title": "Medicaid benefit repeal switch",
         "description": "Medicaid benefits can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
@@ -23792,7 +23551,6 @@
     "BEN_oasdi_repeal": {
         "title": "Social Security benefit repeal switch",
         "description": "Social Security benefits (e02400) can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
@@ -23818,7 +23576,6 @@
     "BEN_ui_repeal": {
         "title": "Unemployment insurance benefit repeal switch",
         "description": "Unemployment insurance benefits (e02300) can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
@@ -23844,7 +23601,6 @@
     "BEN_other_repeal": {
         "title": "Other benefit repeal switch",
         "description": "Other benefits can be repealed by switching this parameter to true.",
-        "notes": "",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "indexable": false,
