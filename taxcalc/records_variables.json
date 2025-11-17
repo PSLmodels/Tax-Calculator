@@ -763,11 +763,6 @@
       "desc": "Total refundable income tax credits",
       "form": {"2013-20??": "calculated variable"}
     },
-    "sep": {
-      "type": "int",
-      "desc": "2 when MARS is 3 (married filing separately); otherwise 1",
-      "form": {"2013-2016": "1040 lines 1-5"}
-    },
     "sey": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
