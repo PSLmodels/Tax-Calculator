@@ -1863,7 +1863,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
 
 @iterate_jit(nopython=True)
 def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
-        c04470, c17000, c20800, c21040, e24515, MARS, sep, dwks19,
+        c04470, c17000, c20800, c21040, e24515, MARS, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
         earned, cmbtp, qbided,
         AMT_child_em_c_age, AMT_brk1,
@@ -1908,8 +1908,6 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
-    sep: int
-        2 when MARS is 3 (married filing separately), otherwise 1
     dwks19: float
         Maximum of 0 and dwks1 - dwks13
     dwks14: float
@@ -1934,7 +1932,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         Qualified business income deduction
     AMT_child_em_c_age: float
         Age ceiling for special AMT exemption
-    AMT_brk1: float
+    AMT_brk1: list
         AMT bracket 1 (upper threshold)
     AMT_em: list
         AMT exemption amount
@@ -2007,7 +2005,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     # line30 is AMT taxable income less AMT exemption amount
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
-                AMT_rt2_addon * max(0., (line30 - (AMT_brk1 / sep))))
+                AMT_rt2_addon * max(0., (line30 - AMT_brk1[MARS - 1])))
     if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
         # complete Form 6251, Part III (line36 is equal to line30)
         line37 = dwks13
@@ -2016,7 +2014,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         line40 = min(line30, line39)
         line41 = max(0., line30 - line40)
         line42 = (AMT_rt1 * line41 +
-                  AMT_rt2_addon * max(0., (line41 - (AMT_brk1 / sep))))
+                  AMT_rt2_addon * max(0., (line41 - AMT_brk1[MARS - 1])))
         line44 = dwks14
         line45 = max(0., AMT_CG_brk1[MARS - 1] - line44)
         line46 = min(line30, line37)

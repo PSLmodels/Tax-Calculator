@@ -374,7 +374,7 @@
   "39": {
       "baseline": "2017_law.json",
       "start_year": 2015,
-      "value": {"AMT_brk1": 195400},
+      "value": {"AMT_brk1": [195400, 195400, 97700, 195400, 195400]},
       "name": "Increase AMT surtax threshold by $10,000",
       "output_type": "iitax",
       "compare_with": {}
