@@ -638,9 +638,7 @@ def test_section_titles(tests_path):
         },
         "Personal Exemptions": {
             "Personal And Dependent Exemption Amount": 0,
-            "Personal Exemption Phaseout Start": 0,
-            "Personal Exemption Phaseout Step Size": 0,
-            "Personal Exemption Phaseout Rate": 0,
+            "Personal Exemption Phaseout": 0,
             "Repeal for Dependents Under Age 18": 0
         },
         "Standard Deduction": {
