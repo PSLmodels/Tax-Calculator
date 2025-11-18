@@ -5,6 +5,31 @@ Go
 for a complete commit history.
 
 
+2025-11-19 Release 6.2.1
+------------------------
+(last merged pull request is
+[#2978](https://github.com/PSLmodels/Tax-Calculator/pull/2978))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Remove use of internally-generated `sep` variable
+  [[#2978](https://github.com/PSLmodels/Tax-Calculator/pull/2978) by
+  Martin Holmer]
+- Fix "description" of four FICA tax rate parameters in
+  `policy_current_law.json`
+  [[#2975](https://github.com/PSLmodels/Tax-Calculator/pull/2975) by
+  Martin Holmer]
+- Move "notes" into "description" field in `policy_current_law.json` and
+  remove "notes" field
+  [[#2974](https://github.com/PSLmodels/Tax-Calculator/pull/2974) by
+  Martin Holmer]
+
+**Bug Fixes**
+
+
 2025-10-29 Release 6.2.0
 ------------------------
 (last merged pull request is
