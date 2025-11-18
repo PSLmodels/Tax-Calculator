@@ -80,9 +80,9 @@ def fixture_reformfile1():
     """
     contents = """
     {"policy": {
-        "AMT_brk1": { // top of first AMT tax bracket
-          "2015": 200000,
-          "2017": 300000},
+        "AMT_brk1": { // top of first AMT tax bracket by MARS
+          "2015": [200000, 200000, 100000, 200000, 200000],
+          "2017": [300000, 300000, 150000, 300000, 300000]},
         "EITC_c": { // max EITC amount by number of qualifying kids (0,1,2,3+)
           "2016": [ 900, 5000,  8000,  9000],
           "2019": [1200, 7000, 10000, 12000]},
@@ -122,7 +122,7 @@ def fixture_baselinebad():
     """
     Temporary baseline file with .json extension.
     """
-    contents = '{ "policy": {"AMT_brk1": {"2011": 0.0}}}'
+    contents = '{ "policy": {"CTC_c": {"2011": 0.0}}}'
     with tempfile.NamedTemporaryFile(
             suffix='.json', mode='a', delete=False
     ) as rfile:
@@ -353,9 +353,9 @@ def test_ctor_init_with_cps_files():
     surtax
     """, True, 6),  # these 6 variables minus MARS plus RECID
 
-    ('ALL', True, 209),
-    # 209 =
-    # all 212 vars in records_variables.json (see test_records.py)
+    ('ALL', True, 208),
+    # 208 =
+    # all 211 vars in records_variables.json (see test_records.py)
     # minus 5 TaxCalcIO.BASE_DUMPVARS omitting RECID (see taxcalcio.py)
     # plus 2 TaxCalcIO.MTR_DUMPVARS (see taxcalcio.py)
 

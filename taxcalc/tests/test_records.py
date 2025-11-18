@@ -221,7 +221,7 @@ def test_for_duplicate_names():
         assert varname not in varnames
         varnames.add(varname)
         assert varname in records_varinfo.USABLE_READ_VARS
-    assert num_vars == 212  # number of vars in records_variables.json
+    assert num_vars == 211  # number of vars in records_variables.json
 
 
 def test_records_variables_content(tests_path):

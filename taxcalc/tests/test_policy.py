@@ -112,9 +112,9 @@ REFORM_JSON = """
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
-    "AMT_brk1": // top of first AMT tax bracket
-    {"2015": 200000,
-     "2017": 300000
+    "AMT_brk1": // top of first AMT tax bracket by MARS
+    {"2015": [200000, 200000, 100000, 200000, 200000],
+     "2017": [300000, 300000, 150000, 300000, 300000]
     },
     "EITC_c": // maximum EITC amount by number of qualifying kids (0,1,2,3+)
     {"2016": [ 900, 5000,  8000,  9000],
@@ -157,10 +157,10 @@ def test_read_json_reform_file_and_implement_reform(set_year):
     pol.implement_reform(Policy.read_json_reform(REFORM_JSON))
     syr = pol.start_year
     amt_brk1 = pol._AMT_brk1
-    assert amt_brk1[2015 - syr] == 200000
-    assert amt_brk1[2016 - syr] > 200000
-    assert amt_brk1[2017 - syr] == 300000
-    assert amt_brk1[2018 - syr] > 300000
+    assert amt_brk1[2015 - syr][0] == 200000
+    assert amt_brk1[2016 - syr][0] > 200000
+    assert amt_brk1[2017 - syr][0] == 300000
+    assert amt_brk1[2018 - syr][0] > 300000
     ii_em = pol._II_em
     assert ii_em[2016 - syr] == 6000
     assert ii_em[2017 - syr] == 6000
@@ -444,9 +444,9 @@ def test_read_json_reform_and_implement_reform(set_year):
     // Boolean variables are specified as true or false with no quotes and all
     // lowercase characters.
     {
-        "AMT_brk1": // top of first AMT tax bracket
-        {"2015": 200000,
-         "2017": 300000
+        "AMT_brk1": // top of first AMT tax bracket by MARS
+        {"2015": [200000, 200000, 100000, 200000, 200000],
+         "2017": [300000, 300000, 150000, 300000, 300000]
         },
         "EITC_c": // max EITC amount by number of qualifying kids (0,1,2,3+)
         {"2016": [ 900, 5000,  8000,  9000],
@@ -479,10 +479,10 @@ def test_read_json_reform_and_implement_reform(set_year):
     policy.implement_reform(reform_dict)
     syr = policy.start_year
     amt_brk1 = policy._AMT_brk1
-    assert amt_brk1[2015 - syr] == 200000
-    assert amt_brk1[2016 - syr] > 200000
-    assert amt_brk1[2017 - syr] == 300000
-    assert amt_brk1[2018 - syr] > 300000
+    assert amt_brk1[2015 - syr][0] == 200000
+    assert amt_brk1[2016 - syr][0] > 200000
+    assert amt_brk1[2017 - syr][0] == 300000
+    assert amt_brk1[2018 - syr][0] > 300000
     ii_em = policy._II_em
     assert ii_em[2016 - syr] == 6000
     assert ii_em[2017 - syr] == 6000
@@ -638,8 +638,7 @@ def test_section_titles(tests_path):
         },
         "Personal Exemptions": {
             "Personal And Dependent Exemption Amount": 0,
-            # "Personal Exemption Phaseout Starting Income": 0,
-            "Personal Exemption Phaseout Rate": 0,
+            "Personal Exemption Phaseout": 0,
             "Repeal for Dependents Under Age 18": 0
         },
         "Standard Deduction": {

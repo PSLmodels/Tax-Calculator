@@ -1706,8 +1706,8 @@
     "II_em_ps": {
         "title": "Personal exemption phaseout starting income",
         "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Personal Exemptions",
+        "section_2": "Personal Exemption Phaseout",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -2074,11 +2074,57 @@
             "cps": true
         }
     },
+    "II_em_po_step_size": {
+        "title": "Personal exemption phaseout step size",
+        "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease for each step AGI exceeds II_em_ps.",
+        "section_1": "Personal Exemptions",
+        "section_2": "Personal Exemption Phaseout",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 2500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 2500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 1250.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 2500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 2500.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "II_em_prt": {
         "title": "Personal exemption phaseout rate",
-        "description": "Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.",
+        "description": "Personal exemption amount will decrease by this rate for each step by which AGI exceeds exemption phaseout start.",
         "section_1": "Personal Exemptions",
-        "section_2": "Personal Exemption Phaseout Rate",
+        "section_2": "Personal Exemption Phaseout",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -17827,58 +17873,352 @@
         "value": [
             {
                 "year": 2013,
+                "MARS": "single",
+                "value": 179500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 179500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 89750.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 179500.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
                 "value": 179500.0
             },
             {
                 "year": 2014,
+                "MARS": "single",
+                "value": 182500.0
+            },
+            {
+                "year": 2014,
+                "MARS": "mjoint",
+                "value": 182500.0
+            },
+            {
+                "year": 2014,
+                "MARS": "mseparate",
+                "value": 91250.0
+            },
+            {
+                "year": 2014,
+                "MARS": "headhh",
+                "value": 182500.0
+            },
+            {
+                "year": 2014,
+                "MARS": "widow",
                 "value": 182500.0
             },
             {
                 "year": 2015,
+                "MARS": "single",
+                "value": 185400.0
+            },
+            {
+                "year": 2015,
+                "MARS": "mjoint",
+                "value": 185400.0
+            },
+            {
+                "year": 2015,
+                "MARS": "mseparate",
+                "value": 92700.0
+            },
+            {
+                "year": 2015,
+                "MARS": "headhh",
+                "value": 185400.0
+            },
+            {
+                "year": 2015,
+                "MARS": "widow",
                 "value": 185400.0
             },
             {
                 "year": 2016,
+                "MARS": "single",
+                "value": 186300.0
+            },
+            {
+                "year": 2016,
+                "MARS": "mjoint",
+                "value": 186300.0
+            },
+            {
+                "year": 2016,
+                "MARS": "mseparate",
+                "value": 93150.0
+            },
+            {
+                "year": 2016,
+                "MARS": "headhh",
+                "value": 186300.0
+            },
+            {
+                "year": 2016,
+                "MARS": "widow",
                 "value": 186300.0
             },
             {
                 "year": 2017,
+                "MARS": "single",
+                "value": 187800.0
+            },
+            {
+                "year": 2017,
+                "MARS": "mjoint",
+                "value": 187800.0
+            },
+            {
+                "year": 2017,
+                "MARS": "mseparate",
+                "value": 93900.0
+            },
+            {
+                "year": 2017,
+                "MARS": "headhh",
+                "value": 187800.0
+            },
+            {
+                "year": 2017,
+                "MARS": "widow",
                 "value": 187800.0
             },
             {
                 "year": 2018,
+                "MARS": "single",
+                "value": 191100.0
+            },
+            {
+                "year": 2018,
+                "MARS": "mjoint",
+                "value": 191100.0
+            },
+            {
+                "year": 2018,
+                "MARS": "mseparate",
+                "value": 95550.0
+            },
+            {
+                "year": 2018,
+                "MARS": "headhh",
+                "value": 191100.0
+            },
+            {
+                "year": 2018,
+                "MARS": "widow",
                 "value": 191100.0
             },
             {
                 "year": 2019,
+                "MARS": "single",
+                "value": 194800.0
+            },
+            {
+                "year": 2019,
+                "MARS": "mjoint",
+                "value": 194800.0
+            },
+            {
+                "year": 2019,
+                "MARS": "mseparate",
+                "value": 97400.0
+            },
+            {
+                "year": 2019,
+                "MARS": "headhh",
+                "value": 194800.0
+            },
+            {
+                "year": 2019,
+                "MARS": "widow",
                 "value": 194800.0
             },
             {
                 "year": 2020,
+                "MARS": "single",
+                "value": 197900.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 197900.0
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 98950.0
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 197900.0
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
                 "value": 197900.0
             },
             {
                 "year": 2021,
+                "MARS": "single",
+                "value": 199900.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 199900.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 99950.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 199900.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
                 "value": 199900.0
             },
             {
                 "year": 2022,
+                "MARS": "single",
+                "value": 206100.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 206100.0
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 103050.0
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 206100.0
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
                 "value": 206100.0
             },
             {
                 "year": 2023,
+                "MARS": "single",
+                "value": 220700.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 220700.0
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 110350.0
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 220700.0
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
                 "value": 220700.0
             },
             {
                 "year": 2024,
+                "MARS": "single",
+                "value": 232600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 232600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 116300.0
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 232600.0
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
                 "value": 232600.0
             },
             {
                 "year": 2025,
+                "MARS": "single",
+                "value": 239100.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 239100.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 119550.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 239100.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
                 "value": 239100.0
             },
             {
                 "year": 2026,
+                "MARS": "single",
+                "value": 244500.0
+            },
+            {
+                "year": 2026,
+                "MARS": "mjoint",
+                "value": 244500.0
+            },
+            {
+                "year": 2026,
+                "MARS": "mseparate",
+                "value": 122250.0
+            },
+            {
+                "year": 2026,
+                "MARS": "headhh",
+                "value": 244500.0
+            },
+            {
+                "year": 2026,
+                "MARS": "widow",
                 "value": 244500.0
             }
         ],
@@ -17981,7 +18321,7 @@
             },
             {
                 "year": 2026,
-                "value": 639200
+                "value": 639200.0
             }
         ],
         "validators": {
