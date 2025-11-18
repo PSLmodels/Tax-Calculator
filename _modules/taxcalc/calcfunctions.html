@@ -1158,8 +1158,8 @@ document.write(`
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">AGI</span><span class="p">(</span><span class="n">ymod1</span><span class="p">,</span> <span class="n">c02500</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span>
-        <span class="n">II_em</span><span class="p">,</span> <span class="n">II_em_ps</span><span class="p">,</span> <span class="n">II_em_prt</span><span class="p">,</span> <span class="n">II_no_em_nu18</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AGI</span><span class="p">(</span><span class="n">ymod1</span><span class="p">,</span> <span class="n">c02500</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span>
+        <span class="n">II_em</span><span class="p">,</span> <span class="n">II_em_ps</span><span class="p">,</span> <span class="n">II_em_po_step_size</span><span class="p">,</span> <span class="n">II_em_prt</span><span class="p">,</span> <span class="n">II_no_em_nu18</span><span class="p">,</span>
         <span class="n">e02300</span><span class="p">,</span> <span class="n">UI_thd</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">pre_c04600</span><span class="p">,</span> <span class="n">c04600</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Adjusted Gross Income (AGI), c00100, and</span>
@@ -1178,8 +1178,6 @@ document.write(`
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                               4=household-head, 5=widow(er))</span>
-<span class="sd">    sep: int</span>
-<span class="sd">        2 when MARS is 3 (married filing separately); otherwise 1</span>
 <span class="sd">    DSI: int</span>
 <span class="sd">        1 if claimed as dependent on another return; otherwise 0</span>
 <span class="sd">    exact: int</span>
@@ -1192,6 +1190,8 @@ document.write(`
 <span class="sd">        Personal and dependent exemption amount</span>
 <span class="sd">    II_em_ps: list</span>
 <span class="sd">        Personal exemption phaseout starting income</span>
+<span class="sd">    II_em_po_step_size: list</span>
+<span class="sd">        Personal exemption phaseout step size</span>
 <span class="sd">    II_em_prt: float</span>
 <span class="sd">        Personal exemption phaseout rate</span>
 <span class="sd">    II_no_em_nu18: float</span>
@@ -1236,12 +1236,12 @@ document.write(`
     <span class="c1"># phase-out personal exemption amount</span>
     <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
         <span class="n">line5</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">II_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="n">line6</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">line5</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2500.</span> <span class="o">/</span> <span class="n">sep</span><span class="p">))</span>
+        <span class="n">line6</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">line5</span> <span class="o">/</span> <span class="n">II_em_po_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">line7</span> <span class="o">=</span> <span class="n">II_em_prt</span> <span class="o">*</span> <span class="n">line6</span>
         <span class="n">c04600</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_c04600</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">line7</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation needed for sensible mtr calculation</span>
         <span class="n">dispc_numer</span> <span class="o">=</span> <span class="n">II_em_prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">II_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="n">dispc_denom</span> <span class="o">=</span> <span class="mf">2500.</span> <span class="o">/</span> <span class="n">sep</span>
+        <span class="n">dispc_denom</span> <span class="o">=</span> <span class="n">II_em_po_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">dispc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dispc_numer</span> <span class="o">/</span> <span class="n">dispc_denom</span><span class="p">))</span>
         <span class="n">c04600</span> <span class="o">=</span> <span class="n">pre_c04600</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">dispc</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">pre_c04600</span><span class="p">,</span> <span class="n">c04600</span><span class="p">)</span>
@@ -2276,7 +2276,7 @@ document.write(`
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">AMT</span><span class="p">(</span><span class="n">e07300</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">f6251</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span>
-        <span class="n">c04470</span><span class="p">,</span> <span class="n">c17000</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">e24515</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">dwks19</span><span class="p">,</span>
+        <span class="n">c04470</span><span class="p">,</span> <span class="n">c17000</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">e24515</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">dwks19</span><span class="p">,</span>
         <span class="n">dwks14</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">e62900</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">dwks10</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span>
         <span class="n">earned</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span>
         <span class="n">AMT_child_em_c_age</span><span class="p">,</span> <span class="n">AMT_brk1</span><span class="p">,</span>
@@ -2321,8 +2321,6 @@ document.write(`
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                                  4=household-head, 5=widow(er))</span>
-<span class="sd">    sep: int</span>
-<span class="sd">        2 when MARS is 3 (married filing separately), otherwise 1</span>
 <span class="sd">    dwks19: float</span>
 <span class="sd">        Maximum of 0 and dwks1 - dwks13</span>
 <span class="sd">    dwks14: float</span>
@@ -2347,7 +2345,7 @@ document.write(`
 <span class="sd">        Qualified business income deduction</span>
 <span class="sd">    AMT_child_em_c_age: float</span>
 <span class="sd">        Age ceiling for special AMT exemption</span>
-<span class="sd">    AMT_brk1: float</span>
+<span class="sd">    AMT_brk1: list</span>
 <span class="sd">        AMT bracket 1 (upper threshold)</span>
 <span class="sd">    AMT_em: list</span>
 <span class="sd">        AMT exemption amount</span>
@@ -2420,7 +2418,7 @@ document.write(`
     <span class="c1"># line30 is AMT taxable income less AMT exemption amount</span>
     <span class="n">line30</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c62100</span> <span class="o">-</span> <span class="n">line29</span><span class="p">)</span>
     <span class="n">line3163</span> <span class="o">=</span> <span class="p">(</span><span class="n">AMT_rt1</span> <span class="o">*</span> <span class="n">line30</span> <span class="o">+</span>
-                <span class="n">AMT_rt2_addon</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">line30</span> <span class="o">-</span> <span class="p">(</span><span class="n">AMT_brk1</span> <span class="o">/</span> <span class="n">sep</span><span class="p">))))</span>
+                <span class="n">AMT_rt2_addon</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">line30</span> <span class="o">-</span> <span class="n">AMT_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])))</span>
     <span class="k">if</span> <span class="n">dwks10</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">dwks13</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">dwks14</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">dwks19</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">e24515</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="c1"># complete Form 6251, Part III (line36 is equal to line30)</span>
         <span class="n">line37</span> <span class="o">=</span> <span class="n">dwks13</span>
@@ -2429,7 +2427,7 @@ document.write(`
         <span class="n">line40</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line30</span><span class="p">,</span> <span class="n">line39</span><span class="p">)</span>
         <span class="n">line41</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line30</span> <span class="o">-</span> <span class="n">line40</span><span class="p">)</span>
         <span class="n">line42</span> <span class="o">=</span> <span class="p">(</span><span class="n">AMT_rt1</span> <span class="o">*</span> <span class="n">line41</span> <span class="o">+</span>
-                  <span class="n">AMT_rt2_addon</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">line41</span> <span class="o">-</span> <span class="p">(</span><span class="n">AMT_brk1</span> <span class="o">/</span> <span class="n">sep</span><span class="p">))))</span>
+                  <span class="n">AMT_rt2_addon</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">line41</span> <span class="o">-</span> <span class="n">AMT_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])))</span>
         <span class="n">line44</span> <span class="o">=</span> <span class="n">dwks14</span>
         <span class="n">line45</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_CG_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">line44</span><span class="p">)</span>
         <span class="n">line46</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line30</span><span class="p">,</span> <span class="n">line37</span><span class="p">)</span>

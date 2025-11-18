@@ -642,8 +642,7 @@ _Known Values:_
 _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error
 
-
-### Personal Exemption Phaseout Rate
+### Personal Exemption Phaseout
 
 ####  `II_prt`
 _Description:_ Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.
