@@ -644,8 +644,6 @@ to be an accurate representation of the Cost-of-Living Refund proposal.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tc</span><span class="o">.</span><span class="n">BenefitPrograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_calc_one_year</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="p">)</span>
-        <span class="n">tc</span><span class="o">.</span><span class="n">BenefitSurtax</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">tc</span><span class="o">.</span><span class="n">BenefitLimitation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">tc</span><span class="o">.</span><span class="n">FairShareTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
         <span class="n">tc</span><span class="o">.</span><span class="n">LumpSumTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
         <span class="c1"># specify new method to set pseudo COLR policy parameters</span>
@@ -702,24 +700,17 @@ to be an accurate representation of the Cost-of-Living Refund proposal.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">138</span>
-<span class="g g-Whitespace">    </span><span class="mi">135</span> <span class="k">for</span> <span class="n">cyr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">CYR_FIRST</span><span class="p">,</span> <span class="n">CYR_LAST</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">136</span>     <span class="c1"># advance to and calculate for specified cyr</span>
-<span class="g g-Whitespace">    </span><span class="mi">137</span>     <span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">cyr</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">138</span>     <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">139</span>     <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">cyr</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">140</span>     <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-
-<span class="nn">Cell In[2], line 103,</span> in <span class="ni">Calculator.calc_all</span><span class="nt">(self, zero_out_calc_vars)</span>
-<span class="g g-Whitespace">    </span><span class="mi">101</span> <span class="n">tc</span><span class="o">.</span><span class="n">BenefitPrograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">102</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_one_year</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">103</span> <span class="n">tc</span><span class="o">.</span><span class="n">BenefitSurtax</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span> <span class="n">tc</span><span class="o">.</span><span class="n">BenefitLimitation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">105</span> <span class="n">tc</span><span class="o">.</span><span class="n">FairShareTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-
-<span class="ne">AttributeError</span>: module &#39;taxcalc&#39; has no attribute &#39;BenefitSurtax&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>YEAR  UNITS   ITAX1   ITAX2  EITC1  EITC2  COLR1  COLR2
+2019  201.9  1320.2  1320.2   63.3   63.3    0.0    0.0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020  204.5  819.6  529.0   65.5    0.0    0.0  356.1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2021  207.1  1019.4  762.7   76.4    0.0    0.0  333.1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2022  209.7  1717.0  1424.9   60.9    0.0    0.0  353.0
 </pre></div>
 </div>
 </div>
