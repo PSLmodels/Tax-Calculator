@@ -55,6 +55,10 @@ class TaxCalcIO():
         None implies economic assumptions are standard assumptions,
         or string is name of optional ASSUMP file.
 
+    behavior: None or string
+        None implies behavioral response elasticities are all zero,
+        or string is name of optional BEHAVIOR file.
+
     runid: int
         run id value to use for simpler output file names
 
@@ -67,8 +71,8 @@ class TaxCalcIO():
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, input_data, tax_year, baseline, reform, assump,
-                 runid=0, silent=True):
+    def __init__(self, input_data, tax_year, baseline, reform,
+                 assump, behavior, runid=0, silent=True):
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-statements,too-many-locals
         self.silent = silent
@@ -262,15 +266,15 @@ class TaxCalcIO():
         for ext in extensions:
             delete_file(self.output_filename.replace('.xxx', ext))
 
-    def init(self, input_data, tax_year, baseline, reform, assump,
-             exact_calculations):
+    def init(self, input_data, tax_year, baseline, reform,
+             assump, behavior, exact_calculations):
         """
         TaxCalcIO class post-constructor method that completes initialization.
 
         Parameters
         ----------
-        First five are same as the first five of the TaxCalcIO constructor:
-            input_data, tax_year, baseline, reform, assump.
+        First six are same as the first six of the TaxCalcIO constructor:
+            input_data, tax_year, baseline, reform, assump, behavior.
 
         exact_calculations: boolean
             specifies whether or not exact tax calculations are done without
