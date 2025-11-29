@@ -77,6 +77,12 @@ For examples of assumption files and the general rules for writing
 JSON assumption files, go to [this
 page](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files).
 
+## Specify behavioral responses
+
+For a JSON file template that can be used to specify you own values of
+each response elasticity, go to [this
+page](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/README.md).
+
 ## Specify filing units
 
 The `taxcalc` package containing `tc` does not include an
@@ -227,7 +233,7 @@ on an old Mac with a slow Intel CPU chip.
 % tc cps.csv 2020 --dumpdb
 Read input data for 2014; input data were extrapolated to 2020
 Write dump output to sqlite3 database file cps-20-#-#-#.db
-Execution time is 33.2 seconds
+Execution time is 9.6 seconds
 ```
 
 The dump database contains 2020 income tax liabilities for each filing
@@ -318,7 +324,6 @@ Write tabular output to file cps-24-#-ref3-#-tables.text
 Write graphical output to file cps-24-#-ref3-#-pch.html
 Write graphical output to file cps-24-#-ref3-#-atr.html
 Write graphical output to file cps-24-#-ref3-#-mtr.html
-Execution time is 37.3 seconds
 
 % diff cps-24-#-ref3-#-params.bas cps-24-#-ref3-#-params.ref
 34c34
@@ -552,7 +557,6 @@ Advance input data and policy to 2034
 Write tabular output to file tmd-34-#-ext-#-tables.text
 Advance input data and policy to 2035
 Write tabular output to file tmd-35-#-ext-#-tables.text
-Execution time is 55.6 seconds
 ```
 
 [PR
