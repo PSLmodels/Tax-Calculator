@@ -49,5 +49,5 @@ the same as for policy reform files, which are described
 [here](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md#how-to-specify-a-tax-reform-in-a-json-policy-reform-file).
 The assumption parameter names recognized by Tax-Calculator, and their
 default values, are listed in [this
-section](https://PSLmodels.github.io/Tax-Calculator/uguide.html#params)
+section](https://taxcalc.pslmodels.org/guide/assumption_params.html)
 of the user guide.

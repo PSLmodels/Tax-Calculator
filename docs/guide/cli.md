@@ -59,7 +59,7 @@ page](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/RE
 ## Specify analysis assumptions
 
 This part explains how to specify economic assumption files used in
-static tax analysis. This is an advanced topic, so if you want to
+tax analysis. This is an advanced topic, so if you want to
 start out using the default assumptions (which are documented in [this
 section](https://taxcalc.pslmodels.org/guide/policy_params.html#policy-parameters))
 of the guide), you can skip this part now and come back to read it

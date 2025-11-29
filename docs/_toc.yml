@@ -14,6 +14,7 @@ parts:
     - file: guide/input_vars
     - file: guide/output_vars
     - file: guide/assumption_params
+    - file: guide/behavior_params
   - file: recipes/index
     sections:
     - file: recipes/recipe00
