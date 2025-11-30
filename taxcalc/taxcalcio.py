@@ -337,6 +337,36 @@ class TaxCalcIO():
             return
         # get assumption sub-dictionaries
         assumpdict = Calculator.read_json_param_objects(None, assump)
+        # get behavior dictionary
+        behvdict = None
+        if behavior:
+            with open(behv, 'r', encoding='utf-8') as jfile:
+                json_text = jfile.read()
+            try:
+                behvdict = json_to_dict(json_text)
+            except ValueError as valerr:  # pragma: no cover
+                msg = f'{behavior} contains invalid JSON'
+                self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
+                self.errmsg += f'{valerr}'
+                return
+            # check behavior response elasticity names and values
+            elasticity_set = set(behvdict.keys())
+            if elasticity_set != set(['sub', 'inc', 'cg']):
+                msg = f'{behavior} contains invalid or missing elasticities'
+                self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
+                self.errmsg += f'Valid elasticities are "sub", "inc", "cg"'
+                return
+            if behvdict['sub'] < 0.0:
+                msg = f'{behavior} contains negative "sub" elasticity'
+                self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
+            if behvdict['inc'] > 0.0:
+                msg = f'{behavior} contains positive "inc" elasticity'
+                self.errmsg += f'ERROR: BEHAVIOR file {msg}\n'
+            if behvdict['cg'] > 0.0:
+                msg = f'{behavior} contains positive "cg" elasticity'
+                self.errmsg += f'ERROR: BEHAVIOR file {msg}\n'
+            if self.errmsg:
+                return
         # get policy parameter dictionaries from --baseline file(s)
         poldicts_bas = []
         if self.specified_baseline:
