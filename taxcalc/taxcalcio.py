@@ -240,8 +240,28 @@ class TaxCalcIO():
         else:
             msg = 'TaxCalcIO.ctor: assump is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
+        # check name and existence of BEHAVIOR file
+        beh = '-x'
+        if behavior is None:
+            beh = '-#'
+        elif isinstance(behavior, str):
+            # remove any leading directory path from BEHAVIOR filename
+            fname = os.path.basename(behavior)
+            # check if fname ends with ".json"
+            if fname.endswith('.json'):
+                beh = f'-{fname[:-5]}'
+            else:
+                msg = 'BEHAVIOR file name does not end in .json'
+                self.errmsg += f'ERROR: {msg}\n'
+            # check existence of BEHAVIOR file
+            if not os.path.isfile(behavior):
+                msg = 'BEHAVIOR file could not be found'
+                self.errmsg += f'ERROR: {msg}\n'
+        else:
+            msg = 'TaxCalcIO.ctor: behavior is neither None nor str'
+            self.errmsg += f'ERROR: {msg}\n'
         # create OUTPUT file name and delete any existing output files
-        self.output_filename = f'{inp}{bas}{ref}{asm}.xxx'
+        self.output_filename = f'{inp}{bas}{ref}{asm}{beh}.xxx'
         self.runid = runid
         if runid > 0:
             self.output_filename = f'run{runid}-{str(tax_year)[2:]}.xxx'
