@@ -4,7 +4,7 @@ Tax-Calculator Input-Output class.
 # CODING-STYLE CHECKS:
 # pycodestyle taxcalcio.py
 # pylint --disable=locally-disabled taxcalcio.py
-
+# pylint: disable=too-many-lines
 import os
 import gc
 import copy
@@ -340,7 +340,7 @@ class TaxCalcIO():
         # get behavior dictionary
         behvdict = None
         if behavior:
-            with open(behv, 'r', encoding='utf-8') as jfile:
+            with open(behavior, 'r', encoding='utf-8') as jfile:
                 json_text = jfile.read()
             try:
                 behvdict = json_to_dict(json_text)
@@ -354,7 +354,7 @@ class TaxCalcIO():
             if elasticity_set != set(['sub', 'inc', 'cg']):
                 msg = f'{behavior} contains invalid or missing elasticities'
                 self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
-                self.errmsg += f'Valid elasticities are "sub", "inc", "cg"'
+                self.errmsg += 'Valid elasticities are "sub", "inc", "cg"'
                 return
             if behvdict['sub'] < 0.0:
                 msg = f'{behavior} contains negative "sub" elasticity'

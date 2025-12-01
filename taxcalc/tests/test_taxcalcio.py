@@ -727,3 +727,79 @@ def test_error_message_parsed_correctly(regression_reform_file):
         'AMEDT_rt[year=2021] 1.8 > max 1 '
     )
     assert tcio.errmsg == exp_errmsg
+
+
+@pytest.fixture(scope='session', name='behvfile0')
+def fixture_behvfile0():
+    """
+    Temporary behavior file with .json extension.
+    """
+    contents = """
+    {
+    "sub": 0,
+    "inc": 0,
+    "cg": 0,
+    "extra_key": 0
+    }
+    """
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as bfile:
+        bfile.write(contents)
+    yield bfile
+    if os.path.isfile(bfile.name):
+        try:
+            os.remove(bfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.fixture(scope='session', name='behvfile1')
+def fixture_behvfile1():
+    """
+    Temporary behavior file with .json extension.
+    """
+    contents = """
+    {
+    "sub": -0.3,
+    "inc": 0.5,
+    "cg": 1
+    }
+    """
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as bfile:
+        bfile.write(contents)
+    yield bfile
+    if os.path.isfile(bfile.name):
+        try:
+            os.remove(bfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.mark.parametrize('behvfile', [('behvfile0', 'behvfile1')])
+def test_init_behavior_errors(behvfile, behvfile0, behvfile1):
+    """
+    Check behavior error messages generated correctly by TaxCalcIO.init method.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    if behvfile == 'behvfile0':
+        behavior_filename = behvfile0.name
+    else:
+        behavior_filename = behvfile1.name
+    # test TaxCalcIO constructor
+    tcio = TaxCalcIO(input_data=recdf,
+                     tax_year=2024,
+                     baseline=None,
+                     reform=None,
+                     assump=None,
+                     behavior=behavior_filename)
+    assert not tcio.errmsg
+    # test TaxCalcIO.init method
+    tcio.init(input_data=recdf, tax_year=2024,
+              baseline=None, reform=None,
+              assump=None, behavior=behavior_filename,
+              exact_calculations=True)
+    assert tcio.errmsg
