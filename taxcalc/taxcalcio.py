@@ -352,7 +352,7 @@ class TaxCalcIO():
             # check behavior response elasticity names and values
             elasticity_set = set(behvdict.keys())
             if elasticity_set != set(['sub', 'inc', 'cg']):
-                msg = f'{behavior} contains invalid or missing elasticities'
+                msg = f'{behavior} contains extra or missing elasticities'
                 self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
                 self.errmsg += 'Valid elasticities are "sub", "inc", "cg"'
                 return
