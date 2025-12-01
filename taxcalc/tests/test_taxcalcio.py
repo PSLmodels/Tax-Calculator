@@ -754,6 +754,21 @@ def fixture_behvfile0():
             pass  # sometimes we can't remove a generated temporary file
 
 
+def test_init_behavior0_errors(behvfile0):
+    """
+    Check behavior error messages generated correctly by TaxCalcIO.init method.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    behv_fname = behvfile0.name
+    tcio = TaxCalcIO(input_data=recdf, tax_year=2024, baseline=None,
+                     reform=None, assump=None, behavior=behv_fname)
+    assert not tcio.errmsg
+    tcio.init(input_data=recdf, tax_year=2024, baseline=None, reform=None,
+              assump=None, behavior=behv_fname, exact_calculations=True)
+    assert tcio.errmsg
+
+
 @pytest.fixture(scope='session', name='behvfile1')
 def fixture_behvfile1():
     """
@@ -778,22 +793,7 @@ def fixture_behvfile1():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_init_behavior_errors_0(behvfile0):
-    """
-    Check behavior error messages generated correctly by TaxCalcIO.init method.
-    """
-    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
-    recdf = pd.DataFrame(data=recdict, index=[0])
-    behv_fname = behvfile0.name
-    tcio = TaxCalcIO(input_data=recdf, tax_year=2024, baseline=None,
-                     reform=None, assump=None, behavior=behv_fname)
-    assert not tcio.errmsg
-    tcio.init(input_data=recdf, tax_year=2024, baseline=None, reform=None,
-              assump=None, behavior=behv_fname, exact_calculations=True)
-    assert tcio.errmsg
-
-
-def test_init_behavior_errors_1(behvfile1):
+def test_init_behavior1_errors(behvfile1):
     """
     Check behavior error messages generated correctly by TaxCalcIO.init method.
     """

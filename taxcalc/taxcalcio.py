@@ -13,6 +13,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import paramtools
+import behresp
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption
@@ -241,6 +242,7 @@ class TaxCalcIO():
             msg = 'TaxCalcIO.ctor: assump is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
         # check name and existence of BEHAVIOR file
+        self.behvdict = None
         beh = '-x'
         if behavior is None:
             beh = '-#'
@@ -338,31 +340,30 @@ class TaxCalcIO():
         # get assumption sub-dictionaries
         assumpdict = Calculator.read_json_param_objects(None, assump)
         # get behavior dictionary
-        behvdict = None
         if behavior:
             with open(behavior, 'r', encoding='utf-8') as jfile:
                 json_text = jfile.read()
             try:
-                behvdict = json_to_dict(json_text)
+                self.behvdict = json_to_dict(json_text)
             except ValueError as valerr:  # pragma: no cover
                 msg = f'{behavior} contains invalid JSON'
                 self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
                 self.errmsg += f'{valerr}'
                 return
             # check behavior response elasticity names and values
-            elasticity_set = set(behvdict.keys())
+            elasticity_set = set(self.behvdict.keys())
             if elasticity_set != set(['sub', 'inc', 'cg']):
                 msg = f'{behavior} contains extra or missing elasticities'
                 self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
                 self.errmsg += 'Valid elasticities are "sub", "inc", "cg"'
                 return
-            if behvdict['sub'] < 0.0:
+            if self.behvdict['sub'] < 0.0:
                 msg = f'{behavior} contains negative "sub" elasticity'
                 self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
-            if behvdict['inc'] > 0.0:
+            if self.behvdict['inc'] > 0.0:
                 msg = f'{behavior} contains positive "inc" elasticity'
                 self.errmsg += f'ERROR: BEHAVIOR file {msg}\n'
-            if behvdict['cg'] > 0.0:
+            if self.behvdict['cg'] > 0.0:
                 msg = f'{behavior} contains positive "cg" elasticity'
                 self.errmsg += f'ERROR: BEHAVIOR file {msg}\n'
             if self.errmsg:
@@ -616,24 +617,29 @@ class TaxCalcIO():
         if not doing_calcs:
             return
         # do output calculations
-        self.calc_bas.calc_all()
-        self.calc_ref.calc_all()
-        if output_dump:
+        if self.behvdict:  # if assuming behavioral responses
+            br_dump_bas, br_dump_ref = behresp.response(
+                self.calc_bas, self.calc_ref,
+                self.behvdict, dump=True
+            )
+        else:  # if assuming no behavioral responses
+            self.calc_bas.calc_all()
+            self.calc_ref.calc_all()
+        # handle MTR output variables
+        mtr_ptax_bas = None
+        mtr_itax_bas = None
+        mtr_ptax_ref = None
+        mtr_itax_ref = None
+        if output_dump and not self.behvdict:
             assert isinstance(dump_varlist, list)
             assert len(dump_varlist) > 0
-            # might need marginal tax rates for dumpdb
-            (mtr_ptax_ref, mtr_itax_ref,
-             _) = self.calc_ref.mtr(wrt_full_compensation=False,
-                                    calc_all_already_called=True)
-            (mtr_ptax_bas, mtr_itax_bas,
-             _) = self.calc_bas.mtr(wrt_full_compensation=False,
-                                    calc_all_already_called=True)
-        else:
-            # do not need marginal tax rates for dumpdb
-            mtr_ptax_ref = None
-            mtr_itax_ref = None
-            mtr_ptax_bas = None
-            mtr_itax_bas = None
+            if 'mtr_itax' in dump_varlist or 'mtr_ptax' in dump_varlist:
+                (mtr_ptax_bas, mtr_itax_bas,
+                 _) = self.calc_bas.mtr(wrt_full_compensation=False,
+                                        calc_all_already_called=True)
+                (mtr_ptax_ref, mtr_itax_ref,
+                 _) = self.calc_ref.mtr(wrt_full_compensation=False,
+                                        calc_all_already_called=True)
         # optionally write --tables output to text file
         if output_tables:
             self.write_tables_file()
@@ -642,11 +648,14 @@ class TaxCalcIO():
             self.write_graph_files()
         # optionally write --dumpdb output to SQLite database file
         if output_dump:
-            self.write_dumpdb_file(
-                dump_varlist,
-                mtr_ptax_ref, mtr_itax_ref,
-                mtr_ptax_bas, mtr_itax_bas,
-            )
+            if self.behvdict:  # if assuming behavioral responses
+                pass  # TODO --- add code here ---
+            else:  # if assuming no behavioral responses
+                self.write_dumpdb_file(
+                    dump_varlist,
+                    mtr_ptax_ref, mtr_itax_ref,
+                    mtr_ptax_bas, mtr_itax_bas,
+                )
 
     def write_policy_params_files(self):
         """
