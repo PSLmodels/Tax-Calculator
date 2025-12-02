@@ -620,26 +620,40 @@ class TaxCalcIO():
         if self.behvdict:  # if assuming behavioral responses
             br_dump_bas, br_dump_ref = behresp.response(
                 self.calc_bas, self.calc_ref,
-                self.behvdict, dump=True
+                self.behvdict, dump=True,
             )
+            # move returned dump dataframe values back into calc objects
+            for vname, vseries in br_dump_bas.items():
+                self.calc_bas.array(vname, vseries)
+            for vname, vseries in br_dump_ref.items():
+                self.calc_ref.array(vname, vseries)
         else:  # if assuming no behavioral responses
             self.calc_bas.calc_all()
             self.calc_ref.calc_all()
         # handle MTR output variables
         mtr_ptax_bas = None
         mtr_itax_bas = None
+        mtr_combined_bas = None
         mtr_ptax_ref = None
         mtr_itax_ref = None
-        if output_dump and not self.behvdict:
+        mtr_combined_ref = None
+        if output_dump:
             assert isinstance(dump_varlist, list)
             assert len(dump_varlist) > 0
-            if 'mtr_itax' in dump_varlist or 'mtr_ptax' in dump_varlist:
+            mtr_output = (
+                'mtr_itax' in dump_varlist or
+                'mtr_ptax' in dump_varlist or
+                'mtr_combined' in dump_varlist
+            )
+            if mtr_output:
                 (mtr_ptax_bas, mtr_itax_bas,
-                 _) = self.calc_bas.mtr(wrt_full_compensation=False,
-                                        calc_all_already_called=True)
+                 mtr_combined_bas) = self.calc_bas.mtr(
+                     wrt_full_compensation=False,
+                     calc_all_already_called=True)
                 (mtr_ptax_ref, mtr_itax_ref,
-                 _) = self.calc_ref.mtr(wrt_full_compensation=False,
-                                        calc_all_already_called=True)
+                 mtr_combined_ref) = self.calc_ref.mtr(
+                     wrt_full_compensation=False,
+                     calc_all_already_called=True)
         # optionally write --tables output to text file
         if output_tables:
             self.write_tables_file()
@@ -648,14 +662,11 @@ class TaxCalcIO():
             self.write_graph_files()
         # optionally write --dumpdb output to SQLite database file
         if output_dump:
-            if self.behvdict:  # if assuming behavioral responses
-                pass  # TODO --- add code here ---
-            else:  # if assuming no behavioral responses
-                self.write_dumpdb_file(
-                    dump_varlist,
-                    mtr_ptax_ref, mtr_itax_ref,
-                    mtr_ptax_bas, mtr_itax_bas,
-                )
+            self.write_dumpdb_file(
+                dump_varlist,
+                mtr_ptax_ref, mtr_itax_ref, mtr_combined_ref,
+                mtr_ptax_bas, mtr_itax_bas, mtr_combined_bas,
+            )
 
     def write_policy_params_files(self):
         """
@@ -931,24 +942,25 @@ class TaxCalcIO():
     def write_dumpdb_file(
             self,
             dump_varlist,
-            mtr_ptax_ref, mtr_itax_ref,
-            mtr_ptax_bas, mtr_itax_bas,
+            mtr_ptax_ref, mtr_itax_ref, mtr_combined_ref,
+            mtr_ptax_bas, mtr_itax_bas, mtr_combined_bas,
     ):
         """
         Write dump output to SQLite database file.
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
-        def dump_output(calcx, dumpvars, mtr_itax, mtr_ptax):
+        def dump_output(calcx, dumpvars, mtr_itax, mtr_ptax, mtr_combined):
             """
             Extract dump output from calcx and return it as Pandas DataFrame.
             """
             odict = {}
             for var in dumpvars:
-                if var in TaxCalcIO.MTR_DUMPVARS:
-                    if var == 'mtr_itax':
-                        odict[var] = pd.Series(mtr_itax)
-                    elif var == 'mtr_ptax':
-                        odict[var] = pd.Series(mtr_ptax)
+                if var == 'mtr_itax':
+                    odict[var] = pd.Series(mtr_itax)
+                elif var == 'mtr_ptax':
+                    odict[var] = pd.Series(mtr_ptax)
+                elif var == 'mtr_combined':
+                    odict[var] = pd.Series(mtr_combined)
                 else:
                     odict[var] = pd.Series(calcx.array(var))
             odf = pd.concat(odict, axis=1)
@@ -994,14 +1006,16 @@ class TaxCalcIO():
         del outdf
         # write baseline table
         outdf = dump_output(
-            self.calc_bas, dump_varlist, mtr_itax_bas, mtr_ptax_bas,
+            self.calc_bas, dump_varlist,
+            mtr_itax_bas, mtr_ptax_bas, mtr_combined_bas,
         )
         assert len(outdf.index) == self.calc_bas.array_len
         outdf.to_sql('baseline', dbcon, index=False)
         del outdf
         # write reform table
         outdf = dump_output(
-            self.calc_ref, dump_varlist, mtr_itax_ref, mtr_ptax_ref,
+            self.calc_ref, dump_varlist,
+            mtr_itax_ref, mtr_ptax_ref, mtr_combined_ref,
         )
         assert len(outdf.index) == self.calc_ref.array_len
         outdf.to_sql('reform', dbcon, index=False)
