@@ -628,14 +628,14 @@ class TaxCalcIO():
                 if mtr_vname in vnames:
                     vnames.remove(mtr_vname)
             for vname in vnames:
-                self.calc_bas.array(vname, br_dump_bas[vname])
+                self.calc_bas.array(vname, br_dump_bas[vname].to_numpy())
             del br_dump_bas
             vnames = list(br_dump_ref.columns)
             for mtr_vname in ['mtr_ptax', 'mtr_itax', 'mtr_combined']:
                 if mtr_vname in vnames:
                     vnames.remove(mtr_vname)
             for vname in vnames:
-                self.calc_bas.array(vname, br_dump_ref[vname])
+                self.calc_ref.array(vname, br_dump_ref[vname].to_numpy())
             del br_dump_ref
         else:  # if assuming no behavioral responses
             self.calc_bas.calc_all()
