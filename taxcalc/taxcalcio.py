@@ -623,10 +623,20 @@ class TaxCalcIO():
                 self.behvdict, dump=True,
             )
             # move returned dump dataframe values back into calc objects
-            for vname, vseries in br_dump_bas.items():
-                self.calc_bas.array(vname, vseries)
-            for vname, vseries in br_dump_ref.items():
-                self.calc_ref.array(vname, vseries)
+            vnames = list(br_dump_bas.columns)
+            for mtr_vname in ['mtr_ptax', 'mtr_itax', 'mtr_combined']:
+                if mtr_vname in vnames:
+                    vnames.remove(mtr_vname)
+            for vname in vnames:
+                self.calc_bas.array(vname, br_dump_bas[vname])
+            del br_dump_bas
+            vnames = list(br_dump_ref.columns)
+            for mtr_vname in ['mtr_ptax', 'mtr_itax', 'mtr_combined']:
+                if mtr_vname in vnames:
+                    vnames.remove(mtr_vname)
+            for vname in vnames:
+                self.calc_bas.array(vname, br_dump_ref[vname])
+            del br_dump_ref
         else:  # if assuming no behavioral responses
             self.calc_bas.calc_all()
             self.calc_ref.calc_all()
