@@ -9,6 +9,7 @@ Tests for Tax-Calculator TaxCalcIO class.
 
 import os
 from io import StringIO
+from pathlib import Path
 import tempfile
 import pytest
 import pandas as pd
@@ -836,17 +837,19 @@ def test_tc_analyze_with_behavior(reformfile1, behvfile2):
     """
     Test TaxCalcIO.analyze method when assuming behavioral responses to reform.
     """
-    txyr = 2020
     tcio = TaxCalcIO(
-        'cps.csv', txyr, baseline=None, reform=reformfile1.name,
+        'cps.csv', 2020, baseline=None, reform=reformfile1.name,
         assump=None, behavior=behvfile2.name,
+        runid=11,
     )
     tcio.init(
-        'cps.csv', txyr, baseline=None, reform=reformfile1.name,
+        'cps.csv', 2020, baseline=None, reform=reformfile1.name,
         assump=None, behavior=behvfile2.name,
         exact_calculations=True,
     )
     assert not tcio.errmsg
-    assert tcio.tax_year() == txyr
+    assert tcio.tax_year() == 2020
     tcio.analyze(output_tables=True)
-    assert tcio.tax_year() == txyr
+    assert tcio.tax_year() == 2020
+    table_path = Path('run11-20.tables')
+    table_path.unlink(missing_ok=True)
