@@ -806,3 +806,47 @@ def test_init_behavior1_errors(behvfile1):
     tcio.init(input_data=recdf, tax_year=2024, baseline=None, reform=None,
               assump=None, behavior=behv_fname, exact_calculations=True)
     assert tcio.errmsg
+
+
+@pytest.fixture(scope='session', name='behvfile2')
+def fixture_behvfile2():
+    """
+    Temporary behavior file with .json extension.
+    """
+    contents = """
+    {
+    "sub": 0.25,
+    "inc": 0.0,
+    "cg": 0.0
+    }
+    """
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as bfile:
+        bfile.write(contents)
+    yield bfile
+    if os.path.isfile(bfile.name):
+        try:
+            os.remove(bfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_tc_analyze_with_behavior(reformfile1, behvfile2):
+    """
+    Test TaxCalcIO.analyze method when assuming behavioral responses to reform.
+    """
+    txyr = 2020
+    tcio = TaxCalcIO(
+        'cps.csv', txyr, baseline=None, reform=reformfile1.name,
+        assump=None, behavior=behvfile2.name,
+    )
+    tcio.init(
+        'cps.csv', txyr, baseline=None, reform=reformfile1.name,
+        assump=None, behavior=behvfile2.name,
+        exact_calculations=True,
+    )
+    assert not tcio.errmsg
+    assert tcio.tax_year() == txyr
+    tcio.analyze()
+    assert tcio.tax_year() == txyr
