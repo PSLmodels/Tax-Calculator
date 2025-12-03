@@ -269,6 +269,12 @@ class TaxCalcIO():
             self.output_filename = f'run{runid}-{str(tax_year)[2:]}.xxx'
         self.delete_output_files()
         # initialize variables whose values are set in init method
+        self.pol_ref = None
+        self.pol_bas = None
+        self.recs_ref = None
+        self.recs_bas = None
+        self.con = None
+        self.aging_input_data = None
         self.calc_ref = None
         self.calc_bas = None
 
@@ -408,84 +414,84 @@ class TaxCalcIO():
         gdiff_response.apply_to(policy_gfactors_ref)
         # ... the baseline Policy object
         if self.specified_baseline:
-            pol_bas = Policy(
+            self.pol_bas = Policy(
                 gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
             for poldict in poldicts_bas:
                 try:
-                    pol_bas.implement_reform(
+                    self.pol_bas.implement_reform(
                         poldict,
                         print_warnings=True,
                         raise_errors=False,
                     )
                     if self.errmsg:
                         self.errmsg += '\n'
-                    for _, errors in pol_bas.parameter_errors.items():
+                    for _, errors in self.pol_bas.parameter_errors.items():
                         self.errmsg += '\n'.join(errors)
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += str(valerr_msg)
         else:
-            pol_bas = Policy(
+            self.pol_bas = Policy(
                 gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
         # ... the reform Policy object
         if self.specified_reform:
-            pol_ref = Policy(
+            self.pol_ref = Policy(
                 gfactors=policy_gfactors_ref,
                 last_budget_year=last_b_year,
             )
             for poldict in poldicts_ref:
                 try:
-                    pol_ref.implement_reform(
+                    self.pol_ref.implement_reform(
                         poldict,
                         print_warnings=True,
                         raise_errors=False,
                     )
                     if self.errmsg:
                         self.errmsg += '\n'
-                    for _, errors in pol_ref.parameter_errors.items():
+                    for _, errors in self.pol_ref.parameter_errors.items():
                         self.errmsg += '\n'.join(errors)
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += str(valerr_msg)
         else:
-            pol_ref = Policy(
+            self.pol_ref = Policy(
                 gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
         # create Consumption object
-        con = Consumption(last_budget_year=last_b_year)
+        self.con = Consumption(last_budget_year=last_b_year)
         try:
-            con.update_consumption(assumpdict['consumption'])
+            self.con.update_consumption(assumpdict['consumption'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += str(valerr_msg)
         # any errors imply cannot proceed with calculations
         if self.errmsg:
             return
         # set policy to tax_year
-        pol_ref.set_year(tax_year)
-        pol_bas.set_year(tax_year)
+        self.pol_ref.set_year(tax_year)
+        self.pol_bas.set_year(tax_year)
         # read input file contents into Records objects
-        aging_input_data = True
+        self.aging_input_data = True
         if self.cps_input_data:
-            recs_ref = Records.cps_constructor(
+            self.recs_ref = Records.cps_constructor(
                 gfactors=gfactors_ref,
                 exact_calculations=exact_calculations,
             )
-            recs_bas = Records.cps_constructor(
+            self.recs_bas = Records.cps_constructor(
                 gfactors=gfactors_bas,
                 exact_calculations=exact_calculations,
             )
         elif self.puf_input_data:  # pragma: no cover
-            recs_ref = Records.puf_constructor(
+            self.recs_ref = Records.puf_constructor(
                 data=input_data,
                 gfactors=gfactors_ref,
                 weights=self.puf_weights,
                 ratios=self.puf_ratios,
                 exact_calculations=exact_calculations,
             )
-            recs_bas = Records.puf_constructor(
+            self.recs_bas = Records.puf_constructor(
                 data=input_data,
                 gfactors=gfactors_bas,
                 weights=self.puf_weights,
@@ -493,21 +499,21 @@ class TaxCalcIO():
                 exact_calculations=exact_calculations,
             )
         elif self.tmd_input_data:  # pragma: no cover
-            recs_ref = Records.tmd_constructor(
+            self.recs_ref = Records.tmd_constructor(
                 data_path=Path(input_data),
                 weights_path=Path(self.tmd_weights),
                 growfactors=gfactors_ref,
                 exact_calculations=exact_calculations,
             )
-            recs_bas = Records.tmd_constructor(
+            self.recs_bas = Records.tmd_constructor(
                 data_path=Path(input_data),
                 weights_path=Path(self.tmd_weights),
                 growfactors=gfactors_bas,
                 exact_calculations=exact_calculations,
             )
         else:  # input_data are raw data that are not being aged
-            aging_input_data = False
-            recs_ref = Records(
+            self.aging_input_data = False
+            self.recs_ref = Records(
                 data=input_data,
                 start_year=tax_year,
                 gfactors=None,
@@ -515,21 +521,26 @@ class TaxCalcIO():
                 adjust_ratios=None,
                 exact_calculations=exact_calculations,
             )
-            recs_bas = copy.deepcopy(recs_ref)
+            self.recs_bas = copy.deepcopy(self.recs_ref)
+        # extrapolate input data to tax_year if aging_input_data is True
+        if self.aging_input_data:
+            while self.recs_ref.current_year < tax_year:
+                self.recs_ref.increment_year()
+                self.recs_bas.increment_year()
         # create Calculator objects
         self.calc_ref = Calculator(
-            policy=pol_ref,
-            records=recs_ref,
+            policy=self.pol_ref,
+            records=self.recs_ref,
             verbose=(not self.silent),
-            consumption=con,
-            sync_years=aging_input_data,
+            consumption=self.con,
+            sync_years=self.aging_input_data,
         )
         self.calc_bas = Calculator(
-            policy=pol_bas,
-            records=recs_bas,
+            policy=self.pol_bas,
+            records=self.recs_bas,
             verbose=False,
-            consumption=con,
-            sync_years=aging_input_data,
+            consumption=self.con,
+            sync_years=self.aging_input_data,
         )
 
     def tax_year(self):
@@ -547,7 +558,7 @@ class TaxCalcIO():
 
     def advance_to_year(self, year):
         """
-        Update self.output_filename and advance Calculator objects to year.
+        Update self.output_filename and create Calculator objects for year.
         """
         # update self.output_filename and delete output files
         parts = self.output_filename.split('-')
@@ -559,9 +570,33 @@ class TaxCalcIO():
             parts[1] = '.'.join(subparts)
         self.output_filename = '-'.join(parts)
         self.delete_output_files()
-        # advance baseline and reform Calculator objects to specified year
-        self.calc_bas.advance_to_year(year)
-        self.calc_ref.advance_to_year(year)
+        # create baseline and reform Calculator objects for specified year
+        # ... set policy for year
+        self.pol_ref.set_year(year)
+        self.pol_bas.set_year(year)
+        # ... set consumption for year
+        self.con.set_year(year)
+        # ... increment records to year
+        self.recs_ref.increment_year()
+        self.recs_bas.increment_year()
+        # ... delete old and create new Calculator objects
+        del self.calc_ref
+        self.calc_ref = Calculator(
+            policy=self.pol_ref,
+            records=self.recs_ref,
+            verbose=(not self.silent),
+            consumption=self.con,
+            sync_years=self.aging_input_data,
+        )
+        del self.calc_bas
+        self.calc_bas = Calculator(
+            policy=self.pol_bas,
+            records=self.recs_bas,
+            verbose=(not self.silent),
+            consumption=self.con,
+            sync_years=self.aging_input_data,
+        )
+        # report advance to new year
         aging_data = (
             self.cps_input_data or
             self.puf_input_data or
