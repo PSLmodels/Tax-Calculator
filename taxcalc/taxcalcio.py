@@ -678,25 +678,22 @@ class TaxCalcIO():
         # handle MTR output variables
         mtr_ptax_bas = None
         mtr_itax_bas = None
-        mtr_combined_bas = None
         mtr_ptax_ref = None
         mtr_itax_ref = None
-        mtr_combined_ref = None
         if output_dump:
             assert isinstance(dump_varlist, list)
             assert len(dump_varlist) > 0
             mtr_output = (
                 'mtr_itax' in dump_varlist or
-                'mtr_ptax' in dump_varlist or
-                'mtr_combined' in dump_varlist
+                'mtr_ptax' in dump_varlist
             )
             if mtr_output:
                 (mtr_ptax_bas, mtr_itax_bas,
-                 mtr_combined_bas) = self.calc_bas.mtr(
+                 _) = self.calc_bas.mtr(
                      wrt_full_compensation=False,
                      calc_all_already_called=True)
                 (mtr_ptax_ref, mtr_itax_ref,
-                 mtr_combined_ref) = self.calc_ref.mtr(
+                 _) = self.calc_ref.mtr(
                      wrt_full_compensation=False,
                      calc_all_already_called=True)
         # optionally write --tables output to text file
@@ -709,8 +706,8 @@ class TaxCalcIO():
         if output_dump:
             self.write_dumpdb_file(
                 dump_varlist,
-                mtr_ptax_ref, mtr_itax_ref, mtr_combined_ref,
-                mtr_ptax_bas, mtr_itax_bas, mtr_combined_bas,
+                mtr_ptax_ref, mtr_itax_ref,
+                mtr_ptax_bas, mtr_itax_bas,
             )
 
     def write_policy_params_files(self):
@@ -987,14 +984,14 @@ class TaxCalcIO():
     def write_dumpdb_file(
             self,
             dump_varlist,
-            mtr_ptax_ref, mtr_itax_ref, mtr_combined_ref,
-            mtr_ptax_bas, mtr_itax_bas, mtr_combined_bas,
+            mtr_ptax_ref, mtr_itax_ref,
+            mtr_ptax_bas, mtr_itax_bas,
     ):
         """
         Write dump output to SQLite database file.
         """
         # pylint: disable=too-many-arguments,too-many-positional-arguments
-        def dump_output(calcx, dumpvars, mtr_itax, mtr_ptax, mtr_combined):
+        def dump_output(calcx, dumpvars, mtr_itax, mtr_ptax):
             """
             Extract dump output from calcx and return it as Pandas DataFrame.
             """
@@ -1004,8 +1001,6 @@ class TaxCalcIO():
                     odict[var] = pd.Series(mtr_itax)
                 elif var == 'mtr_ptax':
                     odict[var] = pd.Series(mtr_ptax)
-                elif var == 'mtr_combined':
-                    odict[var] = pd.Series(mtr_combined)
                 else:
                     odict[var] = pd.Series(calcx.array(var))
             odf = pd.concat(odict, axis=1)
@@ -1052,7 +1047,7 @@ class TaxCalcIO():
         # write baseline table
         outdf = dump_output(
             self.calc_bas, dump_varlist,
-            mtr_itax_bas, mtr_ptax_bas, mtr_combined_bas,
+            mtr_itax_bas, mtr_ptax_bas,
         )
         assert len(outdf.index) == self.calc_bas.array_len
         outdf.to_sql('baseline', dbcon, index=False)
@@ -1060,7 +1055,7 @@ class TaxCalcIO():
         # write reform table
         outdf = dump_output(
             self.calc_ref, dump_varlist,
-            mtr_itax_ref, mtr_ptax_ref, mtr_combined_ref,
+            mtr_itax_ref, mtr_ptax_ref,
         )
         assert len(outdf.index) == self.calc_ref.array_len
         outdf.to_sql('reform', dbcon, index=False)
