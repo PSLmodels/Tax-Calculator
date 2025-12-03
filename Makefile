@@ -24,6 +24,8 @@ help:
 	@echo "             pycodestyle (nee pep8) and pylint tools"
 	@echo "idtest     : generate report for and cleanup after executing"
 	@echo "             taxcalc/cli/input_data_tests/tests.sh"
+	@echo "brtest     : generate report for and cleanup after executing"
+	@echo "             taxcalc/cli/behavioral_responses_tests/tests.sh"
 	@echo "coverage   : generate test coverage report"
 	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
 	@echo "git-pr N=n : create local pr-n branch containing upstream PR"
@@ -95,6 +97,11 @@ cstest:
 idtest: package
 	@echo "Executing taxcalc/cli/input_data_tests"
 	@cd taxcalc/cli/input_data_tests ; ./tests.sh
+
+.PHONY=brtest
+brtest: package
+	@echo "Executing taxcalc/cli/behavioral_responses_tests"
+	@cd taxcalc/cli/behavioral_responses_tests ; ./tests.sh
 
 define coverage-cleanup
 rm -f .coverage htmlcov/*
