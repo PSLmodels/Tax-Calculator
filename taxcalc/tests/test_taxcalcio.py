@@ -848,5 +848,5 @@ def test_tc_analyze_with_behavior(reformfile1, behvfile2):
     )
     assert not tcio.errmsg
     assert tcio.tax_year() == txyr
-    tcio.analyze()
+    tcio.analyze(output_tables=True)
     assert tcio.tax_year() == txyr
