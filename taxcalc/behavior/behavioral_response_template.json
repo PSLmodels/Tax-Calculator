@@ -1,0 +1,14 @@
+// Parameters used to specify behavioral responses in tax policy analysis.
+//
+// This JSON file serves as a template for specifying behavioral response
+// elasticities that specify how individuals respond to a tax reform.
+//
+// Detailed documentation on these parameters can be found in the
+// response function docstring in the Behavioral-Responses repository
+// at the following URL:
+// https://github.com/PSLmodels/Behavioral-Responses/blob/232abc1e6b9f0a2b2f224ad887af3c19019d28d3/behresp/behavior.py#L13-L50
+{
+    "sub": 0.0,
+    "inc": 0,0,
+    "cg": 0.0
+}

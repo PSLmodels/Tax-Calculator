@@ -24,6 +24,8 @@ help:
 	@echo "             pycodestyle (nee pep8) and pylint tools"
 	@echo "idtest     : generate report for and cleanup after executing"
 	@echo "             taxcalc/cli/input_data_tests/tests.sh"
+	@echo "brtest     : generate report for and cleanup after executing"
+	@echo "             taxcalc/cli/behavioral_responses_tests/tests.sh"
 	@echo "coverage   : generate test coverage report"
 	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
 	@echo "git-pr N=n : create local pr-n branch containing upstream PR"
@@ -51,13 +53,13 @@ endef
 .PHONY=pytest
 pytest: clean
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m "not requires_puf and not requires_tmd"
+	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=4 -m "not requires_puf and not requires_tmd"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
 pytest-all: clean
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m ""
+	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=4 -m ""
 	@$(pytest-cleanup)
 
 define tctest-cleanup
@@ -95,6 +97,11 @@ cstest:
 idtest: package
 	@echo "Executing taxcalc/cli/input_data_tests"
 	@cd taxcalc/cli/input_data_tests ; ./tests.sh
+
+.PHONY=brtest
+brtest: package
+	@echo "Executing taxcalc/cli/behavioral_responses_tests"
+	@cd taxcalc/cli/behavioral_responses_tests ; ./tests.sh
 
 define coverage-cleanup
 rm -f .coverage htmlcov/*

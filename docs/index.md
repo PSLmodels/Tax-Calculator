@@ -3,7 +3,7 @@ Tax-Calculator
 
 ## What is Tax-Calculator?
 
-Tax-Calculator is an open-source microsimulation model for static analysis of
+Tax-Calculator is an open-source microsimulation model for analysis of
 USA federal income and payroll taxes.
 You can install it with [PyPI](https://pypi.org/project/taxcalc/) via:
 ```
@@ -17,16 +17,12 @@ conda install conda-forge::taxcalc
 
 When using sample data that represent the USA population,
 Tax-Calculator can estimate the aggregate revenue and distributional
-effects of tax reforms under static analysis assumptions.  Read
+effects of tax reforms.  Read
 {doc}`usage/data` for information about the three different prepared
 sample data sets that Tax-Calculator knows how to handle.
 
 Tax-Calculator can also process custom-created data on one or more filing
 units permitting analysis of how tax reforms affect certain people.
-
-Tax-Calculator interacts with other models in the
-[Policy Simulation Library](https://www.pslmodels.org/) to conduct non-static
-analysis.
 
 Tax-Calculator is transparent because its Python source code and embedded
 documentation are publicly available at the

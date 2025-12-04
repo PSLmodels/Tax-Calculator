@@ -1,0 +1,10 @@
+{
+    "policy": {
+        // raise personal exemption amount in 2028 and index in subsequent years
+        "II_em": {"2028": 1000},
+        // raise non-AMT tax rates in the top three brackets in 2028
+        "II_rt5": {"2028": 0.36},
+        "II_rt6": {"2028": 0.39},
+        "II_rt7": {"2028": 0.41}
+    }
+}
