@@ -5,6 +5,24 @@ Go
 for a complete commit history.
 
 
+2025-12-05 Release 6.3.0
+------------------------
+(last merged pull request is
+[#2981](https://github.com/PSLmodels/Tax-Calculator/pull/2981))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Add `--behavior` option to CLI that provides behavioral response
+  capabilities like those in Tax-Brain
+  [[#2981](https://github.com/PSLmodels/Tax-Calculator/pull/2981) by
+  Martin Holmer]
+
+**Bug Fixes**
+
+
 2025-11-19 Release 6.2.1
 ------------------------
 (last merged pull request is
