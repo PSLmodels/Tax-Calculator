@@ -584,7 +584,7 @@ class TaxCalcIO():
         self.calc_ref = Calculator(
             policy=self.pol_ref,
             records=self.recs_ref,
-            verbose=(not self.silent),
+            verbose=False,
             consumption=self.con,
             sync_years=self.aging_input_data,
         )
@@ -592,7 +592,7 @@ class TaxCalcIO():
         self.calc_bas = Calculator(
             policy=self.pol_bas,
             records=self.recs_bas,
-            verbose=(not self.silent),
+            verbose=False,
             consumption=self.con,
             sync_years=self.aging_input_data,
         )
