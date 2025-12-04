@@ -35,6 +35,11 @@ fi
 
 tc cps.csv 2035 --numyears 1 --behavior br1.json --runid 30 \
    --reform ref.json --exact --tables --silent
+cmp run30-35.tables run30-35.tables-expect
+if [ $? -ne 0 ]; then
+    ERRORS=1
+    echo Differences between run30-35.tables run30-35.tables-expect
+fi
 tc cps.csv 2028 --numyears 8 --behavior br1.json --runid 31 \
    --reform ref.json --exact --tables --silent
 cmp run31-35.tables run30-35.tables

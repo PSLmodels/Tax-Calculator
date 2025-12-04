@@ -53,13 +53,13 @@ endef
 .PHONY=pytest
 pytest: clean
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m "not requires_puf and not requires_tmd"
+	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=4 -m "not requires_puf and not requires_tmd"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
 pytest-all: clean
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=2 -m ""
+	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=4 -m ""
 	@$(pytest-cleanup)
 
 define tctest-cleanup
