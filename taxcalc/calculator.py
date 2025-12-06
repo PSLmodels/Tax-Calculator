@@ -112,9 +112,7 @@ class Calculator():
             raise ValueError('consumption must be None or Consumption object')
         if self.__consumption.current_year < self.__policy.current_year:
             self.__consumption.set_year(self.__policy.current_year)
-        current_year_is_data_year = (
-            self.__records.current_year == self.__records.data_year)
-        if sync_years and current_year_is_data_year:
+        if sync_years:
             while self.__records.current_year < self.__policy.current_year:
                 self.__records.increment_year()
             if verbose:
