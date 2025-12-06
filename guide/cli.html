@@ -191,6 +191,7 @@
 <li class="toctree-l2"><a class="reference internal" href="input_vars.html">Input variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="output_vars.html">Output variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="assumption_params.html">Assumption parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="behavior_params.html">Behavior parameters</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../recipes/index.html">Recipes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -204,7 +205,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../recipes/recipe06.html">Recipe 6: Analyzing a Non-Parametric Reform</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage/tcja_after_2025.html">OBBBA: TCJA after 2025</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
 <ul class="nav bd-sidenav">
@@ -471,6 +471,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#test-tc-cli">Test <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-tax-reform">Specify tax reform</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-analysis-assumptions">Specify analysis assumptions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-behavioral-responses">Specify behavioral responses</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-filing-units">Specify filing units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initiate-reform-analysis">Initiate reform analysis</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tabulate-reform-results">Tabulate reform results</a></li>
@@ -538,7 +539,7 @@ page</a>.</p>
 <section id="specify-analysis-assumptions">
 <h2>Specify analysis assumptions<a class="headerlink" href="#specify-analysis-assumptions" title="Link to this heading">#</a></h2>
 <p>This part explains how to specify economic assumption files used in
-static tax analysis. This is an advanced topic, so if you want to
+tax analysis. This is an advanced topic, so if you want to
 start out using the default assumptions (which are documented in <a class="reference external" href="https://taxcalc.pslmodels.org/guide/policy_params.html#policy-parameters">this
 section</a>)
 of the guide), you can skip this part now and come back to read it
@@ -552,6 +553,12 @@ timing and magnitude of these parameter changes are written in JSON, a
 simple and widely-used data-specification language.</p>
 <p>For examples of assumption files and the general rules for writing
 JSON assumption files, go to <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files">this
+page</a>.</p>
+</section>
+<section id="specify-behavioral-responses">
+<h2>Specify behavioral responses<a class="headerlink" href="#specify-behavioral-responses" title="Link to this heading">#</a></h2>
+<p>For a JSON file template that can be used to specify you own values of
+each response elasticity, go to <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/README.md">this
 page</a>.</p>
 </section>
 <section id="specify-filing-units">
@@ -687,13 +694,13 @@ the input file is the built-in <code class="docutils literal notranslate"><span 
 on an old Mac with a slow Intel CPU chip.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="n">cps</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2020</span> <span class="o">--</span><span class="n">dumpdb</span>
 <span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2014</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2020</span>
-<span class="n">Write</span> <span class="n">dump</span> <span class="n">output</span> <span class="n">to</span> <span class="n">sqlite3</span> <span class="n">database</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">20</span><span class="o">-</span><span class="c1">#-#-#.db</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">33.2</span> <span class="n">seconds</span>
+<span class="n">Write</span> <span class="n">dump</span> <span class="n">output</span> <span class="n">to</span> <span class="n">sqlite3</span> <span class="n">database</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">20</span><span class="o">-</span><span class="c1">#-#-#-#.db</span>
+<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">9.6</span> <span class="n">seconds</span>
 </pre></div>
 </div>
 <p>The dump database contains 2020 income tax liabilities for each filing
 unit under both baseline and reform policy regimes.  The name of the
-dump database file is <code class="docutils literal notranslate"><span class="pre">cps-20-#-#-#.db</span></code>.  Because we did not use the
+dump database file is <code class="docutils literal notranslate"><span class="pre">cps-20-#-#-#-#.db</span></code>.  Because we did not use the
 <code class="docutils literal notranslate"><span class="pre">--dumpvars</span></code> option, a minimal set of baseline/reform variables are
 included in the dump database.</p>
 <p>The main advantage of the SQLite3 database is that the
@@ -710,7 +717,7 @@ operating systems), which is automatically installed as part of the
 Anaconda Python distribution.  Full <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> documentation is
 <a class="reference external" href="https://sqlite.org/cli.html">here</a>.</p>
 <p>Here is a quick way to see the structure of the dump database:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">echo</span> <span class="s2">&quot;.schema&quot;</span> <span class="o">|</span> <span class="n">sqlite3</span> <span class="n">cps</span><span class="o">-</span><span class="mi">20</span><span class="o">-</span><span class="c1">#-#-#.db</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">echo</span> <span class="s2">&quot;.schema&quot;</span> <span class="o">|</span> <span class="n">sqlite3</span> <span class="n">cps</span><span class="o">-</span><span class="mi">20</span><span class="o">-</span><span class="c1">#-#-#-#.db</span>
 <span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">IF</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="s2">&quot;base&quot;</span> <span class="p">(</span>
 <span class="s2">&quot;RECID&quot;</span> <span class="n">INTEGER</span><span class="p">,</span>
   <span class="s2">&quot;s006&quot;</span> <span class="n">REAL</span><span class="p">,</span>
@@ -762,21 +769,20 @@ reform, we execute the following commands (note that on Windows you
 should replace <code class="docutils literal notranslate"><span class="pre">cat</span></code> with <code class="docutils literal notranslate"><span class="pre">type</span></code>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="n">cps</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2024</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ref3</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">params</span> <span class="o">--</span><span class="n">tables</span> <span class="o">--</span><span class="n">graphs</span>
 <span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2014</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2024</span>
-<span class="n">Write</span> <span class="n">baseline</span> <span class="n">policy</span> <span class="n">parameter</span> <span class="n">values</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-params.bas</span>
-<span class="n">Write</span> <span class="n">reform</span> <span class="n">policy</span> <span class="n">parameter</span> <span class="n">values</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-params.ref</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-tables.text</span>
-<span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-pch.html</span>
-<span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-atr.html</span>
-<span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-mtr.html</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">37.3</span> <span class="n">seconds</span>
+<span class="n">Write</span> <span class="n">baseline</span> <span class="n">policy</span> <span class="n">parameter</span> <span class="n">values</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#-params.bas</span>
+<span class="n">Write</span> <span class="n">reform</span> <span class="n">policy</span> <span class="n">parameter</span> <span class="n">values</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#-params.ref</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#-tables.text</span>
+<span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#-pch.html</span>
+<span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#-atr.html</span>
+<span class="n">Write</span> <span class="n">graphical</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#-mtr.html</span>
 
-<span class="o">%</span> <span class="n">diff</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-params.bas cps-24-#-ref3-#-params.ref</span>
+<span class="o">%</span> <span class="n">diff</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#-params.bas cps-24-#-ref3-#-#-params.ref</span>
 <span class="mi">34</span><span class="n">c34</span>
 <span class="o">&lt;</span> <span class="n">II_em</span> <span class="mf">0.0</span>
 <span class="o">---</span>
 <span class="o">&gt;</span> <span class="n">II_em</span> <span class="mf">9059.7</span>
 
-<span class="o">%</span> <span class="n">cat</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-tables.text</span>
+<span class="o">%</span> <span class="n">cat</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#-tables.text</span>
 <span class="n">Weighted</span> <span class="n">Tax</span> <span class="n">Reform</span> <span class="n">Totals</span> <span class="n">by</span> <span class="n">Baseline</span> <span class="n">Expanded</span><span class="o">-</span><span class="n">Income</span> <span class="n">Decile</span>
     <span class="n">Returns</span>    <span class="n">ExpInc</span>    <span class="n">IncTax</span>    <span class="n">PayTax</span>     <span class="n">LSTax</span>    <span class="n">AllTax</span>
        <span class="p">(</span><span class="c1">#m)      ($b)      ($b)      ($b)      ($b)      ($b)</span>
@@ -809,11 +815,11 @@ should replace <code class="docutils literal notranslate"><span class="pre">cat<
 </pre></div>
 </div>
 <p>The graphs in the three <code class="docutils literal notranslate"><span class="pre">.html</span></code> files can be viewed in your browser.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">cps-24-#-ref3-#-pch.html</span></code> file looks something like this:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cps-24-#-ref3-#-#-pch.html</span></code> file looks something like this:</p>
 <p><img alt="pch graph" src="../_images/pch.png" /></p>
-<p>The <code class="docutils literal notranslate"><span class="pre">cps-24-#-ref3-#-atr.html</span></code> file looks something like this:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cps-24-#-ref3-#-#-atr.html</span></code> file looks something like this:</p>
 <p><img alt="atr graph" src="../_images/atr.png" /></p>
-<p>The <code class="docutils literal notranslate"><span class="pre">cps-24-#-ref3-#-mtr.html</span></code> file looks something like this:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cps-24-#-ref3-#-#-mtr.html</span></code> file looks something like this:</p>
 <p><img alt="mtr graph" src="../_images/mtr.png" /></p>
 <p>In all the examples in this section, we have executed one <code class="docutils literal notranslate"><span class="pre">tc</span></code> run at
 at time.  But <strong>what if you want to execute many <code class="docutils literal notranslate"><span class="pre">tc</span></code> runs</strong> because
@@ -850,10 +856,10 @@ feature reduces substantially the amount of typing required to conduct
 exploratory data analysis.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">tc</span> <span class="n">cps</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2024</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ref3</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">dumpdb</span>
 <span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2014</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2024</span>
-<span class="n">Write</span> <span class="n">dump</span> <span class="n">output</span> <span class="n">to</span> <span class="n">sqlite3</span> <span class="n">database</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#.db</span>
+<span class="n">Write</span> <span class="n">dump</span> <span class="n">output</span> <span class="n">to</span> <span class="n">sqlite3</span> <span class="n">database</span> <span class="n">file</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#.db</span>
 <span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">35.6</span> <span class="n">seconds</span>
 
-<span class="o">%</span> <span class="n">sqlite3</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#.db</span>
+<span class="o">%</span> <span class="n">sqlite3</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#.db</span>
 <span class="n">SQLite</span> <span class="n">version</span> <span class="mf">3.39.5</span> <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">14</span> <span class="mi">20</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">05</span>
 <span class="n">Enter</span> <span class="s2">&quot;.help&quot;</span> <span class="k">for</span> <span class="n">usage</span> <span class="n">hints</span><span class="o">.</span>
 <span class="n">sqlite</span><span class="o">&gt;</span> <span class="n">YOUR</span> <span class="n">FIRST</span> <span class="n">SQL</span> <span class="n">COMMAND</span> <span class="n">GOES</span> <span class="n">HERE</span>
@@ -922,9 +928,9 @@ FROM base JOIN baseline AS b USING(RECID) JOIN reform AS r USING(RECID);
 .headers on
 </pre></div>
 </div>
-<p>Using this <code class="docutils literal notranslate"><span class="pre">tab.sql</span></code> script to tabulate the <code class="docutils literal notranslate"><span class="pre">cps-24-#-ref3-#.db</span></code>
+<p>Using this <code class="docutils literal notranslate"><span class="pre">tab.sql</span></code> script to tabulate the <code class="docutils literal notranslate"><span class="pre">cps-24-#-ref3-#-#.db</span></code>
 database produces these results in about 1.3 seconds:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">sqlite3</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#.db &lt; tab.sql</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">sqlite3</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#.db &lt; tab.sql</span>
 <span class="o">***</span> <span class="n">unweighted</span> <span class="ow">and</span> <span class="n">weighted</span> <span class="n">tax</span> <span class="n">unit</span> <span class="n">counts</span><span class="p">:</span>
 <span class="n">raw_count</span>  <span class="n">wgh_count</span>
 <span class="o">---------</span>  <span class="o">---------</span>
@@ -966,26 +972,25 @@ extend-TCJA-beyond-2025 reform, then we can execute the following run:</p>
 
 <span class="o">%</span> <span class="n">tc</span> <span class="o">../</span><span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2026</span> <span class="o">--</span><span class="n">numyears</span> <span class="mi">10</span> <span class="o">--</span><span class="n">reform</span> <span class="n">ext</span><span class="o">.</span><span class="n">json</span> <span class="o">--</span><span class="n">tables</span>
 <span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2026</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="c1">#-ext-#-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2027</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">27</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">27</span><span class="o">-</span><span class="c1">#-ext-#-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2028</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">28</span><span class="o">-</span><span class="c1">#-ext-#-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2029</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">29</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">29</span><span class="o">-</span><span class="c1">#-ext-#-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2030</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="c1">#-ext-#-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2031</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">31</span><span class="o">-</span><span class="c1">#-ext-#-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2032</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">32</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">32</span><span class="o">-</span><span class="c1">#-ext-#-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2033</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">33</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">33</span><span class="o">-</span><span class="c1">#-ext-#-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2034</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">34</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">34</span><span class="o">-</span><span class="c1">#-ext-#-#-tables.text</span>
 <span class="n">Advance</span> <span class="nb">input</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">policy</span> <span class="n">to</span> <span class="mi">2035</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">35</span><span class="o">-</span><span class="c1">#-ext-#-tables.text</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">55.6</span> <span class="n">seconds</span>
+<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd</span><span class="o">-</span><span class="mi">35</span><span class="o">-</span><span class="c1">#-ext-#-#-tables.text</span>
 </pre></div>
 </div>
 <p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2900#issue-3047043290">PR
@@ -997,34 +1002,34 @@ reform result from the files generated by this run.</p>
 liability is located on the last row of each tables output file in the
 fourth column, we can look at the ten-year results quickly:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tail -1 tmd-??-*tables.text
-==&gt; tmd-26-#-ext-#-tables.text &lt;==
+==&gt; tmd-26-#-ext-#-#-tables.text &lt;==
  A   192.41   20828.3    -284.0       0.0       0.0    -284.0
 
-==&gt; tmd-27-#-ext-#-tables.text &lt;==
+==&gt; tmd-27-#-ext-#-#-tables.text &lt;==
  A   193.77   21613.4    -291.7       0.0       0.0    -291.7
 
-==&gt; tmd-28-#-ext-#-tables.text &lt;==
+==&gt; tmd-28-#-ext-#-#-tables.text &lt;==
  A   194.72   22404.7    -299.5       0.0       0.0    -299.5
 
-==&gt; tmd-29-#-ext-#-tables.text &lt;==
+==&gt; tmd-29-#-ext-#-#-tables.text &lt;==
  A   195.66   23243.3    -291.8       0.0       0.0    -291.8
 
-==&gt; tmd-30-#-ext-#-tables.text &lt;==
+==&gt; tmd-30-#-ext-#-#-tables.text &lt;==
  A   196.58   24115.1    -299.8       0.0       0.0    -299.8
 
-==&gt; tmd-31-#-ext-#-tables.text &lt;==
+==&gt; tmd-31-#-ext-#-#-tables.text &lt;==
  A   197.48   25020.0    -307.8       0.0       0.0    -307.8
 
-==&gt; tmd-32-#-ext-#-tables.text &lt;==
+==&gt; tmd-32-#-ext-#-#-tables.text &lt;==
  A   198.35   25952.7    -315.7       0.0       0.0    -315.7
 
-==&gt; tmd-33-#-ext-#-tables.text &lt;==
+==&gt; tmd-33-#-ext-#-#-tables.text &lt;==
  A   199.21   26905.4    -323.6       0.0       0.0    -323.6
 
-==&gt; tmd-34-#-ext-#-tables.text &lt;==
+==&gt; tmd-34-#-ext-#-#-tables.text &lt;==
  A   200.03   27878.9    -331.6       0.0       0.0    -331.6
 
-==&gt; tmd-35-#-ext-#-tables.text &lt;==
+==&gt; tmd-35-#-ext-#-#-tables.text &lt;==
  A   200.83   28883.0    -339.6       0.0       0.0    -339.6
 </pre></div>
 </div>
@@ -1035,9 +1040,6 @@ could be called <code class="docutils literal notranslate"><span class="pre">gaw
 10 -3085.1
 </pre></div>
 </div>
-<p>More examples of analyzing different versions of the TCJA after 2025
-are available in this
-<a class="reference external" href="https://taxcalc.pslmodels.org/usage/tcja_after_2025.html">document</a>.</p>
 </section>
 </section>
 
@@ -1108,6 +1110,7 @@ are available in this
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#test-tc-cli">Test <code class="docutils literal notranslate"><span class="pre">tc</span></code> CLI</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-tax-reform">Specify tax reform</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-analysis-assumptions">Specify analysis assumptions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-behavioral-responses">Specify behavioral responses</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-filing-units">Specify filing units</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initiate-reform-analysis">Initiate reform analysis</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tabulate-reform-results">Tabulate reform results</a></li>

@@ -194,6 +194,7 @@
 <li class="toctree-l2"><a class="reference internal" href="guide/input_vars.html">Input variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/output_vars.html">Output variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/assumption_params.html">Assumption parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/behavior_params.html">Behavior parameters</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="recipes/index.html">Recipes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -207,7 +208,6 @@
 <li class="toctree-l2"><a class="reference internal" href="recipes/recipe06.html">Recipe 6: Analyzing a Non-Parametric Reform</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="usage/tcja_after_2025.html">OBBBA: TCJA after 2025</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
 <ul class="nav bd-sidenav">
@@ -490,7 +490,7 @@ document.write(`
 <h1>Tax-Calculator<a class="headerlink" href="#tax-calculator" title="Link to this heading">#</a></h1>
 <section id="what-is-tax-calculator">
 <h2>What is Tax-Calculator?<a class="headerlink" href="#what-is-tax-calculator" title="Link to this heading">#</a></h2>
-<p>Tax-Calculator is an open-source microsimulation model for static analysis of
+<p>Tax-Calculator is an open-source microsimulation model for analysis of
 USA federal income and payroll taxes.
 You can install it with <a class="reference external" href="https://pypi.org/project/taxcalc/">PyPI</a> via:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">taxcalc</span>
@@ -503,14 +503,11 @@ via:</p>
 </div>
 <p>When using sample data that represent the USA population,
 Tax-Calculator can estimate the aggregate revenue and distributional
-effects of tax reforms under static analysis assumptions.  Read
+effects of tax reforms.  Read
 <a class="reference internal" href="usage/data.html"><span class="doc">Data for Tax-Calculator</span></a> for information about the three different prepared
 sample data sets that Tax-Calculator knows how to handle.</p>
 <p>Tax-Calculator can also process custom-created data on one or more filing
 units permitting analysis of how tax reforms affect certain people.</p>
-<p>Tax-Calculator interacts with other models in the
-<a class="reference external" href="https://www.pslmodels.org/">Policy Simulation Library</a> to conduct non-static
-analysis.</p>
 <p>Tax-Calculator is transparent because its Python source code and embedded
 documentation are publicly available at the
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator">Tax-Calculator GitHub repository</a>.</p>

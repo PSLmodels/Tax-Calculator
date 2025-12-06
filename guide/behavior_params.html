@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tax-Calculator Policy &#8212; Tax-Calculator</title>
+    <title>Behavior parameters &#8212; Tax-Calculator</title>
   
   
   
@@ -57,11 +57,11 @@
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/policy';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'guide/behavior_params';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Tax-Calculator Records" href="records.html" />
-    <link rel="prev" title="Tax-Calculator Parameters" href="parameters.html" />
+    <link rel="next" title="Recipes" href="../recipes/index.html" />
+    <link rel="prev" title="Assumption parameters" href="assumption_params.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -180,18 +180,18 @@
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Usage</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../usage/starting.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage/overview.html">Structural overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage/data.html">Data for Tax-Calculator</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../guide/index.html">User guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../guide/python_interface.html">Python interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guide/cli.html">Command-line interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guide/policy_params.html">Policy parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guide/input_vars.html">Input variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guide/output_vars.html">Output variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guide/assumption_params.html">Assumption parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guide/behavior_params.html">Behavior parameters</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">User guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="python_interface.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policy_params.html">Policy parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input_vars.html">Input variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output_vars.html">Output variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assumption_params.html">Assumption parameters</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Behavior parameters</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../recipes/index.html">Recipes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -222,34 +222,34 @@
 <li class="toctree-l1"><a class="reference internal" href="../contributing/RELEASING.html">Releasing Tax-Caclculator Packages</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="public_api.html">Tax-Calculator Python API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="calculator.html">Tax-Calculator Calculator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="consumption.html">Tax-Calculator Consumption</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html">Tax-Calculator Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="decorators.html">Tax-Calculator Decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="growdiff.html">Tax-Calculator GrowDiff</a></li>
-<li class="toctree-l2"><a class="reference internal" href="growfactors.html">Tax-Calculator GrowFactors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parameters.html">Tax-Calculator Parameters</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Tax-Calculator Policy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="records.html">Tax-Calculator Records</a></li>
-<li class="toctree-l2"><a class="reference internal" href="taxcalcio.html">Tax-Calculator IO</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html">Tax-Calculator Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utilsprvt.html">Tax-Calculator Private Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="calculator.html">Tax-Calculator Calculator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="consumption.html">Tax-Calculator Consumption</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html">Tax-Calculator Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="decorators.html">Tax-Calculator Decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="growdiff.html">Tax-Calculator GrowDiff</a></li>
-<li class="toctree-l2"><a class="reference internal" href="growfactors.html">Tax-Calculator GrowFactors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parameters.html">Tax-Calculator Parameters</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Tax-Calculator Policy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="records.html">Tax-Calculator Records</a></li>
-<li class="toctree-l2"><a class="reference internal" href="taxcalcio.html">Tax-Calculator IO</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html">Tax-Calculator Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/public_api.html">Tax-Calculator Python API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data.html">Tax-Calculator Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/decorators.html">Tax-Calculator Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growdiff.html">Tax-Calculator GrowDiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growfactors.html">Tax-Calculator GrowFactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/parameters.html">Tax-Calculator Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/policy.html">Tax-Calculator Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/records.html">Tax-Calculator Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/taxcalcio.html">Tax-Calculator IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Tax-Calculator Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data.html">Tax-Calculator Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/decorators.html">Tax-Calculator Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growdiff.html">Tax-Calculator GrowDiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/growfactors.html">Tax-Calculator GrowFactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/parameters.html">Tax-Calculator Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/policy.html">Tax-Calculator Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/records.html">Tax-Calculator Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/taxcalcio.html">Tax-Calculator IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Tax-Calculator Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
 </ul>
 </details></li>
 </ul>
@@ -327,7 +327,7 @@
       
       
       
-      <li><a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/api/policy.rst" target="_blank"
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/guide/behavior_params.md" target="_blank"
    class="btn btn-sm btn-source-edit-button dropdown-item"
    title="Suggest edit"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -344,7 +344,7 @@
       
       
       
-      <li><a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fapi/policy.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fguide/behavior_params.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -374,7 +374,7 @@
       
       
       
-      <li><a href="../_sources/api/policy.rst" target="_blank"
+      <li><a href="../_sources/guide/behavior_params.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -384,7 +384,7 @@
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.rst</span>
+<span class="btn__text-container">.md</span>
 </a>
 </li>
       
@@ -445,9 +445,7 @@ document.write(`
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -458,28 +456,11 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Tax-Calculator Policy</h1>
+    <h1>Behavior parameters</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc-policy">taxcalc.policy</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.policy.Policy"><code class="docutils literal notranslate"><span class="pre">Policy</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.policy.Policy.implement_reform"><code class="docutils literal notranslate"><span class="pre">Policy.implement_reform()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.policy.Policy.parameter_list"><code class="docutils literal notranslate"><span class="pre">Policy.parameter_list()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.policy.Policy.read_json_reform"><code class="docutils literal notranslate"><span class="pre">Policy.read_json_reform()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.policy.Policy.set_rates"><code class="docutils literal notranslate"><span class="pre">Policy.set_rates()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -489,65 +470,20 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="tax-calculator-policy">
-<span id="policy"></span><h1>Tax-Calculator Policy<a class="headerlink" href="#tax-calculator-policy" title="Link to this heading">#</a></h1>
-<p><strong>Tax-Calculator Policy</strong></p>
-<section id="taxcalc-policy">
-<h2>taxcalc.policy<a class="headerlink" href="#taxcalc-policy" title="Link to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="taxcalc.policy.Policy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">taxcalc.policy.</span></span><span class="sig-name descname"><span class="pre">Policy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gfactors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_budget_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2035</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.policy.Policy" title="Link to this definition">#</a></dt>
-<dd><p>Policy is a subclass of the abstract Parameters class, and
-therefore, inherits its methods (none of which are shown here).</p>
-<p>Constructor for the federal tax policy class.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>gfactors</strong> (<em>GrowFactors class instance</em><em> or </em><em>None</em>) – containing price inflation rates and wage growth rates used
-to index policy paramaters</p></li>
-<li><p><strong>last_budget_year</strong> (<em>integer</em>) – user-defined last parameter extrapolation year</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError:</strong> – if gfactors is not a GrowFactors class instance or None.</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>class instance</strong></p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#taxcalc.policy.Policy" title="taxcalc.policy.Policy">Policy</a></p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.policy.Policy.implement_reform">
-<span class="sig-name descname"><span class="pre">implement_reform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.implement_reform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.policy.Policy.implement_reform" title="Link to this definition">#</a></dt>
-<dd><p>Implement reform using a Tax-Calculator-style reform dictionary.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.policy.Policy.parameter_list">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parameter_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.parameter_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.policy.Policy.parameter_list" title="Link to this definition">#</a></dt>
-<dd><p>Returns list of parameter names in the policy_current_law.json file.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.policy.Policy.read_json_reform">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_json_reform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.read_json_reform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.policy.Policy.read_json_reform" title="Link to this definition">#</a></dt>
-<dd><p>Return a reform dictionary suitable for use with implement_reform
-method generated from the specified JSON object, which can be None or
-a string containing a local filename, a URL beginning with ‘http’
-pointing to a valid JSON file hosted online, or a valid JSON text.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.policy.Policy.set_rates">
-<span class="sig-name descname"><span class="pre">set_rates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.set_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.policy.Policy.set_rates" title="Link to this definition">#</a></dt>
-<dd><p>Initialize policy parameter indexing rates.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
+  <section class="tex2jax_ignore mathjax_ignore" id="behavior-parameters">
+<h1>Behavior parameters<a class="headerlink" href="#behavior-parameters" title="Link to this heading">#</a></h1>
+<p>Note that logic that uses assumed behavior parameters to compute
+changes in input variables caused by a tax reform in a
+partial-equilibrium setting is not part of Tax-Calculator.  The
+<a class="reference external" href="https://github.com/PSLmodels/Behavioral-Responses/blob/232abc1e6b9f0a2b2f224ad887af3c19019d28d3/behresp/behavior.py#L13-L50"><code class="docutils literal notranslate"><span class="pre">response</span></code>
+function</a>
+in the PSLmodels Behavioral-Responses <code class="docutils literal notranslate"><span class="pre">behresp</span></code> package contains that
+logic.</p>
+<p>By default Tax-Calculator assumes no behavioral responses to a tax
+reform, which is the same as saying the behavior parameters (or
+elasticities) are assumed to be zero by default.  The elasticities can
+be set to non-zero values in a JSON file that is formatted like
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/behavior_response_template.json">this</a>).</p>
 </section>
 
     <script type="text/x-thebe-config">
@@ -563,7 +499,7 @@ pointing to a valid JSON file hosted online, or a valid JSON text.</p>
         },
         kernelOptions: {
             name: "python3",
-            path: "./api"
+            path: "./guide"
         },
         predefinedOutput: true
     }
@@ -581,20 +517,20 @@ pointing to a valid JSON file hosted online, or a valid JSON text.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="parameters.html"
+       href="assumption_params.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Tax-Calculator Parameters</p>
+        <p class="prev-next-title">Assumption parameters</p>
       </div>
     </a>
     <a class="right-next"
-       href="records.html"
+       href="../recipes/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Tax-Calculator Records</p>
+        <p class="prev-next-title">Recipes</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -604,30 +540,6 @@ pointing to a valid JSON file hosted online, or a valid JSON text.</p>
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc-policy">taxcalc.policy</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.policy.Policy"><code class="docutils literal notranslate"><span class="pre">Policy</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.policy.Policy.implement_reform"><code class="docutils literal notranslate"><span class="pre">Policy.implement_reform()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.policy.Policy.parameter_list"><code class="docutils literal notranslate"><span class="pre">Policy.parameter_list()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.policy.Policy.read_json_reform"><code class="docutils literal notranslate"><span class="pre">Policy.read_json_reform()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.policy.Policy.set_rates"><code class="docutils literal notranslate"><span class="pre">Policy.set_rates()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>
