@@ -118,6 +118,7 @@ def test_calculator_advance_to_year(cps_subsample):
     """
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
+    pol.set_year(2015)
     calc = Calculator(policy=pol, records=rec)
     calc.advance_to_year(2016)
     assert calc.current_year == 2016

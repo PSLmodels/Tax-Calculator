@@ -4,7 +4,7 @@ Tax-Calculator Input-Output class.
 # CODING-STYLE CHECKS:
 # pycodestyle taxcalcio.py
 # pylint --disable=locally-disabled taxcalcio.py
-
+# pylint: disable=too-many-lines
 import os
 import gc
 import copy
@@ -13,6 +13,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import paramtools
+import behresp
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption
@@ -55,6 +56,10 @@ class TaxCalcIO():
         None implies economic assumptions are standard assumptions,
         or string is name of optional ASSUMP file.
 
+    behavior: None or string
+        None implies behavioral response elasticities are all zero,
+        or string is name of optional BEHAVIOR file.
+
     runid: int
         run id value to use for simpler output file names
 
@@ -67,8 +72,8 @@ class TaxCalcIO():
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, input_data, tax_year, baseline, reform, assump,
-                 runid=0, silent=True):
+    def __init__(self, input_data, tax_year, baseline, reform,
+                 assump, behavior, runid=0, silent=True):
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-statements,too-many-locals
         self.silent = silent
@@ -236,13 +241,40 @@ class TaxCalcIO():
         else:
             msg = 'TaxCalcIO.ctor: assump is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
+        # check name and existence of BEHAVIOR file
+        self.behvdict = None
+        beh = '-x'
+        if behavior is None:
+            beh = '-#'
+        elif isinstance(behavior, str):
+            # remove any leading directory path from BEHAVIOR filename
+            fname = os.path.basename(behavior)
+            # check if fname ends with ".json"
+            if fname.endswith('.json'):
+                beh = f'-{fname[:-5]}'
+            else:
+                msg = 'BEHAVIOR file name does not end in .json'
+                self.errmsg += f'ERROR: {msg}\n'
+            # check existence of BEHAVIOR file
+            if not os.path.isfile(behavior):
+                msg = 'BEHAVIOR file could not be found'
+                self.errmsg += f'ERROR: {msg}\n'
+        else:
+            msg = 'TaxCalcIO.ctor: behavior is neither None nor str'
+            self.errmsg += f'ERROR: {msg}\n'
         # create OUTPUT file name and delete any existing output files
-        self.output_filename = f'{inp}{bas}{ref}{asm}.xxx'
+        self.output_filename = f'{inp}{bas}{ref}{asm}{beh}.xxx'
         self.runid = runid
         if runid > 0:
             self.output_filename = f'run{runid}-{str(tax_year)[2:]}.xxx'
         self.delete_output_files()
         # initialize variables whose values are set in init method
+        self.pol_ref = None
+        self.pol_bas = None
+        self.recs_ref = None
+        self.recs_bas = None
+        self.con = None
+        self.aging_input_data = None
         self.calc_ref = None
         self.calc_bas = None
 
@@ -262,15 +294,15 @@ class TaxCalcIO():
         for ext in extensions:
             delete_file(self.output_filename.replace('.xxx', ext))
 
-    def init(self, input_data, tax_year, baseline, reform, assump,
-             exact_calculations):
+    def init(self, input_data, tax_year, baseline, reform,
+             assump, behavior, exact_calculations):
         """
         TaxCalcIO class post-constructor method that completes initialization.
 
         Parameters
         ----------
-        First five are same as the first five of the TaxCalcIO constructor:
-            input_data, tax_year, baseline, reform, assump.
+        First six are same as the first six of the TaxCalcIO constructor:
+            input_data, tax_year, baseline, reform, assump, behavior.
 
         exact_calculations: boolean
             specifies whether or not exact tax calculations are done without
@@ -313,6 +345,35 @@ class TaxCalcIO():
             return
         # get assumption sub-dictionaries
         assumpdict = Calculator.read_json_param_objects(None, assump)
+        # get behavior dictionary
+        if behavior:
+            with open(behavior, 'r', encoding='utf-8') as jfile:
+                json_text = jfile.read()
+            try:
+                self.behvdict = json_to_dict(json_text)
+            except ValueError as valerr:  # pragma: no cover
+                msg = f'{behavior} contains invalid JSON'
+                self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
+                self.errmsg += f'{valerr}'
+                return
+            # check behavior response elasticity names and values
+            elasticity_set = set(self.behvdict.keys())
+            if elasticity_set != set(['sub', 'inc', 'cg']):
+                msg = f'{behavior} contains extra or missing elasticities'
+                self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
+                self.errmsg += 'Valid elasticities are "sub", "inc", "cg"'
+                return
+            if self.behvdict['sub'] < 0.0:
+                msg = f'{behavior} contains negative "sub" elasticity'
+                self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
+            if self.behvdict['inc'] > 0.0:
+                msg = f'{behavior} contains positive "inc" elasticity'
+                self.errmsg += f'ERROR: BEHAVIOR file {msg}\n'
+            if self.behvdict['cg'] > 0.0:
+                msg = f'{behavior} contains positive "cg" elasticity'
+                self.errmsg += f'ERROR: BEHAVIOR file {msg}\n'
+            if self.errmsg:
+                return
         # get policy parameter dictionaries from --baseline file(s)
         poldicts_bas = []
         if self.specified_baseline:
@@ -353,84 +414,84 @@ class TaxCalcIO():
         gdiff_response.apply_to(policy_gfactors_ref)
         # ... the baseline Policy object
         if self.specified_baseline:
-            pol_bas = Policy(
+            self.pol_bas = Policy(
                 gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
             for poldict in poldicts_bas:
                 try:
-                    pol_bas.implement_reform(
+                    self.pol_bas.implement_reform(
                         poldict,
                         print_warnings=True,
                         raise_errors=False,
                     )
                     if self.errmsg:
                         self.errmsg += '\n'
-                    for _, errors in pol_bas.parameter_errors.items():
+                    for _, errors in self.pol_bas.parameter_errors.items():
                         self.errmsg += '\n'.join(errors)
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += str(valerr_msg)
         else:
-            pol_bas = Policy(
+            self.pol_bas = Policy(
                 gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
         # ... the reform Policy object
         if self.specified_reform:
-            pol_ref = Policy(
+            self.pol_ref = Policy(
                 gfactors=policy_gfactors_ref,
                 last_budget_year=last_b_year,
             )
             for poldict in poldicts_ref:
                 try:
-                    pol_ref.implement_reform(
+                    self.pol_ref.implement_reform(
                         poldict,
                         print_warnings=True,
                         raise_errors=False,
                     )
                     if self.errmsg:
                         self.errmsg += '\n'
-                    for _, errors in pol_ref.parameter_errors.items():
+                    for _, errors in self.pol_ref.parameter_errors.items():
                         self.errmsg += '\n'.join(errors)
                 except paramtools.ValidationError as valerr_msg:
                     self.errmsg += str(valerr_msg)
         else:
-            pol_ref = Policy(
+            self.pol_ref = Policy(
                 gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
         # create Consumption object
-        con = Consumption(last_budget_year=last_b_year)
+        self.con = Consumption(last_budget_year=last_b_year)
         try:
-            con.update_consumption(assumpdict['consumption'])
+            self.con.update_consumption(assumpdict['consumption'])
         except paramtools.ValidationError as valerr_msg:
             self.errmsg += str(valerr_msg)
         # any errors imply cannot proceed with calculations
         if self.errmsg:
             return
         # set policy to tax_year
-        pol_ref.set_year(tax_year)
-        pol_bas.set_year(tax_year)
+        self.pol_ref.set_year(tax_year)
+        self.pol_bas.set_year(tax_year)
         # read input file contents into Records objects
-        aging_input_data = True
+        self.aging_input_data = True
         if self.cps_input_data:
-            recs_ref = Records.cps_constructor(
+            self.recs_ref = Records.cps_constructor(
                 gfactors=gfactors_ref,
                 exact_calculations=exact_calculations,
             )
-            recs_bas = Records.cps_constructor(
+            self.recs_bas = Records.cps_constructor(
                 gfactors=gfactors_bas,
                 exact_calculations=exact_calculations,
             )
         elif self.puf_input_data:  # pragma: no cover
-            recs_ref = Records.puf_constructor(
+            self.recs_ref = Records.puf_constructor(
                 data=input_data,
                 gfactors=gfactors_ref,
                 weights=self.puf_weights,
                 ratios=self.puf_ratios,
                 exact_calculations=exact_calculations,
             )
-            recs_bas = Records.puf_constructor(
+            self.recs_bas = Records.puf_constructor(
                 data=input_data,
                 gfactors=gfactors_bas,
                 weights=self.puf_weights,
@@ -438,21 +499,21 @@ class TaxCalcIO():
                 exact_calculations=exact_calculations,
             )
         elif self.tmd_input_data:  # pragma: no cover
-            recs_ref = Records.tmd_constructor(
+            self.recs_ref = Records.tmd_constructor(
                 data_path=Path(input_data),
                 weights_path=Path(self.tmd_weights),
                 growfactors=gfactors_ref,
                 exact_calculations=exact_calculations,
             )
-            recs_bas = Records.tmd_constructor(
+            self.recs_bas = Records.tmd_constructor(
                 data_path=Path(input_data),
                 weights_path=Path(self.tmd_weights),
                 growfactors=gfactors_bas,
                 exact_calculations=exact_calculations,
             )
         else:  # input_data are raw data that are not being aged
-            aging_input_data = False
-            recs_ref = Records(
+            self.aging_input_data = False
+            self.recs_ref = Records(
                 data=input_data,
                 start_year=tax_year,
                 gfactors=None,
@@ -460,21 +521,26 @@ class TaxCalcIO():
                 adjust_ratios=None,
                 exact_calculations=exact_calculations,
             )
-            recs_bas = copy.deepcopy(recs_ref)
+            self.recs_bas = copy.deepcopy(self.recs_ref)
+        # extrapolate input data to tax_year if aging_input_data is True
+        if self.aging_input_data:
+            while self.recs_ref.current_year < tax_year:
+                self.recs_ref.increment_year()
+                self.recs_bas.increment_year()
         # create Calculator objects
         self.calc_ref = Calculator(
-            policy=pol_ref,
-            records=recs_ref,
+            policy=self.pol_ref,
+            records=self.recs_ref,
             verbose=(not self.silent),
-            consumption=con,
-            sync_years=aging_input_data,
+            consumption=self.con,
+            sync_years=self.aging_input_data,
         )
         self.calc_bas = Calculator(
-            policy=pol_bas,
-            records=recs_bas,
+            policy=self.pol_bas,
+            records=self.recs_bas,
             verbose=False,
-            consumption=con,
-            sync_years=aging_input_data,
+            consumption=self.con,
+            sync_years=self.aging_input_data,
         )
 
     def tax_year(self):
@@ -492,7 +558,7 @@ class TaxCalcIO():
 
     def advance_to_year(self, year):
         """
-        Update self.output_filename and advance Calculator objects to year.
+        Update self.output_filename and create Calculator objects for year.
         """
         # update self.output_filename and delete output files
         parts = self.output_filename.split('-')
@@ -504,9 +570,33 @@ class TaxCalcIO():
             parts[1] = '.'.join(subparts)
         self.output_filename = '-'.join(parts)
         self.delete_output_files()
-        # advance baseline and reform Calculator objects to specified year
-        self.calc_bas.advance_to_year(year)
-        self.calc_ref.advance_to_year(year)
+        # create baseline and reform Calculator objects for specified year
+        # ... set policy for year
+        self.pol_ref.set_year(year)
+        self.pol_bas.set_year(year)
+        # ... set consumption for year
+        self.con.set_year(year)
+        # ... increment records to year
+        self.recs_ref.increment_year()
+        self.recs_bas.increment_year()
+        # ... delete old and create new Calculator objects
+        del self.calc_ref
+        self.calc_ref = Calculator(
+            policy=self.pol_ref,
+            records=self.recs_ref,
+            verbose=False,
+            consumption=self.con,
+            sync_years=self.aging_input_data,
+        )
+        del self.calc_bas
+        self.calc_bas = Calculator(
+            policy=self.pol_bas,
+            records=self.recs_bas,
+            verbose=False,
+            consumption=self.con,
+            sync_years=self.aging_input_data,
+        )
+        # report advance to new year
         aging_data = (
             self.cps_input_data or
             self.puf_input_data or
@@ -562,24 +652,65 @@ class TaxCalcIO():
         if not doing_calcs:
             return
         # do output calculations
-        self.calc_bas.calc_all()
-        self.calc_ref.calc_all()
+        if self.behvdict:  # if assuming behavioral responses
+            br_dump_bas, br_dump_ref = behresp.response(
+                self.calc_bas, self.calc_ref,
+                self.behvdict, dump=True,
+            )
+            # copy returned dump dataframe values back into calc objects
+            int_variables = self.recs_bas.INTEGER_VARS
+            vnames = list(br_dump_bas.columns)
+            for mtr_vname in ['mtr_ptax', 'mtr_itax', 'mtr_combined']:
+                if mtr_vname in vnames:
+                    vnames.remove(mtr_vname)
+            for vname in vnames:
+                if vname in int_variables:
+                    vdtype = np.int32
+                else:
+                    vdtype = np.float64
+                self.calc_bas.array(
+                    vname,
+                    br_dump_bas[vname].to_numpy(dtype=vdtype, copy=True)
+                )
+            del br_dump_bas
+            vnames = list(br_dump_ref.columns)
+            for mtr_vname in ['mtr_ptax', 'mtr_itax', 'mtr_combined']:
+                if mtr_vname in vnames:
+                    vnames.remove(mtr_vname)
+            for vname in vnames:
+                if vname in int_variables:
+                    vdtype = np.int32
+                else:
+                    vdtype = np.float64
+                self.calc_ref.array(
+                    vname,
+                    br_dump_ref[vname].to_numpy(dtype=vdtype, copy=True)
+                )
+            del br_dump_ref
+        else:  # if assuming no behavioral responses
+            self.calc_bas.calc_all()
+            self.calc_ref.calc_all()
+        # handle MTR output variables
+        mtr_ptax_bas = None
+        mtr_itax_bas = None
+        mtr_ptax_ref = None
+        mtr_itax_ref = None
         if output_dump:
             assert isinstance(dump_varlist, list)
             assert len(dump_varlist) > 0
-            # might need marginal tax rates for dumpdb
-            (mtr_ptax_ref, mtr_itax_ref,
-             _) = self.calc_ref.mtr(wrt_full_compensation=False,
-                                    calc_all_already_called=True)
-            (mtr_ptax_bas, mtr_itax_bas,
-             _) = self.calc_bas.mtr(wrt_full_compensation=False,
-                                    calc_all_already_called=True)
-        else:
-            # do not need marginal tax rates for dumpdb
-            mtr_ptax_ref = None
-            mtr_itax_ref = None
-            mtr_ptax_bas = None
-            mtr_itax_bas = None
+            mtr_output = (
+                'mtr_itax' in dump_varlist or
+                'mtr_ptax' in dump_varlist
+            )
+            if mtr_output:
+                (mtr_ptax_bas, mtr_itax_bas,
+                 _) = self.calc_bas.mtr(
+                     wrt_full_compensation=False,
+                     calc_all_already_called=True)
+                (mtr_ptax_ref, mtr_itax_ref,
+                 _) = self.calc_ref.mtr(
+                     wrt_full_compensation=False,
+                     calc_all_already_called=True)
         # optionally write --tables output to text file
         if output_tables:
             self.write_tables_file()
@@ -881,11 +1012,10 @@ class TaxCalcIO():
             """
             odict = {}
             for var in dumpvars:
-                if var in TaxCalcIO.MTR_DUMPVARS:
-                    if var == 'mtr_itax':
-                        odict[var] = pd.Series(mtr_itax)
-                    elif var == 'mtr_ptax':
-                        odict[var] = pd.Series(mtr_ptax)
+                if var == 'mtr_itax':
+                    odict[var] = pd.Series(mtr_itax)
+                elif var == 'mtr_ptax':
+                    odict[var] = pd.Series(mtr_ptax)
                 else:
                     odict[var] = pd.Series(calcx.array(var))
             odf = pd.concat(odict, axis=1)
@@ -931,14 +1061,16 @@ class TaxCalcIO():
         del outdf
         # write baseline table
         outdf = dump_output(
-            self.calc_bas, dump_varlist, mtr_itax_bas, mtr_ptax_bas,
+            self.calc_bas, dump_varlist,
+            mtr_itax_bas, mtr_ptax_bas,
         )
         assert len(outdf.index) == self.calc_bas.array_len
         outdf.to_sql('baseline', dbcon, index=False)
         del outdf
         # write reform table
         outdf = dump_output(
-            self.calc_ref, dump_varlist, mtr_itax_ref, mtr_ptax_ref,
+            self.calc_ref, dump_varlist,
+            mtr_itax_ref, mtr_ptax_ref,
         )
         assert len(outdf.index) == self.calc_ref.array_len
         outdf.to_sql('reform', dbcon, index=False)

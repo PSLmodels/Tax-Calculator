@@ -59,7 +59,7 @@ page](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/RE
 ## Specify analysis assumptions
 
 This part explains how to specify economic assumption files used in
-static tax analysis. This is an advanced topic, so if you want to
+tax analysis. This is an advanced topic, so if you want to
 start out using the default assumptions (which are documented in [this
 section](https://taxcalc.pslmodels.org/guide/policy_params.html#policy-parameters))
 of the guide), you can skip this part now and come back to read it
@@ -76,6 +76,12 @@ simple and widely-used data-specification language.
 For examples of assumption files and the general rules for writing
 JSON assumption files, go to [this
 page](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files).
+
+## Specify behavioral responses
+
+For a JSON file template that can be used to specify you own values of
+each response elasticity, go to [this
+page](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/README.md).
 
 ## Specify filing units
 
@@ -226,13 +232,13 @@ on an old Mac with a slow Intel CPU chip.
 ```
 % tc cps.csv 2020 --dumpdb
 Read input data for 2014; input data were extrapolated to 2020
-Write dump output to sqlite3 database file cps-20-#-#-#.db
-Execution time is 33.2 seconds
+Write dump output to sqlite3 database file cps-20-#-#-#-#.db
+Execution time is 9.6 seconds
 ```
 
 The dump database contains 2020 income tax liabilities for each filing
 unit under both baseline and reform policy regimes.  The name of the
-dump database file is `cps-20-#-#-#.db`.  Because we did not use the
+dump database file is `cps-20-#-#-#-#.db`.  Because we did not use the
 `--dumpvars` option, a minimal set of baseline/reform variables are
 included in the dump database.  
 
@@ -254,7 +260,7 @@ Anaconda Python distribution.  Full `sqlite3` documentation is
 Here is a quick way to see the structure of the dump database:
 
 ```
-% echo ".schema" | sqlite3 cps-20-#-#-#.db
+% echo ".schema" | sqlite3 cps-20-#-#-#-#.db
 CREATE TABLE IF NOT EXISTS "base" (
 "RECID" INTEGER,
   "s006" REAL,
@@ -312,21 +318,20 @@ should replace `cat` with `type`):
 ```
 % tc cps.csv 2024 --reform ref3.json --params --tables --graphs
 Read input data for 2014; input data were extrapolated to 2024
-Write baseline policy parameter values to file cps-24-#-ref3-#-params.bas
-Write reform policy parameter values to file cps-24-#-ref3-#-params.ref
-Write tabular output to file cps-24-#-ref3-#-tables.text
-Write graphical output to file cps-24-#-ref3-#-pch.html
-Write graphical output to file cps-24-#-ref3-#-atr.html
-Write graphical output to file cps-24-#-ref3-#-mtr.html
-Execution time is 37.3 seconds
+Write baseline policy parameter values to file cps-24-#-ref3-#-#-params.bas
+Write reform policy parameter values to file cps-24-#-ref3-#-#-params.ref
+Write tabular output to file cps-24-#-ref3-#-#-tables.text
+Write graphical output to file cps-24-#-ref3-#-#-pch.html
+Write graphical output to file cps-24-#-ref3-#-#-atr.html
+Write graphical output to file cps-24-#-ref3-#-#-mtr.html
 
-% diff cps-24-#-ref3-#-params.bas cps-24-#-ref3-#-params.ref
+% diff cps-24-#-ref3-#-#-params.bas cps-24-#-ref3-#-#-params.ref
 34c34
 < II_em 0.0
 ---
 > II_em 9059.7
 
-% cat cps-24-#-ref3-#-tables.text
+% cat cps-24-#-ref3-#-#-tables.text
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
@@ -360,15 +365,15 @@ Weighted Tax Differences by Baseline Expanded-Income Decile
 
 The graphs in the three `.html` files can be viewed in your browser.
 
-The `cps-24-#-ref3-#-pch.html` file looks something like this:
+The `cps-24-#-ref3-#-#-pch.html` file looks something like this:
 
 ![pch graph](../_static/pch.png)
 
-The `cps-24-#-ref3-#-atr.html` file looks something like this:
+The `cps-24-#-ref3-#-#-atr.html` file looks something like this:
 
 ![atr graph](../_static/atr.png)
 
-The `cps-24-#-ref3-#-mtr.html` file looks something like this:
+The `cps-24-#-ref3-#-#-mtr.html` file looks something like this:
 
 ![mtr graph](../_static/mtr.png)
 
@@ -411,10 +416,10 @@ exploratory data analysis.
 ```
 % tc cps.csv 2024 --reform ref3.json --dumpdb
 Read input data for 2014; input data were extrapolated to 2024
-Write dump output to sqlite3 database file cps-24-#-ref3-#.db
+Write dump output to sqlite3 database file cps-24-#-ref3-#-#.db
 Execution time is 35.6 seconds
 
-% sqlite3 cps-24-#-ref3-#.db
+% sqlite3 cps-24-#-ref3-#-#.db
 SQLite version 3.39.5 2022-10-14 20:58:05
 Enter ".help" for usage hints.
 sqlite> YOUR FIRST SQL COMMAND GOES HERE
@@ -485,11 +490,11 @@ FROM base JOIN baseline AS b USING(RECID) JOIN reform AS r USING(RECID);
 .headers on
 ```
 
-Using this `tab.sql` script to tabulate the `cps-24-#-ref3-#.db`
+Using this `tab.sql` script to tabulate the `cps-24-#-ref3-#-#.db`
 database produces these results in about 1.3 seconds:
 
 ```
-% sqlite3 cps-24-#-ref3-#.db < tab.sql
+% sqlite3 cps-24-#-ref3-#-#.db < tab.sql
 *** unweighted and weighted tax unit counts:
 raw_count  wgh_count
 ---------  ---------
@@ -533,26 +538,25 @@ Tax-Calculator 4.6.2 on Python 3.12
 
 % tc ../tmd.csv 2026 --numyears 10 --reform ext.json --tables
 Read input data for 2021; input data were extrapolated to 2026
-Write tabular output to file tmd-26-#-ext-#-tables.text
+Write tabular output to file tmd-26-#-ext-#-#-tables.text
 Advance input data and policy to 2027
-Write tabular output to file tmd-27-#-ext-#-tables.text
+Write tabular output to file tmd-27-#-ext-#-#-tables.text
 Advance input data and policy to 2028
-Write tabular output to file tmd-28-#-ext-#-tables.text
+Write tabular output to file tmd-28-#-ext-#-#-tables.text
 Advance input data and policy to 2029
-Write tabular output to file tmd-29-#-ext-#-tables.text
+Write tabular output to file tmd-29-#-ext-#-#-tables.text
 Advance input data and policy to 2030
-Write tabular output to file tmd-30-#-ext-#-tables.text
+Write tabular output to file tmd-30-#-ext-#-#-tables.text
 Advance input data and policy to 2031
-Write tabular output to file tmd-31-#-ext-#-tables.text
+Write tabular output to file tmd-31-#-ext-#-#-tables.text
 Advance input data and policy to 2032
-Write tabular output to file tmd-32-#-ext-#-tables.text
+Write tabular output to file tmd-32-#-ext-#-#-tables.text
 Advance input data and policy to 2033
-Write tabular output to file tmd-33-#-ext-#-tables.text
+Write tabular output to file tmd-33-#-ext-#-#-tables.text
 Advance input data and policy to 2034
-Write tabular output to file tmd-34-#-ext-#-tables.text
+Write tabular output to file tmd-34-#-ext-#-#-tables.text
 Advance input data and policy to 2035
-Write tabular output to file tmd-35-#-ext-#-tables.text
-Execution time is 55.6 seconds
+Write tabular output to file tmd-35-#-ext-#-#-tables.text
 ```
 
 [PR
@@ -567,34 +571,34 @@ fourth column, we can look at the ten-year results quickly:
 
 ```
 % tail -1 tmd-??-*tables.text
-==> tmd-26-#-ext-#-tables.text <==
+==> tmd-26-#-ext-#-#-tables.text <==
  A   192.41   20828.3    -284.0       0.0       0.0    -284.0
 
-==> tmd-27-#-ext-#-tables.text <==
+==> tmd-27-#-ext-#-#-tables.text <==
  A   193.77   21613.4    -291.7       0.0       0.0    -291.7
 
-==> tmd-28-#-ext-#-tables.text <==
+==> tmd-28-#-ext-#-#-tables.text <==
  A   194.72   22404.7    -299.5       0.0       0.0    -299.5
 
-==> tmd-29-#-ext-#-tables.text <==
+==> tmd-29-#-ext-#-#-tables.text <==
  A   195.66   23243.3    -291.8       0.0       0.0    -291.8
 
-==> tmd-30-#-ext-#-tables.text <==
+==> tmd-30-#-ext-#-#-tables.text <==
  A   196.58   24115.1    -299.8       0.0       0.0    -299.8
 
-==> tmd-31-#-ext-#-tables.text <==
+==> tmd-31-#-ext-#-#-tables.text <==
  A   197.48   25020.0    -307.8       0.0       0.0    -307.8
 
-==> tmd-32-#-ext-#-tables.text <==
+==> tmd-32-#-ext-#-#-tables.text <==
  A   198.35   25952.7    -315.7       0.0       0.0    -315.7
 
-==> tmd-33-#-ext-#-tables.text <==
+==> tmd-33-#-ext-#-#-tables.text <==
  A   199.21   26905.4    -323.6       0.0       0.0    -323.6
 
-==> tmd-34-#-ext-#-tables.text <==
+==> tmd-34-#-ext-#-#-tables.text <==
  A   200.03   27878.9    -331.6       0.0       0.0    -331.6
 
-==> tmd-35-#-ext-#-tables.text <==
+==> tmd-35-#-ext-#-#-tables.text <==
  A   200.83   28883.0    -339.6       0.0       0.0    -339.6
 ```
 
@@ -606,7 +610,3 @@ could be called `gawk` or `gawk.exe` on your computer, as follows:
 % tail -1 tmd-??-*tables.text | awk '$1~/A/{n++;c+=$4}END{print n,c}'
 10 -3085.1
 ```
-
-More examples of analyzing different versions of the TCJA after 2025
-are available in this
-[document](https://taxcalc.pslmodels.org/usage/tcja_after_2025.html).

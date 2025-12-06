@@ -89,9 +89,9 @@ this command for tabular output under 2024 current-law policy:
 ```
 (taxcalc-dev) myruns> TMD_AREA=nm tc tmd.csv 2024 --exact --tables
 Read input data for 2021; input data were extrapolated to 2024
-Write tabular output to file tmd_nm-24-#-#-#.tables
+Write tabular output to file tmd_nm-24-#-#-#-#.tables
 Execution time is 8.2 seconds
-(taxcalc-dev) myruns> awk '$1~/Ret/||$1~/A/' tmd_nm-24-#-#-#.tables | head -2
+(taxcalc-dev) myruns> awk '$1~/Ret/||$1~/A/' tmd_nm-24-#-#-#-#.tables | head -2
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
  A     1.17      87.0       7.2       6.9       0.0      14.1
 ```
@@ -102,9 +102,9 @@ files and execute this command:
 ```
 (taxcalc-dev) myruns> TMD_AREA=nm01 tc tmd.csv 2024 --exact --tables
 Read input data for 2021; input data were extrapolated to 2024
-Write tabular output to file tmd_nm01-24-#-#-#.tables
+Write tabular output to file tmd_nm01-24-#-#-#-#.tables
 Execution time is 8.3 seconds
-(taxcalc-dev) myruns> awk '$1~/Ret/||$1~/A/' tmd_nm01-24-#-#-#.tables | head -2
+(taxcalc-dev) myruns> awk '$1~/Ret/||$1~/A/' tmd_nm01-24-#-#-#-#.tables | head -2
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
  A     0.40      31.9       2.8       2.5       0.0       5.3
 ```

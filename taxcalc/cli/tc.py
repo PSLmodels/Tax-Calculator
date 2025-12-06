@@ -29,12 +29,15 @@ def cli_tc_main():
     start_time = time.time()
 
     # parse command-line arguments:
-    usage_str = 'tc INPUT TAXYEAR {}{}{}{}'.format(
+    usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
         '[--help] [--numyears N]\n',
         (
             '          '
-            '[--baseline BASELINE] [--reform REFORM] '
-            '[--assump ASSUMP] [--exact]\n'
+            '[--baseline BASELINE] [--reform REFORM]\n'
+        ),
+        (
+            '          '
+            '[--assump ASSUMP] [--behavior BEHAVIOR] [--exact]\n'
         ),
         (
             '          '
@@ -90,6 +93,12 @@ def cli_tc_main():
                         help=('ASSUMP is name of optional JSON economic '
                               'assumptions file. No --assump implies use '
                               'of no customized assumptions.'),
+                        default=None)
+    parser.add_argument('--behavior',
+                        help=('BEHAVIOR is name of optional JSON behavioral '
+                              'response elasticities file. No --behavior '
+                              'implies use of zero elasticities; that is, '
+                              'no response to reform.'),
                         default=None)
     parser.add_argument('--exact',
                         help=('optional flag that suppresses the smoothing of '
@@ -273,6 +282,7 @@ def cli_tc_main():
         baseline=args.baseline,
         reform=args.reform,
         assump=args.assump,
+        behavior=args.behavior,
         runid=args.runid,
         silent=args.silent,
     )
@@ -293,6 +303,7 @@ def cli_tc_main():
         baseline=args.baseline,
         reform=args.reform,
         assump=args.assump,
+        behavior=args.behavior,
         exact_calculations=args.exact,
     )
     if tcio.errmsg:
@@ -366,7 +377,7 @@ EXPECTED_TEST_OUTPUT = (
     '1|131.88\n'
     '2|28879.00\n'
 )
-TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.dumpdb'
+TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#-#.dumpdb'
 TEST_SQLITE_QUERY = """
 SELECT
   RECID           AS id,

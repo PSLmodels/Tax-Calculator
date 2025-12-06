@@ -96,7 +96,6 @@ docs/recipes/md_src/recipe06.md
 docs/usage/data.md
 docs/usage/overview.md
 docs/usage/starting.md
-docs/usage/tcja_after_2025.md
 taxcalc/__init__.py
 taxcalc/calcfunctions.py
 taxcalc/calculator.py
