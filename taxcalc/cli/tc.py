@@ -377,7 +377,7 @@ EXPECTED_TEST_OUTPUT = (
     '1|131.88\n'
     '2|28879.00\n'
 )
-TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#.dumpdb'
+TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#-#.dumpdb'
 TEST_SQLITE_QUERY = """
 SELECT
   RECID           AS id,

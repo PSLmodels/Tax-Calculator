@@ -41,7 +41,7 @@ if [ $? -ne 0 ]; then
     echo Differences between run30-35.tables run30-35.tables-expect
 fi
 tc cps.csv 2028 --numyears 8 --behavior br1.json --runid 31 \
-   --reform ref.json --exact --tables --silent
+   --reform ref.json --exact --tables --graphs --silent
 cmp run31-35.tables run30-35.tables
 if [ $? -ne 0 ]; then
     ERRORS=1
@@ -50,4 +50,5 @@ fi
 
 if [ $ERRORS -eq 0 ]; then
     rm -f run??-??.tables
+    rm -f run31-??-???.html
 fi

@@ -657,20 +657,35 @@ class TaxCalcIO():
                 self.calc_bas, self.calc_ref,
                 self.behvdict, dump=True,
             )
-            # move returned dump dataframe values back into calc objects
+            # copy returned dump dataframe values back into calc objects
+            int_variables = self.recs_bas.INTEGER_VARS
             vnames = list(br_dump_bas.columns)
             for mtr_vname in ['mtr_ptax', 'mtr_itax', 'mtr_combined']:
                 if mtr_vname in vnames:
                     vnames.remove(mtr_vname)
             for vname in vnames:
-                self.calc_bas.array(vname, br_dump_bas[vname].to_numpy())
+                if vname in int_variables:
+                    vdtype = np.int32
+                else:
+                    vdtype = np.float64
+                self.calc_bas.array(
+                    vname,
+                    br_dump_bas[vname].to_numpy(dtype=vdtype, copy=True)
+                )
             del br_dump_bas
             vnames = list(br_dump_ref.columns)
             for mtr_vname in ['mtr_ptax', 'mtr_itax', 'mtr_combined']:
                 if mtr_vname in vnames:
                     vnames.remove(mtr_vname)
             for vname in vnames:
-                self.calc_ref.array(vname, br_dump_ref[vname].to_numpy())
+                if vname in int_variables:
+                    vdtype = np.int32
+                else:
+                    vdtype = np.float64
+                self.calc_ref.array(
+                    vname,
+                    br_dump_ref[vname].to_numpy(dtype=vdtype, copy=True)
+                )
             del br_dump_ref
         else:  # if assuming no behavioral responses
             self.calc_bas.calc_all()

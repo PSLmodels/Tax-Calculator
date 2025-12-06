@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: taxcalc
-Version: 6.2.1
+Version: 6.3.0
 Summary: Tax-Calculator
 Home-page: https://github.com/PSLmodels/Tax-Calculator
 Download-URL: https://github.com/PSLmodels/Tax-Calculator
@@ -43,8 +43,8 @@ Dynamic: summary
 Tax-Calculator
 ==============
 
-Tax-Calculator is an open-source microsimulation model for analysis of
-USA federal income and payroll taxes.
+Tax-Calculator is an open-source microsimulation model for conventional
+analysis of USA federal income and payroll taxes.
 
 We are seeking contributors and maintainers.  If you are interested in
 joining the project as a contributor or maintainer, open a new
