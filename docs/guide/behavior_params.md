@@ -13,4 +13,4 @@ By default Tax-Calculator assumes no behavioral responses to a tax
 reform, which is the same as saying the behavior parameters (or
 elasticities) are assumed to be zero by default.  The elasticities can
 be set to non-zero values in a JSON file that is formatted like
-[this](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/behavior_response_template.json)).
+[this](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/behavioral_response_template.json)).
