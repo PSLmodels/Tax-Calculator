@@ -4,7 +4,7 @@ There is a way to specify in a text file the collection of behavioral
 response elasticities that you want to assume about how individuals
 respond to a tax reform.
 
-Here is an [example](behavioral_responses_template.json) of a
+Here is an [example](behavioral_response_template.json) of a
 behavioral responses file.
 
 Every behavior file is a JSON file.  JSON, which stands for JavaScript
