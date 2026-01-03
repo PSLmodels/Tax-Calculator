@@ -898,6 +898,55 @@ def test_AGI(test_tuple, expected_value, skip_jit):
     assert np.allclose(test_value, expected_value)
 
 
+def test_agi_age55_exemption(skip_jit):
+    """
+    Test AGI calculation with age 55+ personal exemption.
+    """
+    # Test 1: Single filer age 54 (below threshold) - no exemption
+    result1 = calcfunctions.AGI(
+        100000, 0, 0, 1, 1, 0, 1, 0, 0,  # basic inputs
+        0, [250000]*5, [2500]*5, 0.02, 0,  # II_em params (all $0)
+        0, [150000]*5, 0,  # UI params
+        0, 0, 0,  # output params (c00100, pre_c04600, c04600)
+        54, 0, 1000.0, 0  # age_head, age_spouse, II_em_age55, c04600_age55
+    )
+    # result is (c00100, pre_c04600, c04600, c04600_age55)
+    assert result1[3] == 0.0  # c04600_age55: no exemption for age 54
+
+    # Test 2: Single filer age 55 (at threshold) - $1000 exemption
+    result2 = calcfunctions.AGI(
+        100000, 0, 0, 1, 1, 0, 1, 0, 0,
+        0, [250000]*5, [2500]*5, 0.02, 0,
+        0, [150000]*5, 0,
+        0, 0, 0,
+        55, 0, 1000.0, 0
+    )
+    assert result2[3] == 1000.0  # c04600_age55: $1000 exemption for age 55
+    assert result2[2] == 1000.0  # c04600: total exemption is $1000
+
+    # Test 3: Joint filers both age 55+ - $2000 exemption
+    result3 = calcfunctions.AGI(
+        100000, 0, 0, 2, 2, 0, 1, 0, 0,
+        0, [250000]*5, [2500]*5, 0.02, 0,
+        0, [150000]*5, 0,
+        0, 0, 0,
+        56, 57, 1000.0, 0
+    )
+    assert result3[3] == 2000.0  # c04600_age55: $2000 for both spouses
+    assert result3[2] == 2000.0  # c04600: total exemption is $2000
+
+    # Test 4: Joint filers one age 55, one age 54 - $1000 exemption
+    result4 = calcfunctions.AGI(
+        100000, 0, 0, 2, 2, 0, 1, 0, 0,
+        0, [250000]*5, [2500]*5, 0.02, 0,
+        0, [150000]*5, 0,
+        0, 0, 0,
+        55, 54, 1000.0, 0
+    )
+    assert result4[3] == 1000.0  # c04600_age55: $1000 for one spouse only
+    assert result4[2] == 1000.0  # c04600: total exemption is $1000
+
+
 # parameters for next test
 e03150 = 0
 e03210 = 0

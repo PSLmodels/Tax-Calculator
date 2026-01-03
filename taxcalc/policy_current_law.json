@@ -1703,6 +1703,31 @@
             "cps": true
         }
     },
+    "II_em_age55": {
+        "title": "Personal exemption for taxpayers age 55 and older",
+        "description": "Personal exemption amount for each taxpayer and spouse age 55 or older. This exemption is in addition to the standard II_em personal exemption.",
+        "section_1": "Personal Exemptions",
+        "section_2": "Age-Based Personal Exemption",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "II_em_ps": {
         "title": "Personal exemption phaseout starting income",
         "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).",

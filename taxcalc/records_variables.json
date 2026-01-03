@@ -822,6 +822,11 @@
       "form": {"2013-2017": "1040 line 42",
                "2018-20??": ""}
     },
+    "c04600_age55": {
+      "type": "float",
+      "desc": "Personal exemptions for age 55+ taxpayers (not subject to phaseout)",
+      "form": {"2013-20??": "calculated variable"}
+    },
     "qbided": {
       "type": "float",
       "desc": "Qualified Business Income (QBI) deduction",
