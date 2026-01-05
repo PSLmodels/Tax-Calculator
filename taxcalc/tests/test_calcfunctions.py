@@ -5,6 +5,8 @@ Tests for Tax-Calculator calcfunctions.py logic.
 # pycodestyle test_calcfunctions.py
 # pylint --disable=locally-disabled test_calcfunctions.py
 
+# pylint: disable=too-many-lines
+
 import os
 import re
 import ast
@@ -867,6 +869,9 @@ exact = False
 nu18 = 0
 taxable_ubi = 0
 II_em = 0.0
+II_em_age55 = 0.0
+age_head = 50
+age_spouse = 0
 II_em_ps = [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]
 II_em_po_step_size = [2500, 2500, 1250, 2500, 2500]
 II_prt = 0.02
@@ -877,13 +882,15 @@ UI_em = 10200
 c00100 = 0  # calculated in function
 pre_c04600 = 0  # calculated in function
 c04600 = 0  # calculated in function
+c04600_age55 = 0  # calculated in function
 
 tuple0 = (
     ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
-    II_em, II_em_ps, II_em_po_step_size, II_prt, II_no_em_nu18,
-    e02300, UI_thd, UI_em, c00100, pre_c04600, c04600)
-# returned tuple is (c00100, pre_c04600, c04600)
-expected0 = (19330, 0, 0)
+    II_em, II_em_age55, age_head, age_spouse,
+    II_em_ps, II_em_po_step_size, II_prt, II_no_em_nu18,
+    e02300, UI_thd, UI_em, c00100, pre_c04600, c04600, c04600_age55)
+# returned tuple is (c00100, pre_c04600, c04600, c04600_age55)
+expected0 = (19330, 0, 0, 0)
 
 
 @pytest.mark.parametrize(
@@ -905,10 +912,10 @@ def test_agi_age55_exemption(skip_jit):
     # Test 1: Single filer age 54 (below threshold) - no exemption
     result1 = calcfunctions.AGI(
         100000, 0, 0, 1, 1, 0, 1, 0, 0,  # basic inputs
-        0, [250000]*5, [2500]*5, 0.02, 0,  # II_em params (all $0)
-        0, [150000]*5, 0,  # UI params
-        0, 0, 0,  # output params (c00100, pre_c04600, c04600)
-        54, 0, 1000.0, 0  # age_head, age_spouse, II_em_age55, c04600_age55
+        0, 1000, 54, 0,  # personal exemption amounts and ages
+        [250000] * 5, [2500] * 5, 0.02, 0,  # II_em phaseout params
+        0, [150000] * 5, 0,  # UI params
+        0, 0, 0, 0  # output params (c00100, pre_c04600, c04600, c04600_age55)
     )
     # result is (c00100, pre_c04600, c04600, c04600_age55)
     assert result1[3] == 0.0  # c04600_age55: no exemption for age 54
@@ -916,10 +923,10 @@ def test_agi_age55_exemption(skip_jit):
     # Test 2: Single filer age 55 (at threshold) - $1000 exemption
     result2 = calcfunctions.AGI(
         100000, 0, 0, 1, 1, 0, 1, 0, 0,
-        0, [250000]*5, [2500]*5, 0.02, 0,
-        0, [150000]*5, 0,
-        0, 0, 0,
-        55, 0, 1000.0, 0
+        0, 1000, 55, 0,  # personal exemption amounts and ages
+        [250000] * 5, [2500] * 5, 0.02, 0,  # II_em phaseout params
+        0, [150000] * 5, 0,
+        0, 0, 0, 0  # output params (c00100, pre_c04600, c04600, c04600_age55)
     )
     assert result2[3] == 1000.0  # c04600_age55: $1000 exemption for age 55
     assert result2[2] == 1000.0  # c04600: total exemption is $1000
@@ -927,10 +934,10 @@ def test_agi_age55_exemption(skip_jit):
     # Test 3: Joint filers both age 55+ - $2000 exemption
     result3 = calcfunctions.AGI(
         100000, 0, 0, 2, 2, 0, 1, 0, 0,
-        0, [250000]*5, [2500]*5, 0.02, 0,
-        0, [150000]*5, 0,
-        0, 0, 0,
-        56, 57, 1000.0, 0
+        0, 1000, 56, 57,  # personal exemption amounts and ages
+        [250000] * 5, [2500] * 5, 0.02, 0,  # II_em phaseout params
+        0, [150000] * 5, 0,
+        0, 0, 0, 0  # output params (c00100, pre_c04600, c04600, c04600_age55)
     )
     assert result3[3] == 2000.0  # c04600_age55: $2000 for both spouses
     assert result3[2] == 2000.0  # c04600: total exemption is $2000
@@ -938,10 +945,10 @@ def test_agi_age55_exemption(skip_jit):
     # Test 4: Joint filers one age 55, one age 54 - $1000 exemption
     result4 = calcfunctions.AGI(
         100000, 0, 0, 2, 2, 0, 1, 0, 0,
-        0, [250000]*5, [2500]*5, 0.02, 0,
-        0, [150000]*5, 0,
-        0, 0, 0,
-        55, 54, 1000.0, 0
+        0, 1000, 55, 54,  # personal exemption amounts and ages
+        [250000] * 5, [2500] * 5, 0.02, 0,  # II_em phaseout params
+        0, [150000] * 5, 0,
+        0, 0, 0, 0  # output params (c00100, pre_c04600, c04600, c04600_age55)
     )
     assert result4[3] == 1000.0  # c04600_age55: $1000 for one spouse only
     assert result4[2] == 1000.0  # c04600: total exemption is $1000

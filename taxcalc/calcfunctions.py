@@ -749,9 +749,9 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 
 @iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
-        II_em, II_em_ps, II_em_po_step_size, II_em_prt, II_no_em_nu18,
-        e02300, UI_thd, UI_em, c00100, pre_c04600, c04600,
-        age_head, age_spouse, II_em_age55, c04600_age55):
+        II_em, II_em_age55, age_head, age_spouse,
+        II_em_ps, II_em_po_step_size, II_em_prt, II_no_em_nu18,
+        e02300, UI_thd, UI_em, c00100, pre_c04600, c04600, c04600_age55):
     """
     Computes Adjusted Gross Income (AGI), c00100, and
     compute personal exemption amount, c04600.
@@ -779,6 +779,12 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         Amount of UBI that is taxable (is added to AGI)
     II_em: float
         Personal and dependent exemption amount
+    II_em_age55: float
+        Personal exemption for taxpayers age 55 and older
+    age_head: int
+        Age of taxpayer
+    age_spouse: int
+        Age of spouse
     II_em_ps: list
         Personal exemption phaseout starting income
     II_em_po_step_size: list
@@ -799,12 +805,6 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         Personal exemption before phase-out
     c04600: float
         Personal exemptions after phase-out
-    age_head: int
-        Age of taxpayer
-    age_spouse: int
-        Age of spouse
-    II_em_age55: float
-        Personal exemption for taxpayers age 55 and older
     c04600_age55: float
         Personal exemptions for age 55+ taxpayers (not subject to phaseout)
 

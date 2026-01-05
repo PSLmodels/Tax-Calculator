@@ -1707,7 +1707,7 @@
         "title": "Personal exemption for taxpayers age 55 and older",
         "description": "Personal exemption amount for each taxpayer and spouse age 55 or older. This exemption is in addition to the standard II_em personal exemption.",
         "section_1": "Personal Exemptions",
-        "section_2": "Age-Based Personal Exemption",
+        "section_2": "Personal And Dependent Exemption Amount",
         "indexable": true,
         "indexed": true,
         "type": "float",
