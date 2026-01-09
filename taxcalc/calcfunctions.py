@@ -835,6 +835,16 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         pre_c04600 = XTOT * II_em
     if DSI:
         pre_c04600 = 0.
+    # add elderly personal exemption to pre_c04600
+    # (elderly exemption is NOT phased out)
+    if II_em_elderly > 0.:
+        elderly_count = 0
+        if age_head >= II_em_elderly_minage:
+            elderly_count += 1
+        if MARS == 2 and age_spouse >= II_em_elderly_minage:
+            elderly_count += 1
+        if elderly_count > 0:
+            pre_c04600 += elderly_count * II_em_elderly
     # phase-out personal exemption amount
     if exact == 1:  # exact calculation as on tax forms
         line5 = max(0., c00100 - II_em_ps[MARS - 1])
