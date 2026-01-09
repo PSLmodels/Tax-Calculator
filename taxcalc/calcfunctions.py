@@ -837,7 +837,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         pre_c04600 = 0.
     # add elderly personal exemption to pre_c04600
     # (elderly exemption is NOT phased out)
-    if II_em_elderly > 0.:
+    if II_em_elderly > 0. and DSI == 0:
         elderly_count = 0
         if age_head >= II_em_elderly_minage:
             elderly_count += 1
@@ -858,7 +858,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         c04600 = pre_c04600 * (1. - dispc)
     # add elderly personal exemption to c04600
     # (elderly exemption is NOT phased out)
-    if II_em_elderly > 0.:
+    if II_em_elderly > 0. and DSI == 0:
         elderly_count = 0
         if age_head >= II_em_elderly_minage:
             elderly_count += 1

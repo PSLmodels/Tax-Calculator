@@ -920,12 +920,29 @@ tuple_elderly = (
     age_head_elderly, age_spouse_elderly, II_em_elderly_test,
     II_em_elderly_minage_test,
     0, 0, 0)
-# Expected: c00100=100000, pre_c04600=0, c04600=1000 (only head qualifies)
-expected_elderly = (100000, 0, 1000)
+# Expected: c00100=100000, pre_c04600=1000 (includes elderly exemption),
+#           c04600=2000 (elderly exemption included in phase-out calc + added back; only head qualifies)
+expected_elderly = (100000, 1000, 2000)
+
+
+# Test case for elderly exemption with DSI=1 (claimed as dependent)
+# Should NOT receive elderly exemption even if age qualifies
+tuple_elderly_dsi = (
+    ymod1_elderly, 0, 0, 0, MARS_elderly, 1, False, 0, 0,
+    0.0, [9e+99, 9e+99, 9e+99, 9e+99, 9e+99],
+    [2500, 2500, 1250, 2500, 2500], 0.02, False,
+    0, [150000, 150000, 150000, 150000, 150000], 0,
+    age_head_elderly, age_spouse_elderly, II_em_elderly_test,
+    II_em_elderly_minage_test,
+    0, 0, 0)
+# Expected: c00100=100000, pre_c04600=0 (DSI=1 means no exemptions),
+#           c04600=0 (no elderly exemption for dependents)
+expected_elderly_dsi = (100000, 0, 0)
 
 
 @pytest.mark.parametrize(
-    'test_tuple,expected_value', [(tuple_elderly, expected_elderly)]
+    'test_tuple,expected_value',
+    [(tuple_elderly, expected_elderly), (tuple_elderly_dsi, expected_elderly_dsi)]
 )
 def test_AGI_elderly(test_tuple, expected_value, skip_jit):
     """
