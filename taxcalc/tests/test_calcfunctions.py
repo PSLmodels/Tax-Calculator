@@ -921,8 +921,8 @@ tuple_elderly = (
     II_em_elderly_minage_test,
     0, 0, 0)
 # Expected: c00100=100000, pre_c04600=1000 (includes elderly exemption),
-#           c04600=2000 (elderly exemption included in phase-out calc + added back; only head qualifies)
-expected_elderly = (100000, 1000, 2000)
+#           c04600=1000 (phased-out regular exemptions + elderly exemption; only head qualifies)
+expected_elderly = (100000, 1000, 1000)
 
 
 # Test case for elderly exemption with DSI=1 (claimed as dependent)
