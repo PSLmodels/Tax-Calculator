@@ -2170,6 +2170,56 @@
             "cps": true
         }
     },
+    "II_em_elderly_minage": {
+        "title": "Elderly personal exemption age threshold",
+        "description": "Taxpayers and spouses at or above this age qualify for the elderly personal exemption.",
+        "section_1": "Personal Exemptions",
+        "section_2": "Personal And Dependent Exemption Amount",
+        "indexable": false,
+        "indexed": false,
+        "type": "int",
+        "value": [
+            {
+                "year": 2013,
+                "value": 65
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 55,
+                "max": 75
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "II_em_elderly": {
+        "title": "Elderly personal exemption amount",
+        "description": "Amount of personal exemption per elderly taxpayer and spouse (at or above II_em_elderly_minage).",
+        "section_1": "Personal Exemptions",
+        "section_2": "Personal And Dependent Exemption Amount",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "STD": {
         "title": "Standard deduction amount",
         "description": "Amount filing unit can use as a standard deduction.",

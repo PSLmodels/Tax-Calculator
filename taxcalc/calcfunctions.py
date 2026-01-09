@@ -750,10 +750,13 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 @iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         II_em, II_em_ps, II_em_po_step_size, II_em_prt, II_no_em_nu18,
-        e02300, UI_thd, UI_em, c00100, pre_c04600, c04600):
+        e02300, UI_thd, UI_em,
+        age_head, age_spouse, II_em_elderly, II_em_elderly_minage,
+        c00100, pre_c04600, c04600):
     """
     Computes Adjusted Gross Income (AGI), c00100, and
-    compute personal exemption amount, c04600.
+    compute personal exemption amount, c04600
+    (including elderly personal exemption if applicable).
 
     Parameters
     ----------
@@ -792,6 +795,14 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         AGI threshold for unemployment compensation exclusion
     UI_em: float
         Amount of unemployment compensation excluded from AGI
+    age_head: int
+        Age of taxpayer (primary adult)
+    age_spouse: int
+        Age of spouse (secondary adult if present)
+    II_em_elderly: float
+        Elderly personal exemption amount per elderly taxpayer and spouse
+    II_em_elderly_minage: int
+        Age threshold for elderly personal exemption
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
@@ -806,7 +817,8 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
     pre_c04600: float
         Personal exemption before phase-out
     c04600: float
-        Personal exemptions after phase-out
+        Personal exemptions after phase-out (includes elderly exemption if
+        II_em_elderly > 0 and age qualifies)
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
@@ -834,6 +846,16 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         dispc_denom = II_em_po_step_size[MARS - 1]
         dispc = min(1., max(0., dispc_numer / dispc_denom))
         c04600 = pre_c04600 * (1. - dispc)
+    # add elderly personal exemption to c04600
+    # (elderly exemption is NOT phased out)
+    if II_em_elderly > 0.:
+        elderly_count = 0
+        if age_head >= II_em_elderly_minage:
+            elderly_count += 1
+        if MARS == 2 and age_spouse >= II_em_elderly_minage:
+            elderly_count += 1
+        if elderly_count > 0:
+            c04600 += elderly_count * II_em_elderly
     return (c00100, pre_c04600, c04600)
 
 

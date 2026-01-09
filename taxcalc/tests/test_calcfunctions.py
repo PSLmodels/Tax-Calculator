@@ -874,6 +874,10 @@ II_no_em_nu18 = False
 e02300 = 10200
 UI_thd = [150000, 150000, 150000, 150000, 150000]
 UI_em = 10200
+age_head = 50
+age_spouse = 0
+II_em_elderly = 0.0
+II_em_elderly_minage = 65
 c00100 = 0  # calculated in function
 pre_c04600 = 0  # calculated in function
 c04600 = 0  # calculated in function
@@ -881,7 +885,9 @@ c04600 = 0  # calculated in function
 tuple0 = (
     ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
     II_em, II_em_ps, II_em_po_step_size, II_prt, II_no_em_nu18,
-    e02300, UI_thd, UI_em, c00100, pre_c04600, c04600)
+    e02300, UI_thd, UI_em,
+    age_head, age_spouse, II_em_elderly, II_em_elderly_minage,
+    c00100, pre_c04600, c04600)
 # returned tuple is (c00100, pre_c04600, c04600)
 expected0 = (19330, 0, 0)
 
@@ -891,10 +897,42 @@ expected0 = (19330, 0, 0)
 )
 def test_AGI(test_tuple, expected_value, skip_jit):
     """
-    Tests the TaxInc function
+    Tests the AGI function
     """
     test_value = calcfunctions.AGI(*test_tuple)
     print('Returned from agi function: ', test_value)
+    assert np.allclose(test_value, expected_value)
+
+
+# parameters for elderly personal exemption test
+ymod1_elderly = 100000
+MARS_elderly = 2
+age_head_elderly = 60
+age_spouse_elderly = 55
+II_em_elderly_test = 1000.0
+II_em_elderly_minage_test = 57
+
+tuple_elderly = (
+    ymod1_elderly, 0, 0, 0, MARS_elderly, 0, False, 0, 0,
+    0.0, [9e+99, 9e+99, 9e+99, 9e+99, 9e+99],
+    [2500, 2500, 1250, 2500, 2500], 0.02, False,
+    0, [150000, 150000, 150000, 150000, 150000], 0,
+    age_head_elderly, age_spouse_elderly, II_em_elderly_test,
+    II_em_elderly_minage_test,
+    0, 0, 0)
+# Expected: c00100=100000, pre_c04600=0, c04600=1000 (only head qualifies)
+expected_elderly = (100000, 0, 1000)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [(tuple_elderly, expected_elderly)]
+)
+def test_AGI_elderly(test_tuple, expected_value, skip_jit):
+    """
+    Tests the AGI function for elderly personal exemption
+    """
+    test_value = calcfunctions.AGI(*test_tuple)
+    print('Returned from agi function (elderly test): ', test_value)
     assert np.allclose(test_value, expected_value)
 
 
