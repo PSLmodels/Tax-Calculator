@@ -806,7 +806,8 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
-        Personal exemption before phase-out
+        Personal exemption before phase-out (includes elderly personal
+        exemption if applicable)
     c04600: float
         Personal exemptions after phase-out
 
@@ -815,7 +816,8 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
-        Personal exemption before phase-out
+        Personal exemption before phase-out (includes elderly personal
+        exemption if applicable)
     c04600: float
         Personal exemptions after phase-out (includes elderly exemption if
         II_em_elderly > 0 and age qualifies)
