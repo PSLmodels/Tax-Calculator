@@ -4,4 +4,3 @@ omit =
     taxcalc/cli/*
     taxcalc/tests/*
     taxcalc/validation/*
-    docs/cookbook/*
