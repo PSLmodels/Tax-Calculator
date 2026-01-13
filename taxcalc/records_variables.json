@@ -82,19 +82,19 @@
     },
     "e00200": {
       "type": "float",
-      "desc": "Wages, salaries, and tips for filing unit net of pension contributions",
+      "desc": "Wages, salaries, tips/otime for filing unit net of pension contributions",
       "form": {"2013-2016": "1040 line 7"},
       "availability": "taxdata_puf, taxdata_cps, taxmicrodata_tmd"
     },
     "e00200p": {
       "type": "float",
-      "desc": "Wages, salaries, and tips for taxpayer net of pension contributions (pencon_p)",
+      "desc": "Wages, salaries, tips/otime for taxpayer net of pension contributions (pencon_p)",
       "form": {"2013-2016": "1040 line 7 component"},
       "availability": "taxdata_puf, taxdata_cps, taxmicrodata_tmd"
     },
     "e00200s": {
       "type": "float",
-      "desc": "Wages, salaries, and tips for spouse net of pension contributions (pencon_s)",
+      "desc": "Wages, salaries, tips/otime for spouse net of pension contributions (pencon_s)",
       "form": {"2013-2016": "1040 line 7 component"},
       "availability": "taxdata_puf, taxdata_cps, taxmicrodata_tmd"
     },
@@ -1154,14 +1154,14 @@
       "desc": "Deduction for payment of qualified auto loan interest",
       "form": {"2025-20??": "calculated variable"}
     },
-    "ALD_OvertimeIncome": {
+    "overtime_income_deduction": {
       "type": "float",
-      "desc": "Above-the-line deduction for qualified overtime income",
+      "desc": "Deduction for qualified overtime income",
       "form": {"2025-20??": "calculated variable"}
     },
-    "ALD_TipIncome": {
+    "tip_income_deduction": {
       "type": "float",
-      "desc": "Above-the-line deduction for qualified tip income",
+      "desc": "Deduction for qualified tip income",
       "form": {"2025-20??": "calculated variable"}
     },
     "ubi": {

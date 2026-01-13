@@ -115,9 +115,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         This parameter is indexed by rate of growth in average wages not by
           the price inflation rate.
     e00200p: float
-        Wages, salaries, and tips for taxpayer net of pension contributions
+        Wages, salaries,tips/otime for taxpayer net of pension contributions
     e00200s: float
-        Wages, salaries, and tips for spouse net of pension contributions
+        Wages, salaries, tips/otime for spouse net of pension contributions
     pencon_p: float
         Contributions to defined-contribution pension plans for taxpayer
     pencon_s: float
@@ -353,7 +353,7 @@ def Adj(e03150, e03210, c03260,
         ALD_OvertimeIncome_ps, ALD_OvertimeIncome_prt,
         tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
         ALD_TipIncome_ps, ALD_TipIncome_prt,
-        c02900, ALD_OvertimeIncome, ALD_TipIncome):
+        c02900, overtime_income_deduction, tip_income_deduction):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
 
@@ -437,10 +437,10 @@ def Adj(e03150, e03210, c03260,
     -------
     c02900: float
         Total of all "above the line" income adjustments to get AGI
-    ALD_OvertimeIncome: float
-        Overtime ALD amount included in c02900
-    ALD_TipIncome: float
-        Tip ALD amount included in c02900
+    overtime_income_deduction: float
+        Overtime deduction amount
+    tip_income_deduction: float
+        Tip dedection amount
     """
     # Form 2555 foreign earned income exclusion is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
@@ -457,8 +457,8 @@ def Adj(e03150, e03210, c03260,
               (1. - ALD_IRAContributions_hc) * e03150 +
               (1. - ALD_KEOGH_SEP_hc) * e03300 +
               care_deduction)
-    # calculate ALD_OvertimeIncome
-    ALD_OvertimeIncome = 0.
+    # calculate overtime_income_deduction
+    overtime_income_deduction = 0.
     if overtime_income > 0. and ALD_OvertimeIncome_hc < 1.0:
         ded = min(overtime_income, ALD_OvertimeIncome_c[MARS - 1])
         po_start = ALD_OvertimeIncome_ps[MARS - 1]
@@ -466,9 +466,9 @@ def Adj(e03150, e03210, c03260,
             excess = earned - po_start
             po_amount = excess * ALD_OvertimeIncome_prt
             ded = max(0., ded - po_amount)
-        ALD_OvertimeIncome = ded
-    # calculate ALD_TipIncome
-    ALD_TipIncome = 0.
+        overtime_income_deduction = ded
+    # calculate tip_income_deduction
+    tip_income_deduction = 0.
     if tip_income > 0. and ALD_TipIncome_hc < 1.0:
         ded = min(tip_income, ALD_TipIncome_c[MARS - 1])
         po_start = ALD_TipIncome_ps[MARS - 1]
@@ -476,10 +476,9 @@ def Adj(e03150, e03210, c03260,
             excess = earned - po_start
             po_amount = excess * ALD_TipIncome_prt
             ded = max(0., ded - po_amount)
-        ALD_TipIncome = ded
+        tip_income_deduction = ded
     # return results
-    c02900 += ALD_OvertimeIncome + ALD_TipIncome
-    return (c02900, ALD_OvertimeIncome, ALD_TipIncome)
+    return (c02900, overtime_income_deduction, tip_income_deduction)
 
 
 @iterate_jit(nopython=True)
@@ -540,95 +539,95 @@ def CapGains(p23250, p22250, ALD_StudentLoan_hc,
     Parameters
     ----------
     p23250: float
-        Net long-term capital gains/losses (Schedule D)
+      Net long-term capital gains/losses (Schedule D)
     p22250: float
-        Net short-term capital gails/losses (Schedule D)
+      Net short-term capital gails/losses (Schedule D)
     ALD_StudentLoan_hc: float
-        Student loan interest deduction haircut
+      Student loan interest deduction haircut
     ALD_InvInc_ec_rt: float
-        Investment income exclusion rate haircut
+      Investment income exclusion rate haircut
     invinc_ec_base: float
-        Exclusion of investment income from AGI
+      Exclusion of investment income from AGI
     e00200: float
-        Wages, salaries, tips for filing unit net of pension contributions
+      Wages, salaries, tips/otime for filing unit net of pension contributions
     e00300: float
-        Taxable interest income
+      Taxable interest income
     e00600: float
-        Ordinary dividends included in AGI
+      Ordinary dividends included in AGI
     e00650: float
-        Qualified dividends included in ordinary dividends
+      Qualified dividends included in ordinary dividends
     e00700: float
-        Taxable refunds of state and local income taxes
+      Taxable refunds of state and local income taxes
     e00800: float
-        Alimony received
+      Alimony received
     CG_nodiff: bool
-        Long term capital gains and qualified dividends taxed no
-        differently than regular taxable income
+      Long term capital gains and qualified dividends taxed no
+      differently than regular taxable income
     CG_ec: float
-        Dollar amount of all capital gains and qualified dividends that are
-        excluded from AGI
+      Dollar amount of all capital gains and qualified dividends that are
+      excluded from AGI
     CG_reinvest_ec_rt: float
-        Fraction of all capital gains and qualified dividends in excess
-        of the dollar exclusion that are excluded from AGI
+      Fraction of all capital gains and qualified dividends in excess
+      of the dollar exclusion that are excluded from AGI
     Capital_loss_limitation: float
-        Limitation on capital losses that are deductible
+      Limitation on capital losses that are deductible
     ALD_BusinessLosses_c: list
-        Maximm amount of business losses deductible
+      Maximm amount of business losses deductible
     MARS: int
-        Filing marital status (1=single, 2=joint, 3=separate,
-                               4=household-head, 5=widow(er))
+      Filing marital status (1=single, 2=joint, 3=separate,
+                             4=household-head, 5=widow(er))
     e00900: float
-        Schedule C business net profit/loss for filing unit
+      Schedule C business net profit/loss for filing unit
     e01100: float
-        Capital gain distributions not reported on Schedule D
+      Capital gain distributions not reported on Schedule D
     e01200: float
-        Other net gain/loss from Form 4797
+      Other net gain/loss from Form 4797
     e01400: float
-        Taxable IRA distributions
+      Taxable IRA distributions
     e01700: float
-        Taxable pensions and annunities
+      Taxable pensions and annunities
     e02000: float
-        Schedule E total rental, royalty, partnership, S-corporation,
-        etc, income/loss (includes e26270 and e27200)
+      Schedule E total rental, royalty, partnership, S-corporation,
+      etc, income/loss (includes e26270 and e27200)
     e02100: float
-        Farm net income/loss for filing unit from Schedule F
+      Farm net income/loss for filing unit from Schedule F
     e02300: float
-        Unemployment insurance benefits
+      Unemployment insurance benefits
     e00400: float
-        Tax-exempt interest income
+      Tax-exempt interest income
     e02400: float
-        Total social security (OASDI) benefits
+      Total social security (OASDI) benefits
     c02900: float
-        Total of all "above the line" income adjustments to get AGI
+      Total of all "above the line" income adjustments to get AGI
     e03210: float
-        Student loan interest
+      Student loan interest
     e03230: float
-        Tuition and fees from Form 8917
+      Tuition and fees from Form 8917
     e03240: float
-        Domestic production activities from Form 8903
+      Domestic production activities from Form 8903
     c01000: float
-        Limitation on capital losses
+      Limitation on capital losses
     c23650: float
-        Net capital gains (long and short term) before exclusion
+      Net capital gains (long and short term) before exclusion
     ymod: float
-        Variable that is used in OASDI benefit taxation logic
+      Variable that is used in OASDI benefit taxation logic
     ymod1: float
-        Variable that is included in AGI
+      Variable that is included in AGI
     invinc_agi_ec: float
-        Exclusion of investment income from AGI
+      Exclusion of investment income from AGI
 
     Returns
     -------
     c01000: float
-        Limitation on capital losses
+      Limitation on capital losses
     c23650: float
-        Net capital gains (long and short term) before exclusion
+      Net capital gains (long and short term) before exclusion
     ymod: float
-        Variable that is used in OASDI benefit taxation logic
+      Variable that is used in OASDI benefit taxation logic
     ymod1: float
-        Variable that is included in AGI
+      Variable that is included in AGI
     invinc_agi_ec: float
-        Exclusion of investment income from AGI
+      Exclusion of investment income from AGI
     """
     # net capital gain (long term + short term) before exclusion
     c23650 = p23250 + p22250
@@ -3521,54 +3520,54 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     Parameters
     ----------
     e00200: float
-        Wages, salaries, and tips for filing unit net of pension contributions
+      Wages, salaries, tips/otime for filing unit net of pension contributions
     pencon_p: float
-        Contributions to defined-contribution pension plans for taxpayer
+      Contributions to defined-contribution pension plans for taxpayer
     pencon_s: float
-        Contributions to defined-contribution pension plans for spouse
+      Contributions to defined-contribution pension plans for spouse
     e00300: float
-        Taxable interest income
+      Taxable interest income
     e00400: float
-        Tax-exempt interest income
+      Tax-exempt interest income
     e00600: float
-        Ordinary dividends included in AGI
+      Ordinary dividends included in AGI
     e00700: float
-        Taxable refunds of state and local income taxes
+      Taxable refunds of state and local income taxes
     e00800: float
-        Alimony received
+      Alimony received
     e00900: float
-        Schedule C business net profit/loss for filing unit
+      Schedule C business net profit/loss for filing unit
     e01100: float
-        Capital gain distributions not reported on Schedule D
+      Capital gain distributions not reported on Schedule D
     e01200: float
-        Other net gain/loss from Form 4797
+      Other net gain/loss from Form 4797
     e01400: float
-        Taxable IRA distributions
+      Taxable IRA distributions
     e01500: float
-        Total pensions and annuities
+      Total pensions and annuities
     e02000: float
-        Schedule E total rental, royalty, partnership, S-corporation,
-        etc, income/loss
+      Schedule E total rental, royalty, partnership, S-corporation,
+      etc, income/loss
     e02100: float
-        Farm net income/loss for filing unit from Schedule F
+      Farm net income/loss for filing unit from Schedule F
     p22250: float
-        Schedule D net short term capital gains/losses
+      Schedule D net short term capital gains/losses
     p23250:float
-        Schedule D net long term capital gains/losses
+      Schedule D net long term capital gains/losses
     cmbtp: float
-        Estimate of inome on (AMT) Form 6251 but not in AGI
+      Estimate of inome on (AMT) Form 6251 but not in AGI
     ptax_was: float
-        Employee and employer OASDI and HI FICA tax
+      Employee and employer OASDI and HI FICA tax
     benefit_value_total: float
-        Consumption value of all benefits received by tax unit, which
-        is included in expanded income
+      Consumption value of all benefits received by tax unit, which
+      is included in expanded income
     expanded_income: float
-        Broad income measure that includes benefit_value_total
+      Broad income measure that includes benefit_value_total
 
     Returns
     -------
     expanded_income: float
-        Broad income measure that includes benefit_value_total
+      Broad income measure that includes benefit_value_total
     """
     expanded_income = (
         e00200 +  # wage and salary income net of DC pension contributions

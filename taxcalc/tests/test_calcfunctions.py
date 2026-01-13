@@ -936,8 +936,8 @@ ALD_TipIncome_c = [25000, 25000, 25000, 25000, 25000]
 ALD_TipIncome_ps = [150000, 300000, 150000, 150000, 150000]
 ALD_TipIncome_prt = 0.10
 c02900 = 0  # calculated in function
-ALD_OvertimeIncome = 0  # calculated in function
-ALD_TipIncome = 0  # calculated in function
+overtime_income_deduction = 0  # calculated in function
+tip_income_deduction = 0  # calculated in function
 
 tuple0 = (
     e03150, e03210, c03260,
@@ -952,12 +952,11 @@ tuple0 = (
     ALD_OvertimeIncome_ps, ALD_OvertimeIncome_prt,
     tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
     ALD_TipIncome_ps, ALD_TipIncome_prt,
-    c02900, ALD_OvertimeIncome, ALD_TipIncome
+    c02900, overtime_income_deduction, tip_income_deduction
 )
 ovr = 12500 - (200000 - 150000) * 0.10
 tip = 25000 - (200000 - 150000) * 0.10
-c02900 = 0 + ovr + tip
-expected0 = (c02900, ovr, tip)
+expected0 = (0.0, ovr, tip)
 
 
 @pytest.mark.parametrize(
@@ -965,7 +964,7 @@ expected0 = (c02900, ovr, tip)
 )
 def test_Adj(test_tuple, expected_value, skip_jit):
     """
-    Tests the Adj function ALD_OvertimeIncome and ALD_TipIncome code
+    Tests the Adj function code
     """
     test_value = calcfunctions.Adj(*test_tuple)
     print('Returned from Adj function: ', test_value)
