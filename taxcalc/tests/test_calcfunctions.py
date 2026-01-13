@@ -581,6 +581,8 @@ e27200 = [0.00, 0.00, 0.00, 0.00]
 e00650 = [5000.00, 8000.00, 3000.00, 9000.00]
 c01000 = [7000.00, 4000.00, -3000.00, -3000.00]
 senior_deduction = [0.00, 0.00, 1000.00, 0.00]
+overtime_income_deduction = [0.00, 0.00, 0.00, 0.00]
+tip_income_deduction = [0.00, 0.00, 0.00, 0.00]
 auto_loan_interest_deduction = [0.00, 0.00, 0.00, 1000.00]
 PT_SSTB_income = [0, 1, 1, 1]
 PT_binc_w2_wages = [0.00, 0.00, 0.00, 0.00]
@@ -592,7 +594,11 @@ tuple0 = (
     c00100[0], standard[0], c04470[0], c04600[0], MARS[0], e00900[0],
     c03260[0], e26270[0],
     e02100[0], e27200[0], e00650[0], c01000[0],
-    senior_deduction[0], auto_loan_interest_deduction[0], PT_SSTB_income[0],
+    senior_deduction[0],
+    overtime_income_deduction[0],
+    tip_income_deduction[0],
+    auto_loan_interest_deduction[0],
+    PT_SSTB_income[0],
     PT_binc_w2_wages[0], PT_ubia_property[0], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
@@ -603,7 +609,11 @@ tuple1 = (
     c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1],
     c03260[1], e26270[1],
     e02100[1], e27200[1], e00650[1], c01000[1],
-    senior_deduction[1], auto_loan_interest_deduction[1], PT_SSTB_income[1],
+    senior_deduction[1],
+    overtime_income_deduction[1],
+    tip_income_deduction[1],
+    auto_loan_interest_deduction[1],
+    PT_SSTB_income[1],
     PT_binc_w2_wages[1], PT_ubia_property[1], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
@@ -614,7 +624,11 @@ tuple2 = (
     c00100[2], standard[2], c04470[2], c04600[2], MARS[2], e00900[2],
     c03260[2], e26270[2],
     e02100[2], e27200[2], e00650[2], c01000[2],
-    senior_deduction[2], auto_loan_interest_deduction[2], PT_SSTB_income[2],
+    senior_deduction[2],
+    overtime_income_deduction[2],
+    tip_income_deduction[2],
+    auto_loan_interest_deduction[2],
+    PT_SSTB_income[2],
     PT_binc_w2_wages[2], PT_ubia_property[2], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
@@ -625,7 +639,11 @@ tuple3 = (
     c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3],
     c03260[3], e26270[3],
     e02100[3], e27200[3], e00650[3], c01000[3],
-    senior_deduction[3], auto_loan_interest_deduction[3], PT_SSTB_income[3],
+    senior_deduction[3],
+    overtime_income_deduction[3],
+    tip_income_deduction[3],
+    auto_loan_interest_deduction[3],
+    PT_SSTB_income[3],
     PT_binc_w2_wages[3], PT_ubia_property[3], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
@@ -895,77 +913,4 @@ def test_AGI(test_tuple, expected_value, skip_jit):
     """
     test_value = calcfunctions.AGI(*test_tuple)
     print('Returned from agi function: ', test_value)
-    assert np.allclose(test_value, expected_value)
-
-
-# parameters for next test
-e03150 = 0
-e03210 = 0
-c03260 = 0
-e03270 = 0
-e03300 = 0
-e03400 = 0
-e03500 = 0
-e00800 = 0
-e03220 = 0
-e03230 = 0
-e03240 = 0
-e03290 = 0
-care_deduction = 0
-ALD_StudentLoan_hc = 0
-ALD_SelfEmp_HealthIns_hc = 0
-ALD_KEOGH_SEP_hc = 0
-ALD_EarlyWithdraw_hc = 0
-ALD_AlimonyPaid_hc = 0
-ALD_AlimonyReceived_hc = 0
-ALD_EducatorExpenses_hc = 0
-ALD_HSADeduction_hc = 0
-ALD_IRAContributions_hc = 0
-ALD_DomesticProduction_hc = 0
-ALD_Tuition_hc = 0
-MARS = 1
-earned = 200000
-overtime_income = 13000
-ALD_OvertimeIncome_hc = 0.
-ALD_OvertimeIncome_c = [12500, 25000, 12500, 12500, 12500]
-ALD_OvertimeIncome_ps = [150000, 300000, 150000, 150000, 150000]
-ALD_OvertimeIncome_prt = 0.10
-tip_income = 30000
-ALD_TipIncome_hc = 0.
-ALD_TipIncome_c = [25000, 25000, 25000, 25000, 25000]
-ALD_TipIncome_ps = [150000, 300000, 150000, 150000, 150000]
-ALD_TipIncome_prt = 0.10
-c02900 = 0  # calculated in function
-overtime_income_deduction = 0  # calculated in function
-tip_income_deduction = 0  # calculated in function
-
-tuple0 = (
-    e03150, e03210, c03260,
-    e03270, e03300, e03400, e03500, e00800,
-    e03220, e03230, e03240, e03290, care_deduction,
-    ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
-    ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
-    ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
-    ALD_DomesticProduction_hc, ALD_Tuition_hc,
-    MARS, earned,
-    overtime_income, ALD_OvertimeIncome_hc, ALD_OvertimeIncome_c,
-    ALD_OvertimeIncome_ps, ALD_OvertimeIncome_prt,
-    tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
-    ALD_TipIncome_ps, ALD_TipIncome_prt,
-    c02900, overtime_income_deduction, tip_income_deduction
-)
-ovr = 12500 - (200000 - 150000) * 0.10
-tip = 25000 - (200000 - 150000) * 0.10
-expected0 = (0.0, ovr, tip)
-
-
-@pytest.mark.parametrize(
-    'test_tuple,expected_value', [(tuple0, expected0)]
-)
-def test_Adj(test_tuple, expected_value, skip_jit):
-    """
-    Tests the Adj function code
-    """
-    test_value = calcfunctions.Adj(*test_tuple)
-    print('Returned from Adj function: ', test_value)
     assert np.allclose(test_value, expected_value)
