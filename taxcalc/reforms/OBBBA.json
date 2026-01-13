@@ -112,7 +112,13 @@
     "ALD_AlimonyReceived_hc": {"2026": 0.0},
 
     // New OBBBA parameters
-    "AutoLoanInterestDed_c": {"2025": 10000, "2029": 0},
-    "ALD_OvertimeIncome_hc": {"2025": 0.0, "2029": 1.0},
-    "ALD_TipIncome_hc": {"2025": 0.0, "2029": 1.0}
+    "OvertimeIncomeDed_c": {
+        "2025": [12500, 25000, 12500, 12500, 12500],
+        "2029": [0, 0, 0, 0, 0]
+    },
+    "TipIncomeDed_c": {
+        "2025": [25000, 25000, 25000, 25000, 25000],
+        "2029": [0, 0, 0, 0, 0]
+    },
+    "AutoLoanInterestDed_c": {"2025": 10000, "2029": 0}
 }

@@ -786,13 +786,13 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
 def MiscDed(age_head, age_spouse, MARS, c00100, exact,
             SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
             overtime_income,
-            ALD_OvertimeIncome_c,
-            ALD_OvertimeIncome_ps,
-            ALD_OvertimeIncome_prt,
+            OvertimeIncomeDed_c,
+            OvertimeIncomeDed_ps,
+            OvertimeIncomeDed_prt,
             tip_income,
-            ALD_TipIncome_c,
-            ALD_TipIncome_ps,
-            ALD_TipIncome_prt,
+            TipIncomeDed_c,
+            TipIncomeDed_ps,
+            TipIncomeDed_prt,
             auto_loan_interest,
             AutoLoanInterestDed_c,
             AutoLoanInterestDed_ps,
@@ -827,25 +827,21 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
     SeniorDed_prt: float
         Senior deduction phase-out rate
     overtime_income: float
-        Overtime income qualified for an above-the-line deduction
-    ALD_OvertimeIncome_hc: float
-        ALD_OvertimeIncome haircut
-    ALD_OvertimeIncome_c: list[float]
-        ALD_OvertimeIncome cap
-    ALD_OvertimeIncome_ps: list[float]
-        ALD_OvertimeIncome phase-out earned income start
-    ALD_OvertimeIncome_prt: float
-        ALD_OvertimeIncome phase-out rate
+        Overtime income qualified for a misc deduction
+    OvertimeIncomeDed_c: list[float]
+        overtime_income_deduction cap
+    OvertimeIncomeDed_ps: list[float]
+        overtime_income_deduction phase-out modified AGI start
+    OvertimeIncomeDed_prt: float
+        overtime_income_deduction phase-out rate
     tip_income: float
-        Tip income qualified for an above-the-line deduction
-    ALD_TipIncome_hc: float
-        ALD_TipIncome haircut
-    ALD_TipIncome_c: list[float]
-        ALD_TipIncome cap
-    ALD_TipIncome_ps: list[float]
-        ALD_TipIncome phase-out earned income start
-    ALD_TipIncome_prt: float
-        ALD_TipIncome phase-out rate
+        Tip income qualified for a misc deduction
+    TipIncomeDed_c: list[float]
+        tip_income_deduction cap
+    TipIncomeDed_ps: list[float]
+        tip_income_deduction phase-out modified AGI start
+    TipIncomeDed_prt: float
+        tip_income_deduction phase-out rate
     auto_loan_interest: float
         Qualified auto loan interest paid
     AutoLoanInterestDed_c: float
@@ -891,21 +887,21 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
     # calculate overtime_income_deduction
     overtime_income_deduction = 0.
     if overtime_income > 0.:
-        ded = min(overtime_income, ALD_OvertimeIncome_c[MARS - 1])
-        po_start = ALD_OvertimeIncome_ps[MARS - 1]
+        ded = min(overtime_income, OvertimeIncomeDed_c[MARS - 1])
+        po_start = OvertimeIncomeDed_ps[MARS - 1]
         if magi > po_start:
             excess = magi - po_start
-            po_amount = excess * ALD_OvertimeIncome_prt
+            po_amount = excess * OvertimeIncomeDed_prt
             ded = max(0., ded - po_amount)
         overtime_income_deduction = ded
     # calculate tip_income_deduction
     tip_income_deduction = 0.
     if tip_income > 0.:
-        ded = min(tip_income, ALD_TipIncome_c[MARS - 1])
-        po_start = ALD_TipIncome_ps[MARS - 1]
+        ded = min(tip_income, TipIncomeDed_c[MARS - 1])
+        po_start = TipIncomeDed_ps[MARS - 1]
         if magi > po_start:
             excess = magi - po_start
-            po_amount = excess * ALD_TipIncome_prt
+            po_amount = excess * TipIncomeDed_prt
             ded = max(0., ded - po_amount)
         tip_income_deduction = ded
     # calculate auto loan interest deduction

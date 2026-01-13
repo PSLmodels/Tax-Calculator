@@ -106,9 +106,9 @@
     "ALD_AlimonyReceived_hc": {"2025": 0, "2026": 1},
 
     // New OBBBA parameters
+    "OvertimeIncomeDed_c": {"2025": [0, 0, 0, 0, 0]},
+    "TipIncomeDed_c": {"2025": [0, 0, 0, 0, 0]},
     "AutoLoanInterestDed_c": {"2025": 0},
-    "ALD_OvertimeIncome_hc": {"2025": 1.0},
-    "ALD_TipIncome_hc": {"2025": 1.0},
 
     // Additional parameters
     "ID_Medical_frt": {"2026": 0.075}

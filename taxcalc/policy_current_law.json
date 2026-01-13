@@ -23380,48 +23380,11 @@
             "cps": true
         }
     },
-    "ALD_OvertimeIncome_hc": {
-        "title": "Overtime income ALD haircut",
-        "description": "Overtime income ALD is subject to this haircut.  Final ALD amount is multiplied by (1-ALD_OvertimeIncome_hc).",
-        "section_1": "Above The Line Deductions",
-        "section_2": "Misc. Exclusions",
-        "indexable": false,
-        "indexed": false,
-        "type": "float",
-        "value": [
-            {
-                "year": 2013,
-                "value": 1.0
-            },
-            {
-                "year": 2025,
-                "value": 0.0
-            },
-            {
-                "year": 2028,
-                "value": 0.0
-            },
-            {
-                "year": 2029,
-                "value": 1.0
-            }
-        ],
-        "validators": {
-            "range": {
-                "min": 0,
-                "max": 1
-            }
-        },
-        "compatible_data": {
-            "puf": true,
-            "cps": true
-        }
-    },
-    "ALD_OvertimeIncome_c": {
-        "title": "Overtime ALD cap",
-        "description": "Overtime ALD is capped at this level.",
-        "section_1": "Above The Line Deductions",
-        "section_2": "Misc. Exclusions",
+    "OvertimeIncomeDed_c": {
+        "title": "Overtime deduction cap",
+        "description": "Overtime deduction is capped at this level.",
+        "section_1": "",
+        "section_2": "",
         "indexable": true,
         "indexed": false,
         "type": "float",
@@ -23429,27 +23392,77 @@
             {
                 "year": 2013,
                 "MARS": "single",
-                "value": 12500.0
+                "value": 0.0
             },
             {
                 "year": 2013,
                 "MARS": "mjoint",
-                "value": 25000.0
+                "value": 0.0
             },
             {
                 "year": 2013,
                 "MARS": "mseparate",
-                "value": 12500.0
+                "value": 0.0
             },
             {
                 "year": 2013,
                 "MARS": "headhh",
-                "value": 12500.0
+                "value": 0.0
             },
             {
                 "year": 2013,
                 "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
                 "value": 12500.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 25000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 12500.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 12500.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 12500.0
+            },
+            {
+                "year": 2029,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "MARS": "widow",
+                "value": 0.0
             }
         ],
         "validators": {
@@ -23463,11 +23476,11 @@
             "cps": true
         }
     },
-    "ALD_OvertimeIncome_ps": {
-        "title": "Overtime ALD phase-out start earned income level",
-        "description": "Overtime ALD is phased-out if earned income exceeds this amount.",
-        "section_1": "Above The Line Deductions",
-        "section_2": "Misc. Exclusions",
+    "OvertimeIncomeDed_ps": {
+        "title": "Overtime deduction phase-out start modified AGI level",
+        "description": "Overtime deduction is phased-out if modified AGI exceeds this amount.",
+        "section_1": "",
+        "section_2": "",
         "indexable": true,
         "indexed": false,
         "type": "float",
@@ -23509,11 +23522,11 @@
             "cps": true
         }
     },
-    "ALD_OvertimeIncome_prt": {
-        "title": "Overtime ALD phase-out rate",
-        "description": "Overtime ALD is phased-out at this rate on earned income exceeding ALD_OvertimeIncome_ps.",
-        "section_1": "Above The Line Deductions",
-        "section_2": "Misc. Exclusions",
+    "OvertimeIncomeDed_prt": {
+        "title": "Overtime deduction phase-out rate",
+        "description": "Overtime deduction is phased-out at this rate on modified AGI exceeding OvertimeIncomeDed_ps.",
+        "section_1": "",
+        "section_2": "",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -23534,48 +23547,11 @@
             "cps": true
         }
     },
-    "ALD_TipIncome_hc": {
-        "title": "Tip income ALD haircut",
-        "description": "Tip income ALD is subject to this haircut.  Final ALD amount is multiplied by (1-ALD_TipIncome_hc).",
-        "section_1": "Above The Line Deductions",
-        "section_2": "Misc. Exclusions",
-        "indexable": false,
-        "indexed": false,
-        "type": "float",
-        "value": [
-            {
-                "year": 2013,
-                "value": 1.0
-            },
-            {
-                "year": 2025,
-                "value": 0.0
-            },
-            {
-                "year": 2028,
-                "value": 0.0
-            },
-            {
-                "year": 2029,
-                "value": 1.0
-            }
-        ],
-        "validators": {
-            "range": {
-                "min": 0,
-                "max": 1
-            }
-        },
-        "compatible_data": {
-            "puf": true,
-            "cps": true
-        }
-    },
-    "ALD_TipIncome_c": {
-        "title": "Tip ALD cap",
-        "description": "Tip ALD is capped at this level.",
-        "section_1": "Above The Line Deductions",
-        "section_2": "Misc. Exclusions",
+    "TipIncomeDed_c": {
+        "title": "Tip deduction cap",
+        "description": "Tip deduction is capped at this level.",
+        "section_1": "",
+        "section_2": "",
         "indexable": true,
         "indexed": false,
         "type": "float",
@@ -23583,27 +23559,77 @@
             {
                 "year": 2013,
                 "MARS": "single",
-                "value": 25000.0
+                "value": 0.0
             },
             {
                 "year": 2013,
                 "MARS": "mjoint",
-                "value": 25000.0
+                "value": 0.0
             },
             {
                 "year": 2013,
                 "MARS": "mseparate",
-                "value": 25000.0
+                "value": 0.0
             },
             {
                 "year": 2013,
                 "MARS": "headhh",
-                "value": 25000.0
+                "value": 0.0
             },
             {
                 "year": 2013,
                 "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
                 "value": 25000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 25000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 25000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 25000.0
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 25000.0
+            },
+            {
+                "year": 2029,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2029,
+                "MARS": "widow",
+                "value": 0.0
             }
         ],
         "validators": {
@@ -23617,11 +23643,11 @@
             "cps": true
         }
     },
-    "ALD_TipIncome_ps": {
-        "title": "Tip ALD phase-out start earned income level",
-        "description": "Tip ALD is phased-out if earned income exceeds this amount.",
-        "section_1": "Above The Line Deductions",
-        "section_2": "Misc. Exclusions",
+    "TipIncomeDed_ps": {
+        "title": "Tip deduction phase-out start modified AGI level",
+        "description": "Tip deduction is phased-out if modified AGI exceeds this amount.",
+        "section_1": "",
+        "section_2": "",
         "indexable": true,
         "indexed": false,
         "type": "float",
@@ -23663,11 +23689,11 @@
             "cps": true
         }
     },
-    "ALD_TipIncome_prt": {
-        "title": "Tip ALD phase-out rate",
-        "description": "Tip ALD is phased-out at this rate on earned income exceeding ALD_TipIncome_ps.",
-        "section_1": "Above The Line Deductions",
-        "section_2": "Misc. Exclusions",
+    "TipIncomeDed_prt": {
+        "title": "Tip deduction phase-out rate",
+        "description": "Tip deduction is phased-out at this rate on modified AGI exceeding TipIncomeDed_ps.",
+        "section_1": "",
+        "section_2": "",
         "indexable": false,
         "indexed": false,
         "type": "float",
