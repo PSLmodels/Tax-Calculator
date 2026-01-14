@@ -874,7 +874,7 @@ def test_CTCnew_2022(test_tuple, expected_value, skip_jit):
     assert np.allclose(test_value, expected_value)
 
 
-# parameters for next test
+# parameters for test_AGI
 ymod1 = 19330 + 10200
 c02500 = 0
 c02900 = 0
@@ -912,5 +912,86 @@ def test_AGI(test_tuple, expected_value, skip_jit):
     Tests the TaxInc function
     """
     test_value = calcfunctions.AGI(*test_tuple)
-    print('Returned from agi function: ', test_value)
+    print('Returned from AGI function: ', test_value)
+    assert np.allclose(test_value, expected_value)
+
+
+# parameters for test_MiscDed
+age_head = 66
+age_spouse = 65
+MARS = 2
+c00100 = 320_000
+exact_false = False
+exact_true = True
+SeniorDed_c = 6_000
+SeniorDed_ps = [75_000, 150_000, 75_000, 75_000, 75_000]
+SeniorDed_prt = 0.06
+overtime_income = 30_000
+OvertimeIncomeDed_c = [12_500, 25_000, 12_500, 12_500, 12_500]
+OvertimeIncomeDed_ps = [150_000, 300_000, 150_000, 150_000, 150_000]
+OvertimeIncomeDed_prt = 0.1
+tip_income = 30_000
+TipIncomeDed_c = 25_000
+TipIncomeDed_ps = [150_000, 300_000, 150_000, 150_000, 150_000]
+TipIncomeDed_prt = 0.1
+auto_loan_interest = 12_000
+AutoLoanInterestDed_c = 10_000
+AutoLoanInterestDed_ps = [100_000, 200_000, 100_000, 100_000, 200_000]
+AutoLoanInterestDed_po_step_size = 1_000
+AutoLoanInterestDed_po_rate_per_step = 0.2
+senior_deduction = 0  # calculated in MiscDed function
+overtime_income_deduction = 0  # calculated in MiscDed function
+tip_income_deduction = 0  # calculated in MiscDed function
+auto_loan_interest_deduction = 0  # calculated in MiscDed function
+
+tuple0 = (age_head, age_spouse, MARS, c00100, exact_false,
+          SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
+          overtime_income,
+          OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
+          OvertimeIncomeDed_prt,
+          tip_income,
+          TipIncomeDed_c, TipIncomeDed_ps,
+          TipIncomeDed_prt,
+          auto_loan_interest,
+          AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
+          AutoLoanInterestDed_po_step_size,
+          AutoLoanInterestDed_po_rate_per_step,
+          senior_deduction,
+          overtime_income_deduction,
+          tip_income_deduction,
+          auto_loan_interest_deduction)
+# returned tuple is (senior_deduction, overtime_income_deduction,
+#                    tip_income_deduction,auto_loan_interest_deduction)
+expected0 = (1_800, 23_000, 23_000, 0)
+
+tuple1 = (age_head, age_spouse, MARS, c00100, exact_true,
+          SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
+          overtime_income,
+          OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
+          OvertimeIncomeDed_prt,
+          tip_income,
+          TipIncomeDed_c, TipIncomeDed_ps,
+          TipIncomeDed_prt,
+          auto_loan_interest,
+          AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
+          AutoLoanInterestDed_po_step_size,
+          AutoLoanInterestDed_po_rate_per_step,
+          senior_deduction,
+          overtime_income_deduction,
+          tip_income_deduction,
+          auto_loan_interest_deduction)
+# returned tuple is (senior_deduction, overtime_income_deduction,
+#                    tip_income_deduction,auto_loan_interest_deduction)
+expected1 = (1_800, 23_000, 23_000, 0)
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value', [(tuple0, expected0), (tuple1, expected1)]
+)
+def test_MiscDed(test_tuple, expected_value, skip_jit):
+    """
+    Tests the MiscDed function
+    """
+    test_value = calcfunctions.MiscDed(*test_tuple)
+    print('Returned from MiscDed function: ', test_value)
     assert np.allclose(test_value, expected_value)

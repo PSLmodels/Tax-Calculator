@@ -786,16 +786,13 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
 def MiscDed(age_head, age_spouse, MARS, c00100, exact,
             SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
             overtime_income,
-            OvertimeIncomeDed_c,
-            OvertimeIncomeDed_ps,
+            OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
             OvertimeIncomeDed_prt,
             tip_income,
-            TipIncomeDed_c,
-            TipIncomeDed_ps,
+            TipIncomeDed_c, TipIncomeDed_ps,
             TipIncomeDed_prt,
             auto_loan_interest,
-            AutoLoanInterestDed_c,
-            AutoLoanInterestDed_ps,
+            AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
             AutoLoanInterestDed_po_step_size,
             AutoLoanInterestDed_po_rate_per_step,
             senior_deduction,
@@ -852,8 +849,6 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
         Deduction phase-out AGI step size
     AutoLoanInterestDed_po_rate_per_step: float
         Deduction phase-out rate per AGI step
-    auto_loan_interest_deduction: float
-        Deduction available to both itemizers and nonitemizers
 
     Returns
     -------
