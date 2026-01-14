@@ -787,10 +787,12 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
             SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
             overtime_income,
             OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
-            OvertimeIncomeDed_prt,
+            OvertimeIncomeDed_po_step_size,
+            OvertimeIncomeDed_po_rate_per_step,
             tip_income,
             TipIncomeDed_c, TipIncomeDed_ps,
-            TipIncomeDed_prt,
+            TipIncomeDed_po_step_size,
+            TipIncomeDed_po_rate_per_step,
             auto_loan_interest,
             AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
             AutoLoanInterestDed_po_step_size,
@@ -829,16 +831,20 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
         overtime_income_deduction cap
     OvertimeIncomeDed_ps: list[float]
         overtime_income_deduction phase-out modified AGI start
-    OvertimeIncomeDed_prt: float
-        overtime_income_deduction phase-out rate
+    OvertimeIncomeDed_po_step_size: float
+        Deduction phase-out AGI step size
+    OvertimeIncomeDed_po_rate_per_step: float
+        Deduction phase-out rate per AGI step
     tip_income: float
         Tip income qualified for a misc deduction
     TipIncomeDed_c: float
         tip_income_deduction cap
     TipIncomeDed_ps: list[float]
         tip_income_deduction phase-out modified AGI start
-    TipIncomeDed_prt: float
-        tip_income_deduction phase-out rate
+    TipIncomeDed_po_step_size: float
+        Deduction phase-out AGI step size
+    TipIncomeDed_po_rate_per_step: float
+        Deduction phase-out rate per AGI step
     auto_loan_interest: float
         Qualified auto loan interest paid
     AutoLoanInterestDed_c: float
@@ -861,7 +867,7 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
     auto_loan_interest_deduction: float
         Deduction available to both itemizers and nonitemizers
     """
-    # pylint: disable=too-many-branches
+    # pylint: disable=too-many-statements,too-many-branches
     magi = c00100
     # calculate senior deduction
     senior_deduction = 0.
@@ -885,8 +891,15 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
         ded = min(overtime_income, OvertimeIncomeDed_c[MARS - 1])
         po_start = OvertimeIncomeDed_ps[MARS - 1]
         if magi > po_start:
-            excess = magi - po_start
-            po_amount = excess * OvertimeIncomeDed_prt
+            # phase out deduction
+            excess_agi = magi - po_start
+            po_rate = OvertimeIncomeDed_po_rate_per_step
+            if exact == 1:  # exact calculation as on tax forms
+                step_size = OvertimeIncomeDed_po_step_size
+                steps = math.ceil(excess_agi / step_size)
+                po_amount = steps * step_size * po_rate
+            else:  # smoothed calculation needed for sensible mtr calculation
+                po_amount = excess_agi * po_rate
             ded = max(0., ded - po_amount)
         overtime_income_deduction = ded
     # calculate tip_income_deduction
@@ -895,8 +908,15 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
         ded = min(tip_income, TipIncomeDed_c)
         po_start = TipIncomeDed_ps[MARS - 1]
         if magi > po_start:
-            excess = magi - po_start
-            po_amount = excess * TipIncomeDed_prt
+            # phase out deduction
+            excess_agi = magi - po_start
+            po_rate = TipIncomeDed_po_rate_per_step
+            if exact == 1:  # exact calculation as on tax forms
+                step_size = TipIncomeDed_po_step_size
+                steps = math.ceil(excess_agi / step_size)
+                po_amount = steps * step_size * po_rate
+            else:  # smoothed calculation needed for sensible mtr calculation
+                po_amount = excess_agi * po_rate
             ded = max(0., ded - po_amount)
         tip_income_deduction = ded
     # calculate auto loan interest deduction

@@ -226,10 +226,12 @@
 2035 AutoLoanInterestDed_po_rate_per_step 0.2
 2035 OvertimeIncomeDed_c [0. 0. 0. 0. 0.]
 2035 OvertimeIncomeDed_ps [150000. 300000. 150000. 150000. 150000.]
-2035 OvertimeIncomeDed_prt 0.1
+2035 OvertimeIncomeDed_po_step_size 1000.0
+2035 OvertimeIncomeDed_po_rate_per_step 0.1
 2035 TipIncomeDed_c 0.0
 2035 TipIncomeDed_ps [150000. 300000. 150000. 150000. 150000.]
-2035 TipIncomeDed_prt 0.1
+2035 TipIncomeDed_po_step_size 1000.0
+2035 TipIncomeDed_po_rate_per_step 0.1
 2035 BEN_ssi_repeal False
 2035 BEN_housing_repeal False
 2035 BEN_snap_repeal False

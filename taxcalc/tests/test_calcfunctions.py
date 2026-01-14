@@ -5,6 +5,8 @@ Tests for Tax-Calculator calcfunctions.py logic.
 # pycodestyle test_calcfunctions.py
 # pylint --disable=locally-disabled test_calcfunctions.py
 
+# pylint: disable=too-many-lines
+
 import os
 import re
 import ast
@@ -929,11 +931,13 @@ SeniorDed_prt = 0.06
 overtime_income = 30_000
 OvertimeIncomeDed_c = [12_500, 25_000, 12_500, 12_500, 12_500]
 OvertimeIncomeDed_ps = [150_000, 300_000, 150_000, 150_000, 150_000]
-OvertimeIncomeDed_prt = 0.1
+OvertimeIncomeDed_po_step_size = 1_000
+OvertimeIncomeDed_po_rate_per_step = 0.1
 tip_income = 30_000
 TipIncomeDed_c = 25_000
 TipIncomeDed_ps = [150_000, 300_000, 150_000, 150_000, 150_000]
-TipIncomeDed_prt = 0.1
+TipIncomeDed_po_step_size = 1_000
+TipIncomeDed_po_rate_per_step = 0.1
 auto_loan_interest = 12_000
 AutoLoanInterestDed_c = 10_000
 AutoLoanInterestDed_ps = [100_000, 200_000, 100_000, 100_000, 200_000]
@@ -948,10 +952,12 @@ tuple0 = (age_head, age_spouse, MARS, c00100, exact_false,
           SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
           overtime_income,
           OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
-          OvertimeIncomeDed_prt,
+          OvertimeIncomeDed_po_step_size,
+          OvertimeIncomeDed_po_rate_per_step,
           tip_income,
           TipIncomeDed_c, TipIncomeDed_ps,
-          TipIncomeDed_prt,
+          TipIncomeDed_po_step_size,
+          TipIncomeDed_po_rate_per_step,
           auto_loan_interest,
           AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
           AutoLoanInterestDed_po_step_size,
@@ -968,10 +974,12 @@ tuple1 = (age_head, age_spouse, MARS, c00100, exact_true,
           SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
           overtime_income,
           OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
-          OvertimeIncomeDed_prt,
+          OvertimeIncomeDed_po_step_size,
+          OvertimeIncomeDed_po_rate_per_step,
           tip_income,
           TipIncomeDed_c, TipIncomeDed_ps,
-          TipIncomeDed_prt,
+          TipIncomeDed_po_step_size,
+          TipIncomeDed_po_rate_per_step,
           auto_loan_interest,
           AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
           AutoLoanInterestDed_po_step_size,

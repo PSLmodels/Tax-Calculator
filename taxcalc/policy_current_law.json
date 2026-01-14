@@ -23518,9 +23518,34 @@
             "cps": true
         }
     },
-    "OvertimeIncomeDed_prt": {
-        "title": "Overtime deduction phase-out rate",
-        "description": "Overtime deduction is phased-out at this rate on modified AGI exceeding OvertimeIncomeDed_ps.",
+    "OvertimeIncomeDed_po_step_size": {
+        "title": "Overtime income deduction phase-out AGI step size",
+        "description": "Overtime income deduction is phased-out in AGI steps of this size.",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 1000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "OvertimeIncomeDed_po_rate_per_step": {
+        "title": "Overtime income deduction phase-out rate per phase-out step",
+        "description": "Overtime income deduction is phased-out at this rate for each AGI step.",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -23622,9 +23647,34 @@
             "cps": true
         }
     },
-    "TipIncomeDed_prt": {
-        "title": "Tip deduction phase-out rate",
-        "description": "Tip deduction is phased-out at this rate on modified AGI exceeding TipIncomeDed_ps.",
+    "TipIncomeDed_po_step_size": {
+        "title": "Tip income deduction phase-out AGI step size",
+        "description": "Tip income deduction is phased-out in AGI steps of this size.",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 1000.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "TipIncomeDed_po_rate_per_step": {
+        "title": "Tip income deduction phase-out rate per phase-out step",
+        "description": "Tip income deduction is phased-out at this rate for each AGI step.",
         "section_1": "",
         "section_2": "",
         "indexable": false,
