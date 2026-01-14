@@ -836,7 +836,7 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
         overtime_income_deduction phase-out rate
     tip_income: float
         Tip income qualified for a misc deduction
-    TipIncomeDed_c: list[float]
+    TipIncomeDed_c: float
         tip_income_deduction cap
     TipIncomeDed_ps: list[float]
         tip_income_deduction phase-out modified AGI start
@@ -897,7 +897,7 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
     # calculate tip_income_deduction
     tip_income_deduction = 0.
     if tip_income > 0.:
-        ded = min(tip_income, TipIncomeDed_c[MARS - 1])
+        ded = min(tip_income, TipIncomeDed_c)
         po_start = TipIncomeDed_ps[MARS - 1]
         if magi > po_start:
             excess = magi - po_start

@@ -227,7 +227,7 @@
 2035 OvertimeIncomeDed_c [0. 0. 0. 0. 0.]
 2035 OvertimeIncomeDed_ps [150000. 300000. 150000. 150000. 150000.]
 2035 OvertimeIncomeDed_prt 0.1
-2035 TipIncomeDed_c [0. 0. 0. 0. 0.]
+2035 TipIncomeDed_c 0.0
 2035 TipIncomeDed_ps [150000. 300000. 150000. 150000. 150000.]
 2035 TipIncomeDed_prt 0.1
 2035 BEN_ssi_repeal False

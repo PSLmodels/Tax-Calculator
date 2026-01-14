@@ -107,7 +107,7 @@
 
     // New OBBBA parameters
     "OvertimeIncomeDed_c": {"2025": [0, 0, 0, 0, 0]},
-    "TipIncomeDed_c": {"2025": [0, 0, 0, 0, 0]},
+    "TipIncomeDed_c": {"2025": 0},
     "AutoLoanInterestDed_c": {"2025": 0},
 
     // Additional parameters
