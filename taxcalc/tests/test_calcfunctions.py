@@ -5,6 +5,8 @@ Tests for Tax-Calculator calcfunctions.py logic.
 # pycodestyle test_calcfunctions.py
 # pylint --disable=locally-disabled test_calcfunctions.py
 
+# pylint: disable=too-many-lines
+
 import os
 import re
 import ast
@@ -581,6 +583,8 @@ e27200 = [0.00, 0.00, 0.00, 0.00]
 e00650 = [5000.00, 8000.00, 3000.00, 9000.00]
 c01000 = [7000.00, 4000.00, -3000.00, -3000.00]
 senior_deduction = [0.00, 0.00, 1000.00, 0.00]
+overtime_income_deduction = [0.00, 0.00, 0.00, 0.00]
+tip_income_deduction = [0.00, 0.00, 0.00, 0.00]
 auto_loan_interest_deduction = [0.00, 0.00, 0.00, 1000.00]
 PT_SSTB_income = [0, 1, 1, 1]
 PT_binc_w2_wages = [0.00, 0.00, 0.00, 0.00]
@@ -592,7 +596,11 @@ tuple0 = (
     c00100[0], standard[0], c04470[0], c04600[0], MARS[0], e00900[0],
     c03260[0], e26270[0],
     e02100[0], e27200[0], e00650[0], c01000[0],
-    senior_deduction[0], auto_loan_interest_deduction[0], PT_SSTB_income[0],
+    senior_deduction[0],
+    overtime_income_deduction[0],
+    tip_income_deduction[0],
+    auto_loan_interest_deduction[0],
+    PT_SSTB_income[0],
     PT_binc_w2_wages[0], PT_ubia_property[0], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
@@ -603,7 +611,11 @@ tuple1 = (
     c00100[1], standard[1], c04470[1], c04600[1], MARS[1], e00900[1],
     c03260[1], e26270[1],
     e02100[1], e27200[1], e00650[1], c01000[1],
-    senior_deduction[1], auto_loan_interest_deduction[1], PT_SSTB_income[1],
+    senior_deduction[1],
+    overtime_income_deduction[1],
+    tip_income_deduction[1],
+    auto_loan_interest_deduction[1],
+    PT_SSTB_income[1],
     PT_binc_w2_wages[1], PT_ubia_property[1], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
@@ -614,7 +626,11 @@ tuple2 = (
     c00100[2], standard[2], c04470[2], c04600[2], MARS[2], e00900[2],
     c03260[2], e26270[2],
     e02100[2], e27200[2], e00650[2], c01000[2],
-    senior_deduction[2], auto_loan_interest_deduction[2], PT_SSTB_income[2],
+    senior_deduction[2],
+    overtime_income_deduction[2],
+    tip_income_deduction[2],
+    auto_loan_interest_deduction[2],
+    PT_SSTB_income[2],
     PT_binc_w2_wages[2], PT_ubia_property[2], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
@@ -625,7 +641,11 @@ tuple3 = (
     c00100[3], standard[3], c04470[3], c04600[3], MARS[3], e00900[3],
     c03260[3], e26270[3],
     e02100[3], e27200[3], e00650[3], c01000[3],
-    senior_deduction[3], auto_loan_interest_deduction[3], PT_SSTB_income[3],
+    senior_deduction[3],
+    overtime_income_deduction[3],
+    tip_income_deduction[3],
+    auto_loan_interest_deduction[3],
+    PT_SSTB_income[3],
     PT_binc_w2_wages[3], PT_ubia_property[3], PT_qbid_rt, PT_qbid_limited,
     PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
     PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
@@ -856,7 +876,7 @@ def test_CTCnew_2022(test_tuple, expected_value, skip_jit):
     assert np.allclose(test_value, expected_value)
 
 
-# parameters for next test
+# parameters for test_AGI
 ymod1 = 19330 + 10200
 c02500 = 0
 c02900 = 0
@@ -894,79 +914,92 @@ def test_AGI(test_tuple, expected_value, skip_jit):
     Tests the TaxInc function
     """
     test_value = calcfunctions.AGI(*test_tuple)
-    print('Returned from agi function: ', test_value)
+    print('Returned from AGI function: ', test_value)
     assert np.allclose(test_value, expected_value)
 
 
-# parameters for next test
-e03150 = 0
-e03210 = 0
-c03260 = 0
-e03270 = 0
-e03300 = 0
-e03400 = 0
-e03500 = 0
-e00800 = 0
-e03220 = 0
-e03230 = 0
-e03240 = 0
-e03290 = 0
-care_deduction = 0
-ALD_StudentLoan_hc = 0
-ALD_SelfEmp_HealthIns_hc = 0
-ALD_KEOGH_SEP_hc = 0
-ALD_EarlyWithdraw_hc = 0
-ALD_AlimonyPaid_hc = 0
-ALD_AlimonyReceived_hc = 0
-ALD_EducatorExpenses_hc = 0
-ALD_HSADeduction_hc = 0
-ALD_IRAContributions_hc = 0
-ALD_DomesticProduction_hc = 0
-ALD_Tuition_hc = 0
-MARS = 1
-earned = 200000
-overtime_income = 13000
-ALD_OvertimeIncome_hc = 0.
-ALD_OvertimeIncome_c = [12500, 25000, 12500, 12500, 12500]
-ALD_OvertimeIncome_ps = [150000, 300000, 150000, 150000, 150000]
-ALD_OvertimeIncome_prt = 0.10
-tip_income = 30000
-ALD_TipIncome_hc = 0.
-ALD_TipIncome_c = [25000, 25000, 25000, 25000, 25000]
-ALD_TipIncome_ps = [150000, 300000, 150000, 150000, 150000]
-ALD_TipIncome_prt = 0.10
-c02900 = 0  # calculated in function
-ALD_OvertimeIncome = 0  # calculated in function
-ALD_TipIncome = 0  # calculated in function
+# parameters for test_MiscDed
+age_head = 66
+age_spouse = 65
+MARS = 2
+c00100 = 320_000
+exact_false = False
+exact_true = True
+SeniorDed_c = 6_000
+SeniorDed_ps = [75_000, 150_000, 75_000, 75_000, 75_000]
+SeniorDed_prt = 0.06
+overtime_income = 30_000
+OvertimeIncomeDed_c = [12_500, 25_000, 12_500, 12_500, 12_500]
+OvertimeIncomeDed_ps = [150_000, 300_000, 150_000, 150_000, 150_000]
+OvertimeIncomeDed_po_step_size = 1_000
+OvertimeIncomeDed_po_rate_per_step = 0.1
+tip_income = 30_000
+TipIncomeDed_c = 25_000
+TipIncomeDed_ps = [150_000, 300_000, 150_000, 150_000, 150_000]
+TipIncomeDed_po_step_size = 1_000
+TipIncomeDed_po_rate_per_step = 0.1
+auto_loan_interest = 12_000
+AutoLoanInterestDed_c = 10_000
+AutoLoanInterestDed_ps = [100_000, 200_000, 100_000, 100_000, 200_000]
+AutoLoanInterestDed_po_step_size = 1_000
+AutoLoanInterestDed_po_rate_per_step = 0.2
+senior_deduction = 0  # calculated in MiscDed function
+overtime_income_deduction = 0  # calculated in MiscDed function
+tip_income_deduction = 0  # calculated in MiscDed function
+auto_loan_interest_deduction = 0  # calculated in MiscDed function
 
-tuple0 = (
-    e03150, e03210, c03260,
-    e03270, e03300, e03400, e03500, e00800,
-    e03220, e03230, e03240, e03290, care_deduction,
-    ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
-    ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
-    ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
-    ALD_DomesticProduction_hc, ALD_Tuition_hc,
-    MARS, earned,
-    overtime_income, ALD_OvertimeIncome_hc, ALD_OvertimeIncome_c,
-    ALD_OvertimeIncome_ps, ALD_OvertimeIncome_prt,
-    tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
-    ALD_TipIncome_ps, ALD_TipIncome_prt,
-    c02900, ALD_OvertimeIncome, ALD_TipIncome
-)
-ovr = 12500 - (200000 - 150000) * 0.10
-tip = 25000 - (200000 - 150000) * 0.10
-c02900 = 0 + ovr + tip
-expected0 = (c02900, ovr, tip)
+tuple0 = (age_head, age_spouse, MARS, c00100, exact_false,
+          SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
+          overtime_income,
+          OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
+          OvertimeIncomeDed_po_step_size,
+          OvertimeIncomeDed_po_rate_per_step,
+          tip_income,
+          TipIncomeDed_c, TipIncomeDed_ps,
+          TipIncomeDed_po_step_size,
+          TipIncomeDed_po_rate_per_step,
+          auto_loan_interest,
+          AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
+          AutoLoanInterestDed_po_step_size,
+          AutoLoanInterestDed_po_rate_per_step,
+          senior_deduction,
+          overtime_income_deduction,
+          tip_income_deduction,
+          auto_loan_interest_deduction)
+# returned tuple is (senior_deduction, overtime_income_deduction,
+#                    tip_income_deduction,auto_loan_interest_deduction)
+expected0 = (1_800, 23_000, 23_000, 0)
+
+tuple1 = (age_head, age_spouse, MARS, c00100, exact_true,
+          SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
+          overtime_income,
+          OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
+          OvertimeIncomeDed_po_step_size,
+          OvertimeIncomeDed_po_rate_per_step,
+          tip_income,
+          TipIncomeDed_c, TipIncomeDed_ps,
+          TipIncomeDed_po_step_size,
+          TipIncomeDed_po_rate_per_step,
+          auto_loan_interest,
+          AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
+          AutoLoanInterestDed_po_step_size,
+          AutoLoanInterestDed_po_rate_per_step,
+          senior_deduction,
+          overtime_income_deduction,
+          tip_income_deduction,
+          auto_loan_interest_deduction)
+# returned tuple is (senior_deduction, overtime_income_deduction,
+#                    tip_income_deduction,auto_loan_interest_deduction)
+expected1 = (1_800, 23_000, 23_000, 0)
 
 
 @pytest.mark.parametrize(
-    'test_tuple,expected_value', [(tuple0, expected0)]
+    'test_tuple,expected_value', [(tuple0, expected0), (tuple1, expected1)]
 )
-def test_Adj(test_tuple, expected_value, skip_jit):
+def test_MiscDed(test_tuple, expected_value, skip_jit):
     """
-    Tests the Adj function ALD_OvertimeIncome and ALD_TipIncome code
+    Tests the MiscDed function
     """
-    test_value = calcfunctions.Adj(*test_tuple)
-    print('Returned from Adj function: ', test_value)
+    test_value = calcfunctions.MiscDed(*test_tuple)
+    print('Returned from MiscDed function: ', test_value)
     assert np.allclose(test_value, expected_value)

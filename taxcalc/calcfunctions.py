@@ -115,9 +115,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         This parameter is indexed by rate of growth in average wages not by
           the price inflation rate.
     e00200p: float
-        Wages, salaries, and tips for taxpayer net of pension contributions
+        Wages, salaries,tips/otime for taxpayer net of pension contributions
     e00200s: float
-        Wages, salaries, and tips for spouse net of pension contributions
+        Wages, salaries, tips/otime for spouse net of pension contributions
     pencon_p: float
         Contributions to defined-contribution pension plans for taxpayer
     pencon_s: float
@@ -348,12 +348,7 @@ def Adj(e03150, e03210, c03260,
         ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
         ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
         ALD_DomesticProduction_hc, ALD_Tuition_hc,
-        MARS, earned,
-        overtime_income, ALD_OvertimeIncome_hc, ALD_OvertimeIncome_c,
-        ALD_OvertimeIncome_ps, ALD_OvertimeIncome_prt,
-        tip_income, ALD_TipIncome_hc, ALD_TipIncome_c,
-        ALD_TipIncome_ps, ALD_TipIncome_prt,
-        c02900, ALD_OvertimeIncome, ALD_TipIncome):
+        c02900):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
 
@@ -407,40 +402,11 @@ def Adj(e03150, e03210, c03260,
         Domestic production haircut
     ALD_Tuition_hc: float
         Tuition and fees haircut
-    MARS: int
-        Filing marital status (1=single, 2=joint, 3=separate,
-                               4=household-head, 5=widow(er))
-    earned: float
-        Earned income used to phase-out ALD_OvertimeIncome and ALD_TipIncome
-    overtime_income: float
-        Overtime income qualified for an above-the-line deduction
-    ALD_OvertimeIncome_hc: float
-        ALD_OvertimeIncome haircut
-    ALD_OvertimeIncome_c: list[float]
-        ALD_OvertimeIncome cap
-    ALD_OvertimeIncome_ps: list[float]
-        ALD_OvertimeIncome phase-out earned income start
-    ALD_OvertimeIncome_prt: float
-        ALD_OvertimeIncome phase-out rate
-    tip_income: float
-        Tip income qualified for an above-the-line deduction
-    ALD_TipIncome_hc: float
-        ALD_TipIncome haircut
-    ALD_TipIncome_c: list[float]
-        ALD_TipIncome cap
-    ALD_TipIncome_ps: list[float]
-        ALD_TipIncome phase-out earned income start
-    ALD_TipIncome_prt: float
-        ALD_TipIncome phase-out rate
 
     Returns
     -------
     c02900: float
         Total of all "above the line" income adjustments to get AGI
-    ALD_OvertimeIncome: float
-        Overtime ALD amount included in c02900
-    ALD_TipIncome: float
-        Tip ALD amount included in c02900
     """
     # Form 2555 foreign earned income exclusion is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
@@ -457,29 +423,8 @@ def Adj(e03150, e03210, c03260,
               (1. - ALD_IRAContributions_hc) * e03150 +
               (1. - ALD_KEOGH_SEP_hc) * e03300 +
               care_deduction)
-    # calculate ALD_OvertimeIncome
-    ALD_OvertimeIncome = 0.
-    if overtime_income > 0. and ALD_OvertimeIncome_hc < 1.0:
-        ded = min(overtime_income, ALD_OvertimeIncome_c[MARS - 1])
-        po_start = ALD_OvertimeIncome_ps[MARS - 1]
-        if earned > po_start:
-            excess = earned - po_start
-            po_amount = excess * ALD_OvertimeIncome_prt
-            ded = max(0., ded - po_amount)
-        ALD_OvertimeIncome = ded
-    # calculate ALD_TipIncome
-    ALD_TipIncome = 0.
-    if tip_income > 0. and ALD_TipIncome_hc < 1.0:
-        ded = min(tip_income, ALD_TipIncome_c[MARS - 1])
-        po_start = ALD_TipIncome_ps[MARS - 1]
-        if earned > po_start:
-            excess = earned - po_start
-            po_amount = excess * ALD_TipIncome_prt
-            ded = max(0., ded - po_amount)
-        ALD_TipIncome = ded
     # return results
-    c02900 += ALD_OvertimeIncome + ALD_TipIncome
-    return (c02900, ALD_OvertimeIncome, ALD_TipIncome)
+    return c02900
 
 
 @iterate_jit(nopython=True)
@@ -540,95 +485,95 @@ def CapGains(p23250, p22250, ALD_StudentLoan_hc,
     Parameters
     ----------
     p23250: float
-        Net long-term capital gains/losses (Schedule D)
+      Net long-term capital gains/losses (Schedule D)
     p22250: float
-        Net short-term capital gails/losses (Schedule D)
+      Net short-term capital gails/losses (Schedule D)
     ALD_StudentLoan_hc: float
-        Student loan interest deduction haircut
+      Student loan interest deduction haircut
     ALD_InvInc_ec_rt: float
-        Investment income exclusion rate haircut
+      Investment income exclusion rate haircut
     invinc_ec_base: float
-        Exclusion of investment income from AGI
+      Exclusion of investment income from AGI
     e00200: float
-        Wages, salaries, tips for filing unit net of pension contributions
+      Wages, salaries, tips/otime for filing unit net of pension contributions
     e00300: float
-        Taxable interest income
+      Taxable interest income
     e00600: float
-        Ordinary dividends included in AGI
+      Ordinary dividends included in AGI
     e00650: float
-        Qualified dividends included in ordinary dividends
+      Qualified dividends included in ordinary dividends
     e00700: float
-        Taxable refunds of state and local income taxes
+      Taxable refunds of state and local income taxes
     e00800: float
-        Alimony received
+      Alimony received
     CG_nodiff: bool
-        Long term capital gains and qualified dividends taxed no
-        differently than regular taxable income
+      Long term capital gains and qualified dividends taxed no
+      differently than regular taxable income
     CG_ec: float
-        Dollar amount of all capital gains and qualified dividends that are
-        excluded from AGI
+      Dollar amount of all capital gains and qualified dividends that are
+      excluded from AGI
     CG_reinvest_ec_rt: float
-        Fraction of all capital gains and qualified dividends in excess
-        of the dollar exclusion that are excluded from AGI
+      Fraction of all capital gains and qualified dividends in excess
+      of the dollar exclusion that are excluded from AGI
     Capital_loss_limitation: float
-        Limitation on capital losses that are deductible
+      Limitation on capital losses that are deductible
     ALD_BusinessLosses_c: list
-        Maximm amount of business losses deductible
+      Maximm amount of business losses deductible
     MARS: int
-        Filing marital status (1=single, 2=joint, 3=separate,
-                               4=household-head, 5=widow(er))
+      Filing marital status (1=single, 2=joint, 3=separate,
+                             4=household-head, 5=widow(er))
     e00900: float
-        Schedule C business net profit/loss for filing unit
+      Schedule C business net profit/loss for filing unit
     e01100: float
-        Capital gain distributions not reported on Schedule D
+      Capital gain distributions not reported on Schedule D
     e01200: float
-        Other net gain/loss from Form 4797
+      Other net gain/loss from Form 4797
     e01400: float
-        Taxable IRA distributions
+      Taxable IRA distributions
     e01700: float
-        Taxable pensions and annunities
+      Taxable pensions and annunities
     e02000: float
-        Schedule E total rental, royalty, partnership, S-corporation,
-        etc, income/loss (includes e26270 and e27200)
+      Schedule E total rental, royalty, partnership, S-corporation,
+      etc, income/loss (includes e26270 and e27200)
     e02100: float
-        Farm net income/loss for filing unit from Schedule F
+      Farm net income/loss for filing unit from Schedule F
     e02300: float
-        Unemployment insurance benefits
+      Unemployment insurance benefits
     e00400: float
-        Tax-exempt interest income
+      Tax-exempt interest income
     e02400: float
-        Total social security (OASDI) benefits
+      Total social security (OASDI) benefits
     c02900: float
-        Total of all "above the line" income adjustments to get AGI
+      Total of all "above the line" income adjustments to get AGI
     e03210: float
-        Student loan interest
+      Student loan interest
     e03230: float
-        Tuition and fees from Form 8917
+      Tuition and fees from Form 8917
     e03240: float
-        Domestic production activities from Form 8903
+      Domestic production activities from Form 8903
     c01000: float
-        Limitation on capital losses
+      Limitation on capital losses
     c23650: float
-        Net capital gains (long and short term) before exclusion
+      Net capital gains (long and short term) before exclusion
     ymod: float
-        Variable that is used in OASDI benefit taxation logic
+      Variable that is used in OASDI benefit taxation logic
     ymod1: float
-        Variable that is included in AGI
+      Variable that is included in AGI
     invinc_agi_ec: float
-        Exclusion of investment income from AGI
+      Exclusion of investment income from AGI
 
     Returns
     -------
     c01000: float
-        Limitation on capital losses
+      Limitation on capital losses
     c23650: float
-        Net capital gains (long and short term) before exclusion
+      Net capital gains (long and short term) before exclusion
     ymod: float
-        Variable that is used in OASDI benefit taxation logic
+      Variable that is used in OASDI benefit taxation logic
     ymod1: float
-        Variable that is included in AGI
+      Variable that is included in AGI
     invinc_agi_ec: float
-        Exclusion of investment income from AGI
+      Exclusion of investment income from AGI
     """
     # net capital gain (long term + short term) before exclusion
     c23650 = p23250 + p22250
@@ -840,15 +785,26 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
 @iterate_jit(nopython=True)
 def MiscDed(age_head, age_spouse, MARS, c00100, exact,
             SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
+            overtime_income,
+            OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
+            OvertimeIncomeDed_po_step_size,
+            OvertimeIncomeDed_po_rate_per_step,
+            tip_income,
+            TipIncomeDed_c, TipIncomeDed_ps,
+            TipIncomeDed_po_step_size,
+            TipIncomeDed_po_rate_per_step,
             auto_loan_interest,
-            AutoLoanInterestDed_c,
-            AutoLoanInterestDed_ps,
+            AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
             AutoLoanInterestDed_po_step_size,
             AutoLoanInterestDed_po_rate_per_step,
-            senior_deduction, auto_loan_interest_deduction):
+            senior_deduction,
+            overtime_income_deduction,
+            tip_income_deduction,
+            auto_loan_interest_deduction):
     """
     Calculates below-the-line deduction for elderly head/spouse and
-    deduction on qualified auto loan interest paid.
+    deductions on qualified overtime income, tip income, and
+    auto loan interest paid.
 
     Parameters
     ----------
@@ -869,6 +825,26 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
         Senior deduction AGI phase-out start level
     SeniorDed_prt: float
         Senior deduction phase-out rate
+    overtime_income: float
+        Overtime income qualified for a misc deduction
+    OvertimeIncomeDed_c: list[float]
+        overtime_income_deduction cap
+    OvertimeIncomeDed_ps: list[float]
+        overtime_income_deduction phase-out modified AGI start
+    OvertimeIncomeDed_po_step_size: float
+        Deduction phase-out AGI step size
+    OvertimeIncomeDed_po_rate_per_step: float
+        Deduction phase-out rate per AGI step
+    tip_income: float
+        Tip income qualified for a misc deduction
+    TipIncomeDed_c: float
+        tip_income_deduction cap
+    TipIncomeDed_ps: list[float]
+        tip_income_deduction phase-out modified AGI start
+    TipIncomeDed_po_step_size: float
+        Deduction phase-out AGI step size
+    TipIncomeDed_po_rate_per_step: float
+        Deduction phase-out rate per AGI step
     auto_loan_interest: float
         Qualified auto loan interest paid
     AutoLoanInterestDed_c: float
@@ -879,16 +855,20 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
         Deduction phase-out AGI step size
     AutoLoanInterestDed_po_rate_per_step: float
         Deduction phase-out rate per AGI step
-    auto_loan_interest_deduction: float
-        Deduction available to both itemizers and nonitemizers
 
     Returns
     -------
     senior_deduction: float
         Deduction available to both itemizers and nonitemizers
+    overtime_income_deduction: float
+        Deduction available to both itemizers and nonitemizers
+    tip_income_deduction: float
+        Deduction available to both itemizers and nonitemizers
     auto_loan_interest_deduction: float
         Deduction available to both itemizers and nonitemizers
     """
+    # pylint: disable=too-many-statements,too-many-branches
+    magi = c00100
     # calculate senior deduction
     senior_deduction = 0.
     if SeniorDed_c > 0.:
@@ -900,20 +880,54 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
         if seniors > 0:
             ded = seniors * SeniorDed_c
             po_start = SeniorDed_ps[MARS - 1]
-            if c00100 > po_start:
-                excess_agi = c00100 - po_start
+            if magi > po_start:
+                excess_agi = magi - po_start
                 po_amount = excess_agi * SeniorDed_prt
                 ded = max(0., ded - po_amount)
             senior_deduction = ded
+    # calculate overtime_income_deduction
+    overtime_income_deduction = 0.
+    if overtime_income > 0.:
+        ded = min(overtime_income, OvertimeIncomeDed_c[MARS - 1])
+        po_start = OvertimeIncomeDed_ps[MARS - 1]
+        if magi > po_start:
+            # phase out deduction
+            excess_agi = magi - po_start
+            po_rate = OvertimeIncomeDed_po_rate_per_step
+            if exact == 1:  # exact calculation as on tax forms
+                step_size = OvertimeIncomeDed_po_step_size
+                steps = math.ceil(excess_agi / step_size)
+                po_amount = steps * step_size * po_rate
+            else:  # smoothed calculation needed for sensible mtr calculation
+                po_amount = excess_agi * po_rate
+            ded = max(0., ded - po_amount)
+        overtime_income_deduction = ded
+    # calculate tip_income_deduction
+    tip_income_deduction = 0.
+    if tip_income > 0.:
+        ded = min(tip_income, TipIncomeDed_c)
+        po_start = TipIncomeDed_ps[MARS - 1]
+        if magi > po_start:
+            # phase out deduction
+            excess_agi = magi - po_start
+            po_rate = TipIncomeDed_po_rate_per_step
+            if exact == 1:  # exact calculation as on tax forms
+                step_size = TipIncomeDed_po_step_size
+                steps = math.ceil(excess_agi / step_size)
+                po_amount = steps * step_size * po_rate
+            else:  # smoothed calculation needed for sensible mtr calculation
+                po_amount = excess_agi * po_rate
+            ded = max(0., ded - po_amount)
+        tip_income_deduction = ded
     # calculate auto loan interest deduction
     auto_loan_interest_deduction = 0.
     if AutoLoanInterestDed_c > 0. and auto_loan_interest > 0.:
         # cap deduction
         ded = min(auto_loan_interest, AutoLoanInterestDed_c)
         po_start = AutoLoanInterestDed_ps[MARS - 1]
-        if c00100 > po_start:
+        if magi > po_start:
             # phase out deduction
-            excess_agi = c00100 - po_start
+            excess_agi = magi - po_start
             po_rate = AutoLoanInterestDed_po_rate_per_step
             if exact == 1:  # exact calculation as on tax forms
                 step_size = AutoLoanInterestDed_po_step_size
@@ -923,7 +937,8 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
                 po_amount = excess_agi * po_rate
             ded = max(0., ded - po_amount)
         auto_loan_interest_deduction = ded
-    return (senior_deduction, auto_loan_interest_deduction)
+    return (senior_deduction, overtime_income_deduction,
+            tip_income_deduction, auto_loan_interest_deduction)
 
 
 @iterate_jit(nopython=True)
@@ -1306,7 +1321,8 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
            e02100, e27200, e00650, c01000,
-           senior_deduction, auto_loan_interest_deduction,
+           senior_deduction, overtime_income_deduction,
+           tip_income_deduction, auto_loan_interest_deduction,
            PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
            PT_qbid_rt, PT_qbid_limited,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
@@ -1346,6 +1362,10 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         Limitation on capital losses
     senior_deduction: float
         Deduction for elderly head/spouse
+    overtime_income_deduction: float
+        Deduction for qualified overtime income
+    tip_income_deduction: float
+        Deduction for qualified tip income
     auto_loan_interest_deduction: float
         Deduction for qualified auto loan interest paid
     PT_SSTB_income: int
@@ -1395,7 +1415,12 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     """
     # calculate taxable income before qualified business income deduction,
     # which is assumed to be stacked last in the list of deductions
-    odeds = senior_deduction + auto_loan_interest_deduction
+    odeds = (
+        senior_deduction
+        + overtime_income_deduction
+        + tip_income_deduction
+        + auto_loan_interest_deduction
+    )
     pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600 - odeds)
     # calculate qualified business income deduction
     qbinc = max(0., e00900 - c03260 + e26270 + e02100 + e27200)
@@ -3521,54 +3546,54 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     Parameters
     ----------
     e00200: float
-        Wages, salaries, and tips for filing unit net of pension contributions
+      Wages, salaries, tips/otime for filing unit net of pension contributions
     pencon_p: float
-        Contributions to defined-contribution pension plans for taxpayer
+      Contributions to defined-contribution pension plans for taxpayer
     pencon_s: float
-        Contributions to defined-contribution pension plans for spouse
+      Contributions to defined-contribution pension plans for spouse
     e00300: float
-        Taxable interest income
+      Taxable interest income
     e00400: float
-        Tax-exempt interest income
+      Tax-exempt interest income
     e00600: float
-        Ordinary dividends included in AGI
+      Ordinary dividends included in AGI
     e00700: float
-        Taxable refunds of state and local income taxes
+      Taxable refunds of state and local income taxes
     e00800: float
-        Alimony received
+      Alimony received
     e00900: float
-        Schedule C business net profit/loss for filing unit
+      Schedule C business net profit/loss for filing unit
     e01100: float
-        Capital gain distributions not reported on Schedule D
+      Capital gain distributions not reported on Schedule D
     e01200: float
-        Other net gain/loss from Form 4797
+      Other net gain/loss from Form 4797
     e01400: float
-        Taxable IRA distributions
+      Taxable IRA distributions
     e01500: float
-        Total pensions and annuities
+      Total pensions and annuities
     e02000: float
-        Schedule E total rental, royalty, partnership, S-corporation,
-        etc, income/loss
+      Schedule E total rental, royalty, partnership, S-corporation,
+      etc, income/loss
     e02100: float
-        Farm net income/loss for filing unit from Schedule F
+      Farm net income/loss for filing unit from Schedule F
     p22250: float
-        Schedule D net short term capital gains/losses
+      Schedule D net short term capital gains/losses
     p23250:float
-        Schedule D net long term capital gains/losses
+      Schedule D net long term capital gains/losses
     cmbtp: float
-        Estimate of inome on (AMT) Form 6251 but not in AGI
+      Estimate of inome on (AMT) Form 6251 but not in AGI
     ptax_was: float
-        Employee and employer OASDI and HI FICA tax
+      Employee and employer OASDI and HI FICA tax
     benefit_value_total: float
-        Consumption value of all benefits received by tax unit, which
-        is included in expanded income
+      Consumption value of all benefits received by tax unit, which
+      is included in expanded income
     expanded_income: float
-        Broad income measure that includes benefit_value_total
+      Broad income measure that includes benefit_value_total
 
     Returns
     -------
     expanded_income: float
-        Broad income measure that includes benefit_value_total
+      Broad income measure that includes benefit_value_total
     """
     expanded_income = (
         e00200 +  # wage and salary income net of DC pension contributions
