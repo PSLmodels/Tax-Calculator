@@ -114,6 +114,30 @@ class Policy(Parameters):
         'EITC_ps_MarriedJ': (
             'was renamed EITC_ps_addon_MarriedJ in Tax-Calculator 6.1.0'
         ),
+        # following parameters were removed in PR 2991
+        'ALD_OvertimeIncome_hc': 'was removed in Tax-Calculator 6.4.0',
+        'ALD_TipIncome_hc': 'was removed in Tax-Calculator 6.4.0',
+        # following parameters were renamed in PR 2991
+        'ALD_OvertimeIncome_c': (
+            'was renamed OvertimeIncomeDed_c in Tax-Calculator 6.4.0'
+        ),
+        'ALD_OvertimeIncome_ps': (
+            'was renamed OvertimeIncomeDed_ps in Tax-Calculator 6.4.0'
+        ),
+        'ALD_OvertimeIncome_prt': (
+            'was replaced by OvertimeIncomeDed_po_step_size and '
+            'OvertimeIncomeDed_po_rate_per_step in Tax-Calculator 6.4.0'
+        ),
+        'ALD_TipIncome_c': (
+            'was renamed TipIncomeDed_c in Tax-Calculator 6.4.0'
+        ),
+        'ALD_TipIncome_ps': (
+            'was renamed TipIncomeDed_ps in Tax-Calculator 6.4.0'
+        ),
+        'ALD_TipIncome_prt': (
+            'was replaced by TipIncomeDed_po_step_size and '
+            'TipIncomeDed_po_rate_per_step in Tax-Calculator 6.4.0'
+        ),
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}
