@@ -26,14 +26,9 @@ def extract_install_requires(setup_py_content):
         r'"install_requires"\s*:\s*\[([^\]]+)\]', setup_py_content, re.DOTALL
     )
     if match:
-        # Extract the contents of the list and split into packages
-        packages_str = match.group(1)
-        # Use ast.literal_eval to safely parse the string representations
-        packages = [
-            ast.literal_eval(f'{pkg.strip()}')
-            for pkg in packages_str.split(',')
-            if pkg.strip()
-        ]
+        # Extract the contents of the list
+        packages_str = '[' + match.group(1) + ']'
+        packages = ast.literal_eval(packages_str)
         return packages
 
     return []
