@@ -546,7 +546,7 @@ document.write(`
         <span class="c1"># specify exact value based on exact_calculations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exact</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">exact_calculations</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="c1"># specify FLPDYR value based on start_year</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FLPDYR</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">start_year</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLPDYR</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">start_year</span>
         <span class="c1"># check for valid MARS values</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MARS</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
                                      <span class="n">np</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MARS</span><span class="p">,</span> <span class="mi">5</span><span class="p">))):</span>
@@ -693,7 +693,7 @@ document.write(`
 <span class="sd">        extrapolation, reweighting, adjusting for new current year.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">increment_year</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FLPDYR</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLPDYR</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_year</span>  <span class="c1"># pylint: disable=no-member</span>
         <span class="c1"># apply variable adjustment ratios</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_adjust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="p">)</span></div>
 
