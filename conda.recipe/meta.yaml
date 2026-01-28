@@ -10,7 +10,7 @@ requirements:
   build:
     - "python>=3.11, <3.14"
     - "numpy>=1.26"
-    - "pandas>=2.2"
+    - "pandas>=2.2, <3.0"
     - "bokeh>=3.7"
     - "paramtools>=0.20.0"
     - numba
@@ -22,7 +22,7 @@ requirements:
   run:
     - "python>=3.11, <3.14"
     - "numpy>=1.26"
-    - "pandas>=2.2"
+    - "pandas>=2.2, <3.0"
     - "bokeh>=3.7"
     - "paramtools>=0.20.0"
     - numba
