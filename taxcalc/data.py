@@ -228,10 +228,10 @@ class Data():
                 READ_VARS.add(varname)
                 if varname in self.INTEGER_READ_VARS:
                     setattr(self, varname,
-                            taxdf[varname].astype(np.int32).values)
+                            taxdf[varname].astype(np.int32).values.copy())
                 else:
                     setattr(self, varname,
-                            taxdf[varname].astype(np.float64).values)
+                            taxdf[varname].astype(np.float64).values.copy())
             else:
                 self.IGNORED_VARS.add(varname)
         # check that MUST_READ_VARS are all present in taxdf

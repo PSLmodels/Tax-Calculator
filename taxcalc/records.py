@@ -279,7 +279,7 @@ class Records(Data):
         extrapolation, reweighting, adjusting for new current year.
         """
         super().increment_year()
-        self.FLPDYR.fill(self.current_year)  # pylint: disable=no-member
+        self.FLPDYR[:] = self.current_year  # pylint: disable=no-member
         # apply variable adjustment ratios
         self._adjust(self.current_year)
 

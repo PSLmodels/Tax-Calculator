@@ -19,7 +19,7 @@ Classifier: Topic :: Software Development :: Libraries :: Python Modules
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: numpy>=1.26
-Requires-Dist: pandas<3.0,>=2.2
+Requires-Dist: pandas>=2.2
 Requires-Dist: bokeh>=2.4
 Requires-Dist: numba
 Requires-Dist: paramtools>=0.20.0
