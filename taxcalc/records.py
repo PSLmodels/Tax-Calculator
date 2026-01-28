@@ -137,7 +137,7 @@ class Records(Data):
         # specify exact value based on exact_calculations
         self.exact[:] = np.where(exact_calculations is True, 1, 0)
         # specify FLPDYR value based on start_year
-        self.FLPDYR.fill(start_year)
+        self.FLPDYR[:] = start_year
         # check for valid MARS values
         if not np.all(np.logical_and(np.greater_equal(self.MARS, 1),
                                      np.less_equal(self.MARS, 5))):
@@ -279,7 +279,7 @@ class Records(Data):
         extrapolation, reweighting, adjusting for new current year.
         """
         super().increment_year()
-        self.FLPDYR.fill(self.current_year)  # pylint: disable=no-member
+        self.FLPDYR[:] = self.current_year  # pylint: disable=no-member
         # apply variable adjustment ratios
         self._adjust(self.current_year)
 
