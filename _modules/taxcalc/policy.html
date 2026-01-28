@@ -523,6 +523,30 @@ document.write(`
         <span class="s1">&#39;EITC_ps_MarriedJ&#39;</span><span class="p">:</span> <span class="p">(</span>
             <span class="s1">&#39;was renamed EITC_ps_addon_MarriedJ in Tax-Calculator 6.1.0&#39;</span>
         <span class="p">),</span>
+        <span class="c1"># following parameters were removed in PR 2991</span>
+        <span class="s1">&#39;ALD_OvertimeIncome_hc&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 6.4.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ALD_TipIncome_hc&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 6.4.0&#39;</span><span class="p">,</span>
+        <span class="c1"># following parameters were renamed in PR 2991</span>
+        <span class="s1">&#39;ALD_OvertimeIncome_c&#39;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">&#39;was renamed OvertimeIncomeDed_c in Tax-Calculator 6.4.0&#39;</span>
+        <span class="p">),</span>
+        <span class="s1">&#39;ALD_OvertimeIncome_ps&#39;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">&#39;was renamed OvertimeIncomeDed_ps in Tax-Calculator 6.4.0&#39;</span>
+        <span class="p">),</span>
+        <span class="s1">&#39;ALD_OvertimeIncome_prt&#39;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">&#39;was replaced by OvertimeIncomeDed_po_step_size and &#39;</span>
+            <span class="s1">&#39;OvertimeIncomeDed_po_rate_per_step in Tax-Calculator 6.4.0&#39;</span>
+        <span class="p">),</span>
+        <span class="s1">&#39;ALD_TipIncome_c&#39;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">&#39;was renamed TipIncomeDed_c in Tax-Calculator 6.4.0&#39;</span>
+        <span class="p">),</span>
+        <span class="s1">&#39;ALD_TipIncome_ps&#39;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">&#39;was renamed TipIncomeDed_ps in Tax-Calculator 6.4.0&#39;</span>
+        <span class="p">),</span>
+        <span class="s1">&#39;ALD_TipIncome_prt&#39;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">&#39;was replaced by TipIncomeDed_po_step_size and &#39;</span>
+            <span class="s1">&#39;TipIncomeDed_po_rate_per_step in Tax-Calculator 6.4.0&#39;</span>
+        <span class="p">),</span>
     <span class="p">}</span>
     <span class="c1"># (2) specify which Policy parameters have been redefined</span>
     <span class="n">REDEFINED_PARAMS</span> <span class="o">=</span> <span class="p">{}</span>
