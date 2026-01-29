@@ -644,11 +644,17 @@ document.write(`
             <span class="k">if</span> <span class="n">varname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">USABLE_READ_VARS</span><span class="p">:</span>
                 <span class="n">READ_VARS</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">varname</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">varname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">INTEGER_READ_VARS</span><span class="p">:</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span>
-                            <span class="n">taxdf</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+                    <span class="nb">setattr</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="p">,</span>
+                        <span class="n">varname</span><span class="p">,</span>
+                        <span class="n">taxdf</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span>
-                            <span class="n">taxdf</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+                    <span class="nb">setattr</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="p">,</span>
+                        <span class="n">varname</span><span class="p">,</span>
+                        <span class="n">taxdf</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">IGNORED_VARS</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">varname</span><span class="p">)</span>
         <span class="c1"># check that MUST_READ_VARS are all present in taxdf</span>
@@ -661,11 +667,17 @@ document.write(`
         <span class="n">ZEROED_VARS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CALCULATED_VARS</span> <span class="o">|</span> <span class="n">UNREAD_VARS</span>
         <span class="k">for</span> <span class="n">varname</span> <span class="ow">in</span> <span class="n">ZEROED_VARS</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">varname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">INTEGER_VARS</span><span class="p">:</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+                <span class="nb">setattr</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="n">varname</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+                <span class="nb">setattr</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="n">varname</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                <span class="p">)</span>
         <span class="c1"># delete intermediate variables</span>
         <span class="k">del</span> <span class="n">READ_VARS</span>
         <span class="k">del</span> <span class="n">UNREAD_VARS</span>
