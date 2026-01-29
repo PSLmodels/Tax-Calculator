@@ -227,11 +227,17 @@ class Data():
             if varname in self.USABLE_READ_VARS:
                 READ_VARS.add(varname)
                 if varname in self.INTEGER_READ_VARS:
-                    setattr(self, varname,
-                            taxdf[varname].astype(np.int32).values.copy())
+                    setattr(
+                        self,
+                        varname,
+                        taxdf[varname].to_numpy(dtype=np.int32, copy=True)
+                    )
                 else:
-                    setattr(self, varname,
-                            taxdf[varname].astype(np.float64).values.copy())
+                    setattr(
+                        self,
+                        varname,
+                        taxdf[varname].to_numpy(dtype=np.float64, copy=True)
+                    )
             else:
                 self.IGNORED_VARS.add(varname)
         # check that MUST_READ_VARS are all present in taxdf
@@ -244,11 +250,17 @@ class Data():
         ZEROED_VARS = self.CALCULATED_VARS | UNREAD_VARS
         for varname in ZEROED_VARS:
             if varname in self.INTEGER_VARS:
-                setattr(self, varname,
-                        np.zeros(self.array_length, dtype=np.int32))
+                setattr(
+                    self,
+                    varname,
+                    np.zeros(self.array_length, dtype=np.int32)
+                )
             else:
-                setattr(self, varname,
-                        np.zeros(self.array_length, dtype=np.float64))
+                setattr(
+                    self,
+                    varname,
+                    np.zeros(self.array_length, dtype=np.float64)
+                )
         # delete intermediate variables
         del READ_VARS
         del UNREAD_VARS
