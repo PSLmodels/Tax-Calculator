@@ -648,24 +648,23 @@
       "form": {"2018-20??": "specified in custom data"},
       "availability": "taxmicrodata_tmd"
     },
-
     "auto_loan_interest": {
       "type": "float",
       "desc": "Filing unit's interest payments on OBBBA-qualified auto loans",
       "form": {"2025-20??": "specified in custom data"},
-      "availability": ""
+      "availability": "taxmicrodata_tmd"
     },
     "overtime_income": {
       "type": "float",
       "desc": "Filing unit's OBBBA-qualified overtime income",
       "form": {"2025-20??": "specified in custom data"},
-      "availability": ""
+      "availability": "taxmicrodata_tmd"
     },
     "tip_income": {
       "type": "float",
       "desc": "Filing unit's OBBBA-qualified tip income",
       "form": {"2025-20??": "specified in custom data"},
-      "availability": ""
+      "availability": "taxmicrodata_tmd"
     }
   },
   "calc": {

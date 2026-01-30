@@ -59,7 +59,7 @@ pytest: clean
 .PHONY=pytest
 pytest-all: clean
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=8 -m ""
+	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=5 -m ""
 	@$(pytest-cleanup)
 
 define tctest-cleanup
