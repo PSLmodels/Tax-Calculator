@@ -53,7 +53,7 @@ endef
 .PHONY=pytest
 pytest: clean
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=5 -m "not requires_puf and not requires_tmd"
+	@cd taxcalc ; pytest -n4 --disable-warnings --durations=0 --durations-min=8 -m "not requires_puf and not requires_tmd"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
