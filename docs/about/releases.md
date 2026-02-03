@@ -5,6 +5,39 @@ Go
 for a complete commit history.
 
 
+2026-02-04 Release 6.4.0
+------------------------
+(last merged pull request is
+[#2996](https://github.com/PSLmodels/Tax-Calculator/pull/2996))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Several non-substantive clean-up changes to code
+  [[#2983](https://github.com/PSLmodels/Tax-Calculator/pull/2983),
+  [#2984](https://github.com/PSLmodels/Tax-Calculator/pull/2984),
+  [#2986](https://github.com/PSLmodels/Tax-Calculator/pull/2986), and
+  [#2990](https://github.com/PSLmodels/Tax-Calculator/pull/2990)
+  by Martin Holmer]
+- Generalize overtime/tip income deduction logic and rename associatd
+  policy parameters
+  [[#2991](https://github.com/PSLmodels/Tax-Calculator/pull/2991) and
+  [#2992](https://github.com/PSLmodels/Tax-Calculator/pull/2992)
+  by Martin Holmer]
+- Revise code to work with Pandas 3.0+
+  [[#2994](https://github.com/PSLmodels/Tax-Calculator/pull/2994) and
+  [#2995](https://github.com/PSLmodels/Tax-Calculator/pull/2995)
+  by Martin Holmer]
+- Changes made in preparation for new TMD data that will include
+  imputed variables
+  [[#2996](https://github.com/PSLmodels/Tax-Calculator/pull/2996) by
+  Martin Holmer]
+
+**Bug Fixes**
+
+
 2025-12-06 Release 6.3.0
 ------------------------
 (last merged pull request is
