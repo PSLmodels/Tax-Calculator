@@ -44,4 +44,12 @@ fi
 diff -q tmd-35-#-#-#-#.tables tmd-35.tables
 if [ $? -eq 0 ]; then
     rm tmd-35-#-#-#-#.tables
+else
+    python compare_tmd_tables.py
+    if [ $? -eq 0 ]; then
+        rm tmd-35-#-#-#-#.tables
+        echo "No unexpected differences"
+    else
+        echo "Are unexpected differences"
+    fi
 fi
