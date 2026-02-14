@@ -2170,6 +2170,56 @@
             "cps": true
         }
     },
+    "II_em_senior": {
+        "title": "Senior personal exemption amount",
+        "description": "Personal exemption amount for each taxpayer and spouse who meets the age threshold specified in II_em_senior_age. This exemption is added to the regular personal exemption amount and has the same eligibility conditions as the regular personal exemption, but it is not subject to high-income phase-out.",
+        "section_1": "Personal Exemptions",
+        "section_2": "Personal And Dependent Exemption Amount",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "II_em_senior_age": {
+        "title": "Age threshold for senior personal exemption eligibility",
+        "description": "Taxpayers and spouses who are at least this age are eligible for the senior personal exemption amount specified in II_em_senior.",
+        "section_1": "Personal Exemptions",
+        "section_2": "Personal And Dependent Exemption Amount",
+        "indexable": false,
+        "indexed": false,
+        "type": "int",
+        "value": [
+            {
+                "year": 2013,
+                "value": 65
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 55,
+                "max": 75
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "STD": {
         "title": "Standard deduction amount",
         "description": "Amount filing unit can use as a standard deduction.",
