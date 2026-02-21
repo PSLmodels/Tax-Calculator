@@ -8,11 +8,11 @@ import numpy as np
 TEST_FOLDER = Path(__file__).resolve().parent
 ACTUAL_PATH = TEST_FOLDER / "tmd-35-#-#-#-#.tables"
 EXPECT_PATH = TEST_FOLDER / "tmd-35.tables"
-TOLERANCE = {
-    "rtn": 0.0012,
-    "inc": 0.0009,
-    "itx": 0.0004,
-    "ptx": 0.0013,
+REL_TOLERANCE = {
+    "rtn": 0.0002,
+    "inc": 0.0002,
+    "itx": 0.0002,
+    "ptx": 0.0002,
 }
 
 
@@ -46,11 +46,11 @@ def main():
     rcode = 0
     for stat, actual in act.items():
         expect = exp[stat]
-        reltol = TOLERANCE[stat]
-        if not np.allclose([actual], [expect], atol=0.0, rtol=reltol):
+        r_tol = REL_TOLERANCE[stat]
+        if not np.allclose([actual], [expect], atol=0.0, rtol=r_tol):
             print(
                 "TMD_STAT_DIFF:stat,act,exp,atol,rtol= "
-                f"{stat} {actual} {expect} 0.0 {reltol}"
+                f"{stat} {actual} {expect} 0.0 {r_tol}"
             )
             rcode = 1
     return rcode
