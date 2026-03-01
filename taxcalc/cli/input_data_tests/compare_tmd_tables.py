@@ -9,10 +9,10 @@ TEST_FOLDER = Path(__file__).resolve().parent
 ACTUAL_PATH = TEST_FOLDER / "tmd-35-#-#-#-#.tables"
 EXPECT_PATH = TEST_FOLDER / "tmd-35.tables"
 REL_TOLERANCE = {
-    "rtn": 0.0002,
-    "inc": 0.0002,
-    "itx": 0.0002,
-    "ptx": 0.0002,
+    "rtn": 0.0001,
+    "inc": 0.0001,
+    "itx": 0.0001,
+    "ptx": 0.0001,
 }
 
 
