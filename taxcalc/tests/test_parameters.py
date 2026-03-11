@@ -298,7 +298,7 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
     for pname in allparams:
         if pname == "schema":
             continue
-        assert pname[1:] in code_text
+        assert pname in code_text
 
 
 # following tests access private methods, so pylint: disable=protected-access

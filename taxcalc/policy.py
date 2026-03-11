@@ -142,7 +142,10 @@ class Policy(Parameters):
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}
     # (3) specify which Policy parameters are wage (rather than price) indexed
-    WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
+    WAGE_INDEXED_PARAMS = [
+        'SS_Earnings_c', 'SS_Earnings_thd',
+        'eitc_claim_thd', 'actc_claim_thd'
+    ]
 
     def __init__(self,
                  gfactors=None,
