@@ -5,6 +5,23 @@ Go
 for a complete commit history.
 
 
+2026-03-13 Release 6.4.1
+------------------------
+(last merged pull request is
+[#3002](https://github.com/PSLmodels/Tax-Calculator/pull/3002))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Add `eitc_claim_thd` and `actc_claim_thd` parameters
+  [[#3002](https://github.com/PSLmodels/Tax-Calculator/pull/3002)
+  by Martin Holmer]
+
+**Bug Fixes**
+
+
 2026-02-04 Release 6.4.0
 ------------------------
 (last merged pull request is
