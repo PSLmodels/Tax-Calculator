@@ -1,4 +1,6 @@
 2035 parameter_indexing_CPI_offset 0.0
+2035 eitc_claim_thd 0.0
+2035 actc_claim_thd 0.0
 2035 FICA_ss_trt_employer 0.062
 2035 FICA_ss_trt_employee 0.062
 2035 SS_Earnings_c 248886.59

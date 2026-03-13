@@ -2284,8 +2284,8 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 
 
 @iterate_jit(nopython=True)
-def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
-         e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s,
+def EITC(eitc_claim_thd, MARS, DSI, c00100, e00300, e00400, e00600, c01000,
+         e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s, EIC,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_addon_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
@@ -2295,6 +2295,8 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
     Parameters
     ----------
+    eitc_claim_thd: float
+        EITC amount below which EITC is unclaimed
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
@@ -2415,6 +2417,11 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             eitc = (c59660 - EITC_excess_InvestIncome_rt *
                     (invinc - EITC_InvestIncome_c))
             c59660 = max(0., eitc)
+
+    # approximate EITC claiming behavior
+    if c59660 < eitc_claim_thd:
+        c59660 = 0.
+
     return c59660
 
 
@@ -3090,7 +3097,8 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 
 
 @iterate_jit(nopython=True)
-def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
+def AdditionalCTC(actc_claim_thd, codtc_limited,
+                  ACTC_c, n24, earned, ACTC_Income_thd,
                   ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
                   CTC_is_refundable, CTC_include17, CTC_c,
                   age_head, age_spouse, MARS, nu18,
@@ -3102,6 +3110,8 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
 
     Parameters
     ----------
+    actc_claim_thd: float
+        ACTC amount below which ACTC is unclaimed
     codtc_limited: float
         Maximum of 0 and line 10 minus line 16
     ACTC_c: float
@@ -3178,6 +3188,11 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
                 line13 = max(0., line11 - line12)
                 line14 = max(line8, line13)
                 c11070 = min(line5, line14)
+
+    # approximate ACTC claiming behavior
+    if c11070 < actc_claim_thd:
+        c11070 = 0.
+
     return c11070
 
 

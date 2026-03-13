@@ -505,9 +505,9 @@ def test_EITCamount(test_tuple, expected_value, skip_jit):
     assert np.allclose(test_value, expected_value)
 
 
+eitc_claim_thd = 0
 MARS = 4
 DSI = 0
-EIC = 3
 c00100 = 19330
 e00300 = 0
 e00400 = 0
@@ -520,6 +520,7 @@ age_spouse = 0
 earned = 19330
 earned_p = 19330
 earned_s = 0
+EIC = 3
 EITC_ps = [8790, 19330, 19330, 19330]
 EITC_MinEligAge = 25
 EITC_MaxEligAge = 64
@@ -536,8 +537,9 @@ e02300 = 10200
 UI_thd = [150000, 150000, 150000, 150000, 150000]
 UI_em = 10200
 c59660 = 0  # this will be 6660 after the EITC calculation
-tuple1 = (MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
+tuple1 = (eitc_claim_thd, MARS, DSI, c00100, e00300, e00400, e00600, c01000,
           e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s,
+          EIC,
           EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_addon_MarriedJ,
           EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
           EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,

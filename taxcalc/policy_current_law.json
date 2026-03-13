@@ -104,6 +104,56 @@
             "cps": true
         }
     },
+    "eitc_claim_thd": {
+        "title": "EITC claim threshold",
+        "description": "EITC amounts below this threshold are assumed to be unclaimed, and therefore, are zeroed out.  Indexed by wage growth, not price inflation.",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "actc_claim_thd": {
+        "title": "ACTC claim threshold",
+        "description": "ACTC amounts below this threshold are assumed to be unclaimed, and therefore, are zeroed out.  Indexed by wage growth, not price inflation.",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "FICA_ss_trt_employer": {
         "title": "Employer side OASDI payroll tax rate",
         "description": "Employer side OASDI FICA rate.",
