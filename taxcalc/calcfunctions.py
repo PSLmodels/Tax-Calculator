@@ -695,6 +695,7 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 @iterate_jit(nopython=True)
 def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         II_em, II_em_ps, II_em_po_step_size, II_em_prt, II_no_em_nu18,
+        age_head, age_spouse, II_em_senior, II_em_senior_age,
         e02300, UI_thd, UI_em, c00100, pre_c04600, c04600):
     """
     Computes Adjusted Gross Income (AGI), c00100, and
@@ -731,6 +732,14 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         Personal exemption phaseout rate
     II_no_em_nu18: float
         Repeal personal exemptions for dependents under age 18
+    age_head: int
+        Age of taxpayer (primary adult)
+    age_spouse: int
+        Age of spouse (secondary adult if present)
+    II_em_senior: float
+        Personal exemption amount for seniors meeting age threshold
+    II_em_senior_age: int
+        Age threshold for senior personal exemption eligibility
     e02300: float
         Unemployment compensation
     UI_thd: list
@@ -740,18 +749,18 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
-        Personal exemption before phase-out
+        Personal exemption before phase-out (includes senior exemption)
     c04600: float
-        Personal exemptions after phase-out
+        Personal exemptions after phase-out (includes senior exemption)
 
     Returns
     -------
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
-        Personal exemption before phase-out
+        Personal exemption before phase-out (includes senior exemption)
     c04600: float
-        Personal exemptions after phase-out
+        Personal exemptions after phase-out (includes senior exemption)
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
@@ -779,6 +788,17 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         dispc_denom = II_em_po_step_size[MARS - 1]
         dispc = min(1., max(0., dispc_numer / dispc_denom))
         c04600 = pre_c04600 * (1. - dispc)
+    # calculate senior personal exemption (not subject to phase-out)
+    senior_exemption = 0.
+    if II_em_senior > 0. and not DSI:
+        num_seniors = 0
+        if age_head >= II_em_senior_age:
+            num_seniors += 1
+        if MARS == 2 and age_spouse >= II_em_senior_age:
+            num_seniors += 1
+        senior_exemption = num_seniors * II_em_senior
+    pre_c04600 += senior_exemption
+    c04600 += senior_exemption
     return (c00100, pre_c04600, c04600)
 
 
