@@ -50,7 +50,7 @@ def test_benefits(tests_path, cps_fullsample):
             ben = calc.array(f'{bname}_ben')
             benamt = round((ben * wght).sum() * 1e-9, 3)
             bencnt = round((size[ben > 0] * wght[ben > 0]).sum() * 1e-6, 3)
-            benavg = round(benamt / bencnt, 1)
+            benavg = round(benamt / bencnt, 1) if bencnt > 0 else 0.0
             year_list.append(year)
             bname_list.append(bname)
             benamt_list.append(benamt)

@@ -110,7 +110,7 @@ class Records(Data):
 
     PUFCSV_YEAR = 2011
     CPSCSV_YEAR = 2014
-    TMDCSV_YEAR = 2021
+    TMDCSV_YEAR = 2022
 
     CODE_PATH = os.path.abspath(os.path.dirname(__file__))
     VARINFO_FILE_NAME = 'records_variables.json'

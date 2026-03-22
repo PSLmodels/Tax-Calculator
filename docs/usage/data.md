@@ -63,17 +63,29 @@ repository](https://github.com/PSLmodels/tax-microdata-benchmarking)
 produces an input variables file (`tmd.csv.gz`), a **national** weights
 file (`tmd_weights.csv.gz`), and a variable growth factors file
 (`tmd_growfactors.csv`) that can be used with the Tax-Calculator
-package beginning with the 3.6.0 release.  The TMD files are available
-only to users who have purchased their own version of the 2015 IRS-SOI
-PUF.  For those users, the TMD files are available from the
+package beginning with the 3.6.0 release.  Beginning with Tax-Calculator
+release 6.5.0, the start year for the TMD data is 2022.  The TMD files
+are available only to users who have purchased their own version of the
+2015 IRS-SOI PUF.  For those users, the TMD files are available from the
 tax-microdata repository.  The three TMD files can be used with
 Tax-Calculator in two ways:
-  - with the **Python API** by instantiating a GrowFactors object that
-    uses TMD growth factors [`gf=GrowFactors("path/to/tmd_growfactors.csv")`]
-    and by using the `Records.tmd_constructor(...)` static method to
-    instantiate a Records object, or
-  - with the **CLI tool**, `tc`, when the three TMD files are all in
-    the same folder and the `tmd.csv.gz` file has been unzipped.
+  - with the **Python API**:
+     * instantiate a GrowFactors object that uses TMD growth factors
+      [`gf=GrowFactors("path/to/tmd_growfactors.csv")`] and by using
+      the `Records.tmd_constructor(...)` static method to instantiate
+      a Records object, and
+    * after each instantiation of a Policy object, activate the TMD
+      refundable credit claiming behavior by executing the
+      `implement_reform(TMD_CREDIT_CLAIMING)` method on the Policy
+      object (both for baseline and reform Policy objects), where the
+      `TMD_CREDIT_CLAIMING` dictionary is imported from the `taxcalcio.py`
+      module.
+  - or
+  - with the **CLI tool**, use `tc`, when the three TMD files are all
+    in the same folder and the `tmd.csv.gz` file has been unzipped.
+    The `tc` tool automatically activates the TMD refundable credit
+    claiming behavior, so there is no need to do that on the command
+    line when using the CLI tool, `tc`.
 
 The [tax-microdata
 repository](https://github.com/PSLmodels/tax-microdata-benchmarking)
@@ -88,12 +100,12 @@ contains the three national TMD files described above.  Then, execute
 this command for tabular output under 2024 current-law policy:
 ```
 (taxcalc-dev) myruns> TMD_AREA=nm tc tmd.csv 2024 --exact --tables
-Read input data for 2021; input data were extrapolated to 2024
+Read input data for 2022; input data were extrapolated to 2024
 Write tabular output to file tmd_nm-24-#-#-#-#.tables
 Execution time is 8.2 seconds
 (taxcalc-dev) myruns> awk '$1~/Ret/||$1~/A/' tmd_nm-24-#-#-#-#.tables | head -2
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
- A     1.17      87.0       7.2       6.9       0.0      14.1
+ A     ---[SNIP]---
 ```
 
 Or for the first Congressional district in New Mexico, put the
@@ -101,12 +113,12 @@ Or for the first Congressional district in New Mexico, put the
 files and execute this command:
 ```
 (taxcalc-dev) myruns> TMD_AREA=nm01 tc tmd.csv 2024 --exact --tables
-Read input data for 2021; input data were extrapolated to 2024
+Read input data for 2022; input data were extrapolated to 2024
 Write tabular output to file tmd_nm01-24-#-#-#-#.tables
 Execution time is 8.3 seconds
 (taxcalc-dev) myruns> awk '$1~/Ret/||$1~/A/' tmd_nm01-24-#-#-#-#.tables | head -2
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
- A     0.40      31.9       2.8       2.5       0.0       5.3
+ A     ---[SNIP]---
 ```
 
 

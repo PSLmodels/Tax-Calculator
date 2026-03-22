@@ -24,6 +24,11 @@ from taxcalc.utils import (json_to_dict, delete_file, write_graph_file,
                            add_quantile_table_row_variable,
                            unweighted_sum, weighted_sum)
 
+TMD_CREDIT_CLAIMING = {
+    'eitc_claim_thd': {f'{Records.TMDCSV_YEAR}': 1600},
+    'actc_claim_thd': {f'{Records.TMDCSV_YEAR}': 1500},
+}
+
 
 class TaxCalcIO():
     """
@@ -418,6 +423,8 @@ class TaxCalcIO():
                 gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
+            if self.tmd_input_data:  # pragma: no cover
+                self.pol_bas.implement_reform(TMD_CREDIT_CLAIMING)
             for poldict in poldicts_bas:
                 try:
                     self.pol_bas.implement_reform(
@@ -436,12 +443,16 @@ class TaxCalcIO():
                 gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
+            if self.tmd_input_data:  # pragma: no cover
+                self.pol_bas.implement_reform(TMD_CREDIT_CLAIMING)
         # ... the reform Policy object
         if self.specified_reform:
             self.pol_ref = Policy(
                 gfactors=policy_gfactors_ref,
                 last_budget_year=last_b_year,
             )
+            if self.tmd_input_data:  # pragma: no cover
+                self.pol_ref.implement_reform(TMD_CREDIT_CLAIMING)
             for poldict in poldicts_ref:
                 try:
                     self.pol_ref.implement_reform(
@@ -460,6 +471,8 @@ class TaxCalcIO():
                 gfactors=policy_gfactors_bas,
                 last_budget_year=last_b_year,
             )
+            if self.tmd_input_data:  # pragma: no cover
+                self.pol_ref.implement_reform(TMD_CREDIT_CLAIMING)
         # create Consumption object
         self.con = Consumption(last_budget_year=last_b_year)
         try:
