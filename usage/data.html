@@ -531,18 +531,33 @@ repository</a>
 produces an input variables file (<code class="docutils literal notranslate"><span class="pre">tmd.csv.gz</span></code>), a <strong>national</strong> weights
 file (<code class="docutils literal notranslate"><span class="pre">tmd_weights.csv.gz</span></code>), and a variable growth factors file
 (<code class="docutils literal notranslate"><span class="pre">tmd_growfactors.csv</span></code>) that can be used with the Tax-Calculator
-package beginning with the 3.6.0 release.  The TMD files are available
-only to users who have purchased their own version of the 2015 IRS-SOI
-PUF.  For those users, the TMD files are available from the
+package beginning with the 3.6.0 release.  Beginning with Tax-Calculator
+release 6.5.0, the start year for the TMD data is 2022.  The TMD files
+are available only to users who have purchased their own version of the
+2015 IRS-SOI PUF.  For those users, the TMD files are available from the
 tax-microdata repository.  The three TMD files can be used with
 Tax-Calculator in two ways:</p>
 <ul class="simple">
-<li><p>with the <strong>Python API</strong> by instantiating a GrowFactors object that
-uses TMD growth factors [<code class="docutils literal notranslate"><span class="pre">gf=GrowFactors(&quot;path/to/tmd_growfactors.csv&quot;)</span></code>]
-and by using the <code class="docutils literal notranslate"><span class="pre">Records.tmd_constructor(...)</span></code> static method to
-instantiate a Records object, or</p></li>
-<li><p>with the <strong>CLI tool</strong>, <code class="docutils literal notranslate"><span class="pre">tc</span></code>, when the three TMD files are all in
-the same folder and the <code class="docutils literal notranslate"><span class="pre">tmd.csv.gz</span></code> file has been unzipped.</p></li>
+<li><p>with the <strong>Python API</strong>:</p>
+<ul>
+<li><p>instantiate a GrowFactors object that uses TMD growth factors
+[<code class="docutils literal notranslate"><span class="pre">gf=GrowFactors(&quot;path/to/tmd_growfactors.csv&quot;)</span></code>] and by using
+the <code class="docutils literal notranslate"><span class="pre">Records.tmd_constructor(...)</span></code> static method to instantiate
+a Records object, and</p></li>
+<li><p>after each instantiation of a Policy object, activate the TMD
+refundable credit claiming behavior by executing the
+<code class="docutils literal notranslate"><span class="pre">implement_reform(TMD_CREDIT_CLAIMING)</span></code> method on the Policy
+object (both for baseline and reform Policy objects), where the
+<code class="docutils literal notranslate"><span class="pre">TMD_CREDIT_CLAIMING</span></code> dictionary is imported from the <code class="docutils literal notranslate"><span class="pre">taxcalcio.py</span></code>
+module.</p></li>
+</ul>
+</li>
+<li><p>or</p></li>
+<li><p>with the <strong>CLI tool</strong>, use <code class="docutils literal notranslate"><span class="pre">tc</span></code>, when the three TMD files are all
+in the same folder and the <code class="docutils literal notranslate"><span class="pre">tmd.csv.gz</span></code> file has been unzipped.
+The <code class="docutils literal notranslate"><span class="pre">tc</span></code> tool automatically activates the TMD refundable credit
+claiming behavior, so there is no need to do that on the command
+line when using the CLI tool, <code class="docutils literal notranslate"><span class="pre">tc</span></code>.</p></li>
 </ul>
 <p>The <a class="reference external" href="https://github.com/PSLmodels/tax-microdata-benchmarking">tax-microdata
 repository</a>
@@ -556,24 +571,24 @@ if you have the New Mexico state weights in the
 contains the three national TMD files described above.  Then, execute
 this command for tabular output under 2024 current-law policy:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span><span class="p">)</span> <span class="n">myruns</span><span class="o">&gt;</span> <span class="n">TMD_AREA</span><span class="o">=</span><span class="n">nm</span> <span class="n">tc</span> <span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2024</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span>
-<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2024</span>
+<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2022</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2024</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd_nm</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-#-#-#.tables</span>
 <span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">8.2</span> <span class="n">seconds</span>
 <span class="p">(</span><span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span><span class="p">)</span> <span class="n">myruns</span><span class="o">&gt;</span> <span class="n">awk</span> <span class="s1">&#39;$1~/Ret/||$1~/A/&#39;</span> <span class="n">tmd_nm</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-#-#-#.tables | head -2</span>
     <span class="n">Returns</span>    <span class="n">ExpInc</span>    <span class="n">IncTax</span>    <span class="n">PayTax</span>     <span class="n">LSTax</span>    <span class="n">AllTax</span>
- <span class="n">A</span>     <span class="mf">1.17</span>      <span class="mf">87.0</span>       <span class="mf">7.2</span>       <span class="mf">6.9</span>       <span class="mf">0.0</span>      <span class="mf">14.1</span>
+ <span class="n">A</span>     <span class="o">---</span><span class="p">[</span><span class="n">SNIP</span><span class="p">]</span><span class="o">---</span>
 </pre></div>
 </div>
 <p>Or for the first Congressional district in New Mexico, put the
 <code class="docutils literal notranslate"><span class="pre">nm01_tmd_weights.csv.gz</span></code> file in the folder with the other TMD
 files and execute this command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span><span class="p">)</span> <span class="n">myruns</span><span class="o">&gt;</span> <span class="n">TMD_AREA</span><span class="o">=</span><span class="n">nm01</span> <span class="n">tc</span> <span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2024</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span>
-<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2021</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2024</span>
+<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2022</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2024</span>
 <span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd_nm01</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-#-#-#.tables</span>
 <span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">8.3</span> <span class="n">seconds</span>
 <span class="p">(</span><span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span><span class="p">)</span> <span class="n">myruns</span><span class="o">&gt;</span> <span class="n">awk</span> <span class="s1">&#39;$1~/Ret/||$1~/A/&#39;</span> <span class="n">tmd_nm01</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-#-#-#.tables | head -2</span>
     <span class="n">Returns</span>    <span class="n">ExpInc</span>    <span class="n">IncTax</span>    <span class="n">PayTax</span>     <span class="n">LSTax</span>    <span class="n">AllTax</span>
- <span class="n">A</span>     <span class="mf">0.40</span>      <span class="mf">31.9</span>       <span class="mf">2.8</span>       <span class="mf">2.5</span>       <span class="mf">0.0</span>       <span class="mf">5.3</span>
+ <span class="n">A</span>     <span class="o">---</span><span class="p">[</span><span class="n">SNIP</span><span class="p">]</span><span class="o">---</span>
 </pre></div>
 </div>
 </section>

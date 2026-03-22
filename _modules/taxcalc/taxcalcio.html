@@ -417,6 +417,11 @@
                            <span class="n">add_quantile_table_row_variable</span><span class="p">,</span>
                            <span class="n">unweighted_sum</span><span class="p">,</span> <span class="n">weighted_sum</span><span class="p">)</span>
 
+<span class="n">TMD_CREDIT_CLAIMING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;eitc_claim_thd&#39;</span><span class="p">:</span> <span class="p">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Records</span><span class="o">.</span><span class="n">TMDCSV_YEAR</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="mi">1600</span><span class="p">},</span>
+    <span class="s1">&#39;actc_claim_thd&#39;</span><span class="p">:</span> <span class="p">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Records</span><span class="o">.</span><span class="n">TMDCSV_YEAR</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="mi">1500</span><span class="p">},</span>
+<span class="p">}</span>
+
 
 <div class="viewcode-block" id="TaxCalcIO">
 <a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO">[docs]</a>
@@ -813,6 +818,8 @@
                 <span class="n">gfactors</span><span class="o">=</span><span class="n">policy_gfactors_bas</span><span class="p">,</span>
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pol_bas</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">poldict</span> <span class="ow">in</span> <span class="n">poldicts_bas</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">pol_bas</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span>
@@ -831,12 +838,16 @@
                 <span class="n">gfactors</span><span class="o">=</span><span class="n">policy_gfactors_bas</span><span class="p">,</span>
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pol_bas</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
         <span class="c1"># ... the reform Policy object</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pol_ref</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
                 <span class="n">gfactors</span><span class="o">=</span><span class="n">policy_gfactors_ref</span><span class="p">,</span>
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pol_ref</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">poldict</span> <span class="ow">in</span> <span class="n">poldicts_ref</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">pol_ref</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span>
@@ -855,6 +866,8 @@
                 <span class="n">gfactors</span><span class="o">=</span><span class="n">policy_gfactors_bas</span><span class="p">,</span>
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pol_ref</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
         <span class="c1"># create Consumption object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">Consumption</span><span class="p">(</span><span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
