@@ -75,11 +75,11 @@ Tax-Calculator in two ways:
       the `Records.tmd_constructor(...)` static method to instantiate
       a Records object, and
     * after each instantiation of a Policy object, activate the TMD
-      refundable credit claiming behavior by executing an
-      `implement_reform(TMD_CREDIT_CLAIMING)` command on the Policy
+      refundable credit claiming behavior by executing the
+      `implement_reform(TMD_CREDIT_CLAIMING)` method on the Policy
       object (both for baseline and reform Policy objects), where the
-      `TMD_CREDIT_CLAIMING` dictionary is the same as the one at the
-      top of the `taxcalc/taxcalcio.py` module.
+      `TMD_CREDIT_CLAIMING` dictionary is imported from the `taxcalcio.py`
+      module.
   - or
   - with the **CLI tool**, use `tc`, when the three TMD files are all
     in the same folder and the `tmd.csv.gz` file has been unzipped.
