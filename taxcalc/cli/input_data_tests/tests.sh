@@ -1,9 +1,9 @@
 #!/bin/zsh
-# CLI input data tests assume that the three PUF files and the
-# three TMD national files are in the top-level Tax-Calculator
-# directory where they are ignored by git version control.
+# CLI input data tests assume that the three national TMD files are in the top-
+# level Tax-Calculator folder where they are ignored by git version control.
 # See Makefile target idtest for usage.
 
+# use CPS input files
 tc cps.csv 2035 --exact --params --tables --silent
 diff -q cps-35-#-#-#-#-params.baseline cps-35-params.baseline
 if [ $? -eq 0 ]; then
@@ -18,20 +18,7 @@ if [ $? -eq 0 ]; then
     rm cps-35-#-#-#-#.tables
 fi
 
-tc ../../../puf.csv 2035 --exact --params --tables --silent
-diff -q puf-35-#-#-#-#-params.baseline puf-35-params.baseline
-if [ $? -eq 0 ]; then
-    rm puf-35-#-#-#-#-params.baseline
-fi
-diff -q puf-35-#-#-#-#-params.reform puf-35-params.reform
-if [ $? -eq 0 ]; then
-    rm puf-35-#-#-#-#-params.reform
-fi
-diff -q puf-35-#-#-#-#.tables puf-35.tables
-if [ $? -eq 0 ]; then
-    rm puf-35-#-#-#-#.tables
-fi
-
+# use TMD input files
 tc ../../../tmd.csv 2035 --exact --params --tables --silent
 diff -q tmd-35-#-#-#-#-params.baseline tmd-35-params.baseline
 if [ $? -eq 0 ]; then
