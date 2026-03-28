@@ -39,8 +39,8 @@ validation of those data.
 
 ### 2011 IRS public use data (`puf.csv`)
 
-The taxdata repository also produces a weights file and growth
-factors file for use with the 2011 IRS-SOI Public Use File (PUF).  For
+The taxdata repository also produces a weights file and ratios file
+for use with the 2011 IRS-SOI Public Use File (PUF).  For
 users who have purchased their own version of the 2011 PUF, the `puf.csv`,
 `puf_weights.csv.gz` and `puf_ratios.csv` files from the taxdata repository,
 can be used by Tax-Calculator using the `Records.puf_constructor(...)`
@@ -100,12 +100,6 @@ contains the three national TMD files described above.  Then, execute
 this command for tabular output under 2024 current-law policy:
 ```
 (taxcalc-dev) myruns> TMD_AREA=nm tc tmd.csv 2024 --exact --tables
-Read input data for 2022; input data were extrapolated to 2024
-Write tabular output to file tmd_nm-24-#-#-#-#.tables
-Execution time is 8.2 seconds
-(taxcalc-dev) myruns> awk '$1~/Ret/||$1~/A/' tmd_nm-24-#-#-#-#.tables | head -2
-    Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
- A     ---[SNIP]---
 ```
 
 Or for the first Congressional district in New Mexico, put the
@@ -113,12 +107,6 @@ Or for the first Congressional district in New Mexico, put the
 files and execute this command:
 ```
 (taxcalc-dev) myruns> TMD_AREA=nm01 tc tmd.csv 2024 --exact --tables
-Read input data for 2022; input data were extrapolated to 2024
-Write tabular output to file tmd_nm01-24-#-#-#-#.tables
-Execution time is 8.3 seconds
-(taxcalc-dev) myruns> awk '$1~/Ret/||$1~/A/' tmd_nm01-24-#-#-#-#.tables | head -2
-    Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
- A     ---[SNIP]---
 ```
 
 
