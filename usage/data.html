@@ -508,8 +508,8 @@ validation of those data.</p>
 </section>
 <section id="irs-public-use-data-puf-csv">
 <h3>2011 IRS public use data (<code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>)<a class="headerlink" href="#irs-public-use-data-puf-csv" title="Link to this heading">#</a></h3>
-<p>The taxdata repository also produces a weights file and growth
-factors file for use with the 2011 IRS-SOI Public Use File (PUF).  For
+<p>The taxdata repository also produces a weights file and ratios file
+for use with the 2011 IRS-SOI Public Use File (PUF).  For
 users who have purchased their own version of the 2011 PUF, the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>,
 <code class="docutils literal notranslate"><span class="pre">puf_weights.csv.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code> files from the taxdata repository,
 can be used by Tax-Calculator using the <code class="docutils literal notranslate"><span class="pre">Records.puf_constructor(...)</span></code>
@@ -571,24 +571,12 @@ if you have the New Mexico state weights in the
 contains the three national TMD files described above.  Then, execute
 this command for tabular output under 2024 current-law policy:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span><span class="p">)</span> <span class="n">myruns</span><span class="o">&gt;</span> <span class="n">TMD_AREA</span><span class="o">=</span><span class="n">nm</span> <span class="n">tc</span> <span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2024</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span>
-<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2022</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2024</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd_nm</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-#-#-#.tables</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">8.2</span> <span class="n">seconds</span>
-<span class="p">(</span><span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span><span class="p">)</span> <span class="n">myruns</span><span class="o">&gt;</span> <span class="n">awk</span> <span class="s1">&#39;$1~/Ret/||$1~/A/&#39;</span> <span class="n">tmd_nm</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-#-#-#.tables | head -2</span>
-    <span class="n">Returns</span>    <span class="n">ExpInc</span>    <span class="n">IncTax</span>    <span class="n">PayTax</span>     <span class="n">LSTax</span>    <span class="n">AllTax</span>
- <span class="n">A</span>     <span class="o">---</span><span class="p">[</span><span class="n">SNIP</span><span class="p">]</span><span class="o">---</span>
 </pre></div>
 </div>
 <p>Or for the first Congressional district in New Mexico, put the
 <code class="docutils literal notranslate"><span class="pre">nm01_tmd_weights.csv.gz</span></code> file in the folder with the other TMD
 files and execute this command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span><span class="p">)</span> <span class="n">myruns</span><span class="o">&gt;</span> <span class="n">TMD_AREA</span><span class="o">=</span><span class="n">nm01</span> <span class="n">tc</span> <span class="n">tmd</span><span class="o">.</span><span class="n">csv</span> <span class="mi">2024</span> <span class="o">--</span><span class="n">exact</span> <span class="o">--</span><span class="n">tables</span>
-<span class="n">Read</span> <span class="nb">input</span> <span class="n">data</span> <span class="k">for</span> <span class="mi">2022</span><span class="p">;</span> <span class="nb">input</span> <span class="n">data</span> <span class="n">were</span> <span class="n">extrapolated</span> <span class="n">to</span> <span class="mi">2024</span>
-<span class="n">Write</span> <span class="n">tabular</span> <span class="n">output</span> <span class="n">to</span> <span class="n">file</span> <span class="n">tmd_nm01</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-#-#-#.tables</span>
-<span class="n">Execution</span> <span class="n">time</span> <span class="ow">is</span> <span class="mf">8.3</span> <span class="n">seconds</span>
-<span class="p">(</span><span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span><span class="p">)</span> <span class="n">myruns</span><span class="o">&gt;</span> <span class="n">awk</span> <span class="s1">&#39;$1~/Ret/||$1~/A/&#39;</span> <span class="n">tmd_nm01</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-#-#-#.tables | head -2</span>
-    <span class="n">Returns</span>    <span class="n">ExpInc</span>    <span class="n">IncTax</span>    <span class="n">PayTax</span>     <span class="n">LSTax</span>    <span class="n">AllTax</span>
- <span class="n">A</span>     <span class="o">---</span><span class="p">[</span><span class="n">SNIP</span><span class="p">]</span><span class="o">---</span>
 </pre></div>
 </div>
 </section>
