@@ -39,12 +39,12 @@ validation of those data.
 
 ### 2011 IRS public use data (`puf.csv`)
 
-The taxdata repository also produces a weights file and ratios file
-for use with the 2011 IRS-SOI Public Use File (PUF).  For
-users who have purchased their own version of the 2011 PUF, the `puf.csv`,
-`puf_weights.csv.gz` and `puf_ratios.csv` files from the taxdata repository,
-can be used by Tax-Calculator using the `Records.puf_constructor(...)`
-static method.
+The taxdata repository also produces an input variables file, weights
+file, and ratios file, using the 2011 IRS-SOI Public Use File (PUF).
+For users who have purchased from IRS-SOI their own version of the
+2011 PUF, the `puf.csv`, `puf_weights.csv.gz` and `puf_ratios.csv`
+files from the taxdata repository, can be used by Tax-Calculator using
+the `Records.puf_constructor(...)` static method.
 
 We refer users of the PUF to the IRS limitations on the use of those
 data and their distribution.  We also refer users of the PUF input
@@ -52,9 +52,7 @@ data to the [taxdata](https://github.com/PSLmodels/taxdata)
 documentation for details on how to use these files with the PUF and
 to see how well the resulting tax calculations hit aggregate targets
 published by the IRS.  However, we do note that analysis with a
-PUF-based data file tends to be more accurate than the `cps.csv` file
-and that the validation of Tax-Calculator with other microsimulation
-models uses the `puf.csv` file.
+PUF-based data file tends to be more accurate than the `cps.csv` file.
 
 ### 2015 IRS public use data (`tmd.csv`)
 
@@ -85,7 +83,7 @@ Tax-Calculator in two ways:
     in the same folder and the `tmd.csv.gz` file has been unzipped.
     The `tc` tool automatically activates the TMD refundable credit
     claiming behavior, so there is no need to do that on the command
-    line when using the CLI tool, `tc`.
+    line when using the CLI tool.
 
 The [tax-microdata
 repository](https://github.com/PSLmodels/tax-microdata-benchmarking)
