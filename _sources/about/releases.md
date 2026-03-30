@@ -5,6 +5,32 @@ Go
 for a complete commit history.
 
 
+2026-03-28 Release 6.5.0
+------------------------
+(last merged pull request is
+[#3007](https://github.com/PSLmodels/Tax-Calculator/pull/3007))
+
+**This is an enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Revise documentation to reflect new 2022 TMD input data files.
+  [[#3007](https://github.com/PSLmodels/Tax-Calculator/pull/3007)
+  by Martin Holmer]
+- Revise code to handle new 2022 TMD input data files.
+  [[#3004](https://github.com/PSLmodels/Tax-Calculator/pull/3004)
+  by Martin Holmer]
+- Add new `growfactor.csv` file that extends through 2036.
+  [[#3006](https://github.com/PSLmodels/Tax-Calculator/pull/3006)
+  by Jason DeBacker]
+
+**Bug Fixes**
+- Fix alimony haircut parameter values in the `NoOBBBA.md` reform.
+  [[#3005](https://github.com/PSLmodels/Tax-Calculator/pull/3005)
+  by Max Kossek]
+
+
 2026-03-13 Release 6.4.1
 ------------------------
 (last merged pull request is

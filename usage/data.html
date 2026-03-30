@@ -508,21 +508,19 @@ validation of those data.</p>
 </section>
 <section id="irs-public-use-data-puf-csv">
 <h3>2011 IRS public use data (<code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>)<a class="headerlink" href="#irs-public-use-data-puf-csv" title="Link to this heading">#</a></h3>
-<p>The taxdata repository also produces a weights file and ratios file
-for use with the 2011 IRS-SOI Public Use File (PUF).  For
-users who have purchased their own version of the 2011 PUF, the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>,
-<code class="docutils literal notranslate"><span class="pre">puf_weights.csv.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code> files from the taxdata repository,
-can be used by Tax-Calculator using the <code class="docutils literal notranslate"><span class="pre">Records.puf_constructor(...)</span></code>
-static method.</p>
+<p>The taxdata repository also produces an input variables file, weights
+file, and ratios file, using the 2011 IRS-SOI Public Use File (PUF).
+For users who have purchased from IRS-SOI their own version of the
+2011 PUF, the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">puf_weights.csv.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code>
+files from the taxdata repository, can be used by Tax-Calculator using
+the <code class="docutils literal notranslate"><span class="pre">Records.puf_constructor(...)</span></code> static method.</p>
 <p>We refer users of the PUF to the IRS limitations on the use of those
 data and their distribution.  We also refer users of the PUF input
 data to the <a class="reference external" href="https://github.com/PSLmodels/taxdata">taxdata</a>
 documentation for details on how to use these files with the PUF and
 to see how well the resulting tax calculations hit aggregate targets
 published by the IRS.  However, we do note that analysis with a
-PUF-based data file tends to be more accurate than the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file
-and that the validation of Tax-Calculator with other microsimulation
-models uses the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file.</p>
+PUF-based data file tends to be more accurate than the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file.</p>
 </section>
 <section id="irs-public-use-data-tmd-csv">
 <h3>2015 IRS public use data (<code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code>)<a class="headerlink" href="#irs-public-use-data-tmd-csv" title="Link to this heading">#</a></h3>
@@ -557,7 +555,7 @@ module.</p></li>
 in the same folder and the <code class="docutils literal notranslate"><span class="pre">tmd.csv.gz</span></code> file has been unzipped.
 The <code class="docutils literal notranslate"><span class="pre">tc</span></code> tool automatically activates the TMD refundable credit
 claiming behavior, so there is no need to do that on the command
-line when using the CLI tool, <code class="docutils literal notranslate"><span class="pre">tc</span></code>.</p></li>
+line when using the CLI tool.</p></li>
 </ul>
 <p>The <a class="reference external" href="https://github.com/PSLmodels/tax-microdata-benchmarking">tax-microdata
 repository</a>
