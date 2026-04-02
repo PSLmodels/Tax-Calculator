@@ -26,6 +26,7 @@ config = {
         "bokeh>=2.4",
         "numba",
         "paramtools>=0.20.0",
+        "behresp"
     ],
     "classifiers": [
         "Development Status :: 4 - Beta",
