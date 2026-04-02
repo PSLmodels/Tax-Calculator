@@ -5,6 +5,21 @@ Go
 for a complete commit history.
 
 
+2026-04-02 Release 6.5.1
+------------------------
+(last merged pull request is
+[#3010](https://github.com/PSLmodels/Tax-Calculator/pull/3010))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Add `behresp` to the install requirements in `setup.py` file
+  [[#3010](https://github.com/PSLmodels/Tax-Calculator/pull/3010)
+  by Jason DeBacker]
+
+
 2026-03-29 Release 6.5.0
 ------------------------
 (last merged pull request is
