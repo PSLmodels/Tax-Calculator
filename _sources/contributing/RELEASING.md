@@ -1,4 +1,4 @@
-Releasing Tax-Caclculator Packages
+Releasing Tax-Calculator Packages
 ==================================
 
 The following outlines the process for releasing a new `taxcalc` package.
