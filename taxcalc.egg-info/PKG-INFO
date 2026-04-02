@@ -23,6 +23,7 @@ Requires-Dist: pandas>=2.2
 Requires-Dist: bokeh>=2.4
 Requires-Dist: numba
 Requires-Dist: paramtools>=0.20.0
+Requires-Dist: behresp
 Dynamic: classifier
 Dynamic: description
 Dynamic: description-content-type
