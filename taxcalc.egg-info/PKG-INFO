@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: taxcalc
-Version: 6.5.0
+Version: 6.5.1
 Summary: Tax-Calculator
 Home-page: https://github.com/PSLmodels/Tax-Calculator
 Download-URL: https://github.com/PSLmodels/Tax-Calculator
@@ -23,6 +23,7 @@ Requires-Dist: pandas>=2.2
 Requires-Dist: bokeh>=2.4
 Requires-Dist: numba
 Requires-Dist: paramtools>=0.20.0
+Requires-Dist: behresp
 Dynamic: classifier
 Dynamic: description
 Dynamic: description-content-type
