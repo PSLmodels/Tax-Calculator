@@ -1267,7 +1267,7 @@
     <span class="n">magi</span> <span class="o">=</span> <span class="n">c00100</span>
     <span class="c1"># calculate senior deduction</span>
     <span class="n">senior_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">SeniorDed_c</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">SeniorDed_c</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">seniors</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
             <span class="n">seniors</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1283,7 +1283,9 @@
             <span class="n">senior_deduction</span> <span class="o">=</span> <span class="n">ded</span>
     <span class="c1"># calculate overtime_income_deduction</span>
     <span class="n">overtime_income_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">overtime_income</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+    <span class="c1"># Married taxpayers filing separately are not eligible for the</span>
+    <span class="c1"># qualified overtime deduction.</span>
+    <span class="k">if</span> <span class="n">overtime_income</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">overtime_income</span><span class="p">,</span> <span class="n">OvertimeIncomeDed_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">po_start</span> <span class="o">=</span> <span class="n">OvertimeIncomeDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
@@ -1300,7 +1302,9 @@
         <span class="n">overtime_income_deduction</span> <span class="o">=</span> <span class="n">ded</span>
     <span class="c1"># calculate tip_income_deduction</span>
     <span class="n">tip_income_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">tip_income</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+    <span class="c1"># Married taxpayers filing separately are not eligible for the</span>
+    <span class="c1"># qualified tip deduction.</span>
+    <span class="k">if</span> <span class="n">tip_income</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tip_income</span><span class="p">,</span> <span class="n">TipIncomeDed_c</span><span class="p">)</span>
         <span class="n">po_start</span> <span class="o">=</span> <span class="n">TipIncomeDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
