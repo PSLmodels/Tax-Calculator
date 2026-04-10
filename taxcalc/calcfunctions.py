@@ -871,7 +871,7 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
     magi = c00100
     # calculate senior deduction
     senior_deduction = 0.
-    if SeniorDed_c > 0.:
+    if SeniorDed_c > 0. and MARS != 3:
         seniors = 0
         if age_head >= 65:
             seniors += 1

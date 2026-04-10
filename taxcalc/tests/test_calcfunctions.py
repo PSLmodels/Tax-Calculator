@@ -1016,10 +1016,33 @@ tuple2 = (age_head, 0, 3, c00100, exact_true,
 #                    tip_income_deduction,auto_loan_interest_deduction)
 expected2 = (0, 0, 0, 0)
 
+tuple3 = (age_head, 0, 3, 120_000, exact_false,
+          SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
+          0,
+          OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
+          OvertimeIncomeDed_po_step_size,
+          OvertimeIncomeDed_po_rate_per_step,
+          0,
+          TipIncomeDed_c, TipIncomeDed_ps,
+          TipIncomeDed_po_step_size,
+          TipIncomeDed_po_rate_per_step,
+          5_000,
+          AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
+          AutoLoanInterestDed_po_step_size,
+          AutoLoanInterestDed_po_rate_per_step,
+          senior_deduction,
+          overtime_income_deduction,
+          tip_income_deduction,
+          auto_loan_interest_deduction)
+# returned tuple is (senior_deduction, overtime_income_deduction,
+#                    tip_income_deduction,auto_loan_interest_deduction)
+expected3 = (0, 0, 0, 1_000)
+
 
 @pytest.mark.parametrize(
     'test_tuple,expected_value',
-    [(tuple0, expected0), (tuple1, expected1), (tuple2, expected2)]
+    [(tuple0, expected0), (tuple1, expected1),
+     (tuple2, expected2), (tuple3, expected3)]
 )
 def test_MiscDed(test_tuple, expected_value, skip_jit):
     """
