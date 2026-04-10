@@ -5,16 +5,35 @@ Go
 for a complete commit history.
 
 
+2026-04-13 Release 6.5.2
+------------------------
+(last merged pull request is
+[#3012](https://github.com/PSLmodels/Tax-Calculator/pull/3012))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+- Make married filing separate tax units ineligible for new OBBBA overtime, tip, and senior deductions
+  [[#3012](https://github.com/PSLmodels/Tax-Calculator/pull/3012)
+  by Max Kossek]
+
+
 2026-04-02 Release 6.5.1
 ------------------------
 (last merged pull request is
 [#3010](https://github.com/PSLmodels/Tax-Calculator/pull/3010))
 
-**This is a minor enhancement release.**
+**This is a bug-fix release.**
 
 **API Changes**
 
 **New Features**
+
+**Bug Fixes**
 - Add `behresp` to the install requirements in `setup.py` file
   [[#3010](https://github.com/PSLmodels/Tax-Calculator/pull/3010)
   by Jason DeBacker]
