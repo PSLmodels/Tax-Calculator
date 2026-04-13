@@ -887,8 +887,6 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
             senior_deduction = ded
     # calculate overtime_income_deduction
     overtime_income_deduction = 0.
-    # Married taxpayers filing separately are not eligible for the
-    # qualified overtime deduction.
     if overtime_income > 0. and MARS != 3:
         ded = min(overtime_income, OvertimeIncomeDed_c[MARS - 1])
         po_start = OvertimeIncomeDed_ps[MARS - 1]
@@ -906,8 +904,6 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
         overtime_income_deduction = ded
     # calculate tip_income_deduction
     tip_income_deduction = 0.
-    # Married taxpayers filing separately are not eligible for the
-    # qualified tip deduction.
     if tip_income > 0. and MARS != 3:
         ded = min(tip_income, TipIncomeDed_c)
         po_start = TipIncomeDed_ps[MARS - 1]
