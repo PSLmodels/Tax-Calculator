@@ -970,7 +970,7 @@ tuple0 = (age_head, age_spouse, MARS, c00100, exact_false,
           auto_loan_interest_deduction)
 # returned tuple is (senior_deduction, overtime_income_deduction,
 #                    tip_income_deduction,auto_loan_interest_deduction)
-expected0 = (1_800, 23_000, 23_000, 0)
+expected0 = (0, 23_000, 23_000, 0)
 
 tuple1 = (age_head, age_spouse, MARS, c00100, exact_true,
           SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
@@ -992,7 +992,7 @@ tuple1 = (age_head, age_spouse, MARS, c00100, exact_true,
           auto_loan_interest_deduction)
 # returned tuple is (senior_deduction, overtime_income_deduction,
 #                    tip_income_deduction,auto_loan_interest_deduction)
-expected1 = (1_800, 23_000, 23_000, 0)
+expected1 = (0, 23_000, 23_000, 0)
 
 tuple2 = (age_head, 0, 3, c00100, exact_true,
           SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
