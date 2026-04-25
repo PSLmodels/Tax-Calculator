@@ -5,6 +5,23 @@ Go
 for a complete commit history.
 
 
+2026-04-27 Release 6.5.3
+------------------------
+(last merged pull request is
+[#3014](https://github.com/PSLmodels/Tax-Calculator/pull/3014))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+- Make phase-out of OBBBA senior deduction be per person (not per tax unit).
+  [[#3014](https://github.com/PSLmodels/Tax-Calculator/pull/3014)
+  by Martin Holmer]
+
+
 2026-04-13 Release 6.5.2
 ------------------------
 (last merged pull request is
