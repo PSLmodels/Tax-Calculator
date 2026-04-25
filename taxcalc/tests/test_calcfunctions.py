@@ -970,7 +970,7 @@ tuple0 = (age_head, age_spouse, MARS, c00100, exact_false,
           auto_loan_interest_deduction)
 # returned tuple is (senior_deduction, overtime_income_deduction,
 #                    tip_income_deduction,auto_loan_interest_deduction)
-expected0 = (1_800, 23_000, 23_000, 0)
+expected0 = (0, 23_000, 23_000, 0)
 
 tuple1 = (age_head, age_spouse, MARS, c00100, exact_true,
           SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
@@ -992,7 +992,7 @@ tuple1 = (age_head, age_spouse, MARS, c00100, exact_true,
           auto_loan_interest_deduction)
 # returned tuple is (senior_deduction, overtime_income_deduction,
 #                    tip_income_deduction,auto_loan_interest_deduction)
-expected1 = (1_800, 23_000, 23_000, 0)
+expected1 = (0, 23_000, 23_000, 0)
 
 tuple2 = (age_head, 0, 3, c00100, exact_true,
           SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
@@ -1038,11 +1038,35 @@ tuple3 = (age_head, 0, 3, 120_000, exact_false,
 #                    tip_income_deduction,auto_loan_interest_deduction)
 expected3 = (0, 0, 0, 1_000)
 
+tuple4 = (age_head, age_spouse, 2, 180_000, exact_false,
+          SeniorDed_c, SeniorDed_ps, SeniorDed_prt,
+          0,
+          OvertimeIncomeDed_c, OvertimeIncomeDed_ps,
+          OvertimeIncomeDed_po_step_size,
+          OvertimeIncomeDed_po_rate_per_step,
+          0,
+          TipIncomeDed_c, TipIncomeDed_ps,
+          TipIncomeDed_po_step_size,
+          TipIncomeDed_po_rate_per_step,
+          0,
+          AutoLoanInterestDed_c, AutoLoanInterestDed_ps,
+          AutoLoanInterestDed_po_step_size,
+          AutoLoanInterestDed_po_rate_per_step,
+          senior_deduction,
+          overtime_income_deduction,
+          tip_income_deduction,
+          auto_loan_interest_deduction)
+# elderly MFJ couple with AGI=180_000 above po_start=150_000, which implies
+# excess=30_000, po_amount=1_800, per_person_ded=4_200, and ded total=8_400
+# returned tuple is (senior_deduction, overtime_income_deduction,
+#                    tip_income_deduction, auto_loan_interest_deduction)
+expected4 = (8_400, 0, 0, 0)
+
 
 @pytest.mark.parametrize(
     'test_tuple,expected_value',
     [(tuple0, expected0), (tuple1, expected1),
-     (tuple2, expected2), (tuple3, expected3)]
+     (tuple2, expected2), (tuple3, expected3), (tuple4, expected4)]
 )
 def test_MiscDed(test_tuple, expected_value, skip_jit):
     """
