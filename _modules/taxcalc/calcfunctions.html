@@ -1274,13 +1274,14 @@
         <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
             <span class="n">seniors</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">seniors</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">ded</span> <span class="o">=</span> <span class="n">seniors</span> <span class="o">*</span> <span class="n">SeniorDed_c</span>
             <span class="n">po_start</span> <span class="o">=</span> <span class="n">SeniorDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
                 <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">magi</span> <span class="o">-</span> <span class="n">po_start</span>
                 <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">SeniorDed_prt</span>
-                <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
-            <span class="n">senior_deduction</span> <span class="o">=</span> <span class="n">ded</span>
+                <span class="n">per_person_ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">SeniorDed_c</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">per_person_ded</span> <span class="o">=</span> <span class="n">SeniorDed_c</span>
+            <span class="n">senior_deduction</span> <span class="o">=</span> <span class="n">seniors</span> <span class="o">*</span> <span class="n">per_person_ded</span>
     <span class="c1"># calculate overtime_income_deduction</span>
     <span class="n">overtime_income_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">if</span> <span class="n">overtime_income</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
