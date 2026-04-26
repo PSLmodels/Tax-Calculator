@@ -897,7 +897,7 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
             po_rate = OvertimeIncomeDed_po_rate_per_step
             if exact == 1:  # exact calculation as on tax forms
                 step_size = OvertimeIncomeDed_po_step_size
-                steps = math.ceil(excess_agi / step_size)
+                steps = math.floor(excess_agi / step_size)
                 po_amount = steps * step_size * po_rate
             else:  # smoothed calculation needed for sensible mtr calculation
                 po_amount = excess_agi * po_rate
@@ -914,7 +914,7 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
             po_rate = TipIncomeDed_po_rate_per_step
             if exact == 1:  # exact calculation as on tax forms
                 step_size = TipIncomeDed_po_step_size
-                steps = math.ceil(excess_agi / step_size)
+                steps = math.floor(excess_agi / step_size)
                 po_amount = steps * step_size * po_rate
             else:  # smoothed calculation needed for sensible mtr calculation
                 po_amount = excess_agi * po_rate
