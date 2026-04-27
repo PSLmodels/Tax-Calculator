@@ -4,31 +4,36 @@
 # See Makefile target idtest for usage.
 
 # use CPS input files
-tc cps.csv 2035 --exact --params --tables --silent
-diff -q cps-35-#-#-#-#-params.baseline cps-35-params.baseline
-if [ $? -eq 0 ]; then
-    rm cps-35-#-#-#-#-params.baseline
-fi
-diff -q cps-35-#-#-#-#-params.reform cps-35-params.reform
-if [ $? -eq 0 ]; then
-    rm cps-35-#-#-#-#-params.reform
-fi
-diff -q cps-35-#-#-#-#.tables cps-35.tables
-if [ $? -eq 0 ]; then
-    rm cps-35-#-#-#-#.tables
-fi
+tc cps.csv 2025 --numyears 11 --exact --params --tables --silent
+for yr in {25..35}; do
+    diff -q cps-$yr-#-#-#-#-params.baseline cps-$yr-params.baseline
+    if [ $? -eq 0 ]; then
+        rm cps-$yr-#-#-#-#-params.baseline
+    fi
+    diff -q cps-$yr-#-#-#-#-params.reform cps-$yr-params.reform
+    if [ $? -eq 0 ]; then
+        rm cps-$yr-#-#-#-#-params.reform
+    fi
+    diff -q cps-$yr-#-#-#-#.tables cps-$yr.tables
+    if [ $? -eq 0 ]; then
+        rm cps-$yr-#-#-#-#.tables
+    fi
+done
 
 # use TMD input files
-tc ../../../tmd.csv 2035 --exact --params --tables --silent
-diff -q tmd-35-#-#-#-#-params.baseline tmd-35-params.baseline
-if [ $? -eq 0 ]; then
-    rm tmd-35-#-#-#-#-params.baseline
-fi
-diff -q tmd-35-#-#-#-#-params.reform tmd-35-params.reform
-if [ $? -eq 0 ]; then
-    rm tmd-35-#-#-#-#-params.reform
-fi
-diff -q tmd-35-#-#-#-#.tables tmd-35.tables
-if [ $? -eq 0 ]; then
-    rm tmd-35-#-#-#-#.tables
-fi
+tc ../../../tmd.csv 2025 --numyears 11 --exact --params --tables --silent
+for yr in {25..35}; do
+    diff -q tmd-$yr-#-#-#-#-params.baseline tmd-$yr-params.baseline
+    if [ $? -eq 0 ]; then
+        rm tmd-$yr-#-#-#-#-params.baseline
+    fi
+    diff -q tmd-$yr-#-#-#-#-params.reform tmd-$yr-params.reform
+    if [ $? -eq 0 ]; then
+        rm tmd-$yr-#-#-#-#-params.reform
+    fi
+    diff -q tmd-$yr-#-#-#-#.tables tmd-$yr.tables
+    if [ $? -eq 0 ]; then
+        rm tmd-$yr-#-#-#-#.tables
+    fi
+done
+

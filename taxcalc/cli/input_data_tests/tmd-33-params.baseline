@@ -1,0 +1,247 @@
+2033 parameter_indexing_CPI_offset 0.0
+2033 eitc_claim_thd 2464.26
+2033 actc_claim_thd 2310.23
+2033 FICA_ss_trt_employer 0.062
+2033 FICA_ss_trt_employee 0.062
+2033 SS_Earnings_c 232250.32
+2033 SECA_Earnings_thd 400.0
+2033 SS_Earnings_thd 9e+99
+2033 FICA_mc_trt_employer 0.0145
+2033 FICA_mc_trt_employee 0.0145
+2033 AMEDT_ec [200000. 250000. 125000. 200000. 200000.]
+2033 AMEDT_rt 0.009
+2033 SS_all_in_agi False
+2033 SS_thd1 [25000. 32000. 25000. 25000. 25000.]
+2033 SS_percentage1 0.5
+2033 SS_thd2 [34000. 44000. 34000. 34000. 34000.]
+2033 SS_percentage2 0.85
+2033 ALD_StudentLoan_hc 0.0
+2033 ALD_SelfEmploymentTax_hc 0.0
+2033 ALD_SelfEmp_HealthIns_hc 0.0
+2033 ALD_KEOGH_SEP_hc 0.0
+2033 ALD_EarlyWithdraw_hc 0.0
+2033 ALD_AlimonyPaid_hc 1.0
+2033 ALD_AlimonyReceived_hc 0.0
+2033 ALD_EducatorExpenses_hc 0.0
+2033 ALD_HSADeduction_hc 0.0
+2033 ALD_IRAContributions_hc 0.0
+2033 ALD_DomesticProduction_hc 1.0
+2033 ALD_Tuition_hc 1.0
+2033 ALD_InvInc_ec_rt 0.0
+2033 ALD_Dependents_hc 0.0
+2033 ALD_Dependents_Child_c 0.0
+2033 ALD_Dependents_Elder_c 0.0
+2033 ALD_Dependents_thd [0. 0. 0. 0. 0.]
+2033 ALD_BusinessLosses_c [302550.93 605101.87 302550.93 302550.93 605101.87]
+2033 II_em 0.0
+2033 II_em_ps [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 II_em_po_step_size [2500. 2500. 1250. 2500. 2500.]
+2033 II_em_prt 0.02
+2033 II_no_em_nu18 False
+2033 STD [19027.62 38055.23 19027.62 28541.43 38055.23]
+2033 STD_Dep 1595.48
+2033 STD_Aged [2422.76 1950.05 1950.05 2422.76 1950.05]
+2033 STD_allow_charity_ded_nonitemizers True
+2033 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]
+2033 II_credit [0. 0. 0. 0. 0.]
+2033 II_credit_ps [0. 0. 0. 0. 0.]
+2033 II_credit_prt 0.0
+2033 II_credit_nr [0. 0. 0. 0. 0.]
+2033 II_credit_nr_ps [0. 0. 0. 0. 0.]
+2033 II_credit_nr_prt 0.0
+2033 RRC_c 0.0
+2033 RRC_ps [0. 0. 0. 0. 0.]
+2033 RRC_pe [0. 0. 0. 0. 0.]
+2033 RRC_prt 0.0
+2033 RRC_c_unit [0. 0. 0. 0. 0.]
+2033 RRC_c_kids 0.0
+2033 ID_Medical_frt 0.075
+2033 ID_Medical_frt_add4aged 0.0
+2033 ID_Medical_hc 0.0
+2033 ID_Medical_c [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 ID_StateLocalTax_hc 0.0
+2033 ID_StateLocalTax_crt 9e+99
+2033 ID_StateLocalTax_c [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 ID_RealEstate_hc 0.0
+2033 ID_RealEstate_crt 9e+99
+2033 ID_RealEstate_c [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 ID_AllTaxes_hc 0.0
+2033 ID_AllTaxes_c [10000. 10000.  5000. 10000. 10000.]
+2033 ID_AllTaxes_c_ps [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 ID_AllTaxes_c_po_rate 0.0
+2033 ID_AllTaxes_c_po_floor [0. 0. 0. 0. 0.]
+2033 ID_InterestPaid_hc 0.0
+2033 ID_InterestPaid_c [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 ID_Charity_crt_all 0.6
+2033 ID_Charity_crt_noncash 0.3
+2033 ID_Charity_frt 0.005
+2033 ID_Charity_hc 0.0
+2033 ID_Charity_c [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 ID_Charity_f [0. 0. 0. 0. 0.]
+2033 ID_Casualty_frt 0.1
+2033 ID_Casualty_hc 1.0
+2033 ID_Casualty_c [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 ID_Miscellaneous_frt 0.02
+2033 ID_Miscellaneous_hc 1.0
+2033 ID_Miscellaneous_c [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 ID_ps [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 ID_prt 0.0
+2033 ID_crt 1.0
+2033 ID_reduction_rate 0.05405405
+2033 ID_c [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 Capital_loss_limitation [3000. 3000. 1500. 3000. 3000.]
+2033 CG_rt1 0.0
+2033 CG_brk1 [ 58441.96 116883.94  58441.96  78237.79 116883.94]
+2033 CG_rt2 0.15
+2033 CG_brk2 [644693.48 725294.95 362647.45 684994.22 725294.95]
+2033 CG_rt3 0.2
+2033 CG_brk3 [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 CG_rt4 1.0
+2033 AMT_CG_rt1 0.0
+2033 AMT_CG_brk1 [ 58441.96 116883.94  58441.96  78237.79 116883.94]
+2033 AMT_CG_rt2 0.15
+2033 AMT_CG_brk2 [644693.48 725294.95 362647.45 684994.22 725294.95]
+2033 AMT_CG_rt3 0.2
+2033 AMT_CG_brk3 [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 AMT_CG_rt4 1.0
+2033 CG_nodiff False
+2033 CG_ec 0.0
+2033 CG_reinvest_ec_rt 0.0
+2033 II_rt1 0.1
+2033 II_brk1 [14654.81 29309.62 14654.81 20918.56 29309.62]
+2033 II_rt2 0.12
+2033 II_brk2 [ 59564.72 119129.42  59564.72  79715.08 119129.42]
+2033 II_rt3 0.22
+2033 II_brk3 [124920.44 249840.9  124920.44 124920.44 249840.9 ]
+2033 II_rt4 0.24
+2033 II_brk4 [238465.69 476931.37 238465.69 238436.15 476931.37]
+2033 II_rt5 0.32
+2033 II_brk5 [302816.85 605633.68 302816.85 302787.3  605633.68]
+2033 II_rt6 0.35
+2033 II_brk6 [757086.44 908480.07 454240.04 757086.44 908480.07]
+2033 II_rt7 0.37
+2033 II_brk7 [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 II_rt8 1.0
+2033 PT_qbid_rt 0.2
+2033 PT_qbid_limited True
+2033 PT_qbid_taxinc_thd [238436.15 476872.27 238465.69 238436.15 238436.15]
+2033 PT_qbid_taxinc_gap [ 75000. 150000.  75000.  75000. 150000.]
+2033 PT_qbid_w2_wages_rt 0.5
+2033 PT_qbid_alt_w2_wages_rt 0.25
+2033 PT_qbid_alt_property_rt 0.025
+2033 PT_qbid_ps [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 PT_qbid_prt 0.0
+2033 PT_qbid_min_ded 472.75
+2033 PT_qbid_min_qbi 1181.83
+2033 UI_em 0.0
+2033 UI_thd [0. 0. 0. 0. 0.]
+2033 AMT_em [106483.74 165693.92  82846.95 106483.74 165693.92]
+2033 AMT_prt 0.5
+2033 AMT_em_ps [ 590919.79 1181839.58  590919.79  590919.79 1181839.58]
+2033 AMT_child_em 11522.95
+2033 AMT_child_em_c_age 18
+2033 AMT_rt1 0.26
+2033 AMT_brk1 [288959.77 288959.77 144479.9  288959.77 288959.77]
+2033 AMT_rt2_addon 0.02
+2033 AMT_em_pe 755431.86
+2033 CDCC_c 3000.0
+2033 CDCC_ps1 15000.0
+2033 CDCC_ps2 [ 75000. 150000.  75000.  75000.  75000.]
+2033 CDCC_po1_rate_max 0.5
+2033 CDCC_po1_rate_min 0.35
+2033 CDCC_po2_rate_min 0.2
+2033 CDCC_po1_step_size 2000.0
+2033 CDCC_po2_step_size [2000. 4000. 2000. 2000. 2000.]
+2033 CDCC_po_rate_per_step 0.01
+2033 CDCC_refundable False
+2033 CTC_c 2600.04
+2033 CTC_c_under6_bonus 0.0
+2033 CTC_include17 False
+2033 CTC_is_refundable False
+2033 ODC_is_refundable False
+2033 CTC_ps [200000. 400000. 200000. 200000. 400000.]
+2033 CTC_prt 0.05
+2033 ACTC_c 2009.12
+2033 ODC_c 500.0
+2033 NIIT_thd [200000. 250000. 125000. 200000. 250000.]
+2033 NIIT_PT_taxed False
+2033 NIIT_rt 0.038
+2033 EITC_c [ 784.75 5232.01 8646.34 9727.73]
+2033 EITC_rt [0.0765 0.34   0.4    0.45  ]
+2033 EITC_basic_frac 0.0
+2033 EITC_prt [0.0765 0.1598 0.2106 0.2106]
+2033 EITC_ps [12834.79 28234.16 28234.16 28234.16]
+2033 EITC_ps_addon_MarriedJ [8603.79 8591.98 8591.98 8591.98]
+2033 EITC_MinEligAge 25
+2033 EITC_MaxEligAge 64
+2033 EITC_InvestIncome_c 14418.44
+2033 EITC_excess_InvestIncome_rt 9e+99
+2033 EITC_indiv False
+2033 EITC_sep_filers_elig True
+2033 RPTC_c 0.0
+2033 RPTC_rt 0.0
+2033 LLC_Expense_c 10000.0
+2033 ETC_pe_Single 90.0
+2033 ETC_pe_Married 180.0
+2033 ACTC_rt 0.15
+2033 ACTC_rt_bonus_under6family 0.0
+2033 ACTC_Income_thd 2500.0
+2033 ACTC_ChildNum 3
+2033 CTC_new_c 0.0
+2033 CTC_new_c_under6_bonus 0.0
+2033 CTC_new_for_all False
+2033 CTC_new_rt 0.0
+2033 CTC_new_ps [0. 0. 0. 0. 0.]
+2033 CTC_new_prt 0.0
+2033 CTC_new_refund_limited False
+2033 CTC_new_refund_limit_payroll_rt 0.0
+2033 CTC_new_refund_limited_all_payroll False
+2033 FST_AGI_trt 0.0
+2033 FST_AGI_thd_lo [1000000. 1000000.  500000. 1000000. 1000000.]
+2033 FST_AGI_thd_hi [2000000. 2000000. 1000000. 2000000. 2000000.]
+2033 AGI_surtax_trt 0.0
+2033 AGI_surtax_thd [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
+2033 LST 0.0
+2033 UBI_u18 0.0
+2033 UBI_1820 0.0
+2033 UBI_21 0.0
+2033 UBI_ecrt 0.0
+2033 CR_RetirementSavings_hc 0.0
+2033 CR_ForeignTax_hc 0.0
+2033 CR_ResidentialEnergy_hc 0.0
+2033 CR_GeneralBusiness_hc 0.0
+2033 CR_MinimumTax_hc 0.0
+2033 CR_AmOppRefundable_hc 0.0
+2033 CR_AmOppNonRefundable_hc 0.0
+2033 CR_SchR_hc 0.0
+2033 CR_OtherCredits_hc 0.0
+2033 CR_Education_hc 0.0
+2033 CR_Charity_rt 0.0
+2033 CR_Charity_f [0. 0. 0. 0. 0.]
+2033 CR_Charity_frt 0.0
+2033 SeniorDed_c 0.0
+2033 SeniorDed_ps [ 75000. 150000.  75000.  75000.  75000.]
+2033 SeniorDed_prt 0.06
+2033 AutoLoanInterestDed_c 0.0
+2033 AutoLoanInterestDed_ps [100000. 200000. 100000. 100000. 200000.]
+2033 AutoLoanInterestDed_po_step_size 1000.0
+2033 AutoLoanInterestDed_po_rate_per_step 0.2
+2033 OvertimeIncomeDed_c [0. 0. 0. 0. 0.]
+2033 OvertimeIncomeDed_ps [150000. 300000. 150000. 150000. 150000.]
+2033 OvertimeIncomeDed_po_step_size 1000.0
+2033 OvertimeIncomeDed_po_rate_per_step 0.1
+2033 TipIncomeDed_c 0.0
+2033 TipIncomeDed_ps [150000. 300000. 150000. 150000. 150000.]
+2033 TipIncomeDed_po_step_size 1000.0
+2033 TipIncomeDed_po_rate_per_step 0.1
+2033 BEN_ssi_repeal False
+2033 BEN_housing_repeal False
+2033 BEN_snap_repeal False
+2033 BEN_tanf_repeal False
+2033 BEN_vet_repeal False
+2033 BEN_wic_repeal False
+2033 BEN_mcare_repeal False
+2033 BEN_mcaid_repeal False
+2033 BEN_oasdi_repeal False
+2033 BEN_ui_repeal False
+2033 BEN_other_repeal False
