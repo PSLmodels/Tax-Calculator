@@ -14,8 +14,8 @@ read-the-docs/_build/
 *.DS_Store
 
 # Non-public IRS-SOI PUF and TMD data files
-puf*
-tmd*
+puf*csv*
+tmd*csv*
 
 # Jupyter notebook checkpoints
 *.ipynb_checkpoints*
