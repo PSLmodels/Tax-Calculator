@@ -1483,7 +1483,7 @@ def SchXYZ(taxable_income, MARS,
            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
            II_brk6, II_brk7):
     """
-    Taxes function returns tax amount given the progressive tax rate
+    Function that returns tax amount given the progressive tax rate
     schedule specified by the II_rt? and (upper) II_brk? parameters and
     given taxable income and filing status (MARS).
 
@@ -1530,14 +1530,14 @@ def SchXYZ(taxable_income, MARS,
     Regular individual income tax liability on all taxable income
     """
     # pylint: disable=too-many-return-statements
+    # IRS 2025 Tax Rate Schedules X (single), Y-1 (MFJ/QW), Y-2 (MFS),
+    # Z (HoH): MARS - 1 selects the schedule via II_brk?[MARS - 1].
     if taxable_income <= 0.:
         return 0.
-    tax = 0.
-    brk0 = 0.
     brk1 = II_brk1[MARS - 1]
     if taxable_income <= brk1:
-        return tax + II_rt1 * (taxable_income - brk0)
-    tax = tax + II_rt1 * (brk1 - brk0)
+        return II_rt1 * taxable_income
+    tax = II_rt1 * brk1
     brk2 = II_brk2[MARS - 1]
     if taxable_income <= brk2:
         return tax + II_rt2 * (taxable_income - brk1)
@@ -1571,59 +1571,10 @@ def SchXYZTax(c04800, MARS,
               II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
               II_brk6, II_brk7, c05200):
     """
-    SchXYZTax calls SchXYZ function and sets c05200 to returned amount.
-
-    Parameters
-    ----------
-    c04800: float
-        Regular taxable income
-    MARS: int
-        Filing (marital) status. (1=single, 2=joint, 3=separate,
-                                  4=household-head, 5=widow(er))
-    II_rt1: float
-        Personal income (regular/non-AMT) tax rate 1
-    II_rt2: float
-        Personal income (regular/non-AMT) tax rate 2
-    II_rt3: float
-        Personal income (regular/non-AMT) tax rate 3
-    II_rt4: float
-        Personal income (regular/non-AMT) tax rate 4
-    II_rt5: float
-        Personal income (regular/non-AMT) tax rate 5
-    II_rt6: float
-        Personal income (regular/non-AMT) tax rate 6
-    II_rt7: float
-        Personal income (regular/non-AMT) tax rate 7
-    II_rt8: float
-        Personal income (regular/non-AMT) tax rate 8
-    II_brk1: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 1
-    II_brk2: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 2
-    II_brk3: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 3
-    II_brk4: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 4
-    II_brk5: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 5
-    II_brk6: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 6
-    II_brk7: list
-        Personal income (regular/non-AMT)
-        tax bracket (upper threshold) 7
-    c05200: float
-        Tax amount from Schedule X,Y,Z tables
-
-    Returns
-    -------
-    c05200: float
-        Tax amount from Schedule X, Y, Z tables
+    Function that routes c04800 (regular taxable income) through the
+    SchXYZ rate-schedule function and stores the result in c05200 (tax
+    amount from Tax Rate Schedules X, Y-1, Y-2, Z). See the SchXYZ function
+    for the semantics of MARS, II_rt?, and II_brk?.
     """
     c05200 = SchXYZ(
         c04800, MARS,
