@@ -1881,7 +1881,7 @@
            <span class="n">II_brk1</span><span class="p">,</span> <span class="n">II_brk2</span><span class="p">,</span> <span class="n">II_brk3</span><span class="p">,</span> <span class="n">II_brk4</span><span class="p">,</span> <span class="n">II_brk5</span><span class="p">,</span>
            <span class="n">II_brk6</span><span class="p">,</span> <span class="n">II_brk7</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Taxes function returns tax amount given the progressive tax rate</span>
+<span class="sd">    Function that returns tax amount given the progressive tax rate</span>
 <span class="sd">    schedule specified by the II_rt? and (upper) II_brk? parameters and</span>
 <span class="sd">    given taxable income and filing status (MARS).</span>
 
@@ -1928,14 +1928,14 @@
 <span class="sd">    Regular individual income tax liability on all taxable income</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-return-statements</span>
+    <span class="c1"># IRS 2025 Tax Rate Schedules X (single), Y-1 (MFJ/QW), Y-2 (MFS),</span>
+    <span class="c1"># Z (HoH): MARS - 1 selects the schedule via II_brk?[MARS - 1].</span>
     <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="k">return</span> <span class="mf">0.</span>
-    <span class="n">tax</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="n">brk0</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">brk1</span> <span class="o">=</span> <span class="n">II_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="n">brk1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt1</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk0</span><span class="p">)</span>
-    <span class="n">tax</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt1</span> <span class="o">*</span> <span class="p">(</span><span class="n">brk1</span> <span class="o">-</span> <span class="n">brk0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">II_rt1</span> <span class="o">*</span> <span class="n">taxable_income</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="n">II_rt1</span> <span class="o">*</span> <span class="n">brk1</span>
     <span class="n">brk2</span> <span class="o">=</span> <span class="n">II_brk2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="n">brk2</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt2</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk1</span><span class="p">)</span>
@@ -1970,59 +1970,10 @@
               <span class="n">II_brk1</span><span class="p">,</span> <span class="n">II_brk2</span><span class="p">,</span> <span class="n">II_brk3</span><span class="p">,</span> <span class="n">II_brk4</span><span class="p">,</span> <span class="n">II_brk5</span><span class="p">,</span>
               <span class="n">II_brk6</span><span class="p">,</span> <span class="n">II_brk7</span><span class="p">,</span> <span class="n">c05200</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    SchXYZTax calls SchXYZ function and sets c05200 to returned amount.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    c04800: float</span>
-<span class="sd">        Regular taxable income</span>
-<span class="sd">    MARS: int</span>
-<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
-<span class="sd">                                  4=household-head, 5=widow(er))</span>
-<span class="sd">    II_rt1: float</span>
-<span class="sd">        Personal income (regular/non-AMT) tax rate 1</span>
-<span class="sd">    II_rt2: float</span>
-<span class="sd">        Personal income (regular/non-AMT) tax rate 2</span>
-<span class="sd">    II_rt3: float</span>
-<span class="sd">        Personal income (regular/non-AMT) tax rate 3</span>
-<span class="sd">    II_rt4: float</span>
-<span class="sd">        Personal income (regular/non-AMT) tax rate 4</span>
-<span class="sd">    II_rt5: float</span>
-<span class="sd">        Personal income (regular/non-AMT) tax rate 5</span>
-<span class="sd">    II_rt6: float</span>
-<span class="sd">        Personal income (regular/non-AMT) tax rate 6</span>
-<span class="sd">    II_rt7: float</span>
-<span class="sd">        Personal income (regular/non-AMT) tax rate 7</span>
-<span class="sd">    II_rt8: float</span>
-<span class="sd">        Personal income (regular/non-AMT) tax rate 8</span>
-<span class="sd">    II_brk1: list</span>
-<span class="sd">        Personal income (regular/non-AMT)</span>
-<span class="sd">        tax bracket (upper threshold) 1</span>
-<span class="sd">    II_brk2: list</span>
-<span class="sd">        Personal income (regular/non-AMT)</span>
-<span class="sd">        tax bracket (upper threshold) 2</span>
-<span class="sd">    II_brk3: list</span>
-<span class="sd">        Personal income (regular/non-AMT)</span>
-<span class="sd">        tax bracket (upper threshold) 3</span>
-<span class="sd">    II_brk4: list</span>
-<span class="sd">        Personal income (regular/non-AMT)</span>
-<span class="sd">        tax bracket (upper threshold) 4</span>
-<span class="sd">    II_brk5: list</span>
-<span class="sd">        Personal income (regular/non-AMT)</span>
-<span class="sd">        tax bracket (upper threshold) 5</span>
-<span class="sd">    II_brk6: list</span>
-<span class="sd">        Personal income (regular/non-AMT)</span>
-<span class="sd">        tax bracket (upper threshold) 6</span>
-<span class="sd">    II_brk7: list</span>
-<span class="sd">        Personal income (regular/non-AMT)</span>
-<span class="sd">        tax bracket (upper threshold) 7</span>
-<span class="sd">    c05200: float</span>
-<span class="sd">        Tax amount from Schedule X,Y,Z tables</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    c05200: float</span>
-<span class="sd">        Tax amount from Schedule X, Y, Z tables</span>
+<span class="sd">    Function that routes c04800 (regular taxable income) through the</span>
+<span class="sd">    SchXYZ rate-schedule function and stores the result in c05200 (tax</span>
+<span class="sd">    amount from Tax Rate Schedules X, Y-1, Y-2, Z). See the SchXYZ function</span>
+<span class="sd">    for the semantics of MARS, II_rt?, and II_brk?.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">c05200</span> <span class="o">=</span> <span class="n">SchXYZ</span><span class="p">(</span>
         <span class="n">c04800</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
