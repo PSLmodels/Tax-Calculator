@@ -2840,9 +2840,9 @@
                       <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
                       <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">codtc_limited</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes amounts on &quot;Child Tax Credit and Credit for Other Dependents</span>
-<span class="sd">    Worksheet&quot; in 2018 Publication 972, which pertain to these two</span>
-<span class="sd">    nonrefundable tax credits.</span>
+<span class="sd">    Computes nonrefundable Child Tax Credit and Credit for Other Dependents</span>
+<span class="sd">    on Schedule 8812 Part I (and Credit Limit Worksheet A).</span>
+<span class="sd">    https://www.irs.gov/pub/irs-pdf/f1040s8.pdf</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2897,7 +2897,8 @@
 <span class="sd">    odc: float</span>
 <span class="sd">        Other Dependent Credit</span>
 <span class="sd">    codtc_limited: float</span>
-<span class="sd">        Maximum of 0 and line 10 minus line 16</span>
+<span class="sd">        Tentative credit not yet absorbed by tax liability (Sch 8812 line 12</span>
+<span class="sd">        minus the nonrefundable amount); used by AdditionalCTC.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -2906,51 +2907,55 @@
 <span class="sd">    odc: float</span>
 <span class="sd">        Other Dependent Credit</span>
 <span class="sd">    codtc_limited: float</span>
-<span class="sd">        Maximum of 0 and line 10 minus line 16</span>
+<span class="sd">        Tentative credit not yet absorbed by tax liability (Sch 8812 line 12</span>
+<span class="sd">        minus the nonrefundable amount); used by AdditionalCTC.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Worksheet Part 1</span>
+    <span class="c1"># Sch 8812 lines 1-3: modified AGI (no foreign earned income exclusion)</span>
+    <span class="n">modAGI</span> <span class="o">=</span> <span class="n">c00100</span>
+    <span class="c1"># reform-only: redefine &quot;qualifying child&quot; as under 18 instead of under 17</span>
     <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
         <span class="n">tu18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">age_head</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>   <span class="c1"># taxpayer is under age 18</span>
         <span class="n">su18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>  <span class="c1"># spouse is under age 18</span>
         <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nu18</span> <span class="o">-</span> <span class="n">tu18</span> <span class="o">-</span> <span class="n">su18</span> <span class="o">-</span> <span class="n">n24</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span>
-    <span class="n">line1</span> <span class="o">=</span> <span class="n">CTC_c</span> <span class="o">*</span> <span class="n">childnum</span> <span class="o">+</span> <span class="n">CTC_c_under6_bonus</span> <span class="o">*</span> <span class="n">nu06</span>
-    <span class="n">line2</span> <span class="o">=</span> <span class="n">ODC_c</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">childnum</span> <span class="o">-</span> <span class="n">num</span><span class="p">)</span>
-    <span class="n">line3</span> <span class="o">=</span> <span class="n">line1</span> <span class="o">+</span> <span class="n">line2</span>
-    <span class="n">modAGI</span> <span class="o">=</span> <span class="n">c00100</span>  <span class="c1"># no foreign earned income exclusion to add to AGI (line6)</span>
-    <span class="k">if</span> <span class="n">line3</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">modAGI</span> <span class="o">&gt;</span> <span class="n">CTC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+    <span class="c1"># Sch 8812 lines 4-5: tentative CTC (plus reform under-6 bonus)</span>
+    <span class="n">line5</span> <span class="o">=</span> <span class="n">CTC_c</span> <span class="o">*</span> <span class="n">childnum</span> <span class="o">+</span> <span class="n">CTC_c_under6_bonus</span> <span class="o">*</span> <span class="n">nu06</span>
+    <span class="c1"># Sch 8812 lines 6-7: tentative ODC</span>
+    <span class="n">line7</span> <span class="o">=</span> <span class="n">ODC_c</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">childnum</span> <span class="o">-</span> <span class="n">num</span><span class="p">)</span>
+    <span class="c1"># Sch 8812 line 8: sum of tentative CTC and ODC</span>
+    <span class="n">line8</span> <span class="o">=</span> <span class="n">line5</span> <span class="o">+</span> <span class="n">line7</span>
+    <span class="c1"># Sch 8812 lines 9-12: phase out using CTC_ps threshold and CTC_prt rate</span>
+    <span class="k">if</span> <span class="n">line8</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">modAGI</span> <span class="o">&gt;</span> <span class="n">CTC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
         <span class="n">excess</span> <span class="o">=</span> <span class="n">modAGI</span> <span class="o">-</span> <span class="n">CTC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
             <span class="n">excess</span> <span class="o">=</span> <span class="mf">1000.</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">excess</span> <span class="o">/</span> <span class="mf">1000.</span><span class="p">)</span>
-        <span class="n">line10</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line3</span> <span class="o">-</span> <span class="n">CTC_prt</span> <span class="o">*</span> <span class="n">excess</span><span class="p">)</span>
+        <span class="n">line12</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line8</span> <span class="o">-</span> <span class="n">CTC_prt</span> <span class="o">*</span> <span class="n">excess</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">line10</span> <span class="o">=</span> <span class="n">line3</span>
-    <span class="k">if</span> <span class="n">line10</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="c1"># Worksheet Part 2</span>
-        <span class="n">line11</span> <span class="o">=</span> <span class="n">c05800</span>
-        <span class="n">line12</span> <span class="o">=</span> <span class="p">(</span><span class="n">e07260</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_ResidentialEnergy_hc</span><span class="p">)</span> <span class="o">+</span>
-                  <span class="n">e07300</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_ForeignTax_hc</span><span class="p">)</span> <span class="o">+</span>
-                  <span class="n">c07180</span> <span class="o">+</span>  <span class="c1"># child &amp; dependent care expense credit</span>
-                  <span class="n">c07230</span> <span class="o">+</span>  <span class="c1"># education credit</span>
-                  <span class="n">e07240</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_RetirementSavings_hc</span><span class="p">)</span> <span class="o">+</span>
-                  <span class="n">c07200</span><span class="p">)</span>  <span class="c1"># Schedule R credit</span>
-        <span class="n">line13</span> <span class="o">=</span> <span class="n">line11</span> <span class="o">-</span> <span class="n">line12</span>
-        <span class="n">line14</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="n">line15</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line13</span> <span class="o">-</span> <span class="n">line14</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>
-            <span class="n">c07220</span> <span class="o">=</span> <span class="n">line10</span> <span class="o">*</span> <span class="n">line1</span> <span class="o">/</span> <span class="n">line3</span>
-            <span class="n">odc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line10</span> <span class="o">-</span> <span class="n">c07220</span><span class="p">)</span>
-            <span class="n">codtc_limited</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line10</span> <span class="o">-</span> <span class="n">c07220</span> <span class="o">-</span> <span class="n">odc</span><span class="p">)</span>
+        <span class="n">line12</span> <span class="o">=</span> <span class="n">line8</span>
+    <span class="k">if</span> <span class="n">line12</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="c1"># Credit Limit Worksheet A: cap by c05800 minus other nonrefundable</span>
+        <span class="c1"># credits already used (Sch 3 lines 1, 2, 3, 4, 5a, 6d)</span>
+        <span class="n">clwA_other</span> <span class="o">=</span> <span class="p">(</span><span class="n">e07300</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_ForeignTax_hc</span><span class="p">)</span> <span class="o">+</span>         <span class="c1"># foreign tax</span>
+                      <span class="n">c07180</span> <span class="o">+</span>                                   <span class="c1"># CDCC</span>
+                      <span class="n">c07230</span> <span class="o">+</span>                                   <span class="c1"># education</span>
+                      <span class="n">e07240</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_RetirementSavings_hc</span><span class="p">)</span> <span class="o">+</span>  <span class="c1"># ret savings</span>
+                      <span class="n">e07260</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_ResidentialEnergy_hc</span><span class="p">)</span> <span class="o">+</span>  <span class="c1"># res energy</span>
+                      <span class="n">c07200</span><span class="p">)</span>                                    <span class="c1"># Schedule R</span>
+        <span class="n">clwA_limit</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">clwA_other</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>  <span class="c1"># reform-only: skip tax-liability cap</span>
+            <span class="n">c07220</span> <span class="o">=</span> <span class="n">line12</span> <span class="o">*</span> <span class="n">line5</span> <span class="o">/</span> <span class="n">line8</span>
+            <span class="n">odc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line12</span> <span class="o">-</span> <span class="n">c07220</span><span class="p">)</span>
+            <span class="n">codtc_limited</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line12</span> <span class="o">-</span> <span class="n">c07220</span> <span class="o">-</span> <span class="n">odc</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">line16</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line10</span><span class="p">,</span> <span class="n">line15</span><span class="p">)</span>  <span class="c1"># credit is capped by tax liability</span>
-            <span class="c1"># separate the CTC and ODTC amounts</span>
-            <span class="n">c07220</span> <span class="o">=</span> <span class="n">line16</span> <span class="o">*</span> <span class="n">line1</span> <span class="o">/</span> <span class="n">line3</span>
-            <span class="n">odc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line16</span> <span class="o">-</span> <span class="n">c07220</span><span class="p">)</span>
-            <span class="c1"># compute codtc_limited for use in AdditionalCTC function</span>
-            <span class="n">codtc_limited</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line10</span> <span class="o">-</span> <span class="n">line16</span><span class="p">)</span>
+            <span class="c1"># Sch 8812 line 14: smaller of line 12 or Credit Limit Worksheet A</span>
+            <span class="n">line14</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line12</span><span class="p">,</span> <span class="n">clwA_limit</span><span class="p">)</span>
+            <span class="c1"># split line 14 into CTC portion and ODC portion</span>
+            <span class="n">c07220</span> <span class="o">=</span> <span class="n">line14</span> <span class="o">*</span> <span class="n">line5</span> <span class="o">/</span> <span class="n">line8</span>
+            <span class="n">odc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line14</span> <span class="o">-</span> <span class="n">c07220</span><span class="p">)</span>
+            <span class="c1"># tentative credit not absorbed by tax — passed to AdditionalCTC</span>
+            <span class="n">codtc_limited</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line12</span> <span class="o">-</span> <span class="n">line14</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">line16</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">c07220</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">odc</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">codtc_limited</span> <span class="o">=</span> <span class="mf">0.</span>
