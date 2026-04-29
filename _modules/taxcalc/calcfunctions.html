@@ -737,89 +737,98 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">Adj</span><span class="p">(</span><span class="n">e03150</span><span class="p">,</span> <span class="n">e03210</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span>
-        <span class="n">e03270</span><span class="p">,</span> <span class="n">e03300</span><span class="p">,</span> <span class="n">e03400</span><span class="p">,</span> <span class="n">e03500</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span>
-        <span class="n">e03220</span><span class="p">,</span> <span class="n">e03230</span><span class="p">,</span> <span class="n">e03240</span><span class="p">,</span> <span class="n">e03290</span><span class="p">,</span> <span class="n">care_deduction</span><span class="p">,</span>
-        <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span> <span class="n">ALD_SelfEmp_HealthIns_hc</span><span class="p">,</span> <span class="n">ALD_KEOGH_SEP_hc</span><span class="p">,</span>
-        <span class="n">ALD_EarlyWithdraw_hc</span><span class="p">,</span> <span class="n">ALD_AlimonyPaid_hc</span><span class="p">,</span> <span class="n">ALD_AlimonyReceived_hc</span><span class="p">,</span>
-        <span class="n">ALD_EducatorExpenses_hc</span><span class="p">,</span> <span class="n">ALD_HSADeduction_hc</span><span class="p">,</span> <span class="n">ALD_IRAContributions_hc</span><span class="p">,</span>
-        <span class="n">ALD_DomesticProduction_hc</span><span class="p">,</span> <span class="n">ALD_Tuition_hc</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">Adj</span><span class="p">(</span><span class="n">e03220</span><span class="p">,</span> <span class="n">e03290</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e03300</span><span class="p">,</span> <span class="n">e03270</span><span class="p">,</span>
+        <span class="n">e03400</span><span class="p">,</span> <span class="n">e03500</span><span class="p">,</span> <span class="n">e03150</span><span class="p">,</span> <span class="n">e03210</span><span class="p">,</span>
+        <span class="n">e03230</span><span class="p">,</span> <span class="n">e03240</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span> <span class="n">care_deduction</span><span class="p">,</span>
+        <span class="n">ALD_EducatorExpenses_hc</span><span class="p">,</span> <span class="n">ALD_HSADeduction_hc</span><span class="p">,</span>
+        <span class="n">ALD_KEOGH_SEP_hc</span><span class="p">,</span> <span class="n">ALD_SelfEmp_HealthIns_hc</span><span class="p">,</span>
+        <span class="n">ALD_EarlyWithdraw_hc</span><span class="p">,</span> <span class="n">ALD_AlimonyPaid_hc</span><span class="p">,</span>
+        <span class="n">ALD_IRAContributions_hc</span><span class="p">,</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span>
+        <span class="n">ALD_Tuition_hc</span><span class="p">,</span> <span class="n">ALD_DomesticProduction_hc</span><span class="p">,</span>
+        <span class="n">ALD_AlimonyReceived_hc</span><span class="p">,</span>
         <span class="n">c02900</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).</span>
+<span class="sd">    Summands are ordered to match 2025 Schedule 1, Part II.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----</span>
-<span class="sd">    e03210: float</span>
-<span class="sd">        Student loan interest paid</span>
 <span class="sd">    e03220: float</span>
-<span class="sd">        Educator expenses</span>
-<span class="sd">    e03150: float</span>
-<span class="sd">        Total deductible IRA plan contributions</span>
-<span class="sd">    e03230: float</span>
-<span class="sd">        Tuition and fees (Form 8917)</span>
-<span class="sd">    e03240: float</span>
-<span class="sd">        Domestic production activity deduction (Form 8903)</span>
-<span class="sd">    c03260: float</span>
-<span class="sd">        Self-employment tax deduction (after haircut)</span>
-<span class="sd">    e03270: float</span>
-<span class="sd">        Self-employed health insurance premiums</span>
+<span class="sd">        Educator expenses (Sch 1 line 11)</span>
 <span class="sd">    e03290: float</span>
-<span class="sd">        HSA deduction (Form 8889)</span>
+<span class="sd">        HSA deduction, Form 8889 (Sch 1 line 13)</span>
+<span class="sd">    c03260: float</span>
+<span class="sd">        Deductible part of self-employment tax, after haircut (Sch 1 line 15)</span>
 <span class="sd">    e03300: float</span>
 <span class="sd">        Total deductible KEOGH/SEP/SIMPLE/etc. plan contributions</span>
+<span class="sd">        (Sch 1 line 16)</span>
+<span class="sd">    e03270: float</span>
+<span class="sd">        Self-employed health insurance premiums (Sch 1 line 17)</span>
 <span class="sd">    e03400: float</span>
-<span class="sd">        Penalty on early withdrawal of savings deduction</span>
+<span class="sd">        Penalty on early withdrawal of savings (Sch 1 line 18)</span>
 <span class="sd">    e03500: float</span>
-<span class="sd">        Alimony paid</span>
+<span class="sd">        Alimony paid (Sch 1 line 19a)</span>
+<span class="sd">    e03150: float</span>
+<span class="sd">        Total deductible IRA plan contributions (Sch 1 line 20)</span>
+<span class="sd">    e03210: float</span>
+<span class="sd">        Student loan interest paid (Sch 1 line 21)</span>
+<span class="sd">    e03230: float</span>
+<span class="sd">        Tuition and fees, Form 8917</span>
+<span class="sd">        (legacy; expired after 2020)</span>
+<span class="sd">    e03240: float</span>
+<span class="sd">        Domestic production activity deduction, Form 8903</span>
+<span class="sd">        (legacy; expired after 2017)</span>
 <span class="sd">    e00800: float</span>
 <span class="sd">        Alimony received</span>
+<span class="sd">        (Sch 1 Part I line 2a; reform-only AGI exclusion via haircut)</span>
 <span class="sd">    care_deduction: float</span>
-<span class="sd">        Dependent care expense deduction</span>
-<span class="sd">    ALD_StudentLoan_hc: float</span>
-<span class="sd">        Student loan interest deduction haircut</span>
-<span class="sd">    ALD_SelfEmp_HealthIns_hc: float</span>
-<span class="sd">        Self-employed h.i. deduction haircut</span>
+<span class="sd">        Dependent care expense deduction (reform construct)</span>
+<span class="sd">    ALD_EducatorExpenses_hc: float</span>
+<span class="sd">        Educator expenses haircut</span>
+<span class="sd">    ALD_HSADeduction_hc: float</span>
+<span class="sd">        HSA deduction haircut</span>
 <span class="sd">    ALD_KEOGH_SEP_hc: float</span>
 <span class="sd">        KEOGH/etc. plan contribution deduction haircut</span>
+<span class="sd">    ALD_SelfEmp_HealthIns_hc: float</span>
+<span class="sd">        Self-employed h.i. deduction haircut</span>
 <span class="sd">    ALD_EarlyWithdraw_hc: float</span>
-<span class="sd">        Penalty on early withdrawal deduction haricut</span>
+<span class="sd">        Penalty on early withdrawal deduction haircut</span>
 <span class="sd">    ALD_AlimonyPaid_hc: float</span>
 <span class="sd">        Alimony paid deduction haircut</span>
-<span class="sd">    ALD_AlimonyReceived_hc: float</span>
-<span class="sd">        Alimony received deduction haircut</span>
-<span class="sd">    ALD_EducatorExpenses_hc: float</span>
-<span class="sd">        Eductor expenses haircut</span>
-<span class="sd">    ALD_HSADeduction_hc: float</span>
-<span class="sd">        HSA Deduction haircut</span>
 <span class="sd">    ALD_IRAContributions_hc: float</span>
-<span class="sd">        IRA Contribution haircut</span>
-<span class="sd">    ALD_DomesticProduction_hc: float</span>
-<span class="sd">        Domestic production haircut</span>
+<span class="sd">        IRA contribution haircut</span>
+<span class="sd">    ALD_StudentLoan_hc: float</span>
+<span class="sd">        Student loan interest deduction haircut</span>
 <span class="sd">    ALD_Tuition_hc: float</span>
 <span class="sd">        Tuition and fees haircut</span>
+<span class="sd">    ALD_DomesticProduction_hc: float</span>
+<span class="sd">        Domestic production haircut</span>
+<span class="sd">    ALD_AlimonyReceived_hc: float</span>
+<span class="sd">        Alimony received deduction haircut</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c02900: float</span>
 <span class="sd">        Total of all &quot;above the line&quot; income adjustments to get AGI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Form 2555 foreign earned income exclusion is assumed to be zero</span>
-    <span class="c1"># Form 1040 adjustments that are included in expanded income:</span>
-    <span class="n">c02900</span> <span class="o">=</span> <span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03210</span> <span class="o">+</span>
-              <span class="n">c03260</span> <span class="o">+</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_EarlyWithdraw_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03400</span> <span class="o">+</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_AlimonyPaid_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03500</span> <span class="o">+</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_AlimonyReceived_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e00800</span> <span class="o">+</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_EducatorExpenses_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03220</span> <span class="o">+</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Tuition_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03230</span> <span class="o">+</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_DomesticProduction_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03240</span> <span class="o">+</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_HSADeduction_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03290</span> <span class="o">+</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_SelfEmp_HealthIns_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03270</span> <span class="o">+</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_IRAContributions_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03150</span> <span class="o">+</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_KEOGH_SEP_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03300</span> <span class="o">+</span>
-              <span class="n">care_deduction</span><span class="p">)</span>
-    <span class="c1"># return results</span>
+    <span class="c1"># Form 2555 foreign earned income exclusion is assumed to be zero.</span>
+    <span class="c1"># Sch 1 line 12 (reservist/artist/fee-basis-gov-official biz expenses,</span>
+    <span class="c1"># Form 2106) and line 23 (Archer MSA) are not modeled.</span>
+    <span class="n">c02900</span> <span class="o">=</span> <span class="p">(</span>                                       <span class="c1"># 2025 ORDERING:</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_EducatorExpenses_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03220</span> <span class="o">+</span>    <span class="c1"># Sch 1 line 11</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_HSADeduction_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03290</span> <span class="o">+</span>        <span class="c1"># Sch 1 line 13</span>
+        <span class="n">c03260</span> <span class="o">+</span>                                     <span class="c1"># Sch 1 line 15</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_KEOGH_SEP_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03300</span> <span class="o">+</span>           <span class="c1"># Sch 1 line 16</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_SelfEmp_HealthIns_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03270</span> <span class="o">+</span>   <span class="c1"># Sch 1 line 17</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_EarlyWithdraw_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03400</span> <span class="o">+</span>       <span class="c1"># Sch 1 line 18</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_AlimonyPaid_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03500</span> <span class="o">+</span>         <span class="c1"># Sch 1 line 19a</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_IRAContributions_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03150</span> <span class="o">+</span>    <span class="c1"># Sch 1 line 20</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03210</span> <span class="o">+</span>         <span class="c1"># Sch 1 line 21</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Tuition_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03230</span> <span class="o">+</span>             <span class="c1"># expired post-2017</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_DomesticProduction_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03240</span> <span class="o">+</span>  <span class="c1"># expired post-2017</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_AlimonyReceived_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e00800</span> <span class="o">+</span>     <span class="c1"># reform construct</span>
+        <span class="n">care_deduction</span>                               <span class="c1"># reform construct</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">c02900</span>
 
 
