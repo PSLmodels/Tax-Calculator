@@ -3072,14 +3072,15 @@ def AdditionalCTC(actc_claim_thd, codtc_limited,
                   c11070):
     """
     Calculates refundable Additional Child Tax Credit (ACTC), c11070,
-    following 2018 Form 8812 logic.
+    following Schedule 8812 Part II (Parts II-A, II-B, II-C).
 
     Parameters
     ----------
     actc_claim_thd: float
         ACTC amount below which ACTC is unclaimed
     codtc_limited: float
-        Maximum of 0 and line 10 minus line 16
+        Sch 8812 line 16a: Part I tentative credit minus the nonrefundable
+        portion absorbed (line 12 minus line 14); set in ChildDepTaxCredit
     ACTC_c: float
         Maximum refundable additional child tax credit
     n24: int
@@ -3095,7 +3096,7 @@ def AdditionalCTC(actc_claim_thd, codtc_limited,
         Number of dependents under 6 years old
     ACTC_rt_bonus_under6family: float
         Bonus additional child tax credit rate for families with qualifying
-        children under 6
+        children under 6 (reform-only; no form correspondence)
     ACTC_ChildNum: float
         Additional Child Tax Credit minimum number of qualified children for
         different formula
@@ -3117,43 +3118,55 @@ def AdditionalCTC(actc_claim_thd, codtc_limited,
     c11070: float
         Child tax credit (refunded) from Form 8812
     """
-    # Part I
-    line3 = codtc_limited
-
-    if CTC_is_refundable:
-        line4 = 0.
+    # Sch 8812 line 16a: leftover Part I tentative credit
+    line16a = codtc_limited
+    # Sch 8812 line 16b: max refundable amount = ACTC_c per qualifying child
+    if CTC_is_refundable:  # reform-only: refundable portion handled in Part I
+        line16b = 0.
     else:
+        # reform-only: redefine "qualifying child" as under 18 instead of under 17
         if CTC_include17:
             tu18 = int(age_head < 18)   # taxpayer is under age 18
             su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
             childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
         else:
             childnum = n24
-        line4 = min(ACTC_c, CTC_c) * childnum
-    c11070 = 0.  # line15
-    if line3 > 0. and line4 > 0.:
-        line5 = min(line3, line4)
-        line7 = max(0., earned - ACTC_Income_thd)
-        # accommodate ACTC rate bonus for families with children under 5
+        line16b = min(ACTC_c, CTC_c) * childnum
+    c11070 = 0.  # default if no refundable amount
+    if line16a > 0. and line16b > 0.:
+        # Sch 8812 line 17: smaller of line 16a or line 16b
+        line17 = min(line16a, line16b)
+        # Part II-A
+        # Sch 8812 line 18a / line 20: earned income excess over threshold
+        earned_excess = max(0., earned - ACTC_Income_thd)
+        # reform-only: ACTC rate bonus for families with children under 6
         if nu06 == 0:
             ACTC_rate = ACTC_rt
         else:
             ACTC_rate = ACTC_rt + ACTC_rt_bonus_under6family
-        line8 = ACTC_rate * line7
+        # Sch 8812 line 20: ACTC_rt times earned-income excess
+        line20 = ACTC_rate * earned_excess
         if childnum < ACTC_ChildNum:
-            if line8 > 0.:
-                c11070 = min(line5, line8)
-        else:  # if childnum >= ACTC_ChildNum
-            if line8 >= line5:
-                c11070 = line5
-            else:  # complete Part II
-                line9 = 0.5 * ptax_was
-                line10 = c03260 + e09800
-                line11 = line9 + line10
-                line12 = c59660 + e11200
-                line13 = max(0., line11 - line12)
-                line14 = max(line8, line13)
-                c11070 = min(line5, line14)
+            # Sch 8812 line 27 (Part II-C): smaller of line 17 or line 20
+            if line20 > 0.:
+                c11070 = min(line17, line20)
+        else:  # childnum >= ACTC_ChildNum: consider Part II-B alternative
+            if line20 >= line17:
+                c11070 = line17
+            else:  # Part II-B
+                # Sch 8812 line 22: SS+Medicare+Add'l Medicare withheld
+                line22 = 0.5 * ptax_was
+                # Sch 8812 line 23: deductible SE tax + unreported FICA
+                line23 = c03260 + e09800
+                # Sch 8812 line 24: sum of lines 22 and 23
+                line24 = line22 + line23
+                # Sch 8812 line 25: EITC + excess SS/RRTA withheld
+                line25 = c59660 + e11200
+                # Sch 8812 line 26: line 24 minus line 25 (not less than 0)
+                line26 = max(0., line24 - line25)
+                # Sch 8812 line 27 (Part II-C): min(line 17, max(line 20, line 26))
+                line27 = max(line20, line26)
+                c11070 = min(line17, line27)
 
     # approximate ACTC claiming behavior
     if c11070 < actc_claim_thd:
