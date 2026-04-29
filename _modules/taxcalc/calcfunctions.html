@@ -3474,14 +3474,15 @@
                   <span class="n">c11070</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates refundable Additional Child Tax Credit (ACTC), c11070,</span>
-<span class="sd">    following 2018 Form 8812 logic.</span>
+<span class="sd">    following Schedule 8812 Part II (Parts II-A, II-B, II-C).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    actc_claim_thd: float</span>
 <span class="sd">        ACTC amount below which ACTC is unclaimed</span>
 <span class="sd">    codtc_limited: float</span>
-<span class="sd">        Maximum of 0 and line 10 minus line 16</span>
+<span class="sd">        Sch 8812 line 16a: Part I tentative credit minus the nonrefundable</span>
+<span class="sd">        portion absorbed (line 12 minus line 14); set in ChildDepTaxCredit</span>
 <span class="sd">    ACTC_c: float</span>
 <span class="sd">        Maximum refundable additional child tax credit</span>
 <span class="sd">    n24: int</span>
@@ -3497,7 +3498,7 @@
 <span class="sd">        Number of dependents under 6 years old</span>
 <span class="sd">    ACTC_rt_bonus_under6family: float</span>
 <span class="sd">        Bonus additional child tax credit rate for families with qualifying</span>
-<span class="sd">        children under 6</span>
+<span class="sd">        children under 6 (reform-only; no form correspondence)</span>
 <span class="sd">    ACTC_ChildNum: float</span>
 <span class="sd">        Additional Child Tax Credit minimum number of qualified children for</span>
 <span class="sd">        different formula</span>
@@ -3519,43 +3520,55 @@
 <span class="sd">    c11070: float</span>
 <span class="sd">        Child tax credit (refunded) from Form 8812</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Part I</span>
-    <span class="n">line3</span> <span class="o">=</span> <span class="n">codtc_limited</span>
-
-    <span class="k">if</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>
-        <span class="n">line4</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="c1"># Sch 8812 line 16a: leftover Part I tentative credit</span>
+    <span class="n">line16a</span> <span class="o">=</span> <span class="n">codtc_limited</span>
+    <span class="c1"># Sch 8812 line 16b: max refundable amount = ACTC_c per qualifying child</span>
+    <span class="k">if</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>  <span class="c1"># reform-only: refundable portion handled in Part I</span>
+        <span class="n">line16b</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># reform-only: redefine &quot;qualifying child&quot; as under 18 instead of under 17</span>
         <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
             <span class="n">tu18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">age_head</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>   <span class="c1"># taxpayer is under age 18</span>
             <span class="n">su18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>  <span class="c1"># spouse is under age 18</span>
             <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nu18</span> <span class="o">-</span> <span class="n">tu18</span> <span class="o">-</span> <span class="n">su18</span> <span class="o">-</span> <span class="n">n24</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span>
-        <span class="n">line4</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ACTC_c</span><span class="p">,</span> <span class="n">CTC_c</span><span class="p">)</span> <span class="o">*</span> <span class="n">childnum</span>
-    <span class="n">c11070</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># line15</span>
-    <span class="k">if</span> <span class="n">line3</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">line4</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="n">line5</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line3</span><span class="p">,</span> <span class="n">line4</span><span class="p">)</span>
-        <span class="n">line7</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">earned</span> <span class="o">-</span> <span class="n">ACTC_Income_thd</span><span class="p">)</span>
-        <span class="c1"># accommodate ACTC rate bonus for families with children under 5</span>
+        <span class="n">line16b</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ACTC_c</span><span class="p">,</span> <span class="n">CTC_c</span><span class="p">)</span> <span class="o">*</span> <span class="n">childnum</span>
+    <span class="n">c11070</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># default if no refundable amount</span>
+    <span class="k">if</span> <span class="n">line16a</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">line16b</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="c1"># Sch 8812 line 17: smaller of line 16a or line 16b</span>
+        <span class="n">line17</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line16a</span><span class="p">,</span> <span class="n">line16b</span><span class="p">)</span>
+        <span class="c1"># Part II-A</span>
+        <span class="c1"># Sch 8812 line 18a / line 20: earned income excess over threshold</span>
+        <span class="n">earned_excess</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">earned</span> <span class="o">-</span> <span class="n">ACTC_Income_thd</span><span class="p">)</span>
+        <span class="c1"># reform-only: ACTC rate bonus for families with children under 6</span>
         <span class="k">if</span> <span class="n">nu06</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">ACTC_rate</span> <span class="o">=</span> <span class="n">ACTC_rt</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ACTC_rate</span> <span class="o">=</span> <span class="n">ACTC_rt</span> <span class="o">+</span> <span class="n">ACTC_rt_bonus_under6family</span>
-        <span class="n">line8</span> <span class="o">=</span> <span class="n">ACTC_rate</span> <span class="o">*</span> <span class="n">line7</span>
+        <span class="c1"># Sch 8812 line 20: ACTC_rt times earned-income excess</span>
+        <span class="n">line20</span> <span class="o">=</span> <span class="n">ACTC_rate</span> <span class="o">*</span> <span class="n">earned_excess</span>
         <span class="k">if</span> <span class="n">childnum</span> <span class="o">&lt;</span> <span class="n">ACTC_ChildNum</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">line8</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-                <span class="n">c11070</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line5</span><span class="p">,</span> <span class="n">line8</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if childnum &gt;= ACTC_ChildNum</span>
-            <span class="k">if</span> <span class="n">line8</span> <span class="o">&gt;=</span> <span class="n">line5</span><span class="p">:</span>
-                <span class="n">c11070</span> <span class="o">=</span> <span class="n">line5</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># complete Part II</span>
-                <span class="n">line9</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ptax_was</span>
-                <span class="n">line10</span> <span class="o">=</span> <span class="n">c03260</span> <span class="o">+</span> <span class="n">e09800</span>
-                <span class="n">line11</span> <span class="o">=</span> <span class="n">line9</span> <span class="o">+</span> <span class="n">line10</span>
-                <span class="n">line12</span> <span class="o">=</span> <span class="n">c59660</span> <span class="o">+</span> <span class="n">e11200</span>
-                <span class="n">line13</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line11</span> <span class="o">-</span> <span class="n">line12</span><span class="p">)</span>
-                <span class="n">line14</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">line8</span><span class="p">,</span> <span class="n">line13</span><span class="p">)</span>
-                <span class="n">c11070</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line5</span><span class="p">,</span> <span class="n">line14</span><span class="p">)</span>
+            <span class="c1"># Sch 8812 line 27 (Part II-C): smaller of line 17 or line 20</span>
+            <span class="k">if</span> <span class="n">line20</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+                <span class="n">c11070</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line17</span><span class="p">,</span> <span class="n">line20</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># childnum &gt;= ACTC_ChildNum: consider Part II-B alternative</span>
+            <span class="k">if</span> <span class="n">line20</span> <span class="o">&gt;=</span> <span class="n">line17</span><span class="p">:</span>
+                <span class="n">c11070</span> <span class="o">=</span> <span class="n">line17</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Part II-B</span>
+                <span class="c1"># Sch 8812 line 22: SS+Medicare+Add&#39;l Medicare withheld</span>
+                <span class="n">line22</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ptax_was</span>
+                <span class="c1"># Sch 8812 line 23: deductible SE tax + unreported FICA</span>
+                <span class="n">line23</span> <span class="o">=</span> <span class="n">c03260</span> <span class="o">+</span> <span class="n">e09800</span>
+                <span class="c1"># Sch 8812 line 24: sum of lines 22 and 23</span>
+                <span class="n">line24</span> <span class="o">=</span> <span class="n">line22</span> <span class="o">+</span> <span class="n">line23</span>
+                <span class="c1"># Sch 8812 line 25: EITC + excess SS/RRTA withheld</span>
+                <span class="n">line25</span> <span class="o">=</span> <span class="n">c59660</span> <span class="o">+</span> <span class="n">e11200</span>
+                <span class="c1"># Sch 8812 line 26: line 24 minus line 25 (not less than 0)</span>
+                <span class="n">line26</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line24</span> <span class="o">-</span> <span class="n">line25</span><span class="p">)</span>
+                <span class="c1"># Sch 8812 line 27 (Part II-C): min(line 17, max(line 20, line 26))</span>
+                <span class="n">line27</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">line20</span><span class="p">,</span> <span class="n">line26</span><span class="p">)</span>
+                <span class="n">c11070</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line17</span><span class="p">,</span> <span class="n">line27</span><span class="p">)</span>
 
     <span class="c1"># approximate ACTC claiming behavior</span>
     <span class="k">if</span> <span class="n">c11070</span> <span class="o">&lt;</span> <span class="n">actc_claim_thd</span><span class="p">:</span>
