@@ -2438,9 +2438,9 @@ def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
                       CTC_is_refundable, CTC_include17,
                       c07220, odc, codtc_limited):
     """
-    Computes amounts on "Child Tax Credit and Credit for Other Dependents
-    Worksheet" in 2018 Publication 972, which pertain to these two
-    nonrefundable tax credits.
+    Computes nonrefundable Child Tax Credit and Credit for Other Dependents
+    on Schedule 8812 Part I (and Credit Limit Worksheet A).
+    https://www.irs.gov/pub/irs-pdf/f1040s8.pdf
 
     Parameters
     ----------
@@ -2495,7 +2495,8 @@ def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
     odc: float
         Other Dependent Credit
     codtc_limited: float
-        Maximum of 0 and line 10 minus line 16
+        Tentative credit not yet absorbed by tax liability (Sch 8812 line 12
+        minus the nonrefundable amount); used by AdditionalCTC.
 
     Returns
     -------
@@ -2504,51 +2505,55 @@ def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
     odc: float
         Other Dependent Credit
     codtc_limited: float
-        Maximum of 0 and line 10 minus line 16
+        Tentative credit not yet absorbed by tax liability (Sch 8812 line 12
+        minus the nonrefundable amount); used by AdditionalCTC.
     """
-    # Worksheet Part 1
+    # Sch 8812 lines 1-3: modified AGI (no foreign earned income exclusion)
+    modAGI = c00100
+    # reform-only: redefine "qualifying child" as under 18 instead of under 17
     if CTC_include17:
         tu18 = int(age_head < 18)   # taxpayer is under age 18
         su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
         childnum = n24 + max(0, nu18 - tu18 - su18 - n24)
     else:
         childnum = n24
-    line1 = CTC_c * childnum + CTC_c_under6_bonus * nu06
-    line2 = ODC_c * max(0, XTOT - childnum - num)
-    line3 = line1 + line2
-    modAGI = c00100  # no foreign earned income exclusion to add to AGI (line6)
-    if line3 > 0. and modAGI > CTC_ps[MARS - 1]:
+    # Sch 8812 lines 4-5: tentative CTC (plus reform under-6 bonus)
+    line5 = CTC_c * childnum + CTC_c_under6_bonus * nu06
+    # Sch 8812 lines 6-7: tentative ODC
+    line7 = ODC_c * max(0, XTOT - childnum - num)
+    # Sch 8812 line 8: sum of tentative CTC and ODC
+    line8 = line5 + line7
+    # Sch 8812 lines 9-12: phase out using CTC_ps threshold and CTC_prt rate
+    if line8 > 0. and modAGI > CTC_ps[MARS - 1]:
         excess = modAGI - CTC_ps[MARS - 1]
         if exact == 1:  # exact calculation as on tax forms
             excess = 1000. * math.ceil(excess / 1000.)
-        line10 = max(0., line3 - CTC_prt * excess)
+        line12 = max(0., line8 - CTC_prt * excess)
     else:
-        line10 = line3
-    if line10 > 0.:
-        # Worksheet Part 2
-        line11 = c05800
-        line12 = (e07260 * (1. - CR_ResidentialEnergy_hc) +
-                  e07300 * (1. - CR_ForeignTax_hc) +
-                  c07180 +  # child & dependent care expense credit
-                  c07230 +  # education credit
-                  e07240 * (1. - CR_RetirementSavings_hc) +
-                  c07200)  # Schedule R credit
-        line13 = line11 - line12
-        line14 = 0.
-        line15 = max(0., line13 - line14)
-        if CTC_is_refundable:
-            c07220 = line10 * line1 / line3
-            odc = max(0., line10 - c07220)
-            codtc_limited = max(0., line10 - c07220 - odc)
+        line12 = line8
+    if line12 > 0.:
+        # Credit Limit Worksheet A: cap by c05800 minus other nonrefundable
+        # credits already used (Sch 3 lines 1, 2, 3, 4, 5a, 6d)
+        clwA_other = (e07300 * (1. - CR_ForeignTax_hc) +         # foreign tax
+                      c07180 +                                   # CDCC
+                      c07230 +                                   # education
+                      e07240 * (1. - CR_RetirementSavings_hc) +  # ret savings
+                      e07260 * (1. - CR_ResidentialEnergy_hc) +  # res energy
+                      c07200)                                    # Schedule R
+        clwA_limit = max(0., c05800 - clwA_other)
+        if CTC_is_refundable:  # reform-only: skip tax-liability cap
+            c07220 = line12 * line5 / line8
+            odc = max(0., line12 - c07220)
+            codtc_limited = max(0., line12 - c07220 - odc)
         else:
-            line16 = min(line10, line15)  # credit is capped by tax liability
-            # separate the CTC and ODTC amounts
-            c07220 = line16 * line1 / line3
-            odc = max(0., line16 - c07220)
-            # compute codtc_limited for use in AdditionalCTC function
-            codtc_limited = max(0., line10 - line16)
+            # Sch 8812 line 14: smaller of line 12 or Credit Limit Worksheet A
+            line14 = min(line12, clwA_limit)
+            # split line 14 into CTC portion and ODC portion
+            c07220 = line14 * line5 / line8
+            odc = max(0., line14 - c07220)
+            # tentative credit not absorbed by tax — passed to AdditionalCTC
+            codtc_limited = max(0., line12 - line14)
     else:
-        line16 = 0.
         c07220 = 0.
         odc = 0.
         codtc_limited = 0.
