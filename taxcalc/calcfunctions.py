@@ -341,89 +341,98 @@ def DependentCare(nu13, elderly_dependents, earned,
 
 
 @iterate_jit(nopython=True)
-def Adj(e03150, e03210, c03260,
-        e03270, e03300, e03400, e03500, e00800,
-        e03220, e03230, e03240, e03290, care_deduction,
-        ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
-        ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
-        ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
-        ALD_DomesticProduction_hc, ALD_Tuition_hc,
+def Adj(e03220, e03290, c03260, e03300, e03270,
+        e03400, e03500, e03150, e03210,
+        e03230, e03240, e00800, care_deduction,
+        ALD_EducatorExpenses_hc, ALD_HSADeduction_hc,
+        ALD_KEOGH_SEP_hc, ALD_SelfEmp_HealthIns_hc,
+        ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc,
+        ALD_IRAContributions_hc, ALD_StudentLoan_hc,
+        ALD_Tuition_hc, ALD_DomesticProduction_hc,
+        ALD_AlimonyReceived_hc,
         c02900):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
+    Summands are ordered to match 2025 Schedule 1, Part II.
 
     Parameters
     -----
-    e03210: float
-        Student loan interest paid
     e03220: float
-        Educator expenses
-    e03150: float
-        Total deductible IRA plan contributions
-    e03230: float
-        Tuition and fees (Form 8917)
-    e03240: float
-        Domestic production activity deduction (Form 8903)
-    c03260: float
-        Self-employment tax deduction (after haircut)
-    e03270: float
-        Self-employed health insurance premiums
+        Educator expenses (Sch 1 line 11)
     e03290: float
-        HSA deduction (Form 8889)
+        HSA deduction, Form 8889 (Sch 1 line 13)
+    c03260: float
+        Deductible part of self-employment tax, after haircut (Sch 1 line 15)
     e03300: float
         Total deductible KEOGH/SEP/SIMPLE/etc. plan contributions
+        (Sch 1 line 16)
+    e03270: float
+        Self-employed health insurance premiums (Sch 1 line 17)
     e03400: float
-        Penalty on early withdrawal of savings deduction
+        Penalty on early withdrawal of savings (Sch 1 line 18)
     e03500: float
-        Alimony paid
+        Alimony paid (Sch 1 line 19a)
+    e03150: float
+        Total deductible IRA plan contributions (Sch 1 line 20)
+    e03210: float
+        Student loan interest paid (Sch 1 line 21)
+    e03230: float
+        Tuition and fees, Form 8917
+        (legacy; expired after 2020)
+    e03240: float
+        Domestic production activity deduction, Form 8903
+        (legacy; expired after 2017)
     e00800: float
         Alimony received
+        (Sch 1 Part I line 2a; reform-only AGI exclusion via haircut)
     care_deduction: float
-        Dependent care expense deduction
-    ALD_StudentLoan_hc: float
-        Student loan interest deduction haircut
-    ALD_SelfEmp_HealthIns_hc: float
-        Self-employed h.i. deduction haircut
+        Dependent care expense deduction (reform construct)
+    ALD_EducatorExpenses_hc: float
+        Educator expenses haircut
+    ALD_HSADeduction_hc: float
+        HSA deduction haircut
     ALD_KEOGH_SEP_hc: float
         KEOGH/etc. plan contribution deduction haircut
+    ALD_SelfEmp_HealthIns_hc: float
+        Self-employed h.i. deduction haircut
     ALD_EarlyWithdraw_hc: float
-        Penalty on early withdrawal deduction haricut
+        Penalty on early withdrawal deduction haircut
     ALD_AlimonyPaid_hc: float
         Alimony paid deduction haircut
-    ALD_AlimonyReceived_hc: float
-        Alimony received deduction haircut
-    ALD_EducatorExpenses_hc: float
-        Eductor expenses haircut
-    ALD_HSADeduction_hc: float
-        HSA Deduction haircut
     ALD_IRAContributions_hc: float
-        IRA Contribution haircut
-    ALD_DomesticProduction_hc: float
-        Domestic production haircut
+        IRA contribution haircut
+    ALD_StudentLoan_hc: float
+        Student loan interest deduction haircut
     ALD_Tuition_hc: float
         Tuition and fees haircut
+    ALD_DomesticProduction_hc: float
+        Domestic production haircut
+    ALD_AlimonyReceived_hc: float
+        Alimony received deduction haircut
 
     Returns
     -------
     c02900: float
         Total of all "above the line" income adjustments to get AGI
     """
-    # Form 2555 foreign earned income exclusion is assumed to be zero
-    # Form 1040 adjustments that are included in expanded income:
-    c02900 = ((1. - ALD_StudentLoan_hc) * e03210 +
-              c03260 +
-              (1. - ALD_EarlyWithdraw_hc) * e03400 +
-              (1. - ALD_AlimonyPaid_hc) * e03500 +
-              (1. - ALD_AlimonyReceived_hc) * e00800 +
-              (1. - ALD_EducatorExpenses_hc) * e03220 +
-              (1. - ALD_Tuition_hc) * e03230 +
-              (1. - ALD_DomesticProduction_hc) * e03240 +
-              (1. - ALD_HSADeduction_hc) * e03290 +
-              (1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
-              (1. - ALD_IRAContributions_hc) * e03150 +
-              (1. - ALD_KEOGH_SEP_hc) * e03300 +
-              care_deduction)
-    # return results
+    # Form 2555 foreign earned income exclusion is assumed to be zero.
+    # Sch 1 line 12 (reservist/artist/fee-basis-gov-official biz expenses,
+    # Form 2106) and line 23 (Archer MSA) are not modeled.
+    c02900 = (                                       # 2025 ORDERING:
+        (1. - ALD_EducatorExpenses_hc) * e03220 +    # Sch 1 line 11
+        (1. - ALD_HSADeduction_hc) * e03290 +        # Sch 1 line 13
+        c03260 +                                     # Sch 1 line 15
+        (1. - ALD_KEOGH_SEP_hc) * e03300 +           # Sch 1 line 16
+        (1. - ALD_SelfEmp_HealthIns_hc) * e03270 +   # Sch 1 line 17
+        (1. - ALD_EarlyWithdraw_hc) * e03400 +       # Sch 1 line 18
+        (1. - ALD_AlimonyPaid_hc) * e03500 +         # Sch 1 line 19a
+        (1. - ALD_IRAContributions_hc) * e03150 +    # Sch 1 line 20
+        (1. - ALD_StudentLoan_hc) * e03210 +         # Sch 1 line 21
+        (1. - ALD_Tuition_hc) * e03230 +             # expired post-2017
+        (1. - ALD_DomesticProduction_hc) * e03240 +  # expired post-2017
+        (1. - ALD_AlimonyReceived_hc) * e00800 +     # reform construct
+        care_deduction                               # reform construct
+    )
     return c02900
 
 
