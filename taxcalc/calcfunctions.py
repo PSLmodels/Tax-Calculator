@@ -1838,25 +1838,25 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
 
         # ---- Sch D TW lines 33-41 (Sch D TW only: 25% and 28% rates) ----
         # These blocks zero out when e24515 = e24518 = 0, recovering QDCGTW.
-        dwks33 = min(dwks9, e24515)               # line 33
-        dwks34 = dwks10 + dwks19                  # line 34
-        dwks36 = max(0., dwks34 - dwks1)          # line 36 (line 35 omitted)
-        dwks37 = max(0., dwks33 - dwks36)         # line 37: amount @ 25%
-        dwks38 = 0.25 * dwks37                    # line 38: 25% tax
+        dwks33 = min(dwks9, e24515)           # line 33
+        dwks34 = dwks10 + dwks19              # line 34
+        dwks36 = max(0., dwks34 - dwks1)      # line 36 (line 35 omitted)
+        dwks37 = max(0., dwks33 - dwks36)     # line 37: amount @ 25%
+        dwks38 = 0.25 * dwks37                # line 38: 25% tax
         dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37   # line 39
-        dwks40 = dwks1 - dwks39                   # line 40: amount @ 28%
-        dwks41 = 0.28 * dwks40                    # line 41: 28% tax
+        dwks40 = dwks1 - dwks39               # line 40: amount @ 28%
+        dwks41 = 0.28 * dwks40                # line 41: 28% tax
 
         # ---- Sch D TW lines 42-45 (final assembly, common) --------------
-        dwks42 = SchXYZ(dwks19, MARS,             # line 42: ordinary tax
+        dwks42 = SchXYZ(dwks19, MARS,         # line 42: ordinary tax
                         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                         II_rt6, II_rt7, II_rt8,
                         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
                         II_brk6, II_brk7)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
                   lowest_rate_tax + highest_rate_incremental_tax)  # line 43
-        dwks44 = c05200                           # line 44: ordinary tax on line 1
-        dwks45 = min(dwks43, dwks44)              # line 45: smaller of 43, 44
+        dwks44 = c05200                       # line 44: ordinary tax on line 1
+        dwks45 = min(dwks43, dwks44)          # line 45: smaller of 43, 44
         c24580 = dwks45
 
     else:  # if hasqdivltcg is zero
