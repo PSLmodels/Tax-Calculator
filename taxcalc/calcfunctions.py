@@ -736,30 +736,42 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         II_em, II_em_ps, II_em_po_step_size, II_em_prt, II_no_em_nu18,
         e02300, UI_thd, UI_em, c00100, pre_c04600, c04600):
     """
-    Computes Adjusted Gross Income (AGI), c00100, and
-    compute personal exemption amount, c04600.
+    Computes Adjusted Gross Income (c00100, Form 1040 line 11) and
+    the reform-only personal exemption amount (pre_c04600 and c04600;
+    no current-law form correspondence — TCJA repealed exemptions).
 
     Parameters
     ----------
+    -- AGI inputs (Form 1040 lines 9-11) --
     ymod1: float
-        Variable that is included in AGI
+        Form 1040 lines 1z+2b+3b+4b+5b+7a+8 (total income excluding
+        taxable Social Security benefits)
     c02500: float
-        Social security (OASDI) benefits included in AGI
+        Form 1040 line 6b: taxable Social Security (OASDI) benefits
     c02900: float
-        Total of all "above the line" income adjustments to get AGI
-    XTOT: int
-        Total number of exemptions for filing unit
+        Form 1040 line 10: total above-the-line adjustments
+        (Schedule 1, Part II, line 26)
+    taxable_ubi: float
+        Reform-only: amount of UBI that is added to AGI
+    -- UI exclusion inputs (reform parameter; 2020 ARPA-style) --
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate,
                                4=household-head, 5=widow(er))
+    e02300: float
+        Unemployment compensation
+    UI_thd: list
+        AGI threshold for unemployment compensation exclusion
+    UI_em: float
+        Amount of unemployment compensation excluded from AGI
+    -- Personal exemption inputs (reform / pre-TCJA only) --
+    XTOT: int
+        Total number of exemptions for filing unit
     DSI: int
         1 if claimed as dependent on another return; otherwise 0
     exact: int
         Whether or not to do rounding of phaseout fraction
     nu18: int
         Number of people in the tax unit under 18
-    taxable_ubi: float
-        Amount of UBI that is taxable (is added to AGI)
     II_em: float
         Personal and dependent exemption amount
     II_em_ps: list
@@ -770,49 +782,57 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi,
         Personal exemption phaseout rate
     II_no_em_nu18: float
         Repeal personal exemptions for dependents under age 18
-    e02300: float
-        Unemployment compensation
-    UI_thd: list
-        AGI threshold for unemployment compensation exclusion
-    UI_em: float
-        Amount of unemployment compensation excluded from AGI
+    -- Outputs (also accepted as inputs by iterate_jit) --
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (AGI), Form 1040 line 11
     pre_c04600: float
-        Personal exemption before phase-out
+        Personal exemption before phase-out (reform-only)
     c04600: float
-        Personal exemptions after phase-out
+        Personal exemptions after phase-out (reform-only)
 
     Returns
     -------
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (AGI), Form 1040 line 11
     pre_c04600: float
-        Personal exemption before phase-out
+        Personal exemption before phase-out (reform-only)
     c04600: float
-        Personal exemptions after phase-out
+        Personal exemptions after phase-out (reform-only)
     """
-    # calculate AGI assuming no foreign earned income exclusion
+    # ----------------------------------------------------------------
+    # Form 1040 line 11: Adjusted Gross Income
+    # ----------------------------------------------------------------
+    # line 9 (total income) - line 10 (Sch 1 line 26 adjustments)
+    # = line 11 (AGI); reform-only taxable_ubi is added in.
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
-    # calculate UI exclusion (e.g., from 2020 AGI due to ARPA)
+    # UI exclusion (2020 ARPA-style; reform parameters UI_em / UI_thd)
     if (c00100 - e02300) <= UI_thd[MARS - 1]:
         ui_excluded = min(e02300, UI_em)
     else:
         ui_excluded = 0.
     c00100 -= ui_excluded
-    # calculate personal exemption amount
+    # ----------------------------------------------------------------
+    # Personal exemption pre-phaseout (reform / pre-TCJA only;
+    # no line on the 2025 Form 1040)
+    # ----------------------------------------------------------------
+    # pre_c04600 = XTOT * II_em, with optional under-18-dep repeal
+    # (II_no_em_nu18) and dependent-filer override (DSI).
     if II_no_em_nu18:  # repeal of personal exemptions for deps. under 18
         pre_c04600 = max(0, XTOT - nu18) * II_em
     else:
         pre_c04600 = XTOT * II_em
     if DSI:
         pre_c04600 = 0.
-    # phase-out personal exemption amount
+    # ----------------------------------------------------------------
+    # Personal exemption phase-out (PEP)
+    # Pre-TCJA "Deduction for Exemptions Worksheet" (lines 5-7);
+    # reform-only.
+    # ----------------------------------------------------------------
     if exact == 1:  # exact calculation as on tax forms
-        line5 = max(0., c00100 - II_em_ps[MARS - 1])
-        line6 = math.ceil(line5 / II_em_po_step_size[MARS - 1])
-        line7 = II_em_prt * line6
-        c04600 = max(0., pre_c04600 * (1. - line7))
+        pep_line5 = max(0., c00100 - II_em_ps[MARS - 1])
+        pep_line6 = math.ceil(pep_line5 / II_em_po_step_size[MARS - 1])
+        pep_line7 = II_em_prt * pep_line6
+        c04600 = max(0., pre_c04600 * (1. - pep_line7))
     else:  # smoothed calculation needed for sensible mtr calculation
         dispc_numer = II_em_prt * (c00100 - II_em_ps[MARS - 1])
         dispc_denom = II_em_po_step_size[MARS - 1]
