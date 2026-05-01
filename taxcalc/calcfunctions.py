@@ -1632,9 +1632,24 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
              dwks10, dwks13, dwks14, dwks19, dwks43, c05700, taxbc):
     """
-    GainsTax function implements (2015) Schedule D Tax Worksheet logic for
-    the special taxation of long-term capital gains and qualified dividends
-    if CG_nodiff is false.
+    Computes the regular-tax preference for long-term capital gains and
+    qualified dividends.  Implements both IRS worksheets in a single body:
+
+      * Qualified Dividends and Capital Gain Tax Worksheet (QDCGTW)
+        from the 2025 Form 1040 instructions; and
+      * Schedule D Tax Worksheet (Sch D TW) from the 2025 Schedule D
+        instructions, which is QDCGTW plus extra rate buckets for
+        un-recaptured section 1250 gain (25%) and collectibles 28%-rate
+        gain (lines 11-12 and 33-41).
+
+    Sch D TW reduces algebraically to QDCGTW when both e24515 and e24518
+    are zero, so the code runs the Sch D TW computation unconditionally
+    and lets the Sch D-only blocks vanish when not applicable.  Section
+    banners below mark which IRS-worksheet lines are common to both
+    worksheets and which belong to Sch D TW only.
+
+    If CG_nodiff is true, qualified dividends and long-term capital gains
+    are taxed at ordinary rates and the worksheet is skipped.
 
     Parameters
     ----------
@@ -1761,69 +1776,87 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
 
     if hasqdivltcg == 1:
 
-        dwks1 = c04800
-        dwks2 = e00650
-        dwks3 = e58990
-        dwks4 = 0.  # always assumed to be zero
-        dwks5 = max(0., dwks3 - dwks4)
-        dwks6 = max(0., dwks2 - dwks5)
-        dwks7 = min(p23250, c23650)  # SchD lines 15 and 16, respectively
-        # dwks8 = min(dwks3, dwks4)
-        # dwks9 = max(0., dwks7 - dwks8)
-        # BELOW TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
+        # ---- Sch D TW lines 1-10 (common to QDCGTW) ----------------------
+        dwks1 = c04800                    # line 1: taxable income
+        dwks2 = e00650                    # line 2: qualified dividends
+        dwks3 = e58990                    # line 3: Form 4952 line 4g
+        dwks4 = 0.                        # line 4: Form 4952 line 4e (=0)
+        dwks5 = max(0., dwks3 - dwks4)    # line 5
+        dwks6 = max(0., dwks2 - dwks5)    # line 6
+        dwks7 = min(p23250, c23650)       # line 7: min(Sch D ln 15, ln 16)
+        # line 8: dwks8 = min(dwks3, dwks4) = 0 (since dwks4 = 0)
+        # line 9 (per IRS form): dwks9 = max(0, dwks7 - dwks8) = max(0, dwks7)
+        # The line-9 formula below deviates from the form to splice in
+        # e01100 (capital-gain distributions reported when no Sch D is
+        # filed) and to reduce dwks9 by negative e58990.  See BUG? note in
+        # CODE_REVIEW_2025.md row 17.
         if e01100 > 0.:
             c24510 = e01100
         else:
             c24510 = max(0., dwks7) + e01100
-        dwks9 = max(0., c24510 - min(0., e58990))
-        # ABOVE TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
-        dwks10 = dwks6 + dwks9
-        dwks11 = e24515 + e24518  # SchD lines 18 and 19, respectively
-        dwks12 = min(dwks9, dwks11)
-        dwks13 = dwks10 - dwks12
-        dwks14 = max(0., dwks1 - dwks13)
-        dwks16 = min(CG_brk1[MARS - 1], dwks1)
-        dwks17 = min(dwks14, dwks16)
-        dwks18 = max(0., dwks1 - dwks10)
-        dwks19 = max(dwks17, dwks18)
-        dwks20 = dwks16 - dwks17
-        lowest_rate_tax = CG_rt1 * dwks20
-        # break in worksheet lines
-        dwks21 = min(dwks1, dwks13)
-        dwks22 = dwks20
-        dwks23 = max(0., dwks21 - dwks22)
-        dwks25 = min(CG_brk2[MARS - 1], dwks1)
-        dwks26 = dwks19 + dwks20
-        dwks27 = max(0., dwks25 - dwks26)
-        dwks28 = min(dwks23, dwks27)
-        dwks29 = CG_rt2 * dwks28
-        dwks30 = dwks22 + dwks28
-        dwks31 = dwks21 - dwks30
-        dwks32 = CG_rt3 * dwks31
-        # compute total taxable CG for additional top bracket
+        dwks9 = max(0., c24510 - min(0., e58990))      # line 9
+        dwks10 = dwks6 + dwks9                         # line 10
+
+        # ---- Sch D TW lines 11-13 (Sch D TW only; vanish in QDCGTW) -----
+        dwks11 = e24515 + e24518          # line 11: Sch D ln 18 + ln 19
+        dwks12 = min(dwks9, dwks11)       # line 12
+        dwks13 = dwks10 - dwks12          # line 13
+
+        # ---- Sch D TW lines 14-19 (rate-bracket setup, common) ----------
+        # Note: code labels dwks16/17/18/19/20 correspond to IRS lines
+        # 15/16/17/18/19 (off-by-one); records-bound dwks19 cannot be
+        # renamed in this refactor.
+        dwks14 = max(0., dwks1 - dwks13)          # line 14
+        dwks16 = min(CG_brk1[MARS - 1], dwks1)    # line 15
+        dwks17 = min(dwks14, dwks16)              # line 16
+        dwks18 = max(0., dwks1 - dwks10)          # line 17
+        dwks19 = max(dwks17, dwks18)              # line 18
+        dwks20 = dwks16 - dwks17                  # line 19: amount @ 0%
+        lowest_rate_tax = CG_rt1 * dwks20         # line 20: 0% tax (=0)
+
+        # ---- Sch D TW lines 21-32 (15% and 20% rate buckets, common) ----
+        dwks21 = min(dwks1, dwks13)               # line 21
+        dwks22 = dwks20                           # line 22
+        dwks23 = max(0., dwks21 - dwks22)         # line 23
+        dwks25 = min(CG_brk2[MARS - 1], dwks1)    # line 25
+        dwks26 = dwks19 + dwks20                  # line 26
+        dwks27 = max(0., dwks25 - dwks26)         # line 27
+        dwks28 = min(dwks23, dwks27)              # line 28: amount @ 15%
+        dwks29 = CG_rt2 * dwks28                  # line 29: 15% tax
+        dwks30 = dwks22 + dwks28                  # line 30
+        dwks31 = dwks21 - dwks30                  # line 31: amount @ 20%
+        dwks32 = CG_rt3 * dwks31                  # line 32: 20% tax
+
+        # ---- Reform-only: 4th capital-gains bracket (not in IRS form) ---
+        # Tax-Calculator extension that levies (CG_rt4 - CG_rt3) on the
+        # portion of total taxed cap gains above CG_brk3.  Inactive under
+        # current law (CG_rt4 = CG_rt3).
         cg_all = dwks20 + dwks28 + dwks31
         hi_base = max(0., cg_all - CG_brk3[MARS - 1])
         hi_incremental_rate = CG_rt4 - CG_rt3
         highest_rate_incremental_tax = hi_incremental_rate * hi_base
-        # break in worksheet lines
-        dwks33 = min(dwks9, e24515)
-        dwks34 = dwks10 + dwks19
-        dwks36 = max(0., dwks34 - dwks1)
-        dwks37 = max(0., dwks33 - dwks36)
-        dwks38 = 0.25 * dwks37
-        # break in worksheet lines
-        dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
-        dwks40 = dwks1 - dwks39
-        dwks41 = 0.28 * dwks40
-        dwks42 = SchXYZ(dwks19, MARS,
+
+        # ---- Sch D TW lines 33-41 (Sch D TW only: 25% and 28% rates) ----
+        # These blocks zero out when e24515 = e24518 = 0, recovering QDCGTW.
+        dwks33 = min(dwks9, e24515)               # line 33
+        dwks34 = dwks10 + dwks19                  # line 34
+        dwks36 = max(0., dwks34 - dwks1)          # line 36 (line 35 omitted)
+        dwks37 = max(0., dwks33 - dwks36)         # line 37: amount @ 25%
+        dwks38 = 0.25 * dwks37                    # line 38: 25% tax
+        dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37   # line 39
+        dwks40 = dwks1 - dwks39                   # line 40: amount @ 28%
+        dwks41 = 0.28 * dwks40                    # line 41: 28% tax
+
+        # ---- Sch D TW lines 42-45 (final assembly, common) --------------
+        dwks42 = SchXYZ(dwks19, MARS,             # line 42: ordinary tax
                         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                         II_rt6, II_rt7, II_rt8,
                         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
                         II_brk6, II_brk7)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
-                  lowest_rate_tax + highest_rate_incremental_tax)
-        dwks44 = c05200
-        dwks45 = min(dwks43, dwks44)
+                  lowest_rate_tax + highest_rate_incremental_tax)  # line 43
+        dwks44 = c05200                           # line 44: ordinary tax on line 1
+        dwks45 = min(dwks43, dwks44)              # line 45: smaller of 43, 44
         c24580 = dwks45
 
     else:  # if hasqdivltcg is zero
