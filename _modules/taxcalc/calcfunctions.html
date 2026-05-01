@@ -876,134 +876,164 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">CapGains</span><span class="p">(</span><span class="n">p23250</span><span class="p">,</span> <span class="n">p22250</span><span class="p">,</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span>
-             <span class="n">ALD_InvInc_ec_rt</span><span class="p">,</span> <span class="n">invinc_ec_base</span><span class="p">,</span>
-             <span class="n">e00200</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span>
-             <span class="n">CG_nodiff</span><span class="p">,</span> <span class="n">CG_ec</span><span class="p">,</span> <span class="n">CG_reinvest_ec_rt</span><span class="p">,</span> <span class="n">Capital_loss_limitation</span><span class="p">,</span>
-             <span class="n">ALD_BusinessLosses_c</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
-             <span class="n">e00900</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span> <span class="n">e01400</span><span class="p">,</span> <span class="n">e01700</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e02100</span><span class="p">,</span>
-             <span class="n">e02300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">e03210</span><span class="p">,</span> <span class="n">e03230</span><span class="p">,</span> <span class="n">e03240</span><span class="p">,</span>
-             <span class="n">c01000</span><span class="p">,</span> <span class="n">c23650</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">ymod1</span><span class="p">,</span> <span class="n">invinc_agi_ec</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">CapGainsLoss</span><span class="p">(</span><span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">Capital_loss_limitation</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
+                 <span class="n">c23650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    CapGains function: ...</span>
+<span class="sd">    Schedule D Part III netting of short-term and long-term capital</span>
+<span class="sd">    gains and losses, capped by the per-MARS net-capital-loss</span>
+<span class="sd">    deduction limit.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    p23250: float</span>
-<span class="sd">      Net long-term capital gains/losses (Schedule D)</span>
 <span class="sd">    p22250: float</span>
-<span class="sd">      Net short-term capital gails/losses (Schedule D)</span>
-<span class="sd">    ALD_StudentLoan_hc: float</span>
-<span class="sd">      Student loan interest deduction haircut</span>
-<span class="sd">    ALD_InvInc_ec_rt: float</span>
-<span class="sd">      Investment income exclusion rate haircut</span>
-<span class="sd">    invinc_ec_base: float</span>
-<span class="sd">      Exclusion of investment income from AGI</span>
-<span class="sd">    e00200: float</span>
-<span class="sd">      Wages, salaries, tips/otime for filing unit net of pension contributions</span>
-<span class="sd">    e00300: float</span>
-<span class="sd">      Taxable interest income</span>
-<span class="sd">    e00600: float</span>
-<span class="sd">      Ordinary dividends included in AGI</span>
-<span class="sd">    e00650: float</span>
-<span class="sd">      Qualified dividends included in ordinary dividends</span>
-<span class="sd">    e00700: float</span>
-<span class="sd">      Taxable refunds of state and local income taxes</span>
-<span class="sd">    e00800: float</span>
-<span class="sd">      Alimony received</span>
-<span class="sd">    CG_nodiff: bool</span>
-<span class="sd">      Long term capital gains and qualified dividends taxed no</span>
-<span class="sd">      differently than regular taxable income</span>
-<span class="sd">    CG_ec: float</span>
-<span class="sd">      Dollar amount of all capital gains and qualified dividends that are</span>
-<span class="sd">      excluded from AGI</span>
-<span class="sd">    CG_reinvest_ec_rt: float</span>
-<span class="sd">      Fraction of all capital gains and qualified dividends in excess</span>
-<span class="sd">      of the dollar exclusion that are excluded from AGI</span>
-<span class="sd">    Capital_loss_limitation: float</span>
-<span class="sd">      Limitation on capital losses that are deductible</span>
-<span class="sd">    ALD_BusinessLosses_c: list</span>
-<span class="sd">      Maximm amount of business losses deductible</span>
+<span class="sd">      Net short-term capital gain/(loss) (Schedule D line 7)</span>
+<span class="sd">    p23250: float</span>
+<span class="sd">      Net long-term capital gain/(loss) (Schedule D line 15)</span>
+<span class="sd">    Capital_loss_limitation: list</span>
+<span class="sd">      MARS-indexed dollar limit on net capital loss deductible</span>
+<span class="sd">      against ordinary income (Schedule D line 21 cap)</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">      Filing marital status (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                             4=household-head, 5=widow(er))</span>
-<span class="sd">    e00900: float</span>
-<span class="sd">      Schedule C business net profit/loss for filing unit</span>
-<span class="sd">    e01100: float</span>
-<span class="sd">      Capital gain distributions not reported on Schedule D</span>
-<span class="sd">    e01200: float</span>
-<span class="sd">      Other net gain/loss from Form 4797</span>
-<span class="sd">    e01400: float</span>
-<span class="sd">      Taxable IRA distributions</span>
-<span class="sd">    e01700: float</span>
-<span class="sd">      Taxable pensions and annunities</span>
-<span class="sd">    e02000: float</span>
-<span class="sd">      Schedule E total rental, royalty, partnership, S-corporation,</span>
-<span class="sd">      etc, income/loss (includes e26270 and e27200)</span>
-<span class="sd">    e02100: float</span>
-<span class="sd">      Farm net income/loss for filing unit from Schedule F</span>
-<span class="sd">    e02300: float</span>
-<span class="sd">      Unemployment insurance benefits</span>
-<span class="sd">    e00400: float</span>
-<span class="sd">      Tax-exempt interest income</span>
-<span class="sd">    e02400: float</span>
-<span class="sd">      Total social security (OASDI) benefits</span>
-<span class="sd">    c02900: float</span>
-<span class="sd">      Total of all &quot;above the line&quot; income adjustments to get AGI</span>
-<span class="sd">    e03210: float</span>
-<span class="sd">      Student loan interest</span>
-<span class="sd">    e03230: float</span>
-<span class="sd">      Tuition and fees from Form 8917</span>
-<span class="sd">    e03240: float</span>
-<span class="sd">      Domestic production activities from Form 8903</span>
-<span class="sd">    c01000: float</span>
-<span class="sd">      Limitation on capital losses</span>
 <span class="sd">    c23650: float</span>
-<span class="sd">      Net capital gains (long and short term) before exclusion</span>
-<span class="sd">    ymod: float</span>
-<span class="sd">      Variable that is used in OASDI benefit taxation logic</span>
-<span class="sd">    ymod1: float</span>
-<span class="sd">      Variable that is included in AGI</span>
-<span class="sd">    invinc_agi_ec: float</span>
-<span class="sd">      Exclusion of investment income from AGI</span>
+<span class="sd">      Net capital gain/(loss) before loss limitation</span>
+<span class="sd">      (Schedule D line 16)</span>
+<span class="sd">    c01000: float</span>
+<span class="sd">      Net capital gain/(loss) after loss limitation</span>
+<span class="sd">      (Schedule D line 21 / Form 1040 line 7)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    c01000: float</span>
-<span class="sd">      Limitation on capital losses</span>
 <span class="sd">    c23650: float</span>
-<span class="sd">      Net capital gains (long and short term) before exclusion</span>
-<span class="sd">    ymod: float</span>
-<span class="sd">      Variable that is used in OASDI benefit taxation logic</span>
-<span class="sd">    ymod1: float</span>
-<span class="sd">      Variable that is included in AGI</span>
-<span class="sd">    invinc_agi_ec: float</span>
-<span class="sd">      Exclusion of investment income from AGI</span>
+<span class="sd">      Net capital gain/(loss) before loss limitation</span>
+<span class="sd">    c01000: float</span>
+<span class="sd">      Net capital gain/(loss) after loss limitation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># net capital gain (long term + short term) before exclusion</span>
+    <span class="c1"># Schedule D line 16: combine net short-term and net long-term</span>
     <span class="n">c23650</span> <span class="o">=</span> <span class="n">p23250</span> <span class="o">+</span> <span class="n">p22250</span>
-    <span class="c1"># limitation on capital losses</span>
+    <span class="c1"># Schedule D line 21: cap any net loss at MARS-indexed limit</span>
     <span class="n">c01000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">Capital_loss_limitation</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">c23650</span><span class="p">)</span>
-    <span class="c1"># compute total investment income</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">c23650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">)</span>
+
+
+<span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AGIIncome</span><span class="p">(</span><span class="n">e00200</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span>
+              <span class="n">e00900</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span> <span class="n">e01400</span><span class="p">,</span> <span class="n">e01700</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e02100</span><span class="p">,</span>
+              <span class="n">e02300</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">e03210</span><span class="p">,</span> <span class="n">e03230</span><span class="p">,</span> <span class="n">e03240</span><span class="p">,</span>
+              <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span> <span class="n">ALD_InvInc_ec_rt</span><span class="p">,</span> <span class="n">invinc_ec_base</span><span class="p">,</span>
+              <span class="n">CG_nodiff</span><span class="p">,</span> <span class="n">CG_ec</span><span class="p">,</span> <span class="n">CG_reinvest_ec_rt</span><span class="p">,</span>
+              <span class="n">ALD_BusinessLosses_c</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
+              <span class="n">ymod</span><span class="p">,</span> <span class="n">ymod1</span><span class="p">,</span> <span class="n">invinc_agi_ec</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds ymod1 (Form 1040 income lines + Schedule 1 Part I, the</span>
+<span class="sd">    AGI building-block consumed by AGI()) and ymod (the modified-AGI</span>
+<span class="sd">    used by SSBenefits to determine the taxable portion of OASDI</span>
+<span class="sd">    benefits). Reform-only investment-income and QDCG exclusions</span>
+<span class="sd">    are applied here.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    e00200: float</span>
+<span class="sd">      Wages, salaries, tips (Form 1040 line 1)</span>
+<span class="sd">    e00300: float</span>
+<span class="sd">      Taxable interest (Form 1040 line 2b)</span>
+<span class="sd">    e00400: float</span>
+<span class="sd">      Tax-exempt interest (Form 1040 line 2a; not in AGI but used</span>
+<span class="sd">      in the SS-benefits modAGI)</span>
+<span class="sd">    e00600: float</span>
+<span class="sd">      Ordinary dividends (Form 1040 line 3b)</span>
+<span class="sd">    e00650: float</span>
+<span class="sd">      Qualified dividends (Form 1040 line 3a; subset of e00600)</span>
+<span class="sd">    e00700: float</span>
+<span class="sd">      Taxable refunds of state and local income taxes</span>
+<span class="sd">      (Schedule 1 line 1)</span>
+<span class="sd">    e00800: float</span>
+<span class="sd">      Alimony received (Schedule 1 line 2a)</span>
+<span class="sd">    e00900: float</span>
+<span class="sd">      Schedule C business net profit/(loss) (Schedule 1 line 3)</span>
+<span class="sd">    e01100: float</span>
+<span class="sd">      Capital gain distributions not reported on Schedule D</span>
+<span class="sd">    e01200: float</span>
+<span class="sd">      Other gain/(loss) from Form 4797 (Schedule 1 line 4)</span>
+<span class="sd">    e01400: float</span>
+<span class="sd">      Taxable IRA distributions (Form 1040 line 4b)</span>
+<span class="sd">    e01700: float</span>
+<span class="sd">      Taxable pensions and annuities (Form 1040 line 5b)</span>
+<span class="sd">    e02000: float</span>
+<span class="sd">      Schedule E rental, royalty, partnership, S-corp, etc.</span>
+<span class="sd">      income/(loss); includes e26270 and e27200 (Schedule 1 line 5)</span>
+<span class="sd">    e02100: float</span>
+<span class="sd">      Schedule F farm net income/(loss) (Schedule 1 line 6)</span>
+<span class="sd">    e02300: float</span>
+<span class="sd">      Unemployment compensation (Schedule 1 line 7)</span>
+<span class="sd">    e02400: float</span>
+<span class="sd">      Total social security (OASDI) benefits (Form 1040 line 6a)</span>
+<span class="sd">    c01000: float</span>
+<span class="sd">      Net capital gain/(loss) after loss limitation</span>
+<span class="sd">      (Form 1040 line 7); set by CapGainsLoss</span>
+<span class="sd">    c02900: float</span>
+<span class="sd">      Total above-the-line adjustments (Schedule 1 line 26)</span>
+<span class="sd">    e03210: float</span>
+<span class="sd">      Student loan interest deduction (pre-haircut)</span>
+<span class="sd">    e03230: float</span>
+<span class="sd">      Tuition and fees deduction (legacy)</span>
+<span class="sd">    e03240: float</span>
+<span class="sd">      Domestic production activities deduction (legacy)</span>
+<span class="sd">    ALD_StudentLoan_hc: float</span>
+<span class="sd">      Reform haircut on the student loan interest deduction</span>
+<span class="sd">    ALD_InvInc_ec_rt: float</span>
+<span class="sd">      Reform exclusion rate for investment income</span>
+<span class="sd">    invinc_ec_base: float</span>
+<span class="sd">      Base investment income subject to the reform exclusion</span>
+<span class="sd">      (set by ALD_InvInc_ec_base)</span>
+<span class="sd">    CG_nodiff: bool</span>
+<span class="sd">      Reform: long-term capital gains and qualified dividends taxed</span>
+<span class="sd">      at ordinary rates (no preferential treatment)</span>
+<span class="sd">    CG_ec: float</span>
+<span class="sd">      Reform: dollar amount of QDCG excluded from AGI when CG_nodiff</span>
+<span class="sd">    CG_reinvest_ec_rt: float</span>
+<span class="sd">      Reform: fraction of QDCG above CG_ec excluded from AGI when</span>
+<span class="sd">      CG_nodiff</span>
+<span class="sd">    ALD_BusinessLosses_c: list</span>
+<span class="sd">      Reform: MARS-indexed cap on combined Sch C + Sch E losses</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">      Filing marital status</span>
+<span class="sd">    ymod: float</span>
+<span class="sd">      Modified-AGI used by SSBenefits to determine taxable portion</span>
+<span class="sd">      of OASDI benefits</span>
+<span class="sd">    ymod1: float</span>
+<span class="sd">      AGI build-up: Form 1040 income lines + Schedule 1 Part I,</span>
+<span class="sd">      net of reform investment-income and QDCG exclusions</span>
+<span class="sd">    invinc_agi_ec: float</span>
+<span class="sd">      Reform exclusion of investment income from AGI</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ymod: float</span>
+<span class="sd">    ymod1: float</span>
+<span class="sd">    invinc_agi_ec: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># investment income (1040 lines 2b, 3b, 7 + Sch 1 line 4 + capgain distrib)</span>
     <span class="n">invinc</span> <span class="o">=</span> <span class="n">e00300</span> <span class="o">+</span> <span class="n">e00600</span> <span class="o">+</span> <span class="n">c01000</span> <span class="o">+</span> <span class="n">e01100</span> <span class="o">+</span> <span class="n">e01200</span>
-    <span class="c1"># compute exclusion of investment income from AGI</span>
+    <span class="c1"># reform: exclude a fraction of investment income from AGI</span>
     <span class="n">invinc_agi_ec</span> <span class="o">=</span> <span class="n">ALD_InvInc_ec_rt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">invinc_ec_base</span><span class="p">)</span>
-    <span class="c1"># compute ymod1 variable that is included in AGI</span>
+    <span class="c1"># ymod1 = Form 1040 income lines + Schedule 1 Part I</span>
     <span class="n">ymod1</span> <span class="o">=</span> <span class="p">(</span><span class="n">e00200</span> <span class="o">+</span> <span class="n">e00700</span> <span class="o">+</span> <span class="n">e00800</span> <span class="o">+</span> <span class="n">e01400</span> <span class="o">+</span> <span class="n">e01700</span> <span class="o">+</span>
              <span class="n">invinc</span> <span class="o">-</span> <span class="n">invinc_agi_ec</span> <span class="o">+</span> <span class="n">e02100</span> <span class="o">+</span> <span class="n">e02300</span> <span class="o">+</span>
              <span class="nb">max</span><span class="p">(</span><span class="n">e00900</span> <span class="o">+</span> <span class="n">e02000</span><span class="p">,</span> <span class="o">-</span><span class="n">ALD_BusinessLosses_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
     <span class="k">if</span> <span class="n">CG_nodiff</span><span class="p">:</span>
-        <span class="c1"># apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment</span>
+        <span class="c1"># reform: when QDCG receive no preferential rates, partially</span>
+        <span class="c1"># exclude (qualified dividends + net capital gain) from AGI</span>
         <span class="n">qdcg_pos</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00650</span> <span class="o">+</span> <span class="n">c01000</span><span class="p">)</span>
         <span class="n">qdcg_exclusion</span> <span class="o">=</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">CG_ec</span><span class="p">,</span> <span class="n">qdcg_pos</span><span class="p">)</span> <span class="o">+</span>
                           <span class="n">CG_reinvest_ec_rt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">qdcg_pos</span> <span class="o">-</span> <span class="n">CG_ec</span><span class="p">))</span>
         <span class="n">ymod1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ymod1</span> <span class="o">-</span> <span class="n">qdcg_exclusion</span><span class="p">)</span>
         <span class="n">invinc_agi_ec</span> <span class="o">+=</span> <span class="n">qdcg_exclusion</span>
-    <span class="c1"># compute ymod variable that is used in OASDI benefit taxation logic</span>
+    <span class="c1"># ymod = modAGI used by the SS-benefits worksheet (Pub. 915)</span>
     <span class="n">ymod2</span> <span class="o">=</span> <span class="n">e00400</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.50</span> <span class="o">*</span> <span class="n">e02400</span><span class="p">)</span> <span class="o">-</span> <span class="n">c02900</span>
     <span class="n">ymod3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03210</span> <span class="o">+</span> <span class="n">e03230</span> <span class="o">+</span> <span class="n">e03240</span>
     <span class="n">ymod</span> <span class="o">=</span> <span class="n">ymod1</span> <span class="o">+</span> <span class="n">ymod2</span> <span class="o">+</span> <span class="n">ymod3</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">c01000</span><span class="p">,</span> <span class="n">c23650</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">ymod1</span><span class="p">,</span> <span class="n">invinc_agi_ec</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">ymod</span><span class="p">,</span> <span class="n">ymod1</span><span class="p">,</span> <span class="n">invinc_agi_ec</span><span class="p">)</span>
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -3526,7 +3556,8 @@
     <span class="k">if</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>  <span class="c1"># reform-only: refundable portion handled in Part I</span>
         <span class="n">line16b</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># reform-only: redefine &quot;qualifying child&quot; as under 18 instead of under 17</span>
+        <span class="c1"># reform-only: redefine &quot;qualifying child&quot; as under 18 instead</span>
+        <span class="c1">#              of under 17</span>
         <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
             <span class="n">tu18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">age_head</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>   <span class="c1"># taxpayer is under age 18</span>
             <span class="n">su18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>  <span class="c1"># spouse is under age 18</span>
@@ -3566,7 +3597,8 @@
                 <span class="n">line25</span> <span class="o">=</span> <span class="n">c59660</span> <span class="o">+</span> <span class="n">e11200</span>
                 <span class="c1"># Sch 8812 line 26: line 24 minus line 25 (not less than 0)</span>
                 <span class="n">line26</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line24</span> <span class="o">-</span> <span class="n">line25</span><span class="p">)</span>
-                <span class="c1"># Sch 8812 line 27 (Part II-C): min(line 17, max(line 20, line 26))</span>
+                <span class="c1"># Sch 8812 line 27 (Part II-b3157</span>
+                <span class="c1">#   min(line 17, max(line 20, line 26))</span>
                 <span class="n">line27</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">line20</span><span class="p">,</span> <span class="n">line26</span><span class="p">)</span>
                 <span class="n">c11070</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line17</span><span class="p">,</span> <span class="n">line27</span><span class="p">)</span>
 
