@@ -2031,9 +2031,24 @@
              <span class="n">CG_rt1</span><span class="p">,</span> <span class="n">CG_rt2</span><span class="p">,</span> <span class="n">CG_rt3</span><span class="p">,</span> <span class="n">CG_rt4</span><span class="p">,</span> <span class="n">CG_brk1</span><span class="p">,</span> <span class="n">CG_brk2</span><span class="p">,</span> <span class="n">CG_brk3</span><span class="p">,</span>
              <span class="n">dwks10</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">dwks14</span><span class="p">,</span> <span class="n">dwks19</span><span class="p">,</span> <span class="n">dwks43</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    GainsTax function implements (2015) Schedule D Tax Worksheet logic for</span>
-<span class="sd">    the special taxation of long-term capital gains and qualified dividends</span>
-<span class="sd">    if CG_nodiff is false.</span>
+<span class="sd">    Computes the regular-tax preference for long-term capital gains and</span>
+<span class="sd">    qualified dividends.  Implements both IRS worksheets in a single body:</span>
+
+<span class="sd">      * Qualified Dividends and Capital Gain Tax Worksheet (QDCGTW)</span>
+<span class="sd">        from the 2025 Form 1040 instructions; and</span>
+<span class="sd">      * Schedule D Tax Worksheet (Sch D TW) from the 2025 Schedule D</span>
+<span class="sd">        instructions, which is QDCGTW plus extra rate buckets for</span>
+<span class="sd">        un-recaptured section 1250 gain (25%) and collectibles 28%-rate</span>
+<span class="sd">        gain (lines 11-12 and 33-41).</span>
+
+<span class="sd">    Sch D TW reduces algebraically to QDCGTW when both e24515 and e24518</span>
+<span class="sd">    are zero, so the code runs the Sch D TW computation unconditionally</span>
+<span class="sd">    and lets the Sch D-only blocks vanish when not applicable.  Section</span>
+<span class="sd">    banners below mark which IRS-worksheet lines are common to both</span>
+<span class="sd">    worksheets and which belong to Sch D TW only.</span>
+
+<span class="sd">    If CG_nodiff is true, qualified dividends and long-term capital gains</span>
+<span class="sd">    are taxed at ordinary rates and the worksheet is skipped.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2160,69 +2175,87 @@
 
     <span class="k">if</span> <span class="n">hasqdivltcg</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 
-        <span class="n">dwks1</span> <span class="o">=</span> <span class="n">c04800</span>
-        <span class="n">dwks2</span> <span class="o">=</span> <span class="n">e00650</span>
-        <span class="n">dwks3</span> <span class="o">=</span> <span class="n">e58990</span>
-        <span class="n">dwks4</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># always assumed to be zero</span>
-        <span class="n">dwks5</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks3</span> <span class="o">-</span> <span class="n">dwks4</span><span class="p">)</span>
-        <span class="n">dwks6</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks2</span> <span class="o">-</span> <span class="n">dwks5</span><span class="p">)</span>
-        <span class="n">dwks7</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p23250</span><span class="p">,</span> <span class="n">c23650</span><span class="p">)</span>  <span class="c1"># SchD lines 15 and 16, respectively</span>
-        <span class="c1"># dwks8 = min(dwks3, dwks4)</span>
-        <span class="c1"># dwks9 = max(0., dwks7 - dwks8)</span>
-        <span class="c1"># BELOW TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT</span>
+        <span class="c1"># ---- Sch D TW lines 1-10 (common to QDCGTW) ----------------------</span>
+        <span class="n">dwks1</span> <span class="o">=</span> <span class="n">c04800</span>                    <span class="c1"># line 1: taxable income</span>
+        <span class="n">dwks2</span> <span class="o">=</span> <span class="n">e00650</span>                    <span class="c1"># line 2: qualified dividends</span>
+        <span class="n">dwks3</span> <span class="o">=</span> <span class="n">e58990</span>                    <span class="c1"># line 3: Form 4952 line 4g</span>
+        <span class="n">dwks4</span> <span class="o">=</span> <span class="mf">0.</span>                        <span class="c1"># line 4: Form 4952 line 4e (=0)</span>
+        <span class="n">dwks5</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks3</span> <span class="o">-</span> <span class="n">dwks4</span><span class="p">)</span>    <span class="c1"># line 5</span>
+        <span class="n">dwks6</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks2</span> <span class="o">-</span> <span class="n">dwks5</span><span class="p">)</span>    <span class="c1"># line 6</span>
+        <span class="n">dwks7</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p23250</span><span class="p">,</span> <span class="n">c23650</span><span class="p">)</span>       <span class="c1"># line 7: min(Sch D ln 15, ln 16)</span>
+        <span class="c1"># line 8: dwks8 = min(dwks3, dwks4) = 0 (since dwks4 = 0)</span>
+        <span class="c1"># line 9 (per IRS form): dwks9 = max(0, dwks7 - dwks8) = max(0, dwks7)</span>
+        <span class="c1"># The line-9 formula below deviates from the form to splice in</span>
+        <span class="c1"># e01100 (capital-gain distributions reported when no Sch D is</span>
+        <span class="c1"># filed) and to reduce dwks9 by negative e58990.  See BUG? note in</span>
+        <span class="c1"># CODE_REVIEW_2025.md row 17.</span>
         <span class="k">if</span> <span class="n">e01100</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
             <span class="n">c24510</span> <span class="o">=</span> <span class="n">e01100</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">c24510</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks7</span><span class="p">)</span> <span class="o">+</span> <span class="n">e01100</span>
-        <span class="n">dwks9</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c24510</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e58990</span><span class="p">))</span>
-        <span class="c1"># ABOVE TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT</span>
-        <span class="n">dwks10</span> <span class="o">=</span> <span class="n">dwks6</span> <span class="o">+</span> <span class="n">dwks9</span>
-        <span class="n">dwks11</span> <span class="o">=</span> <span class="n">e24515</span> <span class="o">+</span> <span class="n">e24518</span>  <span class="c1"># SchD lines 18 and 19, respectively</span>
-        <span class="n">dwks12</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks9</span><span class="p">,</span> <span class="n">dwks11</span><span class="p">)</span>
-        <span class="n">dwks13</span> <span class="o">=</span> <span class="n">dwks10</span> <span class="o">-</span> <span class="n">dwks12</span>
-        <span class="n">dwks14</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks1</span> <span class="o">-</span> <span class="n">dwks13</span><span class="p">)</span>
-        <span class="n">dwks16</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">CG_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dwks1</span><span class="p">)</span>
-        <span class="n">dwks17</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks14</span><span class="p">,</span> <span class="n">dwks16</span><span class="p">)</span>
-        <span class="n">dwks18</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks1</span> <span class="o">-</span> <span class="n">dwks10</span><span class="p">)</span>
-        <span class="n">dwks19</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dwks17</span><span class="p">,</span> <span class="n">dwks18</span><span class="p">)</span>
-        <span class="n">dwks20</span> <span class="o">=</span> <span class="n">dwks16</span> <span class="o">-</span> <span class="n">dwks17</span>
-        <span class="n">lowest_rate_tax</span> <span class="o">=</span> <span class="n">CG_rt1</span> <span class="o">*</span> <span class="n">dwks20</span>
-        <span class="c1"># break in worksheet lines</span>
-        <span class="n">dwks21</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks1</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">)</span>
-        <span class="n">dwks22</span> <span class="o">=</span> <span class="n">dwks20</span>
-        <span class="n">dwks23</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks21</span> <span class="o">-</span> <span class="n">dwks22</span><span class="p">)</span>
-        <span class="n">dwks25</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">CG_brk2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dwks1</span><span class="p">)</span>
-        <span class="n">dwks26</span> <span class="o">=</span> <span class="n">dwks19</span> <span class="o">+</span> <span class="n">dwks20</span>
-        <span class="n">dwks27</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks25</span> <span class="o">-</span> <span class="n">dwks26</span><span class="p">)</span>
-        <span class="n">dwks28</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks23</span><span class="p">,</span> <span class="n">dwks27</span><span class="p">)</span>
-        <span class="n">dwks29</span> <span class="o">=</span> <span class="n">CG_rt2</span> <span class="o">*</span> <span class="n">dwks28</span>
-        <span class="n">dwks30</span> <span class="o">=</span> <span class="n">dwks22</span> <span class="o">+</span> <span class="n">dwks28</span>
-        <span class="n">dwks31</span> <span class="o">=</span> <span class="n">dwks21</span> <span class="o">-</span> <span class="n">dwks30</span>
-        <span class="n">dwks32</span> <span class="o">=</span> <span class="n">CG_rt3</span> <span class="o">*</span> <span class="n">dwks31</span>
-        <span class="c1"># compute total taxable CG for additional top bracket</span>
+        <span class="n">dwks9</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c24510</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e58990</span><span class="p">))</span>      <span class="c1"># line 9</span>
+        <span class="n">dwks10</span> <span class="o">=</span> <span class="n">dwks6</span> <span class="o">+</span> <span class="n">dwks9</span>                         <span class="c1"># line 10</span>
+
+        <span class="c1"># ---- Sch D TW lines 11-13 (Sch D TW only; vanish in QDCGTW) -----</span>
+        <span class="n">dwks11</span> <span class="o">=</span> <span class="n">e24515</span> <span class="o">+</span> <span class="n">e24518</span>          <span class="c1"># line 11: Sch D ln 18 + ln 19</span>
+        <span class="n">dwks12</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks9</span><span class="p">,</span> <span class="n">dwks11</span><span class="p">)</span>       <span class="c1"># line 12</span>
+        <span class="n">dwks13</span> <span class="o">=</span> <span class="n">dwks10</span> <span class="o">-</span> <span class="n">dwks12</span>          <span class="c1"># line 13</span>
+
+        <span class="c1"># ---- Sch D TW lines 14-19 (rate-bracket setup, common) ----------</span>
+        <span class="c1"># Note: code labels dwks16/17/18/19/20 correspond to IRS lines</span>
+        <span class="c1"># 15/16/17/18/19 (off-by-one); records-bound dwks19 cannot be</span>
+        <span class="c1"># renamed in this refactor.</span>
+        <span class="n">dwks14</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks1</span> <span class="o">-</span> <span class="n">dwks13</span><span class="p">)</span>          <span class="c1"># line 14</span>
+        <span class="n">dwks16</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">CG_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dwks1</span><span class="p">)</span>    <span class="c1"># line 15</span>
+        <span class="n">dwks17</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks14</span><span class="p">,</span> <span class="n">dwks16</span><span class="p">)</span>              <span class="c1"># line 16</span>
+        <span class="n">dwks18</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks1</span> <span class="o">-</span> <span class="n">dwks10</span><span class="p">)</span>          <span class="c1"># line 17</span>
+        <span class="n">dwks19</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dwks17</span><span class="p">,</span> <span class="n">dwks18</span><span class="p">)</span>              <span class="c1"># line 18</span>
+        <span class="n">dwks20</span> <span class="o">=</span> <span class="n">dwks16</span> <span class="o">-</span> <span class="n">dwks17</span>                  <span class="c1"># line 19: amount @ 0%</span>
+        <span class="n">lowest_rate_tax</span> <span class="o">=</span> <span class="n">CG_rt1</span> <span class="o">*</span> <span class="n">dwks20</span>         <span class="c1"># line 20: 0% tax (=0)</span>
+
+        <span class="c1"># ---- Sch D TW lines 21-32 (15% and 20% rate buckets, common) ----</span>
+        <span class="n">dwks21</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks1</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">)</span>               <span class="c1"># line 21</span>
+        <span class="n">dwks22</span> <span class="o">=</span> <span class="n">dwks20</span>                           <span class="c1"># line 22</span>
+        <span class="n">dwks23</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks21</span> <span class="o">-</span> <span class="n">dwks22</span><span class="p">)</span>         <span class="c1"># line 23</span>
+        <span class="n">dwks25</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">CG_brk2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dwks1</span><span class="p">)</span>    <span class="c1"># line 25</span>
+        <span class="n">dwks26</span> <span class="o">=</span> <span class="n">dwks19</span> <span class="o">+</span> <span class="n">dwks20</span>                  <span class="c1"># line 26</span>
+        <span class="n">dwks27</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks25</span> <span class="o">-</span> <span class="n">dwks26</span><span class="p">)</span>         <span class="c1"># line 27</span>
+        <span class="n">dwks28</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks23</span><span class="p">,</span> <span class="n">dwks27</span><span class="p">)</span>              <span class="c1"># line 28: amount @ 15%</span>
+        <span class="n">dwks29</span> <span class="o">=</span> <span class="n">CG_rt2</span> <span class="o">*</span> <span class="n">dwks28</span>                  <span class="c1"># line 29: 15% tax</span>
+        <span class="n">dwks30</span> <span class="o">=</span> <span class="n">dwks22</span> <span class="o">+</span> <span class="n">dwks28</span>                  <span class="c1"># line 30</span>
+        <span class="n">dwks31</span> <span class="o">=</span> <span class="n">dwks21</span> <span class="o">-</span> <span class="n">dwks30</span>                  <span class="c1"># line 31: amount @ 20%</span>
+        <span class="n">dwks32</span> <span class="o">=</span> <span class="n">CG_rt3</span> <span class="o">*</span> <span class="n">dwks31</span>                  <span class="c1"># line 32: 20% tax</span>
+
+        <span class="c1"># ---- Reform-only: 4th capital-gains bracket (not in IRS form) ---</span>
+        <span class="c1"># Tax-Calculator extension that levies (CG_rt4 - CG_rt3) on the</span>
+        <span class="c1"># portion of total taxed cap gains above CG_brk3.  Inactive under</span>
+        <span class="c1"># current law (CG_rt4 = CG_rt3).</span>
         <span class="n">cg_all</span> <span class="o">=</span> <span class="n">dwks20</span> <span class="o">+</span> <span class="n">dwks28</span> <span class="o">+</span> <span class="n">dwks31</span>
         <span class="n">hi_base</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">cg_all</span> <span class="o">-</span> <span class="n">CG_brk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">hi_incremental_rate</span> <span class="o">=</span> <span class="n">CG_rt4</span> <span class="o">-</span> <span class="n">CG_rt3</span>
         <span class="n">highest_rate_incremental_tax</span> <span class="o">=</span> <span class="n">hi_incremental_rate</span> <span class="o">*</span> <span class="n">hi_base</span>
-        <span class="c1"># break in worksheet lines</span>
-        <span class="n">dwks33</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks9</span><span class="p">,</span> <span class="n">e24515</span><span class="p">)</span>
-        <span class="n">dwks34</span> <span class="o">=</span> <span class="n">dwks10</span> <span class="o">+</span> <span class="n">dwks19</span>
-        <span class="n">dwks36</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks34</span> <span class="o">-</span> <span class="n">dwks1</span><span class="p">)</span>
-        <span class="n">dwks37</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks33</span> <span class="o">-</span> <span class="n">dwks36</span><span class="p">)</span>
-        <span class="n">dwks38</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">dwks37</span>
-        <span class="c1"># break in worksheet lines</span>
-        <span class="n">dwks39</span> <span class="o">=</span> <span class="n">dwks19</span> <span class="o">+</span> <span class="n">dwks20</span> <span class="o">+</span> <span class="n">dwks28</span> <span class="o">+</span> <span class="n">dwks31</span> <span class="o">+</span> <span class="n">dwks37</span>
-        <span class="n">dwks40</span> <span class="o">=</span> <span class="n">dwks1</span> <span class="o">-</span> <span class="n">dwks39</span>
-        <span class="n">dwks41</span> <span class="o">=</span> <span class="mf">0.28</span> <span class="o">*</span> <span class="n">dwks40</span>
-        <span class="n">dwks42</span> <span class="o">=</span> <span class="n">SchXYZ</span><span class="p">(</span><span class="n">dwks19</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
+
+        <span class="c1"># ---- Sch D TW lines 33-41 (Sch D TW only: 25% and 28% rates) ----</span>
+        <span class="c1"># These blocks zero out when e24515 = e24518 = 0, recovering QDCGTW.</span>
+        <span class="n">dwks33</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks9</span><span class="p">,</span> <span class="n">e24515</span><span class="p">)</span>           <span class="c1"># line 33</span>
+        <span class="n">dwks34</span> <span class="o">=</span> <span class="n">dwks10</span> <span class="o">+</span> <span class="n">dwks19</span>              <span class="c1"># line 34</span>
+        <span class="n">dwks36</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks34</span> <span class="o">-</span> <span class="n">dwks1</span><span class="p">)</span>      <span class="c1"># line 36 (line 35 omitted)</span>
+        <span class="n">dwks37</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks33</span> <span class="o">-</span> <span class="n">dwks36</span><span class="p">)</span>     <span class="c1"># line 37: amount @ 25%</span>
+        <span class="n">dwks38</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">dwks37</span>                <span class="c1"># line 38: 25% tax</span>
+        <span class="n">dwks39</span> <span class="o">=</span> <span class="n">dwks19</span> <span class="o">+</span> <span class="n">dwks20</span> <span class="o">+</span> <span class="n">dwks28</span> <span class="o">+</span> <span class="n">dwks31</span> <span class="o">+</span> <span class="n">dwks37</span>   <span class="c1"># line 39</span>
+        <span class="n">dwks40</span> <span class="o">=</span> <span class="n">dwks1</span> <span class="o">-</span> <span class="n">dwks39</span>               <span class="c1"># line 40: amount @ 28%</span>
+        <span class="n">dwks41</span> <span class="o">=</span> <span class="mf">0.28</span> <span class="o">*</span> <span class="n">dwks40</span>                <span class="c1"># line 41: 28% tax</span>
+
+        <span class="c1"># ---- Sch D TW lines 42-45 (final assembly, common) --------------</span>
+        <span class="n">dwks42</span> <span class="o">=</span> <span class="n">SchXYZ</span><span class="p">(</span><span class="n">dwks19</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>         <span class="c1"># line 42: ordinary tax</span>
                         <span class="n">II_rt1</span><span class="p">,</span> <span class="n">II_rt2</span><span class="p">,</span> <span class="n">II_rt3</span><span class="p">,</span> <span class="n">II_rt4</span><span class="p">,</span> <span class="n">II_rt5</span><span class="p">,</span>
                         <span class="n">II_rt6</span><span class="p">,</span> <span class="n">II_rt7</span><span class="p">,</span> <span class="n">II_rt8</span><span class="p">,</span>
                         <span class="n">II_brk1</span><span class="p">,</span> <span class="n">II_brk2</span><span class="p">,</span> <span class="n">II_brk3</span><span class="p">,</span> <span class="n">II_brk4</span><span class="p">,</span> <span class="n">II_brk5</span><span class="p">,</span>
                         <span class="n">II_brk6</span><span class="p">,</span> <span class="n">II_brk7</span><span class="p">)</span>
         <span class="n">dwks43</span> <span class="o">=</span> <span class="p">(</span><span class="n">dwks29</span> <span class="o">+</span> <span class="n">dwks32</span> <span class="o">+</span> <span class="n">dwks38</span> <span class="o">+</span> <span class="n">dwks41</span> <span class="o">+</span> <span class="n">dwks42</span> <span class="o">+</span>
-                  <span class="n">lowest_rate_tax</span> <span class="o">+</span> <span class="n">highest_rate_incremental_tax</span><span class="p">)</span>
-        <span class="n">dwks44</span> <span class="o">=</span> <span class="n">c05200</span>
-        <span class="n">dwks45</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks43</span><span class="p">,</span> <span class="n">dwks44</span><span class="p">)</span>
+                  <span class="n">lowest_rate_tax</span> <span class="o">+</span> <span class="n">highest_rate_incremental_tax</span><span class="p">)</span>  <span class="c1"># line 43</span>
+        <span class="n">dwks44</span> <span class="o">=</span> <span class="n">c05200</span>                       <span class="c1"># line 44: ordinary tax on line 1</span>
+        <span class="n">dwks45</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks43</span><span class="p">,</span> <span class="n">dwks44</span><span class="p">)</span>          <span class="c1"># line 45: smaller of 43, 44</span>
         <span class="n">c24580</span> <span class="o">=</span> <span class="n">dwks45</span>
 
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># if hasqdivltcg is zero</span>
