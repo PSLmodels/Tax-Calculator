@@ -1630,7 +1630,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
              CG_nodiff,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
-             dwks10, dwks13, dwks14, dwks19, dwks43, c05700, taxbc):
+             dwks10, dwks13, dwks14, dwks18, dwks43, c05700, taxbc):
     """
     Computes the regular-tax preference for long-term capital gains and
     qualified dividends.  Implements both IRS worksheets in a single body:
@@ -1739,8 +1739,8 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         Difference of dwks10 - dwks12
     dwks14: float
         Maximum of 0 and dwks1 - dwks13
-    dwks19: float
-        Maximum of dwks17 and dwks16
+    dwks18: float
+        Maximum of dwks16 and dwks17
     dwks43: float
         separate tax on long-term capital gains and qualified dividends
     c05700: float
@@ -1756,8 +1756,8 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         Difference of dwks10 - dwks12
     dwks14: float
         Maximum of 0 and dwks1 - dwks13
-    dwks19: float
-        Maximum of dwks17 and dwks16
+    dwks18: float
+        Maximum of dwks16 and dwks17
     dwks43: float
         separate tax on long-term capital gains and qualified dividends
     c05700: float
@@ -1803,23 +1803,20 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks13 = dwks10 - dwks12          # line 13
 
         # ---- Sch D TW lines 14-19 (rate-bracket setup, common) ----------
-        # Note: code labels dwks16/17/18/19/20 correspond to IRS lines
-        # 15/16/17/18/19 (off-by-one); records-bound dwks19 cannot be
-        # renamed in this refactor.
         dwks14 = max(0., dwks1 - dwks13)          # line 14
-        dwks16 = min(CG_brk1[MARS - 1], dwks1)    # line 15
-        dwks17 = min(dwks14, dwks16)              # line 16
-        dwks18 = max(0., dwks1 - dwks10)          # line 17
-        dwks19 = max(dwks17, dwks18)              # line 18
-        dwks20 = dwks16 - dwks17                  # line 19: amount @ 0%
-        lowest_rate_tax = CG_rt1 * dwks20         # line 20: 0% tax (=0)
+        dwks15 = min(CG_brk1[MARS - 1], dwks1)    # line 15
+        dwks16 = min(dwks14, dwks15)              # line 16
+        dwks17 = max(0., dwks1 - dwks10)          # line 17
+        dwks18 = max(dwks16, dwks17)              # line 18
+        dwks19 = dwks15 - dwks16                  # line 19: amount @ 0%
+        lowest_rate_tax = CG_rt1 * dwks19         # line 20: 0% tax (=0)
 
         # ---- Sch D TW lines 21-32 (15% and 20% rate buckets, common) ----
         dwks21 = min(dwks1, dwks13)               # line 21
-        dwks22 = dwks20                           # line 22
+        dwks22 = dwks19                           # line 22
         dwks23 = max(0., dwks21 - dwks22)         # line 23
         dwks25 = min(CG_brk2[MARS - 1], dwks1)    # line 25
-        dwks26 = dwks19 + dwks20                  # line 26
+        dwks26 = dwks18 + dwks19                  # line 26
         dwks27 = max(0., dwks25 - dwks26)         # line 27
         dwks28 = min(dwks23, dwks27)              # line 28: amount @ 15%
         dwks29 = CG_rt2 * dwks28                  # line 29: 15% tax
@@ -1831,7 +1828,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         # Tax-Calculator extension that levies (CG_rt4 - CG_rt3) on the
         # portion of total taxed cap gains above CG_brk3.  Inactive under
         # current law (CG_rt4 = CG_rt3).
-        cg_all = dwks20 + dwks28 + dwks31
+        cg_all = dwks19 + dwks28 + dwks31
         hi_base = max(0., cg_all - CG_brk3[MARS - 1])
         hi_incremental_rate = CG_rt4 - CG_rt3
         highest_rate_incremental_tax = hi_incremental_rate * hi_base
@@ -1839,16 +1836,16 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         # ---- Sch D TW lines 33-41 (Sch D TW only: 25% and 28% rates) ----
         # These blocks zero out when e24515 = e24518 = 0, recovering QDCGTW.
         dwks33 = min(dwks9, e24515)           # line 33
-        dwks34 = dwks10 + dwks19              # line 34
+        dwks34 = dwks10 + dwks18              # line 34
         dwks36 = max(0., dwks34 - dwks1)      # line 36 (line 35 omitted)
         dwks37 = max(0., dwks33 - dwks36)     # line 37: amount @ 25%
         dwks38 = 0.25 * dwks37                # line 38: 25% tax
-        dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37   # line 39
+        dwks39 = dwks18 + dwks19 + dwks28 + dwks31 + dwks37   # line 39
         dwks40 = dwks1 - dwks39               # line 40: amount @ 28%
         dwks41 = 0.28 * dwks40                # line 41: 28% tax
 
         # ---- Sch D TW lines 42-45 (final assembly, common) --------------
-        dwks42 = SchXYZ(dwks19, MARS,         # line 42: ordinary tax
+        dwks42 = SchXYZ(dwks18, MARS,         # line 42: ordinary tax
                         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                         II_rt6, II_rt7, II_rt8,
                         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
@@ -1865,14 +1862,14 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks10 = max(0., min(p23250, c23650)) + e01100
         dwks13 = 0.
         dwks14 = 0.
-        dwks19 = 0.
+        dwks18 = 0.
         dwks43 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
     c05100 = c24580  # because foreign earned income exclusion is assumed zero
     c05700 = 0.  # no Form 4972, Lump Sum Distributions
     taxbc = c05700 + c05100
-    return (dwks10, dwks13, dwks14, dwks19, dwks43, c05700, taxbc)
+    return (dwks10, dwks13, dwks14, dwks18, dwks43, c05700, taxbc)
 
 
 @iterate_jit(nopython=True)
@@ -1912,7 +1909,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
 
 @iterate_jit(nopython=True)
 def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
-        c04470, c17000, c20800, c21040, e24515, MARS, dwks19,
+        c04470, c17000, c20800, c21040, e24515, MARS, dwks18,
         dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
         earned, cmbtp, qbided,
         AMT_child_em_c_age, AMT_brk1,
@@ -1957,8 +1954,8 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
-    dwks19: float
-        Maximum of 0 and dwks1 - dwks13
+    dwks18: float
+        Maximum of dwks16 and dwks17
     dwks14: float
         Maximum of 0 and dwks1 - dwks13
     c05700: float
@@ -2055,7 +2052,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
                 AMT_rt2_addon * max(0., (line30 - AMT_brk1[MARS - 1])))
-    if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
+    if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks18 > 0. or e24515 > 0.:
         # complete Form 6251, Part III (line36 is equal to line30)
         line37 = dwks13
         line38 = e24515
@@ -2070,7 +2067,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
         cgtax1 = line47 * AMT_CG_rt1
         line48 = line46 - line47
-        line51 = dwks19
+        line51 = dwks18
         line52 = line45 + line51
         line53 = max(0., AMT_CG_brk2[MARS - 1] - line52)
         line54 = min(line48, line53)  # line54 is amount taxed at AMT_CG_rt2
