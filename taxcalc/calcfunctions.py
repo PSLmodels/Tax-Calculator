@@ -480,134 +480,164 @@ def ALD_InvInc_ec_base(p22250, p23250,
 
 
 @iterate_jit(nopython=True)
-def CapGains(p23250, p22250, ALD_StudentLoan_hc,
-             ALD_InvInc_ec_rt, invinc_ec_base,
-             e00200, e00300, e00600, e00650, e00700, e00800,
-             CG_nodiff, CG_ec, CG_reinvest_ec_rt, Capital_loss_limitation,
-             ALD_BusinessLosses_c, MARS,
-             e00900, e01100, e01200, e01400, e01700, e02000, e02100,
-             e02300, e00400, e02400, c02900, e03210, e03230, e03240,
-             c01000, c23650, ymod, ymod1, invinc_agi_ec):
+def CapGainsLoss(p22250, p23250, Capital_loss_limitation, MARS,
+                 c23650, c01000):
     """
-    CapGains function: ...
+    Schedule D Part III netting of short-term and long-term capital
+    gains and losses, capped by the per-MARS net-capital-loss
+    deduction limit.
 
     Parameters
     ----------
-    p23250: float
-      Net long-term capital gains/losses (Schedule D)
     p22250: float
-      Net short-term capital gails/losses (Schedule D)
-    ALD_StudentLoan_hc: float
-      Student loan interest deduction haircut
-    ALD_InvInc_ec_rt: float
-      Investment income exclusion rate haircut
-    invinc_ec_base: float
-      Exclusion of investment income from AGI
-    e00200: float
-      Wages, salaries, tips/otime for filing unit net of pension contributions
-    e00300: float
-      Taxable interest income
-    e00600: float
-      Ordinary dividends included in AGI
-    e00650: float
-      Qualified dividends included in ordinary dividends
-    e00700: float
-      Taxable refunds of state and local income taxes
-    e00800: float
-      Alimony received
-    CG_nodiff: bool
-      Long term capital gains and qualified dividends taxed no
-      differently than regular taxable income
-    CG_ec: float
-      Dollar amount of all capital gains and qualified dividends that are
-      excluded from AGI
-    CG_reinvest_ec_rt: float
-      Fraction of all capital gains and qualified dividends in excess
-      of the dollar exclusion that are excluded from AGI
-    Capital_loss_limitation: float
-      Limitation on capital losses that are deductible
-    ALD_BusinessLosses_c: list
-      Maximm amount of business losses deductible
+      Net short-term capital gain/(loss) (Schedule D line 7)
+    p23250: float
+      Net long-term capital gain/(loss) (Schedule D line 15)
+    Capital_loss_limitation: list
+      MARS-indexed dollar limit on net capital loss deductible
+      against ordinary income (Schedule D line 21 cap)
     MARS: int
       Filing marital status (1=single, 2=joint, 3=separate,
                              4=household-head, 5=widow(er))
-    e00900: float
-      Schedule C business net profit/loss for filing unit
-    e01100: float
-      Capital gain distributions not reported on Schedule D
-    e01200: float
-      Other net gain/loss from Form 4797
-    e01400: float
-      Taxable IRA distributions
-    e01700: float
-      Taxable pensions and annunities
-    e02000: float
-      Schedule E total rental, royalty, partnership, S-corporation,
-      etc, income/loss (includes e26270 and e27200)
-    e02100: float
-      Farm net income/loss for filing unit from Schedule F
-    e02300: float
-      Unemployment insurance benefits
-    e00400: float
-      Tax-exempt interest income
-    e02400: float
-      Total social security (OASDI) benefits
-    c02900: float
-      Total of all "above the line" income adjustments to get AGI
-    e03210: float
-      Student loan interest
-    e03230: float
-      Tuition and fees from Form 8917
-    e03240: float
-      Domestic production activities from Form 8903
-    c01000: float
-      Limitation on capital losses
     c23650: float
-      Net capital gains (long and short term) before exclusion
-    ymod: float
-      Variable that is used in OASDI benefit taxation logic
-    ymod1: float
-      Variable that is included in AGI
-    invinc_agi_ec: float
-      Exclusion of investment income from AGI
+      Net capital gain/(loss) before loss limitation
+      (Schedule D line 16)
+    c01000: float
+      Net capital gain/(loss) after loss limitation
+      (Schedule D line 21 / Form 1040 line 7)
 
     Returns
     -------
-    c01000: float
-      Limitation on capital losses
     c23650: float
-      Net capital gains (long and short term) before exclusion
-    ymod: float
-      Variable that is used in OASDI benefit taxation logic
-    ymod1: float
-      Variable that is included in AGI
-    invinc_agi_ec: float
-      Exclusion of investment income from AGI
+      Net capital gain/(loss) before loss limitation
+    c01000: float
+      Net capital gain/(loss) after loss limitation
     """
-    # net capital gain (long term + short term) before exclusion
+    # Schedule D line 16: combine net short-term and net long-term
     c23650 = p23250 + p22250
-    # limitation on capital losses
+    # Schedule D line 21: cap any net loss at MARS-indexed limit
     c01000 = max((-1 * Capital_loss_limitation[MARS - 1]), c23650)
-    # compute total investment income
+    return (c23650, c01000)
+
+
+@iterate_jit(nopython=True)
+def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
+              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
+              e02300, e02400, c01000, c02900, e03210, e03230, e03240,
+              ALD_StudentLoan_hc, ALD_InvInc_ec_rt, invinc_ec_base,
+              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
+              ALD_BusinessLosses_c, MARS,
+              ymod, ymod1, invinc_agi_ec):
+    """
+    Builds ymod1 (Form 1040 income lines + Schedule 1 Part I, the
+    AGI building-block consumed by AGI()) and ymod (the modified-AGI
+    used by SSBenefits to determine the taxable portion of OASDI
+    benefits). Reform-only investment-income and QDCG exclusions
+    are applied here.
+
+    Parameters
+    ----------
+    e00200: float
+      Wages, salaries, tips (Form 1040 line 1)
+    e00300: float
+      Taxable interest (Form 1040 line 2b)
+    e00400: float
+      Tax-exempt interest (Form 1040 line 2a; not in AGI but used
+      in the SS-benefits modAGI)
+    e00600: float
+      Ordinary dividends (Form 1040 line 3b)
+    e00650: float
+      Qualified dividends (Form 1040 line 3a; subset of e00600)
+    e00700: float
+      Taxable refunds of state and local income taxes
+      (Schedule 1 line 1)
+    e00800: float
+      Alimony received (Schedule 1 line 2a)
+    e00900: float
+      Schedule C business net profit/(loss) (Schedule 1 line 3)
+    e01100: float
+      Capital gain distributions not reported on Schedule D
+    e01200: float
+      Other gain/(loss) from Form 4797 (Schedule 1 line 4)
+    e01400: float
+      Taxable IRA distributions (Form 1040 line 4b)
+    e01700: float
+      Taxable pensions and annuities (Form 1040 line 5b)
+    e02000: float
+      Schedule E rental, royalty, partnership, S-corp, etc.
+      income/(loss); includes e26270 and e27200 (Schedule 1 line 5)
+    e02100: float
+      Schedule F farm net income/(loss) (Schedule 1 line 6)
+    e02300: float
+      Unemployment compensation (Schedule 1 line 7)
+    e02400: float
+      Total social security (OASDI) benefits (Form 1040 line 6a)
+    c01000: float
+      Net capital gain/(loss) after loss limitation
+      (Form 1040 line 7); set by CapGainsLoss
+    c02900: float
+      Total above-the-line adjustments (Schedule 1 line 26)
+    e03210: float
+      Student loan interest deduction (pre-haircut)
+    e03230: float
+      Tuition and fees deduction (legacy)
+    e03240: float
+      Domestic production activities deduction (legacy)
+    ALD_StudentLoan_hc: float
+      Reform haircut on the student loan interest deduction
+    ALD_InvInc_ec_rt: float
+      Reform exclusion rate for investment income
+    invinc_ec_base: float
+      Base investment income subject to the reform exclusion
+      (set by ALD_InvInc_ec_base)
+    CG_nodiff: bool
+      Reform: long-term capital gains and qualified dividends taxed
+      at ordinary rates (no preferential treatment)
+    CG_ec: float
+      Reform: dollar amount of QDCG excluded from AGI when CG_nodiff
+    CG_reinvest_ec_rt: float
+      Reform: fraction of QDCG above CG_ec excluded from AGI when
+      CG_nodiff
+    ALD_BusinessLosses_c: list
+      Reform: MARS-indexed cap on combined Sch C + Sch E losses
+    MARS: int
+      Filing marital status
+    ymod: float
+      Modified-AGI used by SSBenefits to determine taxable portion
+      of OASDI benefits
+    ymod1: float
+      AGI build-up: Form 1040 income lines + Schedule 1 Part I,
+      net of reform investment-income and QDCG exclusions
+    invinc_agi_ec: float
+      Reform exclusion of investment income from AGI
+
+    Returns
+    -------
+    ymod: float
+    ymod1: float
+    invinc_agi_ec: float
+    """
+    # investment income (1040 lines 2b, 3b, 7 + Sch 1 line 4 + capgain distrib)
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
-    # compute exclusion of investment income from AGI
+    # reform: exclude a fraction of investment income from AGI
     invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
-    # compute ymod1 variable that is included in AGI
+    # ymod1 = Form 1040 income lines + Schedule 1 Part I
     ymod1 = (e00200 + e00700 + e00800 + e01400 + e01700 +
              invinc - invinc_agi_ec + e02100 + e02300 +
              max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
     if CG_nodiff:
-        # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
+        # reform: when QDCG receive no preferential rates, partially
+        # exclude (qualified dividends + net capital gain) from AGI
         qdcg_pos = max(0., e00650 + c01000)
         qdcg_exclusion = (min(CG_ec, qdcg_pos) +
                           CG_reinvest_ec_rt * max(0., qdcg_pos - CG_ec))
         ymod1 = max(0., ymod1 - qdcg_exclusion)
         invinc_agi_ec += qdcg_exclusion
-    # compute ymod variable that is used in OASDI benefit taxation logic
+    # ymod = modAGI used by the SS-benefits worksheet (Pub. 915)
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
-    return (c01000, c23650, ymod, ymod1, invinc_agi_ec)
+    return (ymod, ymod1, invinc_agi_ec)
 
 
 @iterate_jit(nopython=True)
@@ -3124,7 +3154,8 @@ def AdditionalCTC(actc_claim_thd, codtc_limited,
     if CTC_is_refundable:  # reform-only: refundable portion handled in Part I
         line16b = 0.
     else:
-        # reform-only: redefine "qualifying child" as under 18 instead of under 17
+        # reform-only: redefine "qualifying child" as under 18 instead
+        #              of under 17
         if CTC_include17:
             tu18 = int(age_head < 18)   # taxpayer is under age 18
             su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
@@ -3164,7 +3195,8 @@ def AdditionalCTC(actc_claim_thd, codtc_limited,
                 line25 = c59660 + e11200
                 # Sch 8812 line 26: line 24 minus line 25 (not less than 0)
                 line26 = max(0., line24 - line25)
-                # Sch 8812 line 27 (Part II-C): min(line 17, max(line 20, line 26))
+                # Sch 8812 line 27 (Part II-b3157
+                #   min(line 17, max(line 20, line 26))
                 line27 = max(line20, line26)
                 c11070 = min(line17, line27)
 
