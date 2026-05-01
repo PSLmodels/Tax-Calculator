@@ -13,7 +13,8 @@ import pandas as pd
 import paramtools
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
-                                   DependentCare, ALD_InvInc_ec_base, CapGains,
+                                   DependentCare, ALD_InvInc_ec_base,
+                                   CapGainsLoss, AGIIncome,
                                    SSBenefits, UBI, AGI, MiscDed,
                                    ItemDed, StdDed, AdditionalMedicareTax,
                                    F2441, EITC, RefundablePayrollTaxCredit,
@@ -1386,7 +1387,8 @@ class Calculator():
         DependentCare(self.__policy, self.__records)
         Adj(self.__policy, self.__records)
         ALD_InvInc_ec_base(self.__policy, self.__records)
-        CapGains(self.__policy, self.__records)
+        CapGainsLoss(self.__policy, self.__records)
+        AGIIncome(self.__policy, self.__records)
         SSBenefits(self.__policy, self.__records)
         AGI(self.__policy, self.__records)
         MiscDed(self.__policy, self.__records)
