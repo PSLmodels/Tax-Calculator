@@ -1132,30 +1132,42 @@
         <span class="n">II_em</span><span class="p">,</span> <span class="n">II_em_ps</span><span class="p">,</span> <span class="n">II_em_po_step_size</span><span class="p">,</span> <span class="n">II_em_prt</span><span class="p">,</span> <span class="n">II_no_em_nu18</span><span class="p">,</span>
         <span class="n">e02300</span><span class="p">,</span> <span class="n">UI_thd</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">pre_c04600</span><span class="p">,</span> <span class="n">c04600</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes Adjusted Gross Income (AGI), c00100, and</span>
-<span class="sd">    compute personal exemption amount, c04600.</span>
+<span class="sd">    Computes Adjusted Gross Income (c00100, Form 1040 line 11) and</span>
+<span class="sd">    the reform-only personal exemption amount (pre_c04600 and c04600;</span>
+<span class="sd">    no current-law form correspondence — TCJA repealed exemptions).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    -- AGI inputs (Form 1040 lines 9-11) --</span>
 <span class="sd">    ymod1: float</span>
-<span class="sd">        Variable that is included in AGI</span>
+<span class="sd">        Form 1040 lines 1z+2b+3b+4b+5b+7a+8 (total income excluding</span>
+<span class="sd">        taxable Social Security benefits)</span>
 <span class="sd">    c02500: float</span>
-<span class="sd">        Social security (OASDI) benefits included in AGI</span>
+<span class="sd">        Form 1040 line 6b: taxable Social Security (OASDI) benefits</span>
 <span class="sd">    c02900: float</span>
-<span class="sd">        Total of all &quot;above the line&quot; income adjustments to get AGI</span>
-<span class="sd">    XTOT: int</span>
-<span class="sd">        Total number of exemptions for filing unit</span>
+<span class="sd">        Form 1040 line 10: total above-the-line adjustments</span>
+<span class="sd">        (Schedule 1, Part II, line 26)</span>
+<span class="sd">    taxable_ubi: float</span>
+<span class="sd">        Reform-only: amount of UBI that is added to AGI</span>
+<span class="sd">    -- UI exclusion inputs (reform parameter; 2020 ARPA-style) --</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                               4=household-head, 5=widow(er))</span>
+<span class="sd">    e02300: float</span>
+<span class="sd">        Unemployment compensation</span>
+<span class="sd">    UI_thd: list</span>
+<span class="sd">        AGI threshold for unemployment compensation exclusion</span>
+<span class="sd">    UI_em: float</span>
+<span class="sd">        Amount of unemployment compensation excluded from AGI</span>
+<span class="sd">    -- Personal exemption inputs (reform / pre-TCJA only) --</span>
+<span class="sd">    XTOT: int</span>
+<span class="sd">        Total number of exemptions for filing unit</span>
 <span class="sd">    DSI: int</span>
 <span class="sd">        1 if claimed as dependent on another return; otherwise 0</span>
 <span class="sd">    exact: int</span>
 <span class="sd">        Whether or not to do rounding of phaseout fraction</span>
 <span class="sd">    nu18: int</span>
 <span class="sd">        Number of people in the tax unit under 18</span>
-<span class="sd">    taxable_ubi: float</span>
-<span class="sd">        Amount of UBI that is taxable (is added to AGI)</span>
 <span class="sd">    II_em: float</span>
 <span class="sd">        Personal and dependent exemption amount</span>
 <span class="sd">    II_em_ps: list</span>
@@ -1166,49 +1178,57 @@
 <span class="sd">        Personal exemption phaseout rate</span>
 <span class="sd">    II_no_em_nu18: float</span>
 <span class="sd">        Repeal personal exemptions for dependents under age 18</span>
-<span class="sd">    e02300: float</span>
-<span class="sd">        Unemployment compensation</span>
-<span class="sd">    UI_thd: list</span>
-<span class="sd">        AGI threshold for unemployment compensation exclusion</span>
-<span class="sd">    UI_em: float</span>
-<span class="sd">        Amount of unemployment compensation excluded from AGI</span>
+<span class="sd">    -- Outputs (also accepted as inputs by iterate_jit) --</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">        Adjusted Gross Income (AGI), Form 1040 line 11</span>
 <span class="sd">    pre_c04600: float</span>
-<span class="sd">        Personal exemption before phase-out</span>
+<span class="sd">        Personal exemption before phase-out (reform-only)</span>
 <span class="sd">    c04600: float</span>
-<span class="sd">        Personal exemptions after phase-out</span>
+<span class="sd">        Personal exemptions after phase-out (reform-only)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">        Adjusted Gross Income (AGI), Form 1040 line 11</span>
 <span class="sd">    pre_c04600: float</span>
-<span class="sd">        Personal exemption before phase-out</span>
+<span class="sd">        Personal exemption before phase-out (reform-only)</span>
 <span class="sd">    c04600: float</span>
-<span class="sd">        Personal exemptions after phase-out</span>
+<span class="sd">        Personal exemptions after phase-out (reform-only)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># calculate AGI assuming no foreign earned income exclusion</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Form 1040 line 11: Adjusted Gross Income</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># line 9 (total income) - line 10 (Sch 1 line 26 adjustments)</span>
+    <span class="c1"># = line 11 (AGI); reform-only taxable_ubi is added in.</span>
     <span class="n">c00100</span> <span class="o">=</span> <span class="n">ymod1</span> <span class="o">+</span> <span class="n">c02500</span> <span class="o">-</span> <span class="n">c02900</span> <span class="o">+</span> <span class="n">taxable_ubi</span>
-    <span class="c1"># calculate UI exclusion (e.g., from 2020 AGI due to ARPA)</span>
+    <span class="c1"># UI exclusion (2020 ARPA-style; reform parameters UI_em / UI_thd)</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">e02300</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">UI_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
         <span class="n">ui_excluded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e02300</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ui_excluded</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">c00100</span> <span class="o">-=</span> <span class="n">ui_excluded</span>
-    <span class="c1"># calculate personal exemption amount</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Personal exemption pre-phaseout (reform / pre-TCJA only;</span>
+    <span class="c1"># no line on the 2025 Form 1040)</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># pre_c04600 = XTOT * II_em, with optional under-18-dep repeal</span>
+    <span class="c1"># (II_no_em_nu18) and dependent-filer override (DSI).</span>
     <span class="k">if</span> <span class="n">II_no_em_nu18</span><span class="p">:</span>  <span class="c1"># repeal of personal exemptions for deps. under 18</span>
         <span class="n">pre_c04600</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">nu18</span><span class="p">)</span> <span class="o">*</span> <span class="n">II_em</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">pre_c04600</span> <span class="o">=</span> <span class="n">XTOT</span> <span class="o">*</span> <span class="n">II_em</span>
     <span class="k">if</span> <span class="n">DSI</span><span class="p">:</span>
         <span class="n">pre_c04600</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="c1"># phase-out personal exemption amount</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Personal exemption phase-out (PEP)</span>
+    <span class="c1"># Pre-TCJA &quot;Deduction for Exemptions Worksheet&quot; (lines 5-7);</span>
+    <span class="c1"># reform-only.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
-        <span class="n">line5</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">II_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="n">line6</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">line5</span> <span class="o">/</span> <span class="n">II_em_po_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="n">line7</span> <span class="o">=</span> <span class="n">II_em_prt</span> <span class="o">*</span> <span class="n">line6</span>
-        <span class="n">c04600</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_c04600</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">line7</span><span class="p">))</span>
+        <span class="n">pep_line5</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">II_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">pep_line6</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">pep_line5</span> <span class="o">/</span> <span class="n">II_em_po_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">pep_line7</span> <span class="o">=</span> <span class="n">II_em_prt</span> <span class="o">*</span> <span class="n">pep_line6</span>
+        <span class="n">c04600</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_c04600</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">pep_line7</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation needed for sensible mtr calculation</span>
         <span class="n">dispc_numer</span> <span class="o">=</span> <span class="n">II_em_prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">II_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">dispc_denom</span> <span class="o">=</span> <span class="n">II_em_po_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
