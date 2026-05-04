@@ -109,7 +109,7 @@
 
     // Group P: Alimony
     "ALD_AlimonyPaid_hc": {"2026": 1.0},
-    "ALD_AlimonyReceived_hc": {"2026": 0.0},
+    "AlimonyReceived_frac_in_AGI": {"2026": 0.0},
 
     // New OBBBA parameters
     "OvertimeIncomeDed_c": {

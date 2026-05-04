@@ -60,7 +60,7 @@
     "AMT_em_pe": {"2017": 249450},
     "ALD_BusinessLosses_c": {"2017": [9e99, 9e99, 9e99, 9e99, 9e99]},
     "ALD_AlimonyPaid_hc": {"2019": 0},
-    "ALD_AlimonyReceived_hc": {"2019": 1},
+    "AlimonyReceived_frac_in_AGI": {"2019": 1},
     "ALD_DomesticProduction_hc": {"2018": 0},
     "ID_prt": {"2018": 0.03},
     "ID_crt": {"2018": 0.80},
