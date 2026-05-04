@@ -378,13 +378,12 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
         Student loan interest paid (Sch 1 line 21)
     e03230: float
         Tuition and fees, Form 8917
-        (legacy; expired after 2020)
+        (legacy; expired after 2017)
     e03240: float
         Domestic production activity deduction, Form 8903
         (legacy; expired after 2017)
     e00800: float
-        Alimony received
-        (Sch 1 Part I line 2a; reform-only AGI exclusion via haircut)
+        Alimony received (Sch 1 Part I line 2a)
     care_deduction: float
         Dependent care expense deduction (reform construct)
     ALD_EducatorExpenses_hc: float
@@ -426,12 +425,12 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
         (1. - ALD_SelfEmp_HealthIns_hc) * e03270 +   # Sch 1 line 17
         (1. - ALD_EarlyWithdraw_hc) * e03400 +       # Sch 1 line 18
         (1. - ALD_AlimonyPaid_hc) * e03500 +         # Sch 1 line 19a
+        (1. - ALD_AlimonyReceived_hc) * e00800 +     #
         (1. - ALD_IRAContributions_hc) * e03150 +    # Sch 1 line 20
         (1. - ALD_StudentLoan_hc) * e03210 +         # Sch 1 line 21
-        (1. - ALD_Tuition_hc) * e03230 +             # expired post-2017
-        (1. - ALD_DomesticProduction_hc) * e03240 +  # expired post-2017
-        (1. - ALD_AlimonyReceived_hc) * e00800 +     # reform construct
-        care_deduction                               # reform construct
+        (1. - ALD_Tuition_hc) * e03230 +             # ALD expired post-2017
+        (1. - ALD_DomesticProduction_hc) * e03240 +  # ALD expired post-2017
+        care_deduction                               # ALD reform construct
     )
     return c02900
 
