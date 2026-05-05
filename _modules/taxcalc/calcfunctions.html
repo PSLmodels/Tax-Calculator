@@ -739,13 +739,12 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">Adj</span><span class="p">(</span><span class="n">e03220</span><span class="p">,</span> <span class="n">e03290</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e03300</span><span class="p">,</span> <span class="n">e03270</span><span class="p">,</span>
         <span class="n">e03400</span><span class="p">,</span> <span class="n">e03500</span><span class="p">,</span> <span class="n">e03150</span><span class="p">,</span> <span class="n">e03210</span><span class="p">,</span>
-        <span class="n">e03230</span><span class="p">,</span> <span class="n">e03240</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span> <span class="n">care_deduction</span><span class="p">,</span>
+        <span class="n">e03230</span><span class="p">,</span> <span class="n">e03240</span><span class="p">,</span> <span class="n">care_deduction</span><span class="p">,</span>
         <span class="n">ALD_EducatorExpenses_hc</span><span class="p">,</span> <span class="n">ALD_HSADeduction_hc</span><span class="p">,</span>
         <span class="n">ALD_KEOGH_SEP_hc</span><span class="p">,</span> <span class="n">ALD_SelfEmp_HealthIns_hc</span><span class="p">,</span>
         <span class="n">ALD_EarlyWithdraw_hc</span><span class="p">,</span> <span class="n">ALD_AlimonyPaid_hc</span><span class="p">,</span>
         <span class="n">ALD_IRAContributions_hc</span><span class="p">,</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span>
         <span class="n">ALD_Tuition_hc</span><span class="p">,</span> <span class="n">ALD_DomesticProduction_hc</span><span class="p">,</span>
-        <span class="n">ALD_AlimonyReceived_hc</span><span class="p">,</span>
         <span class="n">c02900</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).</span>
@@ -774,13 +773,10 @@
 <span class="sd">        Student loan interest paid (Sch 1 line 21)</span>
 <span class="sd">    e03230: float</span>
 <span class="sd">        Tuition and fees, Form 8917</span>
-<span class="sd">        (legacy; expired after 2020)</span>
+<span class="sd">        (legacy; expired after 2017)</span>
 <span class="sd">    e03240: float</span>
 <span class="sd">        Domestic production activity deduction, Form 8903</span>
 <span class="sd">        (legacy; expired after 2017)</span>
-<span class="sd">    e00800: float</span>
-<span class="sd">        Alimony received</span>
-<span class="sd">        (Sch 1 Part I line 2a; reform-only AGI exclusion via haircut)</span>
 <span class="sd">    care_deduction: float</span>
 <span class="sd">        Dependent care expense deduction (reform construct)</span>
 <span class="sd">    ALD_EducatorExpenses_hc: float</span>
@@ -803,8 +799,6 @@
 <span class="sd">        Tuition and fees haircut</span>
 <span class="sd">    ALD_DomesticProduction_hc: float</span>
 <span class="sd">        Domestic production haircut</span>
-<span class="sd">    ALD_AlimonyReceived_hc: float</span>
-<span class="sd">        Alimony received deduction haircut</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -824,10 +818,9 @@
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_AlimonyPaid_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03500</span> <span class="o">+</span>         <span class="c1"># Sch 1 line 19a</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_IRAContributions_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03150</span> <span class="o">+</span>    <span class="c1"># Sch 1 line 20</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03210</span> <span class="o">+</span>         <span class="c1"># Sch 1 line 21</span>
-        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Tuition_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03230</span> <span class="o">+</span>             <span class="c1"># expired post-2017</span>
-        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_DomesticProduction_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03240</span> <span class="o">+</span>  <span class="c1"># expired post-2017</span>
-        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_AlimonyReceived_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e00800</span> <span class="o">+</span>     <span class="c1"># reform construct</span>
-        <span class="n">care_deduction</span>                               <span class="c1"># reform construct</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Tuition_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03230</span> <span class="o">+</span>             <span class="c1"># ALD expired post-2017</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_DomesticProduction_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03240</span> <span class="o">+</span>  <span class="c1"># ALD expired post-2017</span>
+        <span class="n">care_deduction</span>                               <span class="c1"># ALD reform construct</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">c02900</span>
 
@@ -922,7 +915,7 @@
               <span class="n">e02300</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">e03210</span><span class="p">,</span> <span class="n">e03230</span><span class="p">,</span> <span class="n">e03240</span><span class="p">,</span>
               <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span> <span class="n">ALD_InvInc_ec_rt</span><span class="p">,</span> <span class="n">invinc_ec_base</span><span class="p">,</span>
               <span class="n">CG_nodiff</span><span class="p">,</span> <span class="n">CG_ec</span><span class="p">,</span> <span class="n">CG_reinvest_ec_rt</span><span class="p">,</span>
-              <span class="n">ALD_BusinessLosses_c</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
+              <span class="n">ALD_BusinessLosses_c</span><span class="p">,</span> <span class="n">AlimonyReceived_frac_in_AGI</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
               <span class="n">ymod</span><span class="p">,</span> <span class="n">ymod1</span><span class="p">,</span> <span class="n">invinc_agi_ec</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Builds ymod1 (Form 1040 income lines + Schedule 1 Part I, the</span>
@@ -948,7 +941,9 @@
 <span class="sd">      Taxable refunds of state and local income taxes</span>
 <span class="sd">      (Schedule 1 line 1)</span>
 <span class="sd">    e00800: float</span>
-<span class="sd">      Alimony received (Schedule 1 line 2a)</span>
+<span class="sd">      Alimony received, before TCJA inclusion gating (Schedule 1</span>
+<span class="sd">      line 2a; included in ymod1 only to the extent of</span>
+<span class="sd">      AlimonyReceived_frac_in_AGI)</span>
 <span class="sd">    e00900: float</span>
 <span class="sd">      Schedule C business net profit/(loss) (Schedule 1 line 3)</span>
 <span class="sd">    e01100: float</span>
@@ -996,6 +991,11 @@
 <span class="sd">      CG_nodiff</span>
 <span class="sd">    ALD_BusinessLosses_c: list</span>
 <span class="sd">      Reform: MARS-indexed cap on combined Sch C + Sch E losses</span>
+<span class="sd">    AlimonyReceived_frac_in_AGI: float</span>
+<span class="sd">      Fraction of e00800 (alimony received) included in AGI.</span>
+<span class="sd">      1.0 pre-TCJA (alimony was income to the recipient); 0.0 under</span>
+<span class="sd">      TCJA (alimony received excluded from income for divorce or</span>
+<span class="sd">      separation agreements executed after 2018-12-31)</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">      Filing marital status</span>
 <span class="sd">    ymod: float</span>
@@ -1018,7 +1018,12 @@
     <span class="c1"># reform: exclude a fraction of investment income from AGI</span>
     <span class="n">invinc_agi_ec</span> <span class="o">=</span> <span class="n">ALD_InvInc_ec_rt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">invinc_ec_base</span><span class="p">)</span>
     <span class="c1"># ymod1 = Form 1040 income lines + Schedule 1 Part I</span>
-    <span class="n">ymod1</span> <span class="o">=</span> <span class="p">(</span><span class="n">e00200</span> <span class="o">+</span> <span class="n">e00700</span> <span class="o">+</span> <span class="n">e00800</span> <span class="o">+</span> <span class="n">e01400</span> <span class="o">+</span> <span class="n">e01700</span> <span class="o">+</span>
+    <span class="c1"># (e00800 = alimony received, Sch 1 line 2a, included only to the</span>
+    <span class="c1"># extent of AlimonyReceived_frac_in_AGI -- TCJA excludes alimony</span>
+    <span class="c1"># received from income for post-2018 divorces.)</span>
+    <span class="n">ymod1</span> <span class="o">=</span> <span class="p">(</span><span class="n">e00200</span> <span class="o">+</span> <span class="n">e00700</span> <span class="o">+</span>
+             <span class="n">AlimonyReceived_frac_in_AGI</span> <span class="o">*</span> <span class="n">e00800</span> <span class="o">+</span>
+             <span class="n">e01400</span> <span class="o">+</span> <span class="n">e01700</span> <span class="o">+</span>
              <span class="n">invinc</span> <span class="o">-</span> <span class="n">invinc_agi_ec</span> <span class="o">+</span> <span class="n">e02100</span> <span class="o">+</span> <span class="n">e02300</span> <span class="o">+</span>
              <span class="nb">max</span><span class="p">(</span><span class="n">e00900</span> <span class="o">+</span> <span class="n">e02000</span><span class="p">,</span> <span class="o">-</span><span class="n">ALD_BusinessLosses_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
     <span class="k">if</span> <span class="n">CG_nodiff</span><span class="p">:</span>

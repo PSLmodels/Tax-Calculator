@@ -508,7 +508,7 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-keogh-sep-hc"><code class="docutils literal notranslate"><span class="pre">ALD_KEOGH_SEP_hc</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-earlywithdraw-hc"><code class="docutils literal notranslate"><span class="pre">ALD_EarlyWithdraw_hc</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-alimonypaid-hc"><code class="docutils literal notranslate"><span class="pre">ALD_AlimonyPaid_hc</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-alimonyreceived-hc"><code class="docutils literal notranslate"><span class="pre">ALD_AlimonyReceived_hc</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#alimonyreceived-frac-in-agi"><code class="docutils literal notranslate"><span class="pre">AlimonyReceived_frac_in_AGI</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-educatorexpenses-hc"><code class="docutils literal notranslate"><span class="pre">ALD_EducatorExpenses_hc</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-hsadeduction-hc"><code class="docutils literal notranslate"><span class="pre">ALD_HSADeduction_hc</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-iracontributions-hc"><code class="docutils literal notranslate"><span class="pre">ALD_IRAContributions_hc</span></code></a></li>
@@ -1332,10 +1332,10 @@ for: [single, mjoint, mseparate, headhh, widow]
 <em>Valid Range:</em> min = 0 and max = 1
 <em>Out-of-Range Action:</em> error</p>
 </section>
-<section id="ald-alimonyreceived-hc">
-<h4><code class="docutils literal notranslate"><span class="pre">ALD_AlimonyReceived_hc</span></code><a class="headerlink" href="#ald-alimonyreceived-hc" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> Under pre-TCJA law, none of alimony received is taken as an adjustment from gross income in arriving at AGI. This haircut can be used to change the deduction allowed.
-<em>Notes:</em> The final adjustment amount would be (1-Haircut)*AlimonyReceived.
+<section id="alimonyreceived-frac-in-agi">
+<h4><code class="docutils literal notranslate"><span class="pre">AlimonyReceived_frac_in_AGI</span></code><a class="headerlink" href="#alimonyreceived-frac-in-agi" title="Link to this heading">#</a></h4>
+<p><em>Description:</em> Fraction of alimony received (input variable e00800) that is included in AGI as Schedule 1 Part I line 2a income. Under pre-TCJA law, recipients had to include alimony as taxable income (value 1.0). TCJA excluded alimony received from income for divorce or separation agreements executed after 2018-12-31 (value 0.0).
+<em>Notes:</em> The amount of alimony added to AGI equals AlimonyReceived_frac_in_AGI * AlimonyReceived.
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
 <em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False
 <em>Value Type:</em> float
@@ -5286,7 +5286,7 @@ for: [single, mjoint, mseparate, headhh, widow]
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-keogh-sep-hc"><code class="docutils literal notranslate"><span class="pre">ALD_KEOGH_SEP_hc</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-earlywithdraw-hc"><code class="docutils literal notranslate"><span class="pre">ALD_EarlyWithdraw_hc</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-alimonypaid-hc"><code class="docutils literal notranslate"><span class="pre">ALD_AlimonyPaid_hc</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-alimonyreceived-hc"><code class="docutils literal notranslate"><span class="pre">ALD_AlimonyReceived_hc</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#alimonyreceived-frac-in-agi"><code class="docutils literal notranslate"><span class="pre">AlimonyReceived_frac_in_AGI</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-educatorexpenses-hc"><code class="docutils literal notranslate"><span class="pre">ALD_EducatorExpenses_hc</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-hsadeduction-hc"><code class="docutils literal notranslate"><span class="pre">ALD_HSADeduction_hc</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ald-iracontributions-hc"><code class="docutils literal notranslate"><span class="pre">ALD_IRAContributions_hc</span></code></a></li>
