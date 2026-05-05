@@ -377,7 +377,7 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
         Student loan interest paid (Sch 1 line 21)
     e03230: float
         Tuition and fees, Form 8917
-        (legacy; expired after 2017)
+        (legacy; permanently repealed for tax years after 2020)
     e03240: float
         Domestic production activity deduction, Form 8903
         (legacy; expired after 2017)
@@ -422,7 +422,7 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
         (1. - ALD_AlimonyPaid_hc) * e03500 +         # Sch 1 line 19a
         (1. - ALD_IRAContributions_hc) * e03150 +    # Sch 1 line 20
         (1. - ALD_StudentLoan_hc) * e03210 +         # Sch 1 line 21
-        (1. - ALD_Tuition_hc) * e03230 +             # ALD expired post-2017
+        (1. - ALD_Tuition_hc) * e03230 +             # ALD repealed post-2020
         (1. - ALD_DomesticProduction_hc) * e03240 +  # ALD expired post-2017
         care_deduction                               # ALD reform construct
     )
