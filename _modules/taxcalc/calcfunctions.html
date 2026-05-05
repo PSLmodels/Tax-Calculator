@@ -1096,6 +1096,17 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates total and taxable Universal Basic Income (UBI) amount.</span>
 
+<span class="sd">    Reform construct with no IRS-form correspondence. The per-person UBI</span>
+<span class="sd">    parameters (UBI_u18, UBI_1820, UBI_21) default to 0 in current law,</span>
+<span class="sd">    so this function is inert unless a reform activates UBI.</span>
+
+<span class="sd">    Outputs flow as follows:</span>
+<span class="sd">      ubi            -&gt; BenefitPrograms (benefit_cost_total and, via</span>
+<span class="sd">                        BEN_*_value, benefit_value_total which feeds</span>
+<span class="sd">                        expanded_income)</span>
+<span class="sd">      taxable_ubi    -&gt; AGI (added to c00100)</span>
+<span class="sd">      nontaxable_ubi -&gt; Records-bound output only; not consumed downstream</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    nu18: int</span>
@@ -1111,22 +1122,23 @@
 <span class="sd">    UBI_21: float</span>
 <span class="sd">        UBI benefit for those 21 or more</span>
 <span class="sd">    UBI_ecrt: float</span>
-<span class="sd">        Fraction of UBI benefits that are not included in AGI</span>
+<span class="sd">        Fraction of UBI benefits excluded from AGI; the complementary</span>
+<span class="sd">        fraction (1 - UBI_ecrt) is the taxable share added to AGI</span>
 <span class="sd">    ubi: float</span>
-<span class="sd">        Total UBI received by the tax unit (is included in expanded_income)</span>
+<span class="sd">        Total UBI received by the tax unit</span>
 <span class="sd">    taxable_ubi: float</span>
 <span class="sd">        Amount of UBI that is taxable (is added to AGI)</span>
 <span class="sd">    nontaxable_ubi: float</span>
-<span class="sd">        Amount of UBI that is nontaxable</span>
+<span class="sd">        Amount of UBI that is excluded from AGI</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ubi: float</span>
-<span class="sd">        Total UBI received by the tax unit (is included in expanded_income)</span>
+<span class="sd">        Total UBI received by the tax unit</span>
 <span class="sd">    taxable_ubi: float</span>
 <span class="sd">        Amount of UBI that is taxable (is added to AGI)</span>
 <span class="sd">    nontaxable_ubi: float</span>
-<span class="sd">        Amount of UBI that is nontaxable</span>
+<span class="sd">        Amount of UBI that is excluded from AGI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ubi</span> <span class="o">=</span> <span class="n">nu18</span> <span class="o">*</span> <span class="n">UBI_u18</span> <span class="o">+</span> <span class="n">n1820</span> <span class="o">*</span> <span class="n">UBI_1820</span> <span class="o">+</span> <span class="n">n21</span> <span class="o">*</span> <span class="n">UBI_21</span>
     <span class="n">taxable_ubi</span> <span class="o">=</span> <span class="n">ubi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">UBI_ecrt</span><span class="p">)</span>
