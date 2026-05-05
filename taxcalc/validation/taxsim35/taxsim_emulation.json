@@ -26,10 +26,11 @@
 //     investment income in cases where a marginal increase in investment
 //     income takes a filing unit above the ceiling.
 
-//  (3) ALD_AlimonyReceived_hc = 1.0 (rather than 0)
-//  TAXSIM35 nonproperty income is mapped into AlimonyRecieved
-//  which had its haircut change from 1.0 to 0.0, a change that
-//  TAXSIM35 has not implemented for good reason given this:
+//  (3) AlimonyReceived_frac_in_AGI = 1.0 (rather than 0)
+//  TAXSIM35 nonproperty income is mapped into AlimonyReceived,
+//  which under current law is fully excluded from AGI from 2019
+//  onward (TCJA), but TAXSIM35 has not implemented that exclusion
+//  for good reason given this:
 //      IRS: 'Beginning Jan. 1, 2019, alimony or separate
 //      maintenance payments are not deductible from the
 //      income of the payer spouse, or includable in the
@@ -41,5 +42,5 @@
 
     "EITC_excess_InvestIncome_rt": {"2013": 1.0},
 
-    "ALD_AlimonyReceived_hc": {"2019": 1.0}
+    "AlimonyReceived_frac_in_AGI": {"2019": 1.0}
 }

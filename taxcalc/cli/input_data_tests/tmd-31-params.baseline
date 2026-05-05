@@ -21,7 +21,7 @@
 2031 ALD_KEOGH_SEP_hc 0.0
 2031 ALD_EarlyWithdraw_hc 0.0
 2031 ALD_AlimonyPaid_hc 1.0
-2031 ALD_AlimonyReceived_hc 0.0
+2031 AlimonyReceived_frac_in_AGI 0.0
 2031 ALD_EducatorExpenses_hc 0.0
 2031 ALD_HSADeduction_hc 0.0
 2031 ALD_IRAContributions_hc 0.0

@@ -154,7 +154,7 @@
         "_ALD_AlimonyPaid_hc":
             {"2019": [1],
              "2026": [0]},
-        "_ALD_AlimonyReceived_hc":
+        "_AlimonyReceived_frac_in_AGI":
             {"2019": [0],
              "2026": [1]},
         "_ALD_BusinessLosses_c":

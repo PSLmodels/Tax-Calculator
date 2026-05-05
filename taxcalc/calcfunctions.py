@@ -343,13 +343,12 @@ def DependentCare(nu13, elderly_dependents, earned,
 @iterate_jit(nopython=True)
 def Adj(e03220, e03290, c03260, e03300, e03270,
         e03400, e03500, e03150, e03210,
-        e03230, e03240, e00800, care_deduction,
+        e03230, e03240, care_deduction,
         ALD_EducatorExpenses_hc, ALD_HSADeduction_hc,
         ALD_KEOGH_SEP_hc, ALD_SelfEmp_HealthIns_hc,
         ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc,
         ALD_IRAContributions_hc, ALD_StudentLoan_hc,
         ALD_Tuition_hc, ALD_DomesticProduction_hc,
-        ALD_AlimonyReceived_hc,
         c02900):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
@@ -378,13 +377,10 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
         Student loan interest paid (Sch 1 line 21)
     e03230: float
         Tuition and fees, Form 8917
-        (legacy; expired after 2020)
+        (legacy; expired after 2017)
     e03240: float
         Domestic production activity deduction, Form 8903
         (legacy; expired after 2017)
-    e00800: float
-        Alimony received
-        (Sch 1 Part I line 2a; reform-only AGI exclusion via haircut)
     care_deduction: float
         Dependent care expense deduction (reform construct)
     ALD_EducatorExpenses_hc: float
@@ -407,8 +403,6 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
         Tuition and fees haircut
     ALD_DomesticProduction_hc: float
         Domestic production haircut
-    ALD_AlimonyReceived_hc: float
-        Alimony received deduction haircut
 
     Returns
     -------
@@ -428,10 +422,9 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
         (1. - ALD_AlimonyPaid_hc) * e03500 +         # Sch 1 line 19a
         (1. - ALD_IRAContributions_hc) * e03150 +    # Sch 1 line 20
         (1. - ALD_StudentLoan_hc) * e03210 +         # Sch 1 line 21
-        (1. - ALD_Tuition_hc) * e03230 +             # expired post-2017
-        (1. - ALD_DomesticProduction_hc) * e03240 +  # expired post-2017
-        (1. - ALD_AlimonyReceived_hc) * e00800 +     # reform construct
-        care_deduction                               # reform construct
+        (1. - ALD_Tuition_hc) * e03230 +             # ALD expired post-2017
+        (1. - ALD_DomesticProduction_hc) * e03240 +  # ALD expired post-2017
+        care_deduction                               # ALD reform construct
     )
     return c02900
 
@@ -526,7 +519,7 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
               e02300, e02400, c01000, c02900, e03210, e03230, e03240,
               ALD_StudentLoan_hc, ALD_InvInc_ec_rt, invinc_ec_base,
               CG_nodiff, CG_ec, CG_reinvest_ec_rt,
-              ALD_BusinessLosses_c, MARS,
+              ALD_BusinessLosses_c, AlimonyReceived_frac_in_AGI, MARS,
               ymod, ymod1, invinc_agi_ec):
     """
     Builds ymod1 (Form 1040 income lines + Schedule 1 Part I, the
@@ -552,7 +545,9 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
       Taxable refunds of state and local income taxes
       (Schedule 1 line 1)
     e00800: float
-      Alimony received (Schedule 1 line 2a)
+      Alimony received, before TCJA inclusion gating (Schedule 1
+      line 2a; included in ymod1 only to the extent of
+      AlimonyReceived_frac_in_AGI)
     e00900: float
       Schedule C business net profit/(loss) (Schedule 1 line 3)
     e01100: float
@@ -600,6 +595,11 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
       CG_nodiff
     ALD_BusinessLosses_c: list
       Reform: MARS-indexed cap on combined Sch C + Sch E losses
+    AlimonyReceived_frac_in_AGI: float
+      Fraction of e00800 (alimony received) included in AGI.
+      1.0 pre-TCJA (alimony was income to the recipient); 0.0 under
+      TCJA (alimony received excluded from income for divorce or
+      separation agreements executed after 2018-12-31)
     MARS: int
       Filing marital status
     ymod: float
@@ -622,7 +622,12 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
     # reform: exclude a fraction of investment income from AGI
     invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
     # ymod1 = Form 1040 income lines + Schedule 1 Part I
-    ymod1 = (e00200 + e00700 + e00800 + e01400 + e01700 +
+    # (e00800 = alimony received, Sch 1 line 2a, included only to the
+    # extent of AlimonyReceived_frac_in_AGI -- TCJA excludes alimony
+    # received from income for post-2018 divorces.)
+    ymod1 = (e00200 + e00700 +
+             AlimonyReceived_frac_in_AGI * e00800 +
+             e01400 + e01700 +
              invinc - invinc_agi_ec + e02100 + e02300 +
              max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
     if CG_nodiff:

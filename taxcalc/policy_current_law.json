@@ -809,9 +809,9 @@
             "cps": false
         }
     },
-    "ALD_AlimonyReceived_hc": {
-        "title": "Adjustment for alimony-received haircut",
-        "description": "Under pre-TCJA law, none of alimony received is taken as an adjustment from gross income in arriving at AGI. This haircut can be used to change the deduction allowed.  The final adjustment amount would be (1-Haircut)*AlimonyReceived.",
+    "AlimonyReceived_frac_in_AGI": {
+        "title": "Fraction of alimony received that is included in AGI",
+        "description": "Fraction of alimony received (input variable e00800) that is included in AGI as Schedule 1 Part I line 2a income. Under pre-TCJA law, recipients had to include alimony as taxable income (value 1.0). TCJA excluded alimony received from income for divorce or separation agreements executed after 2018-12-31 (value 0.0). The amount of alimony added to AGI equals AlimonyReceived_frac_in_AGI * AlimonyReceived.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
