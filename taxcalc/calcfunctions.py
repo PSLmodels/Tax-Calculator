@@ -409,10 +409,11 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
     c02900: float
         Total of all "above the line" income adjustments to get AGI
     """
-    # Form 2555 foreign earned income exclusion is assumed to be zero.
-    # Sch 1 line 12 (reservist/artist/fee-basis-gov-official biz expenses,
-    # Form 2106) and line 23 (Archer MSA) are not modeled.
-    c02900 = (                                       # 2025 ORDERING:
+    # Sch 1 Part II lines not modeled: line 12 (reservist/artist/fee-basis
+    # gov-official biz expenses, Form 2106), line 14 (moving expenses for
+    # Armed Forces, Form 3903), line 23 (Archer MSA), and lines 24a-24z /
+    # 25 (other adjustments).
+    c02900 = (
         (1. - ALD_EducatorExpenses_hc) * e03220 +    # Sch 1 line 11
         (1. - ALD_HSADeduction_hc) * e03290 +        # Sch 1 line 13
         c03260 +                                     # Sch 1 line 15
@@ -422,6 +423,7 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
         (1. - ALD_AlimonyPaid_hc) * e03500 +         # Sch 1 line 19a
         (1. - ALD_IRAContributions_hc) * e03150 +    # Sch 1 line 20
         (1. - ALD_StudentLoan_hc) * e03210 +         # Sch 1 line 21
+        # legacy / reform-only items (zero under current law):
         (1. - ALD_Tuition_hc) * e03230 +             # ALD repealed post-2020
         (1. - ALD_DomesticProduction_hc) * e03240 +  # ALD expired post-2017
         care_deduction                               # ALD reform construct
