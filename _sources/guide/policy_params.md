@@ -554,7 +554,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_Tuition_hc`
 _Description:_ If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI.
-_Notes:_ The final adjustment amount would be (1-Haircut)*TuitionFees.
+_Notes:_ The final adjustment amount would be (1-Haircut)*TuitionFees.  Set to 1.0 starting 2021: IRC §222 was permanently repealed for tax years beginning after 2020-12-31 by §104 of the Taxpayer Certainty and Disaster Tax Relief Act of 2020.
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False
 _Value Type:_ float
@@ -564,8 +564,10 @@ _Known Values:_
 2015: 0.0
 2016: 0.0
 2017: 0.0
-2018: 1.0
-2019: 1.0
+2018: 0.0
+2019: 0.0
+2020: 0.0
+2021: 1.0
 _Valid Range:_ min = 0 and max = 1
 _Out-of-Range Action:_ error
 

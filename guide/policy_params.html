@@ -1439,7 +1439,7 @@ for: [single, mjoint, mseparate, headhh, widow]
 <section id="ald-tuition-hc">
 <h4><code class="docutils literal notranslate"><span class="pre">ALD_Tuition_hc</span></code><a class="headerlink" href="#ald-tuition-hc" title="Link to this heading">#</a></h4>
 <p><em>Description:</em> If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI.
-<em>Notes:</em> The final adjustment amount would be (1-Haircut)*TuitionFees.
+<em>Notes:</em> The final adjustment amount would be (1-Haircut)*TuitionFees.  Set to 1.0 starting 2021: IRC §222 was permanently repealed for tax years beginning after 2020-12-31 by §104 of the Taxpayer Certainty and Disaster Tax Relief Act of 2020.
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> False
 <em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False
 <em>Value Type:</em> float
@@ -1449,8 +1449,10 @@ for: [single, mjoint, mseparate, headhh, widow]
 2015: 0.0
 2016: 0.0
 2017: 0.0
-2018: 1.0
-2019: 1.0
+2018: 0.0
+2019: 0.0
+2020: 0.0
+2021: 1.0
 <em>Valid Range:</em> min = 0 and max = 1
 <em>Out-of-Range Action:</em> error</p>
 </section>

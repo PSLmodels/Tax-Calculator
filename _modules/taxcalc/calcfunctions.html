@@ -773,7 +773,7 @@
 <span class="sd">        Student loan interest paid (Sch 1 line 21)</span>
 <span class="sd">    e03230: float</span>
 <span class="sd">        Tuition and fees, Form 8917</span>
-<span class="sd">        (legacy; expired after 2017)</span>
+<span class="sd">        (legacy; permanently repealed for tax years after 2020)</span>
 <span class="sd">    e03240: float</span>
 <span class="sd">        Domestic production activity deduction, Form 8903</span>
 <span class="sd">        (legacy; expired after 2017)</span>
@@ -818,7 +818,7 @@
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_AlimonyPaid_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03500</span> <span class="o">+</span>         <span class="c1"># Sch 1 line 19a</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_IRAContributions_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03150</span> <span class="o">+</span>    <span class="c1"># Sch 1 line 20</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03210</span> <span class="o">+</span>         <span class="c1"># Sch 1 line 21</span>
-        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Tuition_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03230</span> <span class="o">+</span>             <span class="c1"># ALD expired post-2017</span>
+        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Tuition_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03230</span> <span class="o">+</span>             <span class="c1"># ALD repealed post-2020</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_DomesticProduction_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03240</span> <span class="o">+</span>  <span class="c1"># ALD expired post-2017</span>
         <span class="n">care_deduction</span>                               <span class="c1"># ALD reform construct</span>
     <span class="p">)</span>
