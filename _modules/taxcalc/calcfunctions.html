@@ -805,10 +805,11 @@
 <span class="sd">    c02900: float</span>
 <span class="sd">        Total of all &quot;above the line&quot; income adjustments to get AGI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Form 2555 foreign earned income exclusion is assumed to be zero.</span>
-    <span class="c1"># Sch 1 line 12 (reservist/artist/fee-basis-gov-official biz expenses,</span>
-    <span class="c1"># Form 2106) and line 23 (Archer MSA) are not modeled.</span>
-    <span class="n">c02900</span> <span class="o">=</span> <span class="p">(</span>                                       <span class="c1"># 2025 ORDERING:</span>
+    <span class="c1"># Sch 1 Part II lines not modeled: line 12 (reservist/artist/fee-basis</span>
+    <span class="c1"># gov-official biz expenses, Form 2106), line 14 (moving expenses for</span>
+    <span class="c1"># Armed Forces, Form 3903), line 23 (Archer MSA), and lines 24a-24z /</span>
+    <span class="c1"># 25 (other adjustments).</span>
+    <span class="n">c02900</span> <span class="o">=</span> <span class="p">(</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_EducatorExpenses_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03220</span> <span class="o">+</span>    <span class="c1"># Sch 1 line 11</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_HSADeduction_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03290</span> <span class="o">+</span>        <span class="c1"># Sch 1 line 13</span>
         <span class="n">c03260</span> <span class="o">+</span>                                     <span class="c1"># Sch 1 line 15</span>
@@ -818,6 +819,7 @@
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_AlimonyPaid_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03500</span> <span class="o">+</span>         <span class="c1"># Sch 1 line 19a</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_IRAContributions_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03150</span> <span class="o">+</span>    <span class="c1"># Sch 1 line 20</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03210</span> <span class="o">+</span>         <span class="c1"># Sch 1 line 21</span>
+        <span class="c1"># legacy / reform-only items (zero under current law):</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Tuition_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03230</span> <span class="o">+</span>             <span class="c1"># ALD repealed post-2020</span>
         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_DomesticProduction_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e03240</span> <span class="o">+</span>  <span class="c1"># ALD expired post-2017</span>
         <span class="n">care_deduction</span>                               <span class="c1"># ALD reform construct</span>
