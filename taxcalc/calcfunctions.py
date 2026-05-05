@@ -700,6 +700,17 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
     """
     Calculates total and taxable Universal Basic Income (UBI) amount.
 
+    Reform construct with no IRS-form correspondence. The per-person UBI
+    parameters (UBI_u18, UBI_1820, UBI_21) default to 0 in current law,
+    so this function is inert unless a reform activates UBI.
+
+    Outputs flow as follows:
+      ubi            -> BenefitPrograms (benefit_cost_total and, via
+                        BEN_*_value, benefit_value_total which feeds
+                        expanded_income)
+      taxable_ubi    -> AGI (added to c00100)
+      nontaxable_ubi -> Records-bound output only; not consumed downstream
+
     Parameters
     ----------
     nu18: int
@@ -715,22 +726,23 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
     UBI_21: float
         UBI benefit for those 21 or more
     UBI_ecrt: float
-        Fraction of UBI benefits that are not included in AGI
+        Fraction of UBI benefits excluded from AGI; the complementary
+        fraction (1 - UBI_ecrt) is the taxable share added to AGI
     ubi: float
-        Total UBI received by the tax unit (is included in expanded_income)
+        Total UBI received by the tax unit
     taxable_ubi: float
         Amount of UBI that is taxable (is added to AGI)
     nontaxable_ubi: float
-        Amount of UBI that is nontaxable
+        Amount of UBI that is excluded from AGI
 
     Returns
     -------
     ubi: float
-        Total UBI received by the tax unit (is included in expanded_income)
+        Total UBI received by the tax unit
     taxable_ubi: float
         Amount of UBI that is taxable (is added to AGI)
     nontaxable_ubi: float
-        Amount of UBI that is nontaxable
+        Amount of UBI that is excluded from AGI
     """
     ubi = nu18 * UBI_u18 + n1820 * UBI_1820 + n21 * UBI_21
     taxable_ubi = ubi * (1. - UBI_ecrt)
