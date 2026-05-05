@@ -996,7 +996,7 @@
     },
     "ALD_Tuition_hc": {
         "title": "Deduction for tuition and fees haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*TuitionFees.",
+        "description": "If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*TuitionFees.  Set to 1.0 starting 2021: IRC §222 was permanently repealed for tax years beginning after 2020-12-31 by §104 of the Taxpayer Certainty and Disaster Tax Relief Act of 2020.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -1024,7 +1024,7 @@
                 "value": 0.0
             },
             {
-                "year": 2018,
+                "year": 2021,
                 "value": 1.0
             }
         ],
