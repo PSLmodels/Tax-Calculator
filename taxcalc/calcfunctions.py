@@ -281,7 +281,18 @@ def DependentCare(nu13, elderly_dependents, earned,
                   ALD_Dependents_Child_c, ALD_Dependents_Elder_c,
                   care_deduction):
     """
-    Computes dependent-care above-the-line deduction.
+    Computes the dependent-care above-the-line deduction.
+
+    Reform-only construct (originally specified for the 2016 Trump campaign
+    tax plan); no IRS form correspondence. Inert under current law because
+    all four ALD_Dependents_* parameters default to 0.0, which forces
+    care_deduction = 0. for every record.
+
+    The income test is a cliff, not a phaseout: filing units with earned
+    income above ALD_Dependents_thd[MARS-1] receive zero deduction.
+
+    care_deduction is summed into c02900 (Sch 1 line 26) by Adj under the
+    legacy/reform-only banner.
 
     Parameters
     ----------
@@ -310,12 +321,12 @@ def DependentCare(nu13, elderly_dependents, earned,
     care_deduction: float
         Total above the line deductions for dependent care.
     """
-
-    if earned <= ALD_Dependents_thd[MARS - 1]:
-        care_deduction = (((1. - ALD_Dependents_hc) * nu13 *
-                           ALD_Dependents_Child_c) +
-                          ((1. - ALD_Dependents_hc) * elderly_dependents *
-                           ALD_Dependents_Elder_c))
+    earned_thd = ALD_Dependents_thd[MARS - 1]
+    if earned <= earned_thd:
+        hc_frac = 1. - ALD_Dependents_hc
+        child_ded = hc_frac * nu13 * ALD_Dependents_Child_c
+        elder_ded = hc_frac * elderly_dependents * ALD_Dependents_Elder_c
+        care_deduction = child_ded + elder_ded
     else:
         care_deduction = 0.
     return care_deduction
