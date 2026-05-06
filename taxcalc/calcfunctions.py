@@ -22,8 +22,19 @@ from taxcalc.decorators import iterate_jit, JIT
 
 def BenefitPrograms(calc):
     """
-    Calculate total government cost and consumption value of benefits
-    delivered by non-repealed benefit programs.
+    Aggregate per-record government cost and consumption value of the
+    non-tax benefit programs tracked by Tax-Calculator and write them
+    to the Records arrays `benefit_cost_total` and `benefit_value_total`.
+
+    This function does not implement any IRS form; it is a model-internal
+    aggregator. For each program a `BEN_*_repeal` policy parameter, when
+    set, zeroes the program's per-record array before the sums are
+    formed (UBI has no repeal flag because UBI is itself a reform
+    construct that is zero under current law). In-kind programs are
+    weighted by a `BEN_*_value` consumption parameter; cash programs
+    (SSI, OASDI = e02400, UI = e02300, UBI) are valued at full dollar
+    cost. `benefit_value_total` is consumed downstream by ExpandIncome
+    via `expanded_income`.
 
     Parameters
     ----------
@@ -35,61 +46,38 @@ def BenefitPrograms(calc):
     None:
         The function modifies calc
     """
+    # programs aggregated below, in a fixed order:
+    #   (record_array_name, repeal_param_or_None, value_param_or_None)
+    # repeal_param=None ==> program has no repeal flag (UBI only).
+    # value_param=None  ==> cash benefit, valued at full dollar cost.
+    programs = (
+        ('housing_ben', 'BEN_housing_repeal', 'BEN_housing_value'),
+        ('ssi_ben', 'BEN_ssi_repeal', None),
+        ('snap_ben', 'BEN_snap_repeal', 'BEN_snap_value'),
+        ('tanf_ben', 'BEN_tanf_repeal', 'BEN_tanf_value'),
+        ('vet_ben', 'BEN_vet_repeal', 'BEN_vet_value'),
+        ('wic_ben', 'BEN_wic_repeal', 'BEN_wic_value'),
+        ('mcare_ben', 'BEN_mcare_repeal', 'BEN_mcare_value'),
+        ('mcaid_ben', 'BEN_mcaid_repeal', 'BEN_mcaid_value'),
+        ('e02400', 'BEN_oasdi_repeal', None),  # OASDI Social Security
+        ('e02300', 'BEN_ui_repeal', None),  # Unemployment Insurance
+        ('ubi', None, None),  # UBI reform construct
+        ('other_ben', 'BEN_other_repeal', 'BEN_other_value'),
+    )
     # zero out benefits delivered by repealed programs
     zero = np.zeros(calc.array_len)
-    if calc.policy_param('BEN_housing_repeal'):
-        calc.array('housing_ben', zero)
-    if calc.policy_param('BEN_ssi_repeal'):
-        calc.array('ssi_ben', zero)
-    if calc.policy_param('BEN_snap_repeal'):
-        calc.array('snap_ben', zero)
-    if calc.policy_param('BEN_tanf_repeal'):
-        calc.array('tanf_ben', zero)
-    if calc.policy_param('BEN_vet_repeal'):
-        calc.array('vet_ben', zero)
-    if calc.policy_param('BEN_wic_repeal'):
-        calc.array('wic_ben', zero)
-    if calc.policy_param('BEN_mcare_repeal'):
-        calc.array('mcare_ben', zero)
-    if calc.policy_param('BEN_mcaid_repeal'):
-        calc.array('mcaid_ben', zero)
-    if calc.policy_param('BEN_oasdi_repeal'):
-        calc.array('e02400', zero)
-    if calc.policy_param('BEN_ui_repeal'):
-        calc.array('e02300', zero)
-    if calc.policy_param('BEN_other_repeal'):
-        calc.array('other_ben', zero)
+    for name, repeal_param, _ in programs:
+        if repeal_param is not None and calc.policy_param(repeal_param):
+            calc.array(name, zero)
     # calculate government cost of all benefits
-    cost = np.array(
-        calc.array('housing_ben') +
-        calc.array('ssi_ben') +
-        calc.array('snap_ben') +
-        calc.array('tanf_ben') +
-        calc.array('vet_ben') +
-        calc.array('wic_ben') +
-        calc.array('mcare_ben') +
-        calc.array('mcaid_ben') +
-        calc.array('e02400') +
-        calc.array('e02300') +
-        calc.array('ubi') +
-        calc.array('other_ben')
-    )
+    cost = sum(calc.array(name) for name, _, _ in programs)
     calc.array('benefit_cost_total', cost)
     # calculate consumption value of all benefits
-    # (assuming that cash benefits have full value)
-    value = np.array(
-        calc.array('housing_ben') * calc.consump_param('BEN_housing_value') +
-        calc.array('ssi_ben') +
-        calc.array('snap_ben') * calc.consump_param('BEN_snap_value') +
-        calc.array('tanf_ben') * calc.consump_param('BEN_tanf_value') +
-        calc.array('vet_ben') * calc.consump_param('BEN_vet_value') +
-        calc.array('wic_ben') * calc.consump_param('BEN_wic_value') +
-        calc.array('mcare_ben') * calc.consump_param('BEN_mcare_value') +
-        calc.array('mcaid_ben') * calc.consump_param('BEN_mcaid_value') +
-        calc.array('e02400') +
-        calc.array('e02300') +
-        calc.array('ubi') +
-        calc.array('other_ben') * calc.consump_param('BEN_other_value')
+    # (cash benefits are valued at full dollar cost)
+    value = sum(
+        calc.array(name) if vparam is None
+        else calc.array(name) * calc.consump_param(vparam)
+        for name, _, vparam in programs
     )
     calc.array('benefit_value_total', value)
 
