@@ -677,7 +677,18 @@
                   <span class="n">ALD_Dependents_Child_c</span><span class="p">,</span> <span class="n">ALD_Dependents_Elder_c</span><span class="p">,</span>
                   <span class="n">care_deduction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes dependent-care above-the-line deduction.</span>
+<span class="sd">    Computes the dependent-care above-the-line deduction.</span>
+
+<span class="sd">    Reform-only construct (originally specified for the 2016 Trump campaign</span>
+<span class="sd">    tax plan); no IRS form correspondence. Inert under current law because</span>
+<span class="sd">    all four ALD_Dependents_* parameters default to 0.0, which forces</span>
+<span class="sd">    care_deduction = 0. for every record.</span>
+
+<span class="sd">    The income test is a cliff, not a phaseout: filing units with earned</span>
+<span class="sd">    income above ALD_Dependents_thd[MARS-1] receive zero deduction.</span>
+
+<span class="sd">    care_deduction is summed into c02900 (Sch 1 line 26) by Adj under the</span>
+<span class="sd">    legacy/reform-only banner.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -706,12 +717,12 @@
 <span class="sd">    care_deduction: float</span>
 <span class="sd">        Total above the line deductions for dependent care.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="n">earned</span> <span class="o">&lt;=</span> <span class="n">ALD_Dependents_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-        <span class="n">care_deduction</span> <span class="o">=</span> <span class="p">(((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Dependents_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">nu13</span> <span class="o">*</span>
-                           <span class="n">ALD_Dependents_Child_c</span><span class="p">)</span> <span class="o">+</span>
-                          <span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Dependents_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">elderly_dependents</span> <span class="o">*</span>
-                           <span class="n">ALD_Dependents_Elder_c</span><span class="p">))</span>
+    <span class="n">earned_thd</span> <span class="o">=</span> <span class="n">ALD_Dependents_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">earned</span> <span class="o">&lt;=</span> <span class="n">earned_thd</span><span class="p">:</span>
+        <span class="n">hc_frac</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Dependents_hc</span>
+        <span class="n">child_ded</span> <span class="o">=</span> <span class="n">hc_frac</span> <span class="o">*</span> <span class="n">nu13</span> <span class="o">*</span> <span class="n">ALD_Dependents_Child_c</span>
+        <span class="n">elder_ded</span> <span class="o">=</span> <span class="n">hc_frac</span> <span class="o">*</span> <span class="n">elderly_dependents</span> <span class="o">*</span> <span class="n">ALD_Dependents_Elder_c</span>
+        <span class="n">care_deduction</span> <span class="o">=</span> <span class="n">child_ded</span> <span class="o">+</span> <span class="n">elder_ded</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">care_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">return</span> <span class="n">care_deduction</span>
