@@ -595,11 +595,16 @@
 <span class="sd">    was_plus_sey_s: float</span>
 <span class="sd">        Wage and salary income plus taxable self employment income for spouse</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># combined OASDI and HI FICA rates (employer + employee shares)</span>
+    <span class="n">ss_rate</span> <span class="o">=</span> <span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span>
+    <span class="n">mc_rate</span> <span class="o">=</span> <span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span>
+
     <span class="c1"># compute sey and its individual components</span>
     <span class="n">sey_p</span> <span class="o">=</span> <span class="n">e00900p</span> <span class="o">+</span> <span class="n">e02100p</span> <span class="o">+</span> <span class="n">k1bx14p</span>
     <span class="n">sey_s</span> <span class="o">=</span> <span class="n">e00900s</span> <span class="o">+</span> <span class="n">e02100s</span> <span class="o">+</span> <span class="n">k1bx14s</span>
     <span class="n">sey</span> <span class="o">=</span> <span class="n">sey_p</span> <span class="o">+</span> <span class="n">sey_s</span>  <span class="c1"># total self-employment income for filing unit</span>
 
+    <span class="c1"># ---------- FICA on wages and salaries ----------</span>
     <span class="c1"># compute gross wage and salary income (&#39;was&#39; denotes &#39;wage and salary&#39;)</span>
     <span class="n">gross_ws_p</span> <span class="o">=</span> <span class="n">e00200p</span> <span class="o">+</span> <span class="n">pencon_p</span>
     <span class="n">gross_ws_s</span> <span class="o">=</span> <span class="n">e00200s</span> <span class="o">+</span> <span class="n">pencon_s</span>
@@ -608,66 +613,54 @@
     <span class="n">txearn_was_p</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">SS_Earnings_c</span><span class="p">,</span> <span class="n">gross_ws_p</span><span class="p">)</span>
     <span class="n">txearn_was_s</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">SS_Earnings_c</span><span class="p">,</span> <span class="n">gross_ws_s</span><span class="p">)</span>
 
-    <span class="c1"># compute OASDI and HI payroll taxes on wage-and-salary income, FICA</span>
-    <span class="n">ptax_ss_ws_p</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">txearn_was_p</span>
-    <span class="n">ptax_ss_ws_s</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">txearn_was_s</span>
-    <span class="n">ptax_mc_ws_p</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">gross_ws_p</span>
-    <span class="n">ptax_mc_ws_s</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">gross_ws_s</span>
+    <span class="c1"># compute OASDI and HI payroll taxes on wage-and-salary income</span>
+    <span class="n">ptax_ss_ws_p</span> <span class="o">=</span> <span class="n">ss_rate</span> <span class="o">*</span> <span class="n">txearn_was_p</span>
+    <span class="n">ptax_ss_ws_s</span> <span class="o">=</span> <span class="n">ss_rate</span> <span class="o">*</span> <span class="n">txearn_was_s</span>
+    <span class="n">ptax_mc_ws_p</span> <span class="o">=</span> <span class="n">mc_rate</span> <span class="o">*</span> <span class="n">gross_ws_p</span>
+    <span class="n">ptax_mc_ws_s</span> <span class="o">=</span> <span class="n">mc_rate</span> <span class="o">*</span> <span class="n">gross_ws_s</span>
     <span class="n">ptax_was</span> <span class="o">=</span> <span class="n">ptax_ss_ws_p</span> <span class="o">+</span> <span class="n">ptax_ss_ws_s</span> <span class="o">+</span> <span class="n">ptax_mc_ws_p</span> <span class="o">+</span> <span class="n">ptax_mc_ws_s</span>
 
-    <span class="c1"># compute taxable self-employment income for OASDI SECA</span>
-    <span class="n">sey_frac</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span>
-        <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span> <span class="o">+</span>
-         <span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span>
-    <span class="p">)</span>
-    <span class="n">txearn_sey_p</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">),</span> <span class="n">SS_Earnings_c</span> <span class="o">-</span> <span class="n">txearn_was_p</span><span class="p">)</span>
-    <span class="n">txearn_sey_s</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">),</span> <span class="n">SS_Earnings_c</span> <span class="o">-</span> <span class="n">txearn_was_s</span><span class="p">)</span>
-
-    <span class="c1"># compute self-employment tax on taxable self-employment income, SECA</span>
-    <span class="n">setax_ss_p</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">txearn_sey_p</span>
-    <span class="n">setax_ss_s</span> <span class="o">=</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span> <span class="o">*</span> <span class="n">txearn_sey_s</span>
-    <span class="n">setax_mc_p</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">(</span><span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span> <span class="o">*</span>
-        <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">)</span>
-    <span class="p">)</span>
-    <span class="n">setax_mc_s</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">(</span><span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span> <span class="o">*</span>
-        <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">)</span>
-    <span class="p">)</span>
+    <span class="c1"># ---------- SECA on self-employment income (Sch SE Part I) ----------</span>
+    <span class="c1"># Sch SE line 4a multiplier 0.9235, generalized to current FICA rates</span>
+    <span class="n">seca_frac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">ss_rate</span> <span class="o">+</span> <span class="n">mc_rate</span><span class="p">)</span>
+    <span class="c1"># Sch SE line 4c (taxable net SE earnings, per spouse)</span>
+    <span class="n">net_sey_p</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">seca_frac</span><span class="p">)</span>
+    <span class="n">net_sey_s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">seca_frac</span><span class="p">)</span>
+    <span class="c1"># Sch SE line 9: remaining OASDI base = SS_Earnings_c - W-2 SS wages</span>
+    <span class="n">txearn_sey_p</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">net_sey_p</span><span class="p">,</span> <span class="n">SS_Earnings_c</span> <span class="o">-</span> <span class="n">txearn_was_p</span><span class="p">)</span>
+    <span class="n">txearn_sey_s</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">net_sey_s</span><span class="p">,</span> <span class="n">SS_Earnings_c</span> <span class="o">-</span> <span class="n">txearn_was_s</span><span class="p">)</span>
+    <span class="c1"># Sch SE line 10 (OASDI portion) and line 11 (HI portion), per spouse</span>
+    <span class="n">setax_ss_p</span> <span class="o">=</span> <span class="n">ss_rate</span> <span class="o">*</span> <span class="n">txearn_sey_p</span>
+    <span class="n">setax_ss_s</span> <span class="o">=</span> <span class="n">ss_rate</span> <span class="o">*</span> <span class="n">txearn_sey_s</span>
+    <span class="n">setax_mc_p</span> <span class="o">=</span> <span class="n">mc_rate</span> <span class="o">*</span> <span class="n">net_sey_p</span>
+    <span class="n">setax_mc_s</span> <span class="o">=</span> <span class="n">mc_rate</span> <span class="o">*</span> <span class="n">net_sey_s</span>
     <span class="n">setax_p</span> <span class="o">=</span> <span class="n">setax_ss_p</span> <span class="o">+</span> <span class="n">setax_mc_p</span>
     <span class="n">setax_s</span> <span class="o">=</span> <span class="n">setax_ss_s</span> <span class="o">+</span> <span class="n">setax_mc_s</span>
-    <span class="n">setax</span> <span class="o">=</span> <span class="n">setax_p</span> <span class="o">+</span> <span class="n">setax_s</span>
-    <span class="c1"># no setax if self-employment income is low</span>
-    <span class="k">if</span> <span class="n">sey</span> <span class="o">*</span> <span class="n">sey_frac</span> <span class="o">&gt;</span> <span class="n">SECA_Earnings_thd</span><span class="p">:</span>
+    <span class="c1"># Sch SE line 12: zero out if filing-unit SE earnings are below the</span>
+    <span class="c1"># $400 floor (Sch SE line 4: &quot;stop; you do not owe SE tax&quot;)</span>
+    <span class="k">if</span> <span class="n">sey</span> <span class="o">*</span> <span class="n">seca_frac</span> <span class="o">&gt;</span> <span class="n">SECA_Earnings_thd</span><span class="p">:</span>
         <span class="n">setax</span> <span class="o">=</span> <span class="n">setax_p</span> <span class="o">+</span> <span class="n">setax_s</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">setax</span> <span class="o">=</span> <span class="mf">0.0</span>
 
-    <span class="c1"># compute extra OASDI payroll taxes on the portion of the sum</span>
-    <span class="c1"># of wage-and-salary income and taxable self employment income</span>
-    <span class="c1"># that exceeds SS_Earnings_thd</span>
-    <span class="n">sey_frac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span>
-    <span class="n">was_plus_sey_p</span> <span class="o">=</span> <span class="n">gross_ws_p</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">)</span>
-    <span class="n">was_plus_sey_s</span> <span class="o">=</span> <span class="n">gross_ws_s</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">sey_frac</span><span class="p">)</span>
+    <span class="c1"># ---------- Reform-only extra OASDI bracket (not on Sch SE) ----------</span>
+    <span class="c1"># extra OASDI on the portion of (wages + taxable SE) above SS_Earnings_thd</span>
+    <span class="n">extra_frac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ss_rate</span>
+    <span class="n">was_plus_sey_p</span> <span class="o">=</span> <span class="n">gross_ws_p</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">extra_frac</span><span class="p">)</span>
+    <span class="n">was_plus_sey_s</span> <span class="o">=</span> <span class="n">gross_ws_s</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">extra_frac</span><span class="p">)</span>
     <span class="n">extra_ss_income_p</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">was_plus_sey_p</span> <span class="o">-</span> <span class="n">SS_Earnings_thd</span><span class="p">)</span>
     <span class="n">extra_ss_income_s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">was_plus_sey_s</span> <span class="o">-</span> <span class="n">SS_Earnings_thd</span><span class="p">)</span>
-    <span class="n">extra_payrolltax</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">extra_ss_income_p</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">extra_ss_income_s</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span>
-    <span class="p">)</span>
+    <span class="n">extra_payrolltax</span> <span class="o">=</span> <span class="n">ss_rate</span> <span class="o">*</span> <span class="p">(</span><span class="n">extra_ss_income_p</span> <span class="o">+</span> <span class="n">extra_ss_income_s</span><span class="p">)</span>
 
-    <span class="c1"># compute part of total payroll taxes for filing unit</span>
+    <span class="c1"># filing-unit payroll tax and OASDI-only part (HI excluded from ptax_oasdi)</span>
     <span class="n">payrolltax</span> <span class="o">=</span> <span class="n">ptax_was</span> <span class="o">+</span> <span class="n">extra_payrolltax</span>
-
-    <span class="c1"># compute OASDI part of payroll taxes</span>
     <span class="n">ptax_oasdi</span> <span class="o">=</span> <span class="p">(</span><span class="n">ptax_ss_ws_p</span> <span class="o">+</span> <span class="n">ptax_ss_ws_s</span> <span class="o">+</span>
                   <span class="n">setax_ss_p</span> <span class="o">+</span> <span class="n">setax_ss_s</span> <span class="o">+</span>
                   <span class="n">extra_payrolltax</span><span class="p">)</span>
 
-    <span class="c1"># compute earned* variables and AGI deduction for</span>
-    <span class="c1"># &quot;employer share&quot; of self-employment tax, c03260</span>
-    <span class="c1"># Note: c03260 is the amount on 2015 Form 1040, line 27</span>
+    <span class="c1"># ---------- earned-income outputs and Sch SE line 13 deduction ----------</span>
+    <span class="c1"># c03260: deductible half of SE tax (Sch SE line 13 / Sch 1 line 15),</span>
+    <span class="c1"># optionally reduced by the ALD_SelfEmploymentTax_hc reform haircut</span>
     <span class="n">c03260</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_SelfEmploymentTax_hc</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">setax</span>
     <span class="n">earned</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00200p</span> <span class="o">+</span> <span class="n">e00200s</span> <span class="o">+</span> <span class="n">sey</span> <span class="o">-</span> <span class="n">c03260</span><span class="p">)</span>
     <span class="n">earned_p</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">e00200p</span> <span class="o">+</span> <span class="n">sey_p</span> <span class="o">-</span>
