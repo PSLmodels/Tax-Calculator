@@ -199,11 +199,16 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     was_plus_sey_s: float
         Wage and salary income plus taxable self employment income for spouse
     """
+    # combined OASDI and HI FICA rates (employer + employee shares)
+    ss_rate = FICA_ss_trt_employer + FICA_ss_trt_employee
+    mc_rate = FICA_mc_trt_employer + FICA_mc_trt_employee
+
     # compute sey and its individual components
     sey_p = e00900p + e02100p + k1bx14p
     sey_s = e00900s + e02100s + k1bx14s
     sey = sey_p + sey_s  # total self-employment income for filing unit
 
+    # ---------- FICA on wages and salaries ----------
     # compute gross wage and salary income ('was' denotes 'wage and salary')
     gross_ws_p = e00200p + pencon_p
     gross_ws_s = e00200s + pencon_s
@@ -212,66 +217,54 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     txearn_was_p = min(SS_Earnings_c, gross_ws_p)
     txearn_was_s = min(SS_Earnings_c, gross_ws_s)
 
-    # compute OASDI and HI payroll taxes on wage-and-salary income, FICA
-    ptax_ss_ws_p = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_was_p
-    ptax_ss_ws_s = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_was_s
-    ptax_mc_ws_p = (FICA_mc_trt_employer + FICA_mc_trt_employee) * gross_ws_p
-    ptax_mc_ws_s = (FICA_mc_trt_employer + FICA_mc_trt_employee) * gross_ws_s
+    # compute OASDI and HI payroll taxes on wage-and-salary income
+    ptax_ss_ws_p = ss_rate * txearn_was_p
+    ptax_ss_ws_s = ss_rate * txearn_was_s
+    ptax_mc_ws_p = mc_rate * gross_ws_p
+    ptax_mc_ws_s = mc_rate * gross_ws_s
     ptax_was = ptax_ss_ws_p + ptax_ss_ws_s + ptax_mc_ws_p + ptax_mc_ws_s
 
-    # compute taxable self-employment income for OASDI SECA
-    sey_frac = (
-        1.0 - 0.5 *
-        (FICA_ss_trt_employer + FICA_ss_trt_employee +
-         FICA_mc_trt_employer + FICA_mc_trt_employee)
-    )
-    txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
-    txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
-
-    # compute self-employment tax on taxable self-employment income, SECA
-    setax_ss_p = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_sey_p
-    setax_ss_s = (FICA_ss_trt_employer + FICA_ss_trt_employee) * txearn_sey_s
-    setax_mc_p = (
-        (FICA_mc_trt_employer + FICA_mc_trt_employee) *
-        max(0., sey_p * sey_frac)
-    )
-    setax_mc_s = (
-        (FICA_mc_trt_employer + FICA_mc_trt_employee) *
-        max(0., sey_s * sey_frac)
-    )
+    # ---------- SECA on self-employment income (Sch SE Part I) ----------
+    # Sch SE line 4a multiplier 0.9235, generalized to current FICA rates
+    seca_frac = 1.0 - 0.5 * (ss_rate + mc_rate)
+    # Sch SE line 4c (taxable net SE earnings, per spouse)
+    net_sey_p = max(0., sey_p * seca_frac)
+    net_sey_s = max(0., sey_s * seca_frac)
+    # Sch SE line 9: remaining OASDI base = SS_Earnings_c - W-2 SS wages
+    txearn_sey_p = min(net_sey_p, SS_Earnings_c - txearn_was_p)
+    txearn_sey_s = min(net_sey_s, SS_Earnings_c - txearn_was_s)
+    # Sch SE line 10 (OASDI portion) and line 11 (HI portion), per spouse
+    setax_ss_p = ss_rate * txearn_sey_p
+    setax_ss_s = ss_rate * txearn_sey_s
+    setax_mc_p = mc_rate * net_sey_p
+    setax_mc_s = mc_rate * net_sey_s
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
-    setax = setax_p + setax_s
-    # no setax if self-employment income is low
-    if sey * sey_frac > SECA_Earnings_thd:
+    # Sch SE line 12: zero out if filing-unit SE earnings are below the
+    # $400 floor (Sch SE line 4: "stop; you do not owe SE tax")
+    if sey * seca_frac > SECA_Earnings_thd:
         setax = setax_p + setax_s
     else:
         setax = 0.0
 
-    # compute extra OASDI payroll taxes on the portion of the sum
-    # of wage-and-salary income and taxable self employment income
-    # that exceeds SS_Earnings_thd
-    sey_frac = 1.0 - 0.5 * (FICA_ss_trt_employer + FICA_ss_trt_employee)
-    was_plus_sey_p = gross_ws_p + max(0., sey_p * sey_frac)
-    was_plus_sey_s = gross_ws_s + max(0., sey_s * sey_frac)
+    # ---------- Reform-only extra OASDI bracket (not on Sch SE) ----------
+    # extra OASDI on the portion of (wages + taxable SE) above SS_Earnings_thd
+    extra_frac = 1.0 - 0.5 * ss_rate
+    was_plus_sey_p = gross_ws_p + max(0., sey_p * extra_frac)
+    was_plus_sey_s = gross_ws_s + max(0., sey_s * extra_frac)
     extra_ss_income_p = max(0., was_plus_sey_p - SS_Earnings_thd)
     extra_ss_income_s = max(0., was_plus_sey_s - SS_Earnings_thd)
-    extra_payrolltax = (
-        extra_ss_income_p * (FICA_ss_trt_employer + FICA_ss_trt_employee) +
-        extra_ss_income_s * (FICA_ss_trt_employer + FICA_ss_trt_employee)
-    )
+    extra_payrolltax = ss_rate * (extra_ss_income_p + extra_ss_income_s)
 
-    # compute part of total payroll taxes for filing unit
+    # filing-unit payroll tax and OASDI-only part (HI excluded from ptax_oasdi)
     payrolltax = ptax_was + extra_payrolltax
-
-    # compute OASDI part of payroll taxes
     ptax_oasdi = (ptax_ss_ws_p + ptax_ss_ws_s +
                   setax_ss_p + setax_ss_s +
                   extra_payrolltax)
 
-    # compute earned* variables and AGI deduction for
-    # "employer share" of self-employment tax, c03260
-    # Note: c03260 is the amount on 2015 Form 1040, line 27
+    # ---------- earned-income outputs and Sch SE line 13 deduction ----------
+    # c03260: deductible half of SE tax (Sch SE line 13 / Sch 1 line 15),
+    # optionally reduced by the ALD_SelfEmploymentTax_hc reform haircut
     c03260 = (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax
     earned = max(0., e00200p + e00200s + sey - c03260)
     earned_p = max(0., (e00200p + sey_p -
