@@ -417,8 +417,19 @@
 <a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.BenefitPrograms">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">BenefitPrograms</span><span class="p">(</span><span class="n">calc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate total government cost and consumption value of benefits</span>
-<span class="sd">    delivered by non-repealed benefit programs.</span>
+<span class="sd">    Aggregate per-record government cost and consumption value of the</span>
+<span class="sd">    non-tax benefit programs tracked by Tax-Calculator and write them</span>
+<span class="sd">    to the Records arrays `benefit_cost_total` and `benefit_value_total`.</span>
+
+<span class="sd">    This function does not implement any IRS form; it is a model-internal</span>
+<span class="sd">    aggregator. For each program a `BEN_*_repeal` policy parameter, when</span>
+<span class="sd">    set, zeroes the program&#39;s per-record array before the sums are</span>
+<span class="sd">    formed (UBI has no repeal flag because UBI is itself a reform</span>
+<span class="sd">    construct that is zero under current law). In-kind programs are</span>
+<span class="sd">    weighted by a `BEN_*_value` consumption parameter; cash programs</span>
+<span class="sd">    (SSI, OASDI = e02400, UI = e02300, UBI) are valued at full dollar</span>
+<span class="sd">    cost. `benefit_value_total` is consumed downstream by ExpandIncome</span>
+<span class="sd">    via `expanded_income`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -430,61 +441,38 @@
 <span class="sd">    None:</span>
 <span class="sd">        The function modifies calc</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># programs aggregated below, in a fixed order:</span>
+    <span class="c1">#   (record_array_name, repeal_param_or_None, value_param_or_None)</span>
+    <span class="c1"># repeal_param=None ==&gt; program has no repeal flag (UBI only).</span>
+    <span class="c1"># value_param=None  ==&gt; cash benefit, valued at full dollar cost.</span>
+    <span class="n">programs</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;housing_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_housing_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_housing_value&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;ssi_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_ssi_repeal&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;snap_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_snap_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_snap_value&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;tanf_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_tanf_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_tanf_value&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;vet_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_vet_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_vet_value&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;wic_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_wic_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_wic_value&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;mcare_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_mcare_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_mcare_value&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;mcaid_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_mcaid_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_mcaid_value&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;e02400&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_oasdi_repeal&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># OASDI Social Security</span>
+        <span class="p">(</span><span class="s1">&#39;e02300&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_ui_repeal&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># Unemployment Insurance</span>
+        <span class="p">(</span><span class="s1">&#39;ubi&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># UBI reform construct</span>
+        <span class="p">(</span><span class="s1">&#39;other_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_other_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_other_value&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
     <span class="c1"># zero out benefits delivered by repealed programs</span>
     <span class="n">zero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_housing_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;housing_ben&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_ssi_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;ssi_ben&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_snap_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;snap_ben&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_tanf_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;tanf_ben&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_vet_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;vet_ben&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_wic_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;wic_ben&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_mcare_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;mcare_ben&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_mcaid_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;mcaid_ben&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_oasdi_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e02400&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_ui_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e02300&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;BEN_other_repeal&#39;</span><span class="p">):</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;other_ben&#39;</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">repeal_param</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">programs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">repeal_param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">repeal_param</span><span class="p">):</span>
+            <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
     <span class="c1"># calculate government cost of all benefits</span>
-    <span class="n">cost</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;housing_ben&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;ssi_ben&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;snap_ben&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;tanf_ben&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;vet_ben&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;wic_ben&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;mcare_ben&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;mcaid_ben&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e02400&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e02300&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;ubi&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;other_ben&#39;</span><span class="p">)</span>
-    <span class="p">)</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">programs</span><span class="p">)</span>
     <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;benefit_cost_total&#39;</span><span class="p">,</span> <span class="n">cost</span><span class="p">)</span>
     <span class="c1"># calculate consumption value of all benefits</span>
-    <span class="c1"># (assuming that cash benefits have full value)</span>
-    <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;housing_ben&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">consump_param</span><span class="p">(</span><span class="s1">&#39;BEN_housing_value&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;ssi_ben&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;snap_ben&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">consump_param</span><span class="p">(</span><span class="s1">&#39;BEN_snap_value&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;tanf_ben&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">consump_param</span><span class="p">(</span><span class="s1">&#39;BEN_tanf_value&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;vet_ben&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">consump_param</span><span class="p">(</span><span class="s1">&#39;BEN_vet_value&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;wic_ben&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">consump_param</span><span class="p">(</span><span class="s1">&#39;BEN_wic_value&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;mcare_ben&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">consump_param</span><span class="p">(</span><span class="s1">&#39;BEN_mcare_value&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;mcaid_ben&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">consump_param</span><span class="p">(</span><span class="s1">&#39;BEN_mcaid_value&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e02400&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e02300&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;ubi&#39;</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;other_ben&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">consump_param</span><span class="p">(</span><span class="s1">&#39;BEN_other_value&#39;</span><span class="p">)</span>
+    <span class="c1"># (cash benefits are valued at full dollar cost)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+        <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">vparam</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">consump_param</span><span class="p">(</span><span class="n">vparam</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">vparam</span> <span class="ow">in</span> <span class="n">programs</span>
     <span class="p">)</span>
     <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;benefit_value_total&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 

@@ -579,8 +579,18 @@ in iterate_jit decorator.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="taxcalc.calcfunctions.BenefitPrograms">
 <span class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></span><span class="sig-name descname"><span class="pre">BenefitPrograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calcfunctions.html#BenefitPrograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calcfunctions.BenefitPrograms" title="Link to this definition">#</a></dt>
-<dd><p>Calculate total government cost and consumption value of benefits
-delivered by non-repealed benefit programs.</p>
+<dd><p>Aggregate per-record government cost and consumption value of the
+non-tax benefit programs tracked by Tax-Calculator and write them
+to the Records arrays <cite>benefit_cost_total</cite> and <cite>benefit_value_total</cite>.</p>
+<p>This function does not implement any IRS form; it is a model-internal
+aggregator. For each program a <cite>BEN_*_repeal</cite> policy parameter, when
+set, zeroes the program’s per-record array before the sums are
+formed (UBI has no repeal flag because UBI is itself a reform
+construct that is zero under current law). In-kind programs are
+weighted by a <cite>BEN_*_value</cite> consumption parameter; cash programs
+(SSI, OASDI = e02400, UI = e02300, UBI) are valued at full dollar
+cost. <cite>benefit_value_total</cite> is consumed downstream by ExpandIncome
+via <cite>expanded_income</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p>
