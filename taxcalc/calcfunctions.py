@@ -399,7 +399,8 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
     Returns
     -------
     c02900: float
-        Total of all "above the line" income adjustments to get AGI
+        Total above-the-line income adjustments (Sch 1 line 26;
+        flows to Form 1040 line 10)
     """
     # Sch 1 Part II lines not modeled: line 12 (reservist/artist/fee-basis
     # gov-official biz expenses, Form 2106), line 14 (moving expenses for
