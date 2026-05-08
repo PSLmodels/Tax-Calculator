@@ -676,7 +676,30 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
 def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd1, SS_thd2,
                SS_percentage1, SS_percentage2, c02500):
     """
-    Calculates OASDI benefits included in AGI, c02500.
+    Calculates the taxable portion of OASDI benefits, c02500
+    (Form 1040 line 6b), per the Social Security Benefits Worksheet
+    in the Form 1040 instructions (also published as Pub. 915).
+
+    The three-branch form below is algebraically equivalent to the
+    worksheet's all-min/max formulation:
+      * ymod < thd1                : worksheet line 9 <= 0
+                                     -> c02500 = 0
+      * thd1 <= ymod < thd2        : worksheet line 11 = 0
+                                     -> c02500 = p1 * min(ymod - thd1,
+                                                          e02400)
+      * ymod >= thd2               : full worksheet
+                                     -> c02500 = min(p2 * (ymod - thd2)
+                                                     + p1 * min(e02400,
+                                                                thd2 - thd1),
+                                                     p2 * e02400)
+    where ymod is the worksheet line 7 amount built in AGIIncome.
+    Note: MARS=3 thresholds correspond to "MFS lived apart all year";
+    Tax-Calculator does not model the MFS-lived-together case (base = 0).
+
+    The reform flag SS_all_in_agi (default False under current law)
+    overrides the worksheet and includes 100% of OASDI in AGI.
+
+    Downstream: c02500 is added to c00100 (AGI) by AGI().
 
     Parameters
     ----------
@@ -684,38 +707,47 @@ def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd1, SS_thd2,
         Filing marital status (1=single, 2=joint, 3=separate,
                                4=household-head, 5=widow(er))
     ymod: float
-        Variable that is used in OASDI benefit taxation logic
+        Worksheet line 7 (provisional income) built in AGIIncome
     e02400: float
-        Total social security (OASDI) benefits
+        Total OASDI benefits (worksheet line 1; SSA-1099 box 5 sum)
     SS_all_in_agi: bool
-        Whether all social security benefits are included in AGI
+        Reform: include 100% of OASDI in AGI (override worksheet)
     SS_thd1: list
-        Threshold for social security benefit taxability (1)
+        MARS-indexed worksheet line 8 base amount
     SS_thd2: list
-        Threshold for social security benefit taxability (2)
+        MARS-indexed (line 8 + line 10) second-tier threshold
     SS_percentage1: float
-        Social security taxable income decimal fraction (1)
+        First-tier inclusion rate (worksheet line 13; 0.50 current law)
     SS_percentage2: float
-        Social security taxable income decimal fraction (2)
+        Second-tier inclusion rate (worksheet lines 15/17; 0.85 current law)
     c02500: float
-        Social security (OASDI) benefits included in AGI
+        Taxable OASDI benefits (Form 1040 line 6b)
 
     Returns
     -------
     c02500: float
-        Social security (OASDI) benefits included in AGI
+        Taxable OASDI benefits (Form 1040 line 6b)
     """
-    if ymod < SS_thd1[MARS - 1]:
-        c02500 = 0.
-    elif ymod < SS_thd2[MARS - 1]:
-        c02500 = SS_percentage1 * min(ymod - SS_thd1[MARS - 1], e02400)
-    else:
-        c02500 = min(SS_percentage2 * (ymod - SS_thd2[MARS - 1]) +
-                     SS_percentage1 *
-                     min(e02400, SS_thd2[MARS - 1] -
-                         SS_thd1[MARS - 1]), SS_percentage2 * e02400)
+    # reform: include all OASDI in AGI (override worksheet)
     if SS_all_in_agi:
         c02500 = e02400
+        return c02500
+    thd1 = SS_thd1[MARS - 1]  # worksheet line 8
+    thd2 = SS_thd2[MARS - 1]  # worksheet line 8 + line 10
+    if ymod < thd1:
+        # worksheet line 9 <= 0
+        c02500 = 0.
+    elif ymod < thd2:
+        # worksheet line 11 = 0; c02500 = line 14 = min(line 2, line 13)
+        c02500 = SS_percentage1 * min(ymod - thd1, e02400)
+    else:
+        # c02500 = line 18 = min(line 16, line 17)
+        # line 16 = line 14 + line 15
+        #         = p1 * min(e02400, thd2 - thd1) + p2 * (ymod - thd2)
+        # line 17 = p2 * e02400
+        c02500 = min(SS_percentage2 * (ymod - thd2) +
+                     SS_percentage1 * min(e02400, thd2 - thd1),
+                     SS_percentage2 * e02400)
     return c02500
 
 
