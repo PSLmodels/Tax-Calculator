@@ -1072,7 +1072,30 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">SSBenefits</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">SS_all_in_agi</span><span class="p">,</span> <span class="n">SS_thd1</span><span class="p">,</span> <span class="n">SS_thd2</span><span class="p">,</span>
                <span class="n">SS_percentage1</span><span class="p">,</span> <span class="n">SS_percentage2</span><span class="p">,</span> <span class="n">c02500</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates OASDI benefits included in AGI, c02500.</span>
+<span class="sd">    Calculates the taxable portion of OASDI benefits, c02500</span>
+<span class="sd">    (Form 1040 line 6b), per the Social Security Benefits Worksheet</span>
+<span class="sd">    in the Form 1040 instructions (also published as Pub. 915).</span>
+
+<span class="sd">    The three-branch form below is algebraically equivalent to the</span>
+<span class="sd">    worksheet&#39;s all-min/max formulation:</span>
+<span class="sd">      * ymod &lt; thd1                : worksheet line 9 &lt;= 0</span>
+<span class="sd">                                     -&gt; c02500 = 0</span>
+<span class="sd">      * thd1 &lt;= ymod &lt; thd2        : worksheet line 11 = 0</span>
+<span class="sd">                                     -&gt; c02500 = p1 * min(ymod - thd1,</span>
+<span class="sd">                                                          e02400)</span>
+<span class="sd">      * ymod &gt;= thd2               : full worksheet</span>
+<span class="sd">                                     -&gt; c02500 = min(p2 * (ymod - thd2)</span>
+<span class="sd">                                                     + p1 * min(e02400,</span>
+<span class="sd">                                                                thd2 - thd1),</span>
+<span class="sd">                                                     p2 * e02400)</span>
+<span class="sd">    where ymod is the worksheet line 7 amount built in AGIIncome.</span>
+<span class="sd">    Note: MARS=3 thresholds correspond to &quot;MFS lived apart all year&quot;;</span>
+<span class="sd">    Tax-Calculator does not model the MFS-lived-together case (base = 0).</span>
+
+<span class="sd">    The reform flag SS_all_in_agi (default False under current law)</span>
+<span class="sd">    overrides the worksheet and includes 100% of OASDI in AGI.</span>
+
+<span class="sd">    Downstream: c02500 is added to c00100 (AGI) by AGI().</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1080,38 +1103,47 @@
 <span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                               4=household-head, 5=widow(er))</span>
 <span class="sd">    ymod: float</span>
-<span class="sd">        Variable that is used in OASDI benefit taxation logic</span>
+<span class="sd">        Worksheet line 7 (provisional income) built in AGIIncome</span>
 <span class="sd">    e02400: float</span>
-<span class="sd">        Total social security (OASDI) benefits</span>
+<span class="sd">        Total OASDI benefits (worksheet line 1; SSA-1099 box 5 sum)</span>
 <span class="sd">    SS_all_in_agi: bool</span>
-<span class="sd">        Whether all social security benefits are included in AGI</span>
+<span class="sd">        Reform: include 100% of OASDI in AGI (override worksheet)</span>
 <span class="sd">    SS_thd1: list</span>
-<span class="sd">        Threshold for social security benefit taxability (1)</span>
+<span class="sd">        MARS-indexed worksheet line 8 base amount</span>
 <span class="sd">    SS_thd2: list</span>
-<span class="sd">        Threshold for social security benefit taxability (2)</span>
+<span class="sd">        MARS-indexed (line 8 + line 10) second-tier threshold</span>
 <span class="sd">    SS_percentage1: float</span>
-<span class="sd">        Social security taxable income decimal fraction (1)</span>
+<span class="sd">        First-tier inclusion rate (worksheet line 13; 0.50 current law)</span>
 <span class="sd">    SS_percentage2: float</span>
-<span class="sd">        Social security taxable income decimal fraction (2)</span>
+<span class="sd">        Second-tier inclusion rate (worksheet lines 15/17; 0.85 current law)</span>
 <span class="sd">    c02500: float</span>
-<span class="sd">        Social security (OASDI) benefits included in AGI</span>
+<span class="sd">        Taxable OASDI benefits (Form 1040 line 6b)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c02500: float</span>
-<span class="sd">        Social security (OASDI) benefits included in AGI</span>
+<span class="sd">        Taxable OASDI benefits (Form 1040 line 6b)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">ymod</span> <span class="o">&lt;</span> <span class="n">SS_thd1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-        <span class="n">c02500</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">elif</span> <span class="n">ymod</span> <span class="o">&lt;</span> <span class="n">SS_thd2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-        <span class="n">c02500</span> <span class="o">=</span> <span class="n">SS_percentage1</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">ymod</span> <span class="o">-</span> <span class="n">SS_thd1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">e02400</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">c02500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">SS_percentage2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ymod</span> <span class="o">-</span> <span class="n">SS_thd2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span>
-                     <span class="n">SS_percentage1</span> <span class="o">*</span>
-                     <span class="nb">min</span><span class="p">(</span><span class="n">e02400</span><span class="p">,</span> <span class="n">SS_thd2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
-                         <span class="n">SS_thd1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">SS_percentage2</span> <span class="o">*</span> <span class="n">e02400</span><span class="p">)</span>
+    <span class="c1"># reform: include all OASDI in AGI (override worksheet)</span>
     <span class="k">if</span> <span class="n">SS_all_in_agi</span><span class="p">:</span>
         <span class="n">c02500</span> <span class="o">=</span> <span class="n">e02400</span>
+        <span class="k">return</span> <span class="n">c02500</span>
+    <span class="n">thd1</span> <span class="o">=</span> <span class="n">SS_thd1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># worksheet line 8</span>
+    <span class="n">thd2</span> <span class="o">=</span> <span class="n">SS_thd2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># worksheet line 8 + line 10</span>
+    <span class="k">if</span> <span class="n">ymod</span> <span class="o">&lt;</span> <span class="n">thd1</span><span class="p">:</span>
+        <span class="c1"># worksheet line 9 &lt;= 0</span>
+        <span class="n">c02500</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">elif</span> <span class="n">ymod</span> <span class="o">&lt;</span> <span class="n">thd2</span><span class="p">:</span>
+        <span class="c1"># worksheet line 11 = 0; c02500 = line 14 = min(line 2, line 13)</span>
+        <span class="n">c02500</span> <span class="o">=</span> <span class="n">SS_percentage1</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">ymod</span> <span class="o">-</span> <span class="n">thd1</span><span class="p">,</span> <span class="n">e02400</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># c02500 = line 18 = min(line 16, line 17)</span>
+        <span class="c1"># line 16 = line 14 + line 15</span>
+        <span class="c1">#         = p1 * min(e02400, thd2 - thd1) + p2 * (ymod - thd2)</span>
+        <span class="c1"># line 17 = p2 * e02400</span>
+        <span class="n">c02500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">SS_percentage2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ymod</span> <span class="o">-</span> <span class="n">thd2</span><span class="p">)</span> <span class="o">+</span>
+                     <span class="n">SS_percentage1</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">e02400</span><span class="p">,</span> <span class="n">thd2</span> <span class="o">-</span> <span class="n">thd1</span><span class="p">),</span>
+                     <span class="n">SS_percentage2</span> <span class="o">*</span> <span class="n">e02400</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">c02500</span>
 
 
