@@ -529,7 +529,8 @@ def CapGainsLoss(p22250, p23250, Capital_loss_limitation, MARS,
 def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
               e00900, e01100, e01200, e01400, e01700, e02000, e02100,
               e02300, e02400, c01000, c02900, e03210, e03230, e03240,
-              ALD_StudentLoan_hc, ALD_InvInc_ec_rt, invinc_ec_base,
+              ALD_StudentLoan_hc, ALD_Tuition_hc, ALD_DomesticProduction_hc,
+              ALD_InvInc_ec_rt, invinc_ec_base,
               CG_nodiff, CG_ec, CG_reinvest_ec_rt,
               ALD_BusinessLosses_c, AlimonyReceived_frac_in_AGI, MARS,
               ymod, ymod1, invinc_agi_ec):
@@ -592,6 +593,13 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
       Domestic production activities deduction (legacy)
     ALD_StudentLoan_hc: float
       Reform haircut on the student loan interest deduction
+    ALD_Tuition_hc: float
+      Haircut on the tuition-and-fees deduction (1.0 from 2021,
+      after IRC §222 was repealed by the Taxpayer Certainty and
+      Disaster Tax Relief Act of 2020 §104)
+    ALD_DomesticProduction_hc: float
+      Haircut on the domestic-production-activities deduction
+      (1.0 from 2018, after TCJA §13305(a) repealed IRC §199)
     ALD_InvInc_ec_rt: float
       Reform exclusion rate for investment income
     invinc_ec_base: float
@@ -650,9 +658,16 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
                           CG_reinvest_ec_rt * max(0., qdcg_pos - CG_ec))
         ymod1 = max(0., ymod1 - qdcg_exclusion)
         invinc_agi_ec += qdcg_exclusion
-    # ymod = modAGI used by the SS-benefits worksheet (Pub. 915)
+    # ymod = modAGI used by the SS-benefits worksheet (Pub. 915).
+    # Worksheet line 6 = "Schedule 1, lines 11 through 20, and 23 and
+    # 25" — it excludes Sch 1 line 21 (student loan interest) and the
+    # legacy tuition / domestic-production lines. ymod3 adds back the
+    # exact amount Adj subtracted into c02900 for those three items so
+    # the worksheet line 6 omission is undone symmetrically.
     ymod2 = e00400 + (0.50 * e02400) - c02900
-    ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
+    ymod3 = ((1. - ALD_StudentLoan_hc) * e03210 +
+             (1. - ALD_Tuition_hc) * e03230 +
+             (1. - ALD_DomesticProduction_hc) * e03240)
     ymod = ymod1 + ymod2 + ymod3
     return (ymod, ymod1, invinc_agi_ec)
 
