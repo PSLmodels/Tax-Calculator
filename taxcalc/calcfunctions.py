@@ -429,40 +429,57 @@ def ALD_InvInc_ec_base(p22250, p23250,
                        e00300, e00600, e01100, e01200, MARS,
                        invinc_ec_base, Capital_loss_limitation):
     """
-    Computes invinc_ec_base.
+    Computes invinc_ec_base, the base amount of investment income that
+    the reform parameter ALD_InvInc_ec_rt multiplies in AGIIncome to
+    produce invinc_agi_ec, the dollar amount of investment income
+    excluded from AGI. No IRS form correspondence (reform plumbing);
+    inert under current law because ALD_InvInc_ec_rt defaults to 0.
+
+    The base is the sum of five investment-income components: taxable
+    interest, ordinary dividends, net capital gain/(loss) after the
+    Sch D §1211(b) per-MARS loss cap, capital-gain distributions not
+    reported on Schedule D, and other gain/(loss) from Form 4797.
+
+    Note: this function runs before CapGainsLoss in calc_all (so c01000
+    is not yet available) and therefore re-derives the loss-capped
+    capital gain locally as `cgain`. By construction `cgain` equals the
+    `c01000` that CapGainsLoss will produce one call later.
 
     Parameters
     ----------
     p22250: float
-        Net short-term capital gails/losses (Schedule D)
+        Net short-term capital gain/(loss) (Schedule D line 7)
     p23250: float
-        Net long-term capital gains/losses (Schedule D)
+        Net long-term capital gain/(loss) (Schedule D line 15)
     e00300: float
-        Taxable interest income
+        Taxable interest (Form 1040 line 2b)
     e00600: float
-        Ordinary dividends included in AGI
+        Ordinary dividends (Form 1040 line 3b)
     e01100: float
-        Capital gains distributions not reported on Schedule D
+        Capital gain distributions not reported on Schedule D
     e01200: float
-        Other net gain/loss from Form 4797
+        Other gain/(loss) from Form 4797 (Schedule 1 line 4)
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate,
                                4=household-head, 5=widow(er))
     invinc_ec_base: float
-        Exclusion of investment income from AGI
-    Capital_loss_limitation: float
-        Limitation on capital losses that are deductible
+        Base investment income subject to the reform exclusion
+        (consumed by AGIIncome via ALD_InvInc_ec_rt)
+    Capital_loss_limitation: list
+        MARS-indexed dollar limit on net capital loss deductible
+        against ordinary income (Schedule D line 21 cap)
 
     Returns
     -------
     invinc_ec_base: float
-        Exclusion of investment income from AGI
+        Base investment income subject to the reform exclusion
     """
-    # limitation on net short-term and long-term capital losses
+    # Schedule D line 21 / IRC §1211(b): cap any net capital loss at the
+    # MARS-indexed limit. Re-derived here (rather than reusing c01000)
+    # because CapGainsLoss has not yet run; result equals c01000.
     cgain = max(
         (-1 * Capital_loss_limitation[MARS - 1]), p22250 + p23250
     )
-    # compute exclusion of investment income from AGI
     invinc_ec_base = e00300 + e00600 + cgain + e01100 + e01200
     return invinc_ec_base
 
