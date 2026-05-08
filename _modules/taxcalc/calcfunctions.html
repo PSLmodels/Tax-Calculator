@@ -825,40 +825,57 @@
                        <span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
                        <span class="n">invinc_ec_base</span><span class="p">,</span> <span class="n">Capital_loss_limitation</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes invinc_ec_base.</span>
+<span class="sd">    Computes invinc_ec_base, the base amount of investment income that</span>
+<span class="sd">    the reform parameter ALD_InvInc_ec_rt multiplies in AGIIncome to</span>
+<span class="sd">    produce invinc_agi_ec, the dollar amount of investment income</span>
+<span class="sd">    excluded from AGI. No IRS form correspondence (reform plumbing);</span>
+<span class="sd">    inert under current law because ALD_InvInc_ec_rt defaults to 0.</span>
+
+<span class="sd">    The base is the sum of five investment-income components: taxable</span>
+<span class="sd">    interest, ordinary dividends, net capital gain/(loss) after the</span>
+<span class="sd">    Sch D §1211(b) per-MARS loss cap, capital-gain distributions not</span>
+<span class="sd">    reported on Schedule D, and other gain/(loss) from Form 4797.</span>
+
+<span class="sd">    Note: this function runs before CapGainsLoss in calc_all (so c01000</span>
+<span class="sd">    is not yet available) and therefore re-derives the loss-capped</span>
+<span class="sd">    capital gain locally as `cgain`. By construction `cgain` equals the</span>
+<span class="sd">    `c01000` that CapGainsLoss will produce one call later.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    p22250: float</span>
-<span class="sd">        Net short-term capital gails/losses (Schedule D)</span>
+<span class="sd">        Net short-term capital gain/(loss) (Schedule D line 7)</span>
 <span class="sd">    p23250: float</span>
-<span class="sd">        Net long-term capital gains/losses (Schedule D)</span>
+<span class="sd">        Net long-term capital gain/(loss) (Schedule D line 15)</span>
 <span class="sd">    e00300: float</span>
-<span class="sd">        Taxable interest income</span>
+<span class="sd">        Taxable interest (Form 1040 line 2b)</span>
 <span class="sd">    e00600: float</span>
-<span class="sd">        Ordinary dividends included in AGI</span>
+<span class="sd">        Ordinary dividends (Form 1040 line 3b)</span>
 <span class="sd">    e01100: float</span>
-<span class="sd">        Capital gains distributions not reported on Schedule D</span>
+<span class="sd">        Capital gain distributions not reported on Schedule D</span>
 <span class="sd">    e01200: float</span>
-<span class="sd">        Other net gain/loss from Form 4797</span>
+<span class="sd">        Other gain/(loss) from Form 4797 (Schedule 1 line 4)</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                               4=household-head, 5=widow(er))</span>
 <span class="sd">    invinc_ec_base: float</span>
-<span class="sd">        Exclusion of investment income from AGI</span>
-<span class="sd">    Capital_loss_limitation: float</span>
-<span class="sd">        Limitation on capital losses that are deductible</span>
+<span class="sd">        Base investment income subject to the reform exclusion</span>
+<span class="sd">        (consumed by AGIIncome via ALD_InvInc_ec_rt)</span>
+<span class="sd">    Capital_loss_limitation: list</span>
+<span class="sd">        MARS-indexed dollar limit on net capital loss deductible</span>
+<span class="sd">        against ordinary income (Schedule D line 21 cap)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    invinc_ec_base: float</span>
-<span class="sd">        Exclusion of investment income from AGI</span>
+<span class="sd">        Base investment income subject to the reform exclusion</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># limitation on net short-term and long-term capital losses</span>
+    <span class="c1"># Schedule D line 21 / IRC §1211(b): cap any net capital loss at the</span>
+    <span class="c1"># MARS-indexed limit. Re-derived here (rather than reusing c01000)</span>
+    <span class="c1"># because CapGainsLoss has not yet run; result equals c01000.</span>
     <span class="n">cgain</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
         <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">Capital_loss_limitation</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">p22250</span> <span class="o">+</span> <span class="n">p23250</span>
     <span class="p">)</span>
-    <span class="c1"># compute exclusion of investment income from AGI</span>
     <span class="n">invinc_ec_base</span> <span class="o">=</span> <span class="n">e00300</span> <span class="o">+</span> <span class="n">e00600</span> <span class="o">+</span> <span class="n">cgain</span> <span class="o">+</span> <span class="n">e01100</span> <span class="o">+</span> <span class="n">e01200</span>
     <span class="k">return</span> <span class="n">invinc_ec_base</span>
 
