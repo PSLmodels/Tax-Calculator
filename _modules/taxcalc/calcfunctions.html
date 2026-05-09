@@ -1333,74 +1333,185 @@
             <span class="n">tip_income_deduction</span><span class="p">,</span>
             <span class="n">auto_loan_interest_deduction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates below-the-line deduction for elderly head/spouse and</span>
-<span class="sd">    deductions on qualified overtime income, tip income, and</span>
-<span class="sd">    auto loan interest paid.</span>
+<span class="sd">    Computes the four below-the-line additional deductions on</span>
+<span class="sd">    Schedule 1-A (new for 2025): qualified tips (Part II), qualified</span>
+<span class="sd">    overtime compensation (Part III), qualified passenger-vehicle</span>
+<span class="sd">    loan interest (Part IV), and the enhanced deduction for seniors</span>
+<span class="sd">    (Part V). The four amounts are summed into Schedule 1-A line 38</span>
+<span class="sd">    (Form 1040 line 13b) and consumed downstream by `StdDed`/`TaxInc`.</span>
+
+<span class="sd">    Each part caps the qualified input, then phases the cap out as</span>
+<span class="sd">    MAGI exceeds a MARS-indexed start. Tips, overtime, and auto-loan</span>
+<span class="sd">    use an `exact==1` stepped phaseout (floor or ceil of</span>
+<span class="sd">    `excess / step_size`, scaled by `rate_per_step`) and a smooth</span>
+<span class="sd">    linear fallback that gives sensible marginal-tax-rate behavior.</span>
+<span class="sd">    The senior phaseout is always smooth (form Part V line 34</span>
+<span class="sd">    multiplies by 6%, no step rounding).</span>
+
+<span class="sd">    MAGI: Schedule 1-A line 3 adds foreign-income exclusions (Puerto</span>
+<span class="sd">    Rico, Form 2555 lines 45/50, Form 4563 line 15) to AGI; those</span>
+<span class="sd">    inputs are not modeled in Tax-Calculator records, so `c00100`</span>
+<span class="sd">    (Form 1040 line 11 AGI) is used directly as the MAGI proxy.</span>
+
+<span class="sd">    MFS (`MARS=3`): Parts II/III/V state &quot;If married, you must file</span>
+<span class="sd">    jointly to claim this deduction&quot;; the function therefore zeroes</span>
+<span class="sd">    the tip, overtime, and senior deductions when `MARS=3`. Part IV</span>
+<span class="sd">    (auto loan) carries no MFS restriction and is allowed for MFS.</span>
+
+<span class="sd">    Senior deduction is per eligible head/spouse (born before</span>
+<span class="sd">    1961-01-02 ≈ age 65+); each gets the line-35 amount.</span>
+
+<span class="sd">    Eligibility conditions documented on the form but not modeled</span>
+<span class="sd">    here include: valid SSN for taxpayer (and spouse if MFJ);</span>
+<span class="sd">    qualified-occupation listing for tips; qualified-overtime</span>
+<span class="sd">    classification; and the per-vehicle VIN/QPVLI definition for</span>
+<span class="sd">    auto-loan interest. The `tip_income`, `overtime_income`, and</span>
+<span class="sd">    `auto_loan_interest` inputs are assumed to already represent</span>
+<span class="sd">    the form-qualified amounts.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    age_head: int</span>
 <span class="sd">        Age of tax unit head</span>
-<span class="sd">    age_head: int</span>
+<span class="sd">    age_spouse: int</span>
 <span class="sd">        Age of tax unit spouse</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                               4=household-head, 5=widow(er))</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted gross income</span>
+<span class="sd">        Adjusted gross income (Form 1040 line 11); used as the</span>
+<span class="sd">        MAGI proxy for Schedule 1-A line 3</span>
 <span class="sd">    exact: int</span>
 <span class="sd">        Whether or not to smooth deduction phase out</span>
-<span class="sd">    SeniorDed_c: float</span>
-<span class="sd">        Maximum amount of senior deduction per head/spouse aged 65+</span>
-<span class="sd">    SeniorDed_ps: list[float]</span>
-<span class="sd">        Senior deduction AGI phase-out start level</span>
-<span class="sd">    SeniorDed_prt: float</span>
-<span class="sd">        Senior deduction phase-out rate</span>
-<span class="sd">    overtime_income: float</span>
-<span class="sd">        Overtime income qualified for a misc deduction</span>
-<span class="sd">    OvertimeIncomeDed_c: list[float]</span>
-<span class="sd">        overtime_income_deduction cap</span>
-<span class="sd">    OvertimeIncomeDed_ps: list[float]</span>
-<span class="sd">        overtime_income_deduction phase-out modified AGI start</span>
-<span class="sd">    OvertimeIncomeDed_po_step_size: float</span>
-<span class="sd">        Deduction phase-out AGI step size</span>
-<span class="sd">    OvertimeIncomeDed_po_rate_per_step: float</span>
-<span class="sd">        Deduction phase-out rate per AGI step</span>
+<span class="sd">    -- Part II (Tips, Sch 1-A lines 4-13) --</span>
 <span class="sd">    tip_income: float</span>
-<span class="sd">        Tip income qualified for a misc deduction</span>
+<span class="sd">        Qualified tips received (Sch 1-A line 6)</span>
 <span class="sd">    TipIncomeDed_c: float</span>
-<span class="sd">        tip_income_deduction cap</span>
+<span class="sd">        Cap on qualified tips deduction (Sch 1-A line 7)</span>
 <span class="sd">    TipIncomeDed_ps: list[float]</span>
-<span class="sd">        tip_income_deduction phase-out modified AGI start</span>
+<span class="sd">        Phase-out start MAGI (Sch 1-A line 9)</span>
 <span class="sd">    TipIncomeDed_po_step_size: float</span>
-<span class="sd">        Deduction phase-out AGI step size</span>
+<span class="sd">        Phase-out MAGI step size (Sch 1-A line 11 denominator)</span>
 <span class="sd">    TipIncomeDed_po_rate_per_step: float</span>
-<span class="sd">        Deduction phase-out rate per AGI step</span>
+<span class="sd">        Phase-out rate per MAGI step (Sch 1-A line 12 multiplier</span>
+<span class="sd">        divided by line 11 step size)</span>
+<span class="sd">    -- Part III (Overtime, Sch 1-A lines 14-21) --</span>
+<span class="sd">    overtime_income: float</span>
+<span class="sd">        Qualified overtime compensation (Sch 1-A line 14c)</span>
+<span class="sd">    OvertimeIncomeDed_c: list[float]</span>
+<span class="sd">        Cap on overtime deduction (Sch 1-A line 15)</span>
+<span class="sd">    OvertimeIncomeDed_ps: list[float]</span>
+<span class="sd">        Phase-out start MAGI (Sch 1-A line 17)</span>
+<span class="sd">    OvertimeIncomeDed_po_step_size: float</span>
+<span class="sd">        Phase-out MAGI step size (Sch 1-A line 19 denominator)</span>
+<span class="sd">    OvertimeIncomeDed_po_rate_per_step: float</span>
+<span class="sd">        Phase-out rate per MAGI step (Sch 1-A line 20)</span>
+<span class="sd">    -- Part IV (Auto loan interest, Sch 1-A lines 22-30) --</span>
 <span class="sd">    auto_loan_interest: float</span>
-<span class="sd">        Qualified auto loan interest paid</span>
+<span class="sd">        Qualified passenger-vehicle loan interest paid</span>
+<span class="sd">        (Sch 1-A line 23)</span>
 <span class="sd">    AutoLoanInterestDed_c: float</span>
-<span class="sd">        Deduction cap</span>
-<span class="sd">    AutoLoanInterestDed_ps: float</span>
-<span class="sd">        Deduction phase-out starts above this AGI</span>
+<span class="sd">        Cap on auto loan interest deduction (Sch 1-A line 24)</span>
+<span class="sd">    AutoLoanInterestDed_ps: list[float]</span>
+<span class="sd">        Phase-out start MAGI (Sch 1-A line 26)</span>
 <span class="sd">    AutoLoanInterestDed_po_step_size: float</span>
-<span class="sd">        Deduction phase-out AGI step size</span>
+<span class="sd">        Phase-out MAGI step size (Sch 1-A line 28 denominator)</span>
 <span class="sd">    AutoLoanInterestDed_po_rate_per_step: float</span>
-<span class="sd">        Deduction phase-out rate per AGI step</span>
+<span class="sd">        Phase-out rate per MAGI step (Sch 1-A line 29)</span>
+<span class="sd">    -- Part V (Seniors, Sch 1-A lines 31-37) --</span>
+<span class="sd">    SeniorDed_c: float</span>
+<span class="sd">        Maximum amount of senior deduction per elderly head/spouse</span>
+<span class="sd">        (Sch 1-A line 35 base, $6,000 for 2025)</span>
+<span class="sd">    SeniorDed_ps: list[float]</span>
+<span class="sd">        Phase-out start MAGI (Sch 1-A line 32)</span>
+<span class="sd">    SeniorDed_prt: float</span>
+<span class="sd">        Phase-out rate (Sch 1-A line 34, 6% for 2025)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    senior_deduction: float</span>
-<span class="sd">        Deduction available to both itemizers and nonitemizers</span>
+<span class="sd">        Sch 1-A line 37 (enhanced deduction for seniors)</span>
 <span class="sd">    overtime_income_deduction: float</span>
-<span class="sd">        Deduction available to both itemizers and nonitemizers</span>
+<span class="sd">        Sch 1-A line 21 (qualified overtime compensation deduction)</span>
 <span class="sd">    tip_income_deduction: float</span>
-<span class="sd">        Deduction available to both itemizers and nonitemizers</span>
+<span class="sd">        Sch 1-A line 13 (qualified tips deduction)</span>
 <span class="sd">    auto_loan_interest_deduction: float</span>
-<span class="sd">        Deduction available to both itemizers and nonitemizers</span>
+<span class="sd">        Sch 1-A line 30 (qualified passenger vehicle loan interest</span>
+<span class="sd">        deduction)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch 1-A Part I (lines 1-3): Modified AGI</span>
+    <span class="c1"># Foreign-income add-backs (lines 2a-2d) are not modeled in</span>
+    <span class="c1"># Tax-Calculator records, so AGI (Form 1040 line 11 = c00100)</span>
+    <span class="c1"># is the MAGI proxy used by all four parts below.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">magi</span> <span class="o">=</span> <span class="n">c00100</span>
-    <span class="c1"># calculate senior deduction</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch 1-A Part II (lines 4-13): No Tax on Tips</span>
+    <span class="c1"># MFJ-only if married (MARS=3 disallowed).</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="n">tip_income_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">tip_income</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tip_income</span><span class="p">,</span> <span class="n">TipIncomeDed_c</span><span class="p">)</span>  <span class="c1"># line 7 (cap)</span>
+        <span class="n">po_start</span> <span class="o">=</span> <span class="n">TipIncomeDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># line 9</span>
+        <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>  <span class="c1"># line 10 (excess)</span>
+            <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">magi</span> <span class="o">-</span> <span class="n">po_start</span>
+            <span class="n">po_rate</span> <span class="o">=</span> <span class="n">TipIncomeDed_po_rate_per_step</span>
+            <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
+                <span class="n">step_size</span> <span class="o">=</span> <span class="n">TipIncomeDed_po_step_size</span>
+                <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">excess_agi</span> <span class="o">/</span> <span class="n">step_size</span><span class="p">)</span>  <span class="c1"># line 11</span>
+                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">step_size</span> <span class="o">*</span> <span class="n">po_rate</span>  <span class="c1"># line 12</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation needed for sensible mtr calculation</span>
+                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">po_rate</span>
+            <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>  <span class="c1"># line 13</span>
+        <span class="n">tip_income_deduction</span> <span class="o">=</span> <span class="n">ded</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch 1-A Part III (lines 14-21): No Tax on Overtime</span>
+    <span class="c1"># MFJ-only if married (MARS=3 disallowed).</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="n">overtime_income_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">overtime_income</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">overtime_income</span><span class="p">,</span>
+                  <span class="n">OvertimeIncomeDed_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># line 15 (cap)</span>
+        <span class="n">po_start</span> <span class="o">=</span> <span class="n">OvertimeIncomeDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># line 17</span>
+        <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>  <span class="c1"># line 18 (excess)</span>
+            <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">magi</span> <span class="o">-</span> <span class="n">po_start</span>
+            <span class="n">po_rate</span> <span class="o">=</span> <span class="n">OvertimeIncomeDed_po_rate_per_step</span>
+            <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
+                <span class="n">step_size</span> <span class="o">=</span> <span class="n">OvertimeIncomeDed_po_step_size</span>
+                <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">excess_agi</span> <span class="o">/</span> <span class="n">step_size</span><span class="p">)</span>  <span class="c1"># line 19</span>
+                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">step_size</span> <span class="o">*</span> <span class="n">po_rate</span>  <span class="c1"># line 20</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation needed for sensible mtr calculation</span>
+                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">po_rate</span>
+            <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>  <span class="c1"># line 21</span>
+        <span class="n">overtime_income_deduction</span> <span class="o">=</span> <span class="n">ded</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch 1-A Part IV (lines 22-30): No Tax on Car Loan Interest</span>
+    <span class="c1"># No MFS restriction on the form; allowed for all MARS values.</span>
+    <span class="c1"># Step rounding is CEIL (line 28 &quot;increase to next higher whole</span>
+    <span class="c1"># number&quot;), unlike Parts II/III which FLOOR.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="n">auto_loan_interest_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">AutoLoanInterestDed_c</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">auto_loan_interest</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">auto_loan_interest</span><span class="p">,</span> <span class="n">AutoLoanInterestDed_c</span><span class="p">)</span>  <span class="c1"># line 24</span>
+        <span class="n">po_start</span> <span class="o">=</span> <span class="n">AutoLoanInterestDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># line 26</span>
+        <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>  <span class="c1"># line 27 (excess)</span>
+            <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">magi</span> <span class="o">-</span> <span class="n">po_start</span>
+            <span class="n">po_rate</span> <span class="o">=</span> <span class="n">AutoLoanInterestDed_po_rate_per_step</span>
+            <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
+                <span class="n">step_size</span> <span class="o">=</span> <span class="n">AutoLoanInterestDed_po_step_size</span>
+                <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">excess_agi</span> <span class="o">/</span> <span class="n">step_size</span><span class="p">)</span>  <span class="c1"># line 28</span>
+                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">step_size</span> <span class="o">*</span> <span class="n">po_rate</span>  <span class="c1"># line 29</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation needed for sensible mtr calculation</span>
+                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">po_rate</span>
+            <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>  <span class="c1"># line 30</span>
+        <span class="n">auto_loan_interest_deduction</span> <span class="o">=</span> <span class="n">ded</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch 1-A Part V (lines 31-37): Enhanced Deduction for Seniors</span>
+    <span class="c1"># MFJ-only if married (MARS=3 disallowed); per eligible</span>
+    <span class="c1"># head/spouse aged 65+. Phaseout is smooth 6% (no exact branch).</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">senior_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">if</span> <span class="n">SeniorDed_c</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">seniors</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1409,66 +1520,14 @@
         <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
             <span class="n">seniors</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">seniors</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">po_start</span> <span class="o">=</span> <span class="n">SeniorDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
+            <span class="n">po_start</span> <span class="o">=</span> <span class="n">SeniorDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># line 32</span>
+            <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>  <span class="c1"># line 33 (excess)</span>
                 <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">magi</span> <span class="o">-</span> <span class="n">po_start</span>
-                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">SeniorDed_prt</span>
-                <span class="n">per_person_ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">SeniorDed_c</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
+                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">SeniorDed_prt</span>  <span class="c1"># line 34</span>
+                <span class="n">per_person_ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">SeniorDed_c</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>  <span class="c1"># line 35</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">per_person_ded</span> <span class="o">=</span> <span class="n">SeniorDed_c</span>
-            <span class="n">senior_deduction</span> <span class="o">=</span> <span class="n">seniors</span> <span class="o">*</span> <span class="n">per_person_ded</span>
-    <span class="c1"># calculate overtime_income_deduction</span>
-    <span class="n">overtime_income_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">overtime_income</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">overtime_income</span><span class="p">,</span> <span class="n">OvertimeIncomeDed_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="n">po_start</span> <span class="o">=</span> <span class="n">OvertimeIncomeDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
-            <span class="c1"># phase out deduction</span>
-            <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">magi</span> <span class="o">-</span> <span class="n">po_start</span>
-            <span class="n">po_rate</span> <span class="o">=</span> <span class="n">OvertimeIncomeDed_po_rate_per_step</span>
-            <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
-                <span class="n">step_size</span> <span class="o">=</span> <span class="n">OvertimeIncomeDed_po_step_size</span>
-                <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">excess_agi</span> <span class="o">/</span> <span class="n">step_size</span><span class="p">)</span>
-                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">step_size</span> <span class="o">*</span> <span class="n">po_rate</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation needed for sensible mtr calculation</span>
-                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">po_rate</span>
-            <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
-        <span class="n">overtime_income_deduction</span> <span class="o">=</span> <span class="n">ded</span>
-    <span class="c1"># calculate tip_income_deduction</span>
-    <span class="n">tip_income_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">tip_income</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tip_income</span><span class="p">,</span> <span class="n">TipIncomeDed_c</span><span class="p">)</span>
-        <span class="n">po_start</span> <span class="o">=</span> <span class="n">TipIncomeDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
-            <span class="c1"># phase out deduction</span>
-            <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">magi</span> <span class="o">-</span> <span class="n">po_start</span>
-            <span class="n">po_rate</span> <span class="o">=</span> <span class="n">TipIncomeDed_po_rate_per_step</span>
-            <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
-                <span class="n">step_size</span> <span class="o">=</span> <span class="n">TipIncomeDed_po_step_size</span>
-                <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">excess_agi</span> <span class="o">/</span> <span class="n">step_size</span><span class="p">)</span>
-                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">step_size</span> <span class="o">*</span> <span class="n">po_rate</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation needed for sensible mtr calculation</span>
-                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">po_rate</span>
-            <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
-        <span class="n">tip_income_deduction</span> <span class="o">=</span> <span class="n">ded</span>
-    <span class="c1"># calculate auto loan interest deduction</span>
-    <span class="n">auto_loan_interest_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">AutoLoanInterestDed_c</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">auto_loan_interest</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="c1"># cap deduction</span>
-        <span class="n">ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">auto_loan_interest</span><span class="p">,</span> <span class="n">AutoLoanInterestDed_c</span><span class="p">)</span>
-        <span class="n">po_start</span> <span class="o">=</span> <span class="n">AutoLoanInterestDed_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">magi</span> <span class="o">&gt;</span> <span class="n">po_start</span><span class="p">:</span>
-            <span class="c1"># phase out deduction</span>
-            <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">magi</span> <span class="o">-</span> <span class="n">po_start</span>
-            <span class="n">po_rate</span> <span class="o">=</span> <span class="n">AutoLoanInterestDed_po_rate_per_step</span>
-            <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
-                <span class="n">step_size</span> <span class="o">=</span> <span class="n">AutoLoanInterestDed_po_step_size</span>
-                <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">excess_agi</span> <span class="o">/</span> <span class="n">step_size</span><span class="p">)</span>
-                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">step_size</span> <span class="o">*</span> <span class="n">po_rate</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># smoothed calculation needed for sensible mtr calculation</span>
-                <span class="n">po_amount</span> <span class="o">=</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">po_rate</span>
-            <span class="n">ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ded</span> <span class="o">-</span> <span class="n">po_amount</span><span class="p">)</span>
-        <span class="n">auto_loan_interest_deduction</span> <span class="o">=</span> <span class="n">ded</span>
+                <span class="n">per_person_ded</span> <span class="o">=</span> <span class="n">SeniorDed_c</span>  <span class="c1"># line 33: use $6,000 base</span>
+            <span class="n">senior_deduction</span> <span class="o">=</span> <span class="n">seniors</span> <span class="o">*</span> <span class="n">per_person_ded</span>  <span class="c1"># lines 36a/36b/37</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">senior_deduction</span><span class="p">,</span> <span class="n">overtime_income_deduction</span><span class="p">,</span>
             <span class="n">tip_income_deduction</span><span class="p">,</span> <span class="n">auto_loan_interest_deduction</span><span class="p">)</span>
 
