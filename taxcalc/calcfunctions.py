@@ -1444,50 +1444,108 @@ def ItemDed(e17500, e18400, e18500, e19200,
 
 
 @iterate_jit(nopython=True)
-def AdditionalMedicareTax(e00200, MARS,
-                          AMEDT_ec, sey, AMEDT_rt,
-                          FICA_mc_trt_employer, FICA_mc_trt_employee,
+def AdditionalMedicareTax(MARS, e00200,
+                          e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s,
                           FICA_ss_trt_employer, FICA_ss_trt_employee,
+                          FICA_mc_trt_employer, FICA_mc_trt_employee,
+                          AMEDT_ec, AMEDT_rt,
                           ptax_amc):
     """
-    Computes Additional Medicare Tax (Form 8959) included in othertaxes.
+    Form 8959 Additional Medicare Tax. Liability flows into Schedule 2
+    line 11 via `othertaxes` in `C1040` and ultimately into `iitax`.
+
+    Form 8959 has five Parts:
+      Part I  (lines 1-7)  Additional Medicare Tax on Medicare wages
+      Part II (lines 8-13) Additional Medicare Tax on SE income
+      Part III(lines 14-17)Additional Medicare Tax on RRTA compensation
+                           — *not modeled* (no RRTA variables in records)
+      Part IV (line 18)    Total = line 7 + line 13 (+ line 17)
+      Part V  (lines 19-24)Withholding reconciliation — refundable side,
+                           not part of liability.
+
+    Tax-Calculator does not separately track Medicare wages (W-2 box 5)
+    from Form 4137 unreported tips and Form 8919 wages, so `e00200`
+    substitutes for Form 8959 line 4 (the sum of lines 1+2+3).
+
+    Form 8959 line 8 (Sch SE Part I line 6) is reconstructed per-spouse:
+    Sch SE is filed separately by each spouse, so each spouse's net SE
+    earnings are floored at zero independently before the joint total is
+    formed. The records-bound `sey` is the unfloored sum, which would
+    over-net a positive-sey spouse against a negative-sey spouse; this
+    function therefore re-derives `sey_p`/`sey_s` from the underlying
+    per-spouse input components (matching `EI_PayrollTax`) and applies
+    the per-spouse 0-floor before summing.
+
+    The line-5 / line-9 / line-15 thresholds are identical on the form
+    ($250k MFJ / $125k MFS / $200k Single/HoH/QSS for 2025) and are
+    parameterized by `AMEDT_ec[MARS-1]`. The 0.9% rate is parameterized
+    by `AMEDT_rt`.
 
     Parameters
-    -----
+    ----------
     MARS: int
-        Filing marital status (1=single, 2=joint, 3=separate,
-                               4=household-head, 5=widow(er))
-    AMEDT_ec: list
-        Additional Medicare Tax earnings exclusion
-    AMEDT_rt: float
-        Additional Medicare Tax rate
-    FICA_ss_trt_employer: float
-        Employer side FICA Social Security tax rate
-    FICA_ss_trt_employee: float
-        Employee side FICA Social Security tax rate
-    FICA_mc_trt_employer: float
-        Employer side FICA Medicare tax rate
-    FICA_mc_trt_employee: float
-        Employee side FICA Medicare tax rate
+        Filing status (1=single, 2=joint, 3=separate,
+                       4=household-head, 5=widow(er))
+    -- Part I: Medicare wages (lines 1-7) --
     e00200: float
-        Wages and salaries
-    sey: float
-        Self-employment income
+        Wages and salaries; substitutes for Form 8959 line 4 (Medicare
+        wages from W-2 box 5 + Form 4137 line 6 + Form 8919 line 6)
+    -- Part II: Self-employment income (lines 8-13) --
+    e00900p: float
+        Sch C (taxpayer) net profit/loss; component of `sey_p`
+    e00900s: float
+        Sch C (spouse) net profit/loss; component of `sey_s`
+    e02100p: float
+        Sch F (taxpayer) net profit/loss; component of `sey_p`
+    e02100s: float
+        Sch F (spouse) net profit/loss; component of `sey_s`
+    k1bx14p: float
+        Sch K-1 box 14 SE earnings (taxpayer); component of `sey_p`
+    k1bx14s: float
+        Sch K-1 box 14 SE earnings (spouse); component of `sey_s`
+    FICA_ss_trt_employer: float
+        Employer-side FICA OASDI tax rate (Sch SE line 4c reduction)
+    FICA_ss_trt_employee: float
+        Employee-side FICA OASDI tax rate (Sch SE line 4c reduction)
+    FICA_mc_trt_employer: float
+        Employer-side FICA HI tax rate (Sch SE line 4c reduction)
+    FICA_mc_trt_employee: float
+        Employee-side FICA HI tax rate (Sch SE line 4c reduction)
+    -- Common to Parts I and II --
+    AMEDT_ec: list
+        Form 8959 line 5 / line 9 threshold by MARS
+    AMEDT_rt: float
+        Form 8959 line 7 / line 13 rate (0.9% under current law)
+    -- iterate_jit Records-bound output --
     ptax_amc: float
-        Additional Medicare Tax (included in othertaxes and iitax)
+        Additional Medicare Tax (Form 8959 line 18)
 
     Returns
     -------
     ptax_amc: float
-        Additional Medicare Tax (included in othertaxes and iitax)
+        Additional Medicare Tax (Form 8959 line 18)
     """
-    line8 = max(0., sey) * (
-        1. - 0.5 * (FICA_mc_trt_employer + FICA_mc_trt_employee +
-                    FICA_ss_trt_employer + FICA_ss_trt_employee)
-    )
-    line11 = max(0., AMEDT_ec[MARS - 1] - e00200)
-    ptax_amc = AMEDT_rt * (max(0., e00200 - AMEDT_ec[MARS - 1]) +
-                           max(0., line8 - line11))
+    threshold = AMEDT_ec[MARS - 1]  # line 5 (also line 9; same value)
+    seca_frac = 1. - 0.5 * (FICA_ss_trt_employer + FICA_ss_trt_employee +
+                            FICA_mc_trt_employer + FICA_mc_trt_employee)
+    # Per-spouse Sch SE Part I line 6 (each floored at 0; matches the
+    # `sey_p`/`sey_s` and `net_sey_p`/`net_sey_s` construction in
+    # `EI_PayrollTax`).
+    sey_p = e00900p + e02100p + k1bx14p
+    sey_s = e00900s + e02100s + k1bx14s
+    net_sey_p = max(0., sey_p * seca_frac)
+    net_sey_s = max(0., sey_s * seca_frac)
+    # -- Part I: Medicare wages (lines 1-7) --
+    line4 = e00200
+    line6 = max(0., line4 - threshold)
+    line7 = AMEDT_rt * line6
+    # -- Part II: Self-employment income (lines 8-13) --
+    line8 = net_sey_p + net_sey_s
+    line11 = max(0., threshold - line4)  # = max(0, line 9 - line 10)
+    line12 = max(0., line8 - line11)
+    line13 = AMEDT_rt * line12
+    # -- Part IV: Total (line 18); Part III RRTA not modeled --
+    ptax_amc = line7 + line13
     return ptax_amc
 
 
