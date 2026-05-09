@@ -1549,26 +1549,38 @@
             <span class="n">ID_StateLocalTax_crt</span><span class="p">,</span> <span class="n">ID_RealEstate_crt</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">,</span>
             <span class="n">ID_reduction_rate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates itemized deductions, Form 1040, Schedule A.</span>
+<span class="sd">    Calculates itemized deductions, Schedule A (Form 1040).</span>
+
+<span class="sd">    Body sections mirror Schedule A&#39;s six-section structure:</span>
+<span class="sd">      Medical (lines 1-4) → Taxes (5-7) → Interest (8-10) →</span>
+<span class="sd">      Charity (11-14) → Casualty (15) → Other (16) → Total (17).</span>
+
+<span class="sd">    Schedule A inputs and form-arithmetic come first within each</span>
+<span class="sd">    section; reform/legacy plumbing (per-section haircuts ``_hc``,</span>
+<span class="sd">    per-section MARS-indexed dollar caps ``_c``, and AGI-fraction</span>
+<span class="sd">    caps/floors absent from the form) is interleaved.</span>
+
+<span class="sd">    Three post-Sch-A reform/legacy operations apply to the line-17</span>
+<span class="sd">    total ``c21060``: (1) the §68 Pease limitation (repealed by TCJA</span>
+<span class="sd">    for 2018-2025; parameters retained for reform use); (2) the OBBBA</span>
+<span class="sd">    top-bracket reduction (``ID_reduction_rate``, mutually exclusive</span>
+<span class="sd">    with Pease via assert); (3) a reform hard cap ``ID_c`` on total</span>
+<span class="sd">    itemized deductions. No attempt is made to adjust the per-section</span>
+<span class="sd">    components for these post-total limitations; only ``c04470``</span>
+<span class="sd">    reflects them.</span>
+
+<span class="sd">    Unmodeled Schedule A items: line 5c (state and local personal</span>
+<span class="sd">    property taxes), line 6 (other taxes), line 13 (charity carryover</span>
+<span class="sd">    from prior year). Mortgage interest (line 8) and investment</span>
+<span class="sd">    interest (line 9) are pre-aggregated in input variable ``e19200``.</span>
+<span class="sd">    The OBBBA SALT-cap phaseout (line 5e text: &quot;If Form 1040 line 11b</span>
+<span class="sd">    is more than $500,000 ($250,000 MFS), see instructions&quot;) is</span>
+<span class="sd">    implemented via ``ID_AllTaxes_c`` + ``ID_AllTaxes_c_ps`` +</span>
+<span class="sd">    ``ID_AllTaxes_c_po_rate`` + ``ID_AllTaxes_c_po_floor``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    e17500: float</span>
-<span class="sd">        Schedule A: medical expenses</span>
-<span class="sd">    e18400: float</span>
-<span class="sd">        Schedule A: state and local income taxes deductlbe</span>
-<span class="sd">    e18500: float</span>
-<span class="sd">        Schedule A: state and local real estate taxes deductible</span>
-<span class="sd">    e19200: float</span>
-<span class="sd">        Schedule A: interest deduction deductible</span>
-<span class="sd">    e19800: float</span>
-<span class="sd">        Schedule A: charity cash contributions deductible</span>
-<span class="sd">    e20100: float</span>
-<span class="sd">        Schedule A: charity noncash contributions deductible</span>
-<span class="sd">    e20400: float</span>
-<span class="sd">        Schedule A: gross miscellaneous deductions deductible</span>
-<span class="sd">    g20500: float</span>
-<span class="sd">        Schedule A: gross casualty or theft loss deductible</span>
+<span class="sd">    -- Filer attributes --</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                               4=household-head, 5=widow(er))</span>
@@ -1577,182 +1589,234 @@
 <span class="sd">    age_spouse: int</span>
 <span class="sd">        Age in years of spouse</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted gross income (AGI)</span>
+<span class="sd">        Adjusted gross income (Form 1040 line 11)</span>
 <span class="sd">    c04600: float</span>
-<span class="sd">        Personal exemptions after phase out</span>
-<span class="sd">    c04470: float</span>
-<span class="sd">        Itemized deductions after all limitations (0 for non-itemizers)</span>
-<span class="sd">    c21040: float</span>
-<span class="sd">        Itemized deductions that are limited under the Pease limitations</span>
-<span class="sd">    c21060: float</span>
-<span class="sd">        Itemized deductions before limitation (0 for non-itemizers)</span>
-<span class="sd">    c17000: float</span>
-<span class="sd">        Schedule A: medical expenses deducted</span>
-<span class="sd">    c18300: float</span>
-<span class="sd">        Schedule A: state and local taxes plus real estate taxes deducted</span>
-<span class="sd">    c19200: float</span>
-<span class="sd">        Schedule A: interest deducted</span>
-<span class="sd">    c19700: float</span>
-<span class="sd">        Schedule A: charity contributions deducted</span>
-<span class="sd">    c20500: float</span>
-<span class="sd">        Schedule A: net casualty or theft loss deducted</span>
-<span class="sd">    c20800: float</span>
-<span class="sd">        Schedule A: net limited miscellaneous deductions deducted</span>
+<span class="sd">        Personal exemptions after phase out (used by OBBBA reduction</span>
+<span class="sd">        block to derive a taxable-income proxy)</span>
 <span class="sd">    II_brk6: list</span>
-<span class="sd">        Bottom of top income tax rate bracket</span>
-<span class="sd">    ID_ps: list</span>
-<span class="sd">        Itemized deduction phaseout AGI start (Pease)</span>
+<span class="sd">        Bottom of top income tax rate bracket (used by OBBBA reduction)</span>
+<span class="sd">    -- Sch A Medical and Dental Expenses (lines 1-4) --</span>
+<span class="sd">    e17500: float</span>
+<span class="sd">        Medical and dental expenses paid (Sch A line 1)</span>
 <span class="sd">    ID_Medical_frt: float</span>
-<span class="sd">        Floor (as decimal fraction of AGI) for deductible medical expenses</span>
+<span class="sd">        AGI floor rate for medical-expense deduction (Sch A line 3,</span>
+<span class="sd">        7.5% under current law)</span>
 <span class="sd">    ID_Medical_frt_add4aged: float</span>
-<span class="sd">        Add on floor (as decimal fraction of AGI) for deductible</span>
-<span class="sd">        medical expenses for elderly filing units</span>
+<span class="sd">        Add-on AGI floor rate for filers age 65+ (zero post-TCJA)</span>
 <span class="sd">    ID_Medical_hc: float</span>
-<span class="sd">        Medical expense deduction haircut</span>
-<span class="sd">    ID_Casualty_frt: float</span>
-<span class="sd">        Floor (as decimal fraction of AGI) for deductible casualty loss</span>
-<span class="sd">    ID_Casualty_hc: float</span>
-<span class="sd">        Casualty expense deduction haircut</span>
-<span class="sd">    ID_Miscellaneous_frt: float</span>
-<span class="sd">        Floor (as decimal fraction of AGI) for deductible</span>
-<span class="sd">        miscellaneous expenses</span>
-<span class="sd">    ID_Miscellaneous_hc: float</span>
-<span class="sd">        Miscellaneous expense deduction haircut</span>
-<span class="sd">    ID_Charity_crt_all: float</span>
-<span class="sd">        Ceiling (as decimal fraction of AGI) for all charitable</span>
-<span class="sd">        contribution deductions</span>
-<span class="sd">    ID_Charity_crt_noncash: float</span>
-<span class="sd">        Ceiling (as decimal fraction of AGI) for noncash charitable</span>
-<span class="sd">        contribution deductions</span>
-<span class="sd">    ID_prt: float</span>
-<span class="sd">        Itemized deduction phaseout rate (Pease)</span>
-<span class="sd">    ID_crt: float</span>
-<span class="sd">        Itemized deduction maximum phaseout as a decimal fraction of total</span>
-<span class="sd">        itemized deductions (Pease)</span>
-<span class="sd">    ID_c: list</span>
-<span class="sd">        Ceiling on the amount of itemized deductions allowed (dollars)</span>
-<span class="sd">    ID_StateLocalTax_hc: float</span>
-<span class="sd">        State and local income and sales taxes deduction haircut</span>
-<span class="sd">    ID_Charity_frt: float</span>
-<span class="sd">        Floor (as decimal fraction of AGI) for deductible charitable</span>
-<span class="sd">        contributions</span>
-<span class="sd">    ID_Charity_hc: float</span>
-<span class="sd">        Charity expense deduction haircut</span>
-<span class="sd">    ID_InterestPaid_hc: float</span>
-<span class="sd">        Interest paid deduction haircut</span>
-<span class="sd">    ID_RealEstate_hc: float</span>
-<span class="sd">        State, local, and foreign real estate taxes deductions haircut</span>
+<span class="sd">        Reform haircut on medical-expense deduction</span>
 <span class="sd">    ID_Medical_c: list</span>
-<span class="sd">        Ceiling on the amount of medical expense deduction allowed (dollars)</span>
+<span class="sd">        Reform per-MARS dollar cap on medical-expense deduction</span>
+<span class="sd">    -- Sch A Taxes You Paid (lines 5-7) --</span>
+<span class="sd">    e18400: float</span>
+<span class="sd">        State and local income or sales taxes (Sch A line 5a)</span>
+<span class="sd">    e18500: float</span>
+<span class="sd">        State and local real estate taxes (Sch A line 5b)</span>
+<span class="sd">    ID_StateLocalTax_hc: float</span>
+<span class="sd">        Reform haircut on Sch A line 5a</span>
+<span class="sd">    ID_RealEstate_hc: float</span>
+<span class="sd">        Reform haircut on Sch A line 5b</span>
 <span class="sd">    ID_StateLocalTax_c: list</span>
-<span class="sd">        Ceiling on the amount of state and local income and sales taxes</span>
-<span class="sd">        deduction allowed (dollars)</span>
+<span class="sd">        Reform per-MARS dollar cap on Sch A line 5a</span>
 <span class="sd">    ID_RealEstate_c: list</span>
-<span class="sd">        Ceiling on the amount of state, local, and foreign real estate taxes</span>
-<span class="sd">        deduction allowed (dollars)</span>
-<span class="sd">    ID_InterestPaid_c: list</span>
-<span class="sd">        Ceiling on the amount of interest paid deduction allowed (dollars)</span>
-<span class="sd">    ID_Charity_c: list</span>
-<span class="sd">        Ceiling on the amount of charity expense deduction allowed (dollars)</span>
-<span class="sd">    ID_Casualty_c: list</span>
-<span class="sd">        Ceiling on the amount of casualty expense deduction allowed (dollars)</span>
-<span class="sd">    ID_Miscellaneous_c: list</span>
-<span class="sd">        Ceiling on the amount of miscellaneous expense deduction</span>
-<span class="sd">        allowed (dollars)</span>
-<span class="sd">    ID_AllTaxes_c: list</span>
-<span class="sd">        Cap on the amount of state and local income, sales, and</span>
-<span class="sd">        real estate deductions allowed (dollars)</span>
-<span class="sd">    ID_AllTaxes_hc: float</span>
-<span class="sd">        State and local income, sales, and real estate tax deduciton haircut</span>
-<span class="sd">    ID_AllTaxes_c_ps: float</span>
-<span class="sd">        AGI level above which ID_AllTaxes_c is reduced</span>
-<span class="sd">    ID_AllTaxes_c_po_rate: float</span>
-<span class="sd">        ID_AllTaxes_c reduction rate when AGI is above ID_AllTaxes_c_ps</span>
-<span class="sd">    ID_AllTaxes_c_po_floor: float</span>
-<span class="sd">        Floor below which ID_AllTaxes_c cannot be reduced</span>
+<span class="sd">        Reform per-MARS dollar cap on Sch A line 5b</span>
 <span class="sd">    ID_StateLocalTax_crt: float</span>
-<span class="sd">        Ceiling (as decimal fraction of AGI) for the combination of all</span>
-<span class="sd">        state and local income and sales tax deductions</span>
+<span class="sd">        Reform AGI-fraction cap on Sch A line 5a</span>
 <span class="sd">    ID_RealEstate_crt: float</span>
-<span class="sd">        Ceiling (as decimal fraction of AGI) for the combination of all</span>
-<span class="sd">        state, local, and foreign real estate tax deductions</span>
+<span class="sd">        Reform AGI-fraction cap on Sch A line 5b</span>
+<span class="sd">    ID_AllTaxes_hc: float</span>
+<span class="sd">        Reform haircut on combined Sch A line 5d (state+local+RE)</span>
+<span class="sd">    ID_AllTaxes_c: list</span>
+<span class="sd">        SALT cap base amount on Sch A line 5e ($40k / $20k MFS for 2025)</span>
+<span class="sd">    ID_AllTaxes_c_ps: list</span>
+<span class="sd">        AGI level above which the line 5e SALT cap phases out</span>
+<span class="sd">        ($500k / $250k MFS for 2025 per OBBBA)</span>
+<span class="sd">    ID_AllTaxes_c_po_rate: float</span>
+<span class="sd">        Phaseout rate per dollar of AGI above ID_AllTaxes_c_ps</span>
+<span class="sd">    ID_AllTaxes_c_po_floor: list</span>
+<span class="sd">        Floor below which the SALT cap cannot be reduced by the phaseout</span>
+<span class="sd">    -- Sch A Interest You Paid (lines 8-10) --</span>
+<span class="sd">    e19200: float</span>
+<span class="sd">        Total deductible interest (mortgage line 8e + investment line 9,</span>
+<span class="sd">        pre-aggregated in input data)</span>
+<span class="sd">    ID_InterestPaid_hc: float</span>
+<span class="sd">        Reform haircut on interest deduction</span>
+<span class="sd">    ID_InterestPaid_c: list</span>
+<span class="sd">        Reform per-MARS dollar cap on interest deduction</span>
+<span class="sd">    -- Sch A Gifts to Charity (lines 11-14) --</span>
+<span class="sd">    e19800: float</span>
+<span class="sd">        Cash charitable contributions (Sch A line 11)</span>
+<span class="sd">    e20100: float</span>
+<span class="sd">        Non-cash charitable contributions (Sch A line 12)</span>
+<span class="sd">    ID_Charity_frt: float</span>
+<span class="sd">        AGI-fraction floor on total charitable contributions (OBBBA</span>
+<span class="sd">        introduces 0.5% for tax years 2026+; not on form face)</span>
 <span class="sd">    ID_Charity_f: list</span>
-<span class="sd">        Floor on the amount of charity expense deduction allowed (dollars)</span>
+<span class="sd">        Per-MARS dollar floor on charitable contributions</span>
+<span class="sd">    ID_Charity_crt_all: float</span>
+<span class="sd">        AGI-fraction ceiling on total charitable contributions</span>
+<span class="sd">        (~50% / 60% per IRC §170(b))</span>
+<span class="sd">    ID_Charity_crt_noncash: float</span>
+<span class="sd">        AGI-fraction ceiling on noncash charitable contributions</span>
+<span class="sd">    ID_Charity_hc: float</span>
+<span class="sd">        Reform haircut on charitable deduction</span>
+<span class="sd">    ID_Charity_c: list</span>
+<span class="sd">        Reform per-MARS dollar cap on charitable deduction</span>
+<span class="sd">    -- Sch A Casualty and Theft Losses (line 15) --</span>
+<span class="sd">    g20500: float</span>
+<span class="sd">        Casualty / theft loss after Form 4684 10% AGI floor</span>
+<span class="sd">    ID_Casualty_frt: float</span>
+<span class="sd">        Reform additional AGI-fraction floor (zero under current law</span>
+<span class="sd">        because g20500 is already post-Form-4684)</span>
+<span class="sd">    ID_Casualty_hc: float</span>
+<span class="sd">        Reform haircut on casualty deduction</span>
+<span class="sd">    ID_Casualty_c: list</span>
+<span class="sd">        Reform per-MARS dollar cap on casualty deduction</span>
+<span class="sd">    -- Sch A Other Itemized Deductions (line 16, &quot;miscellaneous&quot;) --</span>
+<span class="sd">    e20400: float</span>
+<span class="sd">        Gross miscellaneous deductions</span>
+<span class="sd">    ID_Miscellaneous_frt: float</span>
+<span class="sd">        AGI-fraction floor (pre-TCJA 2% rule retained for reform use)</span>
+<span class="sd">    ID_Miscellaneous_hc: float</span>
+<span class="sd">        Reform haircut (1.0 under current law — TCJA repealed line-16</span>
+<span class="sd">        miscellaneous deductions for 2018-2025)</span>
+<span class="sd">    ID_Miscellaneous_c: list</span>
+<span class="sd">        Reform per-MARS dollar cap on miscellaneous deduction</span>
+<span class="sd">    -- Post-form reform/legacy on Sch A line 17 total --</span>
+<span class="sd">    ID_ps: list</span>
+<span class="sd">        Pease phaseout AGI start (per MARS)</span>
+<span class="sd">    ID_prt: float</span>
+<span class="sd">        Pease phaseout rate</span>
+<span class="sd">    ID_crt: float</span>
+<span class="sd">        Pease maximum-phaseout fraction of total itemizable amount</span>
 <span class="sd">    ID_reduction_rate: float</span>
-<span class="sd">        OBBBA reduction rate for all itemized deductions</span>
+<span class="sd">        OBBBA top-bracket reduction rate on itemized deductions</span>
+<span class="sd">    ID_c: list</span>
+<span class="sd">        Reform hard cap on total itemized deductions (per MARS)</span>
+<span class="sd">    -- iterate_jit Records-bound outputs (also appear as inputs) --</span>
+<span class="sd">    c17000: float</span>
+<span class="sd">        Sch A line 4 (medical expenses deducted)</span>
+<span class="sd">    c18300: float</span>
+<span class="sd">        Sch A line 7 (state and local taxes deducted)</span>
+<span class="sd">    c19200: float</span>
+<span class="sd">        Sch A line 10 (interest deducted)</span>
+<span class="sd">    c19700: float</span>
+<span class="sd">        Sch A line 14 (charity deducted)</span>
+<span class="sd">    c20500: float</span>
+<span class="sd">        Sch A line 15 (casualty / theft loss deducted)</span>
+<span class="sd">    c20800: float</span>
+<span class="sd">        Sch A line 16 (other / miscellaneous deducted)</span>
+<span class="sd">    c21040: float</span>
+<span class="sd">        Pease phaseout amount applied to itemized deductions</span>
+<span class="sd">    c21060: float</span>
+<span class="sd">        Sch A line 17 (gross total before Pease / OBBBA / reform cap)</span>
+<span class="sd">    c04470: float</span>
+<span class="sd">        Final itemized deductions after Pease / OBBBA / reform cap</span>
+<span class="sd">        (zero for non-itemizers)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    c17000: float</span>
-<span class="sd">        Schedule A: medical expenses deducted</span>
-<span class="sd">    c18300: float</span>
-<span class="sd">        Schedule A: state and local taxes plus real estate taxes deducted</span>
-<span class="sd">    c19200: float</span>
-<span class="sd">        Schedule A: interest deducted</span>
-<span class="sd">    c19700: float</span>
-<span class="sd">        Schedule A: charity contributions deducted</span>
-<span class="sd">    c20500: float</span>
-<span class="sd">        Schedule A: net casualty or theft loss deducted</span>
-<span class="sd">    c20800: float</span>
-<span class="sd">        Schedule A: net limited miscellaneous deductions deducted</span>
-<span class="sd">    c21040: float</span>
-<span class="sd">        Itemized deductions that are phased out under Pease limitation</span>
-<span class="sd">    c21060: float</span>
-<span class="sd">        Itemized deductions before any limitation (0 for non-itemizers)</span>
-<span class="sd">    c04470: float</span>
-<span class="sd">        Itemized deductions after all limitations (0 for non-itemizers)</span>
+<span class="sd">    c17000, c18300, c19200, c19700, c20500, c20800, c21040, c21060, c04470</span>
+<span class="sd">    (see Records-bound section above for line correspondences)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements</span>
     <span class="n">posagi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-    <span class="c1"># Medical</span>
-    <span class="n">medical_frt</span> <span class="o">=</span> <span class="n">ID_Medical_frt</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch A Medical and Dental Expenses (lines 1-4)</span>
+    <span class="c1"># Reform plumbing: ID_Medical_frt_add4aged (age 65+ floor add-on,</span>
+    <span class="c1"># zero post-TCJA), ID_Medical_hc haircut, ID_Medical_c dollar cap.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="n">medical_frt</span> <span class="o">=</span> <span class="n">ID_Medical_frt</span>  <span class="c1"># line 3 floor rate (7.5% of AGI)</span>
     <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span> <span class="ow">or</span> <span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">):</span>
         <span class="n">medical_frt</span> <span class="o">+=</span> <span class="n">ID_Medical_frt_add4aged</span>
-    <span class="n">c17750</span> <span class="o">=</span> <span class="n">medical_frt</span> <span class="o">*</span> <span class="n">posagi</span>
-    <span class="n">c17000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e17500</span> <span class="o">-</span> <span class="n">c17750</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Medical_hc</span><span class="p">)</span>
-    <span class="n">c17000</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="n">ID_Medical_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="c1"># State and local taxes</span>
+    <span class="n">c17750</span> <span class="o">=</span> <span class="n">medical_frt</span> <span class="o">*</span> <span class="n">posagi</span>  <span class="c1"># line 3</span>
+    <span class="n">c17000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e17500</span> <span class="o">-</span> <span class="n">c17750</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Medical_hc</span><span class="p">)</span>  <span class="c1"># line 4</span>
+    <span class="n">c17000</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="n">ID_Medical_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># reform cap</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch A Taxes You Paid (lines 5-7)</span>
+    <span class="c1"># Line 5c (personal property tax) and line 6 (other taxes) are</span>
+    <span class="c1"># unmodeled. Per-component reform plumbing: ID_StateLocalTax_c /</span>
+    <span class="c1"># ID_RealEstate_c (per-MARS dollar caps); ID_StateLocalTax_crt /</span>
+    <span class="c1"># ID_RealEstate_crt (AGI-fraction caps); ID_AllTaxes_hc (haircut on</span>
+    <span class="c1"># combined 5d). The OBBBA 5e SALT cap with $500k/$250k phaseout is</span>
+    <span class="c1"># implemented via ID_AllTaxes_c + ID_AllTaxes_c_ps +</span>
+    <span class="c1"># ID_AllTaxes_c_po_rate + ID_AllTaxes_c_po_floor.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">c18400</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_StateLocalTax_hc</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">e18400</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
-                 <span class="n">ID_StateLocalTax_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+                 <span class="n">ID_StateLocalTax_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># line 5a (state inc/sales)</span>
     <span class="n">c18500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_RealEstate_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e18500</span><span class="p">,</span>
-                 <span class="n">ID_RealEstate_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="c1"># following two statements implement a cap on c18400 and c18500 in a way</span>
-    <span class="c1"># that those with negative AGI, c00100, are not capped under current law,</span>
-    <span class="c1"># hence the 0.0001 rather than zero</span>
+                 <span class="n">ID_RealEstate_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># line 5b (real estate)</span>
+    <span class="c1"># Per-component AGI-fraction caps. The 0.0001 (rather than zero)</span>
+    <span class="c1"># leaves filers with negative AGI uncapped under current law.</span>
     <span class="n">c18400</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18400</span><span class="p">,</span> <span class="n">ID_StateLocalTax_crt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">))</span>
     <span class="n">c18500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18500</span><span class="p">,</span> <span class="n">ID_RealEstate_crt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">))</span>
-    <span class="n">c18300</span> <span class="o">=</span> <span class="p">(</span><span class="n">c18400</span> <span class="o">+</span> <span class="n">c18500</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_AllTaxes_hc</span><span class="p">)</span>
-    <span class="n">cap</span> <span class="o">=</span> <span class="n">ID_AllTaxes_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">posagi</span> <span class="o">&gt;</span> <span class="n">ID_AllTaxes_c_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-        <span class="n">excess_agi</span> <span class="o">=</span> <span class="n">posagi</span> <span class="o">-</span> <span class="n">ID_AllTaxes_c_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">cap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">cap</span> <span class="o">-</span> <span class="n">excess_agi</span> <span class="o">*</span> <span class="n">ID_AllTaxes_c_po_rate</span><span class="p">)</span>
-        <span class="n">cap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="n">ID_AllTaxes_c_po_floor</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">c18300</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18300</span><span class="p">,</span> <span class="n">cap</span><span class="p">)</span>
-    <span class="c1"># Interest paid</span>
-    <span class="n">c19200</span> <span class="o">=</span> <span class="n">e19200</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_InterestPaid_hc</span><span class="p">)</span>
-    <span class="n">c19200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19200</span><span class="p">,</span> <span class="n">ID_InterestPaid_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="c1"># Charity</span>
-    <span class="n">floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ID_Charity_frt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">noncash_ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e20100</span> <span class="o">-</span> <span class="n">floor</span><span class="p">)</span>
+    <span class="n">c18300</span> <span class="o">=</span> <span class="p">(</span><span class="n">c18400</span> <span class="o">+</span> <span class="n">c18500</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_AllTaxes_hc</span><span class="p">)</span>  <span class="c1"># line 5d sum + hc</span>
+    <span class="n">salt_cap</span> <span class="o">=</span> <span class="n">ID_AllTaxes_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># line 5e base cap</span>
+    <span class="n">salt_ps</span> <span class="o">=</span> <span class="n">ID_AllTaxes_c_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># line 5e phaseout start</span>
+    <span class="k">if</span> <span class="n">posagi</span> <span class="o">&gt;</span> <span class="n">salt_ps</span><span class="p">:</span>
+        <span class="n">salt_excess_agi</span> <span class="o">=</span> <span class="n">posagi</span> <span class="o">-</span> <span class="n">salt_ps</span>
+        <span class="n">salt_cap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">salt_cap</span> <span class="o">-</span> <span class="n">salt_excess_agi</span> <span class="o">*</span> <span class="n">ID_AllTaxes_c_po_rate</span><span class="p">)</span>
+        <span class="n">salt_cap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">salt_cap</span><span class="p">,</span> <span class="n">ID_AllTaxes_c_po_floor</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># c18300 is line 5e final (= line 7, since line 6 is unmodeled)</span>
+    <span class="n">c18300</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c18300</span><span class="p">,</span> <span class="n">salt_cap</span><span class="p">)</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch A Interest You Paid (lines 8-10)</span>
+    <span class="c1"># Mortgage (line 8e) and investment (line 9) interest are</span>
+    <span class="c1"># pre-aggregated in input variable e19200. Reform plumbing:</span>
+    <span class="c1"># ID_InterestPaid_hc, ID_InterestPaid_c (no on-form analogue).</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="n">c19200</span> <span class="o">=</span> <span class="n">e19200</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_InterestPaid_hc</span><span class="p">)</span>  <span class="c1"># line 10 (= 8e + 9)</span>
+    <span class="n">c19200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19200</span><span class="p">,</span> <span class="n">ID_InterestPaid_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># reform cap</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch A Gifts to Charity (lines 11-14)</span>
+    <span class="c1"># On-form: e19800 = line 11 (cash), e20100 = line 12 (noncash);</span>
+    <span class="c1"># line 13 (carryover) not modeled. Reform/OBBBA plumbing:</span>
+    <span class="c1"># ID_Charity_frt (AGI-fraction floor; OBBBA&#39;s 0.5% kicks in 2026+),</span>
+    <span class="c1"># ID_Charity_f (dollar floor), ID_Charity_crt_noncash (AGI cap on</span>
+    <span class="c1"># noncash), ID_Charity_crt_all (AGI cap on total per IRC §170(b)),</span>
+    <span class="c1"># ID_Charity_hc, ID_Charity_c. Floor is applied to noncash first,</span>
+    <span class="c1"># any unused remainder against cash.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="n">charity_floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ID_Charity_frt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">noncash_ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e20100</span> <span class="o">-</span> <span class="n">charity_floor</span><span class="p">)</span>
     <span class="n">charity_ded_noncash</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_noncash</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">noncash_ded</span><span class="p">)</span>
-    <span class="n">remaining_floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">floor</span> <span class="o">-</span> <span class="n">e20100</span><span class="p">)</span>
+    <span class="n">remaining_floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">charity_floor</span> <span class="o">-</span> <span class="n">e20100</span><span class="p">)</span>
     <span class="n">charity_ded_cash</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e19800</span> <span class="o">-</span> <span class="n">remaining_floor</span><span class="p">)</span>
-    <span class="n">c19700</span> <span class="o">=</span> <span class="n">charity_ded_noncash</span> <span class="o">+</span> <span class="n">charity_ded_cash</span>
+    <span class="n">c19700</span> <span class="o">=</span> <span class="n">charity_ded_noncash</span> <span class="o">+</span> <span class="n">charity_ded_cash</span>  <span class="c1"># line 14</span>
     <span class="n">c19700</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19700</span><span class="p">,</span> <span class="n">ID_Charity_crt_all</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Charity_hc</span><span class="p">)</span>
     <span class="n">c19700</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19700</span><span class="p">,</span> <span class="n">ID_Charity_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="c1"># Casualty</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch A Casualty and Theft Losses (line 15)</span>
+    <span class="c1"># g20500 is post-Form-4684 (10% AGI floor already applied), so</span>
+    <span class="c1"># ID_Casualty_frt defaults to 0 under current law.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">c20500</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">g20500</span> <span class="o">-</span> <span class="n">ID_Casualty_frt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">)</span> <span class="o">*</span>
-              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Casualty_hc</span><span class="p">))</span>
-    <span class="n">c20500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c20500</span><span class="p">,</span> <span class="n">ID_Casualty_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="c1"># Miscellaneous</span>
-    <span class="n">c20400</span> <span class="o">=</span> <span class="n">e20400</span>
-    <span class="n">c20750</span> <span class="o">=</span> <span class="n">ID_Miscellaneous_frt</span> <span class="o">*</span> <span class="n">posagi</span>
-    <span class="n">c20800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c20400</span> <span class="o">-</span> <span class="n">c20750</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Miscellaneous_hc</span><span class="p">)</span>
-    <span class="n">c20800</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c20800</span><span class="p">,</span> <span class="n">ID_Miscellaneous_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="c1"># Gross total itemized deductions</span>
+              <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Casualty_hc</span><span class="p">))</span>  <span class="c1"># line 15</span>
+    <span class="n">c20500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c20500</span><span class="p">,</span> <span class="n">ID_Casualty_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># reform cap</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch A Other Itemized Deductions (line 16, &quot;miscellaneous&quot; in code)</span>
+    <span class="c1"># The pre-TCJA 2%-of-AGI miscellaneous deductions are repealed for</span>
+    <span class="c1"># current law (ID_Miscellaneous_hc = 1.0); parameters retained for</span>
+    <span class="c1"># reform use.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="n">c20750</span> <span class="o">=</span> <span class="n">ID_Miscellaneous_frt</span> <span class="o">*</span> <span class="n">posagi</span>  <span class="c1"># reform AGI floor</span>
+    <span class="n">c20800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e20400</span> <span class="o">-</span> <span class="n">c20750</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Miscellaneous_hc</span><span class="p">)</span>  <span class="c1"># line 16</span>
+    <span class="n">c20800</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c20800</span><span class="p">,</span> <span class="n">ID_Miscellaneous_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># reform cap</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Sch A Total Itemized Deductions (line 17 = sum of 4+7+10+14+15+16)</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">c21060</span> <span class="o">=</span> <span class="n">c17000</span> <span class="o">+</span> <span class="n">c18300</span> <span class="o">+</span> <span class="n">c19200</span> <span class="o">+</span> <span class="n">c19700</span> <span class="o">+</span> <span class="n">c20500</span> <span class="o">+</span> <span class="n">c20800</span>
-    <span class="c1"># Pease limitation on total itemized deductions</span>
-    <span class="c1"># (no attempt to adjust c04470 components for limitation)</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Reform/legacy post-form stack (no Sch A correspondence):</span>
+    <span class="c1"># (1) §68 Pease overall-limitation — repealed by TCJA for 2018-2025;</span>
+    <span class="c1">#     parameters retained for reform use. Excludes medical (c17000)</span>
+    <span class="c1">#     and casualty (c20500) per §68(c).</span>
+    <span class="c1"># (2) OBBBA top-bracket reduction (ID_reduction_rate). Mutually</span>
+    <span class="c1">#     exclusive with Pease via the assert.</span>
+    <span class="c1"># (3) Reform hard cap ID_c on total itemized deductions.</span>
+    <span class="c1"># No attempt is made to adjust c04470&#39;s components for any of these</span>
+    <span class="c1"># post-total limitations.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">nonlimited</span> <span class="o">=</span> <span class="n">c17000</span> <span class="o">+</span> <span class="n">c20500</span>
     <span class="n">limitstart</span> <span class="o">=</span> <span class="n">ID_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">c21060</span> <span class="o">&gt;</span> <span class="n">nonlimited</span> <span class="ow">and</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">limitstart</span><span class="p">:</span>
@@ -1763,8 +1827,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">c21040</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">c04470</span> <span class="o">=</span> <span class="n">c21060</span>
-    <span class="c1"># OBBBA limitation on total itemized deductions</span>
-    <span class="c1"># (no attempt to adjust c04470 components for limitation)</span>
     <span class="n">reduction</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">if</span> <span class="n">ID_reduction_rate</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">c21040</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Pease and OBBBA cannot both be in effect&#39;</span>
@@ -1772,10 +1834,7 @@
         <span class="n">texcess</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">tincome</span> <span class="o">-</span> <span class="n">II_brk6</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">reduction</span> <span class="o">=</span> <span class="n">ID_reduction_rate</span> <span class="o">*</span> <span class="n">texcess</span>
     <span class="n">c04470</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c04470</span> <span class="o">-</span> <span class="n">reduction</span><span class="p">)</span>
-    <span class="c1"># Cap total itemized deductions</span>
-    <span class="c1"># (no attempt to adjust c04470 components for limitation)</span>
     <span class="n">c04470</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c04470</span><span class="p">,</span> <span class="n">ID_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="c1"># Return total itemized deduction amounts and pre-limitation components</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">c19200</span><span class="p">,</span> <span class="n">c19700</span><span class="p">,</span> <span class="n">c20500</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span>
             <span class="n">c21040</span><span class="p">,</span> <span class="n">c21060</span><span class="p">,</span> <span class="n">c04470</span><span class="p">)</span>
 
