@@ -40,6 +40,7 @@
 2027 II_no_em_nu18 False
 2027 STD [16571.73 33143.46 16571.73 24857.6  33143.46]
 2027 STD_Dep 1389.56
+2027 STD_Dep_earned_add 463.19
 2027 STD_Aged [2110.06 1698.35 1698.35 2110.06 1698.35]
 2027 STD_allow_charity_ded_nonitemizers True
 2027 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]

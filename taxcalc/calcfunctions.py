@@ -1551,79 +1551,126 @@ def AdditionalMedicareTax(MARS, e00200,
 
 @iterate_jit(nopython=True)
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
-           MARS, MIDR, blind_head, blind_spouse, standard,
+           STD_Dep_earned_add, MARS, MIDR, blind_head, blind_spouse, standard,
            STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_all,
            c00100, STD_charity_ded_nonitemizers_max):
     """
-    Calculates standard deduction, including standard deduction for
-    dependents, aged and bind.
+    Computes standard deduction (Form 1040 line 12).
+
+    Mirrors the "Standard Deduction for—" chart on Form 1040 line 12 and
+    the "Standard Deduction Worksheet for Dependents" in the 2025 Form
+    1040 instructions. The body is split into four sections:
+
+    1. MFS-and-spouse-itemizes override (line-12 chart bullet 3): if the
+       filer files married-separately and the spouse itemizes, the
+       standard deduction is zero (filer must itemize).
+    2. Basic standard deduction: either the dependent-worksheet amount
+       (if claimed as a dependent) or the line-12 chart's STD[MARS-1].
+       The dependent worksheet caps the deduction at STD[MARS-1] but
+       floors it at max(earned + STD_Dep_earned_add, STD_Dep).
+    3. Aged/blind add-on: STD_Aged[MARS-1] per checked box (filer 65+,
+       filer blind, spouse 65+, spouse blind). Spouse boxes only count
+       for MFJ filers.
+    4. Reform/legacy CARES cash-charity add-on for nonitemizers (off
+       under current law; STD_allow_charity_ded_nonitemizers defaults
+       to False).
+
+    The Records-bound output is `standard` (Form 1040 line 12);
+    downstream `TaxInc` consumes it into Form 1040 line 14.
 
     Parameters
     -----
     DSI: int
         1 if claimed as dependent on another return; otherwise 0
+        (selects the dependent worksheet branch)
     earned: float
-        Earned income for filing unit
+        Earned income for filing unit (dependent worksheet line 1)
     STD: list
-        Standard deduction amount
+        Per-MARS basic standard deduction (Form 1040 line-12 chart;
+        dependent worksheet line 6 / line-12 chart cap)
     age_head: int
-        Age in years of taxpayer
+        Age in years of taxpayer (≥65 → check filer aged box)
     age_spouse: int
-        Age in years of spouse
+        Age in years of spouse (≥65 → check spouse aged box; MFJ only)
     STD_Aged: list
-        Additional standard deduction for blind and aged
+        Per-MARS additional standard deduction per checked box
+        (per-box amount on the line-12 chart for aged/blind)
     STD_Dep: float
-        Standard deduction for dependents
+        Minimum dependent standard deduction (worksheet line 4)
+    STD_Dep_earned_add: float
+        Earned-income additional amount in the dependent worksheet
+        (worksheet line 2)
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     MIDR: int
         1 if separately filing spouse itemizes, 0 otherwise
+        (only meaningful when MARS=3)
     blind_head: int
-        1 if taxpayer is blind, 0 otherwise
+        1 if taxpayer is blind, 0 otherwise (filer blind box)
     blind_spouse: int
-        1 if spouse is blind, 0 otherwise
+        1 if spouse is blind, 0 otherwise (spouse blind box; MFJ only)
     standard: float
-        Standard deduction (zero for itemizers)
+        Records-bound output: standard deduction (zero for itemizers)
+    -- Reform/legacy CARES nonitemizer charity add-on --
     STD_allow_charity_ded_nonitemizers: bool
-        Allow standard deduction filers to take the charitable contributions
-        deduction
+        Allow standard deduction filers to take the charitable
+        contributions deduction (off under current law)
     e19800: float
-        Schedule A: cash charitable contributions
+        Schedule A line 11 cash charitable contributions
     ID_Charity_crt_all: float
-        Fraction of AGI cap on all charitable deductions
+        Fraction-of-AGI cap on all charitable deductions
     c00100: float
-        Federal AGI
-    STD_charity_ded_nonitemizers_max: float
-        Ceiling amount (in dollars) for charitable deductions for nonitemizers
+        Federal AGI (Form 1040 line 11)
+    STD_charity_ded_nonitemizers_max: list
+        Per-MARS ceiling amount (in dollars) on the nonitemizer
+        charitable contributions deduction
 
     Returns
     -------
     standard: float
         Standard deduction (zero for itemizers)
     """
-    # calculate deduction for dependents
-    if DSI == 1:
-        c15100 = max(350. + earned, STD_Dep)
-        basic_stded = min(STD[MARS - 1], c15100)
-    else:
-        c15100 = 0.
-        if MIDR == 1:
-            basic_stded = 0.
-        else:
-            basic_stded = STD[MARS - 1]
-    # calculate extra standard deduction for aged and blind
-    num_extra_stded = blind_head + blind_spouse
-    if age_head >= 65:
-        num_extra_stded += 1
-    if MARS == 2 and age_spouse >= 65:
-        num_extra_stded += 1
-    extra_stded = num_extra_stded * STD_Aged[MARS - 1]
-    # calculate the total standard deduction
-    standard = basic_stded + extra_stded
+    # ----------------------------------------------------------------
+    # MFS-and-spouse-itemizes override (Form 1040 line-12 instructions:
+    # "Married filing separately and your spouse itemizes deductions").
+    # Implementation invariant: MIDR=1 only occurs when MARS=3.
+    # ----------------------------------------------------------------
     if MARS == 3 and MIDR == 1:
         standard = 0.
-    # calculate CARES cash charity deduction for nonitemizers
+        return standard
+    # ----------------------------------------------------------------
+    # Basic standard deduction: dependent worksheet if claimed as a
+    # dependent, otherwise the Form 1040 line-12 chart value.
+    # ----------------------------------------------------------------
+    std_basic = STD[MARS - 1]                       # line-12 chart cap
+    if DSI == 1:
+        # Dependent Std Ded Worksheet:
+        # line 3 = earned + STD_Dep_earned_add  (worksheet lines 1+2)
+        # line 5 = max(line 3, STD_Dep)         (worksheet lines 4-5)
+        # line 7 = min(line 5, STD[MARS-1])     (worksheet line 7)
+        basic_stded = min(std_basic,
+                          max(earned + STD_Dep_earned_add, STD_Dep))
+    else:
+        basic_stded = std_basic
+    # ----------------------------------------------------------------
+    # Aged/blind add-on (line-12 chart): one STD_Aged box per
+    # 65+/blind condition on filer; spouse boxes only count for MFJ.
+    # ----------------------------------------------------------------
+    num_extra_stded = blind_head
+    if age_head >= 65:
+        num_extra_stded += 1
+    if MARS == 2:
+        num_extra_stded += blind_spouse
+        if age_spouse >= 65:
+            num_extra_stded += 1
+    extra_stded = num_extra_stded * STD_Aged[MARS - 1]
+    standard = basic_stded + extra_stded
+    # ----------------------------------------------------------------
+    # Reform/legacy CARES cash-charity add-on for nonitemizers
+    # (STD_allow_charity_ded_nonitemizers defaults to False under
+    # current law; active in 2020-2021 and under reforms).
+    # ----------------------------------------------------------------
     if STD_allow_charity_ded_nonitemizers:
         capped_ded = min(e19800, ID_Charity_crt_all * c00100)
         standard += min(capped_ded, STD_charity_ded_nonitemizers_max[MARS - 1])

@@ -40,6 +40,7 @@
 2025 II_no_em_nu18 False
 2025 STD [15750. 31500. 15750. 23625. 31500.]
 2025 STD_Dep 1350.0
+2025 STD_Dep_earned_add 450.0
 2025 STD_Aged [2000. 1600. 1600. 2000. 1600.]
 2025 STD_allow_charity_ded_nonitemizers False
 2025 STD_charity_ded_nonitemizers_max [0. 0. 0. 0. 0.]

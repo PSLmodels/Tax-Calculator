@@ -40,6 +40,7 @@
 2031 II_no_em_nu18 False
 2031 STD [18197.65 36395.3  18197.65 27296.48 36395.3 ]
 2031 STD_Dep 1525.89
+2031 STD_Dep_earned_add 508.64
 2031 STD_Aged [2317.09 1864.99 1864.99 2317.09 1864.99]
 2031 STD_allow_charity_ded_nonitemizers True
 2031 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]

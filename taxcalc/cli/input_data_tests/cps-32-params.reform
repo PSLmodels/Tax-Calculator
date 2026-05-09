@@ -40,6 +40,7 @@
 2032 II_no_em_nu18 False
 2032 STD [18607.1  37214.19 18607.1  27910.65 37214.19]
 2032 STD_Dep 1560.22
+2032 STD_Dep_earned_add 520.08
 2032 STD_Aged [2369.22 1906.95 1906.95 2369.22 1906.95]
 2032 STD_allow_charity_ded_nonitemizers True
 2032 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]

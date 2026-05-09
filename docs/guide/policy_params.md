@@ -3995,6 +3995,30 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error
 
 
+####  `STD_Dep_earned_add`
+_Description:_ In the IRS Standard Deduction Worksheet for Dependents (Form 1040 instructions), this is the amount added to earned income (worksheet line 2) before comparing against the minimum dependent standard deduction (STD_Dep). Indexed for inflation per IRC §63(c)(5)(B).
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True
+_Value Type:_ float
+_Known Values:_
+2013: 350.0
+2014: 350.0
+2015: 350.0
+2016: 350.0
+2017: 350.0
+2018: 350.0
+2019: 350.0
+2020: 350.0
+2021: 350.0
+2022: 400.0
+2023: 400.0
+2024: 450.0
+2025: 450.0
+2026: 450.0
+_Valid Range:_ min = 0 and max = 9e+99
+_Out-of-Range Action:_ error
+
+
 ####  `STD_allow_charity_ded_nonitemizers`
 _Description:_ Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here as well as a max on the dollar amount for total charitable deductions for those taking the standard deduction.
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True

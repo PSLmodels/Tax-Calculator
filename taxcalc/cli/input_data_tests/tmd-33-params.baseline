@@ -40,6 +40,7 @@
 2033 II_no_em_nu18 False
 2033 STD [19027.62 38055.23 19027.62 28541.43 38055.23]
 2033 STD_Dep 1595.48
+2033 STD_Dep_earned_add 531.83
 2033 STD_Aged [2422.76 1950.05 1950.05 2422.76 1950.05]
 2033 STD_allow_charity_ded_nonitemizers True
 2033 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]

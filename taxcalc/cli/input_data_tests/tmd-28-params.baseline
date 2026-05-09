@@ -40,6 +40,7 @@
 2028 II_no_em_nu18 False
 2028 STD [16992.65 33985.3  16992.65 25488.98 33985.3 ]
 2028 STD_Dep 1424.85
+2028 STD_Dep_earned_add 474.96
 2028 STD_Aged [2163.66 1741.49 1741.49 2163.66 1741.49]
 2028 STD_allow_charity_ded_nonitemizers True
 2028 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]
