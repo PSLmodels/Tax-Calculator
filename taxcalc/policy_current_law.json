@@ -2652,6 +2652,83 @@
             "cps": true
         }
     },
+    "STD_Dep_earned_add": {
+        "title": "Earned-income additional amount in dependent standard deduction",
+        "description": "In the IRS Standard Deduction Worksheet for Dependents (Form 1040 instructions), this is the amount added to earned income (worksheet line 2) before comparing against the minimum dependent standard deduction (STD_Dep). Indexed for inflation per IRC §63(c)(5)(B).",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 350.0
+            },
+            {
+                "year": 2014,
+                "value": 350.0
+            },
+            {
+                "year": 2015,
+                "value": 350.0
+            },
+            {
+                "year": 2016,
+                "value": 350.0
+            },
+            {
+                "year": 2017,
+                "value": 350.0
+            },
+            {
+                "year": 2018,
+                "value": 350.0
+            },
+            {
+                "year": 2019,
+                "value": 350.0
+            },
+            {
+                "year": 2020,
+                "value": 350.0
+            },
+            {
+                "year": 2021,
+                "value": 350.0
+            },
+            {
+                "year": 2022,
+                "value": 400.0
+            },
+            {
+                "year": 2023,
+                "value": 400.0
+            },
+            {
+                "year": 2024,
+                "value": 450.0
+            },
+            {
+                "year": 2025,
+                "value": 450.0
+            },
+            {
+                "year": 2026,
+                "value": 450.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "STD_Aged": {
         "title": "Additional standard deduction for blind and aged",
         "description": "To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction.",

@@ -187,23 +187,23 @@ def test_DependentCare(skip_jit):
 STD_in = [6000, 12000, 6000, 12000, 12000]
 STD_Aged_in = [1500, 1200, 1500, 1500, 1500]
 Charity_max_in = [300, 600, 300, 300, 300]
-tuple1 = (0, 1000, STD_in, 45, 44, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
+tuple1 = (0, 1000, STD_in, 45, 44, STD_Aged_in, 1000, 350, 2, 0, 0, 0, 2,
           False, 0, 0, 0, Charity_max_in)
-tuple2 = (0, 1000, STD_in, 66, 44, STD_Aged_in, 1000, 2, 0, 1, 1, 2,
+tuple2 = (0, 1000, STD_in, 66, 44, STD_Aged_in, 1000, 350, 2, 0, 1, 1, 2,
           True, 200, 100000, 1, Charity_max_in)
-tuple3 = (0, 1000, STD_in, 44, 66, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
+tuple3 = (0, 1000, STD_in, 44, 66, STD_Aged_in, 1000, 350, 2, 0, 0, 0, 2,
           True, 700, 100000, 1, Charity_max_in)
-tuple4 = (0, 1200, STD_in, 66, 67, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
+tuple4 = (0, 1200, STD_in, 66, 67, STD_Aged_in, 1000, 350, 2, 0, 0, 0, 2,
           True, 0, 100000, 1, Charity_max_in)
-tuple5 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2,
+tuple5 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 350, 1, 0, 0, 0, 2,
           True, 0, 100000, 1, Charity_max_in)
-tuple6 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2,
+tuple6 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 350, 1, 0, 0, 0, 2,
           True, 0, 100000, 1, Charity_max_in)
-tuple7 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 1, 0, 0, 2,
+tuple7 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 350, 3, 1, 0, 0, 2,
           True, 0, 100000, 1, Charity_max_in)
-tuple8 = (1, 200, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2,
+tuple8 = (1, 200, STD_in, 44, 0, STD_Aged_in, 1000, 350, 3, 0, 0, 0, 2,
           True, 0, 100000, 1, Charity_max_in)
-tuple9 = (1, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2,
+tuple9 = (1, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 350, 3, 0, 0, 0, 2,
           True, 0, 100000, 1, Charity_max_in)
 expected = [12000, 15800, 13800, 14400, 6000, 6000, 0, 1000, 1350]
 
