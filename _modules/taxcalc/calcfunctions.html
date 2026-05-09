@@ -1840,50 +1840,108 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">AdditionalMedicareTax</span><span class="p">(</span><span class="n">e00200</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
-                          <span class="n">AMEDT_ec</span><span class="p">,</span> <span class="n">sey</span><span class="p">,</span> <span class="n">AMEDT_rt</span><span class="p">,</span>
-                          <span class="n">FICA_mc_trt_employer</span><span class="p">,</span> <span class="n">FICA_mc_trt_employee</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AdditionalMedicareTax</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">e00200</span><span class="p">,</span>
+                          <span class="n">e00900p</span><span class="p">,</span> <span class="n">e00900s</span><span class="p">,</span> <span class="n">e02100p</span><span class="p">,</span> <span class="n">e02100s</span><span class="p">,</span> <span class="n">k1bx14p</span><span class="p">,</span> <span class="n">k1bx14s</span><span class="p">,</span>
                           <span class="n">FICA_ss_trt_employer</span><span class="p">,</span> <span class="n">FICA_ss_trt_employee</span><span class="p">,</span>
+                          <span class="n">FICA_mc_trt_employer</span><span class="p">,</span> <span class="n">FICA_mc_trt_employee</span><span class="p">,</span>
+                          <span class="n">AMEDT_ec</span><span class="p">,</span> <span class="n">AMEDT_rt</span><span class="p">,</span>
                           <span class="n">ptax_amc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes Additional Medicare Tax (Form 8959) included in othertaxes.</span>
+<span class="sd">    Form 8959 Additional Medicare Tax. Liability flows into Schedule 2</span>
+<span class="sd">    line 11 via `othertaxes` in `C1040` and ultimately into `iitax`.</span>
+
+<span class="sd">    Form 8959 has five Parts:</span>
+<span class="sd">      Part I  (lines 1-7)  Additional Medicare Tax on Medicare wages</span>
+<span class="sd">      Part II (lines 8-13) Additional Medicare Tax on SE income</span>
+<span class="sd">      Part III(lines 14-17)Additional Medicare Tax on RRTA compensation</span>
+<span class="sd">                           — *not modeled* (no RRTA variables in records)</span>
+<span class="sd">      Part IV (line 18)    Total = line 7 + line 13 (+ line 17)</span>
+<span class="sd">      Part V  (lines 19-24)Withholding reconciliation — refundable side,</span>
+<span class="sd">                           not part of liability.</span>
+
+<span class="sd">    Tax-Calculator does not separately track Medicare wages (W-2 box 5)</span>
+<span class="sd">    from Form 4137 unreported tips and Form 8919 wages, so `e00200`</span>
+<span class="sd">    substitutes for Form 8959 line 4 (the sum of lines 1+2+3).</span>
+
+<span class="sd">    Form 8959 line 8 (Sch SE Part I line 6) is reconstructed per-spouse:</span>
+<span class="sd">    Sch SE is filed separately by each spouse, so each spouse&#39;s net SE</span>
+<span class="sd">    earnings are floored at zero independently before the joint total is</span>
+<span class="sd">    formed. The records-bound `sey` is the unfloored sum, which would</span>
+<span class="sd">    over-net a positive-sey spouse against a negative-sey spouse; this</span>
+<span class="sd">    function therefore re-derives `sey_p`/`sey_s` from the underlying</span>
+<span class="sd">    per-spouse input components (matching `EI_PayrollTax`) and applies</span>
+<span class="sd">    the per-spouse 0-floor before summing.</span>
+
+<span class="sd">    The line-5 / line-9 / line-15 thresholds are identical on the form</span>
+<span class="sd">    ($250k MFJ / $125k MFS / $200k Single/HoH/QSS for 2025) and are</span>
+<span class="sd">    parameterized by `AMEDT_ec[MARS-1]`. The 0.9% rate is parameterized</span>
+<span class="sd">    by `AMEDT_rt`.</span>
 
 <span class="sd">    Parameters</span>
-<span class="sd">    -----</span>
+<span class="sd">    ----------</span>
 <span class="sd">    MARS: int</span>
-<span class="sd">        Filing marital status (1=single, 2=joint, 3=separate,</span>
-<span class="sd">                               4=household-head, 5=widow(er))</span>
-<span class="sd">    AMEDT_ec: list</span>
-<span class="sd">        Additional Medicare Tax earnings exclusion</span>
-<span class="sd">    AMEDT_rt: float</span>
-<span class="sd">        Additional Medicare Tax rate</span>
-<span class="sd">    FICA_ss_trt_employer: float</span>
-<span class="sd">        Employer side FICA Social Security tax rate</span>
-<span class="sd">    FICA_ss_trt_employee: float</span>
-<span class="sd">        Employee side FICA Social Security tax rate</span>
-<span class="sd">    FICA_mc_trt_employer: float</span>
-<span class="sd">        Employer side FICA Medicare tax rate</span>
-<span class="sd">    FICA_mc_trt_employee: float</span>
-<span class="sd">        Employee side FICA Medicare tax rate</span>
+<span class="sd">        Filing status (1=single, 2=joint, 3=separate,</span>
+<span class="sd">                       4=household-head, 5=widow(er))</span>
+<span class="sd">    -- Part I: Medicare wages (lines 1-7) --</span>
 <span class="sd">    e00200: float</span>
-<span class="sd">        Wages and salaries</span>
-<span class="sd">    sey: float</span>
-<span class="sd">        Self-employment income</span>
+<span class="sd">        Wages and salaries; substitutes for Form 8959 line 4 (Medicare</span>
+<span class="sd">        wages from W-2 box 5 + Form 4137 line 6 + Form 8919 line 6)</span>
+<span class="sd">    -- Part II: Self-employment income (lines 8-13) --</span>
+<span class="sd">    e00900p: float</span>
+<span class="sd">        Sch C (taxpayer) net profit/loss; component of `sey_p`</span>
+<span class="sd">    e00900s: float</span>
+<span class="sd">        Sch C (spouse) net profit/loss; component of `sey_s`</span>
+<span class="sd">    e02100p: float</span>
+<span class="sd">        Sch F (taxpayer) net profit/loss; component of `sey_p`</span>
+<span class="sd">    e02100s: float</span>
+<span class="sd">        Sch F (spouse) net profit/loss; component of `sey_s`</span>
+<span class="sd">    k1bx14p: float</span>
+<span class="sd">        Sch K-1 box 14 SE earnings (taxpayer); component of `sey_p`</span>
+<span class="sd">    k1bx14s: float</span>
+<span class="sd">        Sch K-1 box 14 SE earnings (spouse); component of `sey_s`</span>
+<span class="sd">    FICA_ss_trt_employer: float</span>
+<span class="sd">        Employer-side FICA OASDI tax rate (Sch SE line 4c reduction)</span>
+<span class="sd">    FICA_ss_trt_employee: float</span>
+<span class="sd">        Employee-side FICA OASDI tax rate (Sch SE line 4c reduction)</span>
+<span class="sd">    FICA_mc_trt_employer: float</span>
+<span class="sd">        Employer-side FICA HI tax rate (Sch SE line 4c reduction)</span>
+<span class="sd">    FICA_mc_trt_employee: float</span>
+<span class="sd">        Employee-side FICA HI tax rate (Sch SE line 4c reduction)</span>
+<span class="sd">    -- Common to Parts I and II --</span>
+<span class="sd">    AMEDT_ec: list</span>
+<span class="sd">        Form 8959 line 5 / line 9 threshold by MARS</span>
+<span class="sd">    AMEDT_rt: float</span>
+<span class="sd">        Form 8959 line 7 / line 13 rate (0.9% under current law)</span>
+<span class="sd">    -- iterate_jit Records-bound output --</span>
 <span class="sd">    ptax_amc: float</span>
-<span class="sd">        Additional Medicare Tax (included in othertaxes and iitax)</span>
+<span class="sd">        Additional Medicare Tax (Form 8959 line 18)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ptax_amc: float</span>
-<span class="sd">        Additional Medicare Tax (included in othertaxes and iitax)</span>
+<span class="sd">        Additional Medicare Tax (Form 8959 line 18)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">line8</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
-        <span class="mf">1.</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span> <span class="o">+</span>
-                    <span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span><span class="p">)</span>
-    <span class="p">)</span>
-    <span class="n">line11</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMEDT_ec</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e00200</span><span class="p">)</span>
-    <span class="n">ptax_amc</span> <span class="o">=</span> <span class="n">AMEDT_rt</span> <span class="o">*</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00200</span> <span class="o">-</span> <span class="n">AMEDT_ec</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span>
-                           <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line8</span> <span class="o">-</span> <span class="n">line11</span><span class="p">))</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">AMEDT_ec</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># line 5 (also line 9; same value)</span>
+    <span class="n">seca_frac</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span> <span class="o">+</span>
+                            <span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span>
+    <span class="c1"># Per-spouse Sch SE Part I line 6 (each floored at 0; matches the</span>
+    <span class="c1"># `sey_p`/`sey_s` and `net_sey_p`/`net_sey_s` construction in</span>
+    <span class="c1"># `EI_PayrollTax`).</span>
+    <span class="n">sey_p</span> <span class="o">=</span> <span class="n">e00900p</span> <span class="o">+</span> <span class="n">e02100p</span> <span class="o">+</span> <span class="n">k1bx14p</span>
+    <span class="n">sey_s</span> <span class="o">=</span> <span class="n">e00900s</span> <span class="o">+</span> <span class="n">e02100s</span> <span class="o">+</span> <span class="n">k1bx14s</span>
+    <span class="n">net_sey_p</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">seca_frac</span><span class="p">)</span>
+    <span class="n">net_sey_s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">seca_frac</span><span class="p">)</span>
+    <span class="c1"># -- Part I: Medicare wages (lines 1-7) --</span>
+    <span class="n">line4</span> <span class="o">=</span> <span class="n">e00200</span>
+    <span class="n">line6</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line4</span> <span class="o">-</span> <span class="n">threshold</span><span class="p">)</span>
+    <span class="n">line7</span> <span class="o">=</span> <span class="n">AMEDT_rt</span> <span class="o">*</span> <span class="n">line6</span>
+    <span class="c1"># -- Part II: Self-employment income (lines 8-13) --</span>
+    <span class="n">line8</span> <span class="o">=</span> <span class="n">net_sey_p</span> <span class="o">+</span> <span class="n">net_sey_s</span>
+    <span class="n">line11</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">-</span> <span class="n">line4</span><span class="p">)</span>  <span class="c1"># = max(0, line 9 - line 10)</span>
+    <span class="n">line12</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line8</span> <span class="o">-</span> <span class="n">line11</span><span class="p">)</span>
+    <span class="n">line13</span> <span class="o">=</span> <span class="n">AMEDT_rt</span> <span class="o">*</span> <span class="n">line12</span>
+    <span class="c1"># -- Part IV: Total (line 18); Part III RRTA not modeled --</span>
+    <span class="n">ptax_amc</span> <span class="o">=</span> <span class="n">line7</span> <span class="o">+</span> <span class="n">line13</span>
     <span class="k">return</span> <span class="n">ptax_amc</span>
 
 
