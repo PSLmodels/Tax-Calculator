@@ -1153,26 +1153,38 @@ def ItemDed(e17500, e18400, e18500, e19200,
             ID_StateLocalTax_crt, ID_RealEstate_crt, ID_Charity_f,
             ID_reduction_rate):
     """
-    Calculates itemized deductions, Form 1040, Schedule A.
+    Calculates itemized deductions, Schedule A (Form 1040).
+
+    Body sections mirror Schedule A's six-section structure:
+      Medical (lines 1-4) → Taxes (5-7) → Interest (8-10) →
+      Charity (11-14) → Casualty (15) → Other (16) → Total (17).
+
+    Schedule A inputs and form-arithmetic come first within each
+    section; reform/legacy plumbing (per-section haircuts ``_hc``,
+    per-section MARS-indexed dollar caps ``_c``, and AGI-fraction
+    caps/floors absent from the form) is interleaved.
+
+    Three post-Sch-A reform/legacy operations apply to the line-17
+    total ``c21060``: (1) the §68 Pease limitation (repealed by TCJA
+    for 2018-2025; parameters retained for reform use); (2) the OBBBA
+    top-bracket reduction (``ID_reduction_rate``, mutually exclusive
+    with Pease via assert); (3) a reform hard cap ``ID_c`` on total
+    itemized deductions. No attempt is made to adjust the per-section
+    components for these post-total limitations; only ``c04470``
+    reflects them.
+
+    Unmodeled Schedule A items: line 5c (state and local personal
+    property taxes), line 6 (other taxes), line 13 (charity carryover
+    from prior year). Mortgage interest (line 8) and investment
+    interest (line 9) are pre-aggregated in input variable ``e19200``.
+    The OBBBA SALT-cap phaseout (line 5e text: "If Form 1040 line 11b
+    is more than $500,000 ($250,000 MFS), see instructions") is
+    implemented via ``ID_AllTaxes_c`` + ``ID_AllTaxes_c_ps`` +
+    ``ID_AllTaxes_c_po_rate`` + ``ID_AllTaxes_c_po_floor``.
 
     Parameters
     ----------
-    e17500: float
-        Schedule A: medical expenses
-    e18400: float
-        Schedule A: state and local income taxes deductlbe
-    e18500: float
-        Schedule A: state and local real estate taxes deductible
-    e19200: float
-        Schedule A: interest deduction deductible
-    e19800: float
-        Schedule A: charity cash contributions deductible
-    e20100: float
-        Schedule A: charity noncash contributions deductible
-    e20400: float
-        Schedule A: gross miscellaneous deductions deductible
-    g20500: float
-        Schedule A: gross casualty or theft loss deductible
+    -- Filer attributes --
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate,
                                4=household-head, 5=widow(er))
@@ -1181,182 +1193,234 @@ def ItemDed(e17500, e18400, e18500, e19200,
     age_spouse: int
         Age in years of spouse
     c00100: float
-        Adjusted gross income (AGI)
+        Adjusted gross income (Form 1040 line 11)
     c04600: float
-        Personal exemptions after phase out
-    c04470: float
-        Itemized deductions after all limitations (0 for non-itemizers)
-    c21040: float
-        Itemized deductions that are limited under the Pease limitations
-    c21060: float
-        Itemized deductions before limitation (0 for non-itemizers)
-    c17000: float
-        Schedule A: medical expenses deducted
-    c18300: float
-        Schedule A: state and local taxes plus real estate taxes deducted
-    c19200: float
-        Schedule A: interest deducted
-    c19700: float
-        Schedule A: charity contributions deducted
-    c20500: float
-        Schedule A: net casualty or theft loss deducted
-    c20800: float
-        Schedule A: net limited miscellaneous deductions deducted
+        Personal exemptions after phase out (used by OBBBA reduction
+        block to derive a taxable-income proxy)
     II_brk6: list
-        Bottom of top income tax rate bracket
-    ID_ps: list
-        Itemized deduction phaseout AGI start (Pease)
+        Bottom of top income tax rate bracket (used by OBBBA reduction)
+    -- Sch A Medical and Dental Expenses (lines 1-4) --
+    e17500: float
+        Medical and dental expenses paid (Sch A line 1)
     ID_Medical_frt: float
-        Floor (as decimal fraction of AGI) for deductible medical expenses
+        AGI floor rate for medical-expense deduction (Sch A line 3,
+        7.5% under current law)
     ID_Medical_frt_add4aged: float
-        Add on floor (as decimal fraction of AGI) for deductible
-        medical expenses for elderly filing units
+        Add-on AGI floor rate for filers age 65+ (zero post-TCJA)
     ID_Medical_hc: float
-        Medical expense deduction haircut
-    ID_Casualty_frt: float
-        Floor (as decimal fraction of AGI) for deductible casualty loss
-    ID_Casualty_hc: float
-        Casualty expense deduction haircut
-    ID_Miscellaneous_frt: float
-        Floor (as decimal fraction of AGI) for deductible
-        miscellaneous expenses
-    ID_Miscellaneous_hc: float
-        Miscellaneous expense deduction haircut
-    ID_Charity_crt_all: float
-        Ceiling (as decimal fraction of AGI) for all charitable
-        contribution deductions
-    ID_Charity_crt_noncash: float
-        Ceiling (as decimal fraction of AGI) for noncash charitable
-        contribution deductions
-    ID_prt: float
-        Itemized deduction phaseout rate (Pease)
-    ID_crt: float
-        Itemized deduction maximum phaseout as a decimal fraction of total
-        itemized deductions (Pease)
-    ID_c: list
-        Ceiling on the amount of itemized deductions allowed (dollars)
-    ID_StateLocalTax_hc: float
-        State and local income and sales taxes deduction haircut
-    ID_Charity_frt: float
-        Floor (as decimal fraction of AGI) for deductible charitable
-        contributions
-    ID_Charity_hc: float
-        Charity expense deduction haircut
-    ID_InterestPaid_hc: float
-        Interest paid deduction haircut
-    ID_RealEstate_hc: float
-        State, local, and foreign real estate taxes deductions haircut
+        Reform haircut on medical-expense deduction
     ID_Medical_c: list
-        Ceiling on the amount of medical expense deduction allowed (dollars)
+        Reform per-MARS dollar cap on medical-expense deduction
+    -- Sch A Taxes You Paid (lines 5-7) --
+    e18400: float
+        State and local income or sales taxes (Sch A line 5a)
+    e18500: float
+        State and local real estate taxes (Sch A line 5b)
+    ID_StateLocalTax_hc: float
+        Reform haircut on Sch A line 5a
+    ID_RealEstate_hc: float
+        Reform haircut on Sch A line 5b
     ID_StateLocalTax_c: list
-        Ceiling on the amount of state and local income and sales taxes
-        deduction allowed (dollars)
+        Reform per-MARS dollar cap on Sch A line 5a
     ID_RealEstate_c: list
-        Ceiling on the amount of state, local, and foreign real estate taxes
-        deduction allowed (dollars)
-    ID_InterestPaid_c: list
-        Ceiling on the amount of interest paid deduction allowed (dollars)
-    ID_Charity_c: list
-        Ceiling on the amount of charity expense deduction allowed (dollars)
-    ID_Casualty_c: list
-        Ceiling on the amount of casualty expense deduction allowed (dollars)
-    ID_Miscellaneous_c: list
-        Ceiling on the amount of miscellaneous expense deduction
-        allowed (dollars)
-    ID_AllTaxes_c: list
-        Cap on the amount of state and local income, sales, and
-        real estate deductions allowed (dollars)
-    ID_AllTaxes_hc: float
-        State and local income, sales, and real estate tax deduciton haircut
-    ID_AllTaxes_c_ps: float
-        AGI level above which ID_AllTaxes_c is reduced
-    ID_AllTaxes_c_po_rate: float
-        ID_AllTaxes_c reduction rate when AGI is above ID_AllTaxes_c_ps
-    ID_AllTaxes_c_po_floor: float
-        Floor below which ID_AllTaxes_c cannot be reduced
+        Reform per-MARS dollar cap on Sch A line 5b
     ID_StateLocalTax_crt: float
-        Ceiling (as decimal fraction of AGI) for the combination of all
-        state and local income and sales tax deductions
+        Reform AGI-fraction cap on Sch A line 5a
     ID_RealEstate_crt: float
-        Ceiling (as decimal fraction of AGI) for the combination of all
-        state, local, and foreign real estate tax deductions
+        Reform AGI-fraction cap on Sch A line 5b
+    ID_AllTaxes_hc: float
+        Reform haircut on combined Sch A line 5d (state+local+RE)
+    ID_AllTaxes_c: list
+        SALT cap base amount on Sch A line 5e ($40k / $20k MFS for 2025)
+    ID_AllTaxes_c_ps: list
+        AGI level above which the line 5e SALT cap phases out
+        ($500k / $250k MFS for 2025 per OBBBA)
+    ID_AllTaxes_c_po_rate: float
+        Phaseout rate per dollar of AGI above ID_AllTaxes_c_ps
+    ID_AllTaxes_c_po_floor: list
+        Floor below which the SALT cap cannot be reduced by the phaseout
+    -- Sch A Interest You Paid (lines 8-10) --
+    e19200: float
+        Total deductible interest (mortgage line 8e + investment line 9,
+        pre-aggregated in input data)
+    ID_InterestPaid_hc: float
+        Reform haircut on interest deduction
+    ID_InterestPaid_c: list
+        Reform per-MARS dollar cap on interest deduction
+    -- Sch A Gifts to Charity (lines 11-14) --
+    e19800: float
+        Cash charitable contributions (Sch A line 11)
+    e20100: float
+        Non-cash charitable contributions (Sch A line 12)
+    ID_Charity_frt: float
+        AGI-fraction floor on total charitable contributions (OBBBA
+        introduces 0.5% for tax years 2026+; not on form face)
     ID_Charity_f: list
-        Floor on the amount of charity expense deduction allowed (dollars)
+        Per-MARS dollar floor on charitable contributions
+    ID_Charity_crt_all: float
+        AGI-fraction ceiling on total charitable contributions
+        (~50% / 60% per IRC §170(b))
+    ID_Charity_crt_noncash: float
+        AGI-fraction ceiling on noncash charitable contributions
+    ID_Charity_hc: float
+        Reform haircut on charitable deduction
+    ID_Charity_c: list
+        Reform per-MARS dollar cap on charitable deduction
+    -- Sch A Casualty and Theft Losses (line 15) --
+    g20500: float
+        Casualty / theft loss after Form 4684 10% AGI floor
+    ID_Casualty_frt: float
+        Reform additional AGI-fraction floor (zero under current law
+        because g20500 is already post-Form-4684)
+    ID_Casualty_hc: float
+        Reform haircut on casualty deduction
+    ID_Casualty_c: list
+        Reform per-MARS dollar cap on casualty deduction
+    -- Sch A Other Itemized Deductions (line 16, "miscellaneous") --
+    e20400: float
+        Gross miscellaneous deductions
+    ID_Miscellaneous_frt: float
+        AGI-fraction floor (pre-TCJA 2% rule retained for reform use)
+    ID_Miscellaneous_hc: float
+        Reform haircut (1.0 under current law — TCJA repealed line-16
+        miscellaneous deductions for 2018-2025)
+    ID_Miscellaneous_c: list
+        Reform per-MARS dollar cap on miscellaneous deduction
+    -- Post-form reform/legacy on Sch A line 17 total --
+    ID_ps: list
+        Pease phaseout AGI start (per MARS)
+    ID_prt: float
+        Pease phaseout rate
+    ID_crt: float
+        Pease maximum-phaseout fraction of total itemizable amount
     ID_reduction_rate: float
-        OBBBA reduction rate for all itemized deductions
+        OBBBA top-bracket reduction rate on itemized deductions
+    ID_c: list
+        Reform hard cap on total itemized deductions (per MARS)
+    -- iterate_jit Records-bound outputs (also appear as inputs) --
+    c17000: float
+        Sch A line 4 (medical expenses deducted)
+    c18300: float
+        Sch A line 7 (state and local taxes deducted)
+    c19200: float
+        Sch A line 10 (interest deducted)
+    c19700: float
+        Sch A line 14 (charity deducted)
+    c20500: float
+        Sch A line 15 (casualty / theft loss deducted)
+    c20800: float
+        Sch A line 16 (other / miscellaneous deducted)
+    c21040: float
+        Pease phaseout amount applied to itemized deductions
+    c21060: float
+        Sch A line 17 (gross total before Pease / OBBBA / reform cap)
+    c04470: float
+        Final itemized deductions after Pease / OBBBA / reform cap
+        (zero for non-itemizers)
 
     Returns
     -------
-    c17000: float
-        Schedule A: medical expenses deducted
-    c18300: float
-        Schedule A: state and local taxes plus real estate taxes deducted
-    c19200: float
-        Schedule A: interest deducted
-    c19700: float
-        Schedule A: charity contributions deducted
-    c20500: float
-        Schedule A: net casualty or theft loss deducted
-    c20800: float
-        Schedule A: net limited miscellaneous deductions deducted
-    c21040: float
-        Itemized deductions that are phased out under Pease limitation
-    c21060: float
-        Itemized deductions before any limitation (0 for non-itemizers)
-    c04470: float
-        Itemized deductions after all limitations (0 for non-itemizers)
+    c17000, c18300, c19200, c19700, c20500, c20800, c21040, c21060, c04470
+    (see Records-bound section above for line correspondences)
     """
     # pylint: disable=too-many-statements
     posagi = max(c00100, 0.)
-    # Medical
-    medical_frt = ID_Medical_frt
+    # ----------------------------------------------------------------
+    # Sch A Medical and Dental Expenses (lines 1-4)
+    # Reform plumbing: ID_Medical_frt_add4aged (age 65+ floor add-on,
+    # zero post-TCJA), ID_Medical_hc haircut, ID_Medical_c dollar cap.
+    # ----------------------------------------------------------------
+    medical_frt = ID_Medical_frt  # line 3 floor rate (7.5% of AGI)
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         medical_frt += ID_Medical_frt_add4aged
-    c17750 = medical_frt * posagi
-    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_hc)
-    c17000 = min(c17000, ID_Medical_c[MARS - 1])
-    # State and local taxes
+    c17750 = medical_frt * posagi  # line 3
+    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_hc)  # line 4
+    c17000 = min(c17000, ID_Medical_c[MARS - 1])  # reform cap
+    # ----------------------------------------------------------------
+    # Sch A Taxes You Paid (lines 5-7)
+    # Line 5c (personal property tax) and line 6 (other taxes) are
+    # unmodeled. Per-component reform plumbing: ID_StateLocalTax_c /
+    # ID_RealEstate_c (per-MARS dollar caps); ID_StateLocalTax_crt /
+    # ID_RealEstate_crt (AGI-fraction caps); ID_AllTaxes_hc (haircut on
+    # combined 5d). The OBBBA 5e SALT cap with $500k/$250k phaseout is
+    # implemented via ID_AllTaxes_c + ID_AllTaxes_c_ps +
+    # ID_AllTaxes_c_po_rate + ID_AllTaxes_c_po_floor.
+    # ----------------------------------------------------------------
     c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400, 0.),
-                 ID_StateLocalTax_c[MARS - 1])
+                 ID_StateLocalTax_c[MARS - 1])  # line 5a (state inc/sales)
     c18500 = min((1. - ID_RealEstate_hc) * e18500,
-                 ID_RealEstate_c[MARS - 1])
-    # following two statements implement a cap on c18400 and c18500 in a way
-    # that those with negative AGI, c00100, are not capped under current law,
-    # hence the 0.0001 rather than zero
+                 ID_RealEstate_c[MARS - 1])  # line 5b (real estate)
+    # Per-component AGI-fraction caps. The 0.0001 (rather than zero)
+    # leaves filers with negative AGI uncapped under current law.
     c18400 = min(c18400, ID_StateLocalTax_crt * max(c00100, 0.0001))
     c18500 = min(c18500, ID_RealEstate_crt * max(c00100, 0.0001))
-    c18300 = (c18400 + c18500) * (1. - ID_AllTaxes_hc)
-    cap = ID_AllTaxes_c[MARS - 1]
-    if posagi > ID_AllTaxes_c_ps[MARS - 1]:
-        excess_agi = posagi - ID_AllTaxes_c_ps[MARS - 1]
-        cap = max(0., cap - excess_agi * ID_AllTaxes_c_po_rate)
-        cap = max(cap, ID_AllTaxes_c_po_floor[MARS - 1])
-    c18300 = min(c18300, cap)
-    # Interest paid
-    c19200 = e19200 * (1. - ID_InterestPaid_hc)
-    c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
-    # Charity
-    floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
-    noncash_ded = max(0., e20100 - floor)
+    c18300 = (c18400 + c18500) * (1. - ID_AllTaxes_hc)  # line 5d sum + hc
+    salt_cap = ID_AllTaxes_c[MARS - 1]  # line 5e base cap
+    salt_ps = ID_AllTaxes_c_ps[MARS - 1]  # line 5e phaseout start
+    if posagi > salt_ps:
+        salt_excess_agi = posagi - salt_ps
+        salt_cap = max(0., salt_cap - salt_excess_agi * ID_AllTaxes_c_po_rate)
+        salt_cap = max(salt_cap, ID_AllTaxes_c_po_floor[MARS - 1])
+    # c18300 is line 5e final (= line 7, since line 6 is unmodeled)
+    c18300 = min(c18300, salt_cap)
+    # ----------------------------------------------------------------
+    # Sch A Interest You Paid (lines 8-10)
+    # Mortgage (line 8e) and investment (line 9) interest are
+    # pre-aggregated in input variable e19200. Reform plumbing:
+    # ID_InterestPaid_hc, ID_InterestPaid_c (no on-form analogue).
+    # ----------------------------------------------------------------
+    c19200 = e19200 * (1. - ID_InterestPaid_hc)  # line 10 (= 8e + 9)
+    c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])  # reform cap
+    # ----------------------------------------------------------------
+    # Sch A Gifts to Charity (lines 11-14)
+    # On-form: e19800 = line 11 (cash), e20100 = line 12 (noncash);
+    # line 13 (carryover) not modeled. Reform/OBBBA plumbing:
+    # ID_Charity_frt (AGI-fraction floor; OBBBA's 0.5% kicks in 2026+),
+    # ID_Charity_f (dollar floor), ID_Charity_crt_noncash (AGI cap on
+    # noncash), ID_Charity_crt_all (AGI cap on total per IRC §170(b)),
+    # ID_Charity_hc, ID_Charity_c. Floor is applied to noncash first,
+    # any unused remainder against cash.
+    # ----------------------------------------------------------------
+    charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
+    noncash_ded = max(0., e20100 - charity_floor)
     charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, noncash_ded)
-    remaining_floor = max(0., floor - e20100)
+    remaining_floor = max(0., charity_floor - e20100)
     charity_ded_cash = max(0., e19800 - remaining_floor)
-    c19700 = charity_ded_noncash + charity_ded_cash
+    c19700 = charity_ded_noncash + charity_ded_cash  # line 14
     c19700 = min(c19700, ID_Charity_crt_all * posagi) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
-    # Casualty
+    # ----------------------------------------------------------------
+    # Sch A Casualty and Theft Losses (line 15)
+    # g20500 is post-Form-4684 (10% AGI floor already applied), so
+    # ID_Casualty_frt defaults to 0 under current law.
+    # ----------------------------------------------------------------
     c20500 = (max(0., g20500 - ID_Casualty_frt * posagi) *
-              (1. - ID_Casualty_hc))
-    c20500 = min(c20500, ID_Casualty_c[MARS - 1])
-    # Miscellaneous
-    c20400 = e20400
-    c20750 = ID_Miscellaneous_frt * posagi
-    c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_hc)
-    c20800 = min(c20800, ID_Miscellaneous_c[MARS - 1])
-    # Gross total itemized deductions
+              (1. - ID_Casualty_hc))  # line 15
+    c20500 = min(c20500, ID_Casualty_c[MARS - 1])  # reform cap
+    # ----------------------------------------------------------------
+    # Sch A Other Itemized Deductions (line 16, "miscellaneous" in code)
+    # The pre-TCJA 2%-of-AGI miscellaneous deductions are repealed for
+    # current law (ID_Miscellaneous_hc = 1.0); parameters retained for
+    # reform use.
+    # ----------------------------------------------------------------
+    c20750 = ID_Miscellaneous_frt * posagi  # reform AGI floor
+    c20800 = max(0., e20400 - c20750) * (1. - ID_Miscellaneous_hc)  # line 16
+    c20800 = min(c20800, ID_Miscellaneous_c[MARS - 1])  # reform cap
+    # ----------------------------------------------------------------
+    # Sch A Total Itemized Deductions (line 17 = sum of 4+7+10+14+15+16)
+    # ----------------------------------------------------------------
     c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
-    # Pease limitation on total itemized deductions
-    # (no attempt to adjust c04470 components for limitation)
+    # ----------------------------------------------------------------
+    # Reform/legacy post-form stack (no Sch A correspondence):
+    # (1) §68 Pease overall-limitation — repealed by TCJA for 2018-2025;
+    #     parameters retained for reform use. Excludes medical (c17000)
+    #     and casualty (c20500) per §68(c).
+    # (2) OBBBA top-bracket reduction (ID_reduction_rate). Mutually
+    #     exclusive with Pease via the assert.
+    # (3) Reform hard cap ID_c on total itemized deductions.
+    # No attempt is made to adjust c04470's components for any of these
+    # post-total limitations.
+    # ----------------------------------------------------------------
     nonlimited = c17000 + c20500
     limitstart = ID_ps[MARS - 1]
     if c21060 > nonlimited and c00100 > limitstart:
@@ -1367,8 +1431,6 @@ def ItemDed(e17500, e18400, e18500, e19200,
     else:
         c21040 = 0.
         c04470 = c21060
-    # OBBBA limitation on total itemized deductions
-    # (no attempt to adjust c04470 components for limitation)
     reduction = 0.
     if ID_reduction_rate > 0.:
         assert c21040 <= 0.0, 'Pease and OBBBA cannot both be in effect'
@@ -1376,10 +1438,7 @@ def ItemDed(e17500, e18400, e18500, e19200,
         texcess = max(0., tincome - II_brk6[MARS - 1])
         reduction = ID_reduction_rate * texcess
     c04470 = max(0., c04470 - reduction)
-    # Cap total itemized deductions
-    # (no attempt to adjust c04470 components for limitation)
     c04470 = min(c04470, ID_c[MARS - 1])
-    # Return total itemized deduction amounts and pre-limitation components
     return (c17000, c18300, c19200, c19700, c20500, c20800,
             c21040, c21060, c04470)
 
