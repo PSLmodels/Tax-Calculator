@@ -1361,7 +1361,8 @@ def ItemDed(e17500, e18400, e18500, e19200,
         salt_excess_agi = posagi - salt_ps
         salt_cap = max(0., salt_cap - salt_excess_agi * ID_AllTaxes_c_po_rate)
         salt_cap = max(salt_cap, ID_AllTaxes_c_po_floor[MARS - 1])
-    c18300 = min(c18300, salt_cap)  # line 5e final (= line 7, since line 6 unmodeled)
+    # c18300 is line 5e final (= line 7, since line 6 is unmodeled)
+    c18300 = min(c18300, salt_cap)
     # ----------------------------------------------------------------
     # Sch A Interest You Paid (lines 8-10)
     # Mortgage (line 8e) and investment (line 9) interest are
