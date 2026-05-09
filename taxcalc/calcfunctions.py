@@ -937,74 +937,185 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
             tip_income_deduction,
             auto_loan_interest_deduction):
     """
-    Calculates below-the-line deduction for elderly head/spouse and
-    deductions on qualified overtime income, tip income, and
-    auto loan interest paid.
+    Computes the four below-the-line additional deductions on
+    Schedule 1-A (new for 2025): qualified tips (Part II), qualified
+    overtime compensation (Part III), qualified passenger-vehicle
+    loan interest (Part IV), and the enhanced deduction for seniors
+    (Part V). The four amounts are summed into Schedule 1-A line 38
+    (Form 1040 line 13b) and consumed downstream by `StdDed`/`TaxInc`.
+
+    Each part caps the qualified input, then phases the cap out as
+    MAGI exceeds a MARS-indexed start. Tips, overtime, and auto-loan
+    use an `exact==1` stepped phaseout (floor or ceil of
+    `excess / step_size`, scaled by `rate_per_step`) and a smooth
+    linear fallback that gives sensible marginal-tax-rate behavior.
+    The senior phaseout is always smooth (form Part V line 34
+    multiplies by 6%, no step rounding).
+
+    MAGI: Schedule 1-A line 3 adds foreign-income exclusions (Puerto
+    Rico, Form 2555 lines 45/50, Form 4563 line 15) to AGI; those
+    inputs are not modeled in Tax-Calculator records, so `c00100`
+    (Form 1040 line 11 AGI) is used directly as the MAGI proxy.
+
+    MFS (`MARS=3`): Parts II/III/V state "If married, you must file
+    jointly to claim this deduction"; the function therefore zeroes
+    the tip, overtime, and senior deductions when `MARS=3`. Part IV
+    (auto loan) carries no MFS restriction and is allowed for MFS.
+
+    Senior deduction is per eligible head/spouse (born before
+    1961-01-02 ≈ age 65+); each gets the line-35 amount.
+
+    Eligibility conditions documented on the form but not modeled
+    here include: valid SSN for taxpayer (and spouse if MFJ);
+    qualified-occupation listing for tips; qualified-overtime
+    classification; and the per-vehicle VIN/QPVLI definition for
+    auto-loan interest. The `tip_income`, `overtime_income`, and
+    `auto_loan_interest` inputs are assumed to already represent
+    the form-qualified amounts.
 
     Parameters
     ----------
     age_head: int
         Age of tax unit head
-    age_head: int
+    age_spouse: int
         Age of tax unit spouse
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate,
                                4=household-head, 5=widow(er))
     c00100: float
-        Adjusted gross income
+        Adjusted gross income (Form 1040 line 11); used as the
+        MAGI proxy for Schedule 1-A line 3
     exact: int
         Whether or not to smooth deduction phase out
-    SeniorDed_c: float
-        Maximum amount of senior deduction per head/spouse aged 65+
-    SeniorDed_ps: list[float]
-        Senior deduction AGI phase-out start level
-    SeniorDed_prt: float
-        Senior deduction phase-out rate
-    overtime_income: float
-        Overtime income qualified for a misc deduction
-    OvertimeIncomeDed_c: list[float]
-        overtime_income_deduction cap
-    OvertimeIncomeDed_ps: list[float]
-        overtime_income_deduction phase-out modified AGI start
-    OvertimeIncomeDed_po_step_size: float
-        Deduction phase-out AGI step size
-    OvertimeIncomeDed_po_rate_per_step: float
-        Deduction phase-out rate per AGI step
+    -- Part II (Tips, Sch 1-A lines 4-13) --
     tip_income: float
-        Tip income qualified for a misc deduction
+        Qualified tips received (Sch 1-A line 6)
     TipIncomeDed_c: float
-        tip_income_deduction cap
+        Cap on qualified tips deduction (Sch 1-A line 7)
     TipIncomeDed_ps: list[float]
-        tip_income_deduction phase-out modified AGI start
+        Phase-out start MAGI (Sch 1-A line 9)
     TipIncomeDed_po_step_size: float
-        Deduction phase-out AGI step size
+        Phase-out MAGI step size (Sch 1-A line 11 denominator)
     TipIncomeDed_po_rate_per_step: float
-        Deduction phase-out rate per AGI step
+        Phase-out rate per MAGI step (Sch 1-A line 12 multiplier
+        divided by line 11 step size)
+    -- Part III (Overtime, Sch 1-A lines 14-21) --
+    overtime_income: float
+        Qualified overtime compensation (Sch 1-A line 14c)
+    OvertimeIncomeDed_c: list[float]
+        Cap on overtime deduction (Sch 1-A line 15)
+    OvertimeIncomeDed_ps: list[float]
+        Phase-out start MAGI (Sch 1-A line 17)
+    OvertimeIncomeDed_po_step_size: float
+        Phase-out MAGI step size (Sch 1-A line 19 denominator)
+    OvertimeIncomeDed_po_rate_per_step: float
+        Phase-out rate per MAGI step (Sch 1-A line 20)
+    -- Part IV (Auto loan interest, Sch 1-A lines 22-30) --
     auto_loan_interest: float
-        Qualified auto loan interest paid
+        Qualified passenger-vehicle loan interest paid
+        (Sch 1-A line 23)
     AutoLoanInterestDed_c: float
-        Deduction cap
-    AutoLoanInterestDed_ps: float
-        Deduction phase-out starts above this AGI
+        Cap on auto loan interest deduction (Sch 1-A line 24)
+    AutoLoanInterestDed_ps: list[float]
+        Phase-out start MAGI (Sch 1-A line 26)
     AutoLoanInterestDed_po_step_size: float
-        Deduction phase-out AGI step size
+        Phase-out MAGI step size (Sch 1-A line 28 denominator)
     AutoLoanInterestDed_po_rate_per_step: float
-        Deduction phase-out rate per AGI step
+        Phase-out rate per MAGI step (Sch 1-A line 29)
+    -- Part V (Seniors, Sch 1-A lines 31-37) --
+    SeniorDed_c: float
+        Maximum amount of senior deduction per elderly head/spouse
+        (Sch 1-A line 35 base, $6,000 for 2025)
+    SeniorDed_ps: list[float]
+        Phase-out start MAGI (Sch 1-A line 32)
+    SeniorDed_prt: float
+        Phase-out rate (Sch 1-A line 34, 6% for 2025)
 
     Returns
     -------
     senior_deduction: float
-        Deduction available to both itemizers and nonitemizers
+        Sch 1-A line 37 (enhanced deduction for seniors)
     overtime_income_deduction: float
-        Deduction available to both itemizers and nonitemizers
+        Sch 1-A line 21 (qualified overtime compensation deduction)
     tip_income_deduction: float
-        Deduction available to both itemizers and nonitemizers
+        Sch 1-A line 13 (qualified tips deduction)
     auto_loan_interest_deduction: float
-        Deduction available to both itemizers and nonitemizers
+        Sch 1-A line 30 (qualified passenger vehicle loan interest
+        deduction)
     """
     # pylint: disable=too-many-statements,too-many-branches
+    # ----------------------------------------------------------------
+    # Sch 1-A Part I (lines 1-3): Modified AGI
+    # Foreign-income add-backs (lines 2a-2d) are not modeled in
+    # Tax-Calculator records, so AGI (Form 1040 line 11 = c00100)
+    # is the MAGI proxy used by all four parts below.
+    # ----------------------------------------------------------------
     magi = c00100
-    # calculate senior deduction
+    # ----------------------------------------------------------------
+    # Sch 1-A Part II (lines 4-13): No Tax on Tips
+    # MFJ-only if married (MARS=3 disallowed).
+    # ----------------------------------------------------------------
+    tip_income_deduction = 0.
+    if tip_income > 0. and MARS != 3:
+        ded = min(tip_income, TipIncomeDed_c)  # line 7 (cap)
+        po_start = TipIncomeDed_ps[MARS - 1]  # line 9
+        if magi > po_start:  # line 10 (excess)
+            excess_agi = magi - po_start
+            po_rate = TipIncomeDed_po_rate_per_step
+            if exact == 1:  # exact calculation as on tax forms
+                step_size = TipIncomeDed_po_step_size
+                steps = math.floor(excess_agi / step_size)  # line 11
+                po_amount = steps * step_size * po_rate  # line 12
+            else:  # smoothed calculation needed for sensible mtr calculation
+                po_amount = excess_agi * po_rate
+            ded = max(0., ded - po_amount)  # line 13
+        tip_income_deduction = ded
+    # ----------------------------------------------------------------
+    # Sch 1-A Part III (lines 14-21): No Tax on Overtime
+    # MFJ-only if married (MARS=3 disallowed).
+    # ----------------------------------------------------------------
+    overtime_income_deduction = 0.
+    if overtime_income > 0. and MARS != 3:
+        ded = min(overtime_income,
+                  OvertimeIncomeDed_c[MARS - 1])  # line 15 (cap)
+        po_start = OvertimeIncomeDed_ps[MARS - 1]  # line 17
+        if magi > po_start:  # line 18 (excess)
+            excess_agi = magi - po_start
+            po_rate = OvertimeIncomeDed_po_rate_per_step
+            if exact == 1:  # exact calculation as on tax forms
+                step_size = OvertimeIncomeDed_po_step_size
+                steps = math.floor(excess_agi / step_size)  # line 19
+                po_amount = steps * step_size * po_rate  # line 20
+            else:  # smoothed calculation needed for sensible mtr calculation
+                po_amount = excess_agi * po_rate
+            ded = max(0., ded - po_amount)  # line 21
+        overtime_income_deduction = ded
+    # ----------------------------------------------------------------
+    # Sch 1-A Part IV (lines 22-30): No Tax on Car Loan Interest
+    # No MFS restriction on the form; allowed for all MARS values.
+    # Step rounding is CEIL (line 28 "increase to next higher whole
+    # number"), unlike Parts II/III which FLOOR.
+    # ----------------------------------------------------------------
+    auto_loan_interest_deduction = 0.
+    if AutoLoanInterestDed_c > 0. and auto_loan_interest > 0.:
+        ded = min(auto_loan_interest, AutoLoanInterestDed_c)  # line 24
+        po_start = AutoLoanInterestDed_ps[MARS - 1]  # line 26
+        if magi > po_start:  # line 27 (excess)
+            excess_agi = magi - po_start
+            po_rate = AutoLoanInterestDed_po_rate_per_step
+            if exact == 1:  # exact calculation as on tax forms
+                step_size = AutoLoanInterestDed_po_step_size
+                steps = math.ceil(excess_agi / step_size)  # line 28
+                po_amount = steps * step_size * po_rate  # line 29
+            else:  # smoothed calculation needed for sensible mtr calculation
+                po_amount = excess_agi * po_rate
+            ded = max(0., ded - po_amount)  # line 30
+        auto_loan_interest_deduction = ded
+    # ----------------------------------------------------------------
+    # Sch 1-A Part V (lines 31-37): Enhanced Deduction for Seniors
+    # MFJ-only if married (MARS=3 disallowed); per eligible
+    # head/spouse aged 65+. Phaseout is smooth 6% (no exact branch).
+    # ----------------------------------------------------------------
     senior_deduction = 0.
     if SeniorDed_c > 0. and MARS != 3:
         seniors = 0
@@ -1013,66 +1124,14 @@ def MiscDed(age_head, age_spouse, MARS, c00100, exact,
         if MARS == 2 and age_spouse >= 65:
             seniors += 1
         if seniors > 0:
-            po_start = SeniorDed_ps[MARS - 1]
-            if magi > po_start:
+            po_start = SeniorDed_ps[MARS - 1]  # line 32
+            if magi > po_start:  # line 33 (excess)
                 excess_agi = magi - po_start
-                po_amount = excess_agi * SeniorDed_prt
-                per_person_ded = max(0., SeniorDed_c - po_amount)
+                po_amount = excess_agi * SeniorDed_prt  # line 34
+                per_person_ded = max(0., SeniorDed_c - po_amount)  # line 35
             else:
-                per_person_ded = SeniorDed_c
-            senior_deduction = seniors * per_person_ded
-    # calculate overtime_income_deduction
-    overtime_income_deduction = 0.
-    if overtime_income > 0. and MARS != 3:
-        ded = min(overtime_income, OvertimeIncomeDed_c[MARS - 1])
-        po_start = OvertimeIncomeDed_ps[MARS - 1]
-        if magi > po_start:
-            # phase out deduction
-            excess_agi = magi - po_start
-            po_rate = OvertimeIncomeDed_po_rate_per_step
-            if exact == 1:  # exact calculation as on tax forms
-                step_size = OvertimeIncomeDed_po_step_size
-                steps = math.floor(excess_agi / step_size)
-                po_amount = steps * step_size * po_rate
-            else:  # smoothed calculation needed for sensible mtr calculation
-                po_amount = excess_agi * po_rate
-            ded = max(0., ded - po_amount)
-        overtime_income_deduction = ded
-    # calculate tip_income_deduction
-    tip_income_deduction = 0.
-    if tip_income > 0. and MARS != 3:
-        ded = min(tip_income, TipIncomeDed_c)
-        po_start = TipIncomeDed_ps[MARS - 1]
-        if magi > po_start:
-            # phase out deduction
-            excess_agi = magi - po_start
-            po_rate = TipIncomeDed_po_rate_per_step
-            if exact == 1:  # exact calculation as on tax forms
-                step_size = TipIncomeDed_po_step_size
-                steps = math.floor(excess_agi / step_size)
-                po_amount = steps * step_size * po_rate
-            else:  # smoothed calculation needed for sensible mtr calculation
-                po_amount = excess_agi * po_rate
-            ded = max(0., ded - po_amount)
-        tip_income_deduction = ded
-    # calculate auto loan interest deduction
-    auto_loan_interest_deduction = 0.
-    if AutoLoanInterestDed_c > 0. and auto_loan_interest > 0.:
-        # cap deduction
-        ded = min(auto_loan_interest, AutoLoanInterestDed_c)
-        po_start = AutoLoanInterestDed_ps[MARS - 1]
-        if magi > po_start:
-            # phase out deduction
-            excess_agi = magi - po_start
-            po_rate = AutoLoanInterestDed_po_rate_per_step
-            if exact == 1:  # exact calculation as on tax forms
-                step_size = AutoLoanInterestDed_po_step_size
-                steps = math.ceil(excess_agi / step_size)
-                po_amount = steps * step_size * po_rate
-            else:  # smoothed calculation needed for sensible mtr calculation
-                po_amount = excess_agi * po_rate
-            ded = max(0., ded - po_amount)
-        auto_loan_interest_deduction = ded
+                per_person_ded = SeniorDed_c  # line 33: use $6,000 base
+            senior_deduction = seniors * per_person_ded  # lines 36a/36b/37
     return (senior_deduction, overtime_income_deduction,
             tip_income_deduction, auto_loan_interest_deduction)
 
