@@ -1947,79 +1947,126 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">StdDed</span><span class="p">(</span><span class="n">DSI</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">STD</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">STD_Aged</span><span class="p">,</span> <span class="n">STD_Dep</span><span class="p">,</span>
-           <span class="n">MARS</span><span class="p">,</span> <span class="n">MIDR</span><span class="p">,</span> <span class="n">blind_head</span><span class="p">,</span> <span class="n">blind_spouse</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span>
+           <span class="n">STD_Dep_earned_add</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">MIDR</span><span class="p">,</span> <span class="n">blind_head</span><span class="p">,</span> <span class="n">blind_spouse</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span>
            <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">,</span> <span class="n">e19800</span><span class="p">,</span> <span class="n">ID_Charity_crt_all</span><span class="p">,</span>
            <span class="n">c00100</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates standard deduction, including standard deduction for</span>
-<span class="sd">    dependents, aged and bind.</span>
+<span class="sd">    Computes standard deduction (Form 1040 line 12).</span>
+
+<span class="sd">    Mirrors the &quot;Standard Deduction for—&quot; chart on Form 1040 line 12 and</span>
+<span class="sd">    the &quot;Standard Deduction Worksheet for Dependents&quot; in the 2025 Form</span>
+<span class="sd">    1040 instructions. The body is split into four sections:</span>
+
+<span class="sd">    1. MFS-and-spouse-itemizes override (line-12 chart bullet 3): if the</span>
+<span class="sd">       filer files married-separately and the spouse itemizes, the</span>
+<span class="sd">       standard deduction is zero (filer must itemize).</span>
+<span class="sd">    2. Basic standard deduction: either the dependent-worksheet amount</span>
+<span class="sd">       (if claimed as a dependent) or the line-12 chart&#39;s STD[MARS-1].</span>
+<span class="sd">       The dependent worksheet caps the deduction at STD[MARS-1] but</span>
+<span class="sd">       floors it at max(earned + STD_Dep_earned_add, STD_Dep).</span>
+<span class="sd">    3. Aged/blind add-on: STD_Aged[MARS-1] per checked box (filer 65+,</span>
+<span class="sd">       filer blind, spouse 65+, spouse blind). Spouse boxes only count</span>
+<span class="sd">       for MFJ filers.</span>
+<span class="sd">    4. Reform/legacy CARES cash-charity add-on for nonitemizers (off</span>
+<span class="sd">       under current law; STD_allow_charity_ded_nonitemizers defaults</span>
+<span class="sd">       to False).</span>
+
+<span class="sd">    The Records-bound output is `standard` (Form 1040 line 12);</span>
+<span class="sd">    downstream `TaxInc` consumes it into Form 1040 line 14.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----</span>
 <span class="sd">    DSI: int</span>
 <span class="sd">        1 if claimed as dependent on another return; otherwise 0</span>
+<span class="sd">        (selects the dependent worksheet branch)</span>
 <span class="sd">    earned: float</span>
-<span class="sd">        Earned income for filing unit</span>
+<span class="sd">        Earned income for filing unit (dependent worksheet line 1)</span>
 <span class="sd">    STD: list</span>
-<span class="sd">        Standard deduction amount</span>
+<span class="sd">        Per-MARS basic standard deduction (Form 1040 line-12 chart;</span>
+<span class="sd">        dependent worksheet line 6 / line-12 chart cap)</span>
 <span class="sd">    age_head: int</span>
-<span class="sd">        Age in years of taxpayer</span>
+<span class="sd">        Age in years of taxpayer (≥65 → check filer aged box)</span>
 <span class="sd">    age_spouse: int</span>
-<span class="sd">        Age in years of spouse</span>
+<span class="sd">        Age in years of spouse (≥65 → check spouse aged box; MFJ only)</span>
 <span class="sd">    STD_Aged: list</span>
-<span class="sd">        Additional standard deduction for blind and aged</span>
+<span class="sd">        Per-MARS additional standard deduction per checked box</span>
+<span class="sd">        (per-box amount on the line-12 chart for aged/blind)</span>
 <span class="sd">    STD_Dep: float</span>
-<span class="sd">        Standard deduction for dependents</span>
+<span class="sd">        Minimum dependent standard deduction (worksheet line 4)</span>
+<span class="sd">    STD_Dep_earned_add: float</span>
+<span class="sd">        Earned-income additional amount in the dependent worksheet</span>
+<span class="sd">        (worksheet line 2)</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                                  4=household-head, 5=widow(er))</span>
 <span class="sd">    MIDR: int</span>
 <span class="sd">        1 if separately filing spouse itemizes, 0 otherwise</span>
+<span class="sd">        (only meaningful when MARS=3)</span>
 <span class="sd">    blind_head: int</span>
-<span class="sd">        1 if taxpayer is blind, 0 otherwise</span>
+<span class="sd">        1 if taxpayer is blind, 0 otherwise (filer blind box)</span>
 <span class="sd">    blind_spouse: int</span>
-<span class="sd">        1 if spouse is blind, 0 otherwise</span>
+<span class="sd">        1 if spouse is blind, 0 otherwise (spouse blind box; MFJ only)</span>
 <span class="sd">    standard: float</span>
-<span class="sd">        Standard deduction (zero for itemizers)</span>
+<span class="sd">        Records-bound output: standard deduction (zero for itemizers)</span>
+<span class="sd">    -- Reform/legacy CARES nonitemizer charity add-on --</span>
 <span class="sd">    STD_allow_charity_ded_nonitemizers: bool</span>
-<span class="sd">        Allow standard deduction filers to take the charitable contributions</span>
-<span class="sd">        deduction</span>
+<span class="sd">        Allow standard deduction filers to take the charitable</span>
+<span class="sd">        contributions deduction (off under current law)</span>
 <span class="sd">    e19800: float</span>
-<span class="sd">        Schedule A: cash charitable contributions</span>
+<span class="sd">        Schedule A line 11 cash charitable contributions</span>
 <span class="sd">    ID_Charity_crt_all: float</span>
-<span class="sd">        Fraction of AGI cap on all charitable deductions</span>
+<span class="sd">        Fraction-of-AGI cap on all charitable deductions</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Federal AGI</span>
-<span class="sd">    STD_charity_ded_nonitemizers_max: float</span>
-<span class="sd">        Ceiling amount (in dollars) for charitable deductions for nonitemizers</span>
+<span class="sd">        Federal AGI (Form 1040 line 11)</span>
+<span class="sd">    STD_charity_ded_nonitemizers_max: list</span>
+<span class="sd">        Per-MARS ceiling amount (in dollars) on the nonitemizer</span>
+<span class="sd">        charitable contributions deduction</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    standard: float</span>
 <span class="sd">        Standard deduction (zero for itemizers)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># calculate deduction for dependents</span>
-    <span class="k">if</span> <span class="n">DSI</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">c15100</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">350.</span> <span class="o">+</span> <span class="n">earned</span><span class="p">,</span> <span class="n">STD_Dep</span><span class="p">)</span>
-        <span class="n">basic_stded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">STD</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c15100</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">c15100</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="k">if</span> <span class="n">MIDR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">basic_stded</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">basic_stded</span> <span class="o">=</span> <span class="n">STD</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="c1"># calculate extra standard deduction for aged and blind</span>
-    <span class="n">num_extra_stded</span> <span class="o">=</span> <span class="n">blind_head</span> <span class="o">+</span> <span class="n">blind_spouse</span>
-    <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
-        <span class="n">num_extra_stded</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
-        <span class="n">num_extra_stded</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">extra_stded</span> <span class="o">=</span> <span class="n">num_extra_stded</span> <span class="o">*</span> <span class="n">STD_Aged</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="c1"># calculate the total standard deduction</span>
-    <span class="n">standard</span> <span class="o">=</span> <span class="n">basic_stded</span> <span class="o">+</span> <span class="n">extra_stded</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># MFS-and-spouse-itemizes override (Form 1040 line-12 instructions:</span>
+    <span class="c1"># &quot;Married filing separately and your spouse itemizes deductions&quot;).</span>
+    <span class="c1"># Implementation invariant: MIDR=1 only occurs when MARS=3.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">MIDR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">standard</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="c1"># calculate CARES cash charity deduction for nonitemizers</span>
+        <span class="k">return</span> <span class="n">standard</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Basic standard deduction: dependent worksheet if claimed as a</span>
+    <span class="c1"># dependent, otherwise the Form 1040 line-12 chart value.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="n">std_basic</span> <span class="o">=</span> <span class="n">STD</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>                       <span class="c1"># line-12 chart cap</span>
+    <span class="k">if</span> <span class="n">DSI</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># Dependent Std Ded Worksheet:</span>
+        <span class="c1"># line 3 = earned + STD_Dep_earned_add  (worksheet lines 1+2)</span>
+        <span class="c1"># line 5 = max(line 3, STD_Dep)         (worksheet lines 4-5)</span>
+        <span class="c1"># line 7 = min(line 5, STD[MARS-1])     (worksheet line 7)</span>
+        <span class="n">basic_stded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">std_basic</span><span class="p">,</span>
+                          <span class="nb">max</span><span class="p">(</span><span class="n">earned</span> <span class="o">+</span> <span class="n">STD_Dep_earned_add</span><span class="p">,</span> <span class="n">STD_Dep</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">basic_stded</span> <span class="o">=</span> <span class="n">std_basic</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Aged/blind add-on (line-12 chart): one STD_Aged box per</span>
+    <span class="c1"># 65+/blind condition on filer; spouse boxes only count for MFJ.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="n">num_extra_stded</span> <span class="o">=</span> <span class="n">blind_head</span>
+    <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
+        <span class="n">num_extra_stded</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">num_extra_stded</span> <span class="o">+=</span> <span class="n">blind_spouse</span>
+        <span class="k">if</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
+            <span class="n">num_extra_stded</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">extra_stded</span> <span class="o">=</span> <span class="n">num_extra_stded</span> <span class="o">*</span> <span class="n">STD_Aged</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">standard</span> <span class="o">=</span> <span class="n">basic_stded</span> <span class="o">+</span> <span class="n">extra_stded</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Reform/legacy CARES cash-charity add-on for nonitemizers</span>
+    <span class="c1"># (STD_allow_charity_ded_nonitemizers defaults to False under</span>
+    <span class="c1"># current law; active in 2020-2021 and under reforms).</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="k">if</span> <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">:</span>
         <span class="n">capped_ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e19800</span><span class="p">,</span> <span class="n">ID_Charity_crt_all</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">)</span>
         <span class="n">standard</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">capped_ded</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>

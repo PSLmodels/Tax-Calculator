@@ -847,6 +847,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-parameters-not-in-tax-brain-webapp">Other Parameters (not in Tax-Brain webapp)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ii-em-ps"><code class="docutils literal notranslate"><span class="pre">II_em_ps</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#std-dep"><code class="docutils literal notranslate"><span class="pre">STD_Dep</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#std-dep-earned-add"><code class="docutils literal notranslate"><span class="pre">STD_Dep_earned_add</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#std-allow-charity-ded-nonitemizers"><code class="docutils literal notranslate"><span class="pre">STD_allow_charity_ded_nonitemizers</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#std-charity-ded-nonitemizers-max"><code class="docutils literal notranslate"><span class="pre">STD_charity_ded_nonitemizers_max</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ui-em"><code class="docutils literal notranslate"><span class="pre">UI_em</span></code></a></li>
@@ -4935,6 +4936,30 @@ for: [single, mjoint, mseparate, headhh, widow]
 <em>Valid Range:</em> min = 0 and max = 9e+99
 <em>Out-of-Range Action:</em> error</p>
 </section>
+<section id="std-dep-earned-add">
+<h3><code class="docutils literal notranslate"><span class="pre">STD_Dep_earned_add</span></code><a class="headerlink" href="#std-dep-earned-add" title="Link to this heading">#</a></h3>
+<p><em>Description:</em> In the IRS Standard Deduction Worksheet for Dependents (Form 1040 instructions), this is the amount added to earned income (worksheet line 2) before comparing against the minimum dependent standard deduction (STD_Dep). Indexed for inflation per IRC §63(c)(5)(B).
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> True
+<em>Value Type:</em> float
+<em>Known Values:</em>
+2013: 350.0
+2014: 350.0
+2015: 350.0
+2016: 350.0
+2017: 350.0
+2018: 350.0
+2019: 350.0
+2020: 350.0
+2021: 350.0
+2022: 400.0
+2023: 400.0
+2024: 450.0
+2025: 450.0
+2026: 450.0
+<em>Valid Range:</em> min = 0 and max = 9e+99
+<em>Out-of-Range Action:</em> error</p>
+</section>
 <section id="std-allow-charity-ded-nonitemizers">
 <h3><code class="docutils literal notranslate"><span class="pre">STD_allow_charity_ded_nonitemizers</span></code><a class="headerlink" href="#std-allow-charity-ded-nonitemizers" title="Link to this heading">#</a></h3>
 <p><em>Description:</em> Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here as well as a max on the dollar amount for total charitable deductions for those taking the standard deduction.
@@ -5627,6 +5652,7 @@ for: [single, mjoint, mseparate, headhh, widow]
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-parameters-not-in-tax-brain-webapp">Other Parameters (not in Tax-Brain webapp)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ii-em-ps"><code class="docutils literal notranslate"><span class="pre">II_em_ps</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#std-dep"><code class="docutils literal notranslate"><span class="pre">STD_Dep</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#std-dep-earned-add"><code class="docutils literal notranslate"><span class="pre">STD_Dep_earned_add</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#std-allow-charity-ded-nonitemizers"><code class="docutils literal notranslate"><span class="pre">STD_allow_charity_ded_nonitemizers</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#std-charity-ded-nonitemizers-max"><code class="docutils literal notranslate"><span class="pre">STD_charity_ded_nonitemizers_max</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ui-em"><code class="docutils literal notranslate"><span class="pre">UI_em</span></code></a></li>
