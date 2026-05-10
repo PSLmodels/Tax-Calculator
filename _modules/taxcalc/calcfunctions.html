@@ -2085,147 +2085,252 @@
            <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">PT_qbid_min_ded</span><span class="p">,</span> <span class="n">PT_qbid_min_qbi</span><span class="p">,</span>
            <span class="n">c04800</span><span class="p">,</span> <span class="n">qbided</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates taxable income, c04800, and</span>
-<span class="sd">    qualified business income deduction, qbided.</span>
+<span class="sd">    Form 1040 lines 13-15 (2025): the §199A pass-through Qualified</span>
+<span class="sd">    Business Income deduction (line 13, from Form 8995 or Form 8995-A)</span>
+<span class="sd">    and regular taxable income (line 15 = AGI - line 14).</span>
+
+<span class="sd">    QBI deduction structure (TCJA §199A):</span>
+<span class="sd">      - Filers with pre-QBID taxable income at or below</span>
+<span class="sd">        PT_qbid_taxinc_thd[MARS-1] ($197,300 / $394,600 MFJ for 2025)</span>
+<span class="sd">        file the simplified Form 8995: deduction = PT_qbid_rt * QBI,</span>
+<span class="sd">        capped only by the income limitation.</span>
+<span class="sd">      - Filers above the threshold file Form 8995-A. In the phase-in</span>
+<span class="sd">        window of width PT_qbid_taxinc_gap[MARS-1] ($50,000 /</span>
+<span class="sd">        $100,000 MFJ) above the threshold:</span>
+<span class="sd">          * Specified Service Trade or Business (SSTB) filers have QBI</span>
+<span class="sd">            and W-2 wages / UBIA scaled by Schedule A&#39;s &quot;applicable</span>
+<span class="sd">            percentage&quot; = (upper_thd - taxinc) / gap, with full</span>
+<span class="sd">            disallowance once taxinc &gt;= upper_thd.</span>
+<span class="sd">          * Non-SSTB filers face the W-2/UBIA cap with a Part III</span>
+<span class="sd">            phase-in reduction; above the window the cap binds in full.</span>
+<span class="sd">      - All filers face the Part IV income limitation: deduction may</span>
+<span class="sd">        not exceed PT_qbid_rt * (pre-QBID taxinc - net_cg), where</span>
+<span class="sd">        net_cg = qualified dividends + net long-term capital gain.</span>
+
+<span class="sd">    QBI components (Form 8995 line 1c instructions): Sch C net profit</span>
+<span class="sd">    `e00900`, Sch E partnership/S-corp `e26270`, Sch F `e02100`, Sch E</span>
+<span class="sd">    farm rent `e27200`. Wages (`e00200`) and investment income are NOT</span>
+<span class="sd">    QBI. QBI is reduced by the deductible part of SECA tax `c03260`</span>
+<span class="sd">    (Sch SE / Sch 1 line 15). REIT dividends and PTP income (Form 8995</span>
+<span class="sd">    lines 6-9 / Form 8995-A Part IV lines 28-31) are not modeled.</span>
+
+<span class="sd">    Pre-QBID taxable income (Form 8995 line 11 / Form 8995-A line 33)</span>
+<span class="sd">    subtracts from AGI: max(itemized, standard) + personal exemption</span>
+<span class="sd">    (reform-only `c04600`) + Sch 1-A senior/overtime/tip/auto-loan</span>
+<span class="sd">    deductions. The QBID is &quot;stacked last&quot; so that c04800 = max(0,</span>
+<span class="sd">    pre_qbid_taxinc - qbided).</span>
+
+<span class="sd">    Reform-only constructs (no IRS form analogue):</span>
+<span class="sd">      - PT_qbid_limited=False disables the W-2/UBIA cap, SSTB exclusion,</span>
+<span class="sd">        and phase-in entirely (deduction = PT_qbid_rt * QBI subject only</span>
+<span class="sd">        to the income cap).</span>
+<span class="sd">      - PT_qbid_ps / PT_qbid_prt: linear phase-out of the deduction</span>
+<span class="sd">        above PT_qbid_ps[MARS-1].</span>
+<span class="sd">      - PT_qbid_min_qbi / PT_qbid_min_ded: minimum-deduction floor for</span>
+<span class="sd">        filers with QBI at or above PT_qbid_min_qbi.</span>
+
+<span class="sd">    Downstream consumer: `c04800` is the input to `SchXYZ` /</span>
+<span class="sd">    `SchXYZTax` / `GainsTax` (regular tax) and to `AMT` (Form 6251).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">        Adjusted Gross Income (Form 1040 line 11)</span>
 <span class="sd">    standard: float</span>
-<span class="sd">        Standard deduction (zero for itemizers)</span>
+<span class="sd">        Standard deduction (Form 1040 line 12; zero for itemizers)</span>
 <span class="sd">    c04470: float</span>
-<span class="sd">        Itemized deductions after phase-out (zero for non-itemizers)</span>
+<span class="sd">        Itemized deductions after phase-out (Form 1040 line 12; zero</span>
+<span class="sd">        for non-itemizers)</span>
 <span class="sd">    c04600: float</span>
-<span class="sd">        Personal exemptions after phase-out</span>
+<span class="sd">        Personal exemptions after phase-out (reform-only; zero under</span>
+<span class="sd">        current law for 2018-2025 per TCJA suspension)</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                                  4=household-head, 5=widow(er))</span>
 <span class="sd">    e00900: float</span>
-<span class="sd">        Schedule C business net profit/loss for filing unit</span>
+<span class="sd">        Schedule C business net profit/loss (QBI component)</span>
 <span class="sd">    c03260: float</span>
-<span class="sd">        Self-employment (SECA) tax above-the-line deduction</span>
+<span class="sd">        Self-employment (SECA) tax above-the-line deduction (Sch 1</span>
+<span class="sd">        line 15); subtracted from QBI per §199A</span>
 <span class="sd">    e26270: float</span>
-<span class="sd">        Schedule E: combined partnership and S-corporation net income/loss</span>
+<span class="sd">        Schedule E partnership / S-corporation net income/loss (QBI</span>
+<span class="sd">        component)</span>
 <span class="sd">    e02100: float</span>
-<span class="sd">        Farm net income/loss for filing unit from Schedule F</span>
+<span class="sd">        Schedule F farm net income/loss (QBI component)</span>
 <span class="sd">    e27200: float</span>
-<span class="sd">        Schedule E: farm rent net income or loss</span>
+<span class="sd">        Schedule E farm rent net income/loss (QBI component)</span>
 <span class="sd">    e00650: float</span>
-<span class="sd">        Qualified dividends included in ordinary dividends</span>
+<span class="sd">        Qualified dividends (Form 8995 line 12 / 8995-A line 34 input)</span>
 <span class="sd">    c01000: float</span>
-<span class="sd">        Limitation on capital losses</span>
+<span class="sd">        Net capital gain or loss after §1211(b) limit (Form 8995 line</span>
+<span class="sd">        12 / 8995-A line 34 input; see BUG? note in Phase-2 review re:</span>
+<span class="sd">        net STCG inclusion)</span>
 <span class="sd">    senior_deduction: float</span>
-<span class="sd">        Deduction for elderly head/spouse</span>
+<span class="sd">        Sch 1-A Part V senior deduction (reduces pre-QBID taxinc)</span>
 <span class="sd">    overtime_income_deduction: float</span>
-<span class="sd">        Deduction for qualified overtime income</span>
+<span class="sd">        Sch 1-A Part III overtime deduction (reduces pre-QBID taxinc)</span>
 <span class="sd">    tip_income_deduction: float</span>
-<span class="sd">        Deduction for qualified tip income</span>
+<span class="sd">        Sch 1-A Part II tip deduction (reduces pre-QBID taxinc)</span>
 <span class="sd">    auto_loan_interest_deduction: float</span>
-<span class="sd">        Deduction for qualified auto loan interest paid</span>
+<span class="sd">        Sch 1-A Part IV auto-loan-interest deduction (reduces pre-QBID</span>
+<span class="sd">        taxinc)</span>
 <span class="sd">    PT_SSTB_income: int</span>
-<span class="sd">        Value of one implies business income is from a specified service</span>
-<span class="sd">          trade or business (SSTB)</span>
-<span class="sd">        Value of zero implies business income is from a qualified trade or</span>
-<span class="sd">          business</span>
+<span class="sd">        1 = QBI is from a Specified Service Trade or Business; 0 = QBI</span>
+<span class="sd">        is from a qualified (non-SSTB) trade or business</span>
 <span class="sd">    PT_binc_w2_wages: float</span>
-<span class="sd">        Filing unit&#39;s share of total W-2 wages paid by the</span>
-<span class="sd">        pass-through business</span>
+<span class="sd">        Filing unit&#39;s allocable share of W-2 wages paid by the</span>
+<span class="sd">        pass-through business (Form 8995-A line 4)</span>
 <span class="sd">    PT_ubia_property: float</span>
-<span class="sd">        Filing unit&#39;s share of total business property owned by the</span>
-<span class="sd">        pass-through business</span>
+<span class="sd">        Filing unit&#39;s allocable share of unadjusted basis immediately</span>
+<span class="sd">        after acquisition of qualified property (Form 8995-A line 7)</span>
 <span class="sd">    PT_qbid_rt: float</span>
-<span class="sd">        Pass-through qualified business income deduction rate</span>
+<span class="sd">        QBID rate (Form 8995 line 5 / 8995-A line 3 multiplier; 20% in</span>
+<span class="sd">        2025)</span>
 <span class="sd">    PT_qbid_limited: bool</span>
-<span class="sd">        Whether or not TCJA QBID limits are active</span>
+<span class="sd">        Reform switch; False disables the W-2/UBIA cap, SSTB exclusion,</span>
+<span class="sd">        and Part III phase-in</span>
 <span class="sd">    PT_qbid_taxinc_thd: list</span>
-<span class="sd">        Lower threshold of pre-QBID taxable income</span>
+<span class="sd">        MARS-indexed lower threshold of pre-QBID taxable income (Form</span>
+<span class="sd">        8995-A line 21; $197,300 / $394,600 MFJ for 2025)</span>
 <span class="sd">    PT_qbid_taxinc_gap: list</span>
-<span class="sd">        Dollar gap between upper and lower threshold of pre-QBID taxable income</span>
+<span class="sd">        MARS-indexed phase-in window width (Form 8995-A line 23;</span>
+<span class="sd">        $50,000 / $100,000 MFJ for 2025)</span>
 <span class="sd">    PT_qbid_w2_wages_rt: float</span>
-<span class="sd">        QBID cap rate on pass-through business W-2 wages paid</span>
+<span class="sd">        Primary W-2-wages cap rate (Form 8995-A line 5; 50%)</span>
 <span class="sd">    PT_qbid_alt_w2_wages_rt: float</span>
-<span class="sd">        Alternative QBID cap rate on pass-through business W-2 wages paid</span>
+<span class="sd">        Alternative W-2-wages cap rate (Form 8995-A line 6; 25%)</span>
 <span class="sd">    PT_qbid_alt_property_rt: float</span>
-<span class="sd">        Alternative QBID cap rate on pass-through business property owned</span>
+<span class="sd">        Alternative UBIA cap rate (Form 8995-A line 8; 2.5%)</span>
 <span class="sd">    PT_qbid_ps: list</span>
-<span class="sd">        QBID phaseout taxable income start</span>
+<span class="sd">        Reform-only QBID phase-out start (no form analogue)</span>
 <span class="sd">    PT_qbid_prt: float</span>
-<span class="sd">        QBID phaseout rate</span>
+<span class="sd">        Reform-only QBID phase-out rate (no form analogue)</span>
 <span class="sd">    PT_qbid_min_ded: float</span>
-<span class="sd">        Minimum QBID amount</span>
+<span class="sd">        Reform-only minimum QBID amount (no form analogue)</span>
 <span class="sd">    PT_qbid_min_qbi: float</span>
-<span class="sd">        Minimum QBI necessary to get QBID no less than PT_qbid_min_ded</span>
+<span class="sd">        Reform-only minimum QBI to qualify for PT_qbid_min_ded floor</span>
 <span class="sd">    c04800: float</span>
-<span class="sd">        Regular taxable income</span>
+<span class="sd">        Regular taxable income (Form 1040 line 15; iterate_jit</span>
+<span class="sd">        Records-bound output)</span>
 <span class="sd">    qbided: float</span>
-<span class="sd">        Qualified Business Income (QBI) deduction</span>
+<span class="sd">        Qualified Business Income deduction (Form 1040 line 13;</span>
+<span class="sd">        iterate_jit Records-bound output)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c04800: float</span>
-<span class="sd">        Regular taxable income</span>
+<span class="sd">        Regular taxable income (Form 1040 line 15)</span>
 <span class="sd">    qbided: float</span>
-<span class="sd">        Qualified Business Income (QBI) deduction</span>
+<span class="sd">        Qualified Business Income deduction (Form 1040 line 13)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># calculate taxable income before qualified business income deduction,</span>
-    <span class="c1"># which is assumed to be stacked last in the list of deductions</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Pre-QBID taxable income (Form 8995 line 11 / Form 8995-A line 33)</span>
+    <span class="c1"># = Form 1040 line 15 with the QBID line removed. QBID is &quot;stacked</span>
+    <span class="c1"># last&quot; so all other below-AGI deductions are subtracted here:</span>
+    <span class="c1"># max(itemized, standard) + reform-only personal exemption +</span>
+    <span class="c1"># Sch 1-A senior/overtime/tip/auto-loan deductions.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">odeds</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">senior_deduction</span>
-        <span class="o">+</span> <span class="n">overtime_income_deduction</span>
-        <span class="o">+</span> <span class="n">tip_income_deduction</span>
-        <span class="o">+</span> <span class="n">auto_loan_interest_deduction</span>
+        <span class="n">senior_deduction</span>          <span class="c1"># Sch 1-A Part V</span>
+        <span class="o">+</span> <span class="n">overtime_income_deduction</span>  <span class="c1"># Sch 1-A Part III</span>
+        <span class="o">+</span> <span class="n">tip_income_deduction</span>       <span class="c1"># Sch 1-A Part II</span>
+        <span class="o">+</span> <span class="n">auto_loan_interest_deduction</span>  <span class="c1"># Sch 1-A Part IV</span>
     <span class="p">)</span>
     <span class="n">pre_qbid_taxinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">c04470</span><span class="p">,</span> <span class="n">standard</span><span class="p">)</span> <span class="o">-</span> <span class="n">c04600</span> <span class="o">-</span> <span class="n">odeds</span><span class="p">)</span>
-    <span class="c1"># calculate qualified business income deduction</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Qualified Business Income (QBI) build (Form 8995 line 1c /</span>
+    <span class="c1"># Form 8995-A line 2): Sch C net (less SECA ALD), Sch E</span>
+    <span class="c1"># partnership/S-corp, Sch F farm, Sch E farm rent. Wages and</span>
+    <span class="c1"># investment income are NOT QBI.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">qbinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00900</span> <span class="o">-</span> <span class="n">c03260</span> <span class="o">+</span> <span class="n">e26270</span> <span class="o">+</span> <span class="n">e02100</span> <span class="o">+</span> <span class="n">e27200</span><span class="p">)</span>
-    <span class="n">qbid_before_limits</span> <span class="o">=</span> <span class="n">qbinc</span> <span class="o">*</span> <span class="n">PT_qbid_rt</span>
+    <span class="n">qbid_before_limits</span> <span class="o">=</span> <span class="n">qbinc</span> <span class="o">*</span> <span class="n">PT_qbid_rt</span>  <span class="c1"># Form 8995 line 5 / 8995-A line 3</span>
     <span class="k">if</span> <span class="n">PT_qbid_limited</span><span class="p">:</span>
-        <span class="n">lower_thd</span> <span class="o">=</span> <span class="n">PT_qbid_taxinc_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># ------------------------------------------------------------</span>
+        <span class="c1"># Form 8995-A Parts II/III: W-2 wage / UBIA cap and SSTB phase-in.</span>
+        <span class="c1"># Filers with pre_qbid_taxinc &lt;= lower_thd file the simplified</span>
+        <span class="c1"># Form 8995 (no cap, no SSTB exclusion). Above lower_thd, four</span>
+        <span class="c1"># sub-cases per Form 8995-A: (a) SSTB above upper_thd: 0; (b)</span>
+        <span class="c1"># non-SSTB above upper_thd: line 11 = min(line 3, line 10); (c)</span>
+        <span class="c1"># non-SSTB in phase-in: Part III lines 24-26; (d) SSTB in</span>
+        <span class="c1"># phase-in: Schedule A scales QBI/W-2/UBIA by applicable %, then</span>
+        <span class="c1"># Part III applied to scaled values.</span>
+        <span class="c1"># ------------------------------------------------------------</span>
+        <span class="n">lower_thd</span> <span class="o">=</span> <span class="n">PT_qbid_taxinc_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># 8995-A line 21</span>
         <span class="k">if</span> <span class="n">pre_qbid_taxinc</span> <span class="o">&lt;=</span> <span class="n">lower_thd</span><span class="p">:</span>
+            <span class="c1"># Form 8995 path: no W-2/UBIA cap, no SSTB exclusion</span>
             <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_before_limits</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">pre_qbid_taxinc_gap</span> <span class="o">=</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="n">upper_thd</span> <span class="o">=</span> <span class="n">lower_thd</span> <span class="o">+</span> <span class="n">pre_qbid_taxinc_gap</span>
+            <span class="n">gap</span> <span class="o">=</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>    <span class="c1"># 8995-A line 23</span>
+            <span class="n">upper_thd</span> <span class="o">=</span> <span class="n">lower_thd</span> <span class="o">+</span> <span class="n">gap</span>
             <span class="k">if</span> <span class="n">PT_SSTB_income</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pre_qbid_taxinc</span> <span class="o">&gt;=</span> <span class="n">upper_thd</span><span class="p">:</span>
+                <span class="c1"># (a) SSTB above phase-in: deduction fully disallowed</span>
                 <span class="n">qbided</span> <span class="o">=</span> <span class="mf">0.</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># W-2 wage / UBIA cap (8995-A lines 4-10):</span>
+                <span class="c1">#   line 5  = 50% * W-2 wages</span>
+                <span class="c1">#   line 9  = 25% * W-2 wages + 2.5% * UBIA</span>
+                <span class="c1">#   line 10 = max(line 5, line 9)</span>
                 <span class="n">wage_cap</span> <span class="o">=</span> <span class="n">PT_binc_w2_wages</span> <span class="o">*</span> <span class="n">PT_qbid_w2_wages_rt</span>
                 <span class="n">alt_cap</span> <span class="o">=</span> <span class="p">(</span><span class="n">PT_binc_w2_wages</span> <span class="o">*</span> <span class="n">PT_qbid_alt_w2_wages_rt</span> <span class="o">+</span>
                            <span class="n">PT_ubia_property</span> <span class="o">*</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">)</span>
                 <span class="n">full_cap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">wage_cap</span><span class="p">,</span> <span class="n">alt_cap</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">PT_SSTB_income</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">pre_qbid_taxinc</span> <span class="o">&gt;=</span> <span class="n">upper_thd</span><span class="p">:</span>
-                    <span class="c1"># apply full cap</span>
+                    <span class="c1"># (b) non-SSTB above phase-in: line 11 =</span>
+                    <span class="c1"># min(line 3, line 10)</span>
                     <span class="n">qbided</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">full_cap</span><span class="p">,</span> <span class="n">qbid_before_limits</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">PT_SSTB_income</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">pre_qbid_taxinc</span> <span class="o">&lt;</span> <span class="n">upper_thd</span><span class="p">:</span>
-                    <span class="c1"># apply adjusted cap as in Part III of Worksheet 12-A</span>
-                    <span class="c1"># in 2018 IRS Publication 535 (Chapter 12)</span>
-                    <span class="n">prt</span> <span class="o">=</span> <span class="p">(</span><span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">lower_thd</span><span class="p">)</span> <span class="o">/</span> <span class="n">pre_qbid_taxinc_gap</span>
+                    <span class="c1"># (c) non-SSTB in phase-in: 8995-A Part III lines</span>
+                    <span class="c1"># 24-26. line 26 = line 17 - line 25</span>
+                    <span class="c1">#     = qbid_before_limits</span>
+                    <span class="c1">#         - prt * (qbid_before_limits - full_cap)</span>
+                    <span class="c1"># where prt = line 24 = (taxinc - thd) / gap.</span>
+                    <span class="n">prt</span> <span class="o">=</span> <span class="p">(</span><span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">lower_thd</span><span class="p">)</span> <span class="o">/</span> <span class="n">gap</span>
                     <span class="n">adj</span> <span class="o">=</span> <span class="n">prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">qbid_before_limits</span> <span class="o">-</span> <span class="n">full_cap</span><span class="p">)</span>
                     <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_before_limits</span> <span class="o">-</span> <span class="n">adj</span>
                 <span class="k">else</span><span class="p">:</span>  <span class="c1"># PT_SSTB_income == 1 and pre_qbid_taxinc &lt; upper_thd</span>
-                    <span class="n">prti</span> <span class="o">=</span> <span class="p">(</span><span class="n">upper_thd</span> <span class="o">-</span> <span class="n">pre_qbid_taxinc</span><span class="p">)</span> <span class="o">/</span> <span class="n">pre_qbid_taxinc_gap</span>
-                    <span class="n">qbid_adjusted</span> <span class="o">=</span> <span class="n">prti</span> <span class="o">*</span> <span class="n">qbid_before_limits</span>
-                    <span class="n">cap_adjusted</span> <span class="o">=</span> <span class="n">prti</span> <span class="o">*</span> <span class="n">full_cap</span>
-                    <span class="n">prt</span> <span class="o">=</span> <span class="p">(</span><span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">lower_thd</span><span class="p">)</span> <span class="o">/</span> <span class="n">pre_qbid_taxinc_gap</span>
+                    <span class="c1"># (d) SSTB in phase-in: Schedule A scales QBI and</span>
+                    <span class="c1"># W-2/UBIA cap by applicable_pct = (upper_thd -</span>
+                    <span class="c1"># taxinc) / gap; Part III phase-in is then applied</span>
+                    <span class="c1"># to the Schedule-A-adjusted line 3 and line 10.</span>
+                    <span class="n">prti</span> <span class="o">=</span> <span class="p">(</span><span class="n">upper_thd</span> <span class="o">-</span> <span class="n">pre_qbid_taxinc</span><span class="p">)</span> <span class="o">/</span> <span class="n">gap</span>  <span class="c1"># applicable %</span>
+                    <span class="n">qbid_adjusted</span> <span class="o">=</span> <span class="n">prti</span> <span class="o">*</span> <span class="n">qbid_before_limits</span>  <span class="c1"># Sch A line 3</span>
+                    <span class="n">cap_adjusted</span> <span class="o">=</span> <span class="n">prti</span> <span class="o">*</span> <span class="n">full_cap</span>             <span class="c1"># Sch A line 10</span>
+                    <span class="n">prt</span> <span class="o">=</span> <span class="p">(</span><span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">lower_thd</span><span class="p">)</span> <span class="o">/</span> <span class="n">gap</span>
                     <span class="n">adj</span> <span class="o">=</span> <span class="n">prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">qbid_adjusted</span> <span class="o">-</span> <span class="n">cap_adjusted</span><span class="p">)</span>
                     <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_adjusted</span> <span class="o">-</span> <span class="n">adj</span>
-        <span class="c1"># apply taxinc cap (assuming cap rate is equal to PT_qbid_rt)</span>
-        <span class="c1">#   net_cg is defined on line 34 of 2018 Pub 535 Worksheet 12-A</span>
+        <span class="c1"># ------------------------------------------------------------</span>
+        <span class="c1"># Form 8995-A Part IV: income limitation (lines 33-37; same</span>
+        <span class="c1"># role as Form 8995 lines 11-15). net_cg = qualified divs +</span>
+        <span class="c1"># net cap gain (8995-A line 34 / 8995 line 12); income cap =</span>
+        <span class="c1"># PT_qbid_rt * (pre_qbid_taxinc - net_cg) is line 36 / 14;</span>
+        <span class="c1"># final qbided = min(line 32, line 36) is line 37 / 15.</span>
+        <span class="c1"># ------------------------------------------------------------</span>
         <span class="n">net_cg</span> <span class="o">=</span> <span class="n">e00650</span> <span class="o">+</span> <span class="n">c01000</span>
         <span class="n">taxinc_cap</span> <span class="o">=</span> <span class="n">PT_qbid_rt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">net_cg</span><span class="p">)</span>
         <span class="n">qbided</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">qbided</span><span class="p">,</span> <span class="n">taxinc_cap</span><span class="p">)</span>
-        <span class="c1"># apply qbid phaseout</span>
+        <span class="c1"># ------------------------------------------------------------</span>
+        <span class="c1"># Reform-only: linear QBID phase-out above PT_qbid_ps (no IRS</span>
+        <span class="c1"># form analogue).</span>
+        <span class="c1"># ------------------------------------------------------------</span>
         <span class="k">if</span> <span class="n">qbided</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">pre_qbid_taxinc</span> <span class="o">&gt;</span> <span class="n">PT_qbid_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
             <span class="n">excess</span> <span class="o">=</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">PT_qbid_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
             <span class="n">qbided</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">PT_qbid_prt</span> <span class="o">*</span> <span class="n">excess</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># if PT_qbid_limited is false</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Reform: TCJA W-2/UBIA cap, SSTB exclusion, Part III phase-in,</span>
+        <span class="c1"># and Part IV income limitation all disabled.</span>
         <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_before_limits</span>
-    <span class="c1"># apply minimum QBID logic</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Reform-only: minimum QBID floor for filers with QBI at or above</span>
+    <span class="c1"># PT_qbid_min_qbi (no IRS form analogue).</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="k">if</span> <span class="n">qbinc</span> <span class="o">&gt;=</span> <span class="n">PT_qbid_min_qbi</span> <span class="ow">and</span> <span class="n">qbided</span> <span class="o">&lt;</span> <span class="n">PT_qbid_min_ded</span><span class="p">:</span>
         <span class="n">qbided</span> <span class="o">=</span> <span class="n">PT_qbid_min_ded</span>
-
-    <span class="c1"># calculate taxable income after qbided</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Form 1040 line 15: taxable income = pre_qbid_taxinc - qbided</span>
+    <span class="c1"># (line 14 = std/itemized + QBID; QBID stacked last as documented</span>
+    <span class="c1"># in pre_qbid_taxinc construction above).</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">c04800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">qbided</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c04800</span><span class="p">,</span> <span class="n">qbided</span><span class="p">)</span>
 
