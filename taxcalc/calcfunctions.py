@@ -2236,17 +2236,13 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks5 = max(0., dwks3 - dwks4)    # line 5
         dwks6 = max(0., dwks2 - dwks5)    # line 6
         dwks7 = min(p23250, c23650)       # line 7: min(Sch D ln 15, ln 16)
-        # line 8: dwks8 = min(dwks3, dwks4) = 0 (since dwks4 = 0)
-        # line 9 (per IRS form): dwks9 = max(0, dwks7 - dwks8) = max(0, dwks7)
-        # The line-9 formula below deviates from the form to splice in
-        # e01100 (capital-gain distributions reported when no Sch D is
-        # filed) and to reduce dwks9 by negative e58990.  See BUG? note in
-        # CODE_REVIEW_2025.md row 17.
-        if e01100 > 0.:
-            line9_base = e01100
-        else:
-            line9_base = max(0., dwks7) + e01100
-        dwks9 = max(0., line9_base - min(0., e58990))  # line 9
+        dwks8 = min(dwks3, dwks4)         # line 8: min(4952 ln 4g, ln 4e) = 0
+        # line 9: max(0, dwks7 - dwks8) is the on-form value when Sch D
+        # was filed; when Sch D was not filed, p23250 = c23650 = 0 so
+        # dwks7 = 0 and the QDCGTW counterpart of line 9 is e01100
+        # (capital gain distributions on Form 1040 line 7).  The two
+        # cases are mutually exclusive, so the sum captures both.
+        dwks9 = max(0., dwks7 - dwks8) + e01100        # line 9
         dwks10 = dwks6 + dwks9                         # line 10
 
         # ---- Sch D TW lines 11-13 (Sch D TW only; vanish in QDCGTW) -----
