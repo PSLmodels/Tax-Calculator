@@ -2619,15 +2619,13 @@
 <span class="sd">        Regular tax on regular taxable income before credits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements</span>
-    <span class="k">if</span> <span class="n">c01000</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">c23650</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">p23250</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">e01100</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">e00650</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="n">hasqdivltcg</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># has qualified dividends or long-term capital gains</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">hasqdivltcg</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># no qualified dividends or long-term capital gains</span>
+    <span class="n">has_qdivltcg</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="n">CG_nodiff</span> <span class="ow">and</span>
+        <span class="p">(</span><span class="n">c01000</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">c23650</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">p23250</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span>
+         <span class="n">e01100</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">e00650</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">)</span>
+    <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">CG_nodiff</span><span class="p">:</span>
-        <span class="n">hasqdivltcg</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># no special taxation of qual divids and l-t cap gains</span>
-
-    <span class="k">if</span> <span class="n">hasqdivltcg</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">has_qdivltcg</span><span class="p">:</span>
 
         <span class="c1"># ---- Sch D TW lines 1-10 (common to QDCGTW) ----------------------</span>
         <span class="n">dwks1</span> <span class="o">=</span> <span class="n">c04800</span>                    <span class="c1"># line 1: taxable income</span>
@@ -2644,10 +2642,10 @@
         <span class="c1"># filed) and to reduce dwks9 by negative e58990.  See BUG? note in</span>
         <span class="c1"># CODE_REVIEW_2025.md row 17.</span>
         <span class="k">if</span> <span class="n">e01100</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-            <span class="n">c24510</span> <span class="o">=</span> <span class="n">e01100</span>
+            <span class="n">line9_base</span> <span class="o">=</span> <span class="n">e01100</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">c24510</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks7</span><span class="p">)</span> <span class="o">+</span> <span class="n">e01100</span>
-        <span class="n">dwks9</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c24510</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e58990</span><span class="p">))</span>      <span class="c1"># line 9</span>
+            <span class="n">line9_base</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks7</span><span class="p">)</span> <span class="o">+</span> <span class="n">e01100</span>
+        <span class="n">dwks9</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line9_base</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e58990</span><span class="p">))</span>  <span class="c1"># line 9</span>
         <span class="n">dwks10</span> <span class="o">=</span> <span class="n">dwks6</span> <span class="o">+</span> <span class="n">dwks9</span>                         <span class="c1"># line 10</span>
 
         <span class="c1"># ---- Sch D TW lines 11-13 (Sch D TW only; vanish in QDCGTW) -----</span>
@@ -2709,7 +2707,7 @@
         <span class="n">dwks45</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks43</span><span class="p">,</span> <span class="n">dwks44</span><span class="p">)</span>          <span class="c1"># line 45: smaller of 43, 44</span>
         <span class="n">c24580</span> <span class="o">=</span> <span class="n">dwks45</span>
 
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># if hasqdivltcg is zero</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># no qualified-rate preference</span>
 
         <span class="n">c24580</span> <span class="o">=</span> <span class="n">c05200</span>
         <span class="n">dwks10</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">p23250</span><span class="p">,</span> <span class="n">c23650</span><span class="p">))</span> <span class="o">+</span> <span class="n">e01100</span>
@@ -2718,10 +2716,10 @@
         <span class="n">dwks18</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">dwks43</span> <span class="o">=</span> <span class="mf">0.</span>
 
-    <span class="c1"># final calculations done no matter what the value of hasqdivltcg</span>
-    <span class="n">c05100</span> <span class="o">=</span> <span class="n">c24580</span>  <span class="c1"># because foreign earned income exclusion is assumed zero</span>
-    <span class="n">c05700</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># no Form 4972, Lump Sum Distributions</span>
-    <span class="n">taxbc</span> <span class="o">=</span> <span class="n">c05700</span> <span class="o">+</span> <span class="n">c05100</span>
+    <span class="c1"># final assembly (foreign earned income exclusion assumed zero, so</span>
+    <span class="c1"># c05100 = c24580; Form 4972 lump-sum distributions not modeled)</span>
+    <span class="n">c05700</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">taxbc</span> <span class="o">=</span> <span class="n">c24580</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">dwks10</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">dwks14</span><span class="p">,</span> <span class="n">dwks18</span><span class="p">,</span> <span class="n">dwks43</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">)</span>
 
 
