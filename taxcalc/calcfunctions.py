@@ -1678,8 +1678,9 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
-           e02100, e27200, e00650, c01000,
+def TaxInc(c00100, standard, c04470, c04600, MARS,
+           e00900, c03260, e03270, e03300, e26270, e02100, e27200,
+           e00650, p22250, p23250,
            senior_deduction, overtime_income_deduction,
            tip_income_deduction, auto_loan_interest_deduction,
            PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
@@ -1714,9 +1715,12 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     QBI components (Form 8995 line 1c instructions): Sch C net profit
     `e00900`, Sch E partnership/S-corp `e26270`, Sch F `e02100`, Sch E
     farm rent `e27200`. Wages (`e00200`) and investment income are NOT
-    QBI. QBI is reduced by the deductible part of SECA tax `c03260`
-    (Sch SE / Sch 1 line 15). REIT dividends and PTP income (Form 8995
-    lines 6-9 / Form 8995-A Part IV lines 28-31) are not modeled.
+    QBI. QBI is reduced by the trade-or-business above-the-line items:
+    deductible part of SECA tax `c03260` (Sch 1 line 15), self-employed
+    retirement contributions `e03300` (Sch 1 line 16), and self-employed
+    health insurance `e03270` (Sch 1 line 17). REIT dividends and PTP
+    income (Form 8995 lines 6-9 / Form 8995-A Part IV lines 28-31) are
+    not modeled.
 
     Pre-QBID taxable income (Form 8995 line 11 / Form 8995-A line 33)
     subtracts from AGI: max(itemized, standard) + personal exemption
@@ -1756,6 +1760,13 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     c03260: float
         Self-employment (SECA) tax above-the-line deduction (Sch 1
         line 15); subtracted from QBI per §199A
+    e03270: float
+        Self-employed health insurance deduction (Sch 1 line 17);
+        subtracted from QBI per Form 8995 line 1 instructions
+    e03300: float
+        Self-employed retirement contributions to SEP/SIMPLE/qualified
+        plans (Sch 1 line 16); subtracted from QBI per Form 8995 line 1
+        instructions
     e26270: float
         Schedule E partnership / S-corporation net income/loss (QBI
         component)
@@ -1765,10 +1776,14 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
         Schedule E farm rent net income/loss (QBI component)
     e00650: float
         Qualified dividends (Form 8995 line 12 / 8995-A line 34 input)
-    c01000: float
-        Net capital gain or loss after §1211(b) limit (Form 8995 line
-        12 / 8995-A line 34 input; see BUG? note in Phase-2 review re:
-        net STCG inclusion)
+    p22250: float
+        Sch D Part I line 7 (net short-term capital gain/loss); used
+        to compute §1(h) net capital gain for Form 8995 line 12 /
+        8995-A line 34
+    p23250: float
+        Sch D Part II line 15 (net long-term capital gain/loss); used
+        to compute §1(h) net capital gain for Form 8995 line 12 /
+        8995-A line 34
     senior_deduction: float
         Sch 1-A Part V senior deduction (reduces pre-QBID taxinc)
     overtime_income_deduction: float
@@ -1843,11 +1858,14 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
     pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600 - odeds)
     # ----------------------------------------------------------------
     # Qualified Business Income (QBI) build (Form 8995 line 1c /
-    # Form 8995-A line 2): Sch C net (less SECA ALD), Sch E
-    # partnership/S-corp, Sch F farm, Sch E farm rent. Wages and
-    # investment income are NOT QBI.
+    # Form 8995-A line 2): Sch C net, Sch E partnership/S-corp, Sch F
+    # farm, Sch E farm rent, less the trade-or-business above-the-line
+    # items per Form 8995 line 1 instructions: deductible SE tax (Sch 1
+    # line 15), SE retirement (Sch 1 line 16), SE health insurance
+    # (Sch 1 line 17). Wages and investment income are NOT QBI.
     # ----------------------------------------------------------------
-    qbinc = max(0., e00900 - c03260 + e26270 + e02100 + e27200)
+    qbinc = max(0., e00900 - c03260 - e03300 - e03270
+                + e26270 + e02100 + e27200)
     qbid_before_limits = qbinc * PT_qbid_rt  # Form 8995 line 5 / 8995-A line 3
     if PT_qbid_limited:
         # ------------------------------------------------------------
@@ -1887,30 +1905,42 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
                     # (c) non-SSTB in phase-in: 8995-A Part III lines
                     # 24-26. line 26 = line 17 - line 25
                     #     = qbid_before_limits
-                    #         - prt * (qbid_before_limits - full_cap)
-                    # where prt = line 24 = (taxinc - thd) / gap.
+                    #         - prt * max(0, qbid_before_limits - full_cap)
+                    # where prt = line 24 = (taxinc - thd) / gap. Part III
+                    # is skipped when line 10 (full_cap) >= line 3
+                    # (qbid_before_limits), so the cap-vs-QBI excess is
+                    # floored at 0 to prevent the formula from inflating
+                    # qbided above qbid_before_limits.
                     prt = (pre_qbid_taxinc - lower_thd) / gap
-                    adj = prt * (qbid_before_limits - full_cap)
+                    adj = prt * max(0., qbid_before_limits - full_cap)
                     qbided = qbid_before_limits - adj
                 else:  # PT_SSTB_income == 1 and pre_qbid_taxinc < upper_thd
                     # (d) SSTB in phase-in: Schedule A scales QBI and
                     # W-2/UBIA cap by applicable_pct = (upper_thd -
                     # taxinc) / gap; Part III phase-in is then applied
-                    # to the Schedule-A-adjusted line 3 and line 10.
+                    # to the Schedule-A-adjusted line 3 and line 10,
+                    # with the same Part-III-skipped floor as case (c).
                     prti = (upper_thd - pre_qbid_taxinc) / gap  # applicable %
                     qbid_adjusted = prti * qbid_before_limits  # Sch A line 3
                     cap_adjusted = prti * full_cap             # Sch A line 10
                     prt = (pre_qbid_taxinc - lower_thd) / gap
-                    adj = prt * (qbid_adjusted - cap_adjusted)
+                    adj = prt * max(0., qbid_adjusted - cap_adjusted)
                     qbided = qbid_adjusted - adj
         # ------------------------------------------------------------
         # Form 8995-A Part IV: income limitation (lines 33-37; same
-        # role as Form 8995 lines 11-15). net_cg = qualified divs +
-        # net cap gain (8995-A line 34 / 8995 line 12); income cap =
-        # PT_qbid_rt * (pre_qbid_taxinc - net_cg) is line 36 / 14;
-        # final qbided = min(line 32, line 36) is line 37 / 15.
+        # role as Form 8995 lines 11-15). Form 8995 line 12 / 8995-A
+        # line 34 net_cg = §1(h) net capital gain (excess of net LTCG
+        # over net STCL) plus qualified dividends per §199A(e)(3) and
+        # the form 8995 instructions. Net STCG must NOT enter net_cg,
+        # so we use p22250/p23250 directly rather than the post-cap
+        # Sch D total c01000 = p22250 + p23250 (capped at -3000).
+        # Income cap = PT_qbid_rt * (pre_qbid_taxinc - net_cg) is
+        # line 36 / 14; final qbided = min(line 32, line 36) is
+        # line 37 / 15.
         # ------------------------------------------------------------
-        net_cg = e00650 + c01000
+        net_ltcg = max(0., p23250)
+        net_stcl = max(0., -p22250)
+        net_cg = max(0., net_ltcg - net_stcl) + e00650
         taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
         qbided = min(qbided, taxinc_cap)
         # ------------------------------------------------------------
