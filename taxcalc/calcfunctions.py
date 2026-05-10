@@ -2220,15 +2220,13 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         Regular tax on regular taxable income before credits
     """
     # pylint: disable=too-many-statements
-    if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
-        hasqdivltcg = 1  # has qualified dividends or long-term capital gains
-    else:
-        hasqdivltcg = 0  # no qualified dividends or long-term capital gains
+    has_qdivltcg = (
+        not CG_nodiff and
+        (c01000 > 0. or c23650 > 0. or p23250 > 0. or
+         e01100 > 0. or e00650 > 0.)
+    )
 
-    if CG_nodiff:
-        hasqdivltcg = 0  # no special taxation of qual divids and l-t cap gains
-
-    if hasqdivltcg == 1:
+    if has_qdivltcg:
 
         # ---- Sch D TW lines 1-10 (common to QDCGTW) ----------------------
         dwks1 = c04800                    # line 1: taxable income
@@ -2245,10 +2243,10 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         # filed) and to reduce dwks9 by negative e58990.  See BUG? note in
         # CODE_REVIEW_2025.md row 17.
         if e01100 > 0.:
-            c24510 = e01100
+            line9_base = e01100
         else:
-            c24510 = max(0., dwks7) + e01100
-        dwks9 = max(0., c24510 - min(0., e58990))      # line 9
+            line9_base = max(0., dwks7) + e01100
+        dwks9 = max(0., line9_base - min(0., e58990))  # line 9
         dwks10 = dwks6 + dwks9                         # line 10
 
         # ---- Sch D TW lines 11-13 (Sch D TW only; vanish in QDCGTW) -----
@@ -2310,7 +2308,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks45 = min(dwks43, dwks44)          # line 45: smaller of 43, 44
         c24580 = dwks45
 
-    else:  # if hasqdivltcg is zero
+    else:  # no qualified-rate preference
 
         c24580 = c05200
         dwks10 = max(0., min(p23250, c23650)) + e01100
@@ -2319,10 +2317,10 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks18 = 0.
         dwks43 = 0.
 
-    # final calculations done no matter what the value of hasqdivltcg
-    c05100 = c24580  # because foreign earned income exclusion is assumed zero
-    c05700 = 0.  # no Form 4972, Lump Sum Distributions
-    taxbc = c05700 + c05100
+    # final assembly (foreign earned income exclusion assumed zero, so
+    # c05100 = c24580; Form 4972 lump-sum distributions not modeled)
+    c05700 = 0.
+    taxbc = c24580
     return (dwks10, dwks13, dwks14, dwks18, dwks43, c05700, taxbc)
 
 
