@@ -1689,147 +1689,252 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e26270,
            PT_qbid_ps, PT_qbid_prt, PT_qbid_min_ded, PT_qbid_min_qbi,
            c04800, qbided):
     """
-    Calculates taxable income, c04800, and
-    qualified business income deduction, qbided.
+    Form 1040 lines 13-15 (2025): the §199A pass-through Qualified
+    Business Income deduction (line 13, from Form 8995 or Form 8995-A)
+    and regular taxable income (line 15 = AGI - line 14).
+
+    QBI deduction structure (TCJA §199A):
+      - Filers with pre-QBID taxable income at or below
+        PT_qbid_taxinc_thd[MARS-1] ($197,300 / $394,600 MFJ for 2025)
+        file the simplified Form 8995: deduction = PT_qbid_rt * QBI,
+        capped only by the income limitation.
+      - Filers above the threshold file Form 8995-A. In the phase-in
+        window of width PT_qbid_taxinc_gap[MARS-1] ($50,000 /
+        $100,000 MFJ) above the threshold:
+          * Specified Service Trade or Business (SSTB) filers have QBI
+            and W-2 wages / UBIA scaled by Schedule A's "applicable
+            percentage" = (upper_thd - taxinc) / gap, with full
+            disallowance once taxinc >= upper_thd.
+          * Non-SSTB filers face the W-2/UBIA cap with a Part III
+            phase-in reduction; above the window the cap binds in full.
+      - All filers face the Part IV income limitation: deduction may
+        not exceed PT_qbid_rt * (pre-QBID taxinc - net_cg), where
+        net_cg = qualified dividends + net long-term capital gain.
+
+    QBI components (Form 8995 line 1c instructions): Sch C net profit
+    `e00900`, Sch E partnership/S-corp `e26270`, Sch F `e02100`, Sch E
+    farm rent `e27200`. Wages (`e00200`) and investment income are NOT
+    QBI. QBI is reduced by the deductible part of SECA tax `c03260`
+    (Sch SE / Sch 1 line 15). REIT dividends and PTP income (Form 8995
+    lines 6-9 / Form 8995-A Part IV lines 28-31) are not modeled.
+
+    Pre-QBID taxable income (Form 8995 line 11 / Form 8995-A line 33)
+    subtracts from AGI: max(itemized, standard) + personal exemption
+    (reform-only `c04600`) + Sch 1-A senior/overtime/tip/auto-loan
+    deductions. The QBID is "stacked last" so that c04800 = max(0,
+    pre_qbid_taxinc - qbided).
+
+    Reform-only constructs (no IRS form analogue):
+      - PT_qbid_limited=False disables the W-2/UBIA cap, SSTB exclusion,
+        and phase-in entirely (deduction = PT_qbid_rt * QBI subject only
+        to the income cap).
+      - PT_qbid_ps / PT_qbid_prt: linear phase-out of the deduction
+        above PT_qbid_ps[MARS-1].
+      - PT_qbid_min_qbi / PT_qbid_min_ded: minimum-deduction floor for
+        filers with QBI at or above PT_qbid_min_qbi.
+
+    Downstream consumer: `c04800` is the input to `SchXYZ` /
+    `SchXYZTax` / `GainsTax` (regular tax) and to `AMT` (Form 6251).
 
     Parameters
     ----------
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (Form 1040 line 11)
     standard: float
-        Standard deduction (zero for itemizers)
+        Standard deduction (Form 1040 line 12; zero for itemizers)
     c04470: float
-        Itemized deductions after phase-out (zero for non-itemizers)
+        Itemized deductions after phase-out (Form 1040 line 12; zero
+        for non-itemizers)
     c04600: float
-        Personal exemptions after phase-out
+        Personal exemptions after phase-out (reform-only; zero under
+        current law for 2018-2025 per TCJA suspension)
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     e00900: float
-        Schedule C business net profit/loss for filing unit
+        Schedule C business net profit/loss (QBI component)
     c03260: float
-        Self-employment (SECA) tax above-the-line deduction
+        Self-employment (SECA) tax above-the-line deduction (Sch 1
+        line 15); subtracted from QBI per §199A
     e26270: float
-        Schedule E: combined partnership and S-corporation net income/loss
+        Schedule E partnership / S-corporation net income/loss (QBI
+        component)
     e02100: float
-        Farm net income/loss for filing unit from Schedule F
+        Schedule F farm net income/loss (QBI component)
     e27200: float
-        Schedule E: farm rent net income or loss
+        Schedule E farm rent net income/loss (QBI component)
     e00650: float
-        Qualified dividends included in ordinary dividends
+        Qualified dividends (Form 8995 line 12 / 8995-A line 34 input)
     c01000: float
-        Limitation on capital losses
+        Net capital gain or loss after §1211(b) limit (Form 8995 line
+        12 / 8995-A line 34 input; see BUG? note in Phase-2 review re:
+        net STCG inclusion)
     senior_deduction: float
-        Deduction for elderly head/spouse
+        Sch 1-A Part V senior deduction (reduces pre-QBID taxinc)
     overtime_income_deduction: float
-        Deduction for qualified overtime income
+        Sch 1-A Part III overtime deduction (reduces pre-QBID taxinc)
     tip_income_deduction: float
-        Deduction for qualified tip income
+        Sch 1-A Part II tip deduction (reduces pre-QBID taxinc)
     auto_loan_interest_deduction: float
-        Deduction for qualified auto loan interest paid
+        Sch 1-A Part IV auto-loan-interest deduction (reduces pre-QBID
+        taxinc)
     PT_SSTB_income: int
-        Value of one implies business income is from a specified service
-          trade or business (SSTB)
-        Value of zero implies business income is from a qualified trade or
-          business
+        1 = QBI is from a Specified Service Trade or Business; 0 = QBI
+        is from a qualified (non-SSTB) trade or business
     PT_binc_w2_wages: float
-        Filing unit's share of total W-2 wages paid by the
-        pass-through business
+        Filing unit's allocable share of W-2 wages paid by the
+        pass-through business (Form 8995-A line 4)
     PT_ubia_property: float
-        Filing unit's share of total business property owned by the
-        pass-through business
+        Filing unit's allocable share of unadjusted basis immediately
+        after acquisition of qualified property (Form 8995-A line 7)
     PT_qbid_rt: float
-        Pass-through qualified business income deduction rate
+        QBID rate (Form 8995 line 5 / 8995-A line 3 multiplier; 20% in
+        2025)
     PT_qbid_limited: bool
-        Whether or not TCJA QBID limits are active
+        Reform switch; False disables the W-2/UBIA cap, SSTB exclusion,
+        and Part III phase-in
     PT_qbid_taxinc_thd: list
-        Lower threshold of pre-QBID taxable income
+        MARS-indexed lower threshold of pre-QBID taxable income (Form
+        8995-A line 21; $197,300 / $394,600 MFJ for 2025)
     PT_qbid_taxinc_gap: list
-        Dollar gap between upper and lower threshold of pre-QBID taxable income
+        MARS-indexed phase-in window width (Form 8995-A line 23;
+        $50,000 / $100,000 MFJ for 2025)
     PT_qbid_w2_wages_rt: float
-        QBID cap rate on pass-through business W-2 wages paid
+        Primary W-2-wages cap rate (Form 8995-A line 5; 50%)
     PT_qbid_alt_w2_wages_rt: float
-        Alternative QBID cap rate on pass-through business W-2 wages paid
+        Alternative W-2-wages cap rate (Form 8995-A line 6; 25%)
     PT_qbid_alt_property_rt: float
-        Alternative QBID cap rate on pass-through business property owned
+        Alternative UBIA cap rate (Form 8995-A line 8; 2.5%)
     PT_qbid_ps: list
-        QBID phaseout taxable income start
+        Reform-only QBID phase-out start (no form analogue)
     PT_qbid_prt: float
-        QBID phaseout rate
+        Reform-only QBID phase-out rate (no form analogue)
     PT_qbid_min_ded: float
-        Minimum QBID amount
+        Reform-only minimum QBID amount (no form analogue)
     PT_qbid_min_qbi: float
-        Minimum QBI necessary to get QBID no less than PT_qbid_min_ded
+        Reform-only minimum QBI to qualify for PT_qbid_min_ded floor
     c04800: float
-        Regular taxable income
+        Regular taxable income (Form 1040 line 15; iterate_jit
+        Records-bound output)
     qbided: float
-        Qualified Business Income (QBI) deduction
+        Qualified Business Income deduction (Form 1040 line 13;
+        iterate_jit Records-bound output)
 
     Returns
     -------
     c04800: float
-        Regular taxable income
+        Regular taxable income (Form 1040 line 15)
     qbided: float
-        Qualified Business Income (QBI) deduction
+        Qualified Business Income deduction (Form 1040 line 13)
     """
-    # calculate taxable income before qualified business income deduction,
-    # which is assumed to be stacked last in the list of deductions
+    # ----------------------------------------------------------------
+    # Pre-QBID taxable income (Form 8995 line 11 / Form 8995-A line 33)
+    # = Form 1040 line 15 with the QBID line removed. QBID is "stacked
+    # last" so all other below-AGI deductions are subtracted here:
+    # max(itemized, standard) + reform-only personal exemption +
+    # Sch 1-A senior/overtime/tip/auto-loan deductions.
+    # ----------------------------------------------------------------
     odeds = (
-        senior_deduction
-        + overtime_income_deduction
-        + tip_income_deduction
-        + auto_loan_interest_deduction
+        senior_deduction          # Sch 1-A Part V
+        + overtime_income_deduction  # Sch 1-A Part III
+        + tip_income_deduction       # Sch 1-A Part II
+        + auto_loan_interest_deduction  # Sch 1-A Part IV
     )
     pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600 - odeds)
-    # calculate qualified business income deduction
+    # ----------------------------------------------------------------
+    # Qualified Business Income (QBI) build (Form 8995 line 1c /
+    # Form 8995-A line 2): Sch C net (less SECA ALD), Sch E
+    # partnership/S-corp, Sch F farm, Sch E farm rent. Wages and
+    # investment income are NOT QBI.
+    # ----------------------------------------------------------------
     qbinc = max(0., e00900 - c03260 + e26270 + e02100 + e27200)
-    qbid_before_limits = qbinc * PT_qbid_rt
+    qbid_before_limits = qbinc * PT_qbid_rt  # Form 8995 line 5 / 8995-A line 3
     if PT_qbid_limited:
-        lower_thd = PT_qbid_taxinc_thd[MARS - 1]
+        # ------------------------------------------------------------
+        # Form 8995-A Parts II/III: W-2 wage / UBIA cap and SSTB phase-in.
+        # Filers with pre_qbid_taxinc <= lower_thd file the simplified
+        # Form 8995 (no cap, no SSTB exclusion). Above lower_thd, four
+        # sub-cases per Form 8995-A: (a) SSTB above upper_thd: 0; (b)
+        # non-SSTB above upper_thd: line 11 = min(line 3, line 10); (c)
+        # non-SSTB in phase-in: Part III lines 24-26; (d) SSTB in
+        # phase-in: Schedule A scales QBI/W-2/UBIA by applicable %, then
+        # Part III applied to scaled values.
+        # ------------------------------------------------------------
+        lower_thd = PT_qbid_taxinc_thd[MARS - 1]  # 8995-A line 21
         if pre_qbid_taxinc <= lower_thd:
+            # Form 8995 path: no W-2/UBIA cap, no SSTB exclusion
             qbided = qbid_before_limits
         else:
-            pre_qbid_taxinc_gap = PT_qbid_taxinc_gap[MARS - 1]
-            upper_thd = lower_thd + pre_qbid_taxinc_gap
+            gap = PT_qbid_taxinc_gap[MARS - 1]    # 8995-A line 23
+            upper_thd = lower_thd + gap
             if PT_SSTB_income == 1 and pre_qbid_taxinc >= upper_thd:
+                # (a) SSTB above phase-in: deduction fully disallowed
                 qbided = 0.
             else:
+                # W-2 wage / UBIA cap (8995-A lines 4-10):
+                #   line 5  = 50% * W-2 wages
+                #   line 9  = 25% * W-2 wages + 2.5% * UBIA
+                #   line 10 = max(line 5, line 9)
                 wage_cap = PT_binc_w2_wages * PT_qbid_w2_wages_rt
                 alt_cap = (PT_binc_w2_wages * PT_qbid_alt_w2_wages_rt +
                            PT_ubia_property * PT_qbid_alt_property_rt)
                 full_cap = max(wage_cap, alt_cap)
                 if PT_SSTB_income == 0 and pre_qbid_taxinc >= upper_thd:
-                    # apply full cap
+                    # (b) non-SSTB above phase-in: line 11 =
+                    # min(line 3, line 10)
                     qbided = min(full_cap, qbid_before_limits)
                 elif PT_SSTB_income == 0 and pre_qbid_taxinc < upper_thd:
-                    # apply adjusted cap as in Part III of Worksheet 12-A
-                    # in 2018 IRS Publication 535 (Chapter 12)
-                    prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
+                    # (c) non-SSTB in phase-in: 8995-A Part III lines
+                    # 24-26. line 26 = line 17 - line 25
+                    #     = qbid_before_limits
+                    #         - prt * (qbid_before_limits - full_cap)
+                    # where prt = line 24 = (taxinc - thd) / gap.
+                    prt = (pre_qbid_taxinc - lower_thd) / gap
                     adj = prt * (qbid_before_limits - full_cap)
                     qbided = qbid_before_limits - adj
                 else:  # PT_SSTB_income == 1 and pre_qbid_taxinc < upper_thd
-                    prti = (upper_thd - pre_qbid_taxinc) / pre_qbid_taxinc_gap
-                    qbid_adjusted = prti * qbid_before_limits
-                    cap_adjusted = prti * full_cap
-                    prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
+                    # (d) SSTB in phase-in: Schedule A scales QBI and
+                    # W-2/UBIA cap by applicable_pct = (upper_thd -
+                    # taxinc) / gap; Part III phase-in is then applied
+                    # to the Schedule-A-adjusted line 3 and line 10.
+                    prti = (upper_thd - pre_qbid_taxinc) / gap  # applicable %
+                    qbid_adjusted = prti * qbid_before_limits  # Sch A line 3
+                    cap_adjusted = prti * full_cap             # Sch A line 10
+                    prt = (pre_qbid_taxinc - lower_thd) / gap
                     adj = prt * (qbid_adjusted - cap_adjusted)
                     qbided = qbid_adjusted - adj
-        # apply taxinc cap (assuming cap rate is equal to PT_qbid_rt)
-        #   net_cg is defined on line 34 of 2018 Pub 535 Worksheet 12-A
+        # ------------------------------------------------------------
+        # Form 8995-A Part IV: income limitation (lines 33-37; same
+        # role as Form 8995 lines 11-15). net_cg = qualified divs +
+        # net cap gain (8995-A line 34 / 8995 line 12); income cap =
+        # PT_qbid_rt * (pre_qbid_taxinc - net_cg) is line 36 / 14;
+        # final qbided = min(line 32, line 36) is line 37 / 15.
+        # ------------------------------------------------------------
         net_cg = e00650 + c01000
         taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
         qbided = min(qbided, taxinc_cap)
-        # apply qbid phaseout
+        # ------------------------------------------------------------
+        # Reform-only: linear QBID phase-out above PT_qbid_ps (no IRS
+        # form analogue).
+        # ------------------------------------------------------------
         if qbided > 0. and pre_qbid_taxinc > PT_qbid_ps[MARS - 1]:
             excess = pre_qbid_taxinc - PT_qbid_ps[MARS - 1]
             qbided = max(0., qbided - PT_qbid_prt * excess)
-    else:  # if PT_qbid_limited is false
+    else:
+        # Reform: TCJA W-2/UBIA cap, SSTB exclusion, Part III phase-in,
+        # and Part IV income limitation all disabled.
         qbided = qbid_before_limits
-    # apply minimum QBID logic
+    # ----------------------------------------------------------------
+    # Reform-only: minimum QBID floor for filers with QBI at or above
+    # PT_qbid_min_qbi (no IRS form analogue).
+    # ----------------------------------------------------------------
     if qbinc >= PT_qbid_min_qbi and qbided < PT_qbid_min_ded:
         qbided = PT_qbid_min_ded
-
-    # calculate taxable income after qbided
+    # ----------------------------------------------------------------
+    # Form 1040 line 15: taxable income = pre_qbid_taxinc - qbided
+    # (line 14 = std/itemized + QBID; QBID stacked last as documented
+    # in pre_qbid_taxinc construction above).
+    # ----------------------------------------------------------------
     c04800 = max(0., pre_qbid_taxinc - qbided)
     return (c04800, qbided)
 
