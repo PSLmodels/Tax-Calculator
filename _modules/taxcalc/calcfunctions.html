@@ -2779,7 +2779,7 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">AMT</span><span class="p">(</span><span class="n">e07300</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">f6251</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span>
-        <span class="n">c04470</span><span class="p">,</span> <span class="n">c17000</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">e24515</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">dwks18</span><span class="p">,</span>
+        <span class="n">c04470</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">e24515</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">dwks18</span><span class="p">,</span>
         <span class="n">dwks14</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">e62900</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">dwks10</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span>
         <span class="n">earned</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span>
         <span class="n">AMT_child_em_c_age</span><span class="p">,</span> <span class="n">AMT_brk1</span><span class="p">,</span>
@@ -2799,11 +2799,12 @@
 <span class="sd">    before credits c05800 = taxbc + c09600.</span>
 
 <span class="sd">    Form 6251 structure:</span>
-<span class="sd">      - Part I (lines 1a-4): AMTI = taxable income before exemption</span>
-<span class="sd">        plus AMT-disallowed deductions (SALT line 2a, Sch A misc,</span>
-<span class="sd">        medical-floor add-back) and the unmodeled prefs/adjustments</span>
-<span class="sd">        (lines 2c-2t + 3) captured in cmbtp; line 2b refunds (e00700)</span>
-<span class="sd">        are subtracted.</span>
+<span class="sd">      - Part I (lines 1a-4): AMTI = taxable income (Form 1040 line 15)</span>
+<span class="sd">        plus AMT-disallowed deductions (SALT line 2a, Sch A misc) and</span>
+<span class="sd">        the unmodeled prefs/adjustments (lines 2c-2t + 3) captured in</span>
+<span class="sd">        cmbtp; line 2b refunds (e00700) are subtracted.  Note: 2025</span>
+<span class="sd">        Form 6251 has no medical add-back (TCJA/OBBBA harmonized</span>
+<span class="sd">        regular and AMT Sch A medical floors at 7.5% of AGI).</span>
 <span class="sd">      - Part II top (lines 5-6): exemption schedule with phaseout</span>
 <span class="sd">        (line 5 = AMT_em - AMT_prt * max(0, AMTI - AMT_em_ps));</span>
 <span class="sd">        line 6 = AMTI - exemption.</span>
@@ -2844,9 +2845,6 @@
 <span class="sd">    c04470: float</span>
 <span class="sd">        Itemized deductions after Pease phase-out (zero for non-</span>
 <span class="sd">        itemizers); Form 1040 line 12 itemized portion</span>
-<span class="sd">    c17000: float</span>
-<span class="sd">        Schedule A medical expenses deducted (post-floor); used for</span>
-<span class="sd">        the medical add-back capped at 2.5% of AGI</span>
 <span class="sd">    c18300: float</span>
 <span class="sd">        Schedule A SALT post-cap deduction (Form 6251 line 2a</span>
 <span class="sd">        add-back for itemizers)</span>
@@ -2953,14 +2951,14 @@
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="c1"># Form 6251 Part I (lines 1a-4): Alternative Minimum Taxable Income</span>
     <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Form 6251 line 1 = Form 1040 line 15 = AGI - (STD or itemized) - QBID.</span>
     <span class="k">if</span> <span class="n">standard</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
         <span class="n">c62100</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">c04470</span> <span class="o">+</span>
-                  <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="mf">0.025</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">))</span> <span class="o">+</span>  <span class="c1"># medical add-back</span>
                   <span class="n">c18300</span> <span class="o">+</span>    <span class="c1"># SALT add-back (Form 6251 line 2a)</span>
                   <span class="n">c20800</span> <span class="o">-</span>    <span class="c1"># Sch A misc add-back (TCJA-suspended 2018-2025)</span>
                   <span class="n">c21040</span><span class="p">)</span>     <span class="c1"># Pease undone for AMT</span>
     <span class="k">if</span> <span class="n">standard</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">c62100</span> <span class="o">=</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span>
+        <span class="n">c62100</span> <span class="o">=</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">standard</span>
     <span class="n">c62100</span> <span class="o">+=</span> <span class="n">cmbtp</span>  <span class="c1"># Form 6251 lines 2c-2t + 3: AMT prefs/adjustments</span>
     <span class="c1"># c62100 is AMT taxable income = Form 6251 line 4</span>
     <span class="c1"># ----------------------------------------------------------------</span>
@@ -3016,7 +3014,10 @@
         <span class="n">line30</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line24</span><span class="p">,</span> <span class="n">line29</span><span class="p">)</span>           <span class="c1"># amount taxed at AMT_CG_rt2:15%</span>
         <span class="n">cgtax2</span> <span class="o">=</span> <span class="n">line30</span> <span class="o">*</span> <span class="n">AMT_CG_rt2</span>           <span class="c1"># line 31 = 15% * line 30</span>
         <span class="n">line32</span> <span class="o">=</span> <span class="n">line23</span> <span class="o">+</span> <span class="n">line30</span>               <span class="c1"># sum of 0% + 15% amounts</span>
-        <span class="k">if</span> <span class="n">line17</span> <span class="o">==</span> <span class="n">line32</span><span class="p">:</span>
+        <span class="c1"># Form 6251 line 33 = line 22 - line 32 (residual cap-gains for</span>
+        <span class="c1"># 20% bracket / reform-only 4th bracket).  Skip when line 22 ==</span>
+        <span class="c1"># line 32 (no residual).</span>
+        <span class="k">if</span> <span class="n">line22</span> <span class="o">==</span> <span class="n">line32</span><span class="p">:</span>
             <span class="n">line33</span> <span class="o">=</span> <span class="mf">0.</span>                        <span class="c1"># amount taxed at AMT_CG_rt3:20%</span>
             <span class="n">linex2</span> <span class="o">=</span> <span class="mf">0.</span>                        <span class="c1"># amount taxed at AMT_CG_rt4:ref</span>
         <span class="k">else</span><span class="p">:</span>
