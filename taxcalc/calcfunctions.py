@@ -2789,9 +2789,11 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
       line 6  (smallest of 3, 4, 5) ........ line6
       line 7  (AGI) ........................ c00100
       line 8  (decimal from AGI table) ..... crate
-      line 9  (line 6 * line 8) ............ line9
+      line 9a (line 6 * line 8) ............ line9a
+      line 9b (2024 expenses paid in 2025) . not modeled (records data gap)
+      line 9c (line 9a + line 9b) .......... = line9a here
       line 10 (tax-liability limit) ........ max(0, c05800 - e07300)
-      line 11 (nonrefundable credit) ....... c07180 = min(line 9, line 10)
+      line 11 (nonrefundable credit) ....... c07180 = min(line 9c, line 10)
 
     The line-8 rate is computed via two stepped phase-downs:
       - From CDCC_po1_rate_max (35%) down to CDCC_po1_rate_min (20%)
@@ -2801,10 +2803,26 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
         AGI > CDCC_ps2[MARS-1], in CDCC_po2_step_size[MARS-1] AGI steps
         of size CDCC_po_rate_per_step (OBBBA upper phase-down).
 
-    Form 2441 line 9a (partial refundability under residency/earned-income
-    conditions, new for 2025) is not modeled on-form; the reform-only
-    switch CDCC_refundable instead makes the entire credit refundable into
-    CDCC_refund.
+    Form 2441 line 9b (Worksheet A line 13 = qualified 2024 dependent-care
+    expenses paid in 2025 in excess of the 2024 cap) is not modeled
+    because Tax-Calculator records do not separate prior-year-unpaid
+    expenses from current-year expenses; for filers with a 2024 catch-up
+    amount the modeled credit is biased downward by `line9b * crate`.
+    The 2025 credit remains entirely non-refundable on-form; the
+    reform-only CDCC_refundable switch instead routes the full line-9a
+    amount to CDCC_refund (all-or-nothing, not the on-form line-9b
+    catch-up provision).
+
+    The line-10 Credit Limit Worksheet (2025) subtracts only Schedule 3
+    line 1 (foreign tax credit, modeled as e07300) and Schedule 3 line 6l
+    (Form 8978 line 14, BBA partner imputed-underpayment push-out — not
+    modeled). CDCC is itself Schedule 3 line 2, so no other nonrefundable
+    credits precede it in the Sch 3 ordering, and `c05800 - e07300`
+    faithfully implements the worksheet (modulo the unmodeled Form 8978
+    line). F2441 is correspondingly called first in calculator.py among
+    the Schedule 3 credit functions, before PersonalTaxCredit,
+    AmOppCreditParts, SchR, EducationTaxCredit, CharityCredit, and
+    ChildDepTaxCredit.
 
     Parameters
     ----------
@@ -2896,16 +2914,22 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
                 CDCC_po2_rate_min,
                 CDCC_po1_rate_min - steps * CDCC_po_rate_per_step
             )
-    # line 9: preliminary credit
-    line9 = line6 * crate
-    # lines 10, 11: nonrefundable credit limited by tax-before-credits less
-    # FTC (or, under reform CDCC_refundable, the full line-9 amount is
-    # routed to CDCC_refund)
+    # line 9a: preliminary credit (line 6 * line 8)
+    # line 9b (2024 expenses paid in 2025 catch-up via Worksheet A) is
+    # not modeled, so on-form line 9c = line 9a + line 9b reduces to
+    # line 9a here
+    line9a = line6 * crate
+    # lines 10, 11: nonrefundable credit limited by tax-before-credits
+    # less FTC per the 2025 Credit Limit Worksheet (which subtracts only
+    # Sch 3 line 1 and the unmodeled Sch 3 line 6l Form 8978 line 14;
+    # CDCC itself is Sch 3 line 2 so no other nonrefundable credits
+    # precede it).  Under reform CDCC_refundable, the full line-9a
+    # amount is routed to CDCC_refund instead.
     if CDCC_refundable:
         c07180 = 0.
-        CDCC_refund = line9
+        CDCC_refund = line9a
     else:
-        c07180 = min(max(0., c05800 - e07300), line9)
+        c07180 = min(max(0., c05800 - e07300), line9a)
         CDCC_refund = 0.
     return (c32800, c07180, CDCC_refund)
 
