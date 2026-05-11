@@ -2370,7 +2370,9 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
     """
     # Reform construct: inert under current law (AGI_surtax_trt = 0).
     if AGI_surtax_trt > 0.:
-        agi_surtax = AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0.)
+        agi_surtax = (
+            AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0.)
+        )
         taxbc += agi_surtax
         surtax += agi_surtax
     return (taxbc, surtax)
@@ -2576,47 +2578,116 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
 def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
                  c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, niit):
     """
-    Computes Net Investment Income Tax (NIIT) amount assuming that
-    all annuity income is excluded from net investment income.
+    Computes the Net Investment Income Tax (NIIT) per Form 8960 (2025),
+    Parts I and III for individuals.  Output `niit` flows downstream
+    through `C1040` to Schedule 2 line 12 ("Other Taxes") and thence to
+    Form 1040 line 23 / `iitax`.
+
+    Form structure:
+      * Part I  (lines 1-8)   Investment income.
+      * Part II (lines 9-11)  Investment expenses — NOT MODELED;
+                              effectively treated as zero (Tax-Calculator
+                              records do not separate the investment-
+                              interest, allocable state-tax, and misc-
+                              investment expense items from total Sch A).
+      * Part III (lines 12-17) Tax computation for individuals
+                              (estate/trust lines 18-21 not applicable).
+
+    Mapping of Form 8960 lines to inputs:
+      * line 1  Taxable interest         <- e00300
+      * line 2  Ordinary dividends       <- e00600
+      * line 3  Annuities                NOT MODELED (excluded from NII)
+      * line 4a Sch E rents/royalties/
+                PT/S-corp/trust/business <- e02000
+      * line 4b Adjustment for non-
+                section-1411 t-or-b      <- -e26270 when NIIT_PT_taxed is
+                                            False (default); 0 otherwise
+      * line 4c Combine 4a + 4b          <- e02000 [- e26270]
+      * line 5a Property-disposition gain<- c01000 (Sch D §1211(b)-capped
+                                            net cap gain/loss, Form 1040
+                                            line 7)
+      * line 5b/5c Exclusions/adjustment NOT MODELED
+      * line 5d Combine 5a+5b+5c         <- c01000
+      * line 6  CFC/PFIC adjustments     NOT MODELED
+      * line 7  Other modifications      NOT MODELED
+      * line 8  Total investment income  <- sum of above
+      * line 12 NII = line 8 - line 11   <- max(0., line 8); line 11 = 0
+      * line 13 MAGI                     <- c00100 (no foreign earned
+                                            income exclusion add-back
+                                            because Form 2555 not modeled)
+      * line 14 Threshold by filing      <- NIIT_thd[MARS-1]; current-law
+                status                      defaults match the form
+                                            ($200k single/HoH; $250k MFJ/QW;
+                                            $125k MFS)
+      * line 15 max(0, line 13 - line 14)
+      * line 16 min(line 12, line 15)
+      * line 17 NIIT_rt * line 16        <- niit; current-law NIIT_rt
+                                            default 0.038 matches the form
+
+    `NIIT_PT_taxed` is a reform construct: setting it True zeroes out the
+    Form 8960 line 4b adjustment so that active partnership / S-corp
+    income (`e26270`) remains in the NIIT base.
 
     Parameters
     ----------
     e00300: float
-        Tax-exempt interest income
+        Taxable interest income (Form 8960 line 1)
     e00600: float
-        Ordinary dividends included in AGI
+        Ordinary dividends included in AGI (Form 8960 line 2)
     e02000: float
-        Schedule E total rental, royalty, parternship, S-corporation,
-        etc, income/loss
+        Schedule E total rental, royalty, partnership, S-corporation,
+        trust, and trade-or-business income/loss (Form 8960 line 4a)
     e26270: float
-        Schedule E: combined partnership and S-corporation net income/loss
+        Schedule E: combined partnership and S-corporation net
+        income/loss; the portion of e02000 treated as non-section-1411
+        trade-or-business income for the Form 8960 line 4b adjustment
     c01000: float
-        Limitation on capital losses
+        Net capital gain/loss after the Sch D §1211(b) cap
+        (Form 8960 line 5a; lines 5b/5c not modeled)
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (Form 8960 line 13 MAGI proxy;
+        foreign earned income exclusion not modeled)
     NIIT_thd: list
-        Net Investment Income Tax modified AGI threshold
+        Net Investment Income Tax MAGI threshold by filing status
+        (Form 8960 line 14)
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     NIIT_PT_taxed: bool
-        Whether or not partnership and S-corp income is NIIT based
+        Reform switch: false (current law) excludes active partnership
+        and S-corp income from the NIIT base via the Form 8960 line 4b
+        adjustment; true keeps it in the base.
     NIIT_rt: float
-        Net Investment Income Tax rate
+        Net Investment Income Tax rate (Form 8960 line 17; 3.8% under
+        current law)
     niit: float
-        Net investment income tax from Form 8960
+        Net investment income tax from Form 8960 (workspace, overwritten)
 
     Returns
     -------
     niit: float
-        Net investment income tax from Form 8960
+        Net investment income tax from Form 8960 line 17
     """
+    # ---- Part I: investment income (Form 8960 lines 1-8) ----
+    line1 = e00300                                  # line 1
+    line2 = e00600                                  # line 2
+    # line 3 (annuities): not modeled
+    if NIIT_PT_taxed:
+        line4c = e02000                             # line 4b adjustment = 0
+    else:
+        line4c = e02000 - e26270                    # line 4b = -e26270
+    line5d = c01000                                 # lines 5b/5c not modeled
+    # lines 6, 7: not modeled
+    line8 = line1 + line2 + line4c + line5d         # line 8
+
+    # ---- Part II: investment expenses (lines 9-11) not modeled => 0 ----
+
+    # ---- Part III: tax computation (Form 8960 lines 12-17) ----
+    line12 = max(0., line8)                         # line 12 (line 11 = 0)
     modAGI = c00100  # no foreign earned income exclusion to add
-    if not NIIT_PT_taxed:
-        NII = max(0., e00300 + e00600 + c01000 + e02000 - e26270)
-    else:  # do not subtract e26270 from e02000
-        NII = max(0., e00300 + e00600 + c01000 + e02000)
-    niit = NIIT_rt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
+    line15 = max(0., modAGI - NIIT_thd[MARS - 1])   # lines 13-15
+    line16 = min(line12, line15)                    # line 16
+    niit = NIIT_rt * line16                         # line 17
     return niit
 
 
