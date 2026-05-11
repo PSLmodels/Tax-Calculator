@@ -2779,7 +2779,32 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
           CDCC_po_rate_per_step, CDCC_refundable,
           c05800, e07300, c32800, c07180, CDCC_refund):
     """
-    Calculates Form 2441 child and dependent care expense credit, c07180.
+    Calculates Form 2441 (2025) Child and Dependent Care Expenses credit.
+
+    Maps to Form 2441 Part II lines 2-11:
+      line 2  (qualifying persons) ......... f2441 (capped at 2)
+      line 3  (expenses, capped $3k/$6k) ... c32800 = min(e32800, line2*CDCC_c)
+      line 4  (taxpayer earned income) ..... earned_p
+      line 5  (spouse earned income, MFJ) .. earned_s (else line 4)
+      line 6  (smallest of 3, 4, 5) ........ line6
+      line 7  (AGI) ........................ c00100
+      line 8  (decimal from AGI table) ..... crate
+      line 9  (line 6 * line 8) ............ line9
+      line 10 (tax-liability limit) ........ max(0, c05800 - e07300)
+      line 11 (nonrefundable credit) ....... c07180 = min(line 9, line 10)
+
+    The line-8 rate is computed via two stepped phase-downs:
+      - From CDCC_po1_rate_max (35%) down to CDCC_po1_rate_min (20%)
+        starting at AGI > CDCC_ps1, in CDCC_po1_step_size AGI steps of
+        size CDCC_po_rate_per_step.
+      - From CDCC_po1_rate_min down to CDCC_po2_rate_min starting at
+        AGI > CDCC_ps2[MARS-1], in CDCC_po2_step_size[MARS-1] AGI steps
+        of size CDCC_po_rate_per_step (OBBBA upper phase-down).
+
+    Form 2441 line 9a (partial refundability under residency/earned-income
+    conditions, new for 2025) is not modeled on-form; the reform-only
+    switch CDCC_refundable instead makes the entire credit refundable into
+    CDCC_refund.
 
     Parameters
     ----------
@@ -2836,17 +2861,14 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
     CDCC_refund: float
         Refundable amount of c07180 amount
     """
-    # credit for at most two cared-for individuals and for actual expenses
+    # ---- Form 2441 Part II ------------------------------------------------
+    # line 3: qualifying expenses, capped at min(f2441,2) * CDCC_c
     max_credit = min(f2441, 2) * CDCC_c
     c32800 = max(0., min(e32800, max_credit))
-    # credit is limited to minimum of individuals' earned income
-    c32880 = earned_p  # earned income of taxpayer
-    if MARS == 2:
-        c32890 = earned_s  # earned income of spouse when present
-    else:
-        c32890 = earned_p
-    c33000 = max(0., min(c32800, c32880, c32890))
-    # credit rate is limited at high AGI
+    # lines 4, 5, 6: limit to smallest earned income across taxpayer/spouse
+    earned_s_eff = earned_s if MARS == 2 else earned_p
+    line6 = max(0., min(c32800, earned_p, earned_s_eff))
+    # line 8: credit rate (phased down at high AGI via two stepped ramps)
     crate = CDCC_po1_rate_max
     ps1 = CDCC_ps1
     if c00100 > ps1:
@@ -2864,7 +2886,8 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
         ps2 = CDCC_ps2[MARS - 1]
         assert ps2 >= ps1, 'CDCC_ps2 must be no less than CDCC_ps1'
         if c00100 > ps2:
-            steps_fractional = (c00100 - ps2) / CDCC_po2_step_size[MARS - 1]
+            step2 = CDCC_po2_step_size[MARS - 1]
+            steps_fractional = (c00100 - ps2) / step2
             if exact == 1:  # exact calculation as on tax forms
                 steps = math.ceil(steps_fractional)
             else:
@@ -2873,13 +2896,16 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
                 CDCC_po2_rate_min,
                 CDCC_po1_rate_min - steps * CDCC_po_rate_per_step
             )
-    c33200 = c33000 * crate
-    # credit is limited by tax liability if not refundable
+    # line 9: preliminary credit
+    line9 = line6 * crate
+    # lines 10, 11: nonrefundable credit limited by tax-before-credits less
+    # FTC (or, under reform CDCC_refundable, the full line-9 amount is
+    # routed to CDCC_refund)
     if CDCC_refundable:
         c07180 = 0.
-        CDCC_refund = c33200
+        CDCC_refund = line9
     else:
-        c07180 = min(max(0., c05800 - e07300), c33200)
+        c07180 = min(max(0., c05800 - e07300), line9)
         CDCC_refund = 0.
     return (c32800, c07180, CDCC_refund)
 
