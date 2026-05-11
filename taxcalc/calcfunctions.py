@@ -2938,34 +2938,46 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100,
 def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
                phaseout_start, agi, phaseout_rate):
     """
-    Returns EITC amount given specified parameters.
-    English parameter names are used in this function because the
-    EITC formula is not available on IRS forms or in IRS instructions;
-    the extensive IRS EITC look-up table does not reveal the formula.
+    Returns the EIC Worksheet A (or B) line 6 amount: the smaller of
+    the earned-income-based credit (line 2, an EIC-Table lookup keyed
+    on earnings) and the AGI-based credit (line 5, the same lookup
+    keyed on AGI when AGI exceeds the phaseout start).
+
+    The trapezoidal credit schedule is:
+      - phase-in:  phasein_rate * earnings
+      - plateau:   max_amount
+      - phase-out: max_amount - phaseout_rate * (max(earnings, AGI) - ps)
+    English parameter names are used because the EIC Table is published
+    rather than the algebraic formula; `basic_frac` is a reform-only
+    knob (0 under current law) that shifts the schedule so a fraction
+    of `max_amount` is paid at zero earnings.
 
     Parameters
     ----------
     basic_frac: float
         Fraction of maximum earned income credit paid at zero earnings
+        (reform-only; 0 under current law)
     phasein_rate: float
-        Earned income credit phasein rate
+        Earned income credit phasein rate (EIC Table phase-in slope)
     earnings: float
-        Earned income for filing unit
+        Earned income for filing unit (EIC Worksheet A line 1)
     max_amount: float
-        Maximum earned income credit
+        Maximum earned income credit (EIC Table plateau)
     phaseout_start: float
-        Earned income credit phaseout start AGI
+        Earned income credit phaseout start (EIC Worksheet A line 3
+        threshold; AGI/earnings at which line 5 begins to bite)
     agi: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (Form 1040 line 11; EIC Worksheet A
+        line 3) — the worksheet uses AGI rather than earnings to
+        compute line 5 when AGI exceeds line 4
     phaseout_rate: float
-        Earned income credit phaseout rate
+        Earned income credit phaseout rate (EIC Table phase-out slope)
 
     Returns
     -------
     eitc: float
-        Earned Income Credit
+        Earned Income Credit (EIC Worksheet A line 6)
     """
-    # calculate qualified business income de
     eitc = min((basic_frac * max_amount +
                 (1.0 - basic_frac) * phasein_rate * earnings), max_amount)
     if earnings > phaseout_start or agi > phaseout_start:
@@ -2983,134 +2995,201 @@ def EITC(eitc_claim_thd, MARS, DSI, c00100, e00300, e00400, e00600, c01000,
          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
          EITC_indiv, EITC_sep_filers_elig, c59660):
     """
-    Computes EITC amount, c59660.
+    Computes Earned Income Tax Credit (Form 1040 line 27a).
+
+    Implements EIC Worksheet A (Form 1040 instructions) and the Pub 596
+    "Rules If You Have a Qualifying Child" / "Rules If You Do Not Have
+    a Qualifying Child" eligibility tests.  Schedule EIC supplies the
+    qualifying-child count (the `EIC` Records variable); per-child
+    EITC parameters (`EITC_rt`/`EITC_c`/`EITC_prt`/`EITC_ps`) are
+    length-5 lists indexed by `EIC` ∈ {0, 1, 2, 3, 4} with index 4
+    cloned from 3 to encode the "3 or more" plateau.
+
+    EIC Worksheet B (for filers with self-employment income) is not
+    represented separately because Tax-Calculator's `earned` input
+    (built by `EI_PayrollTax`) already includes net SE earnings, so
+    Worksheets A and B collapse to a single `EITCamount` call.
+
+    Body sections (mirroring the worksheet + Pub 596):
+      (A) EIC Worksheet A credit amount (filing-unit, or reform-only
+          per-spouse under `EITC_indiv`).  MFJ adds
+          `EITC_ps_addon_MarriedJ[EIC]` to the phaseout start.
+      (B) Pub 596 Rule 11: childless filer must be age
+          `EITC_MinEligAge`-`EITC_MaxEligAge` (current law 25-64;
+          age == 0 in the data is treated as eligible).  Applies only
+          when EIC == 0; for MFJ either spouse meeting the age test
+          qualifies.
+      (C) Pub 596 Rule 3 (MFS) and Rule 10 (claimed as dependent).
+          MFS eligibility tracks IRC §32(d) as amended by ARPA 2021
+          §9621 via `EITC_sep_filers_elig` (false 2013-2020, true
+          2021+); DSI==1 always disqualifies.
+      (D) Pub 596 Rule 6: investment-income cliff (IRC §32(i)).
+          Investment income = taxable interest (`e00300`) + tax-exempt
+          interest (`e00400`) + ordinary dividends (`e00600`) + net
+          capital gain (`max(0, c01000)`) + net non-passive rents and
+          royalties (`max(0, e02000 - e26270)`, removing Sch E
+          partnership/S-corp).  The form's hard cliff at
+          `EITC_InvestIncome_c` ($11,950 for 2025) is modeled as a
+          smooth phaseout at `EITC_excess_InvestIncome_rt` (default
+          9e+99 → behaviorally identical to the cliff).
+      (E) Model-specific claiming approximation: filers with expected
+          credit below `eitc_claim_thd` (default 0) are assumed not to
+          claim.  No form analogue.
+
+    Downstream: `c59660` is the records-bound EITC amount consumed by
+    `IITAX` (Form 1040 line 27a, refundable credit) and reported in
+    `taxcalc/cli/input_data_tests/tests.sh` baseline `*.tables`.
 
     Parameters
     ----------
     eitc_claim_thd: float
-        EITC amount below which EITC is unclaimed
+        Model-specific behavioral parameter: EITC amount below which
+        the credit is assumed unclaimed (no form analogue)
     MARS: int
-        Filing (marital) status. (1=single, 2=joint, 3=separate,
-                                  4=household-head, 5=widow(er))
+        Filing (marital) status (1=single, 2=joint, 3=separate,
+                                 4=household-head, 5=widow(er))
     DSI: int
         1 if claimed as dependent on another return, otherwise 0
+        (Pub 596 Rule 10)
     EIC: int
-        Number of EIC qualifying children
+        Number of EIC qualifying children (from Schedule EIC,
+        capped at 3 for parameter-lookup purposes; values up to 4
+        are accepted but mapped to the index-4 entry which clones
+        index 3)
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (Form 1040 line 11; EIC Worksheet A
+        line 3)
     e00300: float
-        Taxable interest income
+        Taxable interest income (investment-income component)
     e00400: float
-        Tax exempt interest income
+        Tax-exempt interest income (investment-income component;
+        IRC §32(i)(2)(B))
     e00600: float
-        Ordinary dividends included in AGI
+        Ordinary dividends included in AGI (investment-income
+        component)
     c01000: float
-        Limitation on capital losses
+        Capital-loss-limited Schedule D total (Sch D line 21;
+        investment income uses `max(0, c01000)` — only net gain
+        per IRC §32(i)(2)(D))
     e02000: float
-        Schedule E total rental, royalty, partnership, S-corporation,
-        etc, income/loss
+        Schedule E total rental, royalty, partnership, S-corp,
+        etc., income/loss
     e26270: float
-        Schedule E combined partnership and S-corporation net income/loss
+        Schedule E combined partnership and S-corp net income/loss
+        (subtracted from `e02000` to leave net rents and royalties)
     age_head: int
-        Age in years of taxpayer (primary adult)
+        Age in years of taxpayer (primary adult); 0 in the data
+        means unknown and is treated as eligible
     age_spouse: int
-        Age in years of spouse (secondary adult, if present)
+        Age in years of spouse (secondary adult, if present); 0 means
+        unknown / no spouse
     earned: float
-        Earned income for filing unit
+        Earned income for filing unit (EIC Worksheet A/B line 1;
+        already includes net SE earnings via `EI_PayrollTax`)
     earned_p: float
-        Earned income for taxpayer
+        Earned income for taxpayer (used only for reform-only
+        `EITC_indiv` per-spouse EITC)
     earned_s: float
-        Earned income for spouse
+        Earned income for spouse (used only for reform-only
+        `EITC_indiv` per-spouse EITC)
     EITC_ps: list
-        Earned income credit phaseout start AGI
+        EIC-indexed phaseout start (EIC Worksheet A line 3 threshold)
     EITC_MinEligAge: int
-        Minimum age for childless EITC eligibility
+        Minimum age for childless EITC eligibility (Pub 596 Rule 11;
+        25 under current law)
     EITC_MaxEligAge: int
-        Maximum age for childless EITC eligibility
+        Maximum age for childless EITC eligibility (Pub 596 Rule 11;
+        64 under current law)
     EITC_ps_addon_MarriedJ: list
-        Extra earned income credit phaseout start AGI for
-        married filling jointly
+        EIC-indexed addition to the phaseout start for MFJ filers
+        (= EIC-Table MFJ threshold − single threshold)
     EITC_rt: list
-        Earned income credit phasein rate
+        EIC-indexed phasein rate
     EITC_c: list
-        Maximum earned income credit
+        EIC-indexed maximum credit (EIC Table plateau)
     EITC_prt: list
-        Earned income credit phaseout rate
+        EIC-indexed phaseout rate
     EITC_basic_frac: float
-        Fraction of maximum earned income credit paid at zero earnings
+        Reform-only fraction of `EITC_c` paid at zero earnings;
+        default 0 (inert under current law)
     EITC_InvestIncome_c: float
-        Maximum investment income before EITC reduction
+        Investment-income ceiling (IRC §32(i); $11,950 for 2025)
     EITC_excess_InvestIncome_rt: float
-        Rate of EITC reduction when investemtn income exceeds ceiling
+        Rate at which the EITC is reduced per dollar of investment
+        income above `EITC_InvestIncome_c`; default 9e+99 makes the
+        smooth phaseout behaviorally equivalent to the form's hard
+        cliff
     EITC_indiv: bool
-        EITC is computed for each spouse based in individual earnings
+        Reform-only: if true, MFJ EITC is computed per spouse on
+        individual earnings and summed; default false (filing-unit
+        EITC per the form)
     EITC_sep_filers_elig: bool
-        Separate filers are eligible for the EITC
+        MFS eligibility (Pub 596 Rule 3 / IRC §32(d) as amended by
+        ARPA 2021 §9621); false 2013-2020, true 2021+
     c59660: float
-        EITC amount
+        Records-bound EITC amount (input, overwritten)
 
     Returns
     -------
     c59660: float
-        EITC amount
+        Earned Income Tax Credit (Form 1040 line 27a)
     """
     # pylint: disable=too-many-branches
-    if MARS != 2:
-        eitc = EITCamount(EITC_basic_frac,
-                          EITC_rt[EIC], earned, EITC_c[EIC],
-                          EITC_ps[EIC], c00100, EITC_prt[EIC])
-        if EIC == 0:
-            # enforce age eligibility rule for those with no EITC-eligible
-            # kids assuming that an unknown age_* value implies EITC age
-            # eligibility
-            h_age_elig = EITC_MinEligAge <= age_head <= EITC_MaxEligAge
-            if (age_head == 0 or h_age_elig):
-                c59660 = eitc
-            else:
-                c59660 = 0.
-        else:  # if EIC != 0
-            c59660 = eitc
 
+    # ---------------- (A) EIC Worksheet A: credit amount -------------
+    phasein_rate = EITC_rt[EIC]
+    max_amount = EITC_c[EIC]
+    phaseout_rate = EITC_prt[EIC]
+    po_start = EITC_ps[EIC]
     if MARS == 2:
-        po_start = EITC_ps[EIC] + EITC_ps_addon_MarriedJ[EIC]
-        if not EITC_indiv:
-            # filing unit EITC rather than individual EITC
-            eitc = EITCamount(EITC_basic_frac,
-                              EITC_rt[EIC], earned, EITC_c[EIC],
-                              po_start, c00100, EITC_prt[EIC])
-        if EITC_indiv:
-            # individual EITC rather than a filing-unit EITC
-            eitc_p = EITCamount(EITC_basic_frac,
-                                EITC_rt[EIC], earned_p, EITC_c[EIC],
-                                po_start, earned_p, EITC_prt[EIC])
-            eitc_s = EITCamount(EITC_basic_frac,
-                                EITC_rt[EIC], earned_s, EITC_c[EIC],
-                                po_start, earned_s, EITC_prt[EIC])
-            eitc = eitc_p + eitc_s
+        po_start += EITC_ps_addon_MarriedJ[EIC]
 
-        if EIC == 0:
-            h_age_elig = EITC_MinEligAge <= age_head <= EITC_MaxEligAge
+    if MARS == 2 and EITC_indiv:
+        # reform-only: per-spouse EITC instead of filing-unit EITC
+        eitc_p = EITCamount(EITC_basic_frac, phasein_rate, earned_p,
+                            max_amount, po_start, earned_p, phaseout_rate)
+        eitc_s = EITCamount(EITC_basic_frac, phasein_rate, earned_s,
+                            max_amount, po_start, earned_s, phaseout_rate)
+        eitc = eitc_p + eitc_s
+    else:
+        eitc = EITCamount(EITC_basic_frac, phasein_rate, earned,
+                          max_amount, po_start, c00100, phaseout_rate)
+
+    # ---------------- (B) Pub 596 Rule 11: childless age test --------
+    # Filer (or, for MFJ, either spouse) with no qualifying children
+    # must be in [EITC_MinEligAge, EITC_MaxEligAge] (25-64 under
+    # current law).  age == 0 in the data is treated as eligible.
+    if EIC == 0:
+        h_age_elig = EITC_MinEligAge <= age_head <= EITC_MaxEligAge
+        h_ok = age_head == 0 or h_age_elig
+        if MARS == 2:
             s_age_elig = EITC_MinEligAge <= age_spouse <= EITC_MaxEligAge
-            if (age_head == 0 or age_spouse == 0 or h_age_elig or s_age_elig):
-                c59660 = eitc
-            else:
-                c59660 = 0.
+            s_ok = age_spouse == 0 or s_age_elig
+            if not (h_ok or s_ok):
+                eitc = 0.
         else:
-            c59660 = eitc
+            if not h_ok:
+                eitc = 0.
+    c59660 = eitc
 
+    # ---------------- (C) Pub 596 Rules 3 (MFS) and 10 (dependent) ---
     if (MARS == 3 and not EITC_sep_filers_elig) or DSI == 1:
         c59660 = 0.
 
-    # reduce positive EITC if investment income exceeds ceiling
+    # ---------------- (D) Pub 596 Rule 6: investment-income cliff ----
+    # IRC §32(i): no EITC if investment income exceeds the ceiling.
+    # Modeled as a smooth phaseout; with EITC_excess_InvestIncome_rt
+    # default 9e+99 the reduction immediately drives c59660 to 0.
     if c59660 > 0.:
         invinc = (e00400 + e00300 + e00600 +
                   max(0., c01000) + max(0., (e02000 - e26270)))
         if invinc > EITC_InvestIncome_c:
-            eitc = (c59660 - EITC_excess_InvestIncome_rt *
-                    (invinc - EITC_InvestIncome_c))
-            c59660 = max(0., eitc)
+            red = EITC_excess_InvestIncome_rt * (invinc - EITC_InvestIncome_c)
+            c59660 = max(0., c59660 - red)
 
-    # approximate EITC claiming behavior
+    # ---------------- (E) Behavioral claiming approximation ----------
+    # Not on the form: filers with expected credit < eitc_claim_thd
+    # are assumed not to claim (default 0 = no suppression).
     if c59660 < eitc_claim_thd:
         c59660 = 0.
 
