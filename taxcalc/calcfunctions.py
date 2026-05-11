@@ -2389,100 +2389,151 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
     """
-    Computes Alternative Minimum Tax (AMT) taxable income and liability, where
-    c62100 is AMT taxable income,
-    c09600 is AMT tax liability, and
-    c05800 is total (regular + AMT) income tax liability before credits.
+    Computes Form 6251 (2025) Alternative Minimum Tax (AMT).
 
-    Note that line-number variable names refer to 2015 Form 6251.
+    Builds AMT taxable income c62100 (Form 6251 line 4), tentative
+    minimum tax via either the flat-rate computation (line 7) or
+    Part III's maximum-capital-gains-rates worksheet (lines 12-40),
+    subtracts AMT foreign tax credit (line 8) to yield tentative
+    minimum tax (line 9), and subtracts the regular-tax base
+    (line 10) to yield AMT liability c09600 (line 11). Total tax
+    before credits c05800 = taxbc + c09600.
+
+    Form 6251 structure:
+      - Part I (lines 1a-4): AMTI = taxable income before exemption
+        plus AMT-disallowed deductions (SALT line 2a, Sch A misc,
+        medical-floor add-back) and the unmodeled prefs/adjustments
+        (lines 2c-2t + 3) captured in cmbtp; line 2b refunds (e00700)
+        are subtracted.
+      - Part II top (lines 5-6): exemption schedule with phaseout
+        (line 5 = AMT_em - AMT_prt * max(0, AMTI - AMT_em_ps));
+        line 6 = AMTI - exemption.
+      - Part II tax (line 7): flat-rate AMT tax (26% below AMT_brk1,
+        28% above) OR Part III's cap-gains-aware tax (line 40).
+      - Part III (lines 12-40): tax computation using maximum
+        capital gains rates (0% / 15% / 20% / 25% unrecap §1250)
+        paralleling QDCGTW / Sch D Tax Worksheet.
+      - Part II bottom (lines 8-11): AMT FTC, tentative minimum
+        tax, regular-tax base, AMT.
+
+    Special rules:
+      - MARS == 3 (MFS): exemption fully phased out when
+        c62100 > AMT_em_pe (IRC §55(d)(3) "$900,350 see instructions"
+        cliff).
+      - IRC §59(j) kiddie AMT: for filers under AMT_child_em_c_age
+        (no qualifying older spouse), exemption capped at
+        earned + AMT_child_em.
+      - Reform-only 4th cap-gains bracket above AMT_CG_brk3 taxed
+        at AMT_CG_rt4 (no form analogue; AMT_CG_brk3 default 9e+99
+        makes this inert under current law).
+
+    Downstream: c05800 → C1040 (Form 1040 line 16 + Sch 2 line 1) →
+                         NonrefundableCredits → IITAX.
 
     Parameters
     -----------
-    e07300: float
-        Foreign tax credit from Form 1116
-    dwks13: float
-        Difference of dwks10 - dwks12
     standard: float
-        Standard deduction (zero for itemizers)
-    f6251: int
-        1 if Form 6251 (AMT) attached to return, otherwise 0
+        Standard deduction (zero for itemizers); branches AMTI
+        construction (form line 1b itemizer vs non-itemizer path)
     c00100: float
-        Adjusted Gross Income (AGI)
-    c18300: float
-        Schedule A: state and local taxes plus real estate taxes deducted
-    taxbc: float
-        Regular tax on regular taxable income before credits
+        Adjusted Gross Income (Form 1040 line 11)
+    e00700: float
+        Taxable refunds of state and local income taxes
+        (Form 6251 line 2b subtraction)
+    qbided: float
+        Qualified business income deduction (Form 1040 line 13)
     c04470: float
-        Itemized deductions after phase-out (zero for non-itemizers)
+        Itemized deductions after Pease phase-out (zero for non-
+        itemizers); Form 1040 line 12 itemized portion
     c17000: float
-        Schedule A: Medical expenses deducted
+        Schedule A medical expenses deducted (post-floor); used for
+        the medical add-back capped at 2.5% of AGI
+    c18300: float
+        Schedule A SALT post-cap deduction (Form 6251 line 2a
+        add-back for itemizers)
     c20800: float
-        Schedule A: net limited miscellaneous deductions deducted
+        Schedule A miscellaneous deductions post-2% floor (TCJA-
+        suspended 2018-2025; add-back)
     c21040: float
-        Itemized deductions that are phased out
-    e24515: float
-        Schedule D: Un-Recaptured Section 1250 Gain
+        Itemized deductions that are phased out by Pease
+        (subtracted to undo Pease for AMT)
+    cmbtp: float
+        Estimate of income on AMT Form 6251 but not in AGI; captures
+        Form 6251 lines 2c through 2t and line 3 (depreciation,
+        depletion, ISO, PAB interest, etc.) not separately modeled
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
-    dwks18: float
-        Maximum of dwks16 and dwks17
-    dwks14: float
-        Maximum of 0 and dwks1 - dwks13
-    c05700: float
-        Lump sum distributions
-    e62900: float
-        Alternative Minimum Tax foreign tax credit from Form 6251
-    e00700: float
-        Taxable refunds of state and local income taxes
-    dwks10: float
-        Sum of dwks6 + dwks9
+    AMT_em: list
+        AMT exemption amount by MARS (Form 6251 line 5)
+    AMT_prt: float
+        AMT exemption phaseout rate (line 5 phaseout)
+    AMT_em_ps: list
+        AMT exemption phaseout start by MARS
+    AMT_em_pe: float
+        AMT exemption phaseout ending AMT taxable income for
+        married filing separately (MARS == 3 cliff)
+    AMT_child_em_c_age: float
+        Age ceiling for IRC §59(j) kiddie-AMT exemption cap
+    AMT_child_em: float
+        Kiddie-AMT exemption increment: earned + this amount
     age_head: int
-        Age in years of taxpayer (i.e. primary adult)
+        Age in years of taxpayer (i.e. primary adult); 0 = unset
     age_spouse: int
         Age in years of spouse (i.e. secondary adult if present)
     earned: float
         Earned income for filing unit
-    cmbtp: float
-        Estimate of income on (AMT) Form 6251 but not in AGI
-    qbided: float
-        Qualified business income deduction
-    AMT_child_em_c_age: float
-        Age ceiling for special AMT exemption
     AMT_brk1: list
-        AMT bracket 1 (upper threshold)
-    AMT_em: list
-        AMT exemption amount
-    AMT_prt: float
-        AMT exemption phaseout rate
+        AMT bracket 1 upper threshold by MARS (Form 6251 line 7:
+        $239,100 / $119,550 MFS)
     AMT_rt1: float
-        AMT rate 1
+        AMT rate 1 (26%)
     AMT_rt2_addon: float
-        Additional AMT rate for AMT taxable income above AMT bracket 1
-    AMT_child_em: float
-        Child AMT exemption additional income base
-    AMT_em_ps: list
-        AMT exemption phaseout start
-    AMT_em_pe: float
-        AMT exemption phaseout ending AMT taxable income for
-        married filing separately
+        Additional AMT rate above AMT_brk1 (combined top = 28%)
+    e24515: float
+        Schedule D unrecaptured §1250 gain (Form 6251 line 14)
+    dwks13: float
+        QDCGTW line 4 / Sch D TW line 13 (Form 6251 line 13)
+    dwks14: float
+        QDCGTW line 5 / Sch D TW line 14 (Form 6251 line 20)
+    dwks18: float
+        QDCGTW line 5 / Sch D TW line 21 (Form 6251 line 27)
+    dwks10: float
+        Schedule D Tax Worksheet line 10 (cap on Form 6251 line 15)
     AMT_CG_brk1: list
-        Top of long-term capital gains and qualified dividends (AMT) tax
-        bracket 1
+        Top of long-term capital gains and qualified dividends (AMT)
+        tax bracket 1 (Form 6251 line 19: top of 0% bracket)
     AMT_CG_brk2: list
-        Top of long-term capital gains and qualified dividends (AMT) tax
-        bracket 2
+        Top of long-term capital gains and qualified dividends (AMT)
+        tax bracket 2 (Form 6251 line 25: top of 15% bracket)
     AMT_CG_brk3: list
-        Top of long-term capital gains and qualified dividends (AMT) tax
-        bracket 3
+        Reform-only top of cap-gains bracket 3 (default 9e+99 →
+        inert under current law)
     AMT_CG_rt1: float
         Long term capital gain and qualified dividends (AMT) rate 1
+        (0%)
     AMT_CG_rt2: float
         Long term capital gain and qualified dividends (AMT) rate 2
+        (15%)
     AMT_CG_rt3: float
         Long term capital gain and qualified dividends (AMT) rate 3
+        (20%)
     AMT_CG_rt4: float
-        Long term capital gain and qualified dividends (AMT) rate 4
+        Reform-only long term capital gain and qualified dividends
+        (AMT) rate 4
+    f6251: int
+        1 if Form 6251 (AMT) attached to return, otherwise 0
+    e62900: float
+        Alternative Minimum Tax foreign tax credit from Form 6251
+        (used when f6251 == 1)
+    e07300: float
+        Foreign tax credit from Form 1116 (used when f6251 == 0)
+    taxbc: float
+        Regular tax on regular taxable income before credits (used
+        in the Form 6251 line 10 regular-tax base)
+    c05700: float
+        Lump sum distributions (Form 4972) subtracted from taxbc in
+        the Form 6251 line 10 regular-tax base
     c05800: float
         Total (regular + AMT) income tax liability before credits
     c09600: float
@@ -2493,83 +2544,112 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     Returns
     -------
     c62100: float
-        Alternative Minimum Tax (AMT) taxable income
+        Alternative Minimum Tax (AMT) taxable income (Form 6251 line 4)
     c09600: float
-        Alternative Minimum Tax (AMT) tax liability
+        Alternative Minimum Tax (AMT) tax liability (Form 6251 line 11)
     c05800: float
         Total (regular + AMT) income tax liability before credits
     """
     # pylint: disable=too-many-statements,too-many-branches
-    # Form 6251, Part I
+    # ----------------------------------------------------------------
+    # Form 6251 Part I (lines 1a-4): Alternative Minimum Taxable Income
+    # ----------------------------------------------------------------
     if standard == 0.0:
         c62100 = (c00100 - e00700 - qbided - c04470 +
-                  max(0., min(c17000, 0.025 * c00100)) +
-                  c18300 + c20800 - c21040)
+                  max(0., min(c17000, 0.025 * c00100)) +  # medical add-back
+                  c18300 +    # SALT add-back (Form 6251 line 2a)
+                  c20800 -    # Sch A misc add-back (TCJA-suspended 2018-2025)
+                  c21040)     # Pease undone for AMT
     if standard > 0.0:
         c62100 = c00100 - e00700 - qbided
-    c62100 += cmbtp  # add income not in AGI but considered income for AMT
-    # c62100 is AMT taxable income, which is line28
-    # Form 6251, Part II top
-    # line29 is AMT exemption amount
-    line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
-                 max(0., c62100 - AMT_em_ps[MARS - 1]))
+    c62100 += cmbtp  # Form 6251 lines 2c-2t + 3: AMT prefs/adjustments
+    # c62100 is AMT taxable income = Form 6251 line 4
+    # ----------------------------------------------------------------
+    # Form 6251 Part II top (lines 5-6): exemption and AMTI less exemption
+    # ----------------------------------------------------------------
+    # line 5: AMT exemption amount (with phase-out)
+    line5 = max(0., AMT_em[MARS - 1] - AMT_prt *
+                max(0., c62100 - AMT_em_ps[MARS - 1]))
     if MARS == 3 and c62100 > AMT_em_pe:
-        line29 = 0.
+        line5 = 0.
+    # IRC §59(j) kiddie-AMT cap: exemption limited to earned +
+    # AMT_child_em when filer is under AMT_child_em_c_age (and no
+    # qualifying older spouse).
     young_head = age_head != 0 and age_head < AMT_child_em_c_age
     no_or_young_spouse = age_spouse < AMT_child_em_c_age
     if young_head and no_or_young_spouse:
-        line29 = min(line29, earned + AMT_child_em)
-    # line30 is AMT taxable income less AMT exemption amount
-    line30 = max(0., c62100 - line29)
-    line3163 = (AMT_rt1 * line30 +
-                AMT_rt2_addon * max(0., (line30 - AMT_brk1[MARS - 1])))
+        line5 = min(line5, earned + AMT_child_em)
+    # line 6: AMT taxable income less AMT exemption amount
+    line6 = max(0., c62100 - line5)
+    # ----------------------------------------------------------------
+    # Form 6251 Part II tax (line 7): flat-rate AMT tax OR Part III
+    # ----------------------------------------------------------------
+    # Flat-rate tax: 26% below AMT_brk1, 28% above. Also serves as
+    # Part III line 39 (AMT-rate on full line 12 = line 6).
+    amt_brk1 = AMT_brk1[MARS - 1]
+    flat_rate_tax = (AMT_rt1 * line6 +
+                     AMT_rt2_addon * max(0., line6 - amt_brk1))
     if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks18 > 0. or e24515 > 0.:
-        # complete Form 6251, Part III (line36 is equal to line30)
-        line37 = dwks13
-        line38 = e24515
-        line39 = min(line37 + line38, dwks10)
-        line40 = min(line30, line39)
-        line41 = max(0., line30 - line40)
-        line42 = (AMT_rt1 * line41 +
-                  AMT_rt2_addon * max(0., (line41 - AMT_brk1[MARS - 1])))
-        line44 = dwks14
-        line45 = max(0., AMT_CG_brk1[MARS - 1] - line44)
-        line46 = min(line30, line37)
-        line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
-        cgtax1 = line47 * AMT_CG_rt1
-        line48 = line46 - line47
-        line51 = dwks18
-        line52 = line45 + line51
-        line53 = max(0., AMT_CG_brk2[MARS - 1] - line52)
-        line54 = min(line48, line53)  # line54 is amount taxed at AMT_CG_rt2
-        cgtax2 = line54 * AMT_CG_rt2
-        line56 = line47 + line54  # total amount in lower two brackets
-        if line41 == line56:
-            line57 = 0.  # line57 is amount taxed at AMT_CG_rt3
-            linex2 = 0.  # linex2 is amount taxed at AMT_CG_rt4
+        # ------------------------------------------------------------
+        # Form 6251 Part III (lines 12-40): tax computation using
+        # maximum capital gains rates. line 12 == line 6.
+        # ------------------------------------------------------------
+        line13 = dwks13                        # QDCGTW ln 4 / SchDTW ln 13
+        line14 = e24515                        # Sch D line 19 (unrecap §1250)
+        line15 = min(line13 + line14, dwks10)  # min(13+14, SchDTW line 10)
+        line16 = min(line6, line15)
+        line17 = max(0., line6 - line16)       # ordinary-income portion
+        line18 = (AMT_rt1 * line17 +           # AMT-rate on line 17
+                  AMT_rt2_addon * max(0., line17 - amt_brk1))
+        # line 19 = AMT_CG_brk1[MARS-1] (top of 0% bracket)
+        cg_brk1 = AMT_CG_brk1[MARS - 1]
+        line20 = dwks14                        # QDCGTW ln 5 / SchDTW ln 14
+        line21 = max(0., cg_brk1 - line20)     # unused 0% bracket
+        line22 = min(line6, line13)            # cap-gains-eligible portion
+        line23 = min(line21, line22)           # amount taxed at AMT_CG_rt1:0%
+        cgtax1 = line23 * AMT_CG_rt1
+        line24 = line22 - line23
+        # line 25 = AMT_CG_brk2[MARS-1] (top of 15% bracket)
+        # line 26 == line 21
+        line27 = dwks18                        # QDCGTW ln 5 / SchDTW ln 21
+        line28 = line21 + line27
+        line29 = max(0., AMT_CG_brk2[MARS - 1] - line28)
+        line30 = min(line24, line29)           # amount taxed at AMT_CG_rt2:15%
+        cgtax2 = line30 * AMT_CG_rt2           # line 31 = 15% * line 30
+        line32 = line23 + line30               # sum of 0% + 15% amounts
+        if line17 == line32:
+            line33 = 0.                        # amount taxed at AMT_CG_rt3:20%
+            linex2 = 0.                        # amount taxed at AMT_CG_rt4:ref
         else:
-            line57 = line46 - line56
-            linex1 = min(line48,
-                         max(0., AMT_CG_brk3[MARS - 1] - line44 - line45))
-            linex2 = max(0., line54 - linex1)
-        cgtax3 = line57 * AMT_CG_rt3
+            line33 = line22 - line32
+            # Reform-only 4th bracket above AMT_CG_brk3 (default
+            # 9e+99 → linex2 collapses to 0 under current law).
+            linex1 = min(line24,
+                         max(0., AMT_CG_brk3[MARS - 1] - line20 - line21))
+            linex2 = max(0., line30 - linex1)
+        cgtax3 = line33 * AMT_CG_rt3           # line 34 = 20% * line 33
         cgtax4 = linex2 * AMT_CG_rt4
-        if line38 == 0.:
-            line61 = 0.
+        if line14 == 0.:                       # line 35-37: §1250 25%
+            line37 = 0.
         else:
-            line61 = 0.25 * max(0., line30 - line41 - line56 - line57 - linex2)
-        line62 = line42 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line61
-        line64 = min(line3163, line62)
-        line31 = line64
-    else:  # if not completing Form 6251, Part III
-        line31 = line3163
-    # Form 6251, Part II bottom
+            line37 = 0.25 * max(0., line6 - line17 - line32 - line33 - linex2)
+        line38 = line18 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line37
+        line40 = min(flat_rate_tax, line38)    # min(line 38, line 39)
+        line7 = line40
+    else:  # if not completing Form 6251 Part III
+        line7 = flat_rate_tax
+    # ----------------------------------------------------------------
+    # Form 6251 Part II bottom (lines 8-11): AMT FTC, TMT, regular-tax
+    # base, AMT.
+    # ----------------------------------------------------------------
     if f6251 == 1:
-        line32 = e62900
+        line8 = e62900                         # AMT FTC from filed Form 6251
     else:
-        line32 = e07300
-    line33 = line31 - line32
-    c09600 = max(0., line33 - max(0., taxbc - e07300 - c05700))
+        line8 = e07300                         # regular FTC proxy
+    line9 = line7 - line8                      # tentative minimum tax
+    # line 10 regular-tax base = max(0, taxbc - e07300 - c05700);
+    # c05700 corresponds to "minus any tax from Form 4972".
+    c09600 = max(0., line9 - max(0., taxbc - e07300 - c05700))
     c05800 = taxbc + c09600
     return (c62100, c09600, c05800)
 
