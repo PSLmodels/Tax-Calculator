@@ -2769,7 +2769,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Reform construct: inert under current law (AGI_surtax_trt = 0).</span>
     <span class="k">if</span> <span class="n">AGI_surtax_trt</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="n">agi_surtax</span> <span class="o">=</span> <span class="n">AGI_surtax_trt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">AGI_surtax_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">)</span>
+        <span class="n">agi_surtax</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">AGI_surtax_trt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">AGI_surtax_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">taxbc</span> <span class="o">+=</span> <span class="n">agi_surtax</span>
         <span class="n">surtax</span> <span class="o">+=</span> <span class="n">agi_surtax</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">taxbc</span><span class="p">,</span> <span class="n">surtax</span><span class="p">)</span>
@@ -2975,47 +2977,116 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">NetInvIncTax</span><span class="p">(</span><span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
                  <span class="n">c00100</span><span class="p">,</span> <span class="n">NIIT_thd</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">NIIT_PT_taxed</span><span class="p">,</span> <span class="n">NIIT_rt</span><span class="p">,</span> <span class="n">niit</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes Net Investment Income Tax (NIIT) amount assuming that</span>
-<span class="sd">    all annuity income is excluded from net investment income.</span>
+<span class="sd">    Computes the Net Investment Income Tax (NIIT) per Form 8960 (2025),</span>
+<span class="sd">    Parts I and III for individuals.  Output `niit` flows downstream</span>
+<span class="sd">    through `C1040` to Schedule 2 line 12 (&quot;Other Taxes&quot;) and thence to</span>
+<span class="sd">    Form 1040 line 23 / `iitax`.</span>
+
+<span class="sd">    Form structure:</span>
+<span class="sd">      * Part I  (lines 1-8)   Investment income.</span>
+<span class="sd">      * Part II (lines 9-11)  Investment expenses — NOT MODELED;</span>
+<span class="sd">                              effectively treated as zero (Tax-Calculator</span>
+<span class="sd">                              records do not separate the investment-</span>
+<span class="sd">                              interest, allocable state-tax, and misc-</span>
+<span class="sd">                              investment expense items from total Sch A).</span>
+<span class="sd">      * Part III (lines 12-17) Tax computation for individuals</span>
+<span class="sd">                              (estate/trust lines 18-21 not applicable).</span>
+
+<span class="sd">    Mapping of Form 8960 lines to inputs:</span>
+<span class="sd">      * line 1  Taxable interest         &lt;- e00300</span>
+<span class="sd">      * line 2  Ordinary dividends       &lt;- e00600</span>
+<span class="sd">      * line 3  Annuities                NOT MODELED (excluded from NII)</span>
+<span class="sd">      * line 4a Sch E rents/royalties/</span>
+<span class="sd">                PT/S-corp/trust/business &lt;- e02000</span>
+<span class="sd">      * line 4b Adjustment for non-</span>
+<span class="sd">                section-1411 t-or-b      &lt;- -e26270 when NIIT_PT_taxed is</span>
+<span class="sd">                                            False (default); 0 otherwise</span>
+<span class="sd">      * line 4c Combine 4a + 4b          &lt;- e02000 [- e26270]</span>
+<span class="sd">      * line 5a Property-disposition gain&lt;- c01000 (Sch D §1211(b)-capped</span>
+<span class="sd">                                            net cap gain/loss, Form 1040</span>
+<span class="sd">                                            line 7)</span>
+<span class="sd">      * line 5b/5c Exclusions/adjustment NOT MODELED</span>
+<span class="sd">      * line 5d Combine 5a+5b+5c         &lt;- c01000</span>
+<span class="sd">      * line 6  CFC/PFIC adjustments     NOT MODELED</span>
+<span class="sd">      * line 7  Other modifications      NOT MODELED</span>
+<span class="sd">      * line 8  Total investment income  &lt;- sum of above</span>
+<span class="sd">      * line 12 NII = line 8 - line 11   &lt;- max(0., line 8); line 11 = 0</span>
+<span class="sd">      * line 13 MAGI                     &lt;- c00100 (no foreign earned</span>
+<span class="sd">                                            income exclusion add-back</span>
+<span class="sd">                                            because Form 2555 not modeled)</span>
+<span class="sd">      * line 14 Threshold by filing      &lt;- NIIT_thd[MARS-1]; current-law</span>
+<span class="sd">                status                      defaults match the form</span>
+<span class="sd">                                            ($200k single/HoH; $250k MFJ/QW;</span>
+<span class="sd">                                            $125k MFS)</span>
+<span class="sd">      * line 15 max(0, line 13 - line 14)</span>
+<span class="sd">      * line 16 min(line 12, line 15)</span>
+<span class="sd">      * line 17 NIIT_rt * line 16        &lt;- niit; current-law NIIT_rt</span>
+<span class="sd">                                            default 0.038 matches the form</span>
+
+<span class="sd">    `NIIT_PT_taxed` is a reform construct: setting it True zeroes out the</span>
+<span class="sd">    Form 8960 line 4b adjustment so that active partnership / S-corp</span>
+<span class="sd">    income (`e26270`) remains in the NIIT base.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    e00300: float</span>
-<span class="sd">        Tax-exempt interest income</span>
+<span class="sd">        Taxable interest income (Form 8960 line 1)</span>
 <span class="sd">    e00600: float</span>
-<span class="sd">        Ordinary dividends included in AGI</span>
+<span class="sd">        Ordinary dividends included in AGI (Form 8960 line 2)</span>
 <span class="sd">    e02000: float</span>
-<span class="sd">        Schedule E total rental, royalty, parternship, S-corporation,</span>
-<span class="sd">        etc, income/loss</span>
+<span class="sd">        Schedule E total rental, royalty, partnership, S-corporation,</span>
+<span class="sd">        trust, and trade-or-business income/loss (Form 8960 line 4a)</span>
 <span class="sd">    e26270: float</span>
-<span class="sd">        Schedule E: combined partnership and S-corporation net income/loss</span>
+<span class="sd">        Schedule E: combined partnership and S-corporation net</span>
+<span class="sd">        income/loss; the portion of e02000 treated as non-section-1411</span>
+<span class="sd">        trade-or-business income for the Form 8960 line 4b adjustment</span>
 <span class="sd">    c01000: float</span>
-<span class="sd">        Limitation on capital losses</span>
+<span class="sd">        Net capital gain/loss after the Sch D §1211(b) cap</span>
+<span class="sd">        (Form 8960 line 5a; lines 5b/5c not modeled)</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">        Adjusted Gross Income (Form 8960 line 13 MAGI proxy;</span>
+<span class="sd">        foreign earned income exclusion not modeled)</span>
 <span class="sd">    NIIT_thd: list</span>
-<span class="sd">        Net Investment Income Tax modified AGI threshold</span>
+<span class="sd">        Net Investment Income Tax MAGI threshold by filing status</span>
+<span class="sd">        (Form 8960 line 14)</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                                  4=household-head, 5=widow(er))</span>
 <span class="sd">    NIIT_PT_taxed: bool</span>
-<span class="sd">        Whether or not partnership and S-corp income is NIIT based</span>
+<span class="sd">        Reform switch: false (current law) excludes active partnership</span>
+<span class="sd">        and S-corp income from the NIIT base via the Form 8960 line 4b</span>
+<span class="sd">        adjustment; true keeps it in the base.</span>
 <span class="sd">    NIIT_rt: float</span>
-<span class="sd">        Net Investment Income Tax rate</span>
+<span class="sd">        Net Investment Income Tax rate (Form 8960 line 17; 3.8% under</span>
+<span class="sd">        current law)</span>
 <span class="sd">    niit: float</span>
-<span class="sd">        Net investment income tax from Form 8960</span>
+<span class="sd">        Net investment income tax from Form 8960 (workspace, overwritten)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    niit: float</span>
-<span class="sd">        Net investment income tax from Form 8960</span>
+<span class="sd">        Net investment income tax from Form 8960 line 17</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># ---- Part I: investment income (Form 8960 lines 1-8) ----</span>
+    <span class="n">line1</span> <span class="o">=</span> <span class="n">e00300</span>                                  <span class="c1"># line 1</span>
+    <span class="n">line2</span> <span class="o">=</span> <span class="n">e00600</span>                                  <span class="c1"># line 2</span>
+    <span class="c1"># line 3 (annuities): not modeled</span>
+    <span class="k">if</span> <span class="n">NIIT_PT_taxed</span><span class="p">:</span>
+        <span class="n">line4c</span> <span class="o">=</span> <span class="n">e02000</span>                             <span class="c1"># line 4b adjustment = 0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">line4c</span> <span class="o">=</span> <span class="n">e02000</span> <span class="o">-</span> <span class="n">e26270</span>                    <span class="c1"># line 4b = -e26270</span>
+    <span class="n">line5d</span> <span class="o">=</span> <span class="n">c01000</span>                                 <span class="c1"># lines 5b/5c not modeled</span>
+    <span class="c1"># lines 6, 7: not modeled</span>
+    <span class="n">line8</span> <span class="o">=</span> <span class="n">line1</span> <span class="o">+</span> <span class="n">line2</span> <span class="o">+</span> <span class="n">line4c</span> <span class="o">+</span> <span class="n">line5d</span>         <span class="c1"># line 8</span>
+
+    <span class="c1"># ---- Part II: investment expenses (lines 9-11) not modeled =&gt; 0 ----</span>
+
+    <span class="c1"># ---- Part III: tax computation (Form 8960 lines 12-17) ----</span>
+    <span class="n">line12</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line8</span><span class="p">)</span>                         <span class="c1"># line 12 (line 11 = 0)</span>
     <span class="n">modAGI</span> <span class="o">=</span> <span class="n">c00100</span>  <span class="c1"># no foreign earned income exclusion to add</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">NIIT_PT_taxed</span><span class="p">:</span>
-        <span class="n">NII</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00300</span> <span class="o">+</span> <span class="n">e00600</span> <span class="o">+</span> <span class="n">c01000</span> <span class="o">+</span> <span class="n">e02000</span> <span class="o">-</span> <span class="n">e26270</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># do not subtract e26270 from e02000</span>
-        <span class="n">NII</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00300</span> <span class="o">+</span> <span class="n">e00600</span> <span class="o">+</span> <span class="n">c01000</span> <span class="o">+</span> <span class="n">e02000</span><span class="p">)</span>
-    <span class="n">niit</span> <span class="o">=</span> <span class="n">NIIT_rt</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">NII</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">modAGI</span> <span class="o">-</span> <span class="n">NIIT_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+    <span class="n">line15</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">modAGI</span> <span class="o">-</span> <span class="n">NIIT_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>   <span class="c1"># lines 13-15</span>
+    <span class="n">line16</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line12</span><span class="p">,</span> <span class="n">line15</span><span class="p">)</span>                    <span class="c1"># line 16</span>
+    <span class="n">niit</span> <span class="o">=</span> <span class="n">NIIT_rt</span> <span class="o">*</span> <span class="n">line16</span>                         <span class="c1"># line 17</span>
     <span class="k">return</span> <span class="n">niit</span>
 
 
