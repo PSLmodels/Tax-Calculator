@@ -2,7 +2,7 @@ Weighted Tax Reform Totals by Baseline Expanded-Income Decile for 2034
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
  0    23.97      64.0      -1.4       4.9       0.0       3.5
- 1    23.97     562.0     -12.3      45.6       0.0      33.3
+ 1    23.97     562.0     -12.4      45.6       0.0      33.3
  2    23.97    1038.0      -3.2      67.1       0.0      63.9
  3    23.97    1386.9      14.3      76.7       0.0      91.0
  4    23.97    1749.4      34.1     110.2       0.0     144.3
@@ -10,8 +10,8 @@ Weighted Tax Reform Totals by Baseline Expanded-Income Decile for 2034
  6    23.97    2826.4     113.2     203.9       0.0     317.1
  7    23.97    3706.4     199.3     290.6       0.0     489.9
  8    23.97    5151.6     419.4     458.1       0.0     877.5
- 9    23.97   11956.9    2204.6     865.1       0.0    3069.8
- A   239.67   30652.2    3031.0    2275.0       0.0    5305.9
+ 9    23.97   11956.9    2203.7     865.1       0.0    3068.9
+ A   239.67   30652.2    3030.0    2275.0       0.0    5305.0
 
 Weighted Tax Differences by Baseline Expanded-Income Decile for 2034
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax

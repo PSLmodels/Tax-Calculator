@@ -207,11 +207,11 @@ def test_create_tables(cps_subsample):
                 33.6,
                 76.1,
                 159.7,
-                931.0,
-                1263.5,
+                930.8,
+                1263.3,
                 163.0,
                 278.2,
-                489.8]
+                489.5]
     if not np.allclose(dist[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
@@ -231,11 +231,11 @@ def test_create_tables(cps_subsample):
                 6.5,
                 7.4,
                 11.3,
-                16.3,
-                60.3,
+                16.0,
+                60.0,
                 7.4,
                 7.2,
-                1.7]
+                1.4]
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
@@ -279,11 +279,11 @@ def test_create_tables(cps_subsample):
                 980.0,
                 1247.7,
                 1629.9,
-                3741.0,
-                10033.4,
+                3741.2,
+                10033.6,
                 1100.9,
                 1338.8,
-                1301.3]
+                1301.5]
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
@@ -304,10 +304,10 @@ def test_create_tables(cps_subsample):
                 55.2,
                 101.4,
                 335.2,
-                335.4,
+                335.2,
                 65.6,
                 315.5,
-                1263.5]
+                1263.3]
     if not np.allclose(dist[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
@@ -326,10 +326,10 @@ def test_create_tables(cps_subsample):
                 10.2,
                 8.1,
                 17.7,
-                6.7,
+                6.4,
                 0.3,
                 0.1,
-                60.3]
+                60.0]
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True

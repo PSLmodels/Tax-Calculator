@@ -2380,7 +2380,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
 
 @iterate_jit(nopython=True)
 def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
-        c04470, c17000, c20800, c21040, e24515, MARS, dwks18,
+        c04470, c20800, c21040, e24515, MARS, dwks18,
         dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
         earned, cmbtp, qbided,
         AMT_child_em_c_age, AMT_brk1,
@@ -2400,11 +2400,12 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     before credits c05800 = taxbc + c09600.
 
     Form 6251 structure:
-      - Part I (lines 1a-4): AMTI = taxable income before exemption
-        plus AMT-disallowed deductions (SALT line 2a, Sch A misc,
-        medical-floor add-back) and the unmodeled prefs/adjustments
-        (lines 2c-2t + 3) captured in cmbtp; line 2b refunds (e00700)
-        are subtracted.
+      - Part I (lines 1a-4): AMTI = taxable income (Form 1040 line 15)
+        plus AMT-disallowed deductions (SALT line 2a, Sch A misc) and
+        the unmodeled prefs/adjustments (lines 2c-2t + 3) captured in
+        cmbtp; line 2b refunds (e00700) are subtracted.  Note: 2025
+        Form 6251 has no medical add-back (TCJA/OBBBA harmonized
+        regular and AMT Sch A medical floors at 7.5% of AGI).
       - Part II top (lines 5-6): exemption schedule with phaseout
         (line 5 = AMT_em - AMT_prt * max(0, AMTI - AMT_em_ps));
         line 6 = AMTI - exemption.
@@ -2445,9 +2446,6 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     c04470: float
         Itemized deductions after Pease phase-out (zero for non-
         itemizers); Form 1040 line 12 itemized portion
-    c17000: float
-        Schedule A medical expenses deducted (post-floor); used for
-        the medical add-back capped at 2.5% of AGI
     c18300: float
         Schedule A SALT post-cap deduction (Form 6251 line 2a
         add-back for itemizers)
@@ -2554,14 +2552,14 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     # ----------------------------------------------------------------
     # Form 6251 Part I (lines 1a-4): Alternative Minimum Taxable Income
     # ----------------------------------------------------------------
+    # Form 6251 line 1 = Form 1040 line 15 = AGI - (STD or itemized) - QBID.
     if standard == 0.0:
         c62100 = (c00100 - e00700 - qbided - c04470 +
-                  max(0., min(c17000, 0.025 * c00100)) +  # medical add-back
                   c18300 +    # SALT add-back (Form 6251 line 2a)
                   c20800 -    # Sch A misc add-back (TCJA-suspended 2018-2025)
                   c21040)     # Pease undone for AMT
     if standard > 0.0:
-        c62100 = c00100 - e00700 - qbided
+        c62100 = c00100 - e00700 - qbided - standard
     c62100 += cmbtp  # Form 6251 lines 2c-2t + 3: AMT prefs/adjustments
     # c62100 is AMT taxable income = Form 6251 line 4
     # ----------------------------------------------------------------
@@ -2617,7 +2615,10 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         line30 = min(line24, line29)           # amount taxed at AMT_CG_rt2:15%
         cgtax2 = line30 * AMT_CG_rt2           # line 31 = 15% * line 30
         line32 = line23 + line30               # sum of 0% + 15% amounts
-        if line17 == line32:
+        # Form 6251 line 33 = line 22 - line 32 (residual cap-gains for
+        # 20% bracket / reform-only 4th bracket).  Skip when line 22 ==
+        # line 32 (no residual).
+        if line22 == line32:
             line33 = 0.                        # amount taxed at AMT_CG_rt3:20%
             linex2 = 0.                        # amount taxed at AMT_CG_rt4:ref
         else:
