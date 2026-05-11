@@ -2788,100 +2788,151 @@
         <span class="n">AMT_CG_brk1</span><span class="p">,</span> <span class="n">AMT_CG_brk2</span><span class="p">,</span> <span class="n">AMT_CG_brk3</span><span class="p">,</span> <span class="n">AMT_CG_rt1</span><span class="p">,</span> <span class="n">AMT_CG_rt2</span><span class="p">,</span>
         <span class="n">AMT_CG_rt3</span><span class="p">,</span> <span class="n">AMT_CG_rt4</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span> <span class="n">c09600</span><span class="p">,</span> <span class="n">c62100</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes Alternative Minimum Tax (AMT) taxable income and liability, where</span>
-<span class="sd">    c62100 is AMT taxable income,</span>
-<span class="sd">    c09600 is AMT tax liability, and</span>
-<span class="sd">    c05800 is total (regular + AMT) income tax liability before credits.</span>
+<span class="sd">    Computes Form 6251 (2025) Alternative Minimum Tax (AMT).</span>
 
-<span class="sd">    Note that line-number variable names refer to 2015 Form 6251.</span>
+<span class="sd">    Builds AMT taxable income c62100 (Form 6251 line 4), tentative</span>
+<span class="sd">    minimum tax via either the flat-rate computation (line 7) or</span>
+<span class="sd">    Part III&#39;s maximum-capital-gains-rates worksheet (lines 12-40),</span>
+<span class="sd">    subtracts AMT foreign tax credit (line 8) to yield tentative</span>
+<span class="sd">    minimum tax (line 9), and subtracts the regular-tax base</span>
+<span class="sd">    (line 10) to yield AMT liability c09600 (line 11). Total tax</span>
+<span class="sd">    before credits c05800 = taxbc + c09600.</span>
+
+<span class="sd">    Form 6251 structure:</span>
+<span class="sd">      - Part I (lines 1a-4): AMTI = taxable income before exemption</span>
+<span class="sd">        plus AMT-disallowed deductions (SALT line 2a, Sch A misc,</span>
+<span class="sd">        medical-floor add-back) and the unmodeled prefs/adjustments</span>
+<span class="sd">        (lines 2c-2t + 3) captured in cmbtp; line 2b refunds (e00700)</span>
+<span class="sd">        are subtracted.</span>
+<span class="sd">      - Part II top (lines 5-6): exemption schedule with phaseout</span>
+<span class="sd">        (line 5 = AMT_em - AMT_prt * max(0, AMTI - AMT_em_ps));</span>
+<span class="sd">        line 6 = AMTI - exemption.</span>
+<span class="sd">      - Part II tax (line 7): flat-rate AMT tax (26% below AMT_brk1,</span>
+<span class="sd">        28% above) OR Part III&#39;s cap-gains-aware tax (line 40).</span>
+<span class="sd">      - Part III (lines 12-40): tax computation using maximum</span>
+<span class="sd">        capital gains rates (0% / 15% / 20% / 25% unrecap §1250)</span>
+<span class="sd">        paralleling QDCGTW / Sch D Tax Worksheet.</span>
+<span class="sd">      - Part II bottom (lines 8-11): AMT FTC, tentative minimum</span>
+<span class="sd">        tax, regular-tax base, AMT.</span>
+
+<span class="sd">    Special rules:</span>
+<span class="sd">      - MARS == 3 (MFS): exemption fully phased out when</span>
+<span class="sd">        c62100 &gt; AMT_em_pe (IRC §55(d)(3) &quot;$900,350 see instructions&quot;</span>
+<span class="sd">        cliff).</span>
+<span class="sd">      - IRC §59(j) kiddie AMT: for filers under AMT_child_em_c_age</span>
+<span class="sd">        (no qualifying older spouse), exemption capped at</span>
+<span class="sd">        earned + AMT_child_em.</span>
+<span class="sd">      - Reform-only 4th cap-gains bracket above AMT_CG_brk3 taxed</span>
+<span class="sd">        at AMT_CG_rt4 (no form analogue; AMT_CG_brk3 default 9e+99</span>
+<span class="sd">        makes this inert under current law).</span>
+
+<span class="sd">    Downstream: c05800 → C1040 (Form 1040 line 16 + Sch 2 line 1) →</span>
+<span class="sd">                         NonrefundableCredits → IITAX.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
-<span class="sd">    e07300: float</span>
-<span class="sd">        Foreign tax credit from Form 1116</span>
-<span class="sd">    dwks13: float</span>
-<span class="sd">        Difference of dwks10 - dwks12</span>
 <span class="sd">    standard: float</span>
-<span class="sd">        Standard deduction (zero for itemizers)</span>
-<span class="sd">    f6251: int</span>
-<span class="sd">        1 if Form 6251 (AMT) attached to return, otherwise 0</span>
+<span class="sd">        Standard deduction (zero for itemizers); branches AMTI</span>
+<span class="sd">        construction (form line 1b itemizer vs non-itemizer path)</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
-<span class="sd">    c18300: float</span>
-<span class="sd">        Schedule A: state and local taxes plus real estate taxes deducted</span>
-<span class="sd">    taxbc: float</span>
-<span class="sd">        Regular tax on regular taxable income before credits</span>
+<span class="sd">        Adjusted Gross Income (Form 1040 line 11)</span>
+<span class="sd">    e00700: float</span>
+<span class="sd">        Taxable refunds of state and local income taxes</span>
+<span class="sd">        (Form 6251 line 2b subtraction)</span>
+<span class="sd">    qbided: float</span>
+<span class="sd">        Qualified business income deduction (Form 1040 line 13)</span>
 <span class="sd">    c04470: float</span>
-<span class="sd">        Itemized deductions after phase-out (zero for non-itemizers)</span>
+<span class="sd">        Itemized deductions after Pease phase-out (zero for non-</span>
+<span class="sd">        itemizers); Form 1040 line 12 itemized portion</span>
 <span class="sd">    c17000: float</span>
-<span class="sd">        Schedule A: Medical expenses deducted</span>
+<span class="sd">        Schedule A medical expenses deducted (post-floor); used for</span>
+<span class="sd">        the medical add-back capped at 2.5% of AGI</span>
+<span class="sd">    c18300: float</span>
+<span class="sd">        Schedule A SALT post-cap deduction (Form 6251 line 2a</span>
+<span class="sd">        add-back for itemizers)</span>
 <span class="sd">    c20800: float</span>
-<span class="sd">        Schedule A: net limited miscellaneous deductions deducted</span>
+<span class="sd">        Schedule A miscellaneous deductions post-2% floor (TCJA-</span>
+<span class="sd">        suspended 2018-2025; add-back)</span>
 <span class="sd">    c21040: float</span>
-<span class="sd">        Itemized deductions that are phased out</span>
-<span class="sd">    e24515: float</span>
-<span class="sd">        Schedule D: Un-Recaptured Section 1250 Gain</span>
+<span class="sd">        Itemized deductions that are phased out by Pease</span>
+<span class="sd">        (subtracted to undo Pease for AMT)</span>
+<span class="sd">    cmbtp: float</span>
+<span class="sd">        Estimate of income on AMT Form 6251 but not in AGI; captures</span>
+<span class="sd">        Form 6251 lines 2c through 2t and line 3 (depreciation,</span>
+<span class="sd">        depletion, ISO, PAB interest, etc.) not separately modeled</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                                  4=household-head, 5=widow(er))</span>
-<span class="sd">    dwks18: float</span>
-<span class="sd">        Maximum of dwks16 and dwks17</span>
-<span class="sd">    dwks14: float</span>
-<span class="sd">        Maximum of 0 and dwks1 - dwks13</span>
-<span class="sd">    c05700: float</span>
-<span class="sd">        Lump sum distributions</span>
-<span class="sd">    e62900: float</span>
-<span class="sd">        Alternative Minimum Tax foreign tax credit from Form 6251</span>
-<span class="sd">    e00700: float</span>
-<span class="sd">        Taxable refunds of state and local income taxes</span>
-<span class="sd">    dwks10: float</span>
-<span class="sd">        Sum of dwks6 + dwks9</span>
+<span class="sd">    AMT_em: list</span>
+<span class="sd">        AMT exemption amount by MARS (Form 6251 line 5)</span>
+<span class="sd">    AMT_prt: float</span>
+<span class="sd">        AMT exemption phaseout rate (line 5 phaseout)</span>
+<span class="sd">    AMT_em_ps: list</span>
+<span class="sd">        AMT exemption phaseout start by MARS</span>
+<span class="sd">    AMT_em_pe: float</span>
+<span class="sd">        AMT exemption phaseout ending AMT taxable income for</span>
+<span class="sd">        married filing separately (MARS == 3 cliff)</span>
+<span class="sd">    AMT_child_em_c_age: float</span>
+<span class="sd">        Age ceiling for IRC §59(j) kiddie-AMT exemption cap</span>
+<span class="sd">    AMT_child_em: float</span>
+<span class="sd">        Kiddie-AMT exemption increment: earned + this amount</span>
 <span class="sd">    age_head: int</span>
-<span class="sd">        Age in years of taxpayer (i.e. primary adult)</span>
+<span class="sd">        Age in years of taxpayer (i.e. primary adult); 0 = unset</span>
 <span class="sd">    age_spouse: int</span>
 <span class="sd">        Age in years of spouse (i.e. secondary adult if present)</span>
 <span class="sd">    earned: float</span>
 <span class="sd">        Earned income for filing unit</span>
-<span class="sd">    cmbtp: float</span>
-<span class="sd">        Estimate of income on (AMT) Form 6251 but not in AGI</span>
-<span class="sd">    qbided: float</span>
-<span class="sd">        Qualified business income deduction</span>
-<span class="sd">    AMT_child_em_c_age: float</span>
-<span class="sd">        Age ceiling for special AMT exemption</span>
 <span class="sd">    AMT_brk1: list</span>
-<span class="sd">        AMT bracket 1 (upper threshold)</span>
-<span class="sd">    AMT_em: list</span>
-<span class="sd">        AMT exemption amount</span>
-<span class="sd">    AMT_prt: float</span>
-<span class="sd">        AMT exemption phaseout rate</span>
+<span class="sd">        AMT bracket 1 upper threshold by MARS (Form 6251 line 7:</span>
+<span class="sd">        $239,100 / $119,550 MFS)</span>
 <span class="sd">    AMT_rt1: float</span>
-<span class="sd">        AMT rate 1</span>
+<span class="sd">        AMT rate 1 (26%)</span>
 <span class="sd">    AMT_rt2_addon: float</span>
-<span class="sd">        Additional AMT rate for AMT taxable income above AMT bracket 1</span>
-<span class="sd">    AMT_child_em: float</span>
-<span class="sd">        Child AMT exemption additional income base</span>
-<span class="sd">    AMT_em_ps: list</span>
-<span class="sd">        AMT exemption phaseout start</span>
-<span class="sd">    AMT_em_pe: float</span>
-<span class="sd">        AMT exemption phaseout ending AMT taxable income for</span>
-<span class="sd">        married filing separately</span>
+<span class="sd">        Additional AMT rate above AMT_brk1 (combined top = 28%)</span>
+<span class="sd">    e24515: float</span>
+<span class="sd">        Schedule D unrecaptured §1250 gain (Form 6251 line 14)</span>
+<span class="sd">    dwks13: float</span>
+<span class="sd">        QDCGTW line 4 / Sch D TW line 13 (Form 6251 line 13)</span>
+<span class="sd">    dwks14: float</span>
+<span class="sd">        QDCGTW line 5 / Sch D TW line 14 (Form 6251 line 20)</span>
+<span class="sd">    dwks18: float</span>
+<span class="sd">        QDCGTW line 5 / Sch D TW line 21 (Form 6251 line 27)</span>
+<span class="sd">    dwks10: float</span>
+<span class="sd">        Schedule D Tax Worksheet line 10 (cap on Form 6251 line 15)</span>
 <span class="sd">    AMT_CG_brk1: list</span>
-<span class="sd">        Top of long-term capital gains and qualified dividends (AMT) tax</span>
-<span class="sd">        bracket 1</span>
+<span class="sd">        Top of long-term capital gains and qualified dividends (AMT)</span>
+<span class="sd">        tax bracket 1 (Form 6251 line 19: top of 0% bracket)</span>
 <span class="sd">    AMT_CG_brk2: list</span>
-<span class="sd">        Top of long-term capital gains and qualified dividends (AMT) tax</span>
-<span class="sd">        bracket 2</span>
+<span class="sd">        Top of long-term capital gains and qualified dividends (AMT)</span>
+<span class="sd">        tax bracket 2 (Form 6251 line 25: top of 15% bracket)</span>
 <span class="sd">    AMT_CG_brk3: list</span>
-<span class="sd">        Top of long-term capital gains and qualified dividends (AMT) tax</span>
-<span class="sd">        bracket 3</span>
+<span class="sd">        Reform-only top of cap-gains bracket 3 (default 9e+99 →</span>
+<span class="sd">        inert under current law)</span>
 <span class="sd">    AMT_CG_rt1: float</span>
 <span class="sd">        Long term capital gain and qualified dividends (AMT) rate 1</span>
+<span class="sd">        (0%)</span>
 <span class="sd">    AMT_CG_rt2: float</span>
 <span class="sd">        Long term capital gain and qualified dividends (AMT) rate 2</span>
+<span class="sd">        (15%)</span>
 <span class="sd">    AMT_CG_rt3: float</span>
 <span class="sd">        Long term capital gain and qualified dividends (AMT) rate 3</span>
+<span class="sd">        (20%)</span>
 <span class="sd">    AMT_CG_rt4: float</span>
-<span class="sd">        Long term capital gain and qualified dividends (AMT) rate 4</span>
+<span class="sd">        Reform-only long term capital gain and qualified dividends</span>
+<span class="sd">        (AMT) rate 4</span>
+<span class="sd">    f6251: int</span>
+<span class="sd">        1 if Form 6251 (AMT) attached to return, otherwise 0</span>
+<span class="sd">    e62900: float</span>
+<span class="sd">        Alternative Minimum Tax foreign tax credit from Form 6251</span>
+<span class="sd">        (used when f6251 == 1)</span>
+<span class="sd">    e07300: float</span>
+<span class="sd">        Foreign tax credit from Form 1116 (used when f6251 == 0)</span>
+<span class="sd">    taxbc: float</span>
+<span class="sd">        Regular tax on regular taxable income before credits (used</span>
+<span class="sd">        in the Form 6251 line 10 regular-tax base)</span>
+<span class="sd">    c05700: float</span>
+<span class="sd">        Lump sum distributions (Form 4972) subtracted from taxbc in</span>
+<span class="sd">        the Form 6251 line 10 regular-tax base</span>
 <span class="sd">    c05800: float</span>
 <span class="sd">        Total (regular + AMT) income tax liability before credits</span>
 <span class="sd">    c09600: float</span>
@@ -2892,83 +2943,112 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c62100: float</span>
-<span class="sd">        Alternative Minimum Tax (AMT) taxable income</span>
+<span class="sd">        Alternative Minimum Tax (AMT) taxable income (Form 6251 line 4)</span>
 <span class="sd">    c09600: float</span>
-<span class="sd">        Alternative Minimum Tax (AMT) tax liability</span>
+<span class="sd">        Alternative Minimum Tax (AMT) tax liability (Form 6251 line 11)</span>
 <span class="sd">    c05800: float</span>
 <span class="sd">        Total (regular + AMT) income tax liability before credits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
-    <span class="c1"># Form 6251, Part I</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Form 6251 Part I (lines 1a-4): Alternative Minimum Taxable Income</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="k">if</span> <span class="n">standard</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
         <span class="n">c62100</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">c04470</span> <span class="o">+</span>
-                  <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="mf">0.025</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">))</span> <span class="o">+</span>
-                  <span class="n">c18300</span> <span class="o">+</span> <span class="n">c20800</span> <span class="o">-</span> <span class="n">c21040</span><span class="p">)</span>
+                  <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="mf">0.025</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">))</span> <span class="o">+</span>  <span class="c1"># medical add-back</span>
+                  <span class="n">c18300</span> <span class="o">+</span>    <span class="c1"># SALT add-back (Form 6251 line 2a)</span>
+                  <span class="n">c20800</span> <span class="o">-</span>    <span class="c1"># Sch A misc add-back (TCJA-suspended 2018-2025)</span>
+                  <span class="n">c21040</span><span class="p">)</span>     <span class="c1"># Pease undone for AMT</span>
     <span class="k">if</span> <span class="n">standard</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
         <span class="n">c62100</span> <span class="o">=</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span>
-    <span class="n">c62100</span> <span class="o">+=</span> <span class="n">cmbtp</span>  <span class="c1"># add income not in AGI but considered income for AMT</span>
-    <span class="c1"># c62100 is AMT taxable income, which is line28</span>
-    <span class="c1"># Form 6251, Part II top</span>
-    <span class="c1"># line29 is AMT exemption amount</span>
-    <span class="n">line29</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_em</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">AMT_prt</span> <span class="o">*</span>
-                 <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c62100</span> <span class="o">-</span> <span class="n">AMT_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+    <span class="n">c62100</span> <span class="o">+=</span> <span class="n">cmbtp</span>  <span class="c1"># Form 6251 lines 2c-2t + 3: AMT prefs/adjustments</span>
+    <span class="c1"># c62100 is AMT taxable income = Form 6251 line 4</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Form 6251 Part II top (lines 5-6): exemption and AMTI less exemption</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># line 5: AMT exemption amount (with phase-out)</span>
+    <span class="n">line5</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_em</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">AMT_prt</span> <span class="o">*</span>
+                <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c62100</span> <span class="o">-</span> <span class="n">AMT_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">c62100</span> <span class="o">&gt;</span> <span class="n">AMT_em_pe</span><span class="p">:</span>
-        <span class="n">line29</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">line5</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="c1"># IRC §59(j) kiddie-AMT cap: exemption limited to earned +</span>
+    <span class="c1"># AMT_child_em when filer is under AMT_child_em_c_age (and no</span>
+    <span class="c1"># qualifying older spouse).</span>
     <span class="n">young_head</span> <span class="o">=</span> <span class="n">age_head</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">age_head</span> <span class="o">&lt;</span> <span class="n">AMT_child_em_c_age</span>
     <span class="n">no_or_young_spouse</span> <span class="o">=</span> <span class="n">age_spouse</span> <span class="o">&lt;</span> <span class="n">AMT_child_em_c_age</span>
     <span class="k">if</span> <span class="n">young_head</span> <span class="ow">and</span> <span class="n">no_or_young_spouse</span><span class="p">:</span>
-        <span class="n">line29</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line29</span><span class="p">,</span> <span class="n">earned</span> <span class="o">+</span> <span class="n">AMT_child_em</span><span class="p">)</span>
-    <span class="c1"># line30 is AMT taxable income less AMT exemption amount</span>
-    <span class="n">line30</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c62100</span> <span class="o">-</span> <span class="n">line29</span><span class="p">)</span>
-    <span class="n">line3163</span> <span class="o">=</span> <span class="p">(</span><span class="n">AMT_rt1</span> <span class="o">*</span> <span class="n">line30</span> <span class="o">+</span>
-                <span class="n">AMT_rt2_addon</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">line30</span> <span class="o">-</span> <span class="n">AMT_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])))</span>
+        <span class="n">line5</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line5</span><span class="p">,</span> <span class="n">earned</span> <span class="o">+</span> <span class="n">AMT_child_em</span><span class="p">)</span>
+    <span class="c1"># line 6: AMT taxable income less AMT exemption amount</span>
+    <span class="n">line6</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c62100</span> <span class="o">-</span> <span class="n">line5</span><span class="p">)</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Form 6251 Part II tax (line 7): flat-rate AMT tax OR Part III</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Flat-rate tax: 26% below AMT_brk1, 28% above. Also serves as</span>
+    <span class="c1"># Part III line 39 (AMT-rate on full line 12 = line 6).</span>
+    <span class="n">amt_brk1</span> <span class="o">=</span> <span class="n">AMT_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">flat_rate_tax</span> <span class="o">=</span> <span class="p">(</span><span class="n">AMT_rt1</span> <span class="o">*</span> <span class="n">line6</span> <span class="o">+</span>
+                     <span class="n">AMT_rt2_addon</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line6</span> <span class="o">-</span> <span class="n">amt_brk1</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">dwks10</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">dwks13</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">dwks14</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">dwks18</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">e24515</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="c1"># complete Form 6251, Part III (line36 is equal to line30)</span>
-        <span class="n">line37</span> <span class="o">=</span> <span class="n">dwks13</span>
-        <span class="n">line38</span> <span class="o">=</span> <span class="n">e24515</span>
-        <span class="n">line39</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line37</span> <span class="o">+</span> <span class="n">line38</span><span class="p">,</span> <span class="n">dwks10</span><span class="p">)</span>
-        <span class="n">line40</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line30</span><span class="p">,</span> <span class="n">line39</span><span class="p">)</span>
-        <span class="n">line41</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line30</span> <span class="o">-</span> <span class="n">line40</span><span class="p">)</span>
-        <span class="n">line42</span> <span class="o">=</span> <span class="p">(</span><span class="n">AMT_rt1</span> <span class="o">*</span> <span class="n">line41</span> <span class="o">+</span>
-                  <span class="n">AMT_rt2_addon</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">line41</span> <span class="o">-</span> <span class="n">AMT_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])))</span>
-        <span class="n">line44</span> <span class="o">=</span> <span class="n">dwks14</span>
-        <span class="n">line45</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_CG_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">line44</span><span class="p">)</span>
-        <span class="n">line46</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line30</span><span class="p">,</span> <span class="n">line37</span><span class="p">)</span>
-        <span class="n">line47</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line45</span><span class="p">,</span> <span class="n">line46</span><span class="p">)</span>  <span class="c1"># line47 is amount taxed at AMT_CG_rt1</span>
-        <span class="n">cgtax1</span> <span class="o">=</span> <span class="n">line47</span> <span class="o">*</span> <span class="n">AMT_CG_rt1</span>
-        <span class="n">line48</span> <span class="o">=</span> <span class="n">line46</span> <span class="o">-</span> <span class="n">line47</span>
-        <span class="n">line51</span> <span class="o">=</span> <span class="n">dwks18</span>
-        <span class="n">line52</span> <span class="o">=</span> <span class="n">line45</span> <span class="o">+</span> <span class="n">line51</span>
-        <span class="n">line53</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_CG_brk2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">line52</span><span class="p">)</span>
-        <span class="n">line54</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line48</span><span class="p">,</span> <span class="n">line53</span><span class="p">)</span>  <span class="c1"># line54 is amount taxed at AMT_CG_rt2</span>
-        <span class="n">cgtax2</span> <span class="o">=</span> <span class="n">line54</span> <span class="o">*</span> <span class="n">AMT_CG_rt2</span>
-        <span class="n">line56</span> <span class="o">=</span> <span class="n">line47</span> <span class="o">+</span> <span class="n">line54</span>  <span class="c1"># total amount in lower two brackets</span>
-        <span class="k">if</span> <span class="n">line41</span> <span class="o">==</span> <span class="n">line56</span><span class="p">:</span>
-            <span class="n">line57</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># line57 is amount taxed at AMT_CG_rt3</span>
-            <span class="n">linex2</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># linex2 is amount taxed at AMT_CG_rt4</span>
+        <span class="c1"># ------------------------------------------------------------</span>
+        <span class="c1"># Form 6251 Part III (lines 12-40): tax computation using</span>
+        <span class="c1"># maximum capital gains rates. line 12 == line 6.</span>
+        <span class="c1"># ------------------------------------------------------------</span>
+        <span class="n">line13</span> <span class="o">=</span> <span class="n">dwks13</span>                        <span class="c1"># QDCGTW ln 4 / SchDTW ln 13</span>
+        <span class="n">line14</span> <span class="o">=</span> <span class="n">e24515</span>                        <span class="c1"># Sch D line 19 (unrecap §1250)</span>
+        <span class="n">line15</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line13</span> <span class="o">+</span> <span class="n">line14</span><span class="p">,</span> <span class="n">dwks10</span><span class="p">)</span>  <span class="c1"># min(13+14, SchDTW line 10)</span>
+        <span class="n">line16</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line6</span><span class="p">,</span> <span class="n">line15</span><span class="p">)</span>
+        <span class="n">line17</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line6</span> <span class="o">-</span> <span class="n">line16</span><span class="p">)</span>       <span class="c1"># ordinary-income portion</span>
+        <span class="n">line18</span> <span class="o">=</span> <span class="p">(</span><span class="n">AMT_rt1</span> <span class="o">*</span> <span class="n">line17</span> <span class="o">+</span>           <span class="c1"># AMT-rate on line 17</span>
+                  <span class="n">AMT_rt2_addon</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line17</span> <span class="o">-</span> <span class="n">amt_brk1</span><span class="p">))</span>
+        <span class="c1"># line 19 = AMT_CG_brk1[MARS-1] (top of 0% bracket)</span>
+        <span class="n">cg_brk1</span> <span class="o">=</span> <span class="n">AMT_CG_brk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">line20</span> <span class="o">=</span> <span class="n">dwks14</span>                        <span class="c1"># QDCGTW ln 5 / SchDTW ln 14</span>
+        <span class="n">line21</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">cg_brk1</span> <span class="o">-</span> <span class="n">line20</span><span class="p">)</span>     <span class="c1"># unused 0% bracket</span>
+        <span class="n">line22</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line6</span><span class="p">,</span> <span class="n">line13</span><span class="p">)</span>            <span class="c1"># cap-gains-eligible portion</span>
+        <span class="n">line23</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line21</span><span class="p">,</span> <span class="n">line22</span><span class="p">)</span>           <span class="c1"># amount taxed at AMT_CG_rt1:0%</span>
+        <span class="n">cgtax1</span> <span class="o">=</span> <span class="n">line23</span> <span class="o">*</span> <span class="n">AMT_CG_rt1</span>
+        <span class="n">line24</span> <span class="o">=</span> <span class="n">line22</span> <span class="o">-</span> <span class="n">line23</span>
+        <span class="c1"># line 25 = AMT_CG_brk2[MARS-1] (top of 15% bracket)</span>
+        <span class="c1"># line 26 == line 21</span>
+        <span class="n">line27</span> <span class="o">=</span> <span class="n">dwks18</span>                        <span class="c1"># QDCGTW ln 5 / SchDTW ln 21</span>
+        <span class="n">line28</span> <span class="o">=</span> <span class="n">line21</span> <span class="o">+</span> <span class="n">line27</span>
+        <span class="n">line29</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_CG_brk2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">line28</span><span class="p">)</span>
+        <span class="n">line30</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line24</span><span class="p">,</span> <span class="n">line29</span><span class="p">)</span>           <span class="c1"># amount taxed at AMT_CG_rt2:15%</span>
+        <span class="n">cgtax2</span> <span class="o">=</span> <span class="n">line30</span> <span class="o">*</span> <span class="n">AMT_CG_rt2</span>           <span class="c1"># line 31 = 15% * line 30</span>
+        <span class="n">line32</span> <span class="o">=</span> <span class="n">line23</span> <span class="o">+</span> <span class="n">line30</span>               <span class="c1"># sum of 0% + 15% amounts</span>
+        <span class="k">if</span> <span class="n">line17</span> <span class="o">==</span> <span class="n">line32</span><span class="p">:</span>
+            <span class="n">line33</span> <span class="o">=</span> <span class="mf">0.</span>                        <span class="c1"># amount taxed at AMT_CG_rt3:20%</span>
+            <span class="n">linex2</span> <span class="o">=</span> <span class="mf">0.</span>                        <span class="c1"># amount taxed at AMT_CG_rt4:ref</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">line57</span> <span class="o">=</span> <span class="n">line46</span> <span class="o">-</span> <span class="n">line56</span>
-            <span class="n">linex1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line48</span><span class="p">,</span>
-                         <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_CG_brk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">line44</span> <span class="o">-</span> <span class="n">line45</span><span class="p">))</span>
-            <span class="n">linex2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line54</span> <span class="o">-</span> <span class="n">linex1</span><span class="p">)</span>
-        <span class="n">cgtax3</span> <span class="o">=</span> <span class="n">line57</span> <span class="o">*</span> <span class="n">AMT_CG_rt3</span>
+            <span class="n">line33</span> <span class="o">=</span> <span class="n">line22</span> <span class="o">-</span> <span class="n">line32</span>
+            <span class="c1"># Reform-only 4th bracket above AMT_CG_brk3 (default</span>
+            <span class="c1"># 9e+99 → linex2 collapses to 0 under current law).</span>
+            <span class="n">linex1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line24</span><span class="p">,</span>
+                         <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_CG_brk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">line20</span> <span class="o">-</span> <span class="n">line21</span><span class="p">))</span>
+            <span class="n">linex2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line30</span> <span class="o">-</span> <span class="n">linex1</span><span class="p">)</span>
+        <span class="n">cgtax3</span> <span class="o">=</span> <span class="n">line33</span> <span class="o">*</span> <span class="n">AMT_CG_rt3</span>           <span class="c1"># line 34 = 20% * line 33</span>
         <span class="n">cgtax4</span> <span class="o">=</span> <span class="n">linex2</span> <span class="o">*</span> <span class="n">AMT_CG_rt4</span>
-        <span class="k">if</span> <span class="n">line38</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
-            <span class="n">line61</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="k">if</span> <span class="n">line14</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>                       <span class="c1"># line 35-37: §1250 25%</span>
+            <span class="n">line37</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">line61</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line30</span> <span class="o">-</span> <span class="n">line41</span> <span class="o">-</span> <span class="n">line56</span> <span class="o">-</span> <span class="n">line57</span> <span class="o">-</span> <span class="n">linex2</span><span class="p">)</span>
-        <span class="n">line62</span> <span class="o">=</span> <span class="n">line42</span> <span class="o">+</span> <span class="n">cgtax1</span> <span class="o">+</span> <span class="n">cgtax2</span> <span class="o">+</span> <span class="n">cgtax3</span> <span class="o">+</span> <span class="n">cgtax4</span> <span class="o">+</span> <span class="n">line61</span>
-        <span class="n">line64</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line3163</span><span class="p">,</span> <span class="n">line62</span><span class="p">)</span>
-        <span class="n">line31</span> <span class="o">=</span> <span class="n">line64</span>
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># if not completing Form 6251, Part III</span>
-        <span class="n">line31</span> <span class="o">=</span> <span class="n">line3163</span>
-    <span class="c1"># Form 6251, Part II bottom</span>
+            <span class="n">line37</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line6</span> <span class="o">-</span> <span class="n">line17</span> <span class="o">-</span> <span class="n">line32</span> <span class="o">-</span> <span class="n">line33</span> <span class="o">-</span> <span class="n">linex2</span><span class="p">)</span>
+        <span class="n">line38</span> <span class="o">=</span> <span class="n">line18</span> <span class="o">+</span> <span class="n">cgtax1</span> <span class="o">+</span> <span class="n">cgtax2</span> <span class="o">+</span> <span class="n">cgtax3</span> <span class="o">+</span> <span class="n">cgtax4</span> <span class="o">+</span> <span class="n">line37</span>
+        <span class="n">line40</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">flat_rate_tax</span><span class="p">,</span> <span class="n">line38</span><span class="p">)</span>    <span class="c1"># min(line 38, line 39)</span>
+        <span class="n">line7</span> <span class="o">=</span> <span class="n">line40</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># if not completing Form 6251 Part III</span>
+        <span class="n">line7</span> <span class="o">=</span> <span class="n">flat_rate_tax</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># Form 6251 Part II bottom (lines 8-11): AMT FTC, TMT, regular-tax</span>
+    <span class="c1"># base, AMT.</span>
+    <span class="c1"># ----------------------------------------------------------------</span>
     <span class="k">if</span> <span class="n">f6251</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">line32</span> <span class="o">=</span> <span class="n">e62900</span>
+        <span class="n">line8</span> <span class="o">=</span> <span class="n">e62900</span>                         <span class="c1"># AMT FTC from filed Form 6251</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">line32</span> <span class="o">=</span> <span class="n">e07300</span>
-    <span class="n">line33</span> <span class="o">=</span> <span class="n">line31</span> <span class="o">-</span> <span class="n">line32</span>
-    <span class="n">c09600</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line33</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">taxbc</span> <span class="o">-</span> <span class="n">e07300</span> <span class="o">-</span> <span class="n">c05700</span><span class="p">))</span>
+        <span class="n">line8</span> <span class="o">=</span> <span class="n">e07300</span>                         <span class="c1"># regular FTC proxy</span>
+    <span class="n">line9</span> <span class="o">=</span> <span class="n">line7</span> <span class="o">-</span> <span class="n">line8</span>                      <span class="c1"># tentative minimum tax</span>
+    <span class="c1"># line 10 regular-tax base = max(0, taxbc - e07300 - c05700);</span>
+    <span class="c1"># c05700 corresponds to &quot;minus any tax from Form 4972&quot;.</span>
+    <span class="n">c09600</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line9</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">taxbc</span> <span class="o">-</span> <span class="n">e07300</span> <span class="o">-</span> <span class="n">c05700</span><span class="p">))</span>
     <span class="n">c05800</span> <span class="o">=</span> <span class="n">taxbc</span> <span class="o">+</span> <span class="n">c09600</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c62100</span><span class="p">,</span> <span class="n">c09600</span><span class="p">,</span> <span class="n">c05800</span><span class="p">)</span>
 
