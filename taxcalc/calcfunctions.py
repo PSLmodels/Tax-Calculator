@@ -2323,35 +2323,56 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
 @iterate_jit(nopython=True)
 def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
     """
-    Computes surtax on AGI above some threshold.
+    Computes a flat surtax on the portion of Adjusted Gross Income (AGI)
+    above a MARS-indexed threshold.
+
+    Reform construct: there is no IRS form correspondence (the Internal
+    Revenue Code has no general AGI surtax line). Inert under current
+    law because `AGI_surtax_trt` defaults to 0.0 for all years and
+    `AGI_surtax_thd` defaults to 9e+99 for every MARS value.
+
+    When the rate is positive the same amount (`rate * max(0, AGI - thd)`)
+    is added to two accumulators:
+      - `taxbc` (regular tax on regular taxable income before credits)
+        so the surtax flows through `c05800` into `iitax` downstream;
+      - `surtax` (records-bound diagnostic accumulator, also incremented
+        by `FairShareTax` for the "Buffett Rule" reform construct).
+
+    Called in `Calculator.calc_all` after `GainsTax` (so `taxbc` already
+    reflects the rate-schedule + qualified-div/LTCG tax) and before
+    `NetInvIncTax` and `AMT`.
 
     Parameters
     ----------
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (Form 1040 line 11)
     MARS: int
-        Filing (marital) status. (1=single, 2=joint, 3=separate,
-                                  4=household-head, 5=widow(er))
+        Filing (marital) status (1=single, 2=joint, 3=separate,
+                                 4=household-head, 5=widow(er))
     AGI_surtax_trt: float
-        New AGI surtax rate
+        Reform-only flat surtax rate applied to AGI above
+        `AGI_surtax_thd[MARS-1]`. Default 0.0 (inert).
     AGI_surtax_thd: list
-        Threshold for the new AGI surtax
+        Reform-only MARS-indexed AGI threshold above which the surtax
+        applies. Default 9e+99 (inert).
     taxbc: float
-        Regular tax on regular taxable income before credits
+        Regular tax on regular taxable income before credits (input;
+        already includes rate-schedule + qualified-div/LTCG tax)
     surtax: float
-        Surtax on AGI above some threshold
+        Records-bound surtax accumulator (input)
 
     Returns
     -------
     taxbc: float
-        Regular tax on regular taxable income before credits
+        Input `taxbc` augmented by the AGI surtax
     surtax: float
-        Surtax on AGI above some threshold
+        Input `surtax` augmented by the AGI surtax
     """
+    # Reform construct: inert under current law (AGI_surtax_trt = 0).
     if AGI_surtax_trt > 0.:
-        hiAGItax = AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0.)
-        taxbc += hiAGItax
-        surtax += hiAGItax
+        agi_surtax = AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0.)
+        taxbc += agi_surtax
+        surtax += agi_surtax
     return (taxbc, surtax)
 
 
