@@ -3178,7 +3178,32 @@
           <span class="n">CDCC_po_rate_per_step</span><span class="p">,</span> <span class="n">CDCC_refundable</span><span class="p">,</span>
           <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c32800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates Form 2441 child and dependent care expense credit, c07180.</span>
+<span class="sd">    Calculates Form 2441 (2025) Child and Dependent Care Expenses credit.</span>
+
+<span class="sd">    Maps to Form 2441 Part II lines 2-11:</span>
+<span class="sd">      line 2  (qualifying persons) ......... f2441 (capped at 2)</span>
+<span class="sd">      line 3  (expenses, capped $3k/$6k) ... c32800 = min(e32800, line2*CDCC_c)</span>
+<span class="sd">      line 4  (taxpayer earned income) ..... earned_p</span>
+<span class="sd">      line 5  (spouse earned income, MFJ) .. earned_s (else line 4)</span>
+<span class="sd">      line 6  (smallest of 3, 4, 5) ........ line6</span>
+<span class="sd">      line 7  (AGI) ........................ c00100</span>
+<span class="sd">      line 8  (decimal from AGI table) ..... crate</span>
+<span class="sd">      line 9  (line 6 * line 8) ............ line9</span>
+<span class="sd">      line 10 (tax-liability limit) ........ max(0, c05800 - e07300)</span>
+<span class="sd">      line 11 (nonrefundable credit) ....... c07180 = min(line 9, line 10)</span>
+
+<span class="sd">    The line-8 rate is computed via two stepped phase-downs:</span>
+<span class="sd">      - From CDCC_po1_rate_max (35%) down to CDCC_po1_rate_min (20%)</span>
+<span class="sd">        starting at AGI &gt; CDCC_ps1, in CDCC_po1_step_size AGI steps of</span>
+<span class="sd">        size CDCC_po_rate_per_step.</span>
+<span class="sd">      - From CDCC_po1_rate_min down to CDCC_po2_rate_min starting at</span>
+<span class="sd">        AGI &gt; CDCC_ps2[MARS-1], in CDCC_po2_step_size[MARS-1] AGI steps</span>
+<span class="sd">        of size CDCC_po_rate_per_step (OBBBA upper phase-down).</span>
+
+<span class="sd">    Form 2441 line 9a (partial refundability under residency/earned-income</span>
+<span class="sd">    conditions, new for 2025) is not modeled on-form; the reform-only</span>
+<span class="sd">    switch CDCC_refundable instead makes the entire credit refundable into</span>
+<span class="sd">    CDCC_refund.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -3235,17 +3260,14 @@
 <span class="sd">    CDCC_refund: float</span>
 <span class="sd">        Refundable amount of c07180 amount</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># credit for at most two cared-for individuals and for actual expenses</span>
+    <span class="c1"># ---- Form 2441 Part II ------------------------------------------------</span>
+    <span class="c1"># line 3: qualifying expenses, capped at min(f2441,2) * CDCC_c</span>
     <span class="n">max_credit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">f2441</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">CDCC_c</span>
     <span class="n">c32800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">e32800</span><span class="p">,</span> <span class="n">max_credit</span><span class="p">))</span>
-    <span class="c1"># credit is limited to minimum of individuals&#39; earned income</span>
-    <span class="n">c32880</span> <span class="o">=</span> <span class="n">earned_p</span>  <span class="c1"># earned income of taxpayer</span>
-    <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">c32890</span> <span class="o">=</span> <span class="n">earned_s</span>  <span class="c1"># earned income of spouse when present</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">c32890</span> <span class="o">=</span> <span class="n">earned_p</span>
-    <span class="n">c33000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c32800</span><span class="p">,</span> <span class="n">c32880</span><span class="p">,</span> <span class="n">c32890</span><span class="p">))</span>
-    <span class="c1"># credit rate is limited at high AGI</span>
+    <span class="c1"># lines 4, 5, 6: limit to smallest earned income across taxpayer/spouse</span>
+    <span class="n">earned_s_eff</span> <span class="o">=</span> <span class="n">earned_s</span> <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">earned_p</span>
+    <span class="n">line6</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c32800</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s_eff</span><span class="p">))</span>
+    <span class="c1"># line 8: credit rate (phased down at high AGI via two stepped ramps)</span>
     <span class="n">crate</span> <span class="o">=</span> <span class="n">CDCC_po1_rate_max</span>
     <span class="n">ps1</span> <span class="o">=</span> <span class="n">CDCC_ps1</span>
     <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">ps1</span><span class="p">:</span>
@@ -3263,7 +3285,8 @@
         <span class="n">ps2</span> <span class="o">=</span> <span class="n">CDCC_ps2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">assert</span> <span class="n">ps2</span> <span class="o">&gt;=</span> <span class="n">ps1</span><span class="p">,</span> <span class="s1">&#39;CDCC_ps2 must be no less than CDCC_ps1&#39;</span>
         <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">ps2</span><span class="p">:</span>
-            <span class="n">steps_fractional</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">ps2</span><span class="p">)</span> <span class="o">/</span> <span class="n">CDCC_po2_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">step2</span> <span class="o">=</span> <span class="n">CDCC_po2_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">steps_fractional</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">ps2</span><span class="p">)</span> <span class="o">/</span> <span class="n">step2</span>
             <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
                 <span class="n">steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">steps_fractional</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -3272,13 +3295,16 @@
                 <span class="n">CDCC_po2_rate_min</span><span class="p">,</span>
                 <span class="n">CDCC_po1_rate_min</span> <span class="o">-</span> <span class="n">steps</span> <span class="o">*</span> <span class="n">CDCC_po_rate_per_step</span>
             <span class="p">)</span>
-    <span class="n">c33200</span> <span class="o">=</span> <span class="n">c33000</span> <span class="o">*</span> <span class="n">crate</span>
-    <span class="c1"># credit is limited by tax liability if not refundable</span>
+    <span class="c1"># line 9: preliminary credit</span>
+    <span class="n">line9</span> <span class="o">=</span> <span class="n">line6</span> <span class="o">*</span> <span class="n">crate</span>
+    <span class="c1"># lines 10, 11: nonrefundable credit limited by tax-before-credits less</span>
+    <span class="c1"># FTC (or, under reform CDCC_refundable, the full line-9 amount is</span>
+    <span class="c1"># routed to CDCC_refund)</span>
     <span class="k">if</span> <span class="n">CDCC_refundable</span><span class="p">:</span>
         <span class="n">c07180</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="n">CDCC_refund</span> <span class="o">=</span> <span class="n">c33200</span>
+        <span class="n">CDCC_refund</span> <span class="o">=</span> <span class="n">line9</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">c07180</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">e07300</span><span class="p">),</span> <span class="n">c33200</span><span class="p">)</span>
+        <span class="n">c07180</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">e07300</span><span class="p">),</span> <span class="n">line9</span><span class="p">)</span>
         <span class="n">CDCC_refund</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c32800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">)</span>
 
