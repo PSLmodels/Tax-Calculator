@@ -2722,35 +2722,56 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">AGIsurtax</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">AGI_surtax_trt</span><span class="p">,</span> <span class="n">AGI_surtax_thd</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span> <span class="n">surtax</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes surtax on AGI above some threshold.</span>
+<span class="sd">    Computes a flat surtax on the portion of Adjusted Gross Income (AGI)</span>
+<span class="sd">    above a MARS-indexed threshold.</span>
+
+<span class="sd">    Reform construct: there is no IRS form correspondence (the Internal</span>
+<span class="sd">    Revenue Code has no general AGI surtax line). Inert under current</span>
+<span class="sd">    law because `AGI_surtax_trt` defaults to 0.0 for all years and</span>
+<span class="sd">    `AGI_surtax_thd` defaults to 9e+99 for every MARS value.</span>
+
+<span class="sd">    When the rate is positive the same amount (`rate * max(0, AGI - thd)`)</span>
+<span class="sd">    is added to two accumulators:</span>
+<span class="sd">      - `taxbc` (regular tax on regular taxable income before credits)</span>
+<span class="sd">        so the surtax flows through `c05800` into `iitax` downstream;</span>
+<span class="sd">      - `surtax` (records-bound diagnostic accumulator, also incremented</span>
+<span class="sd">        by `FairShareTax` for the &quot;Buffett Rule&quot; reform construct).</span>
+
+<span class="sd">    Called in `Calculator.calc_all` after `GainsTax` (so `taxbc` already</span>
+<span class="sd">    reflects the rate-schedule + qualified-div/LTCG tax) and before</span>
+<span class="sd">    `NetInvIncTax` and `AMT`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">        Adjusted Gross Income (Form 1040 line 11)</span>
 <span class="sd">    MARS: int</span>
-<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
-<span class="sd">                                  4=household-head, 5=widow(er))</span>
+<span class="sd">        Filing (marital) status (1=single, 2=joint, 3=separate,</span>
+<span class="sd">                                 4=household-head, 5=widow(er))</span>
 <span class="sd">    AGI_surtax_trt: float</span>
-<span class="sd">        New AGI surtax rate</span>
+<span class="sd">        Reform-only flat surtax rate applied to AGI above</span>
+<span class="sd">        `AGI_surtax_thd[MARS-1]`. Default 0.0 (inert).</span>
 <span class="sd">    AGI_surtax_thd: list</span>
-<span class="sd">        Threshold for the new AGI surtax</span>
+<span class="sd">        Reform-only MARS-indexed AGI threshold above which the surtax</span>
+<span class="sd">        applies. Default 9e+99 (inert).</span>
 <span class="sd">    taxbc: float</span>
-<span class="sd">        Regular tax on regular taxable income before credits</span>
+<span class="sd">        Regular tax on regular taxable income before credits (input;</span>
+<span class="sd">        already includes rate-schedule + qualified-div/LTCG tax)</span>
 <span class="sd">    surtax: float</span>
-<span class="sd">        Surtax on AGI above some threshold</span>
+<span class="sd">        Records-bound surtax accumulator (input)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    taxbc: float</span>
-<span class="sd">        Regular tax on regular taxable income before credits</span>
+<span class="sd">        Input `taxbc` augmented by the AGI surtax</span>
 <span class="sd">    surtax: float</span>
-<span class="sd">        Surtax on AGI above some threshold</span>
+<span class="sd">        Input `surtax` augmented by the AGI surtax</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Reform construct: inert under current law (AGI_surtax_trt = 0).</span>
     <span class="k">if</span> <span class="n">AGI_surtax_trt</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="n">hiAGItax</span> <span class="o">=</span> <span class="n">AGI_surtax_trt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">AGI_surtax_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">taxbc</span> <span class="o">+=</span> <span class="n">hiAGItax</span>
-        <span class="n">surtax</span> <span class="o">+=</span> <span class="n">hiAGItax</span>
+        <span class="n">agi_surtax</span> <span class="o">=</span> <span class="n">AGI_surtax_trt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">AGI_surtax_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">)</span>
+        <span class="n">taxbc</span> <span class="o">+=</span> <span class="n">agi_surtax</span>
+        <span class="n">surtax</span> <span class="o">+=</span> <span class="n">agi_surtax</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">taxbc</span><span class="p">,</span> <span class="n">surtax</span><span class="p">)</span>
 
 
