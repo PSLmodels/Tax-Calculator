@@ -3405,8 +3405,36 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
                       personal_nonrefundable_credit,
                       recovery_rebate_credit):
     """
-    Computes personal_refundable_credit and personal_nonrefundable_credit,
-    neither of which are part of current-law policy.
+    Computes three reform-construct credits. None corresponds to a 2025
+    current-law IRS form line:
+
+    - `personal_refundable_credit` and `personal_nonrefundable_credit` are
+      generic AGI-phased reform knobs (`II_credit*` parameters). Both
+      default to zero under current law.
+    - `recovery_rebate_credit` emulates the 2020 CARES Act Economic Impact
+      Payments and the 2021 ARPA Recovery Rebate Credit, both reconciled
+      historically on Form 1040 line 30 via a published worksheet. For 2022+
+      all RRC parameters default to zero, so the credit is 0 under current
+      law.
+
+    The two `II_credit*` blocks are identical-shaped: start with the
+    MARS-indexed maximum; if the rate is positive and AGI exceeds the
+    MARS-indexed phaseout start, subtract `rate * (AGI - start)` and floor
+    at 0.
+
+    The RRC block encodes an either/or parameter regime:
+    - 2020 CARES (`RRC_c=0`, `RRC_c_unit`/`RRC_c_kids` > 0, `RRC_prt=0.05`,
+      `RRC_pe=0`): branches 1 + 3 implement the CARES linear phaseout
+      from `RRC_ps`; branch 2 cannot fire because `c00100 < RRC_pe = 0`
+      is never true.
+    - 2021 ARPA (`RRC_c=1400`, `RRC_c_unit=RRC_c_kids=0`, `RRC_prt=0`):
+      branches 1 + 2 implement the ARPA per-person linear ramp from
+      `RRC_ps` to `RRC_pe`; branch 3 returns 0.
+
+    Downstream: `personal_refundable_credit` and `recovery_rebate_credit`
+    are added by `IITAX` on the refundable side (Form 1040 line 32-style
+    additions); `personal_nonrefundable_credit` is sequentially limited
+    against remaining tax in `NonrefundableCredits`.
 
     Parameters
     ----------
@@ -3414,39 +3442,51 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (AGI) (Form 1040 line 11)
     XTOT: int
-        Total number of exemptions for filing unit
+        Total number of exemptions for filing unit (RRC per-person count)
     nu18: int
-        Number of people under 18 years old in the filing unit
+        Number of people under 18 years old in the filing unit (RRC kids
+        count)
     II_credit: list
-        Personal refundable credit maximum amount
+        Personal refundable credit maximum amount by MARS (reform-only;
+        default 0)
     II_credit_ps: list
-        Personal refundable credit phaseout start
+        Personal refundable credit phaseout start by MARS (reform-only;
+        default 0)
     II_credit_prt: float
-        Personal refundable credit phaseout rate
+        Personal refundable credit phaseout rate (reform-only; default 0)
     II_credit_nr: list
-        Personal nonrefundable credit maximum amount
+        Personal nonrefundable credit maximum amount by MARS (reform-only;
+        default 0)
     II_credit_nr_ps: list
-        Personal nonrefundable credit phaseout start
+        Personal nonrefundable credit phaseout start by MARS (reform-only;
+        default 0)
     II_credit_nr_prt: float
-        Personal nonrefundable credit phaseout rate
+        Personal nonrefundable credit phaseout rate (reform-only; default 0)
     RRC_c: float
-        Maximum amount of Recovery Rebate Credit
+        Per-person Recovery Rebate Credit maximum (ARPA 2021 = 1400; 0
+        otherwise)
     RRC_ps: list
-        Recovery Rebate Credit phase out start
+        Recovery Rebate Credit phaseout start by MARS
     RRC_pe: list
-        Recovery Rebate Credit phase out end
+        Recovery Rebate Credit phaseout end by MARS (used only by the ARPA
+        per-person ramp; 0 outside 2021)
     RRC_prt: float
-        Recovery Rebate Credit phase out rate
+        Recovery Rebate Credit phaseout rate (CARES 2020 = 0.05; 0
+        otherwise)
     RRC_c_kids: float
-        Credit amount per child as part of the Recovery Rebate Credit
+        Per-child amount for the Recovery Rebate Credit (CARES 2020;
+        0 otherwise)
     RRC_c_unit: list
-        Maximum credit for filing unit as part of the Recovery Rebate Credit
+        Per-filing-unit base amount for the Recovery Rebate Credit by MARS
+        (CARES 2020; 0 otherwise)
     personal_refundable_credit: float
-        Personal refundable credit
+        Records-bound output: personal refundable credit
     personal_nonrefundable_credit: float
-        Personal nonrefundable credit
+        Records-bound output: personal nonrefundable credit
+    recovery_rebate_credit: float
+        Records-bound output: recovery rebate credit
 
     Returns
     -------
@@ -3454,35 +3494,40 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
         Personal refundable credit
     personal_nonrefundable_credit: float
         Personal nonrefundable credit
-    personal_rebate_credit: float
-        Personal rebate credit
+    recovery_rebate_credit: float
+        Recovery rebate credit
     """
-    # calculate personal refundable credit amount with phase-out
+    # ---- Personal refundable credit (reform-only) ----
+    ii_ps = II_credit_ps[MARS - 1]
     personal_refundable_credit = II_credit[MARS - 1]
-    if II_credit_prt > 0. and c00100 > II_credit_ps[MARS - 1]:
-        pout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
-        fully_phasedout = personal_refundable_credit - pout
-        personal_refundable_credit = max(0., fully_phasedout)
-    # calculate personal nonrefundable credit amount with phase-out
+    if II_credit_prt > 0. and c00100 > ii_ps:
+        pout = II_credit_prt * (c00100 - ii_ps)
+        personal_refundable_credit = max(0., personal_refundable_credit - pout)
+    # ---- Personal nonrefundable credit (reform-only) ----
+    ii_nr_ps = II_credit_nr_ps[MARS - 1]
     personal_nonrefundable_credit = II_credit_nr[MARS - 1]
-    if II_credit_nr_prt > 0. and c00100 > II_credit_nr_ps[MARS - 1]:
-        pout = II_credit_nr_prt * (c00100 - II_credit_nr_ps[MARS - 1])
-        fully_phasedout = personal_nonrefundable_credit - pout
-        personal_nonrefundable_credit = max(0., fully_phasedout)
-    # calculate Recovery Rebate Credit from CARES Act 2020 and/or ARPA 2021
-    if c00100 < RRC_ps[MARS - 1]:
-        recovery_rebate_credit = RRC_c * XTOT
-        recovery_rebate_credit += RRC_c_unit[MARS - 1] + RRC_c_kids * nu18
-    elif 0 < c00100 < RRC_pe[MARS - 1]:
-        prt = (
-            (c00100 - RRC_ps[MARS - 1]) /
-            (RRC_pe[MARS - 1] - RRC_ps[MARS - 1])
+    if II_credit_nr_prt > 0. and c00100 > ii_nr_ps:
+        pout = II_credit_nr_prt * (c00100 - ii_nr_ps)
+        personal_nonrefundable_credit = max(
+            0., personal_nonrefundable_credit - pout
         )
+    # ---- Recovery Rebate Credit (CARES Act 2020 EIP + ARPA 2021 RRC) ----
+    # Historically Form 1040 line 30 (2020 + 2021); parameters are zeroed
+    # for 2022+, so the three branches all return 0 under current law.
+    rrc_ps = RRC_ps[MARS - 1]
+    rrc_pe = RRC_pe[MARS - 1]
+    rrc_unit_kids = RRC_c_unit[MARS - 1] + RRC_c_kids * nu18
+    if c00100 < rrc_ps:
+        # below phaseout start: full per-person (ARPA) + unit+kids (CARES)
+        recovery_rebate_credit = RRC_c * XTOT + rrc_unit_kids
+    elif 0 < c00100 < rrc_pe:
+        # ARPA-only per-person linear ramp between rrc_ps and rrc_pe
+        prt = (c00100 - rrc_ps) / (rrc_pe - rrc_ps)
         recovery_rebate_credit = RRC_c * XTOT * (1 - prt)
     else:
+        # CARES-only linear phaseout of unit+kids above rrc_ps
         recovery_rebate_credit = max(
-            0, RRC_c_unit[MARS - 1] + RRC_c_kids * nu18 - RRC_prt *
-            (c00100 - RRC_ps[MARS - 1])
+            0., rrc_unit_kids - RRC_prt * (c00100 - rrc_ps)
         )
     return (personal_refundable_credit, personal_nonrefundable_credit,
             recovery_rebate_credit)
