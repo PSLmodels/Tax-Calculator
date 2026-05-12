@@ -3201,33 +3201,59 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
                                RPTC_c, RPTC_rt,
                                rptc_p, rptc_s, rptc):
     """
-    Computes refundable payroll tax credit amounts.
+    Computes the Refundable Payroll Tax Credit (RPTC).
+
+    Reform construct with no IRS form correspondence: RPTC is a
+    Tax-Calculator-only credit designed to emulate a payroll-tax
+    exemption via the refundable-credit side of Form 1040.  Per the
+    `RPTC_c` policy-parameter description, positive values of `RPTC_c`
+    and `RPTC_rt` together emulate a payroll-tax exemption whose
+    implied earnings ceiling is `RPTC_c / RPTC_rt` per spouse.
+
+    Inert under current law: `RPTC_c` and `RPTC_rt` both default to
+    0.0 for all years (2013+), so `rptc_p = rptc_s = rptc = 0`.
+
+    Body (per spouse): pre-phaseout credit = min(rate * earnings, cap),
+    where "earnings" is `was_plus_sey_*` (gross wages-and-salaries plus
+    the reform-only extra-OASDI taxable SE component) as produced by
+    `EI_PayrollTax`.  The filing-unit total `rptc` is the sum of the
+    two per-spouse credits.
+
+    Calling order (calculator.py): invoked after `EITC` and before
+    `PersonalTaxCredit` in the refundable-credit sequence.  Downstream
+    consumer: `IITAX` subtracts `rptc` from total tax liability as a
+    fully-refundable credit (Form 1040 line 31 / Schedule 3 line 13
+    territory, modeled here as a standalone refundable item).
 
     Parameters
     ----------
     was_plus_sey_p: float
-        Wage and salary income plus taxable self employment income for taxpayer
+        Taxpayer's gross wages-and-salaries plus reform-only extra-OASDI
+        taxable self-employment earnings (set by `EI_PayrollTax`).
     was_plus_sey_s: float
-        Wage and salary income plus taxable self employment income for spouse
+        Spouse's gross wages-and-salaries plus reform-only extra-OASDI
+        taxable self-employment earnings (set by `EI_PayrollTax`).
     RPTC_c: float
-        Maximum refundable payroll tax credit
+        Per-spouse maximum refundable payroll tax credit (reform-only;
+        default 0.0).
     RPTC_rt: float
-        Refundable payroll tax credit phasein rate
+        Phasein rate applied to per-spouse earnings before the cap
+        (reform-only; default 0.0).
     rptc_p: float
-        Refundable Payroll Tax Credit for taxpayer
+        Records-bound output: RPTC for taxpayer.
     rptc_s: float
-        Refundable Payroll Tax Credit for spouse
+        Records-bound output: RPTC for spouse.
     rptc: float
-        Refundable Payroll Tax Credit for filing unit
+        Records-bound output: RPTC for filing unit (`rptc_p + rptc_s`).
 
     Returns
     -------
     rptc_p: float
-        Refundable Payroll Tax Credit for taxpayer
+        RPTC for taxpayer.
     rptc_s: float
-        Refundable Payroll Tax Credit for spouse
+        RPTC for spouse.
     rptc: float
-        Refundable Payroll Tax Credit for filing unit
+        RPTC for filing unit.
     """
     rptc_p = min(was_plus_sey_p * RPTC_rt, RPTC_c)
     rptc_s = min(was_plus_sey_s * RPTC_rt, RPTC_c)
