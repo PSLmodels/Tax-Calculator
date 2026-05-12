@@ -3537,55 +3537,95 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
 def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
                      CR_AmOppNonRefundable_hc, c10960, c87668):
     """
-    Applies a phaseout to the Form 8863, line 1, American Opportunity Credit
-    amount, e87521, and then applies the 0.4 refundable rate.
-    Logic corresponds to Form 8863, Part I.
+    Computes the American Opportunity Credit (AOTC) refundable and
+    nonrefundable amounts from Form 8863 Part I (2025).
+
+    Form 8863 Part I line map:
+      * line 1  Tentative AOTC across students <- e87521 (Form 8863
+                                                 Part III line 30 sum;
+                                                 capped at $2,500/student)
+      * line 2  Phaseout base by filing status <- 90000*num
+                                                 ($180k MFJ / $90k other)
+      * line 3  MAGI                           <- c00100 (no Form 2555 /
+                                                 Form 4563 / Puerto Rico
+                                                 exclusion add-back because
+                                                 these are not modeled)
+      * line 4  max(0, line 2 - line 3)
+      * line 5  Phaseout range length          <- 10000*num
+                                                 ($20k MFJ / $10k other)
+      * line 6  min(1.000, line 4 / line 5)    <- rounded to 3 decimals
+                                                 per IRS instructions when
+                                                 exact == 1
+      * line 7  line 1 * line 6                <- post-phaseout AOTC
+      * line 8  0.4 * line 7                   <- refundable AOTC; goes to
+                                                 Form 1040 line 29 via
+                                                 c10960
+      * Part II line 9 = line 7 - line 8       <- nonrefundable portion
+                                                 feeding the Part II Credit
+                                                 Limit Worksheet via c87668
+
+    The reform haircuts `CR_AmOppRefundable_hc` and
+    `CR_AmOppNonRefundable_hc` both default to 0.0 from 2013 onward, so
+    under current law c10960 = 0.4*line7 and c87668 = 0.6*line7 exactly as
+    on the form. `num` doubles the single thresholds for MARS=2 (MFJ
+    thresholds on this form are exactly twice the single thresholds).
+    The Form 8863 line-7 under-24 dependency-eligibility checkbox
+    (IRC §25A(i)(6)(B)) is not modeled; Tax-Calculator records do not
+    encode the parental/dependent status required to determine whether a
+    filer is barred from the refundable portion.
+
+    Calling order: `calculator.py` invokes `AmOppCreditParts` between
+    `SchR` and `EducationTaxCredit`. `c10960` flows to `IITAX` refundable
+    side (Form 1040 line 29); `c87668` flows to `EducationTaxCredit`
+    Part II Credit Limit Worksheet line 10.
 
     Parameters
     ----------
     exact: int
-        Whether or not to do rounding of phaseout fraction
+        If 1, round the line-6 phaseout fraction to 3 decimals per IRS
+        instructions; if 0, use the unrounded fraction.
     e87521: float
-        Total tentative AmOppCredit amount for all students.
-        From Form 8863, line 1.
+        Tentative AOTC across all students (Form 8863 line 1 = sum of
+        Part III line 30).
     num: int
-        2 when MARS is 2 (married filing jointly), otherwise 1
+        2 when MARS is 2 (MFJ), otherwise 1; doubles the single thresholds
+        on Form 8863 lines 2 and 5.
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (Form 8863 line 3 MAGI proxy; Form 2555 /
+        Form 4563 / Puerto Rico add-backs not modeled).
     CR_AmOppRefundable_hc: float
-        Refundable portion of the American Opportunity Credit haircut
+        Reform haircut on the refundable portion (Form 8863 line 8);
+        current-law default 0.0 means no haircut.
     CR_AmOppNonRefundable_hc: float
-        Nonrefundable portion of the American Opportunity Credit haircut
+        Reform haircut on the nonrefundable portion (Form 8863 Part II
+        line 9); current-law default 0.0 means no haircut.
     c10960: float
-        American Opportunity Credit refundable amount from Form 8863
+        Records-bound output, computed below (refundable AOTC).
     c87668: float
-        American Opportunity Credit non-refundable amount from Form 8863
+        Records-bound output, computed below (nonrefundable AOTC fed to
+        EducationTaxCredit Part II).
 
     Returns
     -------
     c10960: float
-        American Opportunity Credit refundable amount from Form 8863
+        Refundable AOTC after the reform haircut (Form 8863 line 8).
     c87668: float
-        American Opportunity Credit non-refundable amount from Form 8863
-
-    Notes
-    -----
-    Tax Law Paramters that are not parameterized:
-        90000: American Opportunity phaseout income base
-        10000: American Opportunity Credit phaseout income range length
-        1/1000: American Opportunity Credit phaseout rate
-        0.3: American Opportunity Credit refundable rate
+        Nonrefundable AOTC after the reform haircut (Form 8863 Part II
+        line 9 input).
     """
     if e87521 > 0.:
-        c87658 = max(0., 90000. * num - c00100)
-        c87660 = 10000. * num
+        # ---- Phaseout fraction (Form 8863 lines 2-6) ----
+        line4 = max(0., 90000. * num - c00100)         # line 2 - line 3
+        line5 = 10000. * num                           # line 5
         if exact == 1:  # exact calculation as on tax forms
-            c87662 = 1000. * min(1., round(c87658 / c87660, 3))
+            line6_x1000 = 1000. * min(1., round(line4 / line5, 3))
         else:
-            c87662 = 1000. * min(1., c87658 / c87660)
-        c87664 = c87662 * e87521 / 1000.
-        c10960 = 0.4 * c87664 * (1. - CR_AmOppRefundable_hc)
-        c87668 = c87664 - c10960 * (1. - CR_AmOppNonRefundable_hc)
+            line6_x1000 = 1000. * min(1., line4 / line5)
+        # ---- Total AOTC after phaseout (line 7) ----
+        line7 = line6_x1000 * e87521 / 1000.
+        # ---- Refundable (line 8) / nonrefundable (Part II line 9) split ----
+        c10960 = 0.4 * line7 * (1. - CR_AmOppRefundable_hc)
+        c87668 = line7 - c10960 * (1. - CR_AmOppNonRefundable_hc)
     else:
         c10960 = 0.
         c87668 = 0.
