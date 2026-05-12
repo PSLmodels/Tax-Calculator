@@ -649,24 +649,40 @@ in iterate_jit decorator.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="taxcalc.calcfunctions.EITCamount">
 <span class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></span><span class="sig-name descname"><span class="pre">EITCamount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basic_frac</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasein_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">earnings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_amount</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseout_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseout_rate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calcfunctions.html#EITCamount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calcfunctions.EITCamount" title="Link to this definition">#</a></dt>
-<dd><p>Returns EITC amount given specified parameters.
-English parameter names are used in this function because the
-EITC formula is not available on IRS forms or in IRS instructions;
-the extensive IRS EITC look-up table does not reveal the formula.</p>
+<dd><p>Returns the EIC Worksheet A (or B) line 6 amount: the smaller of
+the earned-income-based credit (line 2, an EIC-Table lookup keyed
+on earnings) and the AGI-based credit (line 5, the same lookup
+keyed on AGI when AGI exceeds the phaseout start).</p>
+<dl class="simple">
+<dt>The trapezoidal credit schedule is:</dt><dd><ul class="simple">
+<li><p>phase-in:  phasein_rate * earnings</p></li>
+<li><p>plateau:   max_amount</p></li>
+<li><p>phase-out: max_amount - phaseout_rate * (max(earnings, AGI) - ps)</p></li>
+</ul>
+</dd>
+</dl>
+<p>English parameter names are used because the EIC Table is published
+rather than the algebraic formula; <cite>basic_frac</cite> is a reform-only
+knob (0 under current law) that shifts the schedule so a fraction
+of <cite>max_amount</cite> is paid at zero earnings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>basic_frac</strong> (<em>float</em>) – Fraction of maximum earned income credit paid at zero earnings</p></li>
-<li><p><strong>phasein_rate</strong> (<em>float</em>) – Earned income credit phasein rate</p></li>
-<li><p><strong>earnings</strong> (<em>float</em>) – Earned income for filing unit</p></li>
-<li><p><strong>max_amount</strong> (<em>float</em>) – Maximum earned income credit</p></li>
-<li><p><strong>phaseout_start</strong> (<em>float</em>) – Earned income credit phaseout start AGI</p></li>
-<li><p><strong>agi</strong> (<em>float</em>) – Adjusted Gross Income (AGI)</p></li>
-<li><p><strong>phaseout_rate</strong> (<em>float</em>) – Earned income credit phaseout rate</p></li>
+<li><p><strong>basic_frac</strong> (<em>float</em>) – Fraction of maximum earned income credit paid at zero earnings
+(reform-only; 0 under current law)</p></li>
+<li><p><strong>phasein_rate</strong> (<em>float</em>) – Earned income credit phasein rate (EIC Table phase-in slope)</p></li>
+<li><p><strong>earnings</strong> (<em>float</em>) – Earned income for filing unit (EIC Worksheet A line 1)</p></li>
+<li><p><strong>max_amount</strong> (<em>float</em>) – Maximum earned income credit (EIC Table plateau)</p></li>
+<li><p><strong>phaseout_start</strong> (<em>float</em>) – Earned income credit phaseout start (EIC Worksheet A line 3
+threshold; AGI/earnings at which line 5 begins to bite)</p></li>
+<li><p><strong>agi</strong> (<em>float</em>) – Adjusted Gross Income (Form 1040 line 11; EIC Worksheet A
+line 3) — the worksheet uses AGI rather than earnings to
+compute line 5 when AGI exceeds line 4</p></li>
+<li><p><strong>phaseout_rate</strong> (<em>float</em>) – Earned income credit phaseout rate (EIC Table phase-out slope)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>eitc</strong> – Earned Income Credit</p>
+<dd class="field-even"><p><strong>eitc</strong> – Earned Income Credit (EIC Worksheet A line 6)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>

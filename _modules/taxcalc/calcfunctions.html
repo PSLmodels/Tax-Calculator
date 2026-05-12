@@ -3339,34 +3339,46 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">EITCamount</span><span class="p">(</span><span class="n">basic_frac</span><span class="p">,</span> <span class="n">phasein_rate</span><span class="p">,</span> <span class="n">earnings</span><span class="p">,</span> <span class="n">max_amount</span><span class="p">,</span>
                <span class="n">phaseout_start</span><span class="p">,</span> <span class="n">agi</span><span class="p">,</span> <span class="n">phaseout_rate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns EITC amount given specified parameters.</span>
-<span class="sd">    English parameter names are used in this function because the</span>
-<span class="sd">    EITC formula is not available on IRS forms or in IRS instructions;</span>
-<span class="sd">    the extensive IRS EITC look-up table does not reveal the formula.</span>
+<span class="sd">    Returns the EIC Worksheet A (or B) line 6 amount: the smaller of</span>
+<span class="sd">    the earned-income-based credit (line 2, an EIC-Table lookup keyed</span>
+<span class="sd">    on earnings) and the AGI-based credit (line 5, the same lookup</span>
+<span class="sd">    keyed on AGI when AGI exceeds the phaseout start).</span>
+
+<span class="sd">    The trapezoidal credit schedule is:</span>
+<span class="sd">      - phase-in:  phasein_rate * earnings</span>
+<span class="sd">      - plateau:   max_amount</span>
+<span class="sd">      - phase-out: max_amount - phaseout_rate * (max(earnings, AGI) - ps)</span>
+<span class="sd">    English parameter names are used because the EIC Table is published</span>
+<span class="sd">    rather than the algebraic formula; `basic_frac` is a reform-only</span>
+<span class="sd">    knob (0 under current law) that shifts the schedule so a fraction</span>
+<span class="sd">    of `max_amount` is paid at zero earnings.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    basic_frac: float</span>
 <span class="sd">        Fraction of maximum earned income credit paid at zero earnings</span>
+<span class="sd">        (reform-only; 0 under current law)</span>
 <span class="sd">    phasein_rate: float</span>
-<span class="sd">        Earned income credit phasein rate</span>
+<span class="sd">        Earned income credit phasein rate (EIC Table phase-in slope)</span>
 <span class="sd">    earnings: float</span>
-<span class="sd">        Earned income for filing unit</span>
+<span class="sd">        Earned income for filing unit (EIC Worksheet A line 1)</span>
 <span class="sd">    max_amount: float</span>
-<span class="sd">        Maximum earned income credit</span>
+<span class="sd">        Maximum earned income credit (EIC Table plateau)</span>
 <span class="sd">    phaseout_start: float</span>
-<span class="sd">        Earned income credit phaseout start AGI</span>
+<span class="sd">        Earned income credit phaseout start (EIC Worksheet A line 3</span>
+<span class="sd">        threshold; AGI/earnings at which line 5 begins to bite)</span>
 <span class="sd">    agi: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">        Adjusted Gross Income (Form 1040 line 11; EIC Worksheet A</span>
+<span class="sd">        line 3) — the worksheet uses AGI rather than earnings to</span>
+<span class="sd">        compute line 5 when AGI exceeds line 4</span>
 <span class="sd">    phaseout_rate: float</span>
-<span class="sd">        Earned income credit phaseout rate</span>
+<span class="sd">        Earned income credit phaseout rate (EIC Table phase-out slope)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    eitc: float</span>
-<span class="sd">        Earned Income Credit</span>
+<span class="sd">        Earned Income Credit (EIC Worksheet A line 6)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># calculate qualified business income de</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">basic_frac</span> <span class="o">*</span> <span class="n">max_amount</span> <span class="o">+</span>
                 <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">basic_frac</span><span class="p">)</span> <span class="o">*</span> <span class="n">phasein_rate</span> <span class="o">*</span> <span class="n">earnings</span><span class="p">),</span> <span class="n">max_amount</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">earnings</span> <span class="o">&gt;</span> <span class="n">phaseout_start</span> <span class="ow">or</span> <span class="n">agi</span> <span class="o">&gt;</span> <span class="n">phaseout_start</span><span class="p">:</span>
@@ -3385,134 +3397,201 @@
          <span class="n">EITC_InvestIncome_c</span><span class="p">,</span> <span class="n">EITC_excess_InvestIncome_rt</span><span class="p">,</span>
          <span class="n">EITC_indiv</span><span class="p">,</span> <span class="n">EITC_sep_filers_elig</span><span class="p">,</span> <span class="n">c59660</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes EITC amount, c59660.</span>
+<span class="sd">    Computes Earned Income Tax Credit (Form 1040 line 27a).</span>
+
+<span class="sd">    Implements EIC Worksheet A (Form 1040 instructions) and the Pub 596</span>
+<span class="sd">    &quot;Rules If You Have a Qualifying Child&quot; / &quot;Rules If You Do Not Have</span>
+<span class="sd">    a Qualifying Child&quot; eligibility tests.  Schedule EIC supplies the</span>
+<span class="sd">    qualifying-child count (the `EIC` Records variable); per-child</span>
+<span class="sd">    EITC parameters (`EITC_rt`/`EITC_c`/`EITC_prt`/`EITC_ps`) are</span>
+<span class="sd">    length-5 lists indexed by `EIC` ∈ {0, 1, 2, 3, 4} with index 4</span>
+<span class="sd">    cloned from 3 to encode the &quot;3 or more&quot; plateau.</span>
+
+<span class="sd">    EIC Worksheet B (for filers with self-employment income) is not</span>
+<span class="sd">    represented separately because Tax-Calculator&#39;s `earned` input</span>
+<span class="sd">    (built by `EI_PayrollTax`) already includes net SE earnings, so</span>
+<span class="sd">    Worksheets A and B collapse to a single `EITCamount` call.</span>
+
+<span class="sd">    Body sections (mirroring the worksheet + Pub 596):</span>
+<span class="sd">      (A) EIC Worksheet A credit amount (filing-unit, or reform-only</span>
+<span class="sd">          per-spouse under `EITC_indiv`).  MFJ adds</span>
+<span class="sd">          `EITC_ps_addon_MarriedJ[EIC]` to the phaseout start.</span>
+<span class="sd">      (B) Pub 596 Rule 11: childless filer must be age</span>
+<span class="sd">          `EITC_MinEligAge`-`EITC_MaxEligAge` (current law 25-64;</span>
+<span class="sd">          age == 0 in the data is treated as eligible).  Applies only</span>
+<span class="sd">          when EIC == 0; for MFJ either spouse meeting the age test</span>
+<span class="sd">          qualifies.</span>
+<span class="sd">      (C) Pub 596 Rule 3 (MFS) and Rule 10 (claimed as dependent).</span>
+<span class="sd">          MFS eligibility tracks IRC §32(d) as amended by ARPA 2021</span>
+<span class="sd">          §9621 via `EITC_sep_filers_elig` (false 2013-2020, true</span>
+<span class="sd">          2021+); DSI==1 always disqualifies.</span>
+<span class="sd">      (D) Pub 596 Rule 6: investment-income cliff (IRC §32(i)).</span>
+<span class="sd">          Investment income = taxable interest (`e00300`) + tax-exempt</span>
+<span class="sd">          interest (`e00400`) + ordinary dividends (`e00600`) + net</span>
+<span class="sd">          capital gain (`max(0, c01000)`) + net non-passive rents and</span>
+<span class="sd">          royalties (`max(0, e02000 - e26270)`, removing Sch E</span>
+<span class="sd">          partnership/S-corp).  The form&#39;s hard cliff at</span>
+<span class="sd">          `EITC_InvestIncome_c` ($11,950 for 2025) is modeled as a</span>
+<span class="sd">          smooth phaseout at `EITC_excess_InvestIncome_rt` (default</span>
+<span class="sd">          9e+99 → behaviorally identical to the cliff).</span>
+<span class="sd">      (E) Model-specific claiming approximation: filers with expected</span>
+<span class="sd">          credit below `eitc_claim_thd` (default 0) are assumed not to</span>
+<span class="sd">          claim.  No form analogue.</span>
+
+<span class="sd">    Downstream: `c59660` is the records-bound EITC amount consumed by</span>
+<span class="sd">    `IITAX` (Form 1040 line 27a, refundable credit) and reported in</span>
+<span class="sd">    `taxcalc/cli/input_data_tests/tests.sh` baseline `*.tables`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    eitc_claim_thd: float</span>
-<span class="sd">        EITC amount below which EITC is unclaimed</span>
+<span class="sd">        Model-specific behavioral parameter: EITC amount below which</span>
+<span class="sd">        the credit is assumed unclaimed (no form analogue)</span>
 <span class="sd">    MARS: int</span>
-<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
-<span class="sd">                                  4=household-head, 5=widow(er))</span>
+<span class="sd">        Filing (marital) status (1=single, 2=joint, 3=separate,</span>
+<span class="sd">                                 4=household-head, 5=widow(er))</span>
 <span class="sd">    DSI: int</span>
 <span class="sd">        1 if claimed as dependent on another return, otherwise 0</span>
+<span class="sd">        (Pub 596 Rule 10)</span>
 <span class="sd">    EIC: int</span>
-<span class="sd">        Number of EIC qualifying children</span>
+<span class="sd">        Number of EIC qualifying children (from Schedule EIC,</span>
+<span class="sd">        capped at 3 for parameter-lookup purposes; values up to 4</span>
+<span class="sd">        are accepted but mapped to the index-4 entry which clones</span>
+<span class="sd">        index 3)</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">        Adjusted Gross Income (Form 1040 line 11; EIC Worksheet A</span>
+<span class="sd">        line 3)</span>
 <span class="sd">    e00300: float</span>
-<span class="sd">        Taxable interest income</span>
+<span class="sd">        Taxable interest income (investment-income component)</span>
 <span class="sd">    e00400: float</span>
-<span class="sd">        Tax exempt interest income</span>
+<span class="sd">        Tax-exempt interest income (investment-income component;</span>
+<span class="sd">        IRC §32(i)(2)(B))</span>
 <span class="sd">    e00600: float</span>
-<span class="sd">        Ordinary dividends included in AGI</span>
+<span class="sd">        Ordinary dividends included in AGI (investment-income</span>
+<span class="sd">        component)</span>
 <span class="sd">    c01000: float</span>
-<span class="sd">        Limitation on capital losses</span>
+<span class="sd">        Capital-loss-limited Schedule D total (Sch D line 21;</span>
+<span class="sd">        investment income uses `max(0, c01000)` — only net gain</span>
+<span class="sd">        per IRC §32(i)(2)(D))</span>
 <span class="sd">    e02000: float</span>
-<span class="sd">        Schedule E total rental, royalty, partnership, S-corporation,</span>
-<span class="sd">        etc, income/loss</span>
+<span class="sd">        Schedule E total rental, royalty, partnership, S-corp,</span>
+<span class="sd">        etc., income/loss</span>
 <span class="sd">    e26270: float</span>
-<span class="sd">        Schedule E combined partnership and S-corporation net income/loss</span>
+<span class="sd">        Schedule E combined partnership and S-corp net income/loss</span>
+<span class="sd">        (subtracted from `e02000` to leave net rents and royalties)</span>
 <span class="sd">    age_head: int</span>
-<span class="sd">        Age in years of taxpayer (primary adult)</span>
+<span class="sd">        Age in years of taxpayer (primary adult); 0 in the data</span>
+<span class="sd">        means unknown and is treated as eligible</span>
 <span class="sd">    age_spouse: int</span>
-<span class="sd">        Age in years of spouse (secondary adult, if present)</span>
+<span class="sd">        Age in years of spouse (secondary adult, if present); 0 means</span>
+<span class="sd">        unknown / no spouse</span>
 <span class="sd">    earned: float</span>
-<span class="sd">        Earned income for filing unit</span>
+<span class="sd">        Earned income for filing unit (EIC Worksheet A/B line 1;</span>
+<span class="sd">        already includes net SE earnings via `EI_PayrollTax`)</span>
 <span class="sd">    earned_p: float</span>
-<span class="sd">        Earned income for taxpayer</span>
+<span class="sd">        Earned income for taxpayer (used only for reform-only</span>
+<span class="sd">        `EITC_indiv` per-spouse EITC)</span>
 <span class="sd">    earned_s: float</span>
-<span class="sd">        Earned income for spouse</span>
+<span class="sd">        Earned income for spouse (used only for reform-only</span>
+<span class="sd">        `EITC_indiv` per-spouse EITC)</span>
 <span class="sd">    EITC_ps: list</span>
-<span class="sd">        Earned income credit phaseout start AGI</span>
+<span class="sd">        EIC-indexed phaseout start (EIC Worksheet A line 3 threshold)</span>
 <span class="sd">    EITC_MinEligAge: int</span>
-<span class="sd">        Minimum age for childless EITC eligibility</span>
+<span class="sd">        Minimum age for childless EITC eligibility (Pub 596 Rule 11;</span>
+<span class="sd">        25 under current law)</span>
 <span class="sd">    EITC_MaxEligAge: int</span>
-<span class="sd">        Maximum age for childless EITC eligibility</span>
+<span class="sd">        Maximum age for childless EITC eligibility (Pub 596 Rule 11;</span>
+<span class="sd">        64 under current law)</span>
 <span class="sd">    EITC_ps_addon_MarriedJ: list</span>
-<span class="sd">        Extra earned income credit phaseout start AGI for</span>
-<span class="sd">        married filling jointly</span>
+<span class="sd">        EIC-indexed addition to the phaseout start for MFJ filers</span>
+<span class="sd">        (= EIC-Table MFJ threshold − single threshold)</span>
 <span class="sd">    EITC_rt: list</span>
-<span class="sd">        Earned income credit phasein rate</span>
+<span class="sd">        EIC-indexed phasein rate</span>
 <span class="sd">    EITC_c: list</span>
-<span class="sd">        Maximum earned income credit</span>
+<span class="sd">        EIC-indexed maximum credit (EIC Table plateau)</span>
 <span class="sd">    EITC_prt: list</span>
-<span class="sd">        Earned income credit phaseout rate</span>
+<span class="sd">        EIC-indexed phaseout rate</span>
 <span class="sd">    EITC_basic_frac: float</span>
-<span class="sd">        Fraction of maximum earned income credit paid at zero earnings</span>
+<span class="sd">        Reform-only fraction of `EITC_c` paid at zero earnings;</span>
+<span class="sd">        default 0 (inert under current law)</span>
 <span class="sd">    EITC_InvestIncome_c: float</span>
-<span class="sd">        Maximum investment income before EITC reduction</span>
+<span class="sd">        Investment-income ceiling (IRC §32(i); $11,950 for 2025)</span>
 <span class="sd">    EITC_excess_InvestIncome_rt: float</span>
-<span class="sd">        Rate of EITC reduction when investemtn income exceeds ceiling</span>
+<span class="sd">        Rate at which the EITC is reduced per dollar of investment</span>
+<span class="sd">        income above `EITC_InvestIncome_c`; default 9e+99 makes the</span>
+<span class="sd">        smooth phaseout behaviorally equivalent to the form&#39;s hard</span>
+<span class="sd">        cliff</span>
 <span class="sd">    EITC_indiv: bool</span>
-<span class="sd">        EITC is computed for each spouse based in individual earnings</span>
+<span class="sd">        Reform-only: if true, MFJ EITC is computed per spouse on</span>
+<span class="sd">        individual earnings and summed; default false (filing-unit</span>
+<span class="sd">        EITC per the form)</span>
 <span class="sd">    EITC_sep_filers_elig: bool</span>
-<span class="sd">        Separate filers are eligible for the EITC</span>
+<span class="sd">        MFS eligibility (Pub 596 Rule 3 / IRC §32(d) as amended by</span>
+<span class="sd">        ARPA 2021 §9621); false 2013-2020, true 2021+</span>
 <span class="sd">    c59660: float</span>
-<span class="sd">        EITC amount</span>
+<span class="sd">        Records-bound EITC amount (input, overwritten)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c59660: float</span>
-<span class="sd">        EITC amount</span>
+<span class="sd">        Earned Income Tax Credit (Form 1040 line 27a)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-branches</span>
-    <span class="k">if</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">eitc</span> <span class="o">=</span> <span class="n">EITCamount</span><span class="p">(</span><span class="n">EITC_basic_frac</span><span class="p">,</span>
-                          <span class="n">EITC_rt</span><span class="p">[</span><span class="n">EIC</span><span class="p">],</span> <span class="n">earned</span><span class="p">,</span> <span class="n">EITC_c</span><span class="p">[</span><span class="n">EIC</span><span class="p">],</span>
-                          <span class="n">EITC_ps</span><span class="p">[</span><span class="n">EIC</span><span class="p">],</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">EITC_prt</span><span class="p">[</span><span class="n">EIC</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">EIC</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="c1"># enforce age eligibility rule for those with no EITC-eligible</span>
-            <span class="c1"># kids assuming that an unknown age_* value implies EITC age</span>
-            <span class="c1"># eligibility</span>
-            <span class="n">h_age_elig</span> <span class="o">=</span> <span class="n">EITC_MinEligAge</span> <span class="o">&lt;=</span> <span class="n">age_head</span> <span class="o">&lt;=</span> <span class="n">EITC_MaxEligAge</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">age_head</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">h_age_elig</span><span class="p">):</span>
-                <span class="n">c59660</span> <span class="o">=</span> <span class="n">eitc</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">c59660</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if EIC != 0</span>
-            <span class="n">c59660</span> <span class="o">=</span> <span class="n">eitc</span>
 
+    <span class="c1"># ---------------- (A) EIC Worksheet A: credit amount -------------</span>
+    <span class="n">phasein_rate</span> <span class="o">=</span> <span class="n">EITC_rt</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span>
+    <span class="n">max_amount</span> <span class="o">=</span> <span class="n">EITC_c</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span>
+    <span class="n">phaseout_rate</span> <span class="o">=</span> <span class="n">EITC_prt</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span>
+    <span class="n">po_start</span> <span class="o">=</span> <span class="n">EITC_ps</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">po_start</span> <span class="o">=</span> <span class="n">EITC_ps</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span> <span class="o">+</span> <span class="n">EITC_ps_addon_MarriedJ</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">EITC_indiv</span><span class="p">:</span>
-            <span class="c1"># filing unit EITC rather than individual EITC</span>
-            <span class="n">eitc</span> <span class="o">=</span> <span class="n">EITCamount</span><span class="p">(</span><span class="n">EITC_basic_frac</span><span class="p">,</span>
-                              <span class="n">EITC_rt</span><span class="p">[</span><span class="n">EIC</span><span class="p">],</span> <span class="n">earned</span><span class="p">,</span> <span class="n">EITC_c</span><span class="p">[</span><span class="n">EIC</span><span class="p">],</span>
-                              <span class="n">po_start</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">EITC_prt</span><span class="p">[</span><span class="n">EIC</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">EITC_indiv</span><span class="p">:</span>
-            <span class="c1"># individual EITC rather than a filing-unit EITC</span>
-            <span class="n">eitc_p</span> <span class="o">=</span> <span class="n">EITCamount</span><span class="p">(</span><span class="n">EITC_basic_frac</span><span class="p">,</span>
-                                <span class="n">EITC_rt</span><span class="p">[</span><span class="n">EIC</span><span class="p">],</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">EITC_c</span><span class="p">[</span><span class="n">EIC</span><span class="p">],</span>
-                                <span class="n">po_start</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">EITC_prt</span><span class="p">[</span><span class="n">EIC</span><span class="p">])</span>
-            <span class="n">eitc_s</span> <span class="o">=</span> <span class="n">EITCamount</span><span class="p">(</span><span class="n">EITC_basic_frac</span><span class="p">,</span>
-                                <span class="n">EITC_rt</span><span class="p">[</span><span class="n">EIC</span><span class="p">],</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">EITC_c</span><span class="p">[</span><span class="n">EIC</span><span class="p">],</span>
-                                <span class="n">po_start</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">EITC_prt</span><span class="p">[</span><span class="n">EIC</span><span class="p">])</span>
-            <span class="n">eitc</span> <span class="o">=</span> <span class="n">eitc_p</span> <span class="o">+</span> <span class="n">eitc_s</span>
+        <span class="n">po_start</span> <span class="o">+=</span> <span class="n">EITC_ps_addon_MarriedJ</span><span class="p">[</span><span class="n">EIC</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">EIC</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">h_age_elig</span> <span class="o">=</span> <span class="n">EITC_MinEligAge</span> <span class="o">&lt;=</span> <span class="n">age_head</span> <span class="o">&lt;=</span> <span class="n">EITC_MaxEligAge</span>
+    <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">EITC_indiv</span><span class="p">:</span>
+        <span class="c1"># reform-only: per-spouse EITC instead of filing-unit EITC</span>
+        <span class="n">eitc_p</span> <span class="o">=</span> <span class="n">EITCamount</span><span class="p">(</span><span class="n">EITC_basic_frac</span><span class="p">,</span> <span class="n">phasein_rate</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span>
+                            <span class="n">max_amount</span><span class="p">,</span> <span class="n">po_start</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">phaseout_rate</span><span class="p">)</span>
+        <span class="n">eitc_s</span> <span class="o">=</span> <span class="n">EITCamount</span><span class="p">(</span><span class="n">EITC_basic_frac</span><span class="p">,</span> <span class="n">phasein_rate</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span>
+                            <span class="n">max_amount</span><span class="p">,</span> <span class="n">po_start</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">phaseout_rate</span><span class="p">)</span>
+        <span class="n">eitc</span> <span class="o">=</span> <span class="n">eitc_p</span> <span class="o">+</span> <span class="n">eitc_s</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">eitc</span> <span class="o">=</span> <span class="n">EITCamount</span><span class="p">(</span><span class="n">EITC_basic_frac</span><span class="p">,</span> <span class="n">phasein_rate</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span>
+                          <span class="n">max_amount</span><span class="p">,</span> <span class="n">po_start</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">phaseout_rate</span><span class="p">)</span>
+
+    <span class="c1"># ---------------- (B) Pub 596 Rule 11: childless age test --------</span>
+    <span class="c1"># Filer (or, for MFJ, either spouse) with no qualifying children</span>
+    <span class="c1"># must be in [EITC_MinEligAge, EITC_MaxEligAge] (25-64 under</span>
+    <span class="c1"># current law).  age == 0 in the data is treated as eligible.</span>
+    <span class="k">if</span> <span class="n">EIC</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">h_age_elig</span> <span class="o">=</span> <span class="n">EITC_MinEligAge</span> <span class="o">&lt;=</span> <span class="n">age_head</span> <span class="o">&lt;=</span> <span class="n">EITC_MaxEligAge</span>
+        <span class="n">h_ok</span> <span class="o">=</span> <span class="n">age_head</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">h_age_elig</span>
+        <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">s_age_elig</span> <span class="o">=</span> <span class="n">EITC_MinEligAge</span> <span class="o">&lt;=</span> <span class="n">age_spouse</span> <span class="o">&lt;=</span> <span class="n">EITC_MaxEligAge</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">age_head</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">age_spouse</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">h_age_elig</span> <span class="ow">or</span> <span class="n">s_age_elig</span><span class="p">):</span>
-                <span class="n">c59660</span> <span class="o">=</span> <span class="n">eitc</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">c59660</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="n">s_ok</span> <span class="o">=</span> <span class="n">age_spouse</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">s_age_elig</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">h_ok</span> <span class="ow">or</span> <span class="n">s_ok</span><span class="p">):</span>
+                <span class="n">eitc</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">c59660</span> <span class="o">=</span> <span class="n">eitc</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">h_ok</span><span class="p">:</span>
+                <span class="n">eitc</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">c59660</span> <span class="o">=</span> <span class="n">eitc</span>
 
+    <span class="c1"># ---------------- (C) Pub 596 Rules 3 (MFS) and 10 (dependent) ---</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">EITC_sep_filers_elig</span><span class="p">)</span> <span class="ow">or</span> <span class="n">DSI</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">c59660</span> <span class="o">=</span> <span class="mf">0.</span>
 
-    <span class="c1"># reduce positive EITC if investment income exceeds ceiling</span>
+    <span class="c1"># ---------------- (D) Pub 596 Rule 6: investment-income cliff ----</span>
+    <span class="c1"># IRC §32(i): no EITC if investment income exceeds the ceiling.</span>
+    <span class="c1"># Modeled as a smooth phaseout; with EITC_excess_InvestIncome_rt</span>
+    <span class="c1"># default 9e+99 the reduction immediately drives c59660 to 0.</span>
     <span class="k">if</span> <span class="n">c59660</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="n">invinc</span> <span class="o">=</span> <span class="p">(</span><span class="n">e00400</span> <span class="o">+</span> <span class="n">e00300</span> <span class="o">+</span> <span class="n">e00600</span> <span class="o">+</span>
                   <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c01000</span><span class="p">)</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">e02000</span> <span class="o">-</span> <span class="n">e26270</span><span class="p">)))</span>
         <span class="k">if</span> <span class="n">invinc</span> <span class="o">&gt;</span> <span class="n">EITC_InvestIncome_c</span><span class="p">:</span>
-            <span class="n">eitc</span> <span class="o">=</span> <span class="p">(</span><span class="n">c59660</span> <span class="o">-</span> <span class="n">EITC_excess_InvestIncome_rt</span> <span class="o">*</span>
-                    <span class="p">(</span><span class="n">invinc</span> <span class="o">-</span> <span class="n">EITC_InvestIncome_c</span><span class="p">))</span>
-            <span class="n">c59660</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">eitc</span><span class="p">)</span>
+            <span class="n">red</span> <span class="o">=</span> <span class="n">EITC_excess_InvestIncome_rt</span> <span class="o">*</span> <span class="p">(</span><span class="n">invinc</span> <span class="o">-</span> <span class="n">EITC_InvestIncome_c</span><span class="p">)</span>
+            <span class="n">c59660</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c59660</span> <span class="o">-</span> <span class="n">red</span><span class="p">)</span>
 
-    <span class="c1"># approximate EITC claiming behavior</span>
+    <span class="c1"># ---------------- (E) Behavioral claiming approximation ----------</span>
+    <span class="c1"># Not on the form: filers with expected credit &lt; eitc_claim_thd</span>
+    <span class="c1"># are assumed not to claim (default 0 = no suppression).</span>
     <span class="k">if</span> <span class="n">c59660</span> <span class="o">&lt;</span> <span class="n">eitc_claim_thd</span><span class="p">:</span>
         <span class="n">c59660</span> <span class="o">=</span> <span class="mf">0.</span>
 
