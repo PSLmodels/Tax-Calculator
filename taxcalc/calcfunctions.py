@@ -3201,33 +3201,59 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
                                RPTC_c, RPTC_rt,
                                rptc_p, rptc_s, rptc):
     """
-    Computes refundable payroll tax credit amounts.
+    Computes the Refundable Payroll Tax Credit (RPTC).
+
+    Reform construct with no IRS form correspondence: RPTC is a
+    Tax-Calculator-only credit designed to emulate a payroll-tax
+    exemption via the refundable-credit side of Form 1040.  Per the
+    `RPTC_c` policy-parameter description, positive values of `RPTC_c`
+    and `RPTC_rt` together emulate a payroll-tax exemption whose
+    implied earnings ceiling is `RPTC_c / RPTC_rt` per spouse.
+
+    Inert under current law: `RPTC_c` and `RPTC_rt` both default to
+    0.0 for all years (2013+), so `rptc_p = rptc_s = rptc = 0`.
+
+    Body (per spouse): pre-phaseout credit = min(rate * earnings, cap),
+    where "earnings" is `was_plus_sey_*` (gross wages-and-salaries plus
+    the reform-only extra-OASDI taxable SE component) as produced by
+    `EI_PayrollTax`.  The filing-unit total `rptc` is the sum of the
+    two per-spouse credits.
+
+    Calling order (calculator.py): invoked after `EITC` and before
+    `PersonalTaxCredit` in the refundable-credit sequence.  Downstream
+    consumer: `IITAX` subtracts `rptc` from total tax liability as a
+    fully-refundable credit (Form 1040 line 31 / Schedule 3 line 13
+    territory, modeled here as a standalone refundable item).
 
     Parameters
     ----------
     was_plus_sey_p: float
-        Wage and salary income plus taxable self employment income for taxpayer
+        Taxpayer's gross wages-and-salaries plus reform-only extra-OASDI
+        taxable self-employment earnings (set by `EI_PayrollTax`).
     was_plus_sey_s: float
-        Wage and salary income plus taxable self employment income for spouse
+        Spouse's gross wages-and-salaries plus reform-only extra-OASDI
+        taxable self-employment earnings (set by `EI_PayrollTax`).
     RPTC_c: float
-        Maximum refundable payroll tax credit
+        Per-spouse maximum refundable payroll tax credit (reform-only;
+        default 0.0).
     RPTC_rt: float
-        Refundable payroll tax credit phasein rate
+        Phasein rate applied to per-spouse earnings before the cap
+        (reform-only; default 0.0).
     rptc_p: float
-        Refundable Payroll Tax Credit for taxpayer
+        Records-bound output: RPTC for taxpayer.
     rptc_s: float
-        Refundable Payroll Tax Credit for spouse
+        Records-bound output: RPTC for spouse.
     rptc: float
-        Refundable Payroll Tax Credit for filing unit
+        Records-bound output: RPTC for filing unit (`rptc_p + rptc_s`).
 
     Returns
     -------
     rptc_p: float
-        Refundable Payroll Tax Credit for taxpayer
+        RPTC for taxpayer.
     rptc_s: float
-        Refundable Payroll Tax Credit for spouse
+        RPTC for spouse.
     rptc: float
-        Refundable Payroll Tax Credit for filing unit
+        RPTC for filing unit.
     """
     rptc_p = min(was_plus_sey_p * RPTC_rt, RPTC_c)
     rptc_s = min(was_plus_sey_s * RPTC_rt, RPTC_c)
@@ -3379,8 +3405,36 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
                       personal_nonrefundable_credit,
                       recovery_rebate_credit):
     """
-    Computes personal_refundable_credit and personal_nonrefundable_credit,
-    neither of which are part of current-law policy.
+    Computes three reform-construct credits. None corresponds to a 2025
+    current-law IRS form line:
+
+    - `personal_refundable_credit` and `personal_nonrefundable_credit` are
+      generic AGI-phased reform knobs (`II_credit*` parameters). Both
+      default to zero under current law.
+    - `recovery_rebate_credit` emulates the 2020 CARES Act Economic Impact
+      Payments and the 2021 ARPA Recovery Rebate Credit, both reconciled
+      historically on Form 1040 line 30 via a published worksheet. For 2022+
+      all RRC parameters default to zero, so the credit is 0 under current
+      law.
+
+    The two `II_credit*` blocks are identical-shaped: start with the
+    MARS-indexed maximum; if the rate is positive and AGI exceeds the
+    MARS-indexed phaseout start, subtract `rate * (AGI - start)` and floor
+    at 0.
+
+    The RRC block encodes an either/or parameter regime:
+    - 2020 CARES (`RRC_c=0`, `RRC_c_unit`/`RRC_c_kids` > 0, `RRC_prt=0.05`,
+      `RRC_pe=0`): branches 1 + 3 implement the CARES linear phaseout
+      from `RRC_ps`; branch 2 cannot fire because `c00100 < RRC_pe = 0`
+      is never true.
+    - 2021 ARPA (`RRC_c=1400`, `RRC_c_unit=RRC_c_kids=0`, `RRC_prt=0`):
+      branches 1 + 2 implement the ARPA per-person linear ramp from
+      `RRC_ps` to `RRC_pe`; branch 3 returns 0.
+
+    Downstream: `personal_refundable_credit` and `recovery_rebate_credit`
+    are added by `IITAX` on the refundable side (Form 1040 line 32-style
+    additions); `personal_nonrefundable_credit` is sequentially limited
+    against remaining tax in `NonrefundableCredits`.
 
     Parameters
     ----------
@@ -3388,39 +3442,51 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (AGI) (Form 1040 line 11)
     XTOT: int
-        Total number of exemptions for filing unit
+        Total number of exemptions for filing unit (RRC per-person count)
     nu18: int
-        Number of people under 18 years old in the filing unit
+        Number of people under 18 years old in the filing unit (RRC kids
+        count)
     II_credit: list
-        Personal refundable credit maximum amount
+        Personal refundable credit maximum amount by MARS (reform-only;
+        default 0)
     II_credit_ps: list
-        Personal refundable credit phaseout start
+        Personal refundable credit phaseout start by MARS (reform-only;
+        default 0)
     II_credit_prt: float
-        Personal refundable credit phaseout rate
+        Personal refundable credit phaseout rate (reform-only; default 0)
     II_credit_nr: list
-        Personal nonrefundable credit maximum amount
+        Personal nonrefundable credit maximum amount by MARS (reform-only;
+        default 0)
     II_credit_nr_ps: list
-        Personal nonrefundable credit phaseout start
+        Personal nonrefundable credit phaseout start by MARS (reform-only;
+        default 0)
     II_credit_nr_prt: float
-        Personal nonrefundable credit phaseout rate
+        Personal nonrefundable credit phaseout rate (reform-only; default 0)
     RRC_c: float
-        Maximum amount of Recovery Rebate Credit
+        Per-person Recovery Rebate Credit maximum (ARPA 2021 = 1400; 0
+        otherwise)
     RRC_ps: list
-        Recovery Rebate Credit phase out start
+        Recovery Rebate Credit phaseout start by MARS
     RRC_pe: list
-        Recovery Rebate Credit phase out end
+        Recovery Rebate Credit phaseout end by MARS (used only by the ARPA
+        per-person ramp; 0 outside 2021)
     RRC_prt: float
-        Recovery Rebate Credit phase out rate
+        Recovery Rebate Credit phaseout rate (CARES 2020 = 0.05; 0
+        otherwise)
     RRC_c_kids: float
-        Credit amount per child as part of the Recovery Rebate Credit
+        Per-child amount for the Recovery Rebate Credit (CARES 2020;
+        0 otherwise)
     RRC_c_unit: list
-        Maximum credit for filing unit as part of the Recovery Rebate Credit
+        Per-filing-unit base amount for the Recovery Rebate Credit by MARS
+        (CARES 2020; 0 otherwise)
     personal_refundable_credit: float
-        Personal refundable credit
+        Records-bound output: personal refundable credit
     personal_nonrefundable_credit: float
-        Personal nonrefundable credit
+        Records-bound output: personal nonrefundable credit
+    recovery_rebate_credit: float
+        Records-bound output: recovery rebate credit
 
     Returns
     -------
@@ -3428,35 +3494,40 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
         Personal refundable credit
     personal_nonrefundable_credit: float
         Personal nonrefundable credit
-    personal_rebate_credit: float
-        Personal rebate credit
+    recovery_rebate_credit: float
+        Recovery rebate credit
     """
-    # calculate personal refundable credit amount with phase-out
+    # ---- Personal refundable credit (reform-only) ----
+    ii_ps = II_credit_ps[MARS - 1]
     personal_refundable_credit = II_credit[MARS - 1]
-    if II_credit_prt > 0. and c00100 > II_credit_ps[MARS - 1]:
-        pout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
-        fully_phasedout = personal_refundable_credit - pout
-        personal_refundable_credit = max(0., fully_phasedout)
-    # calculate personal nonrefundable credit amount with phase-out
+    if II_credit_prt > 0. and c00100 > ii_ps:
+        pout = II_credit_prt * (c00100 - ii_ps)
+        personal_refundable_credit = max(0., personal_refundable_credit - pout)
+    # ---- Personal nonrefundable credit (reform-only) ----
+    ii_nr_ps = II_credit_nr_ps[MARS - 1]
     personal_nonrefundable_credit = II_credit_nr[MARS - 1]
-    if II_credit_nr_prt > 0. and c00100 > II_credit_nr_ps[MARS - 1]:
-        pout = II_credit_nr_prt * (c00100 - II_credit_nr_ps[MARS - 1])
-        fully_phasedout = personal_nonrefundable_credit - pout
-        personal_nonrefundable_credit = max(0., fully_phasedout)
-    # calculate Recovery Rebate Credit from CARES Act 2020 and/or ARPA 2021
-    if c00100 < RRC_ps[MARS - 1]:
-        recovery_rebate_credit = RRC_c * XTOT
-        recovery_rebate_credit += RRC_c_unit[MARS - 1] + RRC_c_kids * nu18
-    elif 0 < c00100 < RRC_pe[MARS - 1]:
-        prt = (
-            (c00100 - RRC_ps[MARS - 1]) /
-            (RRC_pe[MARS - 1] - RRC_ps[MARS - 1])
+    if II_credit_nr_prt > 0. and c00100 > ii_nr_ps:
+        pout = II_credit_nr_prt * (c00100 - ii_nr_ps)
+        personal_nonrefundable_credit = max(
+            0., personal_nonrefundable_credit - pout
         )
+    # ---- Recovery Rebate Credit (CARES Act 2020 EIP + ARPA 2021 RRC) ----
+    # Historically Form 1040 line 30 (2020 + 2021); parameters are zeroed
+    # for 2022+, so the three branches all return 0 under current law.
+    rrc_ps = RRC_ps[MARS - 1]
+    rrc_pe = RRC_pe[MARS - 1]
+    rrc_unit_kids = RRC_c_unit[MARS - 1] + RRC_c_kids * nu18
+    if c00100 < rrc_ps:
+        # below phaseout start: full per-person (ARPA) + unit+kids (CARES)
+        recovery_rebate_credit = RRC_c * XTOT + rrc_unit_kids
+    elif 0 < c00100 < rrc_pe:
+        # ARPA-only per-person linear ramp between rrc_ps and rrc_pe
+        prt = (c00100 - rrc_ps) / (rrc_pe - rrc_ps)
         recovery_rebate_credit = RRC_c * XTOT * (1 - prt)
     else:
+        # CARES-only linear phaseout of unit+kids above rrc_ps
         recovery_rebate_credit = max(
-            0, RRC_c_unit[MARS - 1] + RRC_c_kids * nu18 - RRC_prt *
-            (c00100 - RRC_ps[MARS - 1])
+            0., rrc_unit_kids - RRC_prt * (c00100 - rrc_ps)
         )
     return (personal_refundable_credit, personal_nonrefundable_credit,
             recovery_rebate_credit)
@@ -3693,28 +3764,47 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, c05800,
 def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
                   CR_Charity_frt, MARS, charity_credit):
     """
-    Computes nonrefundable charity credit, charity_credit.
-    This credit is not part of current-law policy.
+    Computes nonrefundable credit for charitable giving (a reform
+    construct with no IRS form correspondence; not part of current-law
+    policy).  Under current law `CR_Charity_rt`, `CR_Charity_f`, and
+    `CR_Charity_frt` all default to 0.0, so `charity_credit` is
+    identically 0 and the function is inert.
+
+    Under reform the credit equals
+        CR_Charity_rt * max(0, (e19800 + e20100) - floor)
+    where the floor is the larger of a MARS-indexed dollar amount
+    (`CR_Charity_f[MARS-1]`) and an AGI-share (`CR_Charity_frt *
+    c00100`); only giving in excess of the floor earns the credit.
+
+    Downstream consumers: `charity_credit` is fed to
+    `NonrefundableCredits`, where it is sequentially limited against
+    the remaining tax-before-credits (`avail`), and the limited amount
+    is then summed into the nonrefundable-credit total subtracted from
+    tax in `IITAX`.
 
     Parameters
     ----------
     e19800: float
         Itemizable charitable giving for cash and check contributions
+        (Sch A line 11)
     e20100: float
-        Itemizable charitable giving other than cash and check contributions
+        Itemizable charitable giving other than cash and check
+        contributions (Sch A line 12)
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (AGI; Form 1040 line 11)
     CR_Charity_rt: float
-        Charity credit rate
+        Charity credit rate (reform-only; 0 under current law)
     CR_Charity_f: list
-        Charity credit floor
+        MARS-indexed dollar floor: only giving above this amount is
+        eligible (reform-only; 0 under current law)
     CR_Charity_frt: float
-        Charity credit floor rate
+        AGI-share floor: only giving above this fraction of AGI is
+        eligible (reform-only; 0 under current law)
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     charity_credit: float
-        Credit for charitable giving
+        Records-bound output, computed below.
 
     Returns
     -------
@@ -3722,9 +3812,10 @@ def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
         Credit for charitable giving
     """
     total_charity = e19800 + e20100
-    floor = max(CR_Charity_frt * c00100, CR_Charity_f[MARS - 1])
-    charity_cr_floored = max(total_charity - floor, 0)
-    charity_credit = CR_Charity_rt * (charity_cr_floored)
+    dollar_floor = CR_Charity_f[MARS - 1]
+    floor = max(CR_Charity_frt * c00100, dollar_floor)
+    eligible_giving = max(total_charity - floor, 0.)
+    charity_credit = CR_Charity_rt * eligible_giving
     return charity_credit
 
 
@@ -4079,61 +4170,104 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
             c09200, ctc_new):
     """
-    Computes new refundable child tax credit using specified parameters.
+    Computes a reform-construct refundable Child Tax Credit (`ctc_new`)
+    that is added on top of, not in place of, the current-law CTC/ODC
+    machinery in `ChildDepTaxCredit` and `AdditionalCTC`.
+
+    No IRS form: this credit does not correspond to any current-law
+    Form 1040 / Schedule 8812 line. All `CTC_new_*` policy parameters
+    default to 0 / false for all years except 2021, where defaults emulate
+    the ARPA-2021 expanded CTC (`CTC_new_c=1000`, `CTC_new_c_under6_bonus=600`,
+    `CTC_new_for_all=true`, `CTC_new_ps={75k single / 150k MFJ / 75k MFS /
+    112.5k HoH / 150k widow}`, `CTC_new_prt=0.05`). Under 2025 current law
+    every parameter is 0/false, so `ctc_new` is identically zero.
+
+    Body sections:
+      (A) qualifying-child count: `n24`, optionally widened via
+          `CTC_include17` to count under-18 non-`n24` dependents (same
+          block as in `ChildDepTaxCredit` row 29).
+      (B) tentative credit: `CTC_new_c·childnum + CTC_new_c_under6_bonus·nu06`,
+          optionally capped at `CTC_new_rt·posagi` when `CTC_new_for_all=false`
+          (an AGI-based phase-in).
+      (C) AGI phase-out: reduction of `CTC_new_prt` per dollar of AGI above
+          `CTC_new_ps[MARS-1]`, with `exact==1` rounding excess up to the
+          next $1000 (mirrors the Sch 8812 line-9 step).
+      (D) reform-only payroll-tax refundability cap: when
+          `CTC_new_refund_limited=true`, the portion of `ctc_new` exceeding
+          pre-refundable-credits liability `c09200` is capped at
+          `CTC_new_refund_limit_payroll_rt` times either OASDI-only
+          (`ptax_oasdi`) or all-FICA (`payrolltax`) payroll tax depending
+          on `CTC_new_refund_limited_all_payroll`.
+
+    Calling order: runs after `C1040` (so `c09200`, `ptax_oasdi`, and
+    `payrolltax` are final) and immediately before `IITAX`, which
+    subtracts `ctc_new` on the refundable side and rolls it into the
+    `ctc_total` / `ctc_refundable` records-bound aggregates.
 
     Parameters
     ----------
     CTC_new_c: float
-        New refundable child tax credit maximum amount per child
+        Reform: maximum new refundable CTC per qualifying child.
     CTC_new_rt: float
-        New refundalbe child tax credit amount phasein rate
+        Reform: AGI phase-in rate when `CTC_new_for_all=false`.
     CTC_new_c_under6_bonus: float
-        Bonus new refundable child tax credit maximum for qualifying
-        children under six
+        Reform: bonus added to `CTC_new_c` for each under-6 dependent.
     CTC_new_ps: list
-        New refundable child tax credit phaseout starting AGI
+        Reform: MARS-indexed AGI threshold at which the phase-out begins.
     CTC_new_prt: float
-        New refundable child tax credit amount phaseout rate
+        Reform: phase-out reduction rate per dollar of AGI above
+        `CTC_new_ps[MARS-1]`.
     CTC_new_for_all: bool
-        Whether or not maximum amount of the new refundable child tax credit
-        is available to all
+        Reform: when true, full `CTC_new_c·childnum + ...` is available
+        regardless of AGI (no `CTC_new_rt` phase-in); when false the
+        tentative credit is capped at `CTC_new_rt·posagi`.
+    CTC_include17: bool
+        Reform: when true, dependents with `age < 18` not already in `n24`
+        are added to `childnum` (same widening used in `ChildDepTaxCredit`).
     CTC_new_refund_limited: bool
-        New child tax credit refund limited to a decimal fraction of
-        payroll taxes
+        Reform: when true, the refund portion (excess of `ctc_new` over
+        `c09200`) is capped via the payroll-tax limit below.
     CTC_new_refund_limit_payroll_rt: float
-        New child tax credit refund limit rate (decimal fraction of
-        payroll taxes)
+        Reform: payroll-tax-share cap on the refund portion of `ctc_new`.
     CTC_new_refund_limited_all_payroll: bool
-        New child tax credit refund limit applies to all FICA taxes, not
-        just OASDI
+        Reform: when true, the payroll cap applies to total FICA
+        (`payrolltax`); when false it applies to OASDI only (`ptax_oasdi`).
     payrolltax: float
-        Total (employee + employer) payroll tax liability
+        Total (employee + employer) FICA payroll tax liability.
     exact: int
-        Whether or not exact phase-out calculation is being done
+        When 1, round the phase-out excess up to the next $1000 (Sch 8812
+        line-9 step); when 0, use the smooth excess.
     n24: int
-        Number of children who are Child-Tax-Credit eligible, one
-        condition for which is being under age 17
+        Number of CTC-eligible children (a condition for which is being
+        under age 17).
     nu06: int
-        Number of dependents under 6 years old
+        Number of dependents under 6 years old.
+    age_head: int
+        Age of taxpayer (filer); used by the `CTC_include17` widening.
+    age_spouse: int
+        Age of spouse (or 0 if not MFJ); used by the `CTC_include17` widening.
+    nu18: int
+        Number of dependents under 18 years old; used by the
+        `CTC_include17` widening.
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (AGI); floored at 0 as `posagi`.
     MARS: int
-        Filing (marital) status. (1=single, 2=joint, 3=separate,
-                                  4=household-head, 5=widow(er))
+        Filing status (1=single, 2=MFJ, 3=MFS, 4=HoH, 5=widow(er)).
     ptax_oasdi: float
-        Employee and employer OASDI FICA tax plus self employment tax
-        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax
+        Employee + employer OASDI FICA plus SE tax (excludes HI FICA).
     c09200: float
-        Income tax liabilities (including othertaxes) after non-refundable
-        credits are used, but before refundable credits are applied
+        Total income tax (including other taxes) after nonrefundable
+        credits, before refundable credits.
     ctc_new: float
-        New refundable child tax credit
+        Records-bound output, computed below.
 
     Returns
     -------
     ctc_new: float
-        New refundable child tax credit
+        Reform-only new refundable child tax credit; fed into `IITAX` on
+        the refundable side.
     """
+    # (A) qualifying-child count (under-18 widening is reform-only)
     if CTC_include17:
         tu18 = int(age_head < 18)   # taxpayer is under age 18
         su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
@@ -4142,23 +4276,24 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         childnum = n24
     if childnum > 0:
         posagi = max(c00100, 0.)
+        # (B) tentative credit + optional AGI phase-in
         ctc_new = CTC_new_c * childnum + CTC_new_c_under6_bonus * nu06
         if not CTC_new_for_all:
             ctc_new = min(CTC_new_rt * posagi, ctc_new)
+        # (C) AGI phase-out above CTC_new_ps[MARS-1]
         ymax = CTC_new_ps[MARS - 1]
         if posagi > ymax:
-            over = posagi - ymax
+            excess = posagi - ymax
             if exact == 1:  # exact calculation as on tax form
-                excess = math.ceil(over / 1000.) * 1000.
-            else:  # smoothed calculation
-                excess = over
-            ctc_new_reduced = max(0., ctc_new - CTC_new_prt * excess)
-            ctc_new = min(ctc_new, ctc_new_reduced)
+                excess = math.ceil(excess / 1000.) * 1000.
+            ctc_new = max(0., ctc_new - CTC_new_prt * excess)
+        # (D) reform-only payroll-tax cap on the refund portion
         if ctc_new > 0. and CTC_new_refund_limited:
             refund_new = max(0., ctc_new - c09200)
-            limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
             if CTC_new_refund_limited_all_payroll:
                 limit_new = CTC_new_refund_limit_payroll_rt * payrolltax
+            else:
+                limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
             limited_new = max(0., refund_new - limit_new)
             ctc_new = max(0., ctc_new - limited_new)
     else:
@@ -4249,7 +4384,29 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
                  FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
                  fstax, iitax, combined, surtax):
     """
-    Computes Fair Share Tax, or "Buffet Rule", types of reforms.
+    Computes Fair Share Tax (aka "Buffett Rule") — a reform-only minimum
+    tax on high-AGI filers. No IRS form correspondence: the construct
+    models the 2012 Paying a Fair Share Act / Buffett Rule proposal,
+    which was never enacted. Inert under current law because the rate
+    parameter `FST_AGI_trt` defaults to 0.0 for all years 2013+.
+
+    Mechanics (when active under reform):
+      tentative = c00100 * FST_AGI_trt - iitax - employee_share
+      where employee_share = 0.5*ptax_was + 0.5*setax + ptax_amc
+      (the worker-borne half of OASDI+HI FICA and SECA, plus the
+      employee-paid Additional Medicare Tax — credited against the
+      minimum to avoid double-counting payroll already paid).
+    The tentative amount is floored at 0, then linearly phased in
+    between `FST_AGI_thd_lo` and `FST_AGI_thd_hi` (MARS-indexed),
+    fully imposed at or above the high threshold.
+
+    The resulting `fstax` is added to three running accumulators:
+    `iitax` (income-tax total flowing to Form 1040 line 24),
+    `combined` (iitax + payrolltax + lumpsum_tax), and `surtax`
+    (records-bound diagnostic also incremented by `AGIsurtax`; see
+    row 18). Called by `Calculator.calc_all` after `_calc_one_year`
+    finishes, so `iitax`, `ptax_was`, `setax`, and `ptax_amc` are
+    already final.
 
     Parameters
     ----------
@@ -4259,25 +4416,29 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     ptax_was: float
-        Employee and employer OASDI plus HI FICA tax
+        Employee and employer OASDI plus HI FICA tax on wages and
+        salaries (`EI_PayrollTax` output)
     setax: float
-        Self-employment tax
+        Self-employment tax (`EI_PayrollTax` output)
     ptax_amc: float
-        Additional Medicare Tax
+        Additional Medicare Tax (`AdditionalMedicareTax` output)
     FST_AGI_trt: float
-        New minimum tax; rate as a decimal fraction of AGI
+        Reform-only minimum-tax rate applied to AGI (default 0.0 →
+        function inert)
     FST_AGI_thd_lo: list
-        Minimum AGI needed to be subject to the new minimum tax
+        MARS-indexed AGI floor below which no minimum tax is imposed
     FST_AGI_thd_hi: list
-        AGI level at which the New Minimum Tax is fully phased in
+        MARS-indexed AGI level at which the minimum tax is fully
+        phased in; equal to `FST_AGI_thd_lo` disables the phase-in
     fstax: float
-        Fair Share Tax amount
+        Records-bound output: Fair Share Tax amount
     iitax: float
-        Total federal individual income tax liability
+        Records-bound accumulator: total federal income tax liability
     combined: float
-        Sum of iitax and payrolltax and lumpsum_tax
+        Records-bound accumulator: iitax + payrolltax + lumpsum_tax
     surtax: float
-        Individual income tax subtotal augmented by fstax
+        Records-bound accumulator: diagnostic surtax total (also
+        incremented by `AGIsurtax`)
 
     Returns
     -------
@@ -4290,17 +4451,23 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
     surtax: float
         Individual income tax subtotal augmented by fstax
     """
-    if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo[MARS - 1]:
-        employee_share = 0.5 * ptax_was + 0.5 * setax + ptax_amc
-        fstax = max(c00100 * FST_AGI_trt - iitax - employee_share, 0.)
-        thd_gap = max(FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1], 0.)
-        if thd_gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
-            fstax *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / thd_gap
-        iitax += fstax
-        combined += fstax
-        surtax += fstax
-    else:
+    # Reform construct: inert under current law (FST_AGI_trt = 0).
+    thd_lo = FST_AGI_thd_lo[MARS - 1]
+    if FST_AGI_trt <= 0. or c00100 < thd_lo:
         fstax = 0.
+        return (fstax, iitax, combined, surtax)
+    thd_hi = FST_AGI_thd_hi[MARS - 1]
+    # Tentative minimum tax: rate * AGI, credited for income tax and the
+    # worker-borne half of payroll (½ FICA + ½ SECA + employee AMC).
+    employee_share = 0.5 * ptax_was + 0.5 * setax + ptax_amc
+    fstax = max(c00100 * FST_AGI_trt - iitax - employee_share, 0.)
+    # Linear phase-in between thd_lo and thd_hi (no phase-in if equal).
+    thd_gap = max(thd_hi - thd_lo, 0.)
+    if thd_gap > 0. and c00100 < thd_hi:
+        fstax *= (c00100 - thd_lo) / thd_gap
+    iitax += fstax
+    combined += fstax
+    surtax += fstax
     return (fstax, iitax, combined, surtax)
 
 
@@ -4309,7 +4476,18 @@ def LumpSumTax(DSI, num, XTOT,
                LST,
                lumpsum_tax, combined):
     """
-    Computes lump-sum tax and add it to combined taxes.
+    Computes a per-capita lump-sum ("head") tax and adds it to combined taxes.
+
+    No IRS form correspondence: ``LST`` is a reform construct (section
+    "Surtaxes / Lump-Sum Tax" in ``policy_current_law.json``) and defaults
+    to 0.0 from 2013 onward, so this function is inert under current law.
+
+    When active, every member of a non-dependent filing unit pays ``LST``
+    dollars; filing units claimed as dependents elsewhere (``DSI == 1``)
+    are exempt. The head count is ``max(num, XTOT)``: ``num`` is 2 for MFJ
+    and 1 otherwise, which floors the count at the number of filers when
+    ``XTOT`` is unusually low. The resulting tax is added only to
+    ``combined`` (not to ``iitax`` or ``payrolltax``).
 
     Parameters
     ----------
@@ -4320,7 +4498,7 @@ def LumpSumTax(DSI, num, XTOT,
     XTOT: int
         Total number of exemptions for filing unit
     LST: float
-        Dollar amount of lump-sum tax
+        Dollar amount of lump-sum tax (reform parameter; 0.0 under current law)
     lumpsum_tax: float
         Lumpsum (or head) tax
     combined: float
