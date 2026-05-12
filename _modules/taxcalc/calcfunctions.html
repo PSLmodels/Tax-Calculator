@@ -3939,55 +3939,95 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">AmOppCreditParts</span><span class="p">(</span><span class="n">exact</span><span class="p">,</span> <span class="n">e87521</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CR_AmOppRefundable_hc</span><span class="p">,</span>
                      <span class="n">CR_AmOppNonRefundable_hc</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">c87668</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Applies a phaseout to the Form 8863, line 1, American Opportunity Credit</span>
-<span class="sd">    amount, e87521, and then applies the 0.4 refundable rate.</span>
-<span class="sd">    Logic corresponds to Form 8863, Part I.</span>
+<span class="sd">    Computes the American Opportunity Credit (AOTC) refundable and</span>
+<span class="sd">    nonrefundable amounts from Form 8863 Part I (2025).</span>
+
+<span class="sd">    Form 8863 Part I line map:</span>
+<span class="sd">      * line 1  Tentative AOTC across students &lt;- e87521 (Form 8863</span>
+<span class="sd">                                                 Part III line 30 sum;</span>
+<span class="sd">                                                 capped at $2,500/student)</span>
+<span class="sd">      * line 2  Phaseout base by filing status &lt;- 90000*num</span>
+<span class="sd">                                                 ($180k MFJ / $90k other)</span>
+<span class="sd">      * line 3  MAGI                           &lt;- c00100 (no Form 2555 /</span>
+<span class="sd">                                                 Form 4563 / Puerto Rico</span>
+<span class="sd">                                                 exclusion add-back because</span>
+<span class="sd">                                                 these are not modeled)</span>
+<span class="sd">      * line 4  max(0, line 2 - line 3)</span>
+<span class="sd">      * line 5  Phaseout range length          &lt;- 10000*num</span>
+<span class="sd">                                                 ($20k MFJ / $10k other)</span>
+<span class="sd">      * line 6  min(1.000, line 4 / line 5)    &lt;- rounded to 3 decimals</span>
+<span class="sd">                                                 per IRS instructions when</span>
+<span class="sd">                                                 exact == 1</span>
+<span class="sd">      * line 7  line 1 * line 6                &lt;- post-phaseout AOTC</span>
+<span class="sd">      * line 8  0.4 * line 7                   &lt;- refundable AOTC; goes to</span>
+<span class="sd">                                                 Form 1040 line 29 via</span>
+<span class="sd">                                                 c10960</span>
+<span class="sd">      * Part II line 9 = line 7 - line 8       &lt;- nonrefundable portion</span>
+<span class="sd">                                                 feeding the Part II Credit</span>
+<span class="sd">                                                 Limit Worksheet via c87668</span>
+
+<span class="sd">    The reform haircuts `CR_AmOppRefundable_hc` and</span>
+<span class="sd">    `CR_AmOppNonRefundable_hc` both default to 0.0 from 2013 onward, so</span>
+<span class="sd">    under current law c10960 = 0.4*line7 and c87668 = 0.6*line7 exactly as</span>
+<span class="sd">    on the form. `num` doubles the single thresholds for MARS=2 (MFJ</span>
+<span class="sd">    thresholds on this form are exactly twice the single thresholds).</span>
+<span class="sd">    The Form 8863 line-7 under-24 dependency-eligibility checkbox</span>
+<span class="sd">    (IRC §25A(i)(6)(B)) is not modeled; Tax-Calculator records do not</span>
+<span class="sd">    encode the parental/dependent status required to determine whether a</span>
+<span class="sd">    filer is barred from the refundable portion.</span>
+
+<span class="sd">    Calling order: `calculator.py` invokes `AmOppCreditParts` between</span>
+<span class="sd">    `SchR` and `EducationTaxCredit`. `c10960` flows to `IITAX` refundable</span>
+<span class="sd">    side (Form 1040 line 29); `c87668` flows to `EducationTaxCredit`</span>
+<span class="sd">    Part II Credit Limit Worksheet line 10.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    exact: int</span>
-<span class="sd">        Whether or not to do rounding of phaseout fraction</span>
+<span class="sd">        If 1, round the line-6 phaseout fraction to 3 decimals per IRS</span>
+<span class="sd">        instructions; if 0, use the unrounded fraction.</span>
 <span class="sd">    e87521: float</span>
-<span class="sd">        Total tentative AmOppCredit amount for all students.</span>
-<span class="sd">        From Form 8863, line 1.</span>
+<span class="sd">        Tentative AOTC across all students (Form 8863 line 1 = sum of</span>
+<span class="sd">        Part III line 30).</span>
 <span class="sd">    num: int</span>
-<span class="sd">        2 when MARS is 2 (married filing jointly), otherwise 1</span>
+<span class="sd">        2 when MARS is 2 (MFJ), otherwise 1; doubles the single thresholds</span>
+<span class="sd">        on Form 8863 lines 2 and 5.</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">        Adjusted Gross Income (Form 8863 line 3 MAGI proxy; Form 2555 /</span>
+<span class="sd">        Form 4563 / Puerto Rico add-backs not modeled).</span>
 <span class="sd">    CR_AmOppRefundable_hc: float</span>
-<span class="sd">        Refundable portion of the American Opportunity Credit haircut</span>
+<span class="sd">        Reform haircut on the refundable portion (Form 8863 line 8);</span>
+<span class="sd">        current-law default 0.0 means no haircut.</span>
 <span class="sd">    CR_AmOppNonRefundable_hc: float</span>
-<span class="sd">        Nonrefundable portion of the American Opportunity Credit haircut</span>
+<span class="sd">        Reform haircut on the nonrefundable portion (Form 8863 Part II</span>
+<span class="sd">        line 9); current-law default 0.0 means no haircut.</span>
 <span class="sd">    c10960: float</span>
-<span class="sd">        American Opportunity Credit refundable amount from Form 8863</span>
+<span class="sd">        Records-bound output, computed below (refundable AOTC).</span>
 <span class="sd">    c87668: float</span>
-<span class="sd">        American Opportunity Credit non-refundable amount from Form 8863</span>
+<span class="sd">        Records-bound output, computed below (nonrefundable AOTC fed to</span>
+<span class="sd">        EducationTaxCredit Part II).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c10960: float</span>
-<span class="sd">        American Opportunity Credit refundable amount from Form 8863</span>
+<span class="sd">        Refundable AOTC after the reform haircut (Form 8863 line 8).</span>
 <span class="sd">    c87668: float</span>
-<span class="sd">        American Opportunity Credit non-refundable amount from Form 8863</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Tax Law Paramters that are not parameterized:</span>
-<span class="sd">        90000: American Opportunity phaseout income base</span>
-<span class="sd">        10000: American Opportunity Credit phaseout income range length</span>
-<span class="sd">        1/1000: American Opportunity Credit phaseout rate</span>
-<span class="sd">        0.3: American Opportunity Credit refundable rate</span>
+<span class="sd">        Nonrefundable AOTC after the reform haircut (Form 8863 Part II</span>
+<span class="sd">        line 9 input).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">e87521</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="n">c87658</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">90000.</span> <span class="o">*</span> <span class="n">num</span> <span class="o">-</span> <span class="n">c00100</span><span class="p">)</span>
-        <span class="n">c87660</span> <span class="o">=</span> <span class="mf">10000.</span> <span class="o">*</span> <span class="n">num</span>
+        <span class="c1"># ---- Phaseout fraction (Form 8863 lines 2-6) ----</span>
+        <span class="n">line4</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">90000.</span> <span class="o">*</span> <span class="n">num</span> <span class="o">-</span> <span class="n">c00100</span><span class="p">)</span>         <span class="c1"># line 2 - line 3</span>
+        <span class="n">line5</span> <span class="o">=</span> <span class="mf">10000.</span> <span class="o">*</span> <span class="n">num</span>                           <span class="c1"># line 5</span>
         <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
-            <span class="n">c87662</span> <span class="o">=</span> <span class="mf">1000.</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">c87658</span> <span class="o">/</span> <span class="n">c87660</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            <span class="n">line6_x1000</span> <span class="o">=</span> <span class="mf">1000.</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">line4</span> <span class="o">/</span> <span class="n">line5</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">c87662</span> <span class="o">=</span> <span class="mf">1000.</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">c87658</span> <span class="o">/</span> <span class="n">c87660</span><span class="p">)</span>
-        <span class="n">c87664</span> <span class="o">=</span> <span class="n">c87662</span> <span class="o">*</span> <span class="n">e87521</span> <span class="o">/</span> <span class="mf">1000.</span>
-        <span class="n">c10960</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">c87664</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_AmOppRefundable_hc</span><span class="p">)</span>
-        <span class="n">c87668</span> <span class="o">=</span> <span class="n">c87664</span> <span class="o">-</span> <span class="n">c10960</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_AmOppNonRefundable_hc</span><span class="p">)</span>
+            <span class="n">line6_x1000</span> <span class="o">=</span> <span class="mf">1000.</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">line4</span> <span class="o">/</span> <span class="n">line5</span><span class="p">)</span>
+        <span class="c1"># ---- Total AOTC after phaseout (line 7) ----</span>
+        <span class="n">line7</span> <span class="o">=</span> <span class="n">line6_x1000</span> <span class="o">*</span> <span class="n">e87521</span> <span class="o">/</span> <span class="mf">1000.</span>
+        <span class="c1"># ---- Refundable (line 8) / nonrefundable (Part II line 9) split ----</span>
+        <span class="n">c10960</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">line7</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_AmOppRefundable_hc</span><span class="p">)</span>
+        <span class="n">c87668</span> <span class="o">=</span> <span class="n">line7</span> <span class="o">-</span> <span class="n">c10960</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_AmOppNonRefundable_hc</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">c10960</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">c87668</span> <span class="o">=</span> <span class="mf">0.</span>
