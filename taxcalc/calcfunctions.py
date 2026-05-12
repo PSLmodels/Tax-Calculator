@@ -4384,7 +4384,29 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
                  FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
                  fstax, iitax, combined, surtax):
     """
-    Computes Fair Share Tax, or "Buffet Rule", types of reforms.
+    Computes Fair Share Tax (aka "Buffett Rule") — a reform-only minimum
+    tax on high-AGI filers. No IRS form correspondence: the construct
+    models the 2012 Paying a Fair Share Act / Buffett Rule proposal,
+    which was never enacted. Inert under current law because the rate
+    parameter `FST_AGI_trt` defaults to 0.0 for all years 2013+.
+
+    Mechanics (when active under reform):
+      tentative = c00100 * FST_AGI_trt - iitax - employee_share
+      where employee_share = 0.5*ptax_was + 0.5*setax + ptax_amc
+      (the worker-borne half of OASDI+HI FICA and SECA, plus the
+      employee-paid Additional Medicare Tax — credited against the
+      minimum to avoid double-counting payroll already paid).
+    The tentative amount is floored at 0, then linearly phased in
+    between `FST_AGI_thd_lo` and `FST_AGI_thd_hi` (MARS-indexed),
+    fully imposed at or above the high threshold.
+
+    The resulting `fstax` is added to three running accumulators:
+    `iitax` (income-tax total flowing to Form 1040 line 24),
+    `combined` (iitax + payrolltax + lumpsum_tax), and `surtax`
+    (records-bound diagnostic also incremented by `AGIsurtax`; see
+    row 18). Called by `Calculator.calc_all` after `_calc_one_year`
+    finishes, so `iitax`, `ptax_was`, `setax`, and `ptax_amc` are
+    already final.
 
     Parameters
     ----------
@@ -4394,25 +4416,29 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     ptax_was: float
-        Employee and employer OASDI plus HI FICA tax
+        Employee and employer OASDI plus HI FICA tax on wages and
+        salaries (`EI_PayrollTax` output)
     setax: float
-        Self-employment tax
+        Self-employment tax (`EI_PayrollTax` output)
     ptax_amc: float
-        Additional Medicare Tax
+        Additional Medicare Tax (`AdditionalMedicareTax` output)
     FST_AGI_trt: float
-        New minimum tax; rate as a decimal fraction of AGI
+        Reform-only minimum-tax rate applied to AGI (default 0.0 →
+        function inert)
     FST_AGI_thd_lo: list
-        Minimum AGI needed to be subject to the new minimum tax
+        MARS-indexed AGI floor below which no minimum tax is imposed
     FST_AGI_thd_hi: list
-        AGI level at which the New Minimum Tax is fully phased in
+        MARS-indexed AGI level at which the minimum tax is fully
+        phased in; equal to `FST_AGI_thd_lo` disables the phase-in
     fstax: float
-        Fair Share Tax amount
+        Records-bound output: Fair Share Tax amount
     iitax: float
-        Total federal individual income tax liability
+        Records-bound accumulator: total federal income tax liability
     combined: float
-        Sum of iitax and payrolltax and lumpsum_tax
+        Records-bound accumulator: iitax + payrolltax + lumpsum_tax
     surtax: float
-        Individual income tax subtotal augmented by fstax
+        Records-bound accumulator: diagnostic surtax total (also
+        incremented by `AGIsurtax`)
 
     Returns
     -------
@@ -4425,17 +4451,23 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
     surtax: float
         Individual income tax subtotal augmented by fstax
     """
-    if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo[MARS - 1]:
-        employee_share = 0.5 * ptax_was + 0.5 * setax + ptax_amc
-        fstax = max(c00100 * FST_AGI_trt - iitax - employee_share, 0.)
-        thd_gap = max(FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1], 0.)
-        if thd_gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
-            fstax *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / thd_gap
-        iitax += fstax
-        combined += fstax
-        surtax += fstax
-    else:
+    # Reform construct: inert under current law (FST_AGI_trt = 0).
+    thd_lo = FST_AGI_thd_lo[MARS - 1]
+    if FST_AGI_trt <= 0. or c00100 < thd_lo:
         fstax = 0.
+        return (fstax, iitax, combined, surtax)
+    thd_hi = FST_AGI_thd_hi[MARS - 1]
+    # Tentative minimum tax: rate * AGI, credited for income tax and the
+    # worker-borne half of payroll (½ FICA + ½ SECA + employee AMC).
+    employee_share = 0.5 * ptax_was + 0.5 * setax + ptax_amc
+    fstax = max(c00100 * FST_AGI_trt - iitax - employee_share, 0.)
+    # Linear phase-in between thd_lo and thd_hi (no phase-in if equal).
+    thd_gap = max(thd_hi - thd_lo, 0.)
+    if thd_gap > 0. and c00100 < thd_hi:
+        fstax *= (c00100 - thd_lo) / thd_gap
+    iitax += fstax
+    combined += fstax
+    surtax += fstax
     return (fstax, iitax, combined, surtax)
 
 
