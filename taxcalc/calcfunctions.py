@@ -4476,7 +4476,18 @@ def LumpSumTax(DSI, num, XTOT,
                LST,
                lumpsum_tax, combined):
     """
-    Computes lump-sum tax and add it to combined taxes.
+    Computes a per-capita lump-sum ("head") tax and adds it to combined taxes.
+
+    No IRS form correspondence: ``LST`` is a reform construct (section
+    "Surtaxes / Lump-Sum Tax" in ``policy_current_law.json``) and defaults
+    to 0.0 from 2013 onward, so this function is inert under current law.
+
+    When active, every member of a non-dependent filing unit pays ``LST``
+    dollars; filing units claimed as dependents elsewhere (``DSI == 1``)
+    are exempt. The head count is ``max(num, XTOT)``: ``num`` is 2 for MFJ
+    and 1 otherwise, which floors the count at the number of filers when
+    ``XTOT`` is unusually low. The resulting tax is added only to
+    ``combined`` (not to ``iitax`` or ``payrolltax``).
 
     Parameters
     ----------
@@ -4487,7 +4498,7 @@ def LumpSumTax(DSI, num, XTOT,
     XTOT: int
         Total number of exemptions for filing unit
     LST: float
-        Dollar amount of lump-sum tax
+        Dollar amount of lump-sum tax (reform parameter; 0.0 under current law)
     lumpsum_tax: float
         Lumpsum (or head) tax
     combined: float
