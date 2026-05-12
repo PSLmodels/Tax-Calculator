@@ -3764,28 +3764,47 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, c05800,
 def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
                   CR_Charity_frt, MARS, charity_credit):
     """
-    Computes nonrefundable charity credit, charity_credit.
-    This credit is not part of current-law policy.
+    Computes nonrefundable credit for charitable giving (a reform
+    construct with no IRS form correspondence; not part of current-law
+    policy).  Under current law `CR_Charity_rt`, `CR_Charity_f`, and
+    `CR_Charity_frt` all default to 0.0, so `charity_credit` is
+    identically 0 and the function is inert.
+
+    Under reform the credit equals
+        CR_Charity_rt * max(0, (e19800 + e20100) - floor)
+    where the floor is the larger of a MARS-indexed dollar amount
+    (`CR_Charity_f[MARS-1]`) and an AGI-share (`CR_Charity_frt *
+    c00100`); only giving in excess of the floor earns the credit.
+
+    Downstream consumers: `charity_credit` is fed to
+    `NonrefundableCredits`, where it is sequentially limited against
+    the remaining tax-before-credits (`avail`), and the limited amount
+    is then summed into the nonrefundable-credit total subtracted from
+    tax in `IITAX`.
 
     Parameters
     ----------
     e19800: float
         Itemizable charitable giving for cash and check contributions
+        (Sch A line 11)
     e20100: float
-        Itemizable charitable giving other than cash and check contributions
+        Itemizable charitable giving other than cash and check
+        contributions (Sch A line 12)
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (AGI; Form 1040 line 11)
     CR_Charity_rt: float
-        Charity credit rate
+        Charity credit rate (reform-only; 0 under current law)
     CR_Charity_f: list
-        Charity credit floor
+        MARS-indexed dollar floor: only giving above this amount is
+        eligible (reform-only; 0 under current law)
     CR_Charity_frt: float
-        Charity credit floor rate
+        AGI-share floor: only giving above this fraction of AGI is
+        eligible (reform-only; 0 under current law)
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     charity_credit: float
-        Credit for charitable giving
+        Records-bound output, computed below.
 
     Returns
     -------
@@ -3793,9 +3812,10 @@ def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
         Credit for charitable giving
     """
     total_charity = e19800 + e20100
-    floor = max(CR_Charity_frt * c00100, CR_Charity_f[MARS - 1])
-    charity_cr_floored = max(total_charity - floor, 0)
-    charity_credit = CR_Charity_rt * (charity_cr_floored)
+    dollar_floor = CR_Charity_f[MARS - 1]
+    floor = max(CR_Charity_frt * c00100, dollar_floor)
+    eligible_giving = max(total_charity - floor, 0.)
+    charity_credit = CR_Charity_rt * eligible_giving
     return charity_credit
 
 
