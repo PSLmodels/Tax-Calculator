@@ -4170,61 +4170,104 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
             c09200, ctc_new):
     """
-    Computes new refundable child tax credit using specified parameters.
+    Computes a reform-construct refundable Child Tax Credit (`ctc_new`)
+    that is added on top of, not in place of, the current-law CTC/ODC
+    machinery in `ChildDepTaxCredit` and `AdditionalCTC`.
+
+    No IRS form: this credit does not correspond to any current-law
+    Form 1040 / Schedule 8812 line. All `CTC_new_*` policy parameters
+    default to 0 / false for all years except 2021, where defaults emulate
+    the ARPA-2021 expanded CTC (`CTC_new_c=1000`, `CTC_new_c_under6_bonus=600`,
+    `CTC_new_for_all=true`, `CTC_new_ps={75k single / 150k MFJ / 75k MFS /
+    112.5k HoH / 150k widow}`, `CTC_new_prt=0.05`). Under 2025 current law
+    every parameter is 0/false, so `ctc_new` is identically zero.
+
+    Body sections:
+      (A) qualifying-child count: `n24`, optionally widened via
+          `CTC_include17` to count under-18 non-`n24` dependents (same
+          block as in `ChildDepTaxCredit` row 29).
+      (B) tentative credit: `CTC_new_c·childnum + CTC_new_c_under6_bonus·nu06`,
+          optionally capped at `CTC_new_rt·posagi` when `CTC_new_for_all=false`
+          (an AGI-based phase-in).
+      (C) AGI phase-out: reduction of `CTC_new_prt` per dollar of AGI above
+          `CTC_new_ps[MARS-1]`, with `exact==1` rounding excess up to the
+          next $1000 (mirrors the Sch 8812 line-9 step).
+      (D) reform-only payroll-tax refundability cap: when
+          `CTC_new_refund_limited=true`, the portion of `ctc_new` exceeding
+          pre-refundable-credits liability `c09200` is capped at
+          `CTC_new_refund_limit_payroll_rt` times either OASDI-only
+          (`ptax_oasdi`) or all-FICA (`payrolltax`) payroll tax depending
+          on `CTC_new_refund_limited_all_payroll`.
+
+    Calling order: runs after `C1040` (so `c09200`, `ptax_oasdi`, and
+    `payrolltax` are final) and immediately before `IITAX`, which
+    subtracts `ctc_new` on the refundable side and rolls it into the
+    `ctc_total` / `ctc_refundable` records-bound aggregates.
 
     Parameters
     ----------
     CTC_new_c: float
-        New refundable child tax credit maximum amount per child
+        Reform: maximum new refundable CTC per qualifying child.
     CTC_new_rt: float
-        New refundalbe child tax credit amount phasein rate
+        Reform: AGI phase-in rate when `CTC_new_for_all=false`.
     CTC_new_c_under6_bonus: float
-        Bonus new refundable child tax credit maximum for qualifying
-        children under six
+        Reform: bonus added to `CTC_new_c` for each under-6 dependent.
     CTC_new_ps: list
-        New refundable child tax credit phaseout starting AGI
+        Reform: MARS-indexed AGI threshold at which the phase-out begins.
     CTC_new_prt: float
-        New refundable child tax credit amount phaseout rate
+        Reform: phase-out reduction rate per dollar of AGI above
+        `CTC_new_ps[MARS-1]`.
     CTC_new_for_all: bool
-        Whether or not maximum amount of the new refundable child tax credit
-        is available to all
+        Reform: when true, full `CTC_new_c·childnum + ...` is available
+        regardless of AGI (no `CTC_new_rt` phase-in); when false the
+        tentative credit is capped at `CTC_new_rt·posagi`.
+    CTC_include17: bool
+        Reform: when true, dependents with `age < 18` not already in `n24`
+        are added to `childnum` (same widening used in `ChildDepTaxCredit`).
     CTC_new_refund_limited: bool
-        New child tax credit refund limited to a decimal fraction of
-        payroll taxes
+        Reform: when true, the refund portion (excess of `ctc_new` over
+        `c09200`) is capped via the payroll-tax limit below.
     CTC_new_refund_limit_payroll_rt: float
-        New child tax credit refund limit rate (decimal fraction of
-        payroll taxes)
+        Reform: payroll-tax-share cap on the refund portion of `ctc_new`.
     CTC_new_refund_limited_all_payroll: bool
-        New child tax credit refund limit applies to all FICA taxes, not
-        just OASDI
+        Reform: when true, the payroll cap applies to total FICA
+        (`payrolltax`); when false it applies to OASDI only (`ptax_oasdi`).
     payrolltax: float
-        Total (employee + employer) payroll tax liability
+        Total (employee + employer) FICA payroll tax liability.
     exact: int
-        Whether or not exact phase-out calculation is being done
+        When 1, round the phase-out excess up to the next $1000 (Sch 8812
+        line-9 step); when 0, use the smooth excess.
     n24: int
-        Number of children who are Child-Tax-Credit eligible, one
-        condition for which is being under age 17
+        Number of CTC-eligible children (a condition for which is being
+        under age 17).
     nu06: int
-        Number of dependents under 6 years old
+        Number of dependents under 6 years old.
+    age_head: int
+        Age of taxpayer (filer); used by the `CTC_include17` widening.
+    age_spouse: int
+        Age of spouse (or 0 if not MFJ); used by the `CTC_include17` widening.
+    nu18: int
+        Number of dependents under 18 years old; used by the
+        `CTC_include17` widening.
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (AGI); floored at 0 as `posagi`.
     MARS: int
-        Filing (marital) status. (1=single, 2=joint, 3=separate,
-                                  4=household-head, 5=widow(er))
+        Filing status (1=single, 2=MFJ, 3=MFS, 4=HoH, 5=widow(er)).
     ptax_oasdi: float
-        Employee and employer OASDI FICA tax plus self employment tax
-        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax
+        Employee + employer OASDI FICA plus SE tax (excludes HI FICA).
     c09200: float
-        Income tax liabilities (including othertaxes) after non-refundable
-        credits are used, but before refundable credits are applied
+        Total income tax (including other taxes) after nonrefundable
+        credits, before refundable credits.
     ctc_new: float
-        New refundable child tax credit
+        Records-bound output, computed below.
 
     Returns
     -------
     ctc_new: float
-        New refundable child tax credit
+        Reform-only new refundable child tax credit; fed into `IITAX` on
+        the refundable side.
     """
+    # (A) qualifying-child count (under-18 widening is reform-only)
     if CTC_include17:
         tu18 = int(age_head < 18)   # taxpayer is under age 18
         su18 = int(MARS == 2 and age_spouse < 18)  # spouse is under age 18
@@ -4233,23 +4276,24 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         childnum = n24
     if childnum > 0:
         posagi = max(c00100, 0.)
+        # (B) tentative credit + optional AGI phase-in
         ctc_new = CTC_new_c * childnum + CTC_new_c_under6_bonus * nu06
         if not CTC_new_for_all:
             ctc_new = min(CTC_new_rt * posagi, ctc_new)
+        # (C) AGI phase-out above CTC_new_ps[MARS-1]
         ymax = CTC_new_ps[MARS - 1]
         if posagi > ymax:
-            over = posagi - ymax
+            excess = posagi - ymax
             if exact == 1:  # exact calculation as on tax form
-                excess = math.ceil(over / 1000.) * 1000.
-            else:  # smoothed calculation
-                excess = over
-            ctc_new_reduced = max(0., ctc_new - CTC_new_prt * excess)
-            ctc_new = min(ctc_new, ctc_new_reduced)
+                excess = math.ceil(excess / 1000.) * 1000.
+            ctc_new = max(0., ctc_new - CTC_new_prt * excess)
+        # (D) reform-only payroll-tax cap on the refund portion
         if ctc_new > 0. and CTC_new_refund_limited:
             refund_new = max(0., ctc_new - c09200)
-            limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
             if CTC_new_refund_limited_all_payroll:
                 limit_new = CTC_new_refund_limit_payroll_rt * payrolltax
+            else:
+                limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
             limited_new = max(0., refund_new - limit_new)
             ctc_new = max(0., ctc_new - limited_new)
     else:
