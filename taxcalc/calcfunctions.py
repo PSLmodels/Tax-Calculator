@@ -3639,15 +3639,61 @@ def SchR(age_head, age_spouse, MARS, c00100,
          c05800, e07300, c07180, e02400, c02500, e01500, e01700, CR_SchR_hc,
          c07200):
     """
-    Calculates Schedule R credit for the elderly and the disabled, c07200.
+    Calculates Schedule R (2025) Credit for the Elderly or the Disabled,
+    c07200 (Schedule 3 line 6d, nonrefundable).
 
-    Note that no Schedule R policy parameters are inflation indexed.
+    Maps to Schedule R Part III lines 10-22 (Part I checkbox selects the
+    line-10 base and line-15 AGI threshold; Part II physician statement
+    not modeled). Schedule R policy amounts are hardcoded on the form
+    (not inflation-indexed and not exposed as Policy parameters); only
+    the reform haircut CR_SchR_hc is in policy_current_law.json.
 
-    Note that all Schedule R policy parameters are hard-coded, and therefore,
-    are not able to be changed using Policy class parameters.
+    Part I box mapping (Tax-Calculator-reachable boxes only):
+      Box 1  Single/HoH 65+ ............. MARS in (1, 4) and age_head>=65
+      Box 3  MFJ both 65+ ............... MARS==2, both ages>=65
+      Box 7  MFJ one 65+ + other not disabled MARS==2, one age>=65
+      Box 8  MFS 65+ lived apart all year MARS==3 and age_head>=65
+    Boxes 2/4/5/6/9 (disability) are unreachable — Tax-Calculator records
+    do not encode disability or taxable disability income, so the Part I
+    "disabled under 65" paths are not modeled and line 12 reduces to
+    line 10 (no smaller-of-line-10-or-line-11 step).
 
-    Note that the CR_SchR_hc policy parameter allows the user to eliminate
-    or reduce total Schedule R credits.
+    Part III line-by-line mapping:
+      line 10 (base) ............ 5000/7500/3750 per box (above)
+      line 11 (disability inc) .. not modeled
+      line 12 = line 10 (no disability claimed)
+      line 13a (nontaxable OASDI). max(0, e02400 - c02500)
+      line 13b (nontaxable pens). max(0, e01500 - e01700) — approximation
+      line 13c (sum) ............ line13a + line13b
+      line 14 (AGI) ............. c00100
+      line 15 (AGI threshold) ... 7500/10000/5000 per box
+      line 16 ................... max(0, line14 - line15)
+      line 17 ................... 0.5 * line16
+      line 18 ................... line13c + line17
+      line 19 ................... max(0, line12 - line18)
+      line 20 ................... 0.15 * line19
+      line 21 (tax limit) ....... Credit Limit Worksheet output
+      line 22 ................... min(line20, line21), with haircut applied
+
+    The line-13b approximation (max(0, e01500 - e01700)) treats every
+    dollar of gross pension above taxable pension as "nontaxable" under
+    line-13b. It is exact when all of a filer's pensions are uniformly
+    fully taxable or uniformly partially taxable; for filers receiving
+    both a fully-taxable pension and a partially-taxable pension it
+    over-states the line-13b add-back and biases the credit downward.
+
+    The line-21 Credit Limit Worksheet (2025) for Schedule 3 line 6d
+    subtracts preceding Schedule 3 nonrefundable credits: Sch 3 line 1
+    (foreign tax credit, e07300) + Sch 3 line 2 (CDCC, c07180). The
+    Sch 3 line 3 Education-credits subtraction is not implemented here
+    because EducationTaxCredit is called AFTER SchR in calc_all; the
+    final sequential limit is enforced downstream by NonrefundableCredits.
+
+    Calling-order context (calculator.py): F2441 -> PersonalTaxCredit ->
+    AmOppCreditParts -> SchR -> EducationTaxCredit -> CharityCredit ->
+    ChildDepTaxCredit -> NonrefundableCredits. Downstream: c07200 is
+    consumed by NonrefundableCredits as a nonrefundable Sch 3 credit
+    summed into the Form 1040 line 22 credit total.
 
     Parameters
     ----------
@@ -3659,67 +3705,70 @@ def SchR(age_head, age_spouse, MARS, c00100,
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (AGI); used for Schedule R line 14
     c05800: float
-        Total (regular + AMT) income tax liability before credit
+        Total (regular + AMT) income tax liability before credits; input
+        to the line-21 Credit Limit Worksheet
     e07300: float
-        Foreign tax credit from Form 1116
+        Foreign tax credit from Form 1116 (Sch 3 line 1); subtracted on
+        line 21
     c07180: float
         Credit for child and dependent care expenses from Form 2441
+        (Sch 3 line 2); subtracted on line 21
     e02400: float
-        Total social security (OASDI) benefits
+        Total social security (OASDI) benefits; line 13a gross
     c02500: float
-        Social security (OASDI) benefits included in AGI
+        Social security (OASDI) benefits included in AGI; line 13a
+        nontaxable = e02400 - c02500
     e01500: float
-        Total pensions and annuities
+        Total pensions and annuities; line 13b gross
     e01700: float
-        Taxable pensions and annuities
+        Taxable pensions and annuities; line 13b nontaxable approximation
+        = e01500 - e01700
     CR_SchR_hc: float
-        Schedule R credit haircut
-    c07200: float
-        Schedule R credit for the elderly and the disabled
+        Schedule R credit haircut (reform parameter); default 0.0 under
+        current law
 
     Returns
     -------
     c07200: float
-        Schedule R credit for the elderly and the disabled
+        Schedule R credit for the elderly and the disabled (Sch 3 line 6d)
     """
+    # ---- eligibility gate: 65+ paths only (disability not modeled) ----
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
-        # calculate credit assuming nobody is disabled (so line12 = line10)
+        # ---- Part I -> Part III line 10 (base) and line 15 (AGI threshold) --
         if MARS == 2:
             if age_head >= 65 and age_spouse >= 65:
-                schr12 = 7500.
+                line10 = 7500.   # Box 3 (MFJ, both 65+)
             else:
-                schr12 = 5000.
-            schr15 = 10000.
+                line10 = 5000.   # Box 7 (MFJ, one 65+, other not disabled)
+            line15 = 10000.
         elif MARS == 3:
-            schr12 = 3750.
-            schr15 = 5000.
+            line10 = 3750.       # Box 8 (MFS 65+ lived apart all year)
+            line15 = 5000.
         elif MARS in (1, 4):
-            schr12 = 5000.
-            schr15 = 7500.
+            line10 = 5000.       # Box 1 (Single/HoH 65+)
+            line15 = 7500.
         else:
-            schr12 = 0.
-            schr15 = 0.
-        # nontaxable portion of OASDI benefits, line 13a
-        schr13a = max(0., e02400 - c02500)
-        # nontaxable portion of pension benefits, line 13b
-        # NOTE: the following approximation (required because of inadequate IRS
-        #       data) will be accurate if all pensions are partially taxable
-        #       or if all pensions are fully taxable.  But if a filing unit
-        #       receives at least one partially taxable pension and at least
-        #       one fully taxable pension, then the approximation in the
-        #       following line is not exactly correct.
-        schr13b = max(0., e01500 - e01700)
-        schr13c = schr13a + schr13b
-        schr16 = max(0., c00100 - schr15)
-        schr17 = 0.5 * schr16
-        schr18 = schr13c + schr17
-        schr19 = max(0., schr12 - schr18)
-        schr20 = 0.15 * schr19
-        schr21 = max(0., (c05800 - e07300 - c07180))
-        c07200 = min(schr20, schr21) * (1. - CR_SchR_hc)
-    else:  # if not calculating Schedule R credit
+            line10 = 0.
+            line15 = 0.
+        line12 = line10  # line 12 = line 10 (no disability claimed)
+        # ---- Part III lines 13-17: nontaxable income + AGI excess -----------
+        line13a = max(0., e02400 - c02500)  # nontaxable OASDI
+        line13b = max(0., e01500 - e01700)  # nontaxable pensions (approx)
+        line13c = line13a + line13b         # line 13c
+        # line 14 = c00100 (AGI)
+        line16 = max(0., c00100 - line15)   # line 16
+        line17 = 0.5 * line16               # line 17
+        # ---- Part III lines 18-22: credit, tax-liability limit, haircut -----
+        line18 = line13c + line17           # line 18
+        line19 = max(0., line12 - line18)   # line 19
+        line20 = 0.15 * line19              # line 20
+        # line 21 (Credit Limit Wksht)
+        line21 = max(0., c05800 - e07300 - c07180)
+        # line 22, with haircut
+        c07200 = min(line20, line21) * (1. - CR_SchR_hc)
+    else:
         c07200 = 0.
     return c07200
 
