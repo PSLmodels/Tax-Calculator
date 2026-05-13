@@ -4323,132 +4323,210 @@
                          <span class="n">c07180</span><span class="p">,</span> <span class="n">c07200</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">c07230</span><span class="p">,</span> <span class="n">c07240</span><span class="p">,</span>
                          <span class="n">c07260</span><span class="p">,</span> <span class="n">c07300</span><span class="p">,</span> <span class="n">c07400</span><span class="p">,</span> <span class="n">c07600</span><span class="p">,</span> <span class="n">c08000</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    NonRefundableCredits function sequentially limits credits to tax liability.</span>
+<span class="sd">    Sequentially limits nonrefundable credits against remaining income</span>
+<span class="sd">    tax liability and returns the limited per-credit amounts.  The</span>
+<span class="sd">    limited amounts are summed by `C1040` into Form 1040 line 22 via</span>
+<span class="sd">    Form 1040 line 19 (CTC + Credit for Other Dependents) and line 20</span>
+<span class="sd">    (Schedule 3 Part I total).</span>
+
+<span class="sd">    Application order mirrors Schedule 3 (2025) Part I line numbering</span>
+<span class="sd">    plus Form 1040 line 19, with reform-construct credits appended:</span>
+
+<span class="sd">      (A) Sch 3 Part I lines 1-4 (FTC -&gt; CDCC -&gt; Education -&gt; RetSav)</span>
+<span class="sd">      (B) Form 1040 line 19 (CTC -&gt; ODC); skipped under reform-only</span>
+<span class="sd">          `CTC_is_refundable`, which routes both credits to the</span>
+<span class="sd">          refundable side in `IITAX` / `CTC_new`</span>
+<span class="sd">      (C) Sch 3 Part I lines 5a, 6a, 6b, 6d, 6z (ResEnergy -&gt; GenBus</span>
+<span class="sd">          -&gt; PrYrMin -&gt; SchR -&gt; Other); unmodeled on-form items are</span>
+<span class="sd">          5b, 6c, 6e-6m</span>
+<span class="sd">      (D) Reform-only nonrefundable credits (charity_credit,</span>
+<span class="sd">          personal_nonrefundable_credit); inert under current law</span>
+
+<span class="sd">    CTC/ODC placement between Sch 3 line 4 and line 5a is consistent</span>
+<span class="sd">    with Sch 8812 Credit Limit Worksheet A, which subtracts only Sch 3</span>
+<span class="sd">    lines 1, 2, 3, 4 (plus a set of unmodeled credits) from tax before</span>
+<span class="sd">    applying CTC.  Credits with statutory carryforwards (ResEnergy,</span>
+<span class="sd">    GenBus, PrYrMin) come after CTC/ODC, which have no carryforward.</span>
+
+<span class="sd">    Two flavors of inputs:</span>
+<span class="sd">      * **Raw record values** `e07240`, `e07260`, `e07300`, `e07400`,</span>
+<span class="sd">        `e07600`, `p08000`: the per-credit haircut `(1 - CR_*_hc)` is</span>
+<span class="sd">        applied here, then `min` against remaining tax.  All `CR_*_hc`</span>
+<span class="sd">        parameters default to 0.0 (current-law inert).</span>
+<span class="sd">      * **Pre-computed credits** `c07180`, `c07200`, `c07220`,</span>
+<span class="sd">        `c07230`, `odc`, `charity_credit`,</span>
+<span class="sd">        `personal_nonrefundable_credit`: the source function already</span>
+<span class="sd">        applied any haircut and its own Credit Limit Worksheet; this</span>
+<span class="sd">        function re-caps against remaining tax (belt-and-braces, and</span>
+<span class="sd">        correcting any source-side worksheet that omitted a Sch 3</span>
+<span class="sd">        line ahead of itself -- e.g., `SchR` line-21 worksheet omits</span>
+<span class="sd">        Sch 3 line 3 Education).</span>
+
+<span class="sd">    Calling-order context: invoked by `Calculator.calc_all` after</span>
+<span class="sd">    `ChildDepTaxCredit` (which produces `c07220` and `odc`) and the</span>
+<span class="sd">    other per-credit source functions (`F2441` -&gt; `c07180`,</span>
+<span class="sd">    `EducationTaxCredit` -&gt; `c07230`, `SchR` -&gt; `c07200`,</span>
+<span class="sd">    `CharityCredit` -&gt; `charity_credit`, `PersonalTaxCredit` -&gt;</span>
+<span class="sd">    `personal_nonrefundable_credit`), and before `AdditionalCTC` /</span>
+<span class="sd">    `C1040`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    c05800: float</span>
 <span class="sd">        Total (regular + AMT) income tax liability before credits</span>
+<span class="sd">        (Form 1040 line 18)</span>
 <span class="sd">    e07240: float</span>
-<span class="sd">        Retirement savings contributions credit from Form 8880</span>
+<span class="sd">        Retirement savings contributions credit input from Form 8880</span>
+<span class="sd">        (Sch 3 line 4); haircut `(1 - CR_RetirementSavings_hc)`</span>
+<span class="sd">        applied here</span>
 <span class="sd">    e07260: float</span>
-<span class="sd">        Residential energy credit from Form 5695</span>
+<span class="sd">        Residential clean energy credit input from Form 5695 line 15</span>
+<span class="sd">        (Sch 3 line 5a); haircut `(1 - CR_ResidentialEnergy_hc)`</span>
+<span class="sd">        applied here</span>
 <span class="sd">    e07300: float</span>
-<span class="sd">        Foreign tax credit from Form 1116</span>
+<span class="sd">        Foreign tax credit input from Form 1116 (Sch 3 line 1);</span>
+<span class="sd">        haircut `(1 - CR_ForeignTax_hc)` applied here</span>
 <span class="sd">    e07400: float</span>
-<span class="sd">        General business credit from Form 3800</span>
+<span class="sd">        General business credit input from Form 3800 (Sch 3 line 6a);</span>
+<span class="sd">        haircut `(1 - CR_GeneralBusiness_hc)` applied here</span>
 <span class="sd">    e07600: float</span>
-<span class="sd">        Prior year minimum tax credit from Form 8801</span>
+<span class="sd">        Prior-year minimum tax credit input from Form 8801</span>
+<span class="sd">        (Sch 3 line 6b); haircut `(1 - CR_MinimumTax_hc)` applied</span>
+<span class="sd">        here</span>
 <span class="sd">    p08000: float</span>
-<span class="sd">        Other tax credits</span>
+<span class="sd">        Other nonrefundable credits input (Sch 3 line 6z); haircut</span>
+<span class="sd">        `(1 - CR_OtherCredits_hc)` applied here</span>
 <span class="sd">    odc: float</span>
-<span class="sd">        Other Dependent Credit</span>
+<span class="sd">        Credit for Other Dependents from Sch 8812 (Form 1040 line 19</span>
+<span class="sd">        ODC component); pre-computed with `CTC_hc` already applied</span>
 <span class="sd">    personal_nonrefundable_credit: float</span>
-<span class="sd">        Personal nonrefundable credit</span>
+<span class="sd">        Reform-only personal nonrefundable credit from</span>
+<span class="sd">        `PersonalTaxCredit`; current-law inert</span>
 <span class="sd">    CTC_is_refundable: bool</span>
-<span class="sd">        Whether the child tax credit is fully refundable</span>
+<span class="sd">        Reform-only switch (default false): when true, CTC and ODC</span>
+<span class="sd">        are not limited here and are routed to the refundable side</span>
+<span class="sd">        in `IITAX` / `CTC_new`</span>
 <span class="sd">    CR_RetirementSavings_hc: float</span>
-<span class="sd">        Credit for retirement savings haircut</span>
+<span class="sd">        Retirement savings credit haircut (default 0.0; current-law</span>
+<span class="sd">        inert)</span>
 <span class="sd">    CR_ForeignTax_hc: float</span>
-<span class="sd">        Credit for foreign tax credit</span>
+<span class="sd">        Foreign tax credit haircut (default 0.0)</span>
 <span class="sd">    CR_ResidentialEnergy_hc: float</span>
-<span class="sd">        Credit for residential energy haircut</span>
+<span class="sd">        Residential clean energy credit haircut (default 0.0)</span>
 <span class="sd">    CR_GeneralBusiness_hc: float</span>
-<span class="sd">        Credit for general business haircut</span>
+<span class="sd">        General business credit haircut (default 0.0)</span>
 <span class="sd">    CR_MinimumTax_hc: float</span>
-<span class="sd">        Credit for previous year minimum tax credit haircut</span>
+<span class="sd">        Prior-year minimum tax credit haircut (default 0.0)</span>
 <span class="sd">    CR_OtherCredits_hc: float</span>
-<span class="sd">        Other Credit haircut</span>
+<span class="sd">        Other nonrefundable credits haircut (default 0.0)</span>
 <span class="sd">    charity_credit: float</span>
-<span class="sd">        Credit for charitable giving</span>
+<span class="sd">        Reform-only nonrefundable charity credit from `CharityCredit`;</span>
+<span class="sd">        current-law inert</span>
 <span class="sd">    c07180: float</span>
 <span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">        (Sch 3 line 2); pre-computed by `F2441`</span>
 <span class="sd">    c07200: float</span>
 <span class="sd">        Schedule R credit for the elderly and the disabled</span>
+<span class="sd">        (Sch 3 line 6d); pre-computed by `SchR`</span>
 <span class="sd">    c07220: float</span>
-<span class="sd">        Child tax credit (adjusted) from From 8812</span>
+<span class="sd">        Child tax credit from Sch 8812 (Form 1040 line 19 CTC</span>
+<span class="sd">        component); pre-computed by `ChildDepTaxCredit`</span>
 <span class="sd">    c07230: float</span>
-<span class="sd">        Education tax credits non-refundable amount from Form 8863</span>
+<span class="sd">        Nonrefundable education credit from Form 8863</span>
+<span class="sd">        (Sch 3 line 3); pre-computed by `EducationTaxCredit`</span>
 <span class="sd">    c07240: float</span>
-<span class="sd">        Retirement savings credit - Form 8880</span>
+<span class="sd">        Retirement savings credit limited output (overwritten here)</span>
 <span class="sd">    c07260: float</span>
-<span class="sd">        Residential energy credit - Form 5695</span>
+<span class="sd">        Residential clean energy credit limited output (overwritten</span>
+<span class="sd">        here)</span>
 <span class="sd">    c07300: float</span>
-<span class="sd">        Foreign tax credit - Form 1116</span>
+<span class="sd">        Foreign tax credit limited output (overwritten here)</span>
 <span class="sd">    c07400: float</span>
-<span class="sd">        General business credit - Form 3800</span>
+<span class="sd">        General business credit limited output (overwritten here)</span>
 <span class="sd">    c07600: float</span>
-<span class="sd">        Prior year minimum tax credit - Form 8801</span>
+<span class="sd">        Prior-year minimum tax credit limited output (overwritten</span>
+<span class="sd">        here)</span>
 <span class="sd">    c08000: float</span>
-<span class="sd">        Other credits</span>
+<span class="sd">        Other nonrefundable credits limited output (overwritten here)</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c07180: float</span>
-<span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">        Limited credit for child and dependent care expenses</span>
+<span class="sd">        (Sch 3 line 2)</span>
 <span class="sd">    c07200: float</span>
-<span class="sd">        Schedule R credit for the elderly and the disabled</span>
+<span class="sd">        Limited Schedule R credit (Sch 3 line 6d)</span>
 <span class="sd">    c07220: float</span>
-<span class="sd">        Child tax credit (adjusted) from From 8812</span>
+<span class="sd">        Limited child tax credit (Form 1040 line 19 CTC component);</span>
+<span class="sd">        unchanged when `CTC_is_refundable`</span>
 <span class="sd">    c07230: float</span>
-<span class="sd">        Education tax credits non-refundable amount from Form 8863</span>
+<span class="sd">        Limited nonrefundable education credit (Sch 3 line 3)</span>
 <span class="sd">    c07240: float</span>
-<span class="sd">        Retirement savings credit - Form 8880</span>
+<span class="sd">        Limited retirement savings credit (Sch 3 line 4)</span>
 <span class="sd">    odc: float</span>
-<span class="sd">        Other Dependent Credit</span>
+<span class="sd">        Limited Credit for Other Dependents (Form 1040 line 19 ODC</span>
+<span class="sd">        component); unchanged when `CTC_is_refundable`</span>
 <span class="sd">    c07260: float</span>
-<span class="sd">        Residential energy credit - Form 5695</span>
+<span class="sd">        Limited residential clean energy credit (Sch 3 line 5a)</span>
 <span class="sd">    c07300: float</span>
-<span class="sd">        Foreign tax credit - Form 1116</span>
+<span class="sd">        Limited foreign tax credit (Sch 3 line 1)</span>
 <span class="sd">    c07400: float</span>
-<span class="sd">        General business credit - Form 3800</span>
+<span class="sd">        Limited general business credit (Sch 3 line 6a)</span>
 <span class="sd">    c07600: float</span>
-<span class="sd">        Prior year minimum tax credit - Form 8801</span>
+<span class="sd">        Limited prior-year minimum tax credit (Sch 3 line 6b)</span>
 <span class="sd">    c08000: float</span>
-<span class="sd">        Other credits</span>
+<span class="sd">        Limited other nonrefundable credits (Sch 3 line 6z)</span>
 <span class="sd">    charity_credit: float</span>
-<span class="sd">        Credit for charitable giving</span>
+<span class="sd">        Limited reform-only nonrefundable charity credit</span>
 <span class="sd">    personal_nonrefundable_credit: float</span>
-<span class="sd">        Personal nonrefundable credit</span>
+<span class="sd">        Limited reform-only personal nonrefundable credit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># limit tax credits to tax liability in order they are on 2015 1040 form</span>
+    <span class="c1"># Schedule 3 (2025) Part I + Form 1040 line 19: sequential limit</span>
+    <span class="c1"># against remaining tax liability, mirroring the on-form line</span>
+    <span class="c1"># order with reform-construct credits appended.</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">c05800</span>
-    <span class="c1"># Foreign tax credit - Form 1116</span>
+    <span class="c1"># (A) Sch 3 Part I lines 1-4</span>
+    <span class="c1"># Sch 3 line 1 -- Foreign tax credit (Form 1116)</span>
     <span class="n">c07300</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07300</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_ForeignTax_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07300</span>
-    <span class="c1"># Child &amp; dependent care expense credit</span>
+    <span class="c1"># Sch 3 line 2 -- Credit for child and dependent care expenses (Form 2441)</span>
     <span class="n">c07180</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07180</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07180</span>
-    <span class="c1"># Education tax credit</span>
+    <span class="c1"># Sch 3 line 3 -- Education credits (Form 8863 line 19)</span>
     <span class="n">c07230</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07230</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07230</span>
-    <span class="c1"># Retirement savings credit - Form 8880</span>
+    <span class="c1"># Sch 3 line 4 -- Retirement savings contributions credit (Form 8880)</span>
     <span class="n">c07240</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07240</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_RetirementSavings_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07240</span>
-    <span class="c1"># Child tax credit</span>
+    <span class="c1"># (B) Form 1040 line 19 -- CTC + Credit for Other Dependents (Sch 8812);</span>
+    <span class="c1"># skipped under reform-only CTC_is_refundable (routed to refundable side)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>
+        <span class="c1"># Form 1040 line 19 CTC component</span>
         <span class="n">c07220</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07220</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
         <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07220</span>
-        <span class="c1"># Other dependent credit</span>
+        <span class="c1"># Form 1040 line 19 ODC component</span>
         <span class="n">odc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">odc</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
         <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">odc</span>
-    <span class="c1"># Residential energy credit - Form 5695</span>
+    <span class="c1"># (C) Sch 3 Part I lines 5a, 6a, 6b, 6d, 6z (carryforward-eligible</span>
+    <span class="c1"># credits come after CTC/ODC, which have no carryforward)</span>
+    <span class="c1"># Sch 3 line 5a -- Residential clean energy credit (Form 5695 line 15)</span>
     <span class="n">c07260</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07260</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_ResidentialEnergy_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07260</span>
-    <span class="c1"># General business credit - Form 3800</span>
+    <span class="c1"># Sch 3 line 6a -- General business credit (Form 3800)</span>
     <span class="n">c07400</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07400</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_GeneralBusiness_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07400</span>
-    <span class="c1"># Prior year minimum tax credit - Form 8801</span>
+    <span class="c1"># Sch 3 line 6b -- Prior-year minimum tax credit (Form 8801)</span>
     <span class="n">c07600</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07600</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_MinimumTax_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07600</span>
-    <span class="c1"># Schedule R credit</span>
+    <span class="c1"># Sch 3 line 6d -- Credit for the elderly or the disabled (Sch R)</span>
     <span class="n">c07200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07200</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07200</span>
-    <span class="c1"># Other credits</span>
+    <span class="c1"># Sch 3 line 6z -- Other nonrefundable credits</span>
     <span class="n">c08000</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p08000</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_OtherCredits_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c08000</span>
+    <span class="c1"># (D) Reform-only nonrefundable credits (current-law inert)</span>
     <span class="n">charity_credit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">charity_credit</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">charity_credit</span>
-    <span class="c1"># Personal nonrefundable credit</span>
     <span class="n">personal_nonrefundable_credit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">personal_nonrefundable_credit</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">personal_nonrefundable_credit</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c07180</span><span class="p">,</span> <span class="n">c07200</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">c07230</span><span class="p">,</span> <span class="n">c07240</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span>
