@@ -4041,15 +4041,61 @@
          <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">c02500</span><span class="p">,</span> <span class="n">e01500</span><span class="p">,</span> <span class="n">e01700</span><span class="p">,</span> <span class="n">CR_SchR_hc</span><span class="p">,</span>
          <span class="n">c07200</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates Schedule R credit for the elderly and the disabled, c07200.</span>
+<span class="sd">    Calculates Schedule R (2025) Credit for the Elderly or the Disabled,</span>
+<span class="sd">    c07200 (Schedule 3 line 6d, nonrefundable).</span>
 
-<span class="sd">    Note that no Schedule R policy parameters are inflation indexed.</span>
+<span class="sd">    Maps to Schedule R Part III lines 10-22 (Part I checkbox selects the</span>
+<span class="sd">    line-10 base and line-15 AGI threshold; Part II physician statement</span>
+<span class="sd">    not modeled). Schedule R policy amounts are hardcoded on the form</span>
+<span class="sd">    (not inflation-indexed and not exposed as Policy parameters); only</span>
+<span class="sd">    the reform haircut CR_SchR_hc is in policy_current_law.json.</span>
 
-<span class="sd">    Note that all Schedule R policy parameters are hard-coded, and therefore,</span>
-<span class="sd">    are not able to be changed using Policy class parameters.</span>
+<span class="sd">    Part I box mapping (Tax-Calculator-reachable boxes only):</span>
+<span class="sd">      Box 1  Single/HoH 65+ ............. MARS in (1, 4) and age_head&gt;=65</span>
+<span class="sd">      Box 3  MFJ both 65+ ............... MARS==2, both ages&gt;=65</span>
+<span class="sd">      Box 7  MFJ one 65+ + other not disabled MARS==2, one age&gt;=65</span>
+<span class="sd">      Box 8  MFS 65+ lived apart all year MARS==3 and age_head&gt;=65</span>
+<span class="sd">    Boxes 2/4/5/6/9 (disability) are unreachable — Tax-Calculator records</span>
+<span class="sd">    do not encode disability or taxable disability income, so the Part I</span>
+<span class="sd">    &quot;disabled under 65&quot; paths are not modeled and line 12 reduces to</span>
+<span class="sd">    line 10 (no smaller-of-line-10-or-line-11 step).</span>
 
-<span class="sd">    Note that the CR_SchR_hc policy parameter allows the user to eliminate</span>
-<span class="sd">    or reduce total Schedule R credits.</span>
+<span class="sd">    Part III line-by-line mapping:</span>
+<span class="sd">      line 10 (base) ............ 5000/7500/3750 per box (above)</span>
+<span class="sd">      line 11 (disability inc) .. not modeled</span>
+<span class="sd">      line 12 = line 10 (no disability claimed)</span>
+<span class="sd">      line 13a (nontaxable OASDI). max(0, e02400 - c02500)</span>
+<span class="sd">      line 13b (nontaxable pens). max(0, e01500 - e01700) — approximation</span>
+<span class="sd">      line 13c (sum) ............ line13a + line13b</span>
+<span class="sd">      line 14 (AGI) ............. c00100</span>
+<span class="sd">      line 15 (AGI threshold) ... 7500/10000/5000 per box</span>
+<span class="sd">      line 16 ................... max(0, line14 - line15)</span>
+<span class="sd">      line 17 ................... 0.5 * line16</span>
+<span class="sd">      line 18 ................... line13c + line17</span>
+<span class="sd">      line 19 ................... max(0, line12 - line18)</span>
+<span class="sd">      line 20 ................... 0.15 * line19</span>
+<span class="sd">      line 21 (tax limit) ....... Credit Limit Worksheet output</span>
+<span class="sd">      line 22 ................... min(line20, line21), with haircut applied</span>
+
+<span class="sd">    The line-13b approximation (max(0, e01500 - e01700)) treats every</span>
+<span class="sd">    dollar of gross pension above taxable pension as &quot;nontaxable&quot; under</span>
+<span class="sd">    line-13b. It is exact when all of a filer&#39;s pensions are uniformly</span>
+<span class="sd">    fully taxable or uniformly partially taxable; for filers receiving</span>
+<span class="sd">    both a fully-taxable pension and a partially-taxable pension it</span>
+<span class="sd">    over-states the line-13b add-back and biases the credit downward.</span>
+
+<span class="sd">    The line-21 Credit Limit Worksheet (2025) for Schedule 3 line 6d</span>
+<span class="sd">    subtracts preceding Schedule 3 nonrefundable credits: Sch 3 line 1</span>
+<span class="sd">    (foreign tax credit, e07300) + Sch 3 line 2 (CDCC, c07180). The</span>
+<span class="sd">    Sch 3 line 3 Education-credits subtraction is not implemented here</span>
+<span class="sd">    because EducationTaxCredit is called AFTER SchR in calc_all; the</span>
+<span class="sd">    final sequential limit is enforced downstream by NonrefundableCredits.</span>
+
+<span class="sd">    Calling-order context (calculator.py): F2441 -&gt; PersonalTaxCredit -&gt;</span>
+<span class="sd">    AmOppCreditParts -&gt; SchR -&gt; EducationTaxCredit -&gt; CharityCredit -&gt;</span>
+<span class="sd">    ChildDepTaxCredit -&gt; NonrefundableCredits. Downstream: c07200 is</span>
+<span class="sd">    consumed by NonrefundableCredits as a nonrefundable Sch 3 credit</span>
+<span class="sd">    summed into the Form 1040 line 22 credit total.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -4061,67 +4107,70 @@
 <span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                                  4=household-head, 5=widow(er))</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">        Adjusted Gross Income (AGI); used for Schedule R line 14</span>
 <span class="sd">    c05800: float</span>
-<span class="sd">        Total (regular + AMT) income tax liability before credit</span>
+<span class="sd">        Total (regular + AMT) income tax liability before credits; input</span>
+<span class="sd">        to the line-21 Credit Limit Worksheet</span>
 <span class="sd">    e07300: float</span>
-<span class="sd">        Foreign tax credit from Form 1116</span>
+<span class="sd">        Foreign tax credit from Form 1116 (Sch 3 line 1); subtracted on</span>
+<span class="sd">        line 21</span>
 <span class="sd">    c07180: float</span>
 <span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">        (Sch 3 line 2); subtracted on line 21</span>
 <span class="sd">    e02400: float</span>
-<span class="sd">        Total social security (OASDI) benefits</span>
+<span class="sd">        Total social security (OASDI) benefits; line 13a gross</span>
 <span class="sd">    c02500: float</span>
-<span class="sd">        Social security (OASDI) benefits included in AGI</span>
+<span class="sd">        Social security (OASDI) benefits included in AGI; line 13a</span>
+<span class="sd">        nontaxable = e02400 - c02500</span>
 <span class="sd">    e01500: float</span>
-<span class="sd">        Total pensions and annuities</span>
+<span class="sd">        Total pensions and annuities; line 13b gross</span>
 <span class="sd">    e01700: float</span>
-<span class="sd">        Taxable pensions and annuities</span>
+<span class="sd">        Taxable pensions and annuities; line 13b nontaxable approximation</span>
+<span class="sd">        = e01500 - e01700</span>
 <span class="sd">    CR_SchR_hc: float</span>
-<span class="sd">        Schedule R credit haircut</span>
-<span class="sd">    c07200: float</span>
-<span class="sd">        Schedule R credit for the elderly and the disabled</span>
+<span class="sd">        Schedule R credit haircut (reform parameter); default 0.0 under</span>
+<span class="sd">        current law</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c07200: float</span>
-<span class="sd">        Schedule R credit for the elderly and the disabled</span>
+<span class="sd">        Schedule R credit for the elderly and the disabled (Sch 3 line 6d)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># ---- eligibility gate: 65+ paths only (disability not modeled) ----</span>
     <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span> <span class="ow">or</span> <span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">):</span>
-        <span class="c1"># calculate credit assuming nobody is disabled (so line12 = line10)</span>
+        <span class="c1"># ---- Part I -&gt; Part III line 10 (base) and line 15 (AGI threshold) --</span>
         <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
-                <span class="n">schr12</span> <span class="o">=</span> <span class="mf">7500.</span>
+                <span class="n">line10</span> <span class="o">=</span> <span class="mf">7500.</span>   <span class="c1"># Box 3 (MFJ, both 65+)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">schr12</span> <span class="o">=</span> <span class="mf">5000.</span>
-            <span class="n">schr15</span> <span class="o">=</span> <span class="mf">10000.</span>
+                <span class="n">line10</span> <span class="o">=</span> <span class="mf">5000.</span>   <span class="c1"># Box 7 (MFJ, one 65+, other not disabled)</span>
+            <span class="n">line15</span> <span class="o">=</span> <span class="mf">10000.</span>
         <span class="k">elif</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">schr12</span> <span class="o">=</span> <span class="mf">3750.</span>
-            <span class="n">schr15</span> <span class="o">=</span> <span class="mf">5000.</span>
+            <span class="n">line10</span> <span class="o">=</span> <span class="mf">3750.</span>       <span class="c1"># Box 8 (MFS 65+ lived apart all year)</span>
+            <span class="n">line15</span> <span class="o">=</span> <span class="mf">5000.</span>
         <span class="k">elif</span> <span class="n">MARS</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
-            <span class="n">schr12</span> <span class="o">=</span> <span class="mf">5000.</span>
-            <span class="n">schr15</span> <span class="o">=</span> <span class="mf">7500.</span>
+            <span class="n">line10</span> <span class="o">=</span> <span class="mf">5000.</span>       <span class="c1"># Box 1 (Single/HoH 65+)</span>
+            <span class="n">line15</span> <span class="o">=</span> <span class="mf">7500.</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">schr12</span> <span class="o">=</span> <span class="mf">0.</span>
-            <span class="n">schr15</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="c1"># nontaxable portion of OASDI benefits, line 13a</span>
-        <span class="n">schr13a</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e02400</span> <span class="o">-</span> <span class="n">c02500</span><span class="p">)</span>
-        <span class="c1"># nontaxable portion of pension benefits, line 13b</span>
-        <span class="c1"># NOTE: the following approximation (required because of inadequate IRS</span>
-        <span class="c1">#       data) will be accurate if all pensions are partially taxable</span>
-        <span class="c1">#       or if all pensions are fully taxable.  But if a filing unit</span>
-        <span class="c1">#       receives at least one partially taxable pension and at least</span>
-        <span class="c1">#       one fully taxable pension, then the approximation in the</span>
-        <span class="c1">#       following line is not exactly correct.</span>
-        <span class="n">schr13b</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e01500</span> <span class="o">-</span> <span class="n">e01700</span><span class="p">)</span>
-        <span class="n">schr13c</span> <span class="o">=</span> <span class="n">schr13a</span> <span class="o">+</span> <span class="n">schr13b</span>
-        <span class="n">schr16</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">schr15</span><span class="p">)</span>
-        <span class="n">schr17</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">schr16</span>
-        <span class="n">schr18</span> <span class="o">=</span> <span class="n">schr13c</span> <span class="o">+</span> <span class="n">schr17</span>
-        <span class="n">schr19</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">schr12</span> <span class="o">-</span> <span class="n">schr18</span><span class="p">)</span>
-        <span class="n">schr20</span> <span class="o">=</span> <span class="mf">0.15</span> <span class="o">*</span> <span class="n">schr19</span>
-        <span class="n">schr21</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">c05800</span> <span class="o">-</span> <span class="n">e07300</span> <span class="o">-</span> <span class="n">c07180</span><span class="p">))</span>
-        <span class="n">c07200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">schr20</span><span class="p">,</span> <span class="n">schr21</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_SchR_hc</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># if not calculating Schedule R credit</span>
+            <span class="n">line10</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="n">line15</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">line12</span> <span class="o">=</span> <span class="n">line10</span>  <span class="c1"># line 12 = line 10 (no disability claimed)</span>
+        <span class="c1"># ---- Part III lines 13-17: nontaxable income + AGI excess -----------</span>
+        <span class="n">line13a</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e02400</span> <span class="o">-</span> <span class="n">c02500</span><span class="p">)</span>  <span class="c1"># nontaxable OASDI</span>
+        <span class="n">line13b</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e01500</span> <span class="o">-</span> <span class="n">e01700</span><span class="p">)</span>  <span class="c1"># nontaxable pensions (approx)</span>
+        <span class="n">line13c</span> <span class="o">=</span> <span class="n">line13a</span> <span class="o">+</span> <span class="n">line13b</span>         <span class="c1"># line 13c</span>
+        <span class="c1"># line 14 = c00100 (AGI)</span>
+        <span class="n">line16</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">line15</span><span class="p">)</span>   <span class="c1"># line 16</span>
+        <span class="n">line17</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">line16</span>               <span class="c1"># line 17</span>
+        <span class="c1"># ---- Part III lines 18-22: credit, tax-liability limit, haircut -----</span>
+        <span class="n">line18</span> <span class="o">=</span> <span class="n">line13c</span> <span class="o">+</span> <span class="n">line17</span>           <span class="c1"># line 18</span>
+        <span class="n">line19</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line12</span> <span class="o">-</span> <span class="n">line18</span><span class="p">)</span>   <span class="c1"># line 19</span>
+        <span class="n">line20</span> <span class="o">=</span> <span class="mf">0.15</span> <span class="o">*</span> <span class="n">line19</span>              <span class="c1"># line 20</span>
+        <span class="c1"># line 21 (Credit Limit Wksht)</span>
+        <span class="n">line21</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">e07300</span> <span class="o">-</span> <span class="n">c07180</span><span class="p">)</span>
+        <span class="c1"># line 22, with haircut</span>
+        <span class="n">c07200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line20</span><span class="p">,</span> <span class="n">line21</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_SchR_hc</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
         <span class="n">c07200</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">return</span> <span class="n">c07200</span>
 
