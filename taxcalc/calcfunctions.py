@@ -3780,74 +3780,138 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, c05800,
                        CR_Education_hc,
                        c07230):
     """
-    Computes Education Tax Credits (Form 8863) nonrefundable amount, c07230.
-    Logic corresponds to Form 8863, Part II.
+    Computes Education Tax Credits (`c07230`, Schedule 3 line 3) from
+    Form 8863 (2025) Part II "Nonrefundable Education Credits" and the
+    Credit Limit Worksheet (CLW) in the Form 8863 instructions.
+
+    Part II line-by-line mapping:
+        line 9  = `c87668`        (nonref AOTC, computed by `AmOppCreditParts`)
+        line 10 = `e87530`        (LLC adjusted qualified expenses,
+                                   summed over students)
+        line 11 = min(`e87530`, `LLC_Expense_c`)         (cap; $10,000 on form)
+        line 12 = line 11 * 0.20                         (LLC tentative)
+        line 13 = $180,000 MFJ / $90,000 other (`ETC_pe_*` stored in
+                                                thousands of dollars)
+        line 14 = AGI (`c00100`)
+        line 15 = max(0., line 13 - line 14)
+        line 16 = $20,000 MFJ / $10,000 other            (phaseout spread)
+        line 17 = min(1., line 15 / line 16) rounded to 3 decimals when
+                  `exact==1` per the form instruction
+        line 18 = line 12 * line 17                      (LLC after phaseout)
+        line 19 = CLW line 7                             -> Sch 3 line 3
+
+    Credit Limit Worksheet (from Form 8863 instructions):
+        CLW line 1  = Form 8863 line 18                  (LLC after phaseout)
+        CLW line 2  = Form 8863 line 9                   (nonref AOTC)
+        CLW line 3  = CLW line 1 + CLW line 2
+        CLW line 4  = Form 1040 line 18 = `c05800`
+        CLW line 5  = Sch 3 line 1 (`e07300` FTC) + line 2 (`c07180` CDCC)
+                    + line 6d (`c07200` SchR) + 6f + 6l + 6m
+                      (6f / 6l / 6m unmodeled in Tax-Calculator records)
+        CLW line 6  = CLW line 4 - CLW line 5
+        CLW line 7  = min(CLW line 3, CLW line 6)        (nonref ed credits)
+    The code applies CLW lines 5-7 sequentially (LLC first, then nonref
+    AOTC, subtracting LLC from remaining tax-availability before AOTC);
+    this is algebraically equivalent to the form's single combined
+    `min(line 3, line 6)` because both portions are bounded above by
+    the same tax-availability quantity (line 6).
+
+    `ETC_pe_Single` / `ETC_pe_Married` are stored in thousands of
+    dollars per `policy_current_law.json` (descriptions say "in
+    thousands"), so the `* 1000.` factors convert them to the dollar
+    thresholds the form prints on line 13.
+
+    `CR_Education_hc` is a reform construct (haircut) with no IRS-form
+    counterpart; under current law it defaults to 0.0 for all years,
+    so `c07230` equals the on-form line 19 unmodified.
+
+    Downstream consumer: `c07230` flows to `NonrefundableCredits` as
+    Sch 3 line 3 in the credit-ordering and is sequentially re-limited
+    against remaining tax-before-credits there before being summed into
+    the nonrefundable-credit total subtracted in `IITAX`.
 
     Parameters
     ----------
     exact: int
-        Whether or not to do rounding of phaseout fraction
+        Whether or not to do rounding of phaseout fraction (Form 8863
+        line 17 form-instruction rounding when `exact==1`).
     e87530: float
         Adjusted qualified lifetime learning expenses for all students
+        (Form 8863 Part III line 31 summed across students; Part II
+        line 10).
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate,
                                   4=household-head, 5=widow(er))
     c00100: float
-        Adjusted Gross Income (AGI)
+        Adjusted Gross Income (Form 1040 line 11; Form 8863 line 14).
     c05800: float
         Total (regular + AMT) income tax liability before credits
+        (CLW line 4).
     e07300: float
-        Foreign tax credit from Form 1116
+        Foreign tax credit from Form 1116 (Sch 3 line 1; CLW line 5).
     c07180: float
         Credit for child and dependent care expenses from Form 2441
+        (Sch 3 line 2; CLW line 5).
     c07200: float
-        Schedule R credit for the elderly and the disabled
+        Schedule R credit for the elderly and the disabled (Sch 3
+        line 6d; CLW line 5).  Sch 3 lines 6f / 6l / 6m also belong
+        to CLW line 5 but are not modeled in Tax-Calculator records.
     c87668: float
-        American Opportunity Credit non-refundalbe amount from Form 8863
+        American Opportunity Credit nonrefundable amount from Form 8863
+        line 9 (= 0.6 * line 7), computed by `AmOppCreditParts`.
     LLC_Expense_c: float
-        Lifetime learning credit expense limit
+        Lifetime learning credit expense limit (Form 8863 line 11 cap;
+        $10,000 on the form).
     ETC_pe_Single: float
-        Education tax credit phaseout ends (single)
+        Education tax credit phaseout end for non-joint filers, in
+        thousands of dollars (Form 8863 line 13 = $90,000 for non-MFJ).
     ETC_pe_Married: float
-        Education tax credit phaseout ends (married)
+        Education tax credit phaseout end for joint filers, in thousands
+        of dollars (Form 8863 line 13 = $180,000 for MFJ).
     CR_Education_hc: float
-        Education Credits haircut
+        Education credits haircut.  Reform construct; default 0.0 under
+        current law (function emits on-form line 19 unmodified).
     c07230: float
-        Education tax credits non-refundable amount from Form 8863
+        Records-bound output, computed below.
 
     Returns
     -------
     c07230: float
-        Education tax credits non-refundable amount from Form 8863
-
-    Notes
-    -----
-    Tax Law Parameters that are not parameterized:
-        0.2: Lifetime Learning Credit ratio against expense
-        10000.0: AGI range bewteen ETC_pe_Single and single phase-out start;
-                 twice this amount for ETC_pe_Married
+        Education tax credits nonrefundable amount (Form 8863 line 19;
+        Sch 3 line 3) with reform haircut applied.
     """
-    c87560 = 0.2 * min(e87530, LLC_Expense_c)
-    # on the following credit phase-out law see:
+    # ---- Form 8863 Part II lines 10-12 (LLC tentative) ----------------
+    # line 11 caps qualified expenses at LLC_Expense_c ($10,000 on form);
+    # line 12 multiplies by 20% to get the pre-phaseout LLC.
+    line12 = 0.2 * min(e87530, LLC_Expense_c)
+    # ---- Form 8863 Part II lines 13-18 (AGI phaseout) -----------------
+    # ETC_pe_* are stored in thousands of dollars; * 1000. converts to
+    # the on-form line-13 dollar values.  Phaseout spread (line 16) is
+    # $20,000 MFJ / $10,000 other.  See IRC §25A(d)(1):
     # https://www.law.cornell.edu/uscode/text/26/25A#d_1
     if MARS == 2:
-        c87570 = ETC_pe_Married * 1000.
-        c87600 = 20000.
+        line13 = ETC_pe_Married * 1000.
+        line16 = 20000.
     else:
-        c87570 = ETC_pe_Single * 1000.
-        c87600 = 10000.
-    c87590 = max(0., c87570 - c00100)
+        line13 = ETC_pe_Single * 1000.
+        line16 = 10000.
+    line15 = max(0., line13 - c00100)
     if exact == 1:  # exact calculation as on tax forms
-        c87610 = min(1., round(c87590 / c87600, 3))
+        line17 = min(1., round(line15 / line16, 3))
     else:
-        c87610 = min(1., c87590 / c87600)
-    c87620 = c87560 * c87610
-    xline4 = max(0., c05800 - (e07300 + c07180 + c07200))
-    xline5 = min(c87620, xline4)
-    xline9 = max(0., c05800 - (e07300 + c07180 + c07200 + xline5))
-    xline10 = min(c87668, xline9)
-    c87680 = xline5 + xline10
-    c07230 = c87680 * (1. - CR_Education_hc)
+        line17 = min(1., line15 / line16)
+    line18 = line12 * line17
+    # ---- Credit Limit Worksheet (Form 8863 instructions) --------------
+    # CLW line 6 = c05800 - (FTC + CDCC + SchR); Sch 3 lines 6f/6l/6m
+    # also subtracted on-form but unmodeled here.  Sequential
+    # application of LLC then nonref-AOTC below is algebraically
+    # equivalent to the form's single min(CLW line 3, CLW line 6).
+    clw_line6 = max(0., c05800 - (e07300 + c07180 + c07200))
+    llc_used = min(line18, clw_line6)
+    aotc_used = min(c87668, max(0., clw_line6 - llc_used))
+    line19_pre_hc = llc_used + aotc_used
+    # ---- reform haircut (current-law inert: CR_Education_hc == 0) -----
+    c07230 = line19_pre_hc * (1. - CR_Education_hc)
     return c07230
 
 
