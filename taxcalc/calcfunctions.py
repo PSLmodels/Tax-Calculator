@@ -3921,132 +3921,210 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          c07180, c07200, c07220, c07230, c07240,
                          c07260, c07300, c07400, c07600, c08000):
     """
-    NonRefundableCredits function sequentially limits credits to tax liability.
+    Sequentially limits nonrefundable credits against remaining income
+    tax liability and returns the limited per-credit amounts.  The
+    limited amounts are summed by `C1040` into Form 1040 line 22 via
+    Form 1040 line 19 (CTC + Credit for Other Dependents) and line 20
+    (Schedule 3 Part I total).
+
+    Application order mirrors Schedule 3 (2025) Part I line numbering
+    plus Form 1040 line 19, with reform-construct credits appended:
+
+      (A) Sch 3 Part I lines 1-4 (FTC -> CDCC -> Education -> RetSav)
+      (B) Form 1040 line 19 (CTC -> ODC); skipped under reform-only
+          `CTC_is_refundable`, which routes both credits to the
+          refundable side in `IITAX` / `CTC_new`
+      (C) Sch 3 Part I lines 5a, 6a, 6b, 6d, 6z (ResEnergy -> GenBus
+          -> PrYrMin -> SchR -> Other); unmodeled on-form items are
+          5b, 6c, 6e-6m
+      (D) Reform-only nonrefundable credits (charity_credit,
+          personal_nonrefundable_credit); inert under current law
+
+    CTC/ODC placement between Sch 3 line 4 and line 5a is consistent
+    with Sch 8812 Credit Limit Worksheet A, which subtracts only Sch 3
+    lines 1, 2, 3, 4 (plus a set of unmodeled credits) from tax before
+    applying CTC.  Credits with statutory carryforwards (ResEnergy,
+    GenBus, PrYrMin) come after CTC/ODC, which have no carryforward.
+
+    Two flavors of inputs:
+      * **Raw record values** `e07240`, `e07260`, `e07300`, `e07400`,
+        `e07600`, `p08000`: the per-credit haircut `(1 - CR_*_hc)` is
+        applied here, then `min` against remaining tax.  All `CR_*_hc`
+        parameters default to 0.0 (current-law inert).
+      * **Pre-computed credits** `c07180`, `c07200`, `c07220`,
+        `c07230`, `odc`, `charity_credit`,
+        `personal_nonrefundable_credit`: the source function already
+        applied any haircut and its own Credit Limit Worksheet; this
+        function re-caps against remaining tax (belt-and-braces, and
+        correcting any source-side worksheet that omitted a Sch 3
+        line ahead of itself -- e.g., `SchR` line-21 worksheet omits
+        Sch 3 line 3 Education).
+
+    Calling-order context: invoked by `Calculator.calc_all` after
+    `ChildDepTaxCredit` (which produces `c07220` and `odc`) and the
+    other per-credit source functions (`F2441` -> `c07180`,
+    `EducationTaxCredit` -> `c07230`, `SchR` -> `c07200`,
+    `CharityCredit` -> `charity_credit`, `PersonalTaxCredit` ->
+    `personal_nonrefundable_credit`), and before `AdditionalCTC` /
+    `C1040`.
 
     Parameters
     ----------
     c05800: float
         Total (regular + AMT) income tax liability before credits
+        (Form 1040 line 18)
     e07240: float
-        Retirement savings contributions credit from Form 8880
+        Retirement savings contributions credit input from Form 8880
+        (Sch 3 line 4); haircut `(1 - CR_RetirementSavings_hc)`
+        applied here
     e07260: float
-        Residential energy credit from Form 5695
+        Residential clean energy credit input from Form 5695 line 15
+        (Sch 3 line 5a); haircut `(1 - CR_ResidentialEnergy_hc)`
+        applied here
     e07300: float
-        Foreign tax credit from Form 1116
+        Foreign tax credit input from Form 1116 (Sch 3 line 1);
+        haircut `(1 - CR_ForeignTax_hc)` applied here
     e07400: float
-        General business credit from Form 3800
+        General business credit input from Form 3800 (Sch 3 line 6a);
+        haircut `(1 - CR_GeneralBusiness_hc)` applied here
     e07600: float
-        Prior year minimum tax credit from Form 8801
+        Prior-year minimum tax credit input from Form 8801
+        (Sch 3 line 6b); haircut `(1 - CR_MinimumTax_hc)` applied
+        here
     p08000: float
-        Other tax credits
+        Other nonrefundable credits input (Sch 3 line 6z); haircut
+        `(1 - CR_OtherCredits_hc)` applied here
     odc: float
-        Other Dependent Credit
+        Credit for Other Dependents from Sch 8812 (Form 1040 line 19
+        ODC component); pre-computed with `CTC_hc` already applied
     personal_nonrefundable_credit: float
-        Personal nonrefundable credit
+        Reform-only personal nonrefundable credit from
+        `PersonalTaxCredit`; current-law inert
     CTC_is_refundable: bool
-        Whether the child tax credit is fully refundable
+        Reform-only switch (default false): when true, CTC and ODC
+        are not limited here and are routed to the refundable side
+        in `IITAX` / `CTC_new`
     CR_RetirementSavings_hc: float
-        Credit for retirement savings haircut
+        Retirement savings credit haircut (default 0.0; current-law
+        inert)
     CR_ForeignTax_hc: float
-        Credit for foreign tax credit
+        Foreign tax credit haircut (default 0.0)
     CR_ResidentialEnergy_hc: float
-        Credit for residential energy haircut
+        Residential clean energy credit haircut (default 0.0)
     CR_GeneralBusiness_hc: float
-        Credit for general business haircut
+        General business credit haircut (default 0.0)
     CR_MinimumTax_hc: float
-        Credit for previous year minimum tax credit haircut
+        Prior-year minimum tax credit haircut (default 0.0)
     CR_OtherCredits_hc: float
-        Other Credit haircut
+        Other nonrefundable credits haircut (default 0.0)
     charity_credit: float
-        Credit for charitable giving
+        Reform-only nonrefundable charity credit from `CharityCredit`;
+        current-law inert
     c07180: float
         Credit for child and dependent care expenses from Form 2441
+        (Sch 3 line 2); pre-computed by `F2441`
     c07200: float
         Schedule R credit for the elderly and the disabled
+        (Sch 3 line 6d); pre-computed by `SchR`
     c07220: float
-        Child tax credit (adjusted) from From 8812
+        Child tax credit from Sch 8812 (Form 1040 line 19 CTC
+        component); pre-computed by `ChildDepTaxCredit`
     c07230: float
-        Education tax credits non-refundable amount from Form 8863
+        Nonrefundable education credit from Form 8863
+        (Sch 3 line 3); pre-computed by `EducationTaxCredit`
     c07240: float
-        Retirement savings credit - Form 8880
+        Retirement savings credit limited output (overwritten here)
     c07260: float
-        Residential energy credit - Form 5695
+        Residential clean energy credit limited output (overwritten
+        here)
     c07300: float
-        Foreign tax credit - Form 1116
+        Foreign tax credit limited output (overwritten here)
     c07400: float
-        General business credit - Form 3800
+        General business credit limited output (overwritten here)
     c07600: float
-        Prior year minimum tax credit - Form 8801
+        Prior-year minimum tax credit limited output (overwritten
+        here)
     c08000: float
-        Other credits
+        Other nonrefundable credits limited output (overwritten here)
+
     Returns
     -------
     c07180: float
-        Credit for child and dependent care expenses from Form 2441
+        Limited credit for child and dependent care expenses
+        (Sch 3 line 2)
     c07200: float
-        Schedule R credit for the elderly and the disabled
+        Limited Schedule R credit (Sch 3 line 6d)
     c07220: float
-        Child tax credit (adjusted) from From 8812
+        Limited child tax credit (Form 1040 line 19 CTC component);
+        unchanged when `CTC_is_refundable`
     c07230: float
-        Education tax credits non-refundable amount from Form 8863
+        Limited nonrefundable education credit (Sch 3 line 3)
     c07240: float
-        Retirement savings credit - Form 8880
+        Limited retirement savings credit (Sch 3 line 4)
     odc: float
-        Other Dependent Credit
+        Limited Credit for Other Dependents (Form 1040 line 19 ODC
+        component); unchanged when `CTC_is_refundable`
     c07260: float
-        Residential energy credit - Form 5695
+        Limited residential clean energy credit (Sch 3 line 5a)
     c07300: float
-        Foreign tax credit - Form 1116
+        Limited foreign tax credit (Sch 3 line 1)
     c07400: float
-        General business credit - Form 3800
+        Limited general business credit (Sch 3 line 6a)
     c07600: float
-        Prior year minimum tax credit - Form 8801
+        Limited prior-year minimum tax credit (Sch 3 line 6b)
     c08000: float
-        Other credits
+        Limited other nonrefundable credits (Sch 3 line 6z)
     charity_credit: float
-        Credit for charitable giving
+        Limited reform-only nonrefundable charity credit
     personal_nonrefundable_credit: float
-        Personal nonrefundable credit
+        Limited reform-only personal nonrefundable credit
     """
-    # limit tax credits to tax liability in order they are on 2015 1040 form
+    # Schedule 3 (2025) Part I + Form 1040 line 19: sequential limit
+    # against remaining tax liability, mirroring the on-form line
+    # order with reform-construct credits appended.
     avail = c05800
-    # Foreign tax credit - Form 1116
+    # (A) Sch 3 Part I lines 1-4
+    # Sch 3 line 1 -- Foreign tax credit (Form 1116)
     c07300 = min(e07300 * (1. - CR_ForeignTax_hc), avail)
     avail = avail - c07300
-    # Child & dependent care expense credit
+    # Sch 3 line 2 -- Credit for child and dependent care expenses (Form 2441)
     c07180 = min(c07180, avail)
     avail = avail - c07180
-    # Education tax credit
+    # Sch 3 line 3 -- Education credits (Form 8863 line 19)
     c07230 = min(c07230, avail)
     avail = avail - c07230
-    # Retirement savings credit - Form 8880
+    # Sch 3 line 4 -- Retirement savings contributions credit (Form 8880)
     c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
-    # Child tax credit
+    # (B) Form 1040 line 19 -- CTC + Credit for Other Dependents (Sch 8812);
+    # skipped under reform-only CTC_is_refundable (routed to refundable side)
     if not CTC_is_refundable:
+        # Form 1040 line 19 CTC component
         c07220 = min(c07220, avail)
         avail = avail - c07220
-        # Other dependent credit
+        # Form 1040 line 19 ODC component
         odc = min(odc, avail)
         avail = avail - odc
-    # Residential energy credit - Form 5695
+    # (C) Sch 3 Part I lines 5a, 6a, 6b, 6d, 6z (carryforward-eligible
+    # credits come after CTC/ODC, which have no carryforward)
+    # Sch 3 line 5a -- Residential clean energy credit (Form 5695 line 15)
     c07260 = min(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
     avail = avail - c07260
-    # General business credit - Form 3800
+    # Sch 3 line 6a -- General business credit (Form 3800)
     c07400 = min(e07400 * (1. - CR_GeneralBusiness_hc), avail)
     avail = avail - c07400
-    # Prior year minimum tax credit - Form 8801
+    # Sch 3 line 6b -- Prior-year minimum tax credit (Form 8801)
     c07600 = min(e07600 * (1. - CR_MinimumTax_hc), avail)
     avail = avail - c07600
-    # Schedule R credit
+    # Sch 3 line 6d -- Credit for the elderly or the disabled (Sch R)
     c07200 = min(c07200, avail)
     avail = avail - c07200
-    # Other credits
+    # Sch 3 line 6z -- Other nonrefundable credits
     c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
     avail = avail - c08000
+    # (D) Reform-only nonrefundable credits (current-law inert)
     charity_credit = min(charity_credit, avail)
     avail = avail - charity_credit
-    # Personal nonrefundable credit
     personal_nonrefundable_credit = min(personal_nonrefundable_credit, avail)
     avail = avail - personal_nonrefundable_credit
     return (c07180, c07200, c07220, c07230, c07240, odc,
