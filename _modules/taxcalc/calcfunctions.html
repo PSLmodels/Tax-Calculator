@@ -4182,74 +4182,138 @@
                        <span class="n">CR_Education_hc</span><span class="p">,</span>
                        <span class="n">c07230</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes Education Tax Credits (Form 8863) nonrefundable amount, c07230.</span>
-<span class="sd">    Logic corresponds to Form 8863, Part II.</span>
+<span class="sd">    Computes Education Tax Credits (`c07230`, Schedule 3 line 3) from</span>
+<span class="sd">    Form 8863 (2025) Part II &quot;Nonrefundable Education Credits&quot; and the</span>
+<span class="sd">    Credit Limit Worksheet (CLW) in the Form 8863 instructions.</span>
+
+<span class="sd">    Part II line-by-line mapping:</span>
+<span class="sd">        line 9  = `c87668`        (nonref AOTC, computed by `AmOppCreditParts`)</span>
+<span class="sd">        line 10 = `e87530`        (LLC adjusted qualified expenses,</span>
+<span class="sd">                                   summed over students)</span>
+<span class="sd">        line 11 = min(`e87530`, `LLC_Expense_c`)         (cap; $10,000 on form)</span>
+<span class="sd">        line 12 = line 11 * 0.20                         (LLC tentative)</span>
+<span class="sd">        line 13 = $180,000 MFJ / $90,000 other (`ETC_pe_*` stored in</span>
+<span class="sd">                                                thousands of dollars)</span>
+<span class="sd">        line 14 = AGI (`c00100`)</span>
+<span class="sd">        line 15 = max(0., line 13 - line 14)</span>
+<span class="sd">        line 16 = $20,000 MFJ / $10,000 other            (phaseout spread)</span>
+<span class="sd">        line 17 = min(1., line 15 / line 16) rounded to 3 decimals when</span>
+<span class="sd">                  `exact==1` per the form instruction</span>
+<span class="sd">        line 18 = line 12 * line 17                      (LLC after phaseout)</span>
+<span class="sd">        line 19 = CLW line 7                             -&gt; Sch 3 line 3</span>
+
+<span class="sd">    Credit Limit Worksheet (from Form 8863 instructions):</span>
+<span class="sd">        CLW line 1  = Form 8863 line 18                  (LLC after phaseout)</span>
+<span class="sd">        CLW line 2  = Form 8863 line 9                   (nonref AOTC)</span>
+<span class="sd">        CLW line 3  = CLW line 1 + CLW line 2</span>
+<span class="sd">        CLW line 4  = Form 1040 line 18 = `c05800`</span>
+<span class="sd">        CLW line 5  = Sch 3 line 1 (`e07300` FTC) + line 2 (`c07180` CDCC)</span>
+<span class="sd">                    + line 6d (`c07200` SchR) + 6f + 6l + 6m</span>
+<span class="sd">                      (6f / 6l / 6m unmodeled in Tax-Calculator records)</span>
+<span class="sd">        CLW line 6  = CLW line 4 - CLW line 5</span>
+<span class="sd">        CLW line 7  = min(CLW line 3, CLW line 6)        (nonref ed credits)</span>
+<span class="sd">    The code applies CLW lines 5-7 sequentially (LLC first, then nonref</span>
+<span class="sd">    AOTC, subtracting LLC from remaining tax-availability before AOTC);</span>
+<span class="sd">    this is algebraically equivalent to the form&#39;s single combined</span>
+<span class="sd">    `min(line 3, line 6)` because both portions are bounded above by</span>
+<span class="sd">    the same tax-availability quantity (line 6).</span>
+
+<span class="sd">    `ETC_pe_Single` / `ETC_pe_Married` are stored in thousands of</span>
+<span class="sd">    dollars per `policy_current_law.json` (descriptions say &quot;in</span>
+<span class="sd">    thousands&quot;), so the `* 1000.` factors convert them to the dollar</span>
+<span class="sd">    thresholds the form prints on line 13.</span>
+
+<span class="sd">    `CR_Education_hc` is a reform construct (haircut) with no IRS-form</span>
+<span class="sd">    counterpart; under current law it defaults to 0.0 for all years,</span>
+<span class="sd">    so `c07230` equals the on-form line 19 unmodified.</span>
+
+<span class="sd">    Downstream consumer: `c07230` flows to `NonrefundableCredits` as</span>
+<span class="sd">    Sch 3 line 3 in the credit-ordering and is sequentially re-limited</span>
+<span class="sd">    against remaining tax-before-credits there before being summed into</span>
+<span class="sd">    the nonrefundable-credit total subtracted in `IITAX`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    exact: int</span>
-<span class="sd">        Whether or not to do rounding of phaseout fraction</span>
+<span class="sd">        Whether or not to do rounding of phaseout fraction (Form 8863</span>
+<span class="sd">        line 17 form-instruction rounding when `exact==1`).</span>
 <span class="sd">    e87530: float</span>
 <span class="sd">        Adjusted qualified lifetime learning expenses for all students</span>
+<span class="sd">        (Form 8863 Part III line 31 summed across students; Part II</span>
+<span class="sd">        line 10).</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                                  4=household-head, 5=widow(er))</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">        Adjusted Gross Income (Form 1040 line 11; Form 8863 line 14).</span>
 <span class="sd">    c05800: float</span>
 <span class="sd">        Total (regular + AMT) income tax liability before credits</span>
+<span class="sd">        (CLW line 4).</span>
 <span class="sd">    e07300: float</span>
-<span class="sd">        Foreign tax credit from Form 1116</span>
+<span class="sd">        Foreign tax credit from Form 1116 (Sch 3 line 1; CLW line 5).</span>
 <span class="sd">    c07180: float</span>
 <span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">        (Sch 3 line 2; CLW line 5).</span>
 <span class="sd">    c07200: float</span>
-<span class="sd">        Schedule R credit for the elderly and the disabled</span>
+<span class="sd">        Schedule R credit for the elderly and the disabled (Sch 3</span>
+<span class="sd">        line 6d; CLW line 5).  Sch 3 lines 6f / 6l / 6m also belong</span>
+<span class="sd">        to CLW line 5 but are not modeled in Tax-Calculator records.</span>
 <span class="sd">    c87668: float</span>
-<span class="sd">        American Opportunity Credit non-refundalbe amount from Form 8863</span>
+<span class="sd">        American Opportunity Credit nonrefundable amount from Form 8863</span>
+<span class="sd">        line 9 (= 0.6 * line 7), computed by `AmOppCreditParts`.</span>
 <span class="sd">    LLC_Expense_c: float</span>
-<span class="sd">        Lifetime learning credit expense limit</span>
+<span class="sd">        Lifetime learning credit expense limit (Form 8863 line 11 cap;</span>
+<span class="sd">        $10,000 on the form).</span>
 <span class="sd">    ETC_pe_Single: float</span>
-<span class="sd">        Education tax credit phaseout ends (single)</span>
+<span class="sd">        Education tax credit phaseout end for non-joint filers, in</span>
+<span class="sd">        thousands of dollars (Form 8863 line 13 = $90,000 for non-MFJ).</span>
 <span class="sd">    ETC_pe_Married: float</span>
-<span class="sd">        Education tax credit phaseout ends (married)</span>
+<span class="sd">        Education tax credit phaseout end for joint filers, in thousands</span>
+<span class="sd">        of dollars (Form 8863 line 13 = $180,000 for MFJ).</span>
 <span class="sd">    CR_Education_hc: float</span>
-<span class="sd">        Education Credits haircut</span>
+<span class="sd">        Education credits haircut.  Reform construct; default 0.0 under</span>
+<span class="sd">        current law (function emits on-form line 19 unmodified).</span>
 <span class="sd">    c07230: float</span>
-<span class="sd">        Education tax credits non-refundable amount from Form 8863</span>
+<span class="sd">        Records-bound output, computed below.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    c07230: float</span>
-<span class="sd">        Education tax credits non-refundable amount from Form 8863</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Tax Law Parameters that are not parameterized:</span>
-<span class="sd">        0.2: Lifetime Learning Credit ratio against expense</span>
-<span class="sd">        10000.0: AGI range bewteen ETC_pe_Single and single phase-out start;</span>
-<span class="sd">                 twice this amount for ETC_pe_Married</span>
+<span class="sd">        Education tax credits nonrefundable amount (Form 8863 line 19;</span>
+<span class="sd">        Sch 3 line 3) with reform haircut applied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">c87560</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">e87530</span><span class="p">,</span> <span class="n">LLC_Expense_c</span><span class="p">)</span>
-    <span class="c1"># on the following credit phase-out law see:</span>
+    <span class="c1"># ---- Form 8863 Part II lines 10-12 (LLC tentative) ----------------</span>
+    <span class="c1"># line 11 caps qualified expenses at LLC_Expense_c ($10,000 on form);</span>
+    <span class="c1"># line 12 multiplies by 20% to get the pre-phaseout LLC.</span>
+    <span class="n">line12</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">e87530</span><span class="p">,</span> <span class="n">LLC_Expense_c</span><span class="p">)</span>
+    <span class="c1"># ---- Form 8863 Part II lines 13-18 (AGI phaseout) -----------------</span>
+    <span class="c1"># ETC_pe_* are stored in thousands of dollars; * 1000. converts to</span>
+    <span class="c1"># the on-form line-13 dollar values.  Phaseout spread (line 16) is</span>
+    <span class="c1"># $20,000 MFJ / $10,000 other.  See IRC §25A(d)(1):</span>
     <span class="c1"># https://www.law.cornell.edu/uscode/text/26/25A#d_1</span>
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">c87570</span> <span class="o">=</span> <span class="n">ETC_pe_Married</span> <span class="o">*</span> <span class="mf">1000.</span>
-        <span class="n">c87600</span> <span class="o">=</span> <span class="mf">20000.</span>
+        <span class="n">line13</span> <span class="o">=</span> <span class="n">ETC_pe_Married</span> <span class="o">*</span> <span class="mf">1000.</span>
+        <span class="n">line16</span> <span class="o">=</span> <span class="mf">20000.</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">c87570</span> <span class="o">=</span> <span class="n">ETC_pe_Single</span> <span class="o">*</span> <span class="mf">1000.</span>
-        <span class="n">c87600</span> <span class="o">=</span> <span class="mf">10000.</span>
-    <span class="n">c87590</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c87570</span> <span class="o">-</span> <span class="n">c00100</span><span class="p">)</span>
+        <span class="n">line13</span> <span class="o">=</span> <span class="n">ETC_pe_Single</span> <span class="o">*</span> <span class="mf">1000.</span>
+        <span class="n">line16</span> <span class="o">=</span> <span class="mf">10000.</span>
+    <span class="n">line15</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line13</span> <span class="o">-</span> <span class="n">c00100</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
-        <span class="n">c87610</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">c87590</span> <span class="o">/</span> <span class="n">c87600</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">line17</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">line15</span> <span class="o">/</span> <span class="n">line16</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">c87610</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">c87590</span> <span class="o">/</span> <span class="n">c87600</span><span class="p">)</span>
-    <span class="n">c87620</span> <span class="o">=</span> <span class="n">c87560</span> <span class="o">*</span> <span class="n">c87610</span>
-    <span class="n">xline4</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="p">(</span><span class="n">e07300</span> <span class="o">+</span> <span class="n">c07180</span> <span class="o">+</span> <span class="n">c07200</span><span class="p">))</span>
-    <span class="n">xline5</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c87620</span><span class="p">,</span> <span class="n">xline4</span><span class="p">)</span>
-    <span class="n">xline9</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="p">(</span><span class="n">e07300</span> <span class="o">+</span> <span class="n">c07180</span> <span class="o">+</span> <span class="n">c07200</span> <span class="o">+</span> <span class="n">xline5</span><span class="p">))</span>
-    <span class="n">xline10</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c87668</span><span class="p">,</span> <span class="n">xline9</span><span class="p">)</span>
-    <span class="n">c87680</span> <span class="o">=</span> <span class="n">xline5</span> <span class="o">+</span> <span class="n">xline10</span>
-    <span class="n">c07230</span> <span class="o">=</span> <span class="n">c87680</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_Education_hc</span><span class="p">)</span>
+        <span class="n">line17</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">line15</span> <span class="o">/</span> <span class="n">line16</span><span class="p">)</span>
+    <span class="n">line18</span> <span class="o">=</span> <span class="n">line12</span> <span class="o">*</span> <span class="n">line17</span>
+    <span class="c1"># ---- Credit Limit Worksheet (Form 8863 instructions) --------------</span>
+    <span class="c1"># CLW line 6 = c05800 - (FTC + CDCC + SchR); Sch 3 lines 6f/6l/6m</span>
+    <span class="c1"># also subtracted on-form but unmodeled here.  Sequential</span>
+    <span class="c1"># application of LLC then nonref-AOTC below is algebraically</span>
+    <span class="c1"># equivalent to the form&#39;s single min(CLW line 3, CLW line 6).</span>
+    <span class="n">clw_line6</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="p">(</span><span class="n">e07300</span> <span class="o">+</span> <span class="n">c07180</span> <span class="o">+</span> <span class="n">c07200</span><span class="p">))</span>
+    <span class="n">llc_used</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line18</span><span class="p">,</span> <span class="n">clw_line6</span><span class="p">)</span>
+    <span class="n">aotc_used</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c87668</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">clw_line6</span> <span class="o">-</span> <span class="n">llc_used</span><span class="p">))</span>
+    <span class="n">line19_pre_hc</span> <span class="o">=</span> <span class="n">llc_used</span> <span class="o">+</span> <span class="n">aotc_used</span>
+    <span class="c1"># ---- reform haircut (current-law inert: CR_Education_hc == 0) -----</span>
+    <span class="n">c07230</span> <span class="o">=</span> <span class="n">line19_pre_hc</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_Education_hc</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">c07230</span>
 
 
