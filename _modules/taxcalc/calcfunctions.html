@@ -4026,8 +4026,10 @@
         <span class="c1"># ---- Total AOTC after phaseout (line 7) ----</span>
         <span class="n">line7</span> <span class="o">=</span> <span class="n">line6_x1000</span> <span class="o">*</span> <span class="n">e87521</span> <span class="o">/</span> <span class="mf">1000.</span>
         <span class="c1"># ---- Refundable (line 8) / nonrefundable (Part II line 9) split ----</span>
-        <span class="n">c10960</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">line7</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_AmOppRefundable_hc</span><span class="p">)</span>
-        <span class="n">c87668</span> <span class="o">=</span> <span class="n">line7</span> <span class="o">-</span> <span class="n">c10960</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_AmOppNonRefundable_hc</span><span class="p">)</span>
+        <span class="n">ref_portion</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">line7</span>             <span class="c1"># Form 8863 line 8 base</span>
+        <span class="n">nonref_portion</span> <span class="o">=</span> <span class="n">line7</span> <span class="o">-</span> <span class="n">ref_portion</span>  <span class="c1"># Part II line 9 base = 0.6*line7</span>
+        <span class="n">c10960</span> <span class="o">=</span> <span class="n">ref_portion</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_AmOppRefundable_hc</span><span class="p">)</span>
+        <span class="n">c87668</span> <span class="o">=</span> <span class="n">nonref_portion</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_AmOppNonRefundable_hc</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">c10960</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">c87668</span> <span class="o">=</span> <span class="mf">0.</span>
