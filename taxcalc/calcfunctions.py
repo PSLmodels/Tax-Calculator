@@ -3624,8 +3624,10 @@ def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
         # ---- Total AOTC after phaseout (line 7) ----
         line7 = line6_x1000 * e87521 / 1000.
         # ---- Refundable (line 8) / nonrefundable (Part II line 9) split ----
-        c10960 = 0.4 * line7 * (1. - CR_AmOppRefundable_hc)
-        c87668 = line7 - c10960 * (1. - CR_AmOppNonRefundable_hc)
+        ref_portion = 0.4 * line7             # Form 8863 line 8 base
+        nonref_portion = line7 - ref_portion  # Part II line 9 base = 0.6*line7
+        c10960 = ref_portion * (1. - CR_AmOppRefundable_hc)
+        c87668 = nonref_portion * (1. - CR_AmOppNonRefundable_hc)
     else:
         c10960 = 0.
         c87668 = 0.
