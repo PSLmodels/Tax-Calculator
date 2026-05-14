@@ -5052,21 +5052,39 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
 @iterate_jit(nopython=True)
 def AfterTaxIncome(combined, expanded_income, aftertax_income):
     """
-    Calculates after-tax expanded income.
+    Computes the records-bound `aftertax_income` = `expanded_income`
+    − `combined`. This is a model-internal distributional-analysis
+    aggregate with no IRS form/schedule counterpart: it is not part
+    of the tax-liability path. The output can be negative (no floor
+    at zero) — e.g., when `combined` exceeds `expanded_income` for a
+    unit with large business/capital losses. Note that any refundable
+    credits have already been netted into `iitax` (and therefore into
+    `combined`) upstream.
+
+    Calling order: `Calculator.calc_all` invokes `AfterTaxIncome`
+    last, immediately after `ExpandIncome` (which produces
+    `expanded_income`) and after `LumpSumTax` (which finalizes
+    `combined` = `iitax` + `payrolltax` + `lumpsum_tax`). Downstream
+    consumers are distributional tables (`Calculator.decile_graph`,
+    `mtr_graph`) and the consumer-equivalent welfare calculation
+    `Calculator.ce_aftertax_income`.
 
     Parameters
     ----------
     combined: float
-        Sum of iitax and payrolltax and lumpsum_tax
+      Sum of `iitax` + `payrolltax` + `lumpsum_tax` for the filing
+      unit (finalized in `LumpSumTax`).
     expanded_income: float
-        Broad income measure that includes benefit_value_total
+      Broad pre-tax income measure including `benefit_value_total`
+      (from `ExpandIncome`); see that function's docstring for the
+      AGI-vs-expanded-income deltas.
     aftertax_income: float
-        After tax income is equal to expanded_income minus combined
+      Records-bound output, computed below.
 
     Returns
     -------
     aftertax_income: float
-        After tax income is equal to expanded_income minus combined
+      `expanded_income` − `combined`; can be negative.
     """
     aftertax_income = expanded_income - combined
     return aftertax_income
