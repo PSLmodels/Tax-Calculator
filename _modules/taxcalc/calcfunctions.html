@@ -5036,72 +5036,150 @@
           <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">ODC_is_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span>
           <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes final taxes.</span>
+<span class="sd">    Final assembly: sums refundable credits and computes total income-tax</span>
+<span class="sd">    liability net of those credits. Maps to Form 1040 (2025) lines 22-37</span>
+<span class="sd">    with two model-specific simplifications:</span>
+
+<span class="sd">      (1) `refund` here is the analogue of Form 1040 line 32 (refundable-</span>
+<span class="sd">          credit sum) ONLY. Lines 25d (federal income tax withheld) and 26</span>
+<span class="sd">          (estimated tax payments) are not modeled by Tax-Calculator, so</span>
+<span class="sd">          line 33 = 25d + 26 + 32 reduces to line 32 in the model.</span>
+<span class="sd">      (2) `iitax` = c09200 - refund = Form 1040 line 24 - line 32. The</span>
+<span class="sd">          model does not split this into line 34 (refund when 33 &gt; 24) vs.</span>
+<span class="sd">          line 37 (owed when 24 &gt; 33); `iitax` is sign-permissive (positive</span>
+<span class="sd">          = amount owed, negative = refund position).</span>
+
+<span class="sd">    Body sections:</span>
+
+<span class="sd">      (A) Reform-only refundable conversions. When `CTC_is_refundable` or</span>
+<span class="sd">          `ODC_is_refundable` are true (both default false under current</span>
+<span class="sd">          law), the CTC (c07220) and ODC (odc) amounts that were applied</span>
+<span class="sd">          as nonrefundable credits in `NonrefundableCredits` / `C1040` are</span>
+<span class="sd">          added on the refundable side here.</span>
+<span class="sd">      (B) Form 1040 line 32 build. Each addend is annotated with its 1040</span>
+<span class="sd">          line (27a EIC / 28 ACTC / 29 AOC / 30 historical RRC / 31 Sch 3</span>
+<span class="sd">          line 13 refundable CDCC) or reform-only label (no form line).</span>
+<span class="sd">      (C) Records-bound CTC diagnostic. `ctc_total` / `ctc_refundable` /</span>
+<span class="sd">          `ctc_nonrefundable` summarize the union of `ChildDepTaxCredit`</span>
+<span class="sd">          (c07220 nonref + odc), `AdditionalCTC` (c11070 refundable), and</span>
+<span class="sd">          `CTC_new` (reform-only) — partitioned by whether each piece is</span>
+<span class="sd">          refundable under the current parameter regime. Not on the form.</span>
+<span class="sd">      (D) Form 1040 line 24 − line 32 net + combined-tax accumulator.</span>
+<span class="sd">          `combined` = iitax + payrolltax; `lumpsum_tax` is added later</span>
+<span class="sd">          by `LumpSumTax` (also a reform construct, inert under current</span>
+<span class="sd">          law).</span>
+
+<span class="sd">    Reform constructs (no Form 1040 (2025) line):</span>
+<span class="sd">      `personal_refundable_credit` (II_credit* knobs from</span>
+<span class="sd">      `PersonalTaxCredit`), `ctc_new` (from `CTC_new`), `rptc` (from</span>
+<span class="sd">      `RefundablePayrollTaxCredit`), and the `recovery_rebate_credit`</span>
+<span class="sd">      (historically Form 1040 line 30 for 2020 CARES / 2021 ARPA RRC;</span>
+<span class="sd">      inert for 2022+).</span>
+
+<span class="sd">    Calling order: invoked by `Calculator._calc_one_year` after `CTC_new`</span>
+<span class="sd">    (so c09200, c07220, odc, c10960, c11070, c59660, CDCC_refund are all</span>
+<span class="sd">    final) and before `FairShareTax` / `LumpSumTax` / `BenefitPrograms`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    c59660: float</span>
-<span class="sd">        EITC amount</span>
+<span class="sd">        EITC amount from EITC function (Form 1040 line 27a)</span>
 <span class="sd">    c11070: float</span>
-<span class="sd">        Child tax credit (refunded) from Form 8812</span>
+<span class="sd">        Refundable Additional CTC from AdditionalCTC / Schedule 8812</span>
+<span class="sd">        Part II (Form 1040 line 28)</span>
 <span class="sd">    c10960: float</span>
-<span class="sd">        American Opportunity Credit refundable amount from Form 8863</span>
+<span class="sd">        American Opportunity Credit refundable portion from</span>
+<span class="sd">        EducationTaxCredit / Form 8863 line 8 (Form 1040 line 29)</span>
 <span class="sd">    personal_refundable_credit: float</span>
-<span class="sd">        Personal refundable credit</span>
+<span class="sd">        Reform-only refundable personal credit from `PersonalTaxCredit`</span>
+<span class="sd">        (no Form 1040 line; default 0 under current law)</span>
 <span class="sd">    ctc_new: float</span>
-<span class="sd">        New refundable child tax credit</span>
+<span class="sd">        Reform-only new refundable child tax credit from `CTC_new`</span>
+<span class="sd">        (no Form 1040 line; default 0 under current law)</span>
 <span class="sd">    rptc: float</span>
-<span class="sd">        Refundable Payroll Tax Credit for filing unit</span>
+<span class="sd">        Reform-only refundable payroll tax credit for filing unit from</span>
+<span class="sd">        `RefundablePayrollTaxCredit` (no Form 1040 line; default 0)</span>
 <span class="sd">    c09200: float</span>
-<span class="sd">        Income tax liabilities (including othertaxes) after non-refundable</span>
-<span class="sd">        credits are used, but before refundable credits are applied</span>
+<span class="sd">        Total income tax (including other taxes, after nonrefundable</span>
+<span class="sd">        credits) from `C1040` (Form 1040 line 24)</span>
 <span class="sd">    payrolltax: float</span>
-<span class="sd">        Total (employee + employer) payroll tax liability</span>
+<span class="sd">        Total (employee + employer) payroll tax liability from</span>
+<span class="sd">        `EI_PayrollTax`</span>
+<span class="sd">    CDCC_refund: float</span>
+<span class="sd">        Refundable portion of Child and Dependent Care Credit from</span>
+<span class="sd">        `CDCC_refundable` (Schedule 3 line 13 → Form 1040 line 31)</span>
+<span class="sd">    recovery_rebate_credit: float</span>
+<span class="sd">        Recovery Rebate Credit from `PersonalTaxCredit` (historical</span>
+<span class="sd">        Form 1040 line 30 for 2020/2021; inert for 2022+ under</span>
+<span class="sd">        current law)</span>
 <span class="sd">    eitc: float</span>
-<span class="sd">        Earned Income Credit</span>
+<span class="sd">        Records-bound output; rebound to `c59660` here</span>
+<span class="sd">    c07220: float</span>
+<span class="sd">        Nonrefundable CTC (post-NonrefundableCredits cap) from</span>
+<span class="sd">        `ChildDepTaxCredit` / Schedule 8812 Credit Limit Worksheet A</span>
+<span class="sd">    odc: float</span>
+<span class="sd">        Nonrefundable Credit for Other Dependents (post-cap) from</span>
+<span class="sd">        `ChildDepTaxCredit` / Schedule 8812</span>
+<span class="sd">    CTC_is_refundable: bool</span>
+<span class="sd">        Reform-only switch (default false): when true, the entire CTC is</span>
+<span class="sd">        treated as refundable (Schedule 8812 nonref portion `c07220` is</span>
+<span class="sd">        added to `refund` here)</span>
+<span class="sd">    ODC_is_refundable: bool</span>
+<span class="sd">        Reform-only switch (default false): when true, ODC is treated as</span>
+<span class="sd">        refundable (`odc` is added to `refund` here)</span>
 <span class="sd">    refund: float</span>
-<span class="sd">        Total refundable income tax credits</span>
+<span class="sd">        Records-bound output (re-computed)</span>
 <span class="sd">    ctc_total: float</span>
-<span class="sd">        Total CTC amount (c07220 + c11070 + odc + ctc_new)</span>
+<span class="sd">        Records-bound output (re-computed)</span>
 <span class="sd">    ctc_refundable: float</span>
-<span class="sd">        Portion of total CTC amount that is refundable</span>
+<span class="sd">        Records-bound output (re-computed)</span>
+<span class="sd">    ctc_nonrefundable: float</span>
+<span class="sd">        Records-bound output (re-computed)</span>
 <span class="sd">    iitax: float</span>
-<span class="sd">        Total federal individual income tax liability</span>
+<span class="sd">        Records-bound output (re-computed)</span>
 <span class="sd">    combined: float</span>
-<span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
+<span class="sd">        Records-bound output (re-computed)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    eitc: float</span>
-<span class="sd">        Earned Income Credit</span>
+<span class="sd">        Earned Income Credit (= c59660; Form 1040 line 27a)</span>
 <span class="sd">    refund: float</span>
-<span class="sd">        Total refundable income tax credits</span>
+<span class="sd">        Sum of refundable credits (model-specific Form 1040 line 32</span>
+<span class="sd">        analogue; lines 25d and 26 not modeled)</span>
 <span class="sd">    ctc_total: float</span>
-<span class="sd">        Total CTC amount (c07220 + c11070 + odc + ctc_new)</span>
+<span class="sd">        Diagnostic: c07220 + c11070 + odc + ctc_new</span>
 <span class="sd">    ctc_refundable: float</span>
-<span class="sd">        Portion of total CTC amount that is refundable</span>
+<span class="sd">        Diagnostic: portion of ctc_total that is refundable</span>
 <span class="sd">    ctc_nonrefundable: float</span>
-<span class="sd">        Portion of total CTC amount that is nonrefundable</span>
+<span class="sd">        Diagnostic: max(0, ctc_total - ctc_refundable)</span>
 <span class="sd">    iitax: float</span>
-<span class="sd">        Total federal individual income tax liability</span>
+<span class="sd">        Total federal individual income tax liability = c09200 − refund</span>
+<span class="sd">        (sign-permissive: positive = amount owed, negative = refund</span>
+<span class="sd">        position; model does not split into Form 1040 lines 34 vs 37)</span>
 <span class="sd">    combined: float</span>
-<span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
+<span class="sd">        iitax + payrolltax (lumpsum_tax added later by `LumpSumTax`)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="n">c59660</span>
-    <span class="k">if</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>
-        <span class="n">ctc_refund</span> <span class="o">=</span> <span class="n">c07220</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ctc_refund</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">ODC_is_refundable</span><span class="p">:</span>
-        <span class="n">odc_refund</span> <span class="o">=</span> <span class="n">odc</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">odc_refund</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="n">refund</span> <span class="o">=</span> <span class="p">(</span><span class="n">eitc</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">c10960</span> <span class="o">+</span> <span class="n">CDCC_refund</span> <span class="o">+</span> <span class="n">recovery_rebate_credit</span> <span class="o">+</span>
-              <span class="n">personal_refundable_credit</span> <span class="o">+</span> <span class="n">ctc_new</span> <span class="o">+</span> <span class="n">rptc</span> <span class="o">+</span> <span class="n">ctc_refund</span> <span class="o">+</span>
-              <span class="n">odc_refund</span><span class="p">)</span>
+    <span class="c1"># (A) reform-only refundable conversions of CTC / ODC</span>
+    <span class="n">ctc_refund</span> <span class="o">=</span> <span class="n">c07220</span> <span class="k">if</span> <span class="n">CTC_is_refundable</span> <span class="k">else</span> <span class="mf">0.</span>
+    <span class="n">odc_refund</span> <span class="o">=</span> <span class="n">odc</span> <span class="k">if</span> <span class="n">ODC_is_refundable</span> <span class="k">else</span> <span class="mf">0.</span>
+    <span class="c1"># (B) Form 1040 line 32: refundable-credit sum</span>
+    <span class="n">refund</span> <span class="o">=</span> <span class="p">(</span><span class="n">eitc</span> <span class="o">+</span>                       <span class="c1"># Form 1040 line 27a (EIC)</span>
+              <span class="n">c11070</span> <span class="o">+</span>                     <span class="c1"># Form 1040 line 28 (ACTC)</span>
+              <span class="n">c10960</span> <span class="o">+</span>                     <span class="c1"># Form 1040 line 29 (AOC)</span>
+              <span class="n">recovery_rebate_credit</span> <span class="o">+</span>     <span class="c1"># Form 1040 line 30 (historical RRC)</span>
+              <span class="n">CDCC_refund</span> <span class="o">+</span>                <span class="c1"># Sch 3 line 13 → Form 1040 line 31</span>
+              <span class="n">personal_refundable_credit</span> <span class="o">+</span>  <span class="c1"># reform-only (no form line)</span>
+              <span class="n">ctc_new</span> <span class="o">+</span>                     <span class="c1"># reform-only (no form line)</span>
+              <span class="n">rptc</span> <span class="o">+</span>                        <span class="c1"># reform-only (no form line)</span>
+              <span class="n">ctc_refund</span> <span class="o">+</span>                  <span class="c1"># reform-only (CTC_is_refundable)</span>
+              <span class="n">odc_refund</span><span class="p">)</span>                   <span class="c1"># reform-only (ODC_is_refundable)</span>
+    <span class="c1"># (C) records-bound CTC diagnostic (not on the form)</span>
     <span class="n">ctc_total</span> <span class="o">=</span> <span class="n">c07220</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">odc</span> <span class="o">+</span> <span class="n">ctc_new</span>
     <span class="n">ctc_refundable</span> <span class="o">=</span> <span class="n">ctc_refund</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">odc_refund</span> <span class="o">+</span> <span class="n">ctc_new</span>
     <span class="n">ctc_nonrefundable</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ctc_total</span> <span class="o">-</span> <span class="n">ctc_refundable</span><span class="p">)</span>
+    <span class="c1"># (D) Form 1040 line 24 − line 32 + combined-tax accumulator</span>
     <span class="n">iitax</span> <span class="o">=</span> <span class="n">c09200</span> <span class="o">-</span> <span class="n">refund</span>
     <span class="n">combined</span> <span class="o">=</span> <span class="n">iitax</span> <span class="o">+</span> <span class="n">payrolltax</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span>
