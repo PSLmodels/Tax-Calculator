@@ -5454,21 +5454,39 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">AfterTaxIncome</span><span class="p">(</span><span class="n">combined</span><span class="p">,</span> <span class="n">expanded_income</span><span class="p">,</span> <span class="n">aftertax_income</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates after-tax expanded income.</span>
+<span class="sd">    Computes the records-bound `aftertax_income` = `expanded_income`</span>
+<span class="sd">    − `combined`. This is a model-internal distributional-analysis</span>
+<span class="sd">    aggregate with no IRS form/schedule counterpart: it is not part</span>
+<span class="sd">    of the tax-liability path. The output can be negative (no floor</span>
+<span class="sd">    at zero) — e.g., when `combined` exceeds `expanded_income` for a</span>
+<span class="sd">    unit with large business/capital losses. Note that any refundable</span>
+<span class="sd">    credits have already been netted into `iitax` (and therefore into</span>
+<span class="sd">    `combined`) upstream.</span>
+
+<span class="sd">    Calling order: `Calculator.calc_all` invokes `AfterTaxIncome`</span>
+<span class="sd">    last, immediately after `ExpandIncome` (which produces</span>
+<span class="sd">    `expanded_income`) and after `LumpSumTax` (which finalizes</span>
+<span class="sd">    `combined` = `iitax` + `payrolltax` + `lumpsum_tax`). Downstream</span>
+<span class="sd">    consumers are distributional tables (`Calculator.decile_graph`,</span>
+<span class="sd">    `mtr_graph`) and the consumer-equivalent welfare calculation</span>
+<span class="sd">    `Calculator.ce_aftertax_income`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    combined: float</span>
-<span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
+<span class="sd">      Sum of `iitax` + `payrolltax` + `lumpsum_tax` for the filing</span>
+<span class="sd">      unit (finalized in `LumpSumTax`).</span>
 <span class="sd">    expanded_income: float</span>
-<span class="sd">        Broad income measure that includes benefit_value_total</span>
+<span class="sd">      Broad pre-tax income measure including `benefit_value_total`</span>
+<span class="sd">      (from `ExpandIncome`); see that function&#39;s docstring for the</span>
+<span class="sd">      AGI-vs-expanded-income deltas.</span>
 <span class="sd">    aftertax_income: float</span>
-<span class="sd">        After tax income is equal to expanded_income minus combined</span>
+<span class="sd">      Records-bound output, computed below.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    aftertax_income: float</span>
-<span class="sd">        After tax income is equal to expanded_income minus combined</span>
+<span class="sd">      `expanded_income` − `combined`; can be negative.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">aftertax_income</span> <span class="o">=</span> <span class="n">expanded_income</span> <span class="o">-</span> <span class="n">combined</span>
     <span class="k">return</span> <span class="n">aftertax_income</span>
