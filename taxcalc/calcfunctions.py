@@ -4318,80 +4318,174 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           personal_nonrefundable_credit,
           CTC_is_refundable, ODC_is_refundable):
     """
-    Computes total used nonrefundable credits, c07100, othertaxes, and
-    income tax before refundable credits, c09200.
+    Assembles Form 1040 (2025) lines 22-24 + Schedule 2 (2025) Part II
+    line 21:
+      * `c07100` = Form 1040 line 21 = total nonrefundable credits used
+        (Sch 3 line 8 + Form 1040 line 19 CTC + ODC components),
+        re-summed here from the per-credit limited amounts produced by
+        `NonrefundableCredits` and `ChildDepTaxCredit`.
+      * `othertaxes` = Sch 2 line 21 = Form 1040 line 23, the sum of
+        the six modeled "Other Taxes" items.
+      * `c09200` = Form 1040 line 24 = line 22 + line 23, total tax
+        before refundable credits and withholding (which are payments,
+        not taxes, and are applied later by `IITAX`).
+    https://www.irs.gov/pub/irs-pdf/f1040s2.pdf
+
+    Schedule 2 Part II line 21 = line 4 + (lines 7-16) + line 18 +
+    line 19.  Modeled items:
+      * line 4  -- Self-employment tax (Schedule SE)               <- setax
+      * line 7  -- Total addl SS/Medicare tax (Forms 4137 + 8919)  <- e09800
+      * line 8  -- Addl tax on IRAs/other tax-favored accts        <- e09900
+      * line 11 -- Additional Medicare Tax (Form 8959)             <- ptax_amc
+      * line 12 -- Net Investment Income Tax (Form 8960)           <- niit
+      * line 18 -- Total addl taxes (only line 17a recapture of
+                   investment credit modeled)                       <- e09700
+    Unmodeled Sch 2 Part II items: line 9 (household employment
+    taxes, Sch H); lines 13-16 (uncollected SS/Medicare on tips,
+    interest on installment-sale deferred tax, low-income housing
+    recapture); the rest of line 17 (HSA/MSA, NQDC, golden parachute,
+    Form 4255 EPE, etc.); line 19 (recapture of net EPE); line 20
+    (sec 965 installment).
+
+    Schedule 2 Part I (line 1z additions to tax + line 2 AMT) is
+    folded into the input `c05800` only via line 2 (AMT, produced by
+    `AMT`); Part I additions (premium-tax-credit repayment, clean
+    vehicle credit repayments, Form 4255 EPE additions) are
+    unmodeled, so c05800 ~= Form 1040 line 16 + Sch 2 line 2 ~= Form
+    1040 line 18.
+
+    Reform-only knobs:
+      * `CTC_is_refundable` -- when true, CTC (c07220) is excluded
+        from `c07100` here (and `NonrefundableCredits` skips both CTC
+        and ODC); CTC is routed to the refundable side via `CTC_new`
+        / `IITAX`.
+      * `ODC_is_refundable` -- when true, ODC (`odc`) is excluded
+        from `c07100` here.  (Note: `NonrefundableCredits` gates ODC
+        on `CTC_is_refundable`, not on `ODC_is_refundable`.)
+
+    Calling order (calculator.py): invoked after `NonrefundableCredits`
+    and `AdditionalCTC` (so each per-credit input has had its final
+    Sch 3 / Sch 8812 cap applied) and before `CTC_new` / `IITAX`
+    (which subtract refundable credits from `c09200`).
 
     Parameters
     ----------
     c05800: float
         Total (regular + AMT) income tax liability before credits
+        (Form 1040 line 16 + Sch 2 line 2; approximates Form 1040
+        line 18 since Sch 2 line 1z additions are unmodeled)
     c07180: float
-        Credit for child and dependent care expenses from Form 2441
+        Limited credit for child and dependent care expenses from
+        Form 2441 (Sch 3 line 2)
     c07200: float
-        Schedule R credit for the elderly and the disabled
+        Limited Schedule R credit for the elderly and the disabled
+        (Sch 3 line 6d)
     c07220: float
-        Child tax credit (adjusted) from Form 8812
+        Limited child tax credit from Sch 8812 (Form 1040 line 19
+        CTC component); excluded from `c07100` when
+        `CTC_is_refundable`
     c07230: float
-        Education tax credit non-refundable amount from Form 8863
+        Limited nonrefundable education credit from Form 8863
+        (Sch 3 line 3)
     c07240: float
-        Retirement savings credit - Form 8880
+        Limited retirement savings credit from Form 8880
+        (Sch 3 line 4)
     c07260: float
-        Residential energy credit - Form 5695
+        Limited residential clean energy credit from Form 5695
+        (Sch 3 line 5a)
     c07300: float
-        Foreign tax credit - Form 1116
+        Limited foreign tax credit from Form 1116 (Sch 3 line 1)
     c07400: float
-        General business credit - Form 3800
+        Limited general business credit from Form 3800
+        (Sch 3 line 6a)
     c07600: float
-        Prior year minimum tax credit - Form 8801
+        Limited prior-year minimum tax credit from Form 8801
+        (Sch 3 line 6b)
     c08000: float
-        Other credits
+        Limited other nonrefundable credits (Sch 3 line 6z)
     e09700: float
-        Recapture of Investment Credit
+        Recapture of Investment Credit (Sch 2 line 17a, the only
+        modeled component of Sch 2 line 18)
     e09800: float
-        Unreported payroll taxes from Form 4137 or 8919
+        Unreported payroll taxes from Form 4137 + Form 8919
+        (Sch 2 lines 5 + 6 -> Sch 2 line 7)
     e09900: float
-        Penalty tax on qualified retirement plans
+        Additional tax on IRAs / other tax-favored accounts from
+        Form 5329 (Sch 2 line 8)
     niit: float
-        Net Investment Income Tax from Form 8960
+        Net Investment Income Tax from Form 8960 (Sch 2 line 12)
     setax: float
-        Self-employment tax
+        Self-employment tax from Schedule SE (Sch 2 line 4)
     ptax_amc: float
-        Additional Medicare tax
+        Additional Medicare Tax from Form 8959 (Sch 2 line 11)
     othertaxes: float
-        Sum of niit, setax, ptax_amc, e09700, e09800, and e09900
+        Records-bound output: Schedule 2 line 21 / Form 1040 line 23
+        (overwritten here)
     c07100: float
-        Total non-refundable credits used to reduce positive tax liability
+        Records-bound output: total nonrefundable credits used,
+        Form 1040 line 21 (overwritten here)
     c09200: float
-        Income tax liabilities (including othertaxes) after non-refundable
-        credits are used, but before refundable credits are applied
+        Records-bound output: total tax before refundable credits,
+        Form 1040 line 24 (overwritten here)
     odc: float
-        Other Dependent Credit
+        Limited Credit for Other Dependents from Sch 8812 (Form 1040
+        line 19 ODC component); excluded from `c07100` when
+        `ODC_is_refundable`
     charity_credit: float
-        Credit for charitable giving
+        Reform-only nonrefundable charity credit (current-law inert)
     personal_nonrefundable_credit: float
-        Personal nonrefundable credit
+        Reform-only personal nonrefundable credit (current-law inert)
+    CTC_is_refundable: bool
+        Reform-only switch (default false): when true, CTC is routed
+        to the refundable side rather than included in `c07100`
+    ODC_is_refundable: bool
+        Reform-only switch (default false): when true, ODC is routed
+        to the refundable side rather than included in `c07100`
 
     Returns
     -------
     c07100: float
-        Total non-refundable credits used to reduce positive tax liability
+        Total nonrefundable credits used (Form 1040 line 21)
     othertaxes: float
-        Sum of niit, e09700, e09800, and e09900
+        Sum of the six modeled Sch 2 Part II line 21 components
+        (setax, e09800, e09900, ptax_amc, niit, e09700) = Form 1040
+        line 23
     c09200: float
-        Income tax liabilities (including othertaxes) after non-refundable
-        credits are used, but before refundable credits are applied
+        Total tax before refundable credits = Form 1040 line 24
+        = line 22 + line 23
     """
-    # total used nonrefundable credits (as computed in NonrefundableCredits)
-    c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 +
-              c07220 * (1. - CTC_is_refundable) + c08000 +
-              c07230 + c07240 + c07260 +
-              odc * (1. - ODC_is_refundable) + charity_credit +
-              personal_nonrefundable_credit)
-    # tax after credits (2016 Form 1040, line 56)
-    tax_net_nonrefundable_credits = max(0., c05800 - c07100)
-    # tax (including othertaxes) before refundable credits
-    othertaxes = e09700 + e09800 + e09900 + niit + setax + ptax_amc
-    c09200 = othertaxes + tax_net_nonrefundable_credits
+    # (A) Form 1040 line 21 = Sch 3 line 8 + Form 1040 line 19:
+    # sum of limited nonrefundable credits produced by
+    # NonrefundableCredits and ChildDepTaxCredit (= total credits
+    # used against c05800).  Addition order preserved bit-exactly.
+    c07100 = (c07180                                # Sch 3 line 2 CDCC
+              + c07200                              # Sch 3 line 6d SchR
+              + c07600                              # Sch 3 line 6b PrYrMin
+              + c07300                              # Sch 3 line 1 FTC
+              + c07400                              # Sch 3 line 6a GenBus
+              + c07220 * (1. - CTC_is_refundable)   # 1040 line 19 CTC
+              + c08000                              # Sch 3 line 6z Other
+              + c07230                              # Sch 3 line 3 Education
+              + c07240                              # Sch 3 line 4 RetSav
+              + c07260                              # Sch 3 line 5a ResEnergy
+              + odc * (1. - ODC_is_refundable)      # 1040 line 19 ODC
+              + charity_credit                      # reform-only
+              + personal_nonrefundable_credit)      # reform-only
+    # (B) Form 1040 (2025) line 22 = max(0, line 18 - line 21):
+    # tax remaining after nonrefundable credits applied.
+    line22 = max(0., c05800 - c07100)
+    # (C) Schedule 2 Part II line 21 / Form 1040 line 23: Other Taxes.
+    # Modeled items only (lines 9, 13-16, 17b-17z besides 17a, 19, 20
+    # are unmodeled).  Addition order preserved.
+    othertaxes = (e09700                            # Sch 2 line 18 (17a only)
+                  + e09800                          # Sch 2 line 7 (lines 5+6)
+                  + e09900                          # Sch 2 line 8
+                  + niit                            # Sch 2 line 12
+                  + setax                           # Sch 2 line 4
+                  + ptax_amc)                       # Sch 2 line 11
+    # (D) Form 1040 (2025) line 24 = line 22 + line 23: total tax
+    # before refundable credits (which are payments, applied later).
+    c09200 = othertaxes + line22
     return (c07100, othertaxes, c09200)
 
 
