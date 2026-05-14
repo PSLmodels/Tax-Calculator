@@ -4634,72 +4634,150 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           eitc, c07220, odc, CTC_is_refundable, ODC_is_refundable, refund,
           ctc_total, ctc_refundable, ctc_nonrefundable, iitax, combined):
     """
-    Computes final taxes.
+    Final assembly: sums refundable credits and computes total income-tax
+    liability net of those credits. Maps to Form 1040 (2025) lines 22-37
+    with two model-specific simplifications:
+
+      (1) `refund` here is the analogue of Form 1040 line 32 (refundable-
+          credit sum) ONLY. Lines 25d (federal income tax withheld) and 26
+          (estimated tax payments) are not modeled by Tax-Calculator, so
+          line 33 = 25d + 26 + 32 reduces to line 32 in the model.
+      (2) `iitax` = c09200 - refund = Form 1040 line 24 - line 32. The
+          model does not split this into line 34 (refund when 33 > 24) vs.
+          line 37 (owed when 24 > 33); `iitax` is sign-permissive (positive
+          = amount owed, negative = refund position).
+
+    Body sections:
+
+      (A) Reform-only refundable conversions. When `CTC_is_refundable` or
+          `ODC_is_refundable` are true (both default false under current
+          law), the CTC (c07220) and ODC (odc) amounts that were applied
+          as nonrefundable credits in `NonrefundableCredits` / `C1040` are
+          added on the refundable side here.
+      (B) Form 1040 line 32 build. Each addend is annotated with its 1040
+          line (27a EIC / 28 ACTC / 29 AOC / 30 historical RRC / 31 Sch 3
+          line 13 refundable CDCC) or reform-only label (no form line).
+      (C) Records-bound CTC diagnostic. `ctc_total` / `ctc_refundable` /
+          `ctc_nonrefundable` summarize the union of `ChildDepTaxCredit`
+          (c07220 nonref + odc), `AdditionalCTC` (c11070 refundable), and
+          `CTC_new` (reform-only) — partitioned by whether each piece is
+          refundable under the current parameter regime. Not on the form.
+      (D) Form 1040 line 24 − line 32 net + combined-tax accumulator.
+          `combined` = iitax + payrolltax; `lumpsum_tax` is added later
+          by `LumpSumTax` (also a reform construct, inert under current
+          law).
+
+    Reform constructs (no Form 1040 (2025) line):
+      `personal_refundable_credit` (II_credit* knobs from
+      `PersonalTaxCredit`), `ctc_new` (from `CTC_new`), `rptc` (from
+      `RefundablePayrollTaxCredit`), and the `recovery_rebate_credit`
+      (historically Form 1040 line 30 for 2020 CARES / 2021 ARPA RRC;
+      inert for 2022+).
+
+    Calling order: invoked by `Calculator._calc_one_year` after `CTC_new`
+    (so c09200, c07220, odc, c10960, c11070, c59660, CDCC_refund are all
+    final) and before `FairShareTax` / `LumpSumTax` / `BenefitPrograms`.
 
     Parameters
     ----------
     c59660: float
-        EITC amount
+        EITC amount from EITC function (Form 1040 line 27a)
     c11070: float
-        Child tax credit (refunded) from Form 8812
+        Refundable Additional CTC from AdditionalCTC / Schedule 8812
+        Part II (Form 1040 line 28)
     c10960: float
-        American Opportunity Credit refundable amount from Form 8863
+        American Opportunity Credit refundable portion from
+        EducationTaxCredit / Form 8863 line 8 (Form 1040 line 29)
     personal_refundable_credit: float
-        Personal refundable credit
+        Reform-only refundable personal credit from `PersonalTaxCredit`
+        (no Form 1040 line; default 0 under current law)
     ctc_new: float
-        New refundable child tax credit
+        Reform-only new refundable child tax credit from `CTC_new`
+        (no Form 1040 line; default 0 under current law)
     rptc: float
-        Refundable Payroll Tax Credit for filing unit
+        Reform-only refundable payroll tax credit for filing unit from
+        `RefundablePayrollTaxCredit` (no Form 1040 line; default 0)
     c09200: float
-        Income tax liabilities (including othertaxes) after non-refundable
-        credits are used, but before refundable credits are applied
+        Total income tax (including other taxes, after nonrefundable
+        credits) from `C1040` (Form 1040 line 24)
     payrolltax: float
-        Total (employee + employer) payroll tax liability
+        Total (employee + employer) payroll tax liability from
+        `EI_PayrollTax`
+    CDCC_refund: float
+        Refundable portion of Child and Dependent Care Credit from
+        `CDCC_refundable` (Schedule 3 line 13 → Form 1040 line 31)
+    recovery_rebate_credit: float
+        Recovery Rebate Credit from `PersonalTaxCredit` (historical
+        Form 1040 line 30 for 2020/2021; inert for 2022+ under
+        current law)
     eitc: float
-        Earned Income Credit
+        Records-bound output; rebound to `c59660` here
+    c07220: float
+        Nonrefundable CTC (post-NonrefundableCredits cap) from
+        `ChildDepTaxCredit` / Schedule 8812 Credit Limit Worksheet A
+    odc: float
+        Nonrefundable Credit for Other Dependents (post-cap) from
+        `ChildDepTaxCredit` / Schedule 8812
+    CTC_is_refundable: bool
+        Reform-only switch (default false): when true, the entire CTC is
+        treated as refundable (Schedule 8812 nonref portion `c07220` is
+        added to `refund` here)
+    ODC_is_refundable: bool
+        Reform-only switch (default false): when true, ODC is treated as
+        refundable (`odc` is added to `refund` here)
     refund: float
-        Total refundable income tax credits
+        Records-bound output (re-computed)
     ctc_total: float
-        Total CTC amount (c07220 + c11070 + odc + ctc_new)
+        Records-bound output (re-computed)
     ctc_refundable: float
-        Portion of total CTC amount that is refundable
+        Records-bound output (re-computed)
+    ctc_nonrefundable: float
+        Records-bound output (re-computed)
     iitax: float
-        Total federal individual income tax liability
+        Records-bound output (re-computed)
     combined: float
-        Sum of iitax and payrolltax and lumpsum_tax
+        Records-bound output (re-computed)
 
     Returns
     -------
     eitc: float
-        Earned Income Credit
+        Earned Income Credit (= c59660; Form 1040 line 27a)
     refund: float
-        Total refundable income tax credits
+        Sum of refundable credits (model-specific Form 1040 line 32
+        analogue; lines 25d and 26 not modeled)
     ctc_total: float
-        Total CTC amount (c07220 + c11070 + odc + ctc_new)
+        Diagnostic: c07220 + c11070 + odc + ctc_new
     ctc_refundable: float
-        Portion of total CTC amount that is refundable
+        Diagnostic: portion of ctc_total that is refundable
     ctc_nonrefundable: float
-        Portion of total CTC amount that is nonrefundable
+        Diagnostic: max(0, ctc_total - ctc_refundable)
     iitax: float
-        Total federal individual income tax liability
+        Total federal individual income tax liability = c09200 − refund
+        (sign-permissive: positive = amount owed, negative = refund
+        position; model does not split into Form 1040 lines 34 vs 37)
     combined: float
-        Sum of iitax and payrolltax and lumpsum_tax
+        iitax + payrolltax (lumpsum_tax added later by `LumpSumTax`)
     """
     eitc = c59660
-    if CTC_is_refundable:
-        ctc_refund = c07220
-    else:
-        ctc_refund = 0.
-    if ODC_is_refundable:
-        odc_refund = odc
-    else:
-        odc_refund = 0.
-    refund = (eitc + c11070 + c10960 + CDCC_refund + recovery_rebate_credit +
-              personal_refundable_credit + ctc_new + rptc + ctc_refund +
-              odc_refund)
+    # (A) reform-only refundable conversions of CTC / ODC
+    ctc_refund = c07220 if CTC_is_refundable else 0.
+    odc_refund = odc if ODC_is_refundable else 0.
+    # (B) Form 1040 line 32: refundable-credit sum
+    refund = (eitc +                       # Form 1040 line 27a (EIC)
+              c11070 +                     # Form 1040 line 28 (ACTC)
+              c10960 +                     # Form 1040 line 29 (AOC)
+              recovery_rebate_credit +     # Form 1040 line 30 (historical RRC)
+              CDCC_refund +                # Sch 3 line 13 → Form 1040 line 31
+              personal_refundable_credit +  # reform-only (no form line)
+              ctc_new +                     # reform-only (no form line)
+              rptc +                        # reform-only (no form line)
+              ctc_refund +                  # reform-only (CTC_is_refundable)
+              odc_refund)                   # reform-only (ODC_is_refundable)
+    # (C) records-bound CTC diagnostic (not on the form)
     ctc_total = c07220 + c11070 + odc + ctc_new
     ctc_refundable = ctc_refund + c11070 + odc_refund + ctc_new
     ctc_nonrefundable = max(0., ctc_total - ctc_refundable)
+    # (D) Form 1040 line 24 − line 32 + combined-tax accumulator
     iitax = c09200 - refund
     combined = iitax + payrolltax
     return (eitc, refund, ctc_total, ctc_refundable, ctc_nonrefundable,
