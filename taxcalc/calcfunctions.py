@@ -4930,7 +4930,37 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
                  e02000, e02100, p22250, p23250, cmbtp, ptax_was,
                  benefit_value_total, expanded_income):
     """
-    Calculates expanded_income from component income types.
+    Computes the records-bound `expanded_income` aggregate — a broad
+    pre-tax income measure used for distributional analysis. This is a
+    model-internal concept with no IRS form/schedule counterpart: it is
+    not part of the tax-liability path and feeds only `AfterTaxIncome`
+    (and downstream distributional tables).
+
+    Relative to AGI (`c00100`), `expanded_income` differs by:
+      + adding tax-exempt interest (`e00400`),
+      + adding back DC pension contributions (`pencon_p`, `pencon_s`),
+        so wage compensation enters gross rather than net of pension
+        deferrals already removed from `e00200`,
+      + adding the employer share of FICA (`0.5 * ptax_was`),
+      + adding non-AGI AMT preference items (`cmbtp`, from Form 6251),
+      + adding the consumption value of transfer benefits
+        (`benefit_value_total`, from `BenefitPrograms`),
+      − but NOT subtracting Sch 1 Part II above-the-line adjustments
+        (`c02900`); Sch C / Sch E / Sch F enter gross of those.
+    Sch C / Sch E / Sch F / Sch D / Form 4797 items enter at their
+    statutory net (income net of losses), so capital losses and
+    business losses reduce `expanded_income`.
+
+    Body is organized into seven groups (A)-(G), summed in this order
+    to preserve floating-point bit-exactness with the prior
+    implementation. The categories are commentary only; no
+    parenthesized subtotals are introduced.
+
+    Calling order: `calculator.calc_all` invokes `ExpandIncome` after
+    `BenefitPrograms` (which produces `benefit_value_total`) and after
+    `_calc_one_year` / `FairShareTax` / `LumpSumTax`; it precedes
+    `AfterTaxIncome`, which subtracts the `combined` total tax to
+    produce `aftertax_income`.
 
     Parameters
     ----------
@@ -4943,7 +4973,7 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     e00300: float
       Taxable interest income
     e00400: float
-      Tax-exempt interest income
+      Tax-exempt interest income (not in AGI; expanded-income add-on)
     e00600: float
       Ordinary dividends included in AGI
     e00700: float
@@ -4967,30 +4997,35 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
       Farm net income/loss for filing unit from Schedule F
     p22250: float
       Schedule D net short term capital gains/losses
-    p23250:float
+    p23250: float
       Schedule D net long term capital gains/losses
     cmbtp: float
-      Estimate of inome on (AMT) Form 6251 but not in AGI
+      Estimate of income on (AMT) Form 6251 but not in AGI
     ptax_was: float
-      Employee and employer OASDI and HI FICA tax
+      Employee + employer OASDI and HI FICA tax on wages (from
+      `EI_PayrollTax`); half is the employer share, added here as
+      employer-side compensation not present in `e00200`.
     benefit_value_total: float
-      Consumption value of all benefits received by tax unit, which
-      is included in expanded income
+      Consumption value of all benefits received by tax unit
+      (from `BenefitPrograms`); included in expanded income.
     expanded_income: float
-      Broad income measure that includes benefit_value_total
+      Records-bound output, computed below.
 
     Returns
     -------
     expanded_income: float
-      Broad income measure that includes benefit_value_total
+      Broad pre-tax income measure (see body docstring above).
     """
     expanded_income = (
+        # ---- (A) Wage compensation gross of DC pension contributions ----
         e00200 +  # wage and salary income net of DC pension contributions
         pencon_p +  # tax-advantaged DC pension contributions for taxpayer
         pencon_s +  # tax-advantaged DC pension contributions for spouse
+        # ---- (B) Investment income incl. non-AGI tax-exempt interest ----
         e00300 +  # taxable interest income
         e00400 +  # non-taxable interest income
         e00600 +  # dividends
+        # ---- (C) Other Sch 1 / 1040 ordinary income items ----
         e00700 +  # state and local income tax refunds
         e00800 +  # alimony received
         e00900 +  # Sch C business net income/loss
@@ -5000,13 +5035,16 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         e01500 +  # total pension & annuity income (including DB-plan benefits)
         e02000 +  # Sch E total rental, ..., partnership, S-corp income/loss
         e02100 +  # Sch F farm net income/loss
+        # ---- (D) Sch D realized capital gains/losses ----
         p22250 +  # Sch D: net short-term capital gain/loss
         p23250 +  # Sch D: net long-term capital gain/loss
+        # ---- (E) AMT non-AGI add-backs (Form 6251 items not in AGI) ----
         cmbtp +  # other AMT taxable income items from Form 6251
+        # ---- (F) Employer-side FICA share (compensation not in e00200) ----
         0.5 * ptax_was +  # employer share of FICA taxes on wages/salaries
-        benefit_value_total  # consumption value of all benefits received;
-        # see the BenefitPrograms function in this file for details on
-        # exactly how the benefit_value_total variable is computed
+        # ---- (G) Consumption value of transfer benefits ----
+        benefit_value_total  # see BenefitPrograms for the per-program
+        # cash-vs-in-kind valuation rule producing benefit_value_total
     )
     return expanded_income
 
