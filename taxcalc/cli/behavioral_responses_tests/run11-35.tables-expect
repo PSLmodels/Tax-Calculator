@@ -10,8 +10,8 @@ Weighted Tax Reform Totals by Baseline Expanded-Income Decile for 2035
  6    24.21    2931.2     113.7     211.2       0.0     324.9
  7    24.21    3848.0     201.9     302.0       0.0     503.8
  8    24.21    5356.4     428.4     477.9       0.0     906.2
- 9    24.21   12395.0    2360.0     900.7       0.0    3260.8
- A   242.13   31787.0    3194.7    2363.9       0.0    5558.6
+ 9    24.21   12395.0    2359.3     900.7       0.0    3260.0
+ A   242.13   31787.0    3193.9    2363.9       0.0    5557.8
 
 Weighted Tax Differences by Baseline Expanded-Income Decile for 2035
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
@@ -25,5 +25,5 @@ Weighted Tax Differences by Baseline Expanded-Income Decile for 2035
  6    24.21    2931.2      -5.8       0.0       0.0      -5.8
  7    24.21    3848.0      -7.7       0.0       0.0      -7.7
  8    24.21    5356.4     -13.3       0.0       0.0     -13.3
- 9    24.21   12395.0      72.5       0.0       0.0      72.5
+ 9    24.21   12395.0      72.4       0.0       0.0      72.4
  A   242.13   31787.0      35.0       0.0       0.0      35.0
