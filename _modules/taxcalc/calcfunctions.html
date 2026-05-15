@@ -1742,7 +1742,7 @@
     <span class="c1"># implemented via ID_AllTaxes_c + ID_AllTaxes_c_ps +</span>
     <span class="c1"># ID_AllTaxes_c_po_rate + ID_AllTaxes_c_po_floor.</span>
     <span class="c1"># ----------------------------------------------------------------</span>
-    <span class="n">c18400</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_StateLocalTax_hc</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">e18400</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
+    <span class="n">c18400</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_StateLocalTax_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e18400</span><span class="p">,</span>
                  <span class="n">ID_StateLocalTax_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># line 5a (state inc/sales)</span>
     <span class="n">c18500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_RealEstate_hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">e18500</span><span class="p">,</span>
                  <span class="n">ID_RealEstate_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># line 5b (real estate)</span>
@@ -1774,14 +1774,22 @@
     <span class="c1"># ID_Charity_frt (AGI-fraction floor; OBBBA&#39;s 0.5% kicks in 2026+),</span>
     <span class="c1"># ID_Charity_f (dollar floor), ID_Charity_crt_noncash (AGI cap on</span>
     <span class="c1"># noncash), ID_Charity_crt_all (AGI cap on total per IRC §170(b)),</span>
-    <span class="c1"># ID_Charity_hc, ID_Charity_c. Floor is applied to noncash first,</span>
-    <span class="c1"># any unused remainder against cash.</span>
+    <span class="c1"># ID_Charity_hc, ID_Charity_c. The floor is applied once against</span>
+    <span class="c1"># total contributions; the residual is allocated to cash/noncash in</span>
+    <span class="c1"># proportion to gross contributions before the noncash AGI ceiling</span>
+    <span class="c1"># is enforced on the noncash share.</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">charity_floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ID_Charity_frt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">noncash_ded</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e20100</span> <span class="o">-</span> <span class="n">charity_floor</span><span class="p">)</span>
-    <span class="n">charity_ded_noncash</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_noncash</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">noncash_ded</span><span class="p">)</span>
-    <span class="n">remaining_floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">charity_floor</span> <span class="o">-</span> <span class="n">e20100</span><span class="p">)</span>
-    <span class="n">charity_ded_cash</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e19800</span> <span class="o">-</span> <span class="n">remaining_floor</span><span class="p">)</span>
+    <span class="n">total_contrib</span> <span class="o">=</span> <span class="n">e19800</span> <span class="o">+</span> <span class="n">e20100</span>
+    <span class="n">after_floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">total_contrib</span> <span class="o">-</span> <span class="n">charity_floor</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">total_contrib</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="n">noncash_share</span> <span class="o">=</span> <span class="n">e20100</span> <span class="o">/</span> <span class="n">total_contrib</span>
+        <span class="n">charity_ded_noncash</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ID_Charity_crt_noncash</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span>
+                                  <span class="n">after_floor</span> <span class="o">*</span> <span class="n">noncash_share</span><span class="p">)</span>
+        <span class="n">charity_ded_cash</span> <span class="o">=</span> <span class="n">after_floor</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">noncash_share</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">charity_ded_noncash</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">charity_ded_cash</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">c19700</span> <span class="o">=</span> <span class="n">charity_ded_noncash</span> <span class="o">+</span> <span class="n">charity_ded_cash</span>  <span class="c1"># line 14</span>
     <span class="n">c19700</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19700</span><span class="p">,</span> <span class="n">ID_Charity_crt_all</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Charity_hc</span><span class="p">)</span>
     <span class="n">c19700</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19700</span><span class="p">,</span> <span class="n">ID_Charity_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
