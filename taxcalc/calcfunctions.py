@@ -3649,7 +3649,7 @@ def SchR(age_head, age_spouse, MARS, c00100,
     the reform haircut CR_SchR_hc is in policy_current_law.json.
 
     Part I box mapping (Tax-Calculator-reachable boxes only):
-      Box 1  Single/HoH 65+ ............. MARS in (1, 4) and age_head>=65
+      Box 1  Single/HoH/QSS 65+ ......... MARS in (1, 4, 5) and age_head>=65
       Box 3  MFJ both 65+ ............... MARS==2, both ages>=65
       Box 7  MFJ one 65+ + other not disabled MARS==2, one age>=65
       Box 8  MFS 65+ lived apart all year MARS==3 and age_head>=65
@@ -3657,6 +3657,16 @@ def SchR(age_head, age_spouse, MARS, c00100,
     do not encode disability or taxable disability income, so the Part I
     "disabled under 65" paths are not modeled and line 12 reduces to
     line 10 (no smaller-of-line-10-or-line-11 step).
+
+    Box 8 over-credit (model-input-data gap): the 2025 Schedule R
+    instructions disallow the credit for MFS filers who "lived with
+    [their] spouse at any time during 2025"; Box 8 applies only to
+    MFS filers who lived apart from their spouse for all of 2025.
+    Tax-Calculator records do not encode whether MFS filers lived
+    apart all year, so this code treats every MARS==3 filer with
+    age_head>=65 as Box 8 and over-credits the lived-with-spouse
+    sub-population. Same record-data limitation pattern as in
+    SSBenefits (lived-apart-all-year not encoded).
 
     Part III line-by-line mapping:
       line 10 (base) ............ 5000/7500/3750 per box (above)
@@ -3683,11 +3693,15 @@ def SchR(age_head, age_spouse, MARS, c00100,
     over-states the line-13b add-back and biases the credit downward.
 
     The line-21 Credit Limit Worksheet (2025) for Schedule 3 line 6d
-    subtracts preceding Schedule 3 nonrefundable credits: Sch 3 line 1
-    (foreign tax credit, e07300) + Sch 3 line 2 (CDCC, c07180). The
-    Sch 3 line 3 Education-credits subtraction is not implemented here
-    because EducationTaxCredit is called AFTER SchR in calc_all; the
-    final sequential limit is enforced downstream by NonrefundableCredits.
+    per the IRS Schedule R 2025 instructions subtracts Sch 3 line 1
+    (foreign tax credit, e07300) + Sch 3 line 2 (CDCC, c07180) +
+    Sch 3 line 6l (Form 8978). Form 8978 is not modeled in
+    Tax-Calculator records (model-input-data gap). The on-form
+    worksheet does NOT subtract Sch 3 line 3 Education credits, but
+    EducationTaxCredit is called AFTER SchR in calc_all so c07230
+    would not be available here in any case; the final sequential
+    nonrefundable-credit limit is enforced downstream by
+    NonrefundableCredits.
 
     Calling-order context (calculator.py): F2441 -> PersonalTaxCredit ->
     AmOppCreditParts -> SchR -> EducationTaxCredit -> CharityCredit ->
@@ -3746,8 +3760,8 @@ def SchR(age_head, age_spouse, MARS, c00100,
         elif MARS == 3:
             line10 = 3750.       # Box 8 (MFS 65+ lived apart all year)
             line15 = 5000.
-        elif MARS in (1, 4):
-            line10 = 5000.       # Box 1 (Single/HoH 65+)
+        elif MARS in (1, 4, 5):
+            line10 = 5000.       # Box 1 (Single/HoH/QSS 65+)
             line15 = 7500.
         else:
             line10 = 0.
@@ -3764,7 +3778,15 @@ def SchR(age_head, age_spouse, MARS, c00100,
         line18 = line13c + line17           # line 18
         line19 = max(0., line12 - line18)   # line 19
         line20 = 0.15 * line19              # line 20
-        # line 21 (Credit Limit Wksht)
+        # line 21 (Credit Limit Wksht): per 2025 IRS Schedule R
+        # instructions the worksheet subtracts Sch 3 line 1 (FTC) +
+        # line 2 (CDCC) + line 6l (Form 8978). Form 8978 is unmodeled
+        # in Tax-Calculator records. Sch 3 line 3 (Education credits,
+        # c07230) is NOT subtracted on the on-form worksheet;
+        # EducationTaxCredit is computed AFTER SchR in calc_all and
+        # Form 8863's own CLW subtracts c07200 instead. Final
+        # sequential nonrefundable limiting is enforced downstream
+        # by NonrefundableCredits.
         line21 = max(0., c05800 - e07300 - c07180)
         # line 22, with haircut
         c07200 = min(line20, line21) * (1. - CR_SchR_hc)
