@@ -4008,7 +4008,7 @@ def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          e07600, p08000, odc,
                          personal_nonrefundable_credit,
-                         CTC_is_refundable,
+                         CTC_is_refundable, ODC_is_refundable,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
                          CR_MinimumTax_hc, CR_OtherCredits_hc, charity_credit,
@@ -4025,9 +4025,11 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     plus Form 1040 line 19, with reform-construct credits appended:
 
       (A) Sch 3 Part I lines 1-4 (FTC -> CDCC -> Education -> RetSav)
-      (B) Form 1040 line 19 (CTC -> ODC); skipped under reform-only
-          `CTC_is_refundable`, which routes both credits to the
-          refundable side in `IITAX` / `CTC_new`
+      (B) Form 1040 line 19 (CTC -> ODC); CTC capping is skipped
+          under reform-only `CTC_is_refundable` and ODC capping is
+          skipped under reform-only `ODC_is_refundable`, with each
+          credit independently routed to the refundable side in
+          `IITAX` / `CTC_new`
       (C) Sch 3 Part I lines 5a, 6a, 6b, 6d, 6z (ResEnergy -> GenBus
           -> PrYrMin -> SchR -> Other); unmodeled on-form items are
           5b, 6c, 6e-6m
@@ -4095,9 +4097,12 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
         Reform-only personal nonrefundable credit from
         `PersonalTaxCredit`; current-law inert
     CTC_is_refundable: bool
-        Reform-only switch (default false): when true, CTC and ODC
-        are not limited here and are routed to the refundable side
-        in `IITAX` / `CTC_new`
+        Reform-only switch (default false): when true, CTC is not
+        limited here and is routed to the refundable side in
+        `IITAX` / `CTC_new`
+    ODC_is_refundable: bool
+        Reform-only switch (default false): when true, ODC is not
+        limited here and is routed to the refundable side in `IITAX`
     CR_RetirementSavings_hc: float
         Retirement savings credit haircut (default 0.0; current-law
         inert)
@@ -4157,7 +4162,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
         Limited retirement savings credit (Sch 3 line 4)
     odc: float
         Limited Credit for Other Dependents (Form 1040 line 19 ODC
-        component); unchanged when `CTC_is_refundable`
+        component); unchanged when `ODC_is_refundable`
     c07260: float
         Limited residential clean energy credit (Sch 3 line 5a)
     c07300: float
@@ -4191,12 +4196,14 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
     # (B) Form 1040 line 19 -- CTC + Credit for Other Dependents (Sch 8812);
-    # skipped under reform-only CTC_is_refundable (routed to refundable side)
+    # each component independently skipped under its reform-only refundability
+    # switch (routed to refundable side in IITAX / CTC_new).
+    # Form 1040 line 19 CTC component
     if not CTC_is_refundable:
-        # Form 1040 line 19 CTC component
         c07220 = min(c07220, avail)
         avail = avail - c07220
-        # Form 1040 line 19 ODC component
+    # Form 1040 line 19 ODC component
+    if not ODC_is_refundable:
         odc = min(odc, avail)
         avail = avail - odc
     # (C) Sch 3 Part I lines 5a, 6a, 6b, 6d, 6z (carryforward-eligible
@@ -4385,13 +4392,13 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     1040 line 18.
 
     Reform-only knobs:
-      * `CTC_is_refundable` -- when true, CTC (c07220) is excluded
-        from `c07100` here (and `NonrefundableCredits` skips both CTC
-        and ODC); CTC is routed to the refundable side via `CTC_new`
+      * `CTC_is_refundable` -- when true, CTC (`c07220`) is excluded
+        from `c07100` here and `NonrefundableCredits` skips CTC
+        capping; CTC is routed to the refundable side via `CTC_new`
         / `IITAX`.
       * `ODC_is_refundable` -- when true, ODC (`odc`) is excluded
-        from `c07100` here.  (Note: `NonrefundableCredits` gates ODC
-        on `CTC_is_refundable`, not on `ODC_is_refundable`.)
+        from `c07100` here and `NonrefundableCredits` skips ODC
+        capping; ODC is routed to the refundable side via `IITAX`.
 
     Calling order (calculator.py): invoked after `NonrefundableCredits`
     and `AdditionalCTC` (so each per-credit input has had its final
