@@ -4051,7 +4051,7 @@
 <span class="sd">    the reform haircut CR_SchR_hc is in policy_current_law.json.</span>
 
 <span class="sd">    Part I box mapping (Tax-Calculator-reachable boxes only):</span>
-<span class="sd">      Box 1  Single/HoH 65+ ............. MARS in (1, 4) and age_head&gt;=65</span>
+<span class="sd">      Box 1  Single/HoH/QSS 65+ ......... MARS in (1, 4, 5) and age_head&gt;=65</span>
 <span class="sd">      Box 3  MFJ both 65+ ............... MARS==2, both ages&gt;=65</span>
 <span class="sd">      Box 7  MFJ one 65+ + other not disabled MARS==2, one age&gt;=65</span>
 <span class="sd">      Box 8  MFS 65+ lived apart all year MARS==3 and age_head&gt;=65</span>
@@ -4059,6 +4059,16 @@
 <span class="sd">    do not encode disability or taxable disability income, so the Part I</span>
 <span class="sd">    &quot;disabled under 65&quot; paths are not modeled and line 12 reduces to</span>
 <span class="sd">    line 10 (no smaller-of-line-10-or-line-11 step).</span>
+
+<span class="sd">    Box 8 over-credit (model-input-data gap): the 2025 Schedule R</span>
+<span class="sd">    instructions disallow the credit for MFS filers who &quot;lived with</span>
+<span class="sd">    [their] spouse at any time during 2025&quot;; Box 8 applies only to</span>
+<span class="sd">    MFS filers who lived apart from their spouse for all of 2025.</span>
+<span class="sd">    Tax-Calculator records do not encode whether MFS filers lived</span>
+<span class="sd">    apart all year, so this code treats every MARS==3 filer with</span>
+<span class="sd">    age_head&gt;=65 as Box 8 and over-credits the lived-with-spouse</span>
+<span class="sd">    sub-population. Same record-data limitation pattern as in</span>
+<span class="sd">    SSBenefits (lived-apart-all-year not encoded).</span>
 
 <span class="sd">    Part III line-by-line mapping:</span>
 <span class="sd">      line 10 (base) ............ 5000/7500/3750 per box (above)</span>
@@ -4085,11 +4095,15 @@
 <span class="sd">    over-states the line-13b add-back and biases the credit downward.</span>
 
 <span class="sd">    The line-21 Credit Limit Worksheet (2025) for Schedule 3 line 6d</span>
-<span class="sd">    subtracts preceding Schedule 3 nonrefundable credits: Sch 3 line 1</span>
-<span class="sd">    (foreign tax credit, e07300) + Sch 3 line 2 (CDCC, c07180). The</span>
-<span class="sd">    Sch 3 line 3 Education-credits subtraction is not implemented here</span>
-<span class="sd">    because EducationTaxCredit is called AFTER SchR in calc_all; the</span>
-<span class="sd">    final sequential limit is enforced downstream by NonrefundableCredits.</span>
+<span class="sd">    per the IRS Schedule R 2025 instructions subtracts Sch 3 line 1</span>
+<span class="sd">    (foreign tax credit, e07300) + Sch 3 line 2 (CDCC, c07180) +</span>
+<span class="sd">    Sch 3 line 6l (Form 8978). Form 8978 is not modeled in</span>
+<span class="sd">    Tax-Calculator records (model-input-data gap). The on-form</span>
+<span class="sd">    worksheet does NOT subtract Sch 3 line 3 Education credits, but</span>
+<span class="sd">    EducationTaxCredit is called AFTER SchR in calc_all so c07230</span>
+<span class="sd">    would not be available here in any case; the final sequential</span>
+<span class="sd">    nonrefundable-credit limit is enforced downstream by</span>
+<span class="sd">    NonrefundableCredits.</span>
 
 <span class="sd">    Calling-order context (calculator.py): F2441 -&gt; PersonalTaxCredit -&gt;</span>
 <span class="sd">    AmOppCreditParts -&gt; SchR -&gt; EducationTaxCredit -&gt; CharityCredit -&gt;</span>
@@ -4148,8 +4162,8 @@
         <span class="k">elif</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">line10</span> <span class="o">=</span> <span class="mf">3750.</span>       <span class="c1"># Box 8 (MFS 65+ lived apart all year)</span>
             <span class="n">line15</span> <span class="o">=</span> <span class="mf">5000.</span>
-        <span class="k">elif</span> <span class="n">MARS</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
-            <span class="n">line10</span> <span class="o">=</span> <span class="mf">5000.</span>       <span class="c1"># Box 1 (Single/HoH 65+)</span>
+        <span class="k">elif</span> <span class="n">MARS</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+            <span class="n">line10</span> <span class="o">=</span> <span class="mf">5000.</span>       <span class="c1"># Box 1 (Single/HoH/QSS 65+)</span>
             <span class="n">line15</span> <span class="o">=</span> <span class="mf">7500.</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">line10</span> <span class="o">=</span> <span class="mf">0.</span>
@@ -4166,7 +4180,15 @@
         <span class="n">line18</span> <span class="o">=</span> <span class="n">line13c</span> <span class="o">+</span> <span class="n">line17</span>           <span class="c1"># line 18</span>
         <span class="n">line19</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line12</span> <span class="o">-</span> <span class="n">line18</span><span class="p">)</span>   <span class="c1"># line 19</span>
         <span class="n">line20</span> <span class="o">=</span> <span class="mf">0.15</span> <span class="o">*</span> <span class="n">line19</span>              <span class="c1"># line 20</span>
-        <span class="c1"># line 21 (Credit Limit Wksht)</span>
+        <span class="c1"># line 21 (Credit Limit Wksht): per 2025 IRS Schedule R</span>
+        <span class="c1"># instructions the worksheet subtracts Sch 3 line 1 (FTC) +</span>
+        <span class="c1"># line 2 (CDCC) + line 6l (Form 8978). Form 8978 is unmodeled</span>
+        <span class="c1"># in Tax-Calculator records. Sch 3 line 3 (Education credits,</span>
+        <span class="c1"># c07230) is NOT subtracted on the on-form worksheet;</span>
+        <span class="c1"># EducationTaxCredit is computed AFTER SchR in calc_all and</span>
+        <span class="c1"># Form 8863&#39;s own CLW subtracts c07200 instead. Final</span>
+        <span class="c1"># sequential nonrefundable limiting is enforced downstream</span>
+        <span class="c1"># by NonrefundableCredits.</span>
         <span class="n">line21</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">e07300</span> <span class="o">-</span> <span class="n">c07180</span><span class="p">)</span>
         <span class="c1"># line 22, with haircut</span>
         <span class="n">c07200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line20</span><span class="p">,</span> <span class="n">line21</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_SchR_hc</span><span class="p">)</span>
