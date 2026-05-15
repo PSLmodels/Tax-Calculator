@@ -1346,7 +1346,7 @@ def ItemDed(e17500, e18400, e18500, e19200,
     # implemented via ID_AllTaxes_c + ID_AllTaxes_c_ps +
     # ID_AllTaxes_c_po_rate + ID_AllTaxes_c_po_floor.
     # ----------------------------------------------------------------
-    c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400, 0.),
+    c18400 = min((1. - ID_StateLocalTax_hc) * e18400,
                  ID_StateLocalTax_c[MARS - 1])  # line 5a (state inc/sales)
     c18500 = min((1. - ID_RealEstate_hc) * e18500,
                  ID_RealEstate_c[MARS - 1])  # line 5b (real estate)
@@ -1378,14 +1378,22 @@ def ItemDed(e17500, e18400, e18500, e19200,
     # ID_Charity_frt (AGI-fraction floor; OBBBA's 0.5% kicks in 2026+),
     # ID_Charity_f (dollar floor), ID_Charity_crt_noncash (AGI cap on
     # noncash), ID_Charity_crt_all (AGI cap on total per IRC §170(b)),
-    # ID_Charity_hc, ID_Charity_c. Floor is applied to noncash first,
-    # any unused remainder against cash.
+    # ID_Charity_hc, ID_Charity_c. The floor is applied once against
+    # total contributions; the residual is allocated to cash/noncash in
+    # proportion to gross contributions before the noncash AGI ceiling
+    # is enforced on the noncash share.
     # ----------------------------------------------------------------
     charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
-    noncash_ded = max(0., e20100 - charity_floor)
-    charity_ded_noncash = min(ID_Charity_crt_noncash * posagi, noncash_ded)
-    remaining_floor = max(0., charity_floor - e20100)
-    charity_ded_cash = max(0., e19800 - remaining_floor)
+    total_contrib = e19800 + e20100
+    after_floor = max(0., total_contrib - charity_floor)
+    if total_contrib > 0.:
+        noncash_share = e20100 / total_contrib
+        charity_ded_noncash = min(ID_Charity_crt_noncash * posagi,
+                                  after_floor * noncash_share)
+        charity_ded_cash = after_floor * (1. - noncash_share)
+    else:
+        charity_ded_noncash = 0.
+        charity_ded_cash = 0.
     c19700 = charity_ded_noncash + charity_ded_cash  # line 14
     c19700 = min(c19700, ID_Charity_crt_all * posagi) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
