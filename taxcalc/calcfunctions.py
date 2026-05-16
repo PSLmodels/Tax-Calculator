@@ -693,8 +693,17 @@ def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd1, SS_thd2,
                                                                 thd2 - thd1),
                                                      p2 * e02400)
     where ymod is the worksheet line 7 amount built in AGIIncome.
-    Note: MARS=3 thresholds correspond to "MFS lived apart all year";
-    Tax-Calculator does not model the MFS-lived-together case (base = 0).
+
+    MARS=3 (MFS) sub-case modeling gap: worksheet line 8 gives a base
+    of $0 for MFS filers who "lived with [their] spouse at any time
+    during the year" (instructions further direct such filers to skip
+    lines 8-15 and enter 0.85 * line 1 directly on line 16, i.e. 85%
+    of OASDI is taxable). `SS_thd1[2]`/`SS_thd2[2]` ($25,000/$34,000)
+    encode only the "MFS lived apart all year" case. Tax-Calculator
+    records do not carry a lived-apart-all-year flag (same data-gap
+    pattern as Schedule R row 26 in CODE_REVIEW_2025.md), so the code
+    unconditionally treats every MARS=3 filer as lived-apart and
+    under-taxes MFS-lived-with-spouse filers. Not fixable code-side.
 
     The reform flag SS_all_in_agi (default False under current law)
     overrides the worksheet and includes 100% of OASDI in AGI.
