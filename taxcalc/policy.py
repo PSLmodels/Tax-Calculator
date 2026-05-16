@@ -138,6 +138,10 @@ class Policy(Parameters):
             'was replaced by TipIncomeDed_po_step_size and '
             'TipIncomeDed_po_rate_per_step in Tax-Calculator 6.4.0'
         ),
+        # following parameter was renamed in PR 3026
+        'ALD_AlimonyReceived_hc': (
+            'was renamed AlimonyReceived_frac_in_AGI in Tax-Calculator 6.6.0'
+        ),
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}
