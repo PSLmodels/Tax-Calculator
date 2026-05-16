@@ -1089,8 +1089,17 @@
 <span class="sd">                                                                thd2 - thd1),</span>
 <span class="sd">                                                     p2 * e02400)</span>
 <span class="sd">    where ymod is the worksheet line 7 amount built in AGIIncome.</span>
-<span class="sd">    Note: MARS=3 thresholds correspond to &quot;MFS lived apart all year&quot;;</span>
-<span class="sd">    Tax-Calculator does not model the MFS-lived-together case (base = 0).</span>
+
+<span class="sd">    MARS=3 (MFS) sub-case modeling gap: worksheet line 8 gives a base</span>
+<span class="sd">    of $0 for MFS filers who &quot;lived with [their] spouse at any time</span>
+<span class="sd">    during the year&quot; (instructions further direct such filers to skip</span>
+<span class="sd">    lines 8-15 and enter 0.85 * line 1 directly on line 16, i.e. 85%</span>
+<span class="sd">    of OASDI is taxable). `SS_thd1[2]`/`SS_thd2[2]` ($25,000/$34,000)</span>
+<span class="sd">    encode only the &quot;MFS lived apart all year&quot; case. Tax-Calculator</span>
+<span class="sd">    records do not carry a lived-apart-all-year flag (same data-gap</span>
+<span class="sd">    pattern as Schedule R row 26 in CODE_REVIEW_2025.md), so the code</span>
+<span class="sd">    unconditionally treats every MARS=3 filer as lived-apart and</span>
+<span class="sd">    under-taxes MFS-lived-with-spouse filers. Not fixable code-side.</span>
 
 <span class="sd">    The reform flag SS_all_in_agi (default False under current law)</span>
 <span class="sd">    overrides the worksheet and includes 100% of OASDI in AGI.</span>
