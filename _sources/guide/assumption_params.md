@@ -1,24 +1,9 @@
 Assumption parameters
 =====================
 
-This section contains documentation of several sets of parameters that
-characterize responses to a tax reform. Consumption parameters are
-used to compute marginal tax rates and to compute the consumption
-value of in-kind benefits. Growdiff parameters are used to specify
-baseline differences and/or reform responses in the annual rate of
-growth in economic variables. (Note that behavior parameters used to
-compute changes in input variables caused by a tax reform in a
-partial-equilibrium setting are not part of Tax-Calculator, but can be
-used via the Behavioral-Response `behresp` package in a Python
-program.)
+This section contains documentation of several sets of parameters that characterize responses to a tax reform. Consumption parameters are used to compute marginal tax rates and to compute the consumption value of in-kind benefits. Growdiff parameters are used to specify baseline differences and/or reform responses in the annual rate of growth in economic variables.
 
-The assumption parameters control advanced features of Tax-Calculator,
-so understanding the source code that uses them is essential. Default
-values of many assumption parameters are zero and are projected into
-the future at that value, which implies no response to the reform. The
-benefit value consumption parameters have a default value of one,
-which implies the consumption value of the in-kind benefits is equal
-to the government cost of providing the benefits.
+The assumption parameters control advanced features of Tax-Calculator, so understanding the source code that uses them is essential. Default values of many assumption parameters are zero and are projected into the future at that value, which implies no response to the reform. The benefit value consumption parameters have a default value of one, which implies the consumption value of the in-kind benefits is equal to the government cost of providing the benefits.
 
 
 ## Growdiff
@@ -142,7 +127,7 @@ _Out-of-Range Action:_ error
 
 ####  `ATXPY`  
 _Long Name:_ ATXPY additive difference from default projection  
-_Description:_ Default projection is in growfactors.csv file.  ATXPY extrapolates input variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, g20500, e07600, e32800, e58990, e62900, e87530, e87521 and cmbtp.  
+_Description:_ Default projection is in growfactors.csv file.  ATXPY extrapolates input variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, g20500, e07600, e32800, e58990, e62900, e87530, e87521, cmbtp, and auto_loan_interest.  
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
@@ -160,7 +145,7 @@ _Out-of-Range Action:_ error
 
 ####  `AWAGE`  
 _Long Name:_ AWAGE additive difference from default projection  
-_Description:_ Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.  Note that non-zero values of this parameter will not affect historically known values of _SS_Earnings_c.  
+_Description:_ Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p, e00200s, overtime_income, and tip_income.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.  Note that non-zero values of this parameter will not affect historically known values of _SS_Earnings_c.  
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
