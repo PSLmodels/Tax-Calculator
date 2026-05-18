@@ -996,7 +996,7 @@
     },
     "ALD_Tuition_hc": {
         "title": "Deduction for tuition and fees haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*TuitionFees.  Set to 1.0 starting 2021: IRC §222 was permanently repealed for tax years beginning after 2020-12-31 by §104 of the Taxpayer Certainty and Disaster Tax Relief Act of 2020.",
+        "description": "If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*TuitionFees.  Set to 1.0 starting 2021: IRC Section 222 was permanently repealed for tax years beginning after 2020-12-31 by Section 104 of the Taxpayer Certainty and Disaster Tax Relief Act of 2020.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "indexable": false,
@@ -2654,7 +2654,7 @@
     },
     "STD_Dep_earned_add": {
         "title": "Earned-income additional amount in dependent standard deduction",
-        "description": "In the IRS Standard Deduction Worksheet for Dependents (Form 1040 instructions), this is the amount added to earned income (worksheet line 2) before comparing against the minimum dependent standard deduction (STD_Dep). Indexed for inflation per IRC §63(c)(5)(B).",
+        "description": "In the IRS Standard Deduction Worksheet for Dependents (Form 1040 instructions), this is the amount added to earned income (worksheet line 2) before comparing against the minimum dependent standard deduction (STD_Dep). Indexed for inflation per IRC Section 63(c)(5)(B).",
         "section_1": "",
         "section_2": "",
         "indexable": true,

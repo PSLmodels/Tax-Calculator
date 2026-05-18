@@ -540,6 +540,15 @@ NEW_KNOWN_ITEMS = {
 
         {'year': 2026, 'value': 1350.0},
     ],
+    'STD_Dep_earned_add': [
+        {'year': 2023, 'value': 400.0},
+
+        {'year': 2024, 'value': 450.0},
+
+        {'year': 2025, 'value': 450.0},
+
+        {'year': 2026, 'value': 450.0},
+    ],
     'STD_Aged': [
         {'year': 2023, 'MARS': 'single', 'value': 1800.0},
         {'year': 2023, 'MARS': 'mjoint', 'value': 1500.0},
