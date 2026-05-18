@@ -5,7 +5,7 @@ Go
 for a complete commit history.
 
 
-2026-05-xx Release 6.6.0
+2026-05-18 Release 6.6.0
 ------------------------
 (last merged pull request is
 [#3067](https://github.com/PSLmodels/Tax-Calculator/pull/3067))
