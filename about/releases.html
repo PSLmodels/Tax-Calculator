@@ -454,6 +454,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-6-0">2026-05-18 Release 6.6.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-5-3">2026-04-27 Release 6.5.3</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-5-2">2026-04-13 Release 6.5.2</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-5-1">2026-04-02 Release 6.5.1</a></li>
@@ -595,6 +596,54 @@
 <p>Go
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<section id="release-6-6-0">
+<h2>2026-05-18 Release 6.6.0<a class="headerlink" href="#release-6-6-0" title="Link to this heading">#</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3067">#3067</a>)</p>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Extensive <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code> code review that improves the correspondence
+of Python code and local variable names with 2025 IRS tax forms (while
+maintaining legacy/reform tax logic) and improves <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code>
+documentation.
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3016">#3016</a>
+through
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3067">#3067</a>
+by Martin Holmer with the assistance of Claude Code 2.1 running Opus 4.7]</p></li>
+<li><p>Rename calculated variable <code class="docutils literal notranslate"><span class="pre">dwks19</span></code> as <code class="docutils literal notranslate"><span class="pre">dwks18</span></code> to match 2025 IRS form
+line number.
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3024">#3024</a>
+by Martin Holmer with the assistance of Claude Code]</p></li>
+<li><p>Rename policy parameter <code class="docutils literal notranslate"><span class="pre">ALD_AlimonyReceived_hc</span></code> as
+<code class="docutils literal notranslate"><span class="pre">AlimonyReceived_frac_in_AGI</span></code>.
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3026">#3026</a>
+by Martin Holmer with the assistance of Claude Code]</p></li>
+<li><p>Add policy parameter <code class="docutils literal notranslate"><span class="pre">STD_Dep_earned_add</span></code> and use in <code class="docutils literal notranslate"><span class="pre">StdDed</span></code> function logic.
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3040">#3040</a>
+by Martin Holmer with the assistance of Claude Code]</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul class="simple">
+<li><p>Extensive <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code> code review identified and fixed
+several tax logic bugs, all of which had tiny effects on aggregate
+income tax liability; only bug fixes that had a measurable effect on
+2026 current-law liability (using TMD input data) are mentioned below.
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3016">#3016</a>
+through
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3067">#3067</a>
+by Martin Holmer with the assistance of Claude Code 2.1 running Opus 4.7]</p></li>
+<li><p>Fix QBID bugs in <code class="docutils literal notranslate"><span class="pre">TaxIncome</span></code> function.  Effect:
+tmd-26.tables: 2644.3 → 2645.3 (+0.04 percent relative change).
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3042">#3042</a>
+by Martin Holmer with the assistant of Claude Code]</p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">AMT</span></code> function bugs.  Effect:
+tmd-26.tables: 2645.3 → 2644.0 (-0.05 percent relative change).
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3049">#3049</a>
+by Martin Holmer with the assistant of Claude Code]</p></li>
+</ul>
+</section>
 <section id="release-6-5-3">
 <h2>2026-04-27 Release 6.5.3<a class="headerlink" href="#release-6-5-3" title="Link to this heading">#</a></h2>
 <p>(last merged pull request is
@@ -3748,6 +3797,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-6-0">2026-05-18 Release 6.6.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-5-3">2026-04-27 Release 6.5.3</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-5-2">2026-04-13 Release 6.5.2</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-5-1">2026-04-02 Release 6.5.1</a></li>
