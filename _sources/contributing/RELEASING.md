@@ -15,8 +15,8 @@ In the top-level Tax-Calculator directory, do the following:
 --> run `python update_pcl.py`  [to update policy_current_law.json]
 --> run `make cstest`  [to confirm project coding style is being followed]
 --> run `make pytest-all`  [to confirm all pytest test are passing]
---> run `make idtest`  [to check CLI results for CPS, PUF, TMD input data]
 --> run `make brtest`  [to check CLI results for behavioral responses]
+--> run `make idtest`  [to check CLI results for CPS and TMD input data]
 --> run `make tctest-jit`  [to ensure JIT decorators are not hiding bugs]
 --> commit X-Y-Z branch and push to origin
 --> open new GitHub pull request using your X-Y-Z branch
