@@ -283,7 +283,7 @@
     },
     "soi_iitax": {
         "title": "Use SOI income tax concept rather than tax analysis concept",
-        "description": "True implies setax, e09800, ptax_amc are included in income tax as on the IRS forms and in SOI statistics; False implies they are included in payroll tax as in conventional tax analysis.",
+        "description": "True implies setax, e09800, and ptax_amc are included in income tax as on the IRS forms and as in SOI statistics; False implies they are included in payroll tax as in conventional tax analysis.",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -292,7 +292,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": true
+                "value": false
             }
         ],
         "validators": {

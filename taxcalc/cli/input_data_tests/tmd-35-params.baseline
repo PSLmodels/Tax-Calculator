@@ -4,7 +4,7 @@
 2035 FICA_ss_trt_employer 0.062
 2035 FICA_ss_trt_employee 0.062
 2035 SS_Earnings_c 246849.08
-2035 soi_iitax True
+2035 soi_iitax False
 2035 SECA_Earnings_thd 400.0
 2035 SS_Earnings_thd 9e+99
 2035 FICA_mc_trt_employer 0.0145
