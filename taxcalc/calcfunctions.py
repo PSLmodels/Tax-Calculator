@@ -4677,7 +4677,8 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
 @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           c09200, payrolltax, CDCC_refund, recovery_rebate_credit,
-          eitc, c07220, odc, CTC_is_refundable, ODC_is_refundable, refund,
+          eitc, c07220, odc, CTC_is_refundable, ODC_is_refundable,
+          soi_iitax, setax, e09800, ptax_amc, refund,
           ctc_total, ctc_refundable, ctc_nonrefundable, iitax, combined):
     """
     Final assembly: sums refundable credits and computes total income-tax
@@ -4711,7 +4712,13 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
       (D) Form 1040 line 24 − line 32 net + combined-tax accumulator.
           `combined` = iitax + payrolltax; `lumpsum_tax` is added later
           by `LumpSumTax` (also a reform construct, inert under current
-          law).
+          law).  The `soi_iitax` switch determines whether the three
+          employment-related "other taxes" already folded into `c09200`
+          by `C1040` (`setax`, `e09800`, `ptax_amc`) stay in `iitax`
+          (true, SOI/IRS concept — default) or are shifted from `iitax`
+          to `payrolltax` (false, fiscal-analysis concept).  `c09200`
+          itself is not changed; only the final bucketing between the
+          two tax totals is.
 
     Reform constructs (no Form 1040 (2025) line):
       `personal_refundable_credit` (II_credit* knobs from
@@ -4748,7 +4755,8 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         credits) from `C1040` (Form 1040 line 24)
     payrolltax: float
         Total (employee + employer) payroll tax liability from
-        `EI_PayrollTax`
+        `EI_PayrollTax`; re-bound here when `soi_iitax` is false to
+        absorb `setax + e09800 + ptax_amc` from `iitax`
     CDCC_refund: float
         Refundable portion of Child and Dependent Care Credit from
         `CDCC_refundable` (Schedule 3 line 13 → Form 1040 line 31)
@@ -4771,6 +4779,22 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     ODC_is_refundable: bool
         Reform-only switch (default false): when true, ODC is treated as
         refundable (`odc` is added to `refund` here)
+    soi_iitax: bool
+        Bucketing switch (default true): when true, `setax`, `e09800`,
+        and `ptax_amc` remain in `iitax` via `c09200` (SOI/IRS concept,
+        matching the Form 1040 / Schedule 2 layout); when false, they
+        are shifted from `iitax` to `payrolltax` (fiscal-analysis
+        concept).  Does not change `c09200` or `othertaxes`.
+    setax: float
+        Self-employment tax (Sch 2 line 4) from `EI_PayrollTax`; shifted
+        out of `iitax` and into `payrolltax` when `soi_iitax` is false
+    e09800: float
+        Unreported payroll taxes (Sch 2 line 7) from Forms 4137 + 8919;
+        shifted out of `iitax` and into `payrolltax` when `soi_iitax`
+        is false
+    ptax_amc: float
+        Additional Medicare Tax (Sch 2 line 11) from Form 8959; shifted
+        out of `iitax` and into `payrolltax` when `soi_iitax` is false
     refund: float
         Records-bound output (re-computed)
     ctc_total: float
@@ -4797,12 +4821,19 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         Diagnostic: portion of ctc_total that is refundable
     ctc_nonrefundable: float
         Diagnostic: max(0, ctc_total - ctc_refundable)
+    payrolltax: float
+        Final payroll tax: unchanged from input when `soi_iitax` is
+        true; equals input + (setax + e09800 + ptax_amc) when false
     iitax: float
-        Total federal individual income tax liability = c09200 − refund
-        (sign-permissive: positive = amount owed, negative = refund
-        position; model does not split into Form 1040 lines 34 vs 37)
+        Total federal individual income tax liability.  Equals
+        c09200 − refund when `soi_iitax` is true (SOI/IRS concept);
+        equals (c09200 − setax − e09800 − ptax_amc) − refund when
+        false (fiscal-analysis concept).  Sign-permissive: positive
+        = amount owed, negative = refund position; model does not
+        split into Form 1040 lines 34 vs 37.
     combined: float
-        iitax + payrolltax (lumpsum_tax added later by `LumpSumTax`)
+        iitax + payrolltax (lumpsum_tax added later by `LumpSumTax`);
+        invariant under `soi_iitax` by construction
     """
     eitc = c59660
     # (A) reform-only refundable conversions of CTC / ODC
@@ -4823,11 +4854,23 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     ctc_total = c07220 + c11070 + odc + ctc_new
     ctc_refundable = ctc_refund + c11070 + odc_refund + ctc_new
     ctc_nonrefundable = max(0., ctc_total - ctc_refundable)
-    # (D) Form 1040 line 24 − line 32 + combined-tax accumulator
-    iitax = c09200 - refund
+    # (D) Form 1040 line 24 − line 32 + combined-tax accumulator.
+    # soi_iitax=True (default): setax, e09800, ptax_amc stay in iitax via
+    # c09200, matching the IRS Form 1040 / Schedule 2 layout (SOI concept).
+    # soi_iitax=False: those three items shift from iitax to payrolltax,
+    # matching the fiscal-analysis concept in which all employment-based
+    # taxes are bucketed as payroll tax.  c09200 (Form 1040 line 24) and
+    # othertaxes (Sch 2 line 21) are intentionally unchanged so the form-
+    # level intermediates remain faithful regardless of the switch.
+    if soi_iitax:
+        iitax = c09200 - refund
+    else:
+        shift = setax + e09800 + ptax_amc
+        iitax = (c09200 - shift) - refund
+        payrolltax = payrolltax + shift
     combined = iitax + payrolltax
     return (eitc, refund, ctc_total, ctc_refundable, ctc_nonrefundable,
-            iitax, combined)
+            payrolltax, iitax, combined)
 
 
 @iterate_jit(nopython=True)
