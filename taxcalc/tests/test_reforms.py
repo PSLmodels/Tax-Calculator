@@ -424,6 +424,3 @@ def test_pop_the_cap_reform(soi_iitax_value):
     # ... soi_iitax==F --> setax included in payrolltax
     positive_iitax_diff = (iitax_ref - iitax_bas) > 0
     assert positive_iitax_diff == soi_iitax_value
-    # b = 1e-9
-    # print(f'{soi_iitax_value}, {iitax_ref * b:.3f}, {iitax_bas * b: .3f}')
-    # assert 1 == 2
