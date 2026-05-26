@@ -5,6 +5,27 @@ Go
 for a complete commit history.
 
 
+2026-05-xx Release 6.6.1
+------------------------
+(last merged pull request is
+[#3072](https://github.com/PSLmodels/Tax-Calculator/pull/3072))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+
+- Fixes issue #3071 by adding a new parameter called `soi_iitax` that
+  controls the categorization of the self-employment tax (`setax`) and
+  the additional Medicare tax (`ptax_amc`) as being part of the income
+  tax or as being part of the payroll tax.
+  [[#3072](https://github.com/PSLmodels/Tax-Calculator/pull/3072)
+  by Martin Holmer]
+
+
 2026-05-18 Release 6.6.0
 ------------------------
 (last merged pull request is
