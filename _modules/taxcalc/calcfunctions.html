@@ -5078,9 +5078,11 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">IITAX</span><span class="p">(</span><span class="n">c59660</span><span class="p">,</span> <span class="n">c11070</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">,</span> <span class="n">rptc</span><span class="p">,</span>
-          <span class="n">c09200</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">,</span> <span class="n">recovery_rebate_credit</span><span class="p">,</span>
-          <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">ODC_is_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span>
-          <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
+          <span class="n">c09200</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">,</span> <span class="n">recovery_rebate_credit</span><span class="p">,</span>
+          <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">ODC_is_refundable</span><span class="p">,</span>
+          <span class="n">soi_iitax</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">ptax_amc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span>
+          <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span>
+          <span class="n">iitax</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Final assembly: sums refundable credits and computes total income-tax</span>
 <span class="sd">    liability net of those credits. Maps to Form 1040 (2025) lines 22-37</span>
@@ -5113,7 +5115,13 @@
 <span class="sd">      (D) Form 1040 line 24 − line 32 net + combined-tax accumulator.</span>
 <span class="sd">          `combined` = iitax + payrolltax; `lumpsum_tax` is added later</span>
 <span class="sd">          by `LumpSumTax` (also a reform construct, inert under current</span>
-<span class="sd">          law).</span>
+<span class="sd">          law).  The `soi_iitax` switch determines whether the three</span>
+<span class="sd">          employment-related &quot;other taxes&quot; already folded into `c09200`</span>
+<span class="sd">          by `C1040` (`setax`, `e09800`, `ptax_amc`) stay in `iitax`</span>
+<span class="sd">          (true, SOI/IRS concept) or are shifted from `iitax` to</span>
+<span class="sd">          `payrolltax` (false, tax-analysis concept).  `c09200` itself</span>
+<span class="sd">          is not changed; only the final bucketing between the two tax</span>
+<span class="sd">          totals is.</span>
 
 <span class="sd">    Reform constructs (no Form 1040 (2025) line):</span>
 <span class="sd">      `personal_refundable_credit` (II_credit* knobs from</span>
@@ -5148,9 +5156,6 @@
 <span class="sd">    c09200: float</span>
 <span class="sd">        Total income tax (including other taxes, after nonrefundable</span>
 <span class="sd">        credits) from `C1040` (Form 1040 line 24)</span>
-<span class="sd">    payrolltax: float</span>
-<span class="sd">        Total (employee + employer) payroll tax liability from</span>
-<span class="sd">        `EI_PayrollTax`</span>
 <span class="sd">    CDCC_refund: float</span>
 <span class="sd">        Refundable portion of Child and Dependent Care Credit from</span>
 <span class="sd">        `CDCC_refundable` (Schedule 3 line 13 → Form 1040 line 31)</span>
@@ -5173,6 +5178,22 @@
 <span class="sd">    ODC_is_refundable: bool</span>
 <span class="sd">        Reform-only switch (default false): when true, ODC is treated as</span>
 <span class="sd">        refundable (`odc` is added to `refund` here)</span>
+<span class="sd">    soi_iitax: bool</span>
+<span class="sd">        Bucketing switch: when true, `setax`, `e09800`, and `ptax_amc`</span>
+<span class="sd">        remain in `iitax` via `c09200` (SOI/IRS concept, matching the</span>
+<span class="sd">        Form 1040 / Schedule 2 layout); when false, they are shifted</span>
+<span class="sd">        from `iitax` to `payrolltax` (tax-analysis concept).  Does not</span>
+<span class="sd">        change `c09200` or `othertaxes`.</span>
+<span class="sd">    setax: float</span>
+<span class="sd">        Self-employment tax (Sch 2 line 4) from `EI_PayrollTax`; shifted</span>
+<span class="sd">        out of `iitax` and into `payrolltax` when `soi_iitax` is false</span>
+<span class="sd">    e09800: float</span>
+<span class="sd">        Unreported payroll taxes (Sch 2 line 7) from Forms 4137 + 8919;</span>
+<span class="sd">        shifted out of `iitax` and into `payrolltax` when `soi_iitax`</span>
+<span class="sd">        is false</span>
+<span class="sd">    ptax_amc: float</span>
+<span class="sd">        Additional Medicare Tax (Sch 2 line 11) from Form 8959; shifted</span>
+<span class="sd">        out of `iitax` and into `payrolltax` when `soi_iitax` is false</span>
 <span class="sd">    refund: float</span>
 <span class="sd">        Records-bound output (re-computed)</span>
 <span class="sd">    ctc_total: float</span>
@@ -5183,6 +5204,10 @@
 <span class="sd">        Records-bound output (re-computed)</span>
 <span class="sd">    iitax: float</span>
 <span class="sd">        Records-bound output (re-computed)</span>
+<span class="sd">    payrolltax: float</span>
+<span class="sd">        Total (employee + employer) payroll tax liability from</span>
+<span class="sd">        `EI_PayrollTax`; re-computed here when `soi_iitax` is false to</span>
+<span class="sd">        absorb `setax + e09800 + ptax_amc` from `iitax`</span>
 <span class="sd">    combined: float</span>
 <span class="sd">        Records-bound output (re-computed)</span>
 
@@ -5200,11 +5225,18 @@
 <span class="sd">    ctc_nonrefundable: float</span>
 <span class="sd">        Diagnostic: max(0, ctc_total - ctc_refundable)</span>
 <span class="sd">    iitax: float</span>
-<span class="sd">        Total federal individual income tax liability = c09200 − refund</span>
-<span class="sd">        (sign-permissive: positive = amount owed, negative = refund</span>
-<span class="sd">        position; model does not split into Form 1040 lines 34 vs 37)</span>
+<span class="sd">        Total federal individual income tax liability.  Equals</span>
+<span class="sd">        c09200 − refund when `soi_iitax` is true (SOI/IRS concept);</span>
+<span class="sd">        equals (c09200 − setax − e09800 − ptax_amc) − refund when</span>
+<span class="sd">        false (fiscal-analysis concept).  Sign-permissive: positive</span>
+<span class="sd">        = amount owed, negative = refund position; model does not</span>
+<span class="sd">        split into Form 1040 lines 34 vs 37.</span>
+<span class="sd">    payrolltax: float</span>
+<span class="sd">        Final payroll tax: unchanged from input when `soi_iitax` is</span>
+<span class="sd">        true; equals input + (setax + e09800 + ptax_amc) when false</span>
 <span class="sd">    combined: float</span>
-<span class="sd">        iitax + payrolltax (lumpsum_tax added later by `LumpSumTax`)</span>
+<span class="sd">        iitax + payrolltax (lumpsum_tax added later by `LumpSumTax`);</span>
+<span class="sd">        invariant under `soi_iitax` by construction</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="n">c59660</span>
     <span class="c1"># (A) reform-only refundable conversions of CTC / ODC</span>
@@ -5225,11 +5257,23 @@
     <span class="n">ctc_total</span> <span class="o">=</span> <span class="n">c07220</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">odc</span> <span class="o">+</span> <span class="n">ctc_new</span>
     <span class="n">ctc_refundable</span> <span class="o">=</span> <span class="n">ctc_refund</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">odc_refund</span> <span class="o">+</span> <span class="n">ctc_new</span>
     <span class="n">ctc_nonrefundable</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ctc_total</span> <span class="o">-</span> <span class="n">ctc_refundable</span><span class="p">)</span>
-    <span class="c1"># (D) Form 1040 line 24 − line 32 + combined-tax accumulator</span>
-    <span class="n">iitax</span> <span class="o">=</span> <span class="n">c09200</span> <span class="o">-</span> <span class="n">refund</span>
+    <span class="c1"># (D) Form 1040 line 24 − line 32 + combined-tax accumulator.</span>
+    <span class="c1"># soi_iitax=True ==&gt; setax, e09800, ptax_amc stay in iitax via</span>
+    <span class="c1"># c09200, matching the IRS Form 1040 / Schedule 2 layout (SOI concept).</span>
+    <span class="c1"># soi_iitax=False ==&gt; those three items shift from iitax to payrolltax,</span>
+    <span class="c1"># matching the tax-analysis concept in which all employment-based</span>
+    <span class="c1"># taxes are bucketed as payroll tax.  c09200 (Form 1040 line 24) and</span>
+    <span class="c1"># othertaxes (Sch 2 line 21) are intentionally unchanged so the form-</span>
+    <span class="c1"># level intermediates remain faithful regardless of the switch.</span>
+    <span class="k">if</span> <span class="n">soi_iitax</span><span class="p">:</span>
+        <span class="n">iitax</span> <span class="o">=</span> <span class="n">c09200</span> <span class="o">-</span> <span class="n">refund</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="n">setax</span> <span class="o">+</span> <span class="n">e09800</span> <span class="o">+</span> <span class="n">ptax_amc</span>
+        <span class="n">iitax</span> <span class="o">=</span> <span class="p">(</span><span class="n">c09200</span> <span class="o">-</span> <span class="n">shift</span><span class="p">)</span> <span class="o">-</span> <span class="n">refund</span>
+        <span class="n">payrolltax</span> <span class="o">=</span> <span class="n">payrolltax</span> <span class="o">+</span> <span class="n">shift</span>
     <span class="n">combined</span> <span class="o">=</span> <span class="n">iitax</span> <span class="o">+</span> <span class="n">payrolltax</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span>
-            <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
+            <span class="n">iitax</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
