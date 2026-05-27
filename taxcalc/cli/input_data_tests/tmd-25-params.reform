@@ -4,6 +4,7 @@
 2025 FICA_ss_trt_employer 0.062
 2025 FICA_ss_trt_employee 0.062
 2025 SS_Earnings_c 176100.0
+2025 soi_iitax False
 2025 SECA_Earnings_thd 400.0
 2025 SS_Earnings_thd 9e+99
 2025 FICA_mc_trt_employer 0.0145

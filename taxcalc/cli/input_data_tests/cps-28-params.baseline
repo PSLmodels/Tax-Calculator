@@ -4,6 +4,7 @@
 2028 FICA_ss_trt_employer 0.062
 2028 FICA_ss_trt_employee 0.062
 2028 SS_Earnings_c 197793.78
+2028 soi_iitax False
 2028 SECA_Earnings_thd 400.0
 2028 SS_Earnings_thd 9e+99
 2028 FICA_mc_trt_employer 0.0145

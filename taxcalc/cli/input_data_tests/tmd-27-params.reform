@@ -4,6 +4,7 @@
 2027 FICA_ss_trt_employer 0.062
 2027 FICA_ss_trt_employee 0.062
 2027 SS_Earnings_c 190957.5
+2027 soi_iitax False
 2027 SECA_Earnings_thd 400.0
 2027 SS_Earnings_thd 9e+99
 2027 FICA_mc_trt_employer 0.0145

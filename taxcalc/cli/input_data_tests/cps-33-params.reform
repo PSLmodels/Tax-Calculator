@@ -4,6 +4,7 @@
 2033 FICA_ss_trt_employer 0.062
 2033 FICA_ss_trt_employee 0.062
 2033 SS_Earnings_c 232250.32
+2033 soi_iitax False
 2033 SECA_Earnings_thd 400.0
 2033 SS_Earnings_thd 9e+99
 2033 FICA_mc_trt_employer 0.0145

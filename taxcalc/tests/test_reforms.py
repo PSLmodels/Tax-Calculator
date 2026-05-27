@@ -388,3 +388,39 @@ def test_reforms_cps(reform_filename, expected_diff, tests_path):
     weighted_sum_rdiff = (rdiff * calc_clp.array('s006')).sum() * 1.0e-9
     assert np.allclose([weighted_sum_rdiff], [expected_diff],
                        rtol=0.0, atol=0.01)
+
+
+@pytest.mark.parametrize('soi_iitax_value', [(True), (False)])
+def test_pop_the_cap_reform(soi_iitax_value):
+    """
+    Test reform that eliminates earnings cap on FICA and SECA taxes to
+    see if the soi_iitax parameter works as expected.
+    """
+    taxyr = 2025
+    soi_iitax_spec = {'soi_iitax': {taxyr: soi_iitax_value}}
+    pol = Policy()
+    pol.implement_reform(soi_iitax_spec)
+    assert not pol.parameter_errors
+
+    recs = Records.cps_constructor()
+
+    # create baseline Calculator object
+    calc_bas = Calculator(policy=pol, records=recs, verbose=False)
+    calc_bas.advance_to_year(taxyr)
+    calc_bas.calc_all()
+    iitax_bas = calc_bas.weighted_total('iitax')
+
+    # create reform Calculator object
+    pop_the_cap_reform = {'SS_Earnings_c': {taxyr: 9e99}}
+    pol.implement_reform(pop_the_cap_reform)
+    assert not pol.parameter_errors
+    calc_ref = Calculator(policy=pol, records=recs, verbose=False)
+    calc_ref.advance_to_year(taxyr)
+    calc_ref.calc_all()
+    iitax_ref = calc_ref.weighted_total('iitax')
+
+    # compare aggregate individual income tax liability
+    # ... soi_iitax==T --> setax included in iitax
+    # ... soi_iitax==F --> setax included in payrolltax
+    positive_iitax_diff = (iitax_ref - iitax_bas) > 0
+    assert positive_iitax_diff == soi_iitax_value

@@ -174,14 +174,8 @@ taxcalc/reforms/archive/TCJA_Senate.json
 taxcalc/reforms/archive/TCJA_Senate_111417.json
 taxcalc/reforms/archive/TCJA_Senate_120117.json
 taxcalc/tests/benefits_expect.csv
-taxcalc/tests/cmpi_cps_expect.txt
-taxcalc/tests/cmpi_puf_expect.txt
 taxcalc/tests/conftest.py
 taxcalc/tests/cpscsv_agg_expect.csv
-taxcalc/tests/puf_var_correl_coeffs_2016.csv
-taxcalc/tests/puf_var_wght_means_by_year.csv
-taxcalc/tests/pufcsv_agg_expect.csv
-taxcalc/tests/pufcsv_mtr_expect.txt
 taxcalc/tests/reforms.json
 taxcalc/tests/reforms_expect.csv
 taxcalc/tests/test_4package.py
