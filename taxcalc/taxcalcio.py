@@ -25,6 +25,8 @@ from taxcalc.utils import (json_to_dict, delete_file, write_graph_file,
                            unweighted_sum, weighted_sum)
 
 TMD_CREDIT_CLAIMING = {
+    # IMPORTANT NOTE: when changing either TMDCSV_YEAR or _claim_thd value(s),
+    # be sure to update changed info in the Tax-Calculator-LLM CLAUDE.md file.
     'eitc_claim_thd': {f'{Records.TMDCSV_YEAR}': 1600},
     'actc_claim_thd': {f'{Records.TMDCSV_YEAR}': 1500},
 }
