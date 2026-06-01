@@ -418,6 +418,8 @@
                            <span class="n">unweighted_sum</span><span class="p">,</span> <span class="n">weighted_sum</span><span class="p">)</span>
 
 <span class="n">TMD_CREDIT_CLAIMING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># IMPORTANT NOTE: when changing either TMDCSV_YEAR or _claim_thd value(s),</span>
+    <span class="c1"># be sure to update changed info in the Tax-Calculator-LLM CLAUDE.md file.</span>
     <span class="s1">&#39;eitc_claim_thd&#39;</span><span class="p">:</span> <span class="p">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Records</span><span class="o">.</span><span class="n">TMDCSV_YEAR</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="mi">1600</span><span class="p">},</span>
     <span class="s1">&#39;actc_claim_thd&#39;</span><span class="p">:</span> <span class="p">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Records</span><span class="o">.</span><span class="n">TMDCSV_YEAR</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="mi">1500</span><span class="p">},</span>
 <span class="p">}</span>
