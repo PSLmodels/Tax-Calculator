@@ -5,6 +5,27 @@ Go
 for a complete commit history.
 
 
+2026-06-xx Release 6.6.2
+------------------------
+(last merged pull request is
+[#3075](https://github.com/PSLmodels/Tax-Calculator/pull/3075))
+
+**This is a bug-fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+
+- Change CLI so that it now assumes 100% refundable-credit
+  participation with TMD input data, which makes it consistent with
+  the default (full-participation) assumption used in the Python API
+  and in the CLI when using non-TMD input data.
+  [[#3075](https://github.com/PSLmodels/Tax-Calculator/pull/3075)
+  by Martin Holmer]
+
+
 2026-05-27 Release 6.6.1
 ------------------------
 (last merged pull request is
