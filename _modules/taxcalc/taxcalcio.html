@@ -417,6 +417,7 @@
                            <span class="n">add_quantile_table_row_variable</span><span class="p">,</span>
                            <span class="n">unweighted_sum</span><span class="p">,</span> <span class="n">weighted_sum</span><span class="p">)</span>
 
+<span class="n">TMD_ASSUMES_FULL_CREDIT_CLAIMING</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">TMD_CREDIT_CLAIMING</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># IMPORTANT NOTE: when changing either TMDCSV_YEAR or _claim_thd value(s),</span>
     <span class="c1"># be sure to update changed info in the Tax-Calculator-LLM CLAUDE.md file.</span>
@@ -821,7 +822,8 @@
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pol_bas</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">TMD_ASSUMES_FULL_CREDIT_CLAIMING</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pol_bas</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">poldict</span> <span class="ow">in</span> <span class="n">poldicts_bas</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">pol_bas</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span>
@@ -841,7 +843,8 @@
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pol_bas</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">TMD_ASSUMES_FULL_CREDIT_CLAIMING</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pol_bas</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
         <span class="c1"># ... the reform Policy object</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pol_ref</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
@@ -849,7 +852,8 @@
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pol_ref</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">TMD_ASSUMES_FULL_CREDIT_CLAIMING</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pol_ref</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">poldict</span> <span class="ow">in</span> <span class="n">poldicts_ref</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">pol_ref</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span>
@@ -869,7 +873,8 @@
                 <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">pol_ref</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">TMD_ASSUMES_FULL_CREDIT_CLAIMING</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pol_ref</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
         <span class="c1"># create Consumption object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">Consumption</span><span class="p">(</span><span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
