@@ -106,7 +106,7 @@
     },
     "eitc_claim_thd": {
         "title": "EITC claim threshold",
-        "description": "EITC amounts below this threshold are assumed to be unclaimed, and therefore, are zeroed out.  Indexed by wage growth, not price inflation.",
+        "description": "EITC amounts below this threshold are assumed to be unclaimed, and therefore, are zeroed out.  Indexed by wage growth, not price inflation.  Note: 2022 value of 1600 produces plausible EITC participation with TMD data.",
         "section_1": "",
         "section_2": "",
         "indexable": true,
@@ -131,7 +131,7 @@
     },
     "actc_claim_thd": {
         "title": "ACTC claim threshold",
-        "description": "ACTC amounts below this threshold are assumed to be unclaimed, and therefore, are zeroed out.  Indexed by wage growth, not price inflation.",
+        "description": "ACTC amounts below this threshold are assumed to be unclaimed, and therefore, are zeroed out.  Indexed by wage growth, not price inflation.  Note: 2022 value of 1500 produces plausible ACTC participation with TMD data.",
         "section_1": "",
         "section_2": "",
         "indexable": true,
