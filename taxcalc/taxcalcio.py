@@ -24,6 +24,7 @@ from taxcalc.utils import (json_to_dict, delete_file, write_graph_file,
                            add_quantile_table_row_variable,
                            unweighted_sum, weighted_sum)
 
+TMD_ASSUMES_FULL_CREDIT_CLAIMING = True
 TMD_CREDIT_CLAIMING = {
     # IMPORTANT NOTE: when changing either TMDCSV_YEAR or _claim_thd value(s),
     # be sure to update changed info in the Tax-Calculator-LLM CLAUDE.md file.
@@ -426,7 +427,8 @@ class TaxCalcIO():
                 last_budget_year=last_b_year,
             )
             if self.tmd_input_data:  # pragma: no cover
-                self.pol_bas.implement_reform(TMD_CREDIT_CLAIMING)
+                if not TMD_ASSUMES_FULL_CREDIT_CLAIMING:
+                    self.pol_bas.implement_reform(TMD_CREDIT_CLAIMING)
             for poldict in poldicts_bas:
                 try:
                     self.pol_bas.implement_reform(
@@ -446,7 +448,8 @@ class TaxCalcIO():
                 last_budget_year=last_b_year,
             )
             if self.tmd_input_data:  # pragma: no cover
-                self.pol_bas.implement_reform(TMD_CREDIT_CLAIMING)
+                if not TMD_ASSUMES_FULL_CREDIT_CLAIMING:
+                    self.pol_bas.implement_reform(TMD_CREDIT_CLAIMING)
         # ... the reform Policy object
         if self.specified_reform:
             self.pol_ref = Policy(
@@ -454,7 +457,8 @@ class TaxCalcIO():
                 last_budget_year=last_b_year,
             )
             if self.tmd_input_data:  # pragma: no cover
-                self.pol_ref.implement_reform(TMD_CREDIT_CLAIMING)
+                if not TMD_ASSUMES_FULL_CREDIT_CLAIMING:
+                    self.pol_ref.implement_reform(TMD_CREDIT_CLAIMING)
             for poldict in poldicts_ref:
                 try:
                     self.pol_ref.implement_reform(
@@ -474,7 +478,8 @@ class TaxCalcIO():
                 last_budget_year=last_b_year,
             )
             if self.tmd_input_data:  # pragma: no cover
-                self.pol_ref.implement_reform(TMD_CREDIT_CLAIMING)
+                if not TMD_ASSUMES_FULL_CREDIT_CLAIMING:
+                    self.pol_ref.implement_reform(TMD_CREDIT_CLAIMING)
         # create Consumption object
         self.con = Consumption(last_budget_year=last_b_year)
         try:
