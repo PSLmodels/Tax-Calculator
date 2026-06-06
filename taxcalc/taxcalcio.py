@@ -988,7 +988,7 @@ class TaxCalcIO():
             if self.errmsg:
                 return []
         # construct variable list
-        dumpvars_list = TaxCalcIO.MINIMAL_DUMPVARS
+        dumpvars_list = list(TaxCalcIO.MINIMAL_DUMPVARS)
         for var in dumpvars:
             if var not in dumpvars_list and var not in TaxCalcIO.BASE_DUMPVARS:
                 dumpvars_list.append(var)
