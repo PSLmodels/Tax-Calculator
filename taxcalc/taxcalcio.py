@@ -142,132 +142,44 @@ class TaxCalcIO():
             msg = 'INPUT is neither string nor Pandas DataFrame'
             self.errmsg += f'ERROR: {msg}\n'
         # check name(s) and existence of BASELINE file(s)
-        bas = '-x'
         if baseline is None:
             self.specified_baseline = False
             bas = '-#'
         elif isinstance(baseline, str):
             self.specified_baseline = True
-            # split any compound baseline into list of simple reforms
-            basnames = []
-            baselines = baseline.split('+')
-            for bas in baselines:
-                # remove any leading directory path from bas filename
-                fname = os.path.basename(bas)
-                # check if fname ends with ".json"
-                if not fname.endswith('.json'):
-                    msg = f'{fname} does not end in .json'
-                    self.errmsg += f'ERROR: BASELINE file name {msg}\n'
-                # check existence of BASELINE file
-                if os.path.isfile(bas):
-                    # check validity of JSON text
-                    with open(bas, 'r', encoding='utf-8') as jfile:
-                        json_text = jfile.read()
-                        try:
-                            _ = json_to_dict(json_text)
-                        except ValueError as valerr:  # pragma: no cover
-                            msg = f'{bas} contains invalid JSON'
-                            self.errmsg += f'ERROR: BASELINE file {msg}\n'
-                            self.errmsg += f'{valerr}'
-                else:
-                    msg = f'{bas} could not be found'
-                    self.errmsg += f'ERROR: BASELINE file {msg}\n'
-                # add fname to list of basnames used in output file names
-                basnames.append(fname)
-            # create (possibly compound) baseline name for output file names
-            bas = '-'
-            num_basnames = 0
-            for basname in basnames:
-                num_basnames += 1
-                if num_basnames > 1:
-                    bas += '+'
-                bas += f'{basname[:-5]}'
+            bas = self._check_policy_files(baseline, 'BASELINE')
         else:
+            bas = '-x'
             msg = 'TaxCalcIO.ctor: baseline is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
         # check name(s) and existence of REFORM file(s)
-        ref = '-x'
         if reform is None:
             self.specified_reform = False
             ref = '-#'
         elif isinstance(reform, str):
             self.specified_reform = True
-            # split any compound reform into list of simple reforms
-            refnames = []
-            reforms = reform.split('+')
-            for rfm in reforms:
-                # remove any leading directory path from rfm filename
-                fname = os.path.basename(rfm)
-                # check if fname ends with ".json"
-                if not fname.endswith('.json'):
-                    msg = f'{fname} does not end in .json'
-                    self.errmsg += f'ERROR: REFORM file name {msg}\n'
-                # check existence of REFORM file
-                if os.path.isfile(rfm):
-                    # check validity of JSON text
-                    with open(rfm, 'r', encoding='utf-8') as jfile:
-                        json_text = jfile.read()
-                        try:
-                            _ = json_to_dict(json_text)
-                        except ValueError as valerr:  # pragma: no cover
-                            msg = f'{rfm} contains invalid JSON'
-                            self.errmsg += f'ERROR: REFORM file {msg}\n'
-                            self.errmsg += f'{valerr}'
-                else:
-                    msg = f'{rfm} could not be found'
-                    self.errmsg += f'ERROR: REFORM file {msg}\n'
-                # add fname to list of refnames used in output file names
-                refnames.append(fname)
-            # create (possibly compound) reform name for output file names
-            ref = '-'
-            num_refnames = 0
-            for refname in refnames:
-                num_refnames += 1
-                if num_refnames > 1:
-                    ref += '+'
-                ref += f'{refname[:-5]}'
+            ref = self._check_policy_files(reform, 'REFORM')
         else:
+            ref = '-x'
             msg = 'TaxCalcIO.ctor: reform is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
         # check name and existence of ASSUMP file
-        asm = '-x'
         if assump is None:
             asm = '-#'
         elif isinstance(assump, str):
-            # remove any leading directory path from ASSUMP filename
-            fname = os.path.basename(assump)
-            # check if fname ends with ".json"
-            if fname.endswith('.json'):
-                asm = f'-{fname[:-5]}'
-            else:
-                msg = 'ASSUMP file name does not end in .json'
-                self.errmsg += f'ERROR: {msg}\n'
-            # check existence of ASSUMP file
-            if not os.path.isfile(assump):
-                msg = 'ASSUMP file could not be found'
-                self.errmsg += f'ERROR: {msg}\n'
+            asm = self._check_single_json_file(assump, 'ASSUMP')
         else:
+            asm = '-x'
             msg = 'TaxCalcIO.ctor: assump is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
         # check name and existence of BEHAVIOR file
         self.behvdict = None
-        beh = '-x'
         if behavior is None:
             beh = '-#'
         elif isinstance(behavior, str):
-            # remove any leading directory path from BEHAVIOR filename
-            fname = os.path.basename(behavior)
-            # check if fname ends with ".json"
-            if fname.endswith('.json'):
-                beh = f'-{fname[:-5]}'
-            else:
-                msg = 'BEHAVIOR file name does not end in .json'
-                self.errmsg += f'ERROR: {msg}\n'
-            # check existence of BEHAVIOR file
-            if not os.path.isfile(behavior):
-                msg = 'BEHAVIOR file could not be found'
-                self.errmsg += f'ERROR: {msg}\n'
+            beh = self._check_single_json_file(behavior, 'BEHAVIOR')
         else:
+            beh = '-x'
             msg = 'TaxCalcIO.ctor: behavior is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
         # create OUTPUT file name and delete any existing output files
@@ -286,6 +198,59 @@ class TaxCalcIO():
         self.calc_ref = None
         self.calc_bas = None
 
+    def _check_policy_files(self, filespec, label):
+        """
+        Check validity of the (possibly compound) BASELINE or REFORM filespec,
+        appending any errors to self.errmsg, and return the name fragment used
+        in constructing output file names.
+        """
+        names = []
+        for path in filespec.split('+'):
+            # remove any leading directory path from filename
+            fname = os.path.basename(path)
+            # check if fname ends with ".json"
+            if not fname.endswith('.json'):
+                self.errmsg += (
+                    f'ERROR: {label} file name {fname} does not end in .json\n'
+                )
+            # check existence of file
+            if os.path.isfile(path):
+                # check validity of JSON text
+                with open(path, 'r', encoding='utf-8') as jfile:
+                    json_text = jfile.read()
+                    try:
+                        _ = json_to_dict(json_text)
+                    except ValueError as valerr:  # pragma: no cover
+                        msg = f'{path} contains invalid JSON'
+                        self.errmsg += f'ERROR: {label} file {msg}\n'
+                        self.errmsg += f'{valerr}'
+            else:
+                msg = f'{path} could not be found'
+                self.errmsg += f'ERROR: {label} file {msg}\n'
+            # add fname to list of names used in output file names
+            names.append(fname)
+        # return (possibly compound) name fragment for output file names
+        return '-' + '+'.join(name[:-5] for name in names)
+
+    def _check_single_json_file(self, path, label):
+        """
+        Check name and existence of the single ASSUMP or BEHAVIOR file,
+        appending any errors to self.errmsg, and return the name fragment
+        used in constructing output file names.
+        """
+        # remove any leading directory path from filename
+        fname = os.path.basename(path)
+        # check if fname ends with ".json"
+        if fname.endswith('.json'):
+            fragment = f'-{fname[:-5]}'
+        else:
+            fragment = '-x'
+            self.errmsg += f'ERROR: {label} file name does not end in .json\n'
+        # check existence of file
+        if not os.path.isfile(path):
+            self.errmsg += f'ERROR: {label} file could not be found\n'
+        return fragment
+
     def delete_output_files(self):
         """
         Delete all output files derived from self.output_filename.
@@ -302,7 +267,7 @@ class TaxCalcIO():
         for ext in extensions:
             delete_file(self.output_filename.replace('.xxx', ext))
 
-    def make_policy(self, policy_gfactors, last_b_year):
+    def _make_policy(self, policy_gfactors, last_b_year):
         """
         Return Policy object that uses the specified growfactors and that
         optionally implements TMD credit-claiming thresholds.
@@ -316,7 +281,7 @@ class TaxCalcIO():
                 pol.implement_reform(TMD_CREDIT_CLAIMING)
         return pol
 
-    def apply_poldicts(self, pol, poldicts):
+    def _apply_poldicts(self, pol, poldicts):
         """
         Implement each reform dict in poldicts on the pol Policy object,
         appending any parameter errors to self.errmsg.
@@ -454,15 +419,15 @@ class TaxCalcIO():
         gdiff_baseline.apply_to(policy_gfactors_ref)
         gdiff_response.apply_to(policy_gfactors_ref)
         # ... the baseline Policy object
-        self.pol_bas = self.make_policy(policy_gfactors_bas, last_b_year)
+        self.pol_bas = self._make_policy(policy_gfactors_bas, last_b_year)
         if self.specified_baseline:
-            self.apply_poldicts(self.pol_bas, poldicts_bas)
+            self._apply_poldicts(self.pol_bas, poldicts_bas)
         # ... the reform Policy object (no reform implies reform == baseline)
         if self.specified_reform:
-            self.pol_ref = self.make_policy(policy_gfactors_ref, last_b_year)
-            self.apply_poldicts(self.pol_ref, poldicts_ref)
+            self.pol_ref = self._make_policy(policy_gfactors_ref, last_b_year)
+            self._apply_poldicts(self.pol_ref, poldicts_ref)
         else:
-            self.pol_ref = self.make_policy(policy_gfactors_bas, last_b_year)
+            self.pol_ref = self._make_policy(policy_gfactors_bas, last_b_year)
         # create Consumption object
         self.con = Consumption(last_budget_year=last_b_year)
         try:
@@ -476,72 +441,80 @@ class TaxCalcIO():
         self.pol_ref.set_year(tax_year)
         self.pol_bas.set_year(tax_year)
         # read input file contents into Records objects
-        self.aging_input_data = True
-        if self.cps_input_data:
-            self.recs_ref = Records.cps_constructor(
-                gfactors=gfactors_ref,
-                exact_calculations=exact_calculations,
-            )
-            self.recs_bas = Records.cps_constructor(
-                gfactors=gfactors_bas,
-                exact_calculations=exact_calculations,
-            )
-        elif self.puf_input_data:  # pragma: no cover
-            self.recs_ref = Records.puf_constructor(
-                data=input_data,
-                gfactors=gfactors_ref,
-                weights=self.puf_weights,
-                ratios=self.puf_ratios,
-                exact_calculations=exact_calculations,
-            )
-            self.recs_bas = Records.puf_constructor(
-                data=input_data,
-                gfactors=gfactors_bas,
-                weights=self.puf_weights,
-                ratios=self.puf_ratios,
-                exact_calculations=exact_calculations,
-            )
-        elif self.tmd_input_data:  # pragma: no cover
-            self.recs_ref = Records.tmd_constructor(
-                data_path=Path(input_data),
-                weights_path=Path(self.tmd_weights),
-                growfactors=gfactors_ref,
-                exact_calculations=exact_calculations,
-            )
-            self.recs_bas = Records.tmd_constructor(
-                data_path=Path(input_data),
-                weights_path=Path(self.tmd_weights),
-                growfactors=gfactors_bas,
-                exact_calculations=exact_calculations,
-            )
-        else:  # input_data are raw data that are not being aged
-            self.aging_input_data = False
-            self.recs_ref = Records(
-                data=input_data,
-                start_year=tax_year,
-                gfactors=None,
-                weights=None,
-                adjust_ratios=None,
-                exact_calculations=exact_calculations,
-            )
-            self.recs_bas = copy.deepcopy(self.recs_ref)
-        # extrapolate input data to tax_year if aging_input_data is True
+        self.aging_input_data = (
+            self.cps_input_data or
+            self.puf_input_data or
+            self.tmd_input_data
+        )
         if self.aging_input_data:
+            self.recs_ref = self._make_records(
+                gfactors_ref, input_data, tax_year, exact_calculations,
+            )
+            self.recs_bas = self._make_records(
+                gfactors_bas, input_data, tax_year, exact_calculations,
+            )
+            # extrapolate input data to tax_year
             while self.recs_ref.current_year < tax_year:
                 self.recs_ref.increment_year()
                 self.recs_bas.increment_year()
+        else:  # input_data are raw data that are not being aged
+            self.recs_ref = self._make_records(
+                None, input_data, tax_year, exact_calculations,
+            )
+            self.recs_bas = copy.deepcopy(self.recs_ref)
         # create Calculator objects
-        self.calc_ref = Calculator(
-            policy=self.pol_ref,
-            records=self.recs_ref,
-            verbose=(not self.silent),
-            consumption=self.con,
-            sync_years=self.aging_input_data,
+        self.calc_ref = self._make_calculator(
+            self.pol_ref, self.recs_ref, not self.silent,
         )
-        self.calc_bas = Calculator(
-            policy=self.pol_bas,
-            records=self.recs_bas,
-            verbose=False,
+        self.calc_bas = self._make_calculator(
+            self.pol_bas, self.recs_bas, False,
+        )
+
+    def _make_records(self, gfactors, input_data, tax_year, exact_calculations):
+        """
+        Construct and return a Records object using the specified gfactors
+        and the input data type implied by the constructor arguments.
+        """
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
+        if self.cps_input_data:
+            return Records.cps_constructor(
+                gfactors=gfactors,
+                exact_calculations=exact_calculations,
+            )
+        if self.puf_input_data:  # pragma: no cover
+            return Records.puf_constructor(
+                data=input_data,
+                gfactors=gfactors,
+                weights=self.puf_weights,
+                ratios=self.puf_ratios,
+                exact_calculations=exact_calculations,
+            )
+        if self.tmd_input_data:  # pragma: no cover
+            return Records.tmd_constructor(
+                data_path=Path(input_data),
+                weights_path=Path(self.tmd_weights),
+                growfactors=gfactors,
+                exact_calculations=exact_calculations,
+            )
+        # input_data are raw data that are not being aged
+        return Records(
+            data=input_data,
+            start_year=tax_year,
+            gfactors=None,
+            weights=None,
+            adjust_ratios=None,
+            exact_calculations=exact_calculations,
+        )
+
+    def _make_calculator(self, policy, records, verbose):
+        """
+        Construct and return a Calculator object from the specified policy
+        and records objects.
+        """
+        return Calculator(
+            policy=policy,
+            records=records,
+            verbose=verbose,
             consumption=self.con,
             sync_years=self.aging_input_data,
         )
@@ -584,20 +557,12 @@ class TaxCalcIO():
         self.recs_bas.increment_year()
         # ... delete old and create new Calculator objects
         del self.calc_ref
-        self.calc_ref = Calculator(
-            policy=self.pol_ref,
-            records=self.recs_ref,
-            verbose=False,
-            consumption=self.con,
-            sync_years=self.aging_input_data,
+        self.calc_ref = self._make_calculator(
+            self.pol_ref, self.recs_ref, False,
         )
         del self.calc_bas
-        self.calc_bas = Calculator(
-            policy=self.pol_bas,
-            records=self.recs_bas,
-            verbose=False,
-            consumption=self.con,
-            sync_years=self.aging_input_data,
+        self.calc_bas = self._make_calculator(
+            self.pol_bas, self.recs_bas, False,
         )
         # report advance to new year
         aging_data = (
@@ -609,7 +574,7 @@ class TaxCalcIO():
         if not self.silent:
             print(f'{idata} policy to {year}')
 
-    def copy_dump_into_calc(self, calc, br_dump):
+    def _copy_dump_into_calc(self, calc, br_dump):
         """
         Copy behavioral-response dump DataFrame values back into the calc
         object, skipping the marginal-tax-rate columns.
@@ -681,9 +646,9 @@ class TaxCalcIO():
                 self.behvdict, dump=True,
             )
             # copy returned dump dataframe values back into calc objects
-            self.copy_dump_into_calc(self.calc_bas, br_dump_bas)
+            self._copy_dump_into_calc(self.calc_bas, br_dump_bas)
             del br_dump_bas
-            self.copy_dump_into_calc(self.calc_ref, br_dump_ref)
+            self._copy_dump_into_calc(self.calc_ref, br_dump_ref)
             del br_dump_ref
         else:  # if assuming no behavioral responses
             self.calc_bas.calc_all()
@@ -711,13 +676,13 @@ class TaxCalcIO():
                      calc_all_already_called=True)
         # optionally write --tables output to text file
         if output_tables:
-            self.write_tables_file()
+            self._write_tables_file()
         # optionally write --graphs output to HTML files
         if output_graphs:
-            self.write_graph_files()
+            self._write_graph_files()
         # optionally write --dumpdb output to SQLite database file
         if output_dump:
-            self.write_dumpdb_file(
+            self._write_dumpdb_file(
                 dump_varlist,
                 mtr_ptax_ref, mtr_itax_ref,
                 mtr_ptax_bas, mtr_itax_bas,
@@ -727,28 +692,25 @@ class TaxCalcIO():
         """
         Write baseline and reform policy parameter values to separate files.
         """
-        year = self.calc_bas.current_year
-        param_names = Policy.parameter_list()
-        fname = self.output_filename.replace('.xxx', '-params.baseline')
+        self._write_params(self.calc_bas, '-params.baseline', 'baseline')
+        self._write_params(self.calc_ref, '-params.reform', 'reform')
+
+    def _write_params(self, calc, ext, label):
+        """
+        Write policy parameter values from calc to the ext output file.
+        """
+        year = calc.current_year
+        fname = self.output_filename.replace('.xxx', ext)
         with open(fname, 'w', encoding='utf-8') as pfile:
-            for pname in param_names:
-                pval = self.calc_bas.policy_param(pname)
+            for pname in Policy.parameter_list():
+                pval = calc.policy_param(pname)
                 pfile.write(f'{year} {pname} {pval}\n')
         if not self.silent:
             print(  # pragma: no cover
-                f'Write baseline policy parameter values to file {fname}'
-            )
-        fname = self.output_filename.replace('.xxx', '-params.reform')
-        with open(fname, 'w', encoding='utf-8') as pfile:
-            for pname in param_names:
-                pval = self.calc_ref.policy_param(pname)
-                pfile.write(f'{year} {pname} {pval}\n')
-        if not self.silent:
-            print(  # pragma: no cover
-                f'Write reform policy parameter values to file {fname}'
+                f'Write {label} policy parameter values to file {fname}'
             )
 
-    def write_tables_file(self):
+    def _write_tables_file(self):
         """
         Write tables to text file.
         """
@@ -780,14 +742,14 @@ class TaxCalcIO():
         # write each kind of distributional table
         year = self.calc_bas.current_year
         with open(tab_fname, 'w', encoding='utf-8') as tfile:
-            TaxCalcIO.write_decile_table(
+            TaxCalcIO._write_decile_table(
                 distdf,
                 tfile,
                 year,
                 tkind='Reform Totals',
             )
             tfile.write('\n')
-            TaxCalcIO.write_decile_table(
+            TaxCalcIO._write_decile_table(
                 diffdf,
                 tfile,
                 year,
@@ -803,7 +765,7 @@ class TaxCalcIO():
             )
 
     @staticmethod
-    def write_decile_table(dfx, tfile, year, tkind='Totals'):
+    def _write_decile_table(dfx, tfile, year, tkind='Totals'):
         """
         Write to tfile the tkind decile table using dfx DataFrame.
         """
@@ -811,25 +773,23 @@ class TaxCalcIO():
                                               decile_details=False,
                                               pop_quantiles=False,
                                               weight_by_income_measure=False)
+        # each table column: variable, aggregator, scale, header, units
+        wsum = weighted_sum
+        usum = unweighted_sum
+        columns = [
+            ('s006', usum, 1e-6, '    Returns', '       (#m)'),
+            ('expanded_income', wsum, 1e-9, '    ExpInc', '      ($b)'),
+            ('iitax', wsum, 1e-9, '    IncTax', '      ($b)'),
+            ('payrolltax', wsum, 1e-9, '    PayTax', '      ($b)'),
+            ('lumpsum_tax', wsum, 1e-9, '     LSTax', '      ($b)'),
+            ('combined', wsum, 1e-9, '    AllTax', '      ($b)'),
+        ]
         gdfx = dfx.groupby('table_row', as_index=False, observed=True)
-        rtns_series = gdfx.apply(
-            unweighted_sum, 's006', include_groups=False
-        ).values[:, 1]
-        xinc_series = gdfx.apply(
-            weighted_sum, 'expanded_income', include_groups=False
-        ).values[:, 1]
-        itax_series = gdfx.apply(
-            weighted_sum, 'iitax', include_groups=False
-        ).values[:, 1]
-        ptax_series = gdfx.apply(
-            weighted_sum, 'payrolltax', include_groups=False
-        ).values[:, 1]
-        htax_series = gdfx.apply(
-            weighted_sum, 'lumpsum_tax', include_groups=False
-        ).values[:, 1]
-        ctax_series = gdfx.apply(
-            weighted_sum, 'combined', include_groups=False
-        ).values[:, 1]
+        series = [
+            gdfx.apply(agg, var, include_groups=False).values[:, 1]
+            for var, agg, _, _, _ in columns
+        ]
+        scales = [scale for _, _, scale, _, _ in columns]
         # write decile table to text file
         row = (
             f'Weighted Tax {tkind} by '
@@ -838,98 +798,66 @@ class TaxCalcIO():
         tfile.write(row)
         # pylint: disable=consider-using-f-string
         rowfmt = '{}{}{}{}{}{}\n'
-        row = rowfmt.format('    Returns',
-                            '    ExpInc',
-                            '    IncTax',
-                            '    PayTax',
-                            '     LSTax',
-                            '    AllTax')
-        tfile.write(row)
-        row = rowfmt.format('       (#m)',
-                            '      ($b)',
-                            '      ($b)',
-                            '      ($b)',
-                            '      ($b)',
-                            '      ($b)')
-        tfile.write(row)
+        tfile.write(rowfmt.format(*[header for _, _, _, header, _ in columns]))
+        tfile.write(rowfmt.format(*[units for _, _, _, _, units in columns]))
         rowfmt = '{:9.2f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}\n'
         for decile in range(0, 10):
             row = f'{decile:2d}'
-            row += rowfmt.format(rtns_series[decile] * 1e-6,
-                                 xinc_series[decile] * 1e-9,
-                                 itax_series[decile] * 1e-9,
-                                 ptax_series[decile] * 1e-9,
-                                 htax_series[decile] * 1e-9,
-                                 ctax_series[decile] * 1e-9)
+            row += rowfmt.format(*[
+                ser[decile] * scl for ser, scl in zip(series, scales)
+            ])
             tfile.write(row)
         row = ' A'
-        row += rowfmt.format(rtns_series.sum() * 1e-6,
-                             xinc_series.sum() * 1e-9,
-                             itax_series.sum() * 1e-9,
-                             ptax_series.sum() * 1e-9,
-                             htax_series.sum() * 1e-9,
-                             ctax_series.sum() * 1e-9)
+        row += rowfmt.format(*[
+            ser.sum() * scl for ser, scl in zip(series, scales)
+        ])
         tfile.write(row)
         # pylint: enable=consider-using-f-string
         del gdfx
-        del rtns_series
-        del xinc_series
-        del itax_series
-        del ptax_series
-        del htax_series
-        del ctax_series
+        del series
         gc.collect()
 
-    def write_graph_files(self):
+    def _write_graph_files(self):
         """
         Write graphs to HTML files.
         All graphs contain same number of filing units in each quantile.
         """
         pos_wght_sum = self.calc_ref.total_weight() > 0.0
-        fig = None
-        # percentage-aftertax-income-change graph
-        pch_fname = self.output_filename.replace('.xxx', '-chg.html')
-        pch_title = 'CHG by Income Percentile'
-        if pos_wght_sum:
-            fig = self.calc_bas.pch_graph(self.calc_ref, pop_quantiles=False)
-            write_graph_file(fig, pch_fname, pch_title)
-        else:
-            reason = 'No graph because sum of weights is not positive'
-            TaxCalcIO.write_empty_graph_file(pch_fname, pch_title, reason)
-        # average-tax-rate graph
-        atr_fname = self.output_filename.replace('.xxx', '-atr.html')
-        atr_title = 'ATR by Income Percentile'
-        if pos_wght_sum:
-            fig = self.calc_bas.atr_graph(self.calc_ref, pop_quantiles=False)
-            write_graph_file(fig, atr_fname, atr_title)
-        else:
-            reason = 'No graph because sum of weights is not positive'
-            TaxCalcIO.write_empty_graph_file(atr_fname, atr_title, reason)
-        # marginal-tax-rate graph
-        mtr_fname = self.output_filename.replace('.xxx', '-mtr.html')
-        mtr_title = 'MTR by Income Percentile'
-        if pos_wght_sum:
-            fig = self.calc_bas.mtr_graph(
-                self.calc_ref,
-                alt_e00200p_text='Taxpayer Earnings',
-                pop_quantiles=False
-            )
-            write_graph_file(fig, mtr_fname, mtr_title)
-        else:
-            reason = 'No graph because sum of weights is not positive'
-            TaxCalcIO.write_empty_graph_file(mtr_fname, mtr_title, reason)
-        if fig:
-            del fig
-            gc.collect()
+        # each graph is specified by output-file suffix, title, and builder
+        graph_specs = [
+            ('-chg.html', 'CHG by Income Percentile',
+             lambda: self.calc_bas.pch_graph(
+                 self.calc_ref, pop_quantiles=False)),
+            ('-atr.html', 'ATR by Income Percentile',
+             lambda: self.calc_bas.atr_graph(
+                 self.calc_ref, pop_quantiles=False)),
+            ('-mtr.html', 'MTR by Income Percentile',
+             lambda: self.calc_bas.mtr_graph(
+                 self.calc_ref,
+                 alt_e00200p_text='Taxpayer Earnings',
+                 pop_quantiles=False)),
+        ]
+        fnames = []
+        for suffix, title, build_graph in graph_specs:
+            fname = self.output_filename.replace('.xxx', suffix)
+            fnames.append(fname)
+            if pos_wght_sum:
+                fig = build_graph()
+                write_graph_file(fig, fname, title)
+                del fig
+                gc.collect()
+            else:
+                reason = 'No graph because sum of weights is not positive'
+                TaxCalcIO._write_empty_graph_file(fname, title, reason)
         if not self.silent:
             print(  # pragma: no cover
-                f'Write graphical output to file {pch_fname}\n'
-                f'Write graphical output to file {atr_fname}\n'
-                f'Write graphical output to file {mtr_fname}'
+                f'Write graphical output to file {fnames[0]}\n'
+                f'Write graphical output to file {fnames[1]}\n'
+                f'Write graphical output to file {fnames[2]}'
             )
 
     @staticmethod
-    def write_empty_graph_file(fname, title, reason):
+    def _write_empty_graph_file(fname, title, reason):
         """
         Write HTML graph file with title but no graph for specified reason.
         """
@@ -994,7 +922,7 @@ class TaxCalcIO():
                 dumpvars_list.append(var)
         return dumpvars_list
 
-    def write_dumpdb_file(
+    def _write_dumpdb_file(
             self,
             dump_varlist,
             mtr_ptax_ref, mtr_itax_ref,
