@@ -459,10 +459,6 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.analyze"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.analyze()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.output_filepath"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.output_filepath()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.tax_year"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.tax_year()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_decile_table"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_decile_table()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_empty_graph_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_empty_graph_file()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_graph_files"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_graph_files()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_tables_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_tables_file()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -554,31 +550,6 @@ list must include at least one variable.</p></li>
 <dd><p>Return calendar year for which TaxCalcIO calculations are being done.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.write_decile_table">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_decile_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tkind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Totals'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_decile_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_decile_table" title="Link to this definition">#</a></dt>
-<dd><p>Write to tfile the tkind decile table using dfx DataFrame.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.write_empty_graph_file">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_empty_graph_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_empty_graph_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_empty_graph_file" title="Link to this definition">#</a></dt>
-<dd><p>Write HTML graph file with title but no graph for specified reason.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.write_graph_files">
-<span class="sig-name descname"><span class="pre">write_graph_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_graph_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_graph_files" title="Link to this definition">#</a></dt>
-<dd><p>Write graphs to HTML files.
-All graphs contain same number of filing units in each quantile.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.write_tables_file">
-<span class="sig-name descname"><span class="pre">write_tables_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_tables_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_tables_file" title="Link to this definition">#</a></dt>
-<dd><p>Write tables to text file.</p>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -655,10 +626,6 @@ All graphs contain same number of filing units in each quantile.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.analyze"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.analyze()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.output_filepath"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.output_filepath()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.tax_year"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.tax_year()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_decile_table"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_decile_table()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_empty_graph_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_empty_graph_file()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_graph_files"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_graph_files()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#taxcalc.taxcalcio.TaxCalcIO.write_tables_file"><code class="docutils literal notranslate"><span class="pre">TaxCalcIO.write_tables_file()</span></code></a></li>
 </ul>
 </li>
 </ul>
