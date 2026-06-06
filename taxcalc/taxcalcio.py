@@ -302,6 +302,39 @@ class TaxCalcIO():
         for ext in extensions:
             delete_file(self.output_filename.replace('.xxx', ext))
 
+    def make_policy(self, policy_gfactors, last_b_year):
+        """
+        Return Policy object that uses the specified growfactors and that
+        optionally implements TMD credit-claiming thresholds.
+        """
+        pol = Policy(
+            gfactors=policy_gfactors,
+            last_budget_year=last_b_year,
+        )
+        if self.tmd_input_data:  # pragma: no cover
+            if not TMD_ASSUMES_FULL_CREDIT_CLAIMING:
+                pol.implement_reform(TMD_CREDIT_CLAIMING)
+        return pol
+
+    def apply_poldicts(self, pol, poldicts):
+        """
+        Implement each reform dict in poldicts on the pol Policy object,
+        appending any parameter errors to self.errmsg.
+        """
+        for poldict in poldicts:
+            try:
+                pol.implement_reform(
+                    poldict,
+                    print_warnings=True,
+                    raise_errors=False,
+                )
+                if self.errmsg:
+                    self.errmsg += '\n'
+                for _, errors in pol.parameter_errors.items():
+                    self.errmsg += '\n'.join(errors)
+            except paramtools.ValidationError as valerr_msg:
+                self.errmsg += str(valerr_msg)
+
     def init(self, input_data, tax_year, baseline, reform,
              assump, behavior, exact_calculations):
         """
@@ -421,65 +454,15 @@ class TaxCalcIO():
         gdiff_baseline.apply_to(policy_gfactors_ref)
         gdiff_response.apply_to(policy_gfactors_ref)
         # ... the baseline Policy object
+        self.pol_bas = self.make_policy(policy_gfactors_bas, last_b_year)
         if self.specified_baseline:
-            self.pol_bas = Policy(
-                gfactors=policy_gfactors_bas,
-                last_budget_year=last_b_year,
-            )
-            if self.tmd_input_data:  # pragma: no cover
-                if not TMD_ASSUMES_FULL_CREDIT_CLAIMING:
-                    self.pol_bas.implement_reform(TMD_CREDIT_CLAIMING)
-            for poldict in poldicts_bas:
-                try:
-                    self.pol_bas.implement_reform(
-                        poldict,
-                        print_warnings=True,
-                        raise_errors=False,
-                    )
-                    if self.errmsg:
-                        self.errmsg += '\n'
-                    for _, errors in self.pol_bas.parameter_errors.items():
-                        self.errmsg += '\n'.join(errors)
-                except paramtools.ValidationError as valerr_msg:
-                    self.errmsg += str(valerr_msg)
-        else:
-            self.pol_bas = Policy(
-                gfactors=policy_gfactors_bas,
-                last_budget_year=last_b_year,
-            )
-            if self.tmd_input_data:  # pragma: no cover
-                if not TMD_ASSUMES_FULL_CREDIT_CLAIMING:
-                    self.pol_bas.implement_reform(TMD_CREDIT_CLAIMING)
-        # ... the reform Policy object
+            self.apply_poldicts(self.pol_bas, poldicts_bas)
+        # ... the reform Policy object (no reform implies reform == baseline)
         if self.specified_reform:
-            self.pol_ref = Policy(
-                gfactors=policy_gfactors_ref,
-                last_budget_year=last_b_year,
-            )
-            if self.tmd_input_data:  # pragma: no cover
-                if not TMD_ASSUMES_FULL_CREDIT_CLAIMING:
-                    self.pol_ref.implement_reform(TMD_CREDIT_CLAIMING)
-            for poldict in poldicts_ref:
-                try:
-                    self.pol_ref.implement_reform(
-                        poldict,
-                        print_warnings=True,
-                        raise_errors=False,
-                    )
-                    if self.errmsg:
-                        self.errmsg += '\n'
-                    for _, errors in self.pol_ref.parameter_errors.items():
-                        self.errmsg += '\n'.join(errors)
-                except paramtools.ValidationError as valerr_msg:
-                    self.errmsg += str(valerr_msg)
+            self.pol_ref = self.make_policy(policy_gfactors_ref, last_b_year)
+            self.apply_poldicts(self.pol_ref, poldicts_ref)
         else:
-            self.pol_ref = Policy(
-                gfactors=policy_gfactors_bas,
-                last_budget_year=last_b_year,
-            )
-            if self.tmd_input_data:  # pragma: no cover
-                if not TMD_ASSUMES_FULL_CREDIT_CLAIMING:
-                    self.pol_ref.implement_reform(TMD_CREDIT_CLAIMING)
+            self.pol_ref = self.make_policy(policy_gfactors_bas, last_b_year)
         # create Consumption object
         self.con = Consumption(last_budget_year=last_b_year)
         try:
@@ -626,6 +609,26 @@ class TaxCalcIO():
         if not self.silent:
             print(f'{idata} policy to {year}')
 
+    def copy_dump_into_calc(self, calc, br_dump):
+        """
+        Copy behavioral-response dump DataFrame values back into the calc
+        object, skipping the marginal-tax-rate columns.
+        """
+        int_variables = self.recs_bas.INTEGER_VARS
+        vnames = list(br_dump.columns)
+        for mtr_vname in ['mtr_ptax', 'mtr_itax', 'mtr_combined']:
+            if mtr_vname in vnames:
+                vnames.remove(mtr_vname)
+        for vname in vnames:
+            if vname in int_variables:
+                vdtype = np.int32
+            else:
+                vdtype = np.float64
+            calc.array(
+                vname,
+                br_dump[vname].to_numpy(dtype=vdtype, copy=True)
+            )
+
     def analyze(
             self,
             output_params=False,
@@ -678,34 +681,9 @@ class TaxCalcIO():
                 self.behvdict, dump=True,
             )
             # copy returned dump dataframe values back into calc objects
-            int_variables = self.recs_bas.INTEGER_VARS
-            vnames = list(br_dump_bas.columns)
-            for mtr_vname in ['mtr_ptax', 'mtr_itax', 'mtr_combined']:
-                if mtr_vname in vnames:
-                    vnames.remove(mtr_vname)
-            for vname in vnames:
-                if vname in int_variables:
-                    vdtype = np.int32
-                else:
-                    vdtype = np.float64
-                self.calc_bas.array(
-                    vname,
-                    br_dump_bas[vname].to_numpy(dtype=vdtype, copy=True)
-                )
+            self.copy_dump_into_calc(self.calc_bas, br_dump_bas)
             del br_dump_bas
-            vnames = list(br_dump_ref.columns)
-            for mtr_vname in ['mtr_ptax', 'mtr_itax', 'mtr_combined']:
-                if mtr_vname in vnames:
-                    vnames.remove(mtr_vname)
-            for vname in vnames:
-                if vname in int_variables:
-                    vdtype = np.int32
-                else:
-                    vdtype = np.float64
-                self.calc_ref.array(
-                    vname,
-                    br_dump_ref[vname].to_numpy(dtype=vdtype, copy=True)
-                )
+            self.copy_dump_into_calc(self.calc_ref, br_dump_ref)
             del br_dump_ref
         else:  # if assuming no behavioral responses
             self.calc_bas.calc_all()
