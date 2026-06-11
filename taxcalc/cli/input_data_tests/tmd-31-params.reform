@@ -1,4 +1,5 @@
 2031 parameter_indexing_CPI_offset 0.0
+2031 eitc_claim_prob_scale 9e+99
 2031 eitc_claim_thd 0.0
 2031 actc_claim_thd 0.0
 2031 FICA_ss_trt_employer 0.062
