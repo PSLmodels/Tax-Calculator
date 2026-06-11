@@ -1,6 +1,7 @@
 2027 parameter_indexing_CPI_offset 0.0
 2027 eitc_claim_prob_scale 9e+99
 2027 eitc_claim_thd 0.0
+2027 actc_claim_prob_scale 9e+99
 2027 actc_claim_thd 0.0
 2027 FICA_ss_trt_employer 0.062
 2027 FICA_ss_trt_employee 0.062
