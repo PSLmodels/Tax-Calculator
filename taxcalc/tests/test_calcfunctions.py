@@ -506,6 +506,8 @@ def test_EITCamount(test_tuple, expected_value, skip_jit):
 
 
 eitc_claim_thd = 0
+eitc_claim_prob_scale = 9e99
+credit_claim_urn = 0.33
 MARS = 4
 DSI = 0
 c00100 = 19330
@@ -537,7 +539,8 @@ e02300 = 10200
 UI_thd = [150000, 150000, 150000, 150000, 150000]
 UI_em = 10200
 c59660 = 0  # this will be 6660 after the EITC calculation
-tuple1 = (eitc_claim_thd, MARS, DSI, c00100, e00300, e00400, e00600, c01000,
+tuple1 = (eitc_claim_thd, eitc_claim_prob_scale, credit_claim_urn,
+          MARS, DSI, c00100, e00300, e00400, e00600, c01000,
           e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s,
           EIC,
           EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_addon_MarriedJ,
