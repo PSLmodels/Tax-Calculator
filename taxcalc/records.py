@@ -190,6 +190,9 @@ class Records(Data):
         if not np.all(np.logical_and(np.greater_equal(self.PT_SSTB_income, 0),
                                      np.less_equal(self.PT_SSTB_income, 1))):
             raise ValueError('not all PT_SSTB_income values are 0 or 1')
+        # specify credit_claim_urn so that its values are the same across runs
+        rng = np.random.default_rng(seed=192837465)
+        self.credit_claim_urn[:] = rng.uniform(size=self.MARS.size)
 
     @staticmethod
     def cps_constructor(
