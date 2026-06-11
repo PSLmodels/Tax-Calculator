@@ -3209,16 +3209,19 @@ def EITC(eitc_claim_thd, eitc_claim_prob_scale, credit_claim_urn,
             c59660 = max(0., c59660 - red)
 
     # ---------------- (E) Credit claiming logic ----------
+    # Notice that `eitc_claim_prob_scale` and `eitc_claim_thd` can be used
+    # together to specify non-linear claiming probability schedules.
+    #
     # Not on the form: credit claiming logic that uses claiming probability
-    # (default 9e99 implies always claim credit amount)
-    assert credit_claim_urn > 0.
-    assert credit_claim_urn < 1.
+    # (default eitc_claim_prob_scale=9e99 implies always claim credit amount)
     if max_amount > 0.:
         prob = eitc_claim_prob_scale * c59660 / max_amount
         if credit_claim_urn >= prob:
             c59660 = 0.
+    #
     # Not on the form: filers with credit amount less than eitc_claim_thd
-    # are assumed not to claim (default 0 implies always claim credit amount)
+    # are assumed not to claim
+    # (default eitc_claim_thd=0 implies always claim credit amount)
     if c59660 < eitc_claim_thd:
         c59660 = 0.
 
