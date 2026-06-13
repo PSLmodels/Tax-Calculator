@@ -99,7 +99,7 @@ def test_calc_and_used_vars(tests_path):
     for fname in fnames:
         all_cvars.update(set(cvars[fname]))
     # .. add to all_cvars set variables calculated in Records class
-    all_cvars.update(set(['num', 'sep', 'exact']))
+    all_cvars.update(set(['num', 'sep', 'exact', 'credit_claim_urn']))
     # .. add to all_cvars set variables calculated elsewhere
     all_cvars.update(set(['mtr_paytax', 'mtr_inctax']))
     all_cvars.update(set(['benefit_cost_total', 'benefit_value_total']))
