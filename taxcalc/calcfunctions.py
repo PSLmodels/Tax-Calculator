@@ -4380,7 +4380,7 @@ def AdditionalCTC(actc_claim_thd, actc_claim_prob_scale, credit_claim_urn,
         #
         # Not on the form: credit claiming logic that uses claiming probability
         # (default actc_claim_prob_scale=9e99 implies always claim credit)
-        max_amount = ACTC_c * childnum
+        max_amount = line17
         prob = actc_claim_prob_scale * c11070 / max_amount
         if credit_claim_urn >= prob:
             c11070 = 0.
