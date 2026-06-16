@@ -169,7 +169,8 @@ REFORM_YEARS = {
     [(os.path.basename(f), REFORM_YEARS.get(os.path.basename(f), 2020))
      for f in REFORM_FILES],
 )
-def test_reform_json_and_output(reform_file, tax_year, tests_path):
+def test_reform_json_and_output(reform_file, tax_year, tests_path,
+                                full_claiming_assumption):
     """
     Check that each JSON reform file can be converted into a reform dictionary
     that can then be passed to the Policy class implement_reform method that
@@ -222,6 +223,7 @@ def test_reform_json_and_output(reform_file, tax_year, tests_path):
     failures = []
     # specify current-law-policy Calculator object
     pol = Policy()
+    pol.implement_reform(full_claiming_assumption)
     calc = Calculator(policy=pol, records=cases, verbose=False)
     calc.advance_to_year(tax_year)
     calc.calc_all()
@@ -245,6 +247,7 @@ def test_reform_json_and_output(reform_file, tax_year, tests_path):
     # implement the reform relative to its baseline
     reform = Policy.read_json_reform(jrf_text)
     pol = Policy()  # current-law policy
+    pol.implement_reform(full_claiming_assumption)
     if pre_tcja_baseline:
         pol.implement_reform(pre_tcja)
         assert not pol.parameter_errors
