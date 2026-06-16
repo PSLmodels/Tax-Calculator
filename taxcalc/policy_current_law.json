@@ -115,7 +115,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": 1.04
+                "value": 9e+99
             }
         ],
         "validators": {
@@ -165,7 +165,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": 1.10
+                "value": 9e+99
             }
         ],
         "validators": {
