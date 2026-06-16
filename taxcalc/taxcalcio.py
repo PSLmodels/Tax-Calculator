@@ -24,14 +24,6 @@ from taxcalc.utils import (json_to_dict, delete_file, write_graph_file,
                            add_quantile_table_row_variable,
                            unweighted_sum, weighted_sum)
 
-TMD_ASSUMES_FULL_CREDIT_CLAIMING = True
-TMD_CREDIT_CLAIMING = {
-    # IMPORTANT NOTE: when changing either TMDCSV_YEAR or _claim_thd value(s),
-    # be sure to update changed info in the Tax-Calculator-LLM CLAUDE.md file.
-    'eitc_claim_thd': {f'{Records.TMDCSV_YEAR}': 1600},
-    'actc_claim_thd': {f'{Records.TMDCSV_YEAR}': 1500},
-}
-
 
 class TaxCalcIO():
     """
@@ -649,16 +641,12 @@ class TaxCalcIO():
 
     def _make_policy(self, policy_gfactors, last_b_year):
         """
-        Return Policy object that uses the specified growfactors and that
-        optionally implements TMD credit-claiming thresholds.
+        Return Policy object that uses the specified growfactors.
         """
         pol = Policy(
             gfactors=policy_gfactors,
             last_budget_year=last_b_year,
         )
-        if self.tmd_input_data:  # pragma: no cover
-            if not TMD_ASSUMES_FULL_CREDIT_CLAIMING:
-                pol.implement_reform(TMD_CREDIT_CLAIMING)
         return pol
 
     def _apply_poldicts(self, pol, poldicts):
