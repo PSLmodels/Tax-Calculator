@@ -1,7 +1,7 @@
 2029 parameter_indexing_CPI_offset 0.0
-2029 eitc_claim_prob_scale 9e+99
+2029 eitc_claim_prob_scale 1.04
 2029 eitc_claim_thd 0.0
-2029 actc_claim_prob_scale 9e+99
+2029 actc_claim_prob_scale 1.1
 2029 actc_claim_thd 0.0
 2029 FICA_ss_trt_employer 0.062
 2029 FICA_ss_trt_employee 0.062
