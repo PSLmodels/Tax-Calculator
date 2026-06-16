@@ -26,7 +26,7 @@ START_YEAR = 2017
 NUM_YEARS = 19
 
 
-def test_agg(tests_path, cps_fullsample):
+def test_agg(tests_path, cps_fullsample, full_claiming_assumption):
     """
     Test current-law aggregate taxes using cps.csv file.
     """
@@ -34,6 +34,7 @@ def test_agg(tests_path, cps_fullsample):
     nyrs = NUM_YEARS
     # create a baseline Policy object with current-law policy parameters
     baseline_policy = Policy()
+    baseline_policy.implement_reform(full_claiming_assumption)
     # create a Records object (rec) containing all cps.csv input records
     recs = Records.cps_constructor(data=cps_fullsample)
     # create a Calculator object using baseline policy and cps records
