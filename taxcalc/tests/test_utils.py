@@ -70,13 +70,14 @@ def test_validity_of_name_lists():
     assert (set(DIST_TABLE_COLUMNS) - set(DIST_VARIABLES)) == extra_vars_set
 
 
-def test_create_tables(cps_subsample):
+def test_create_tables(cps_subsample, full_claiming_assumption):
     """Test docstring"""
     # pylint: disable=too-many-statements,too-many-branches
 
     # create a current-law Policy object and Calculator object calc1
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
+    pol.implement_reform(full_claiming_assumption)
     calc1 = Calculator(policy=pol, records=rec)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator object calc2
