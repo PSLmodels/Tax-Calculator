@@ -270,7 +270,8 @@ def test_reform_json_and_output(reform_file, tax_year, tests_path,
         raise ValueError(msg)
 
 
-def reform_results(rid, reform_dict, cps_data, reform_2017_law):
+def reform_results(rid, reform_dict, cps_data, reform_2017_law,
+                   full_claiming_assumption):
     """
     Return actual results of the reform specified by rid and reform_dict.
     """
@@ -278,6 +279,7 @@ def reform_results(rid, reform_dict, cps_data, reform_2017_law):
     rec = Records.cps_constructor(data=cps_data)
     # create baseline Calculator object, calc1
     pol1 = Policy()
+    pol1.implement_reform(full_claiming_assumption)
     if reform_dict['baseline'] == '2017_law.json':
         pol1.implement_reform(reform_2017_law)
     elif reform_dict['baseline'] == 'policy_current_law.json':
@@ -292,6 +294,7 @@ def reform_results(rid, reform_dict, cps_data, reform_2017_law):
     for name, value in reform_dict['value'].items():
         reform[name] = {start_year: value}
     pol2 = Policy()
+    pol2.implement_reform(full_claiming_assumption)
     if reform_dict['baseline'] == '2017_law.json':
         pol2.implement_reform(reform_2017_law)
     pol2.implement_reform(reform)
@@ -346,14 +349,15 @@ NUM_REFORMS = 60  # when changing this also change num_reforms in conftest.py
 @pytest.mark.reforms2
 @pytest.mark.parametrize('rid', list(range(1, NUM_REFORMS + 1)))
 def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
-                 reforms_dict, cps_subsample):
+                 reforms_dict, cps_subsample, full_claiming_assumption):
     """
     Write actual reform results to files.
     """
     # pylint: disable=too-many-arguments,too-many-positional-arguments
     assert test_reforms_init == NUM_REFORMS
     actual = reform_results(rid, reforms_dict[str(rid)],
-                            cps_subsample, baseline_2017_law)
+                            cps_subsample, baseline_2017_law,
+                            full_claiming_assumption)
     afile_path = os.path.join(tests_path, f'reform_actual_{rid}.csv')
     with open(afile_path, 'w', encoding='utf-8') as afile:
         afile.write('rid,res1,res2,res3,res4\n')
