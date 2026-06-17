@@ -1,5 +1,6 @@
 #!/bin/zsh
-# CLI tests of behavior responses logic
+# CLI tests of behavior responses logic using CPS input data.
+# These tests assume calibrated (less than full) claiming of credits.
 
 ERRORS=0
 
