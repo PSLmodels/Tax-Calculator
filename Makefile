@@ -13,7 +13,7 @@ help:
 	@echo "clean      : remove .pyc files and local taxcalc package"
 	@echo "package    : build and install local package"
 	@echo "pytest     : generate report for and cleanup after"
-	@echo "             pytest -m 'not requires_puf and not requires_tmd'"
+	@echo "             pytest -m 'not reforms2 and not requires_puf and not requires_tmd'"
 	@echo "pytest-all : generate report for and cleanup after"
 	@echo "             pytest -m ''"
 	@echo "tctest     : generate report for and cleanup after"
@@ -53,7 +53,7 @@ endef
 .PHONY=pytest
 pytest: clean
 	@$(pytest-setup)
-	@cd taxcalc ; pytest -n4 --durations=0 --durations-min=8 -m "not requires_puf and not requires_tmd"
+	@cd taxcalc ; pytest -n4 --durations=0 --durations-min=8 -m "not reforms2 and not requires_puf and not requires_tmd"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
