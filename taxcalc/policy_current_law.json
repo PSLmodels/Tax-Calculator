@@ -106,7 +106,7 @@
     },
     "eitc_claim_prob_scale": {
         "title": "Multiplicative scaling factor applied to EITC claim probability",
-        "description": "Unscaled claim probability is defined as calculated EITC amount divided by maximum EITC amount for the tax unit.  Default value of 9e99 implies everybody claims their EITC amount.",
+        "description": "Unscaled claim probability is defined as calculated EITC amount divided by maximum EITC amount for the tax unit.  Value of 9e99 implies everybody claims their EITC amount.",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -156,7 +156,7 @@
     },
     "actc_claim_prob_scale": {
         "title": "Multiplicative scaling factor applied to ACTC claim probability",
-        "description": "Unscaled claim probability is defined as calculated ACTC amount divided by actc_c*num  for the tax unit.  Default value of 9e99 implies everybody claims their ACTC amount.",
+        "description": "Unscaled claim probability is defined as calculated ACTC amount divided by line17 on Schedule 8812 for the tax unit.  Value of 9e99 implies everybody claims their ACTC amount.",
         "section_1": "",
         "section_2": "",
         "indexable": false,
