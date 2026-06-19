@@ -3005,7 +3005,7 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 
 
 @iterate_jit(nopython=True)
-def EITC(eitc_claim_thd, eitc_claim_prob_scale, credit_claim_urn,
+def EITC(eitc_claim_prob_scale, credit_claim_urn,
          MARS, DSI, c00100, e00300, e00400, e00600, c01000,
          e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s, EIC,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_addon_MarriedJ,
@@ -3059,9 +3059,6 @@ def EITC(eitc_claim_thd, eitc_claim_prob_scale, credit_claim_urn,
 
     Parameters
     ----------
-    eitc_claim_thd: float
-        Model-specific behavioral parameter: EITC amount below which
-        the credit is assumed unclaimed (no form analogue)
     eitc_claim_prob_scale: float
         See Section E logic and comments (no form analogue)
     credit_claim_urn: float
@@ -3210,20 +3207,10 @@ def EITC(eitc_claim_thd, eitc_claim_prob_scale, credit_claim_urn,
 
     # ---------------- (E) Credit claiming logic ----
     if c59660 > 0.:
-        #
-        # Notice that `eitc_claim_prob_scale` and `eitc_claim_thd` can be used
-        # together to specify non-linear claiming probability schedules.
-        #
         # Not on the form: credit claiming logic that uses claiming probability
         # (eitc_claim_prob_scale=9e99 implies always claim credit)
         prob = eitc_claim_prob_scale * c59660 / max_amount
         if credit_claim_urn >= prob:
-            c59660 = 0.
-        #
-        # Not on the form: filers with credit amount less than eitc_claim_thd
-        # are assumed not to claim
-        # (default eitc_claim_thd=0 implies always claim credit)
-        if c59660 < eitc_claim_thd:
             c59660 = 0.
 
     return c59660
@@ -4259,7 +4246,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 
 
 @iterate_jit(nopython=True)
-def AdditionalCTC(actc_claim_thd, actc_claim_prob_scale, credit_claim_urn,
+def AdditionalCTC(actc_claim_prob_scale, credit_claim_urn,
                   codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
                   ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
                   CTC_is_refundable, CTC_include17, CTC_c,
@@ -4272,9 +4259,6 @@ def AdditionalCTC(actc_claim_thd, actc_claim_prob_scale, credit_claim_urn,
 
     Parameters
     ----------
-    actc_claim_thd: float
-        Model-specific behavioral parameter: ACTC amount below which
-        the credit is assumed unclaimed (no form analogue)
     actc_claim_prob_scale: float
         See logic and comments at bottom of function (no form analogue)
     credit_claim_urn: float
@@ -4374,21 +4358,11 @@ def AdditionalCTC(actc_claim_thd, actc_claim_prob_scale, credit_claim_urn,
 
     # approximate ACTC claiming behavior
     if c11070 > 0.:
-        #
-        # Notice that `actc_claim_prob_scale` and `actc_claim_thd` can be used
-        # together to specify non-linear claiming probability schedules.
-        #
         # Not on the form: credit claiming logic that uses claiming probability
         # (actc_claim_prob_scale=9e99 implies always claim credit)
         max_amount = line17
         prob = actc_claim_prob_scale * c11070 / max_amount
         if credit_claim_urn >= prob:
-            c11070 = 0.
-        #
-        # Not on the form: filers with credit amount less than actc_claim_thd
-        # are assumed not to claim
-        # (default actc_claim_thd=0 implies always claim credit)
-        if c11070 < actc_claim_thd:
             c11070 = 0.
 
     return c11070
