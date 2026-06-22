@@ -3407,7 +3407,8 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">EITC</span><span class="p">(</span><span class="n">eitc_claim_thd</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">EITC</span><span class="p">(</span><span class="n">eitc_claim_thd</span><span class="p">,</span> <span class="n">eitc_claim_prob_scale</span><span class="p">,</span> <span class="n">credit_claim_urn</span><span class="p">,</span>
+         <span class="n">MARS</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
          <span class="n">e02000</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">EIC</span><span class="p">,</span>
          <span class="n">EITC_ps</span><span class="p">,</span> <span class="n">EITC_MinEligAge</span><span class="p">,</span> <span class="n">EITC_MaxEligAge</span><span class="p">,</span> <span class="n">EITC_ps_addon_MarriedJ</span><span class="p">,</span>
          <span class="n">EITC_rt</span><span class="p">,</span> <span class="n">EITC_c</span><span class="p">,</span> <span class="n">EITC_prt</span><span class="p">,</span> <span class="n">EITC_basic_frac</span><span class="p">,</span>
@@ -3451,9 +3452,8 @@
 <span class="sd">          `EITC_InvestIncome_c` ($11,950 for 2025) is modeled as a</span>
 <span class="sd">          smooth phaseout at `EITC_excess_InvestIncome_rt` (default</span>
 <span class="sd">          9e+99 → behaviorally identical to the cliff).</span>
-<span class="sd">      (E) Model-specific claiming approximation: filers with expected</span>
-<span class="sd">          credit below `eitc_claim_thd` (default 0) are assumed not to</span>
-<span class="sd">          claim.  No form analogue.</span>
+<span class="sd">      (E) Model-specific claiming approximation: see details below.</span>
+<span class="sd">          No form analogue.</span>
 
 <span class="sd">    Downstream: `c59660` is the records-bound EITC amount consumed by</span>
 <span class="sd">    `IITAX` (Form 1040 line 27a, refundable credit) and reported in</span>
@@ -3464,6 +3464,10 @@
 <span class="sd">    eitc_claim_thd: float</span>
 <span class="sd">        Model-specific behavioral parameter: EITC amount below which</span>
 <span class="sd">        the credit is assumed unclaimed (no form analogue)</span>
+<span class="sd">    eitc_claim_prob_scale: float</span>
+<span class="sd">        See Section E logic and comments (no form analogue)</span>
+<span class="sd">    credit_claim_urn: float</span>
+<span class="sd">        See Section E logic and comments (no form analogue)</span>
 <span class="sd">    MARS: int</span>
 <span class="sd">        Filing (marital) status (1=single, 2=joint, 3=separate,</span>
 <span class="sd">                                 4=household-head, 5=widow(er))</span>
@@ -3606,11 +3610,23 @@
             <span class="n">red</span> <span class="o">=</span> <span class="n">EITC_excess_InvestIncome_rt</span> <span class="o">*</span> <span class="p">(</span><span class="n">invinc</span> <span class="o">-</span> <span class="n">EITC_InvestIncome_c</span><span class="p">)</span>
             <span class="n">c59660</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c59660</span> <span class="o">-</span> <span class="n">red</span><span class="p">)</span>
 
-    <span class="c1"># ---------------- (E) Behavioral claiming approximation ----------</span>
-    <span class="c1"># Not on the form: filers with expected credit &lt; eitc_claim_thd</span>
-    <span class="c1"># are assumed not to claim (default 0 = no suppression).</span>
-    <span class="k">if</span> <span class="n">c59660</span> <span class="o">&lt;</span> <span class="n">eitc_claim_thd</span><span class="p">:</span>
-        <span class="n">c59660</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="c1"># ---------------- (E) Credit claiming logic ----------</span>
+    <span class="k">if</span> <span class="n">c59660</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="c1">#</span>
+        <span class="c1"># Notice that `eitc_claim_prob_scale` and `eitc_claim_thd` can be used</span>
+        <span class="c1"># together to specify non-linear claiming probability schedules.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Not on the form: credit claiming logic that uses claiming probability</span>
+        <span class="c1"># (default eitc_claim_prob_scale=9e99 implies always claim credit)</span>
+        <span class="n">prob</span> <span class="o">=</span> <span class="n">eitc_claim_prob_scale</span> <span class="o">*</span> <span class="n">c59660</span> <span class="o">/</span> <span class="n">max_amount</span>
+        <span class="k">if</span> <span class="n">credit_claim_urn</span> <span class="o">&gt;=</span> <span class="n">prob</span><span class="p">:</span>
+            <span class="n">c59660</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Not on the form: filers with credit amount less than eitc_claim_thd</span>
+        <span class="c1"># are assumed not to claim</span>
+        <span class="c1"># (default eitc_claim_thd=0 implies always claim credit)</span>
+        <span class="k">if</span> <span class="n">c59660</span> <span class="o">&lt;</span> <span class="n">eitc_claim_thd</span><span class="p">:</span>
+            <span class="n">c59660</span> <span class="o">=</span> <span class="mf">0.</span>
 
     <span class="k">return</span> <span class="n">c59660</span>
 
@@ -4645,8 +4661,8 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">AdditionalCTC</span><span class="p">(</span><span class="n">actc_claim_thd</span><span class="p">,</span> <span class="n">codtc_limited</span><span class="p">,</span>
-                  <span class="n">ACTC_c</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">ACTC_Income_thd</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AdditionalCTC</span><span class="p">(</span><span class="n">actc_claim_thd</span><span class="p">,</span> <span class="n">actc_claim_prob_scale</span><span class="p">,</span> <span class="n">credit_claim_urn</span><span class="p">,</span>
+                  <span class="n">codtc_limited</span><span class="p">,</span> <span class="n">ACTC_c</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">ACTC_Income_thd</span><span class="p">,</span>
                   <span class="n">ACTC_rt</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">ACTC_rt_bonus_under6family</span><span class="p">,</span> <span class="n">ACTC_ChildNum</span><span class="p">,</span>
                   <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span> <span class="n">CTC_c</span><span class="p">,</span>
                   <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span>
@@ -4659,7 +4675,12 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    actc_claim_thd: float</span>
-<span class="sd">        ACTC amount below which ACTC is unclaimed</span>
+<span class="sd">        Model-specific behavioral parameter: ACTC amount below which</span>
+<span class="sd">        the credit is assumed unclaimed (no form analogue)</span>
+<span class="sd">    actc_claim_prob_scale: float</span>
+<span class="sd">        See logic and comments at bottom of function (no form analogue)</span>
+<span class="sd">    credit_claim_urn: float</span>
+<span class="sd">        See logic and comments at bottom of function (no form analogue)</span>
 <span class="sd">    codtc_limited: float</span>
 <span class="sd">        Sch 8812 line 16a: Part I tentative credit minus the nonrefundable</span>
 <span class="sd">        portion absorbed (line 12 minus line 14); set in ChildDepTaxCredit</span>
@@ -4700,6 +4721,7 @@
 <span class="sd">    c11070: float</span>
 <span class="sd">        Child tax credit (refunded) from Form 8812</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-branches</span>
     <span class="c1"># Sch 8812 line 16a: leftover Part I tentative credit</span>
     <span class="n">line16a</span> <span class="o">=</span> <span class="n">codtc_limited</span>
     <span class="c1"># Sch 8812 line 16b: max refundable amount = ACTC_c per qualifying child</span>
@@ -4753,8 +4775,23 @@
                 <span class="n">c11070</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line17</span><span class="p">,</span> <span class="n">line27</span><span class="p">)</span>
 
     <span class="c1"># approximate ACTC claiming behavior</span>
-    <span class="k">if</span> <span class="n">c11070</span> <span class="o">&lt;</span> <span class="n">actc_claim_thd</span><span class="p">:</span>
-        <span class="n">c11070</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">c11070</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="c1">#</span>
+        <span class="c1"># Notice that `actc_claim_prob_scale` and `actc_claim_thd` can be used</span>
+        <span class="c1"># together to specify non-linear claiming probability schedules.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Not on the form: credit claiming logic that uses claiming probability</span>
+        <span class="c1"># (default actc_claim_prob_scale=9e99 implies always claim credit)</span>
+        <span class="n">max_amount</span> <span class="o">=</span> <span class="n">line17</span>
+        <span class="n">prob</span> <span class="o">=</span> <span class="n">actc_claim_prob_scale</span> <span class="o">*</span> <span class="n">c11070</span> <span class="o">/</span> <span class="n">max_amount</span>
+        <span class="k">if</span> <span class="n">credit_claim_urn</span> <span class="o">&gt;=</span> <span class="n">prob</span><span class="p">:</span>
+            <span class="n">c11070</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Not on the form: filers with credit amount less than actc_claim_thd</span>
+        <span class="c1"># are assumed not to claim</span>
+        <span class="c1"># (default actc_claim_thd=0 implies always claim credit)</span>
+        <span class="k">if</span> <span class="n">c11070</span> <span class="o">&lt;</span> <span class="n">actc_claim_thd</span><span class="p">:</span>
+            <span class="n">c11070</span> <span class="o">=</span> <span class="mf">0.</span>
 
     <span class="k">return</span> <span class="n">c11070</span>
 
