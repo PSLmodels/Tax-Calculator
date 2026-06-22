@@ -142,14 +142,14 @@ class Policy(Parameters):
         'ALD_AlimonyReceived_hc': (
             'was renamed AlimonyReceived_frac_in_AGI in Tax-Calculator 6.6.0'
         ),
+        # following parameters were removed in PR 3082
+        'eitc_claim_thd': 'was removed in Tax-Calculator 6.7.0',
+        'actc_claim_thd': 'was removed in Tax-Calculator 6.7.0',
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}
     # (3) specify which Policy parameters are wage (rather than price) indexed
-    WAGE_INDEXED_PARAMS = [
-        'SS_Earnings_c', 'SS_Earnings_thd',
-        'eitc_claim_thd', 'actc_claim_thd'
-    ]
+    WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
 
     def __init__(self,
                  gfactors=None,
