@@ -135,16 +135,18 @@ def test_make_calculator_raises_on_no_policy(cps_subsample):
         Calculator(records=rec)
 
 
-def test_calculator_mtr(cps_subsample):
+def test_calculator_mtr(cps_subsample, full_claiming_assumption):
     """
-    Test Calculator mtr method.
+    Test Calculator mtr method using CPS subsample.
     """
     rec = Records.cps_constructor(data=cps_subsample)
-    calcx = Calculator(policy=Policy(), records=rec)
+    pol = Policy()
+    pol.implement_reform(full_claiming_assumption)
+    calcx = Calculator(policy=pol, records=rec)
     calcx.calc_all()
     combinedx = calcx.array('combined')
     c00100x = calcx.array('c00100')
-    calc = Calculator(policy=Policy(), records=rec)
+    calc = Calculator(policy=pol, records=rec)
     recs_pre_e00200p = copy.deepcopy(calc.array('e00200p'))
     (mtr_ptx, mtr_itx, mtr_cmb) = calc.mtr(variable_str='e00200p',
                                            zero_out_calculated_vars=True)

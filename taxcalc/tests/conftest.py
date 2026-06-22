@@ -70,6 +70,15 @@ def tmd_data_path_fixture(tests_path):
     return os.path.join(tests_path, '..', '..', 'tmd.csv')
 
 
+@pytest.fixture(scope='session', name='full_claiming_assumption')
+def full_credit_claiming_assumption_fixture():
+    """Returns parameter dictionary specifying full credit claiming"""
+    return {
+        'eitc_claim_prob_scale': {2013: 9e99},
+        'actc_claim_prob_scale': {2013: 9e99},
+    }
+
+
 @pytest.fixture(scope='session', name='test_reforms_init')
 def fixture_test_reforms(tests_path):
     """

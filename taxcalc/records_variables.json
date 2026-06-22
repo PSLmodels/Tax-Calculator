@@ -669,9 +669,9 @@
   },
   "calc": {
     "credit_claim_urn": {
-      "type": "float",
-      "desc": "Uniform random number used in EITC/ACTC claiming logic",
-      "form": {"2013-2016": "internally generated; same across runs"}
+      "type": "unchanging_float",
+      "desc": "Uniform random number used in EITC/ACTC claiming logic, which implies correlated claimning behavior across different credits",
+      "form": {"2013-20??": "internally generated; same across baseline/reform and across runs"}
     },
     "niit": {
       "type": "float",

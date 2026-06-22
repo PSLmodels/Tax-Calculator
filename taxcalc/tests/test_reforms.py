@@ -163,13 +163,14 @@ REFORM_YEARS = {
 }
 
 
-@pytest.mark.reforms
+@pytest.mark.reforms1
 @pytest.mark.parametrize(
     'reform_file,tax_year',
     [(os.path.basename(f), REFORM_YEARS.get(os.path.basename(f), 2020))
      for f in REFORM_FILES],
 )
-def test_reform_json_and_output(reform_file, tax_year, tests_path):
+def test_reform_json_and_output(reform_file, tax_year, tests_path,
+                                full_claiming_assumption):
     """
     Check that each JSON reform file can be converted into a reform dictionary
     that can then be passed to the Policy class implement_reform method that
@@ -221,7 +222,9 @@ def test_reform_json_and_output(reform_file, tax_year, tests_path):
     # specify list of reform failures
     failures = []
     # specify current-law-policy Calculator object
-    calc = Calculator(policy=Policy(), records=cases, verbose=False)
+    pol = Policy()
+    pol.implement_reform(full_claiming_assumption)
+    calc = Calculator(policy=pol, records=cases, verbose=False)
     calc.advance_to_year(tax_year)
     calc.calc_all()
     clp_base = cases_path.replace('cases.csv', f'clp-{tax_year}')
@@ -244,6 +247,7 @@ def test_reform_json_and_output(reform_file, tax_year, tests_path):
     # implement the reform relative to its baseline
     reform = Policy.read_json_reform(jrf_text)
     pol = Policy()  # current-law policy
+    pol.implement_reform(full_claiming_assumption)
     if pre_tcja_baseline:
         pol.implement_reform(pre_tcja)
         assert not pol.parameter_errors
@@ -266,29 +270,35 @@ def test_reform_json_and_output(reform_file, tax_year, tests_path):
         raise ValueError(msg)
 
 
-def reform_results(rid, reform_dict, cps_data, reform_2017_law):
+def reform_results(rid, reform_dict, cps_data, reform_2017_law,
+                   full_claiming_assumption):
     """
     Return actual results of the reform specified by rid and reform_dict.
     """
     # pylint: disable=too-many-locals
     rec = Records.cps_constructor(data=cps_data)
     # create baseline Calculator object, calc1
-    pol = Policy()
+    pol1 = Policy()
+    pol1.implement_reform(full_claiming_assumption)
     if reform_dict['baseline'] == '2017_law.json':
-        pol.implement_reform(reform_2017_law)
+        pol1.implement_reform(reform_2017_law)
     elif reform_dict['baseline'] == 'policy_current_law.json':
         pass
     else:
         msg = 'illegal baseline value {}'
         raise ValueError(msg.format(reform_dict['baseline']))
-    calc1 = Calculator(policy=pol, records=rec, verbose=False)
+    calc1 = Calculator(policy=pol1, records=rec, verbose=False)
     # create reform Calculator object, calc2
     start_year = reform_dict['start_year']
     reform = {}
     for name, value in reform_dict['value'].items():
         reform[name] = {start_year: value}
-    pol.implement_reform(reform)
-    calc2 = Calculator(policy=pol, records=rec, verbose=False)
+    pol2 = Policy()
+    pol2.implement_reform(full_claiming_assumption)
+    if reform_dict['baseline'] == '2017_law.json':
+        pol2.implement_reform(reform_2017_law)
+    pol2.implement_reform(reform)
+    calc2 = Calculator(policy=pol2, records=rec, verbose=False)
     # increment both Calculator objects to reform's start_year
     calc1.advance_to_year(start_year)
     calc2.advance_to_year(start_year)
@@ -336,16 +346,18 @@ def fixture_reforms_dict(tests_path):
 NUM_REFORMS = 60  # when changing this also change num_reforms in conftest.py
 
 
+@pytest.mark.reforms2
 @pytest.mark.parametrize('rid', list(range(1, NUM_REFORMS + 1)))
 def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
-                 reforms_dict, cps_subsample):
+                 reforms_dict, cps_subsample, full_claiming_assumption):
     """
     Write actual reform results to files.
     """
     # pylint: disable=too-many-arguments,too-many-positional-arguments
     assert test_reforms_init == NUM_REFORMS
     actual = reform_results(rid, reforms_dict[str(rid)],
-                            cps_subsample, baseline_2017_law)
+                            cps_subsample, baseline_2017_law,
+                            full_claiming_assumption)
     afile_path = os.path.join(tests_path, f'reform_actual_{rid}.csv')
     with open(afile_path, 'w', encoding='utf-8') as afile:
         afile.write('rid,res1,res2,res3,res4\n')
@@ -358,27 +370,36 @@ def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
     ('OBBBA.json', 0.0),
     ('NoOBBBA.json', 301.355),
 ])
-def test_reforms_cps(reform_filename, expected_diff, tests_path):
+def test_reforms_cps(
+        reform_filename,
+        expected_diff,
+        tests_path,
+        full_claiming_assumption,
+):
     """
     Test reforms beyond 2025 using public CPS data.
     """
-    pol = Policy()
+    # pylint: disable=too-many-locals
+    clp_pol = Policy()
+    clp_pol.implement_reform(full_claiming_assumption)
     reform_file = os.path.join(tests_path, '..', 'reforms', reform_filename)
     with open(reform_file, 'r', encoding='utf-8') as rfile:
         rtext = rfile.read()
-    pol.implement_reform(Policy.read_json_reform(rtext))
-    assert not pol.parameter_errors
+    ref_pol = Policy()
+    ref_pol.implement_reform(full_claiming_assumption)
+    ref_pol.implement_reform(Policy.read_json_reform(rtext))
+    assert not ref_pol.parameter_errors
 
     recs = Records.cps_constructor()
 
     # create a Calculator object using current-law policy
-    calc_clp = Calculator(policy=Policy(), records=recs, verbose=False)
+    calc_clp = Calculator(policy=clp_pol, records=recs, verbose=False)
     calc_clp.advance_to_year(2026)
     calc_clp.calc_all()
     iitax_clp = calc_clp.array('iitax')
 
     # create a Calculator object using the reform
-    calc_ref = Calculator(policy=pol, records=recs, verbose=False)
+    calc_ref = Calculator(policy=ref_pol, records=recs, verbose=False)
     calc_ref.advance_to_year(2026)
     calc_ref.calc_all()
     iitax_ref = calc_ref.array('iitax')

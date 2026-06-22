@@ -3208,14 +3208,14 @@ def EITC(eitc_claim_thd, eitc_claim_prob_scale, credit_claim_urn,
             red = EITC_excess_InvestIncome_rt * (invinc - EITC_InvestIncome_c)
             c59660 = max(0., c59660 - red)
 
-    # ---------------- (E) Credit claiming logic ----------
+    # ---------------- (E) Credit claiming logic ----
     if c59660 > 0.:
         #
         # Notice that `eitc_claim_prob_scale` and `eitc_claim_thd` can be used
         # together to specify non-linear claiming probability schedules.
         #
         # Not on the form: credit claiming logic that uses claiming probability
-        # (default eitc_claim_prob_scale=9e99 implies always claim credit)
+        # (eitc_claim_prob_scale=9e99 implies always claim credit)
         prob = eitc_claim_prob_scale * c59660 / max_amount
         if credit_claim_urn >= prob:
             c59660 = 0.
@@ -4379,7 +4379,7 @@ def AdditionalCTC(actc_claim_thd, actc_claim_prob_scale, credit_claim_urn,
         # together to specify non-linear claiming probability schedules.
         #
         # Not on the form: credit claiming logic that uses claiming probability
-        # (default actc_claim_prob_scale=9e99 implies always claim credit)
+        # (actc_claim_prob_scale=9e99 implies always claim credit)
         max_amount = line17
         prob = actc_claim_prob_scale * c11070 / max_amount
         if credit_claim_urn >= prob:

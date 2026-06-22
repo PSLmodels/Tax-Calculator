@@ -1,6 +1,7 @@
 #!/bin/zsh
 # CLI input data tests assume that the three national TMD files are in the top-
 # level Tax-Calculator folder where they are ignored by git version control.
+# These tests assume calibrated (less than full) claiming of credits.
 # See Makefile target idtest for usage.
 
 # use CPS input files
