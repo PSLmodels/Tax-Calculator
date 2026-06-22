@@ -104,6 +104,31 @@
             "cps": true
         }
     },
+    "eitc_claim_prob_scale": {
+        "title": "Multiplicative scaling factor applied to EITC claim probability",
+        "description": "Unscaled claim probability is defined as calculated EITC amount divided by maximum EITC amount for the tax unit.  Default value of 9e99 implies everybody claims their EITC amount.",
+        "section_1": "",
+        "section_2": "",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 9e+99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "eitc_claim_thd": {
         "title": "EITC claim threshold",
         "description": "EITC amounts below this threshold are assumed to be unclaimed, and therefore, are zeroed out.  Indexed by wage growth, not price inflation.  Note: 2022 value of 1600 produces plausible EITC participation with TMD data.",
@@ -116,6 +141,31 @@
             {
                 "year": 2013,
                 "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "actc_claim_prob_scale": {
+        "title": "Multiplicative scaling factor applied to ACTC claim probability",
+        "description": "Unscaled claim probability is defined as calculated ACTC amount divided by actc_c*num  for the tax unit.  Default value of 9e99 implies everybody claims their ACTC amount.",
+        "section_1": "",
+        "section_2": "",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 9e+99
             }
         ],
         "validators": {
