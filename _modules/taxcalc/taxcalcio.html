@@ -417,14 +417,6 @@
                            <span class="n">add_quantile_table_row_variable</span><span class="p">,</span>
                            <span class="n">unweighted_sum</span><span class="p">,</span> <span class="n">weighted_sum</span><span class="p">)</span>
 
-<span class="n">TMD_ASSUMES_FULL_CREDIT_CLAIMING</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">TMD_CREDIT_CLAIMING</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="c1"># IMPORTANT NOTE: when changing either TMDCSV_YEAR or _claim_thd value(s),</span>
-    <span class="c1"># be sure to update changed info in the Tax-Calculator-LLM CLAUDE.md file.</span>
-    <span class="s1">&#39;eitc_claim_thd&#39;</span><span class="p">:</span> <span class="p">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Records</span><span class="o">.</span><span class="n">TMDCSV_YEAR</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="mi">1600</span><span class="p">},</span>
-    <span class="s1">&#39;actc_claim_thd&#39;</span><span class="p">:</span> <span class="p">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Records</span><span class="o">.</span><span class="n">TMDCSV_YEAR</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="mi">1500</span><span class="p">},</span>
-<span class="p">}</span>
-
 
 <div class="viewcode-block" id="TaxCalcIO">
 <a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO">[docs]</a>
@@ -1053,16 +1045,12 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_make_policy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy_gfactors</span><span class="p">,</span> <span class="n">last_b_year</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return Policy object that uses the specified growfactors and that</span>
-<span class="sd">        optionally implements TMD credit-claiming thresholds.</span>
+<span class="sd">        Return Policy object that uses the specified growfactors.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pol</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span>
             <span class="n">gfactors</span><span class="o">=</span><span class="n">policy_gfactors</span><span class="p">,</span>
             <span class="n">last_budget_year</span><span class="o">=</span><span class="n">last_b_year</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmd_input_data</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">TMD_ASSUMES_FULL_CREDIT_CLAIMING</span><span class="p">:</span>
-                <span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">TMD_CREDIT_CLAIMING</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pol</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_poldicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">poldicts</span><span class="p">):</span>
