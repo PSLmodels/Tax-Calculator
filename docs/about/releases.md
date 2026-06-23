@@ -5,6 +5,32 @@ Go
 for a complete commit history.
 
 
+2026-06-24 Release 6.7.0
+------------------------
+(last merged pull request is
+[#3082](https://github.com/PSLmodels/Tax-Calculator/pull/3082))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Add and activate logic for refundable credit claiming behavior.
+  [[#3080](https://github.com/PSLmodels/Tax-Calculator/pull/3080)
+   by Martin Holmer]
+- Remove obsolete `eitc_claim_thd` and `actc_claim_thd` parameters.
+  [[#3082](https://github.com/PSLmodels/Tax-Calculator/pull/3082)
+   by Martin Holmer]
+
+**Bug Fixes**
+- Fix minor bugs in the `taxcalcio.py` module and refactor code to
+  make it easier to read.
+  [[#3077](https://github.com/PSLmodels/Tax-Calculator/pull/3077)
+   and
+   [#3078](https://github.com/PSLmodels/Tax-Calculator/pull/3078)
+   by Martin Holmer]
+
+
 2026-06-05 Release 6.6.2
 ------------------------
 (last merged pull request is
@@ -17,7 +43,6 @@ for a complete commit history.
 **New Features**
 
 **Bug Fixes**
-
 - Change CLI so that it now assumes 100% refundable-credit
   participation with TMD input data, which makes it consistent with
   the default (full-participation) assumption used in the Python API
@@ -38,7 +63,6 @@ for a complete commit history.
 **New Features**
 
 **Bug Fixes**
-
 - Fixes issue #3071 by adding a new parameter called `soi_iitax` that
   controls the categorization of the self-employment tax (`setax`) and
   the additional Medicare tax (`ptax_amc`) as being part of the income

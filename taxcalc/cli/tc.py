@@ -374,7 +374,7 @@ TEST_INPUT_DATA = (
 EXPECTED_TEST_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}.exp'
 EXPECTED_TEST_OUTPUT = (
     'id|itax\n'
-    '1|131.88\n'
+    '1|1100.00\n'
     '2|28879.00\n'
 )
 TEST_DUMPDB_FILENAME = f'test-{str(TEST_TAXYEAR)[2:]}-#-#-#-#.dumpdb'
