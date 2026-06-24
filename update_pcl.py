@@ -709,8 +709,6 @@ def main():
         if not pinfo.get('indexed', False):
             continue
         num_indexed_params += 1
-        if pname in ['eitc_claim_thd', 'actc_claim_thd']:
-            continue
         if pname not in NEW_KNOWN_ITEMS:
             print(f'NO NEW_KNOWN_ITEMS FOR INDEXED POLICY PARAMETER {pname}')
             continue
