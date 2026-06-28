@@ -162,7 +162,7 @@ def test_calculator_mtr(cps_subsample, full_claiming_assumption):
                                     calc_all_already_called=True)
     assert isinstance(mtr_combined, np.ndarray)
     (_, _, mtr_combined) = calc.mtr(variable_str='e00650',
-                                    negative_finite_diff=True,
+                                    finite_diff=-0.01,
                                     calc_all_already_called=True)
     assert isinstance(mtr_combined, np.ndarray)
     (_, _, mtr_combined) = calc.mtr(variable_str='e00900p',
