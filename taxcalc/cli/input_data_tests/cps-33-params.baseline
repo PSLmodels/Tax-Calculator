@@ -1,6 +1,8 @@
 2033 parameter_indexing_CPI_offset 0.0
-2033 eitc_claim_prob_scale 1.04
+2033 eitc_claim_prob_scale 1.03
+2033 eitc_claim_prob_min 0.4
 2033 actc_claim_prob_scale 1.1
+2033 actc_claim_prob_min 0.0
 2033 FICA_ss_trt_employer 0.062
 2033 FICA_ss_trt_employee 0.062
 2033 SS_Earnings_c 232250.32
