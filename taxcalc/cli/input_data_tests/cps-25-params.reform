@@ -1,6 +1,8 @@
 2025 parameter_indexing_CPI_offset 0.0
-2025 eitc_claim_prob_scale 1.04
+2025 eitc_claim_prob_scale 1.03
+2025 eitc_claim_prob_min 0.4
 2025 actc_claim_prob_scale 1.1
+2025 actc_claim_prob_min 0.0
 2025 FICA_ss_trt_employer 0.062
 2025 FICA_ss_trt_employee 0.062
 2025 SS_Earnings_c 176100.0

@@ -1,6 +1,8 @@
 2027 parameter_indexing_CPI_offset 0.0
-2027 eitc_claim_prob_scale 1.04
+2027 eitc_claim_prob_scale 1.03
+2027 eitc_claim_prob_min 0.4
 2027 actc_claim_prob_scale 1.1
+2027 actc_claim_prob_min 0.0
 2027 FICA_ss_trt_employer 0.062
 2027 FICA_ss_trt_employee 0.062
 2027 SS_Earnings_c 190957.5
