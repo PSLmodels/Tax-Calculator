@@ -987,7 +987,7 @@
 <div class="viewcode-block" id="Calculator.mtr">
 <a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.mtr">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mtr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_str</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span>
-            <span class="n">negative_finite_diff</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">finite_diff</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>  <span class="c1"># can be positive or negative, but not zero</span>
             <span class="n">zero_out_calculated_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -1019,10 +1019,9 @@
 <span class="sd">            specifies type of income or expense that is increased to compute</span>
 <span class="sd">            the marginal tax rates.  See Notes for list of valid variables.</span>
 
-<span class="sd">        negative_finite_diff: boolean</span>
-<span class="sd">            specifies whether or not marginal tax rates are computed by</span>
-<span class="sd">            subtracting (rather than adding) a small finite_diff amount</span>
-<span class="sd">            to the specified variable.</span>
+<span class="sd">        finite_diff: float</span>
+<span class="sd">            specifies the finite_diff amount added to the specified variable.</span>
+<span class="sd">            Can be positive or negative, but not zero.</span>
 
 <span class="sd">        zero_out_calculated_vars: boolean</span>
 <span class="sd">            specifies value of zero_out_calc_vars parameter used in calls</span>
@@ -1080,10 +1079,8 @@
         <span class="k">if</span> <span class="n">variable_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">MTR_VALID_VARIABLES</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;mtr variable_str=&quot;</span><span class="si">{}</span><span class="s1">&quot; is not valid&#39;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable_str</span><span class="p">))</span>
-        <span class="c1"># specify value for finite_diff parameter</span>
-        <span class="n">finite_diff</span> <span class="o">=</span> <span class="mf">0.01</span>  <span class="c1"># a one-cent difference</span>
-        <span class="k">if</span> <span class="n">negative_finite_diff</span><span class="p">:</span>
-            <span class="n">finite_diff</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="c1"># check value of finite_diff parameter</span>
+        <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">finite_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;mtr finite_diff must be non-zero&#39;</span>
         <span class="c1"># remember records object in order to restore it after mtr computations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">store_records</span><span class="p">()</span>
         <span class="c1"># extract variable array(s) from embedded records object</span>
