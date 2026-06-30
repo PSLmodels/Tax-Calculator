@@ -3005,7 +3005,7 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 
 
 @iterate_jit(nopython=True)
-def EITC(eitc_claim_prob_scale, credit_claim_urn,
+def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
          MARS, DSI, c00100, e00300, e00400, e00600, c01000,
          e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s, EIC,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_addon_MarriedJ,
@@ -3059,6 +3059,8 @@ def EITC(eitc_claim_prob_scale, credit_claim_urn,
 
     Parameters
     ----------
+    eitc_claim_prob_min: float
+        See Section E logic and comments (no form analogue)
     eitc_claim_prob_scale: float
         See Section E logic and comments (no form analogue)
     credit_claim_urn: float
@@ -3209,7 +3211,8 @@ def EITC(eitc_claim_prob_scale, credit_claim_urn,
     if c59660 > 0.:
         # Not on the form: credit claiming logic that uses claiming probability
         # (eitc_claim_prob_scale=9e99 implies always claim credit)
-        prob = eitc_claim_prob_scale * c59660 / max_amount
+        unscaled_prob = max(eitc_claim_prob_min, c59660 / max_amount)
+        prob = eitc_claim_prob_scale * unscaled_prob
         if credit_claim_urn >= prob:
             c59660 = 0.
 
@@ -4246,7 +4249,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 
 
 @iterate_jit(nopython=True)
-def AdditionalCTC(actc_claim_prob_scale, credit_claim_urn,
+def AdditionalCTC(actc_claim_prob_min, actc_claim_prob_scale, credit_claim_urn,
                   codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
                   ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
                   CTC_is_refundable, CTC_include17, CTC_c,
@@ -4259,6 +4262,8 @@ def AdditionalCTC(actc_claim_prob_scale, credit_claim_urn,
 
     Parameters
     ----------
+    actc_claim_prob_min: float
+        See logic and comments at bottom of function (no form analogue)
     actc_claim_prob_scale: float
         See logic and comments at bottom of function (no form analogue)
     credit_claim_urn: float
@@ -4361,7 +4366,8 @@ def AdditionalCTC(actc_claim_prob_scale, credit_claim_urn,
         # Not on the form: credit claiming logic that uses claiming probability
         # (actc_claim_prob_scale=9e99 implies always claim credit)
         max_amount = line17
-        prob = actc_claim_prob_scale * c11070 / max_amount
+        unscaled_prob = max(actc_claim_prob_min, c11070 / max_amount)
+        prob = actc_claim_prob_scale * unscaled_prob
         if credit_claim_urn >= prob:
             c11070 = 0.
 
