@@ -536,7 +536,7 @@ class Calculator():
                            'k1bx14p']
 
     def mtr(self, variable_str='e00200p',
-            negative_finite_diff=False,
+            finite_diff=0.01,  # can be positive or negative, but not zero
             zero_out_calculated_vars=False,
             calc_all_already_called=False,
             wrt_full_compensation=True):
@@ -568,10 +568,9 @@ class Calculator():
             specifies type of income or expense that is increased to compute
             the marginal tax rates.  See Notes for list of valid variables.
 
-        negative_finite_diff: boolean
-            specifies whether or not marginal tax rates are computed by
-            subtracting (rather than adding) a small finite_diff amount
-            to the specified variable.
+        finite_diff: float
+            specifies the finite_diff amount added to the specified variable.
+            Can be positive or negative, but not zero.
 
         zero_out_calculated_vars: boolean
             specifies value of zero_out_calc_vars parameter used in calls
@@ -629,10 +628,8 @@ class Calculator():
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
             msg = 'mtr variable_str="{}" is not valid'
             raise ValueError(msg.format(variable_str))
-        # specify value for finite_diff parameter
-        finite_diff = 0.01  # a one-cent difference
-        if negative_finite_diff:
-            finite_diff *= -1.0
+        # check value of finite_diff parameter
+        assert abs(finite_diff) > 0, 'mtr finite_diff must be non-zero'
         # remember records object in order to restore it after mtr computations
         self.store_records()
         # extract variable array(s) from embedded records object
