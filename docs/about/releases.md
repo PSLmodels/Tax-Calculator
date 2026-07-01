@@ -5,6 +5,26 @@ Go
 for a complete commit history.
 
 
+2026-07-01 Release 6.7.1
+------------------------
+(last merged pull request is
+[#3087](https://github.com/PSLmodels/Tax-Calculator/pull/3087))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Make value of finite_diff used in Calculator class mtr method more flexible
+  [[#3086](https://github.com/PSLmodels/Tax-Calculator/pull/3086)
+   by Martin Holmer]
+- Add {eitc|actc}_claim_prob_min parameters; recalibrate EITC claiming behavior
+  [[#3087](https://github.com/PSLmodels/Tax-Calculator/pull/3087)
+   by Martin Holmer]
+
+**Bug Fixes**
+
+
 2026-06-24 Release 6.7.0
 ------------------------
 (last merged pull request is
