@@ -1689,7 +1689,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     # current law; active in 2020-2021 and under reforms).
     # ----------------------------------------------------------------
     if STD_allow_charity_ded_nonitemizers:
-        capped_ded = min(e19800, ID_Charity_crt_all * c00100)
+        capped_ded = min(e19800, ID_Charity_crt_all * max(0., c00100))
         standard += min(capped_ded, STD_charity_ded_nonitemizers_max[MARS - 1])
     return standard
 

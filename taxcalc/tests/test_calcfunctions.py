@@ -205,7 +205,9 @@ tuple8 = (1, 200, STD_in, 44, 0, STD_Aged_in, 1000, 350, 3, 0, 0, 0, 2,
           True, 0, 100000, 1, Charity_max_in)
 tuple9 = (1, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 350, 3, 0, 0, 0, 2,
           True, 0, 100000, 1, Charity_max_in)
-expected = [12000, 15800, 13800, 14400, 6000, 6000, 0, 1000, 1350]
+tuple10 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 350, 1, 0, 0, 0, 2,
+           True, 0, 1, -3000, Charity_max_in)
+expected = [12000, 15800, 13800, 14400, 6000, 6000, 0, 1000, 1350, 6000]
 
 
 @pytest.mark.stded
@@ -215,12 +217,13 @@ expected = [12000, 15800, 13800, 14400, 6000, 6000, 0, 1000, 1350]
         (tuple3, expected[2]), (tuple4, expected[3]),
         (tuple5, expected[4]), (tuple6, expected[5]),
         (tuple7, expected[6]), (tuple8, expected[7]),
-        (tuple9, expected[8])], ids=[
+        (tuple9, expected[8]), (tuple10, expected[9])], ids=[
             'Married, young', 'Married, allow charity',
             'Married, allow charity, over limit',
             'Married, two old', 'Single 1', 'Single 2', 'Married, Single',
             'Marrid, Single, dep, under earn',
-            'Married, Single, dep, over earn'])
+            'Married, Single, dep, over earn',
+            'Single, negative AGI'])
 def test_StdDed(test_tuple, expected_value, skip_jit):
     """
     Tests the StdDed function
