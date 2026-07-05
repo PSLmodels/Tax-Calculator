@@ -45,7 +45,6 @@
 2025 STD_Dep 1350.0
 2025 STD_Dep_earned_add 450.0
 2025 STD_Aged [2000. 1600. 1600. 2000. 1600.]
-2025 STD_allow_charity_ded_nonitemizers False
 2025 STD_charity_ded_nonitemizers_max [0. 0. 0. 0. 0.]
 2025 II_credit [0. 0. 0. 0. 0.]
 2025 II_credit_ps [0. 0. 0. 0. 0.]

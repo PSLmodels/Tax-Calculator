@@ -45,7 +45,6 @@
 2035 STD_Dep 1668.41
 2035 STD_Dep_earned_add 556.14
 2035 STD_Aged [2533.5  2039.19 2039.19 2533.5  2039.19]
-2035 STD_allow_charity_ded_nonitemizers True
 2035 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]
 2035 II_credit [0. 0. 0. 0. 0.]
 2035 II_credit_ps [0. 0. 0. 0. 0.]

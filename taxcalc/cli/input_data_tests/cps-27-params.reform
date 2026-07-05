@@ -45,7 +45,6 @@
 2027 STD_Dep 1389.56
 2027 STD_Dep_earned_add 463.19
 2027 STD_Aged [2110.06 1698.35 1698.35 2110.06 1698.35]
-2027 STD_allow_charity_ded_nonitemizers True
 2027 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]
 2027 II_credit [0. 0. 0. 0. 0.]
 2027 II_credit_ps [0. 0. 0. 0. 0.]

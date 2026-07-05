@@ -45,7 +45,6 @@
 2030 STD_Dep 1492.02
 2030 STD_Dep_earned_add 497.35
 2030 STD_Aged [2265.66 1823.59 1823.59 2265.66 1823.59]
-2030 STD_allow_charity_ded_nonitemizers True
 2030 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]
 2030 II_credit [0. 0. 0. 0. 0.]
 2030 II_credit_ps [0. 0. 0. 0. 0.]

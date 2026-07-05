@@ -1569,8 +1569,7 @@ def AdditionalMedicareTax(MARS, e00200,
 @iterate_jit(nopython=True)
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            STD_Dep_earned_add, MARS, MIDR, blind_head, blind_spouse, standard,
-           STD_allow_charity_ded_nonitemizers, e19800, ID_Charity_crt_all,
-           c00100, STD_charity_ded_nonitemizers_max):
+           e19800, STD_charity_ded_nonitemizers_max):
     """
     Computes standard deduction (Form 1040 line 12).
 
@@ -1588,9 +1587,8 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     3. Aged/blind add-on: STD_Aged[MARS-1] per checked box (filer 65+,
        filer blind, spouse 65+, spouse blind). Spouse boxes only count
        for MFJ filers.
-    4. Reform/legacy CARES cash-charity add-on for nonitemizers (off
-       under current law; STD_allow_charity_ded_nonitemizers defaults
-       to False).
+    4. Cash-charity-deduction add-on for nonitemizers active under
+       CARES (2020-21) and OBBBA (2026-).
 
     The Records-bound output is `standard` (Form 1040 line 12);
     downstream `TaxInc` consumes it into Form 1040 line 14.
@@ -1629,19 +1627,11 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         1 if spouse is blind, 0 otherwise (spouse blind box; MFJ only)
     standard: float
         Records-bound output: standard deduction (zero for itemizers)
-    -- Reform/legacy CARES nonitemizer charity add-on --
-    STD_allow_charity_ded_nonitemizers: bool
-        Allow standard deduction filers to take the charitable
-        contributions deduction (off under current law)
     e19800: float
         Schedule A line 11 cash charitable contributions
-    ID_Charity_crt_all: float
-        Fraction-of-AGI cap on all charitable deductions
-    c00100: float
-        Federal AGI (Form 1040 line 11)
     STD_charity_ded_nonitemizers_max: list
         Per-MARS ceiling amount (in dollars) on the nonitemizer
-        charitable contributions deduction
+        cash charitable contributions deduction
 
     Returns
     -------
@@ -1684,13 +1674,9 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     extra_stded = num_extra_stded * STD_Aged[MARS - 1]
     standard = basic_stded + extra_stded
     # ----------------------------------------------------------------
-    # Reform/legacy CARES cash-charity add-on for nonitemizers
-    # (STD_allow_charity_ded_nonitemizers defaults to False under
-    # current law; active in 2020-2021 and under reforms).
+    # Cash-charity-deduction add-on for nonitemizers
     # ----------------------------------------------------------------
-    if STD_allow_charity_ded_nonitemizers:
-        capped_ded = min(e19800, ID_Charity_crt_all * c00100)
-        standard += min(capped_ded, STD_charity_ded_nonitemizers_max[MARS - 1])
+    standard += min(e19800, STD_charity_ded_nonitemizers_max[MARS - 1])
     return standard
 
 

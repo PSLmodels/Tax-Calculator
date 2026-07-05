@@ -45,7 +45,6 @@
 2033 STD_Dep 1595.48
 2033 STD_Dep_earned_add 531.83
 2033 STD_Aged [2422.76 1950.05 1950.05 2422.76 1950.05]
-2033 STD_allow_charity_ded_nonitemizers True
 2033 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]
 2033 II_credit [0. 0. 0. 0. 0.]
 2033 II_credit_ps [0. 0. 0. 0. 0.]
