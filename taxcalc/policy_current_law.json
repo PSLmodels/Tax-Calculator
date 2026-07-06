@@ -12460,6 +12460,31 @@
             "cps": false
         }
     },
+    "AMT_CG_rt1250": {
+        "title": "Unrecaptured Section 1250 gain (AMT) rate",
+        "description": "Unrecaptured Section 1250 gain (Form 6251 line 36) is taxed at this rate under the AMT maximum-capital-gains computation.",
+        "section_1": "Capital Gains And Dividends",
+        "section_2": "AMT - Long Term Capital Gains And Qualified Dividends",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.25
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "CG_nodiff": {
         "title": "Long term capital gains and qualified dividends taxed no differently than regular taxable income",
         "description": "Specifies whether or not long term capital gains and qualified dividends are taxed like regular taxable income.",
