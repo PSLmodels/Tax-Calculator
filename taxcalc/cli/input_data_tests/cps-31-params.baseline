@@ -108,6 +108,7 @@
 2031 AMT_CG_rt3 0.2
 2031 AMT_CG_brk3 [9.e+99 9.e+99 9.e+99 9.e+99 9.e+99]
 2031 AMT_CG_rt4 1.0
+2031 AMT_CG_rt1250 0.25
 2031 CG_nodiff False
 2031 CG_ec 0.0
 2031 CG_reinvest_ec_rt 0.0
