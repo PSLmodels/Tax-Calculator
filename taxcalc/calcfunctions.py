@@ -2382,15 +2382,15 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
 
 
 @iterate_jit(nopython=True)
-def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
+def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         c04470, c20800, c21040, e24515, MARS, dwks18,
         dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
         earned, cmbtp, qbided,
         AMT_child_em_c_age, AMT_brk1,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2_addon,
-        AMT_child_em, AMT_em_ps, AMT_em_pe,
+        AMT_child_em, AMT_em_ps, AMT_em_pe, AMT_Medical_frt,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
-        AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
+        AMT_CG_rt3, AMT_CG_rt4, AMT_CG_rt1250, c05800, c09600, c62100):
     """
     Computes Form 6251 (2025) Alternative Minimum Tax (AMT).
 
@@ -2406,9 +2406,13 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
       - Part I (lines 1a-4): AMTI = taxable income (Form 1040 line 15)
         plus AMT-disallowed deductions (SALT line 2a, Sch A misc) and
         the unmodeled prefs/adjustments (lines 2c-2t + 3) captured in
-        cmbtp; line 2b refunds (e00700) are subtracted.  Note: 2025
-        Form 6251 has no medical add-back (TCJA/OBBBA harmonized
-        regular and AMT Sch A medical floors at 7.5% of AGI).
+        cmbtp; line 2b refunds (e00700) are subtracted.  Pre-2017 law
+        also added back the medical expenses deducted under the
+        regular tax's lower floor but disallowed under the AMT's
+        higher floor: max(0, min(c17000, AMT_Medical_frt * c00100)).
+        AMT_Medical_frt is zero beginning in 2017, when TCJA (and now
+        OBBBA) harmonized the regular and AMT Sch A medical floors at
+        7.5% of AGI, making this add-back inert under current law.
       - Part II top (lines 5-6): exemption schedule with phaseout
         (line 5 = AMT_em - AMT_prt * max(0, AMTI - AMT_em_ps));
         line 6 = AMTI - exemption.
@@ -2458,6 +2462,13 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     c21040: float
         Itemized deductions that are phased out by Pease
         (subtracted to undo Pease for AMT)
+    c17000: float
+        Schedule A medical expense deduction under the regular tax's
+        floor (used in the pre-2017 AMT medical add-back)
+    AMT_Medical_frt: float
+        Floor (as a decimal fraction of AGI) for the AMT medical
+        deduction add-back; 0.025 before 2017, zero in 2017+ (TCJA/
+        OBBBA harmonized regular and AMT medical deduction floors)
     cmbtp: float
         Estimate of income on AMT Form 6251 but not in AGI; captures
         Form 6251 lines 2c through 2t and line 3 (depreciation,
@@ -2522,6 +2533,8 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     AMT_CG_rt4: float
         Reform-only long term capital gain and qualified dividends
         (AMT) rate 4
+    AMT_CG_rt1250: float
+        Unrecaptured Section 1250 gain (AMT) rate
     f6251: int
         1 if Form 6251 (AMT) attached to return, otherwise 0
     e62900: float
@@ -2557,10 +2570,13 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     # ----------------------------------------------------------------
     # Form 6251 line 1 = Form 1040 line 15 = AGI - (STD or itemized) - QBID.
     if standard == 0.0:
-        c62100 = (c00100 - e00700 - qbided - c04470 +
-                  c18300 +    # SALT add-back (Form 6251 line 2a)
-                  c20800 -    # Sch A misc add-back (TCJA-suspended 2018-2025)
-                  c21040)     # Pease undone for AMT
+        c62100 = (
+            c00100 - e00700 - qbided - c04470 +
+            c18300 +    # SALT add-back (Form 6251 line 2a)
+            c20800 -    # Sch A misc add-back (TCJA-suspended 2018-2025)
+            c21040 +    # Pease undone for AMT
+            max(0., min(c17000, AMT_Medical_frt * c00100))  # medical add-back
+        )
     if standard > 0.0:
         c62100 = c00100 - e00700 - qbided - standard
     c62100 += cmbtp  # Form 6251 lines 2c-2t + 3: AMT prefs/adjustments
@@ -2633,10 +2649,11 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
             linex2 = max(0., line30 - linex1)
         cgtax3 = line33 * AMT_CG_rt3           # line 34 = 20% * line 33
         cgtax4 = linex2 * AMT_CG_rt4
-        if line14 == 0.:                       # line 35-37: §1250 25%
+        if line14 == 0.:                       # line 35-37: §1250 taxation
             line37 = 0.
         else:
-            line37 = 0.25 * max(0., line6 - line17 - line32 - line33 - linex2)
+            line36 = max(0., line6 - line17 - line32 - line33 - linex2)
+            line37 = AMT_CG_rt1250 * line36
         line38 = line18 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line37
         line40 = min(flat_rate_tax, line38)    # min(line 38, line 39)
         line7 = line40
