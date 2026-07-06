@@ -18546,6 +18546,35 @@
             "cps": false
         }
     },
+    "AMT_Medical_frt": {
+        "title": "Floor (as a decimal fraction of AGI) for AMT medical expense add-back",
+        "description": "Before 2017, the AMT required a higher medical expense floor than the regular tax, so the portion of the medical deduction between the regular-tax floor and this fraction of AGI had to be added back to AMT taxable income. TCJA, and now OBBBA, harmonized the regular and AMT Sch A medical floors at 7.5% of AGI, so this parameter is zero beginning in 2017.",
+        "section_1": "Personal Income",
+        "section_2": "Alternative Minimum Tax",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.025
+            },
+            {
+                "year": 2017,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 0.1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "CDCC_c": {
         "title": "Maximum child & dependent care expenses per dependent",
         "description": "The maximum amount of expenses allowed for each qualifying dependent.",
