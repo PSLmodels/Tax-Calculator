@@ -2795,13 +2795,13 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">AMT</span><span class="p">(</span><span class="n">e07300</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">f6251</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">AMT</span><span class="p">(</span><span class="n">e07300</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">f6251</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">c17000</span><span class="p">,</span> <span class="n">c18300</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span>
         <span class="n">c04470</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">e24515</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">dwks18</span><span class="p">,</span>
         <span class="n">dwks14</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">e62900</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">dwks10</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span>
         <span class="n">earned</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span>
         <span class="n">AMT_child_em_c_age</span><span class="p">,</span> <span class="n">AMT_brk1</span><span class="p">,</span>
         <span class="n">AMT_em</span><span class="p">,</span> <span class="n">AMT_prt</span><span class="p">,</span> <span class="n">AMT_rt1</span><span class="p">,</span> <span class="n">AMT_rt2_addon</span><span class="p">,</span>
-        <span class="n">AMT_child_em</span><span class="p">,</span> <span class="n">AMT_em_ps</span><span class="p">,</span> <span class="n">AMT_em_pe</span><span class="p">,</span>
+        <span class="n">AMT_child_em</span><span class="p">,</span> <span class="n">AMT_em_ps</span><span class="p">,</span> <span class="n">AMT_em_pe</span><span class="p">,</span> <span class="n">AMT_Medical_frt</span><span class="p">,</span>
         <span class="n">AMT_CG_brk1</span><span class="p">,</span> <span class="n">AMT_CG_brk2</span><span class="p">,</span> <span class="n">AMT_CG_brk3</span><span class="p">,</span> <span class="n">AMT_CG_rt1</span><span class="p">,</span> <span class="n">AMT_CG_rt2</span><span class="p">,</span>
         <span class="n">AMT_CG_rt3</span><span class="p">,</span> <span class="n">AMT_CG_rt4</span><span class="p">,</span> <span class="n">AMT_CG_rt1250</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span> <span class="n">c09600</span><span class="p">,</span> <span class="n">c62100</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2819,9 +2819,13 @@
 <span class="sd">      - Part I (lines 1a-4): AMTI = taxable income (Form 1040 line 15)</span>
 <span class="sd">        plus AMT-disallowed deductions (SALT line 2a, Sch A misc) and</span>
 <span class="sd">        the unmodeled prefs/adjustments (lines 2c-2t + 3) captured in</span>
-<span class="sd">        cmbtp; line 2b refunds (e00700) are subtracted.  Note: 2025</span>
-<span class="sd">        Form 6251 has no medical add-back (TCJA/OBBBA harmonized</span>
-<span class="sd">        regular and AMT Sch A medical floors at 7.5% of AGI).</span>
+<span class="sd">        cmbtp; line 2b refunds (e00700) are subtracted.  Pre-2017 law</span>
+<span class="sd">        also added back the medical expenses deducted under the</span>
+<span class="sd">        regular tax&#39;s lower floor but disallowed under the AMT&#39;s</span>
+<span class="sd">        higher floor: max(0, min(c17000, AMT_Medical_frt * c00100)).</span>
+<span class="sd">        AMT_Medical_frt is zero beginning in 2017, when TCJA (and now</span>
+<span class="sd">        OBBBA) harmonized the regular and AMT Sch A medical floors at</span>
+<span class="sd">        7.5% of AGI, making this add-back inert under current law.</span>
 <span class="sd">      - Part II top (lines 5-6): exemption schedule with phaseout</span>
 <span class="sd">        (line 5 = AMT_em - AMT_prt * max(0, AMTI - AMT_em_ps));</span>
 <span class="sd">        line 6 = AMTI - exemption.</span>
@@ -2871,6 +2875,13 @@
 <span class="sd">    c21040: float</span>
 <span class="sd">        Itemized deductions that are phased out by Pease</span>
 <span class="sd">        (subtracted to undo Pease for AMT)</span>
+<span class="sd">    c17000: float</span>
+<span class="sd">        Schedule A medical expense deduction under the regular tax&#39;s</span>
+<span class="sd">        floor (used in the pre-2017 AMT medical add-back)</span>
+<span class="sd">    AMT_Medical_frt: float</span>
+<span class="sd">        Floor (as a decimal fraction of AGI) for the AMT medical</span>
+<span class="sd">        deduction add-back; 0.025 before 2017, zero in 2017+ (TCJA/</span>
+<span class="sd">        OBBBA harmonized regular and AMT medical deduction floors)</span>
 <span class="sd">    cmbtp: float</span>
 <span class="sd">        Estimate of income on AMT Form 6251 but not in AGI; captures</span>
 <span class="sd">        Form 6251 lines 2c through 2t and line 3 (depreciation,</span>
@@ -2972,10 +2983,13 @@
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="c1"># Form 6251 line 1 = Form 1040 line 15 = AGI - (STD or itemized) - QBID.</span>
     <span class="k">if</span> <span class="n">standard</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">c62100</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">c04470</span> <span class="o">+</span>
-                  <span class="n">c18300</span> <span class="o">+</span>    <span class="c1"># SALT add-back (Form 6251 line 2a)</span>
-                  <span class="n">c20800</span> <span class="o">-</span>    <span class="c1"># Sch A misc add-back (TCJA-suspended 2018-2025)</span>
-                  <span class="n">c21040</span><span class="p">)</span>     <span class="c1"># Pease undone for AMT</span>
+        <span class="n">c62100</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">c04470</span> <span class="o">+</span>
+            <span class="n">c18300</span> <span class="o">+</span>    <span class="c1"># SALT add-back (Form 6251 line 2a)</span>
+            <span class="n">c20800</span> <span class="o">-</span>    <span class="c1"># Sch A misc add-back (TCJA-suspended 2018-2025)</span>
+            <span class="n">c21040</span> <span class="o">+</span>    <span class="c1"># Pease undone for AMT</span>
+            <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="n">AMT_Medical_frt</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">))</span>  <span class="c1"># medical add-back</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="n">standard</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
         <span class="n">c62100</span> <span class="o">=</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">standard</span>
     <span class="n">c62100</span> <span class="o">+=</span> <span class="n">cmbtp</span>  <span class="c1"># Form 6251 lines 2c-2t + 3: AMT prefs/adjustments</span>
