@@ -2404,7 +2404,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2_addon,
         AMT_child_em, AMT_em_ps, AMT_em_pe,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
-        AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
+        AMT_CG_rt3, AMT_CG_rt4, AMT_CG_rt1250, c05800, c09600, c62100):
     """
     Computes Form 6251 (2025) Alternative Minimum Tax (AMT).
 
@@ -2536,6 +2536,8 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     AMT_CG_rt4: float
         Reform-only long term capital gain and qualified dividends
         (AMT) rate 4
+    AMT_CG_rt1250: float
+        Unrecaptured Section 1250 gain (AMT) rate
     f6251: int
         1 if Form 6251 (AMT) attached to return, otherwise 0
     e62900: float
@@ -2647,10 +2649,11 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
             linex2 = max(0., line30 - linex1)
         cgtax3 = line33 * AMT_CG_rt3           # line 34 = 20% * line 33
         cgtax4 = linex2 * AMT_CG_rt4
-        if line14 == 0.:                       # line 35-37: §1250 25%
+        if line14 == 0.:                       # line 35-37: §1250 taxation
             line37 = 0.
         else:
-            line37 = 0.25 * max(0., line6 - line17 - line32 - line33 - linex2)
+            line36 = max(0., line6 - line17 - line32 - line33 - linex2)
+            line37 = AMT_CG_rt1250 * line36
         line38 = line18 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line37
         line40 = min(flat_rate_tax, line38)    # min(line 38, line 39)
         line7 = line40
