@@ -2803,7 +2803,7 @@
         <span class="n">AMT_em</span><span class="p">,</span> <span class="n">AMT_prt</span><span class="p">,</span> <span class="n">AMT_rt1</span><span class="p">,</span> <span class="n">AMT_rt2_addon</span><span class="p">,</span>
         <span class="n">AMT_child_em</span><span class="p">,</span> <span class="n">AMT_em_ps</span><span class="p">,</span> <span class="n">AMT_em_pe</span><span class="p">,</span>
         <span class="n">AMT_CG_brk1</span><span class="p">,</span> <span class="n">AMT_CG_brk2</span><span class="p">,</span> <span class="n">AMT_CG_brk3</span><span class="p">,</span> <span class="n">AMT_CG_rt1</span><span class="p">,</span> <span class="n">AMT_CG_rt2</span><span class="p">,</span>
-        <span class="n">AMT_CG_rt3</span><span class="p">,</span> <span class="n">AMT_CG_rt4</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span> <span class="n">c09600</span><span class="p">,</span> <span class="n">c62100</span><span class="p">):</span>
+        <span class="n">AMT_CG_rt3</span><span class="p">,</span> <span class="n">AMT_CG_rt4</span><span class="p">,</span> <span class="n">AMT_CG_rt1250</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span> <span class="n">c09600</span><span class="p">,</span> <span class="n">c62100</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Form 6251 (2025) Alternative Minimum Tax (AMT).</span>
 
@@ -2935,6 +2935,8 @@
 <span class="sd">    AMT_CG_rt4: float</span>
 <span class="sd">        Reform-only long term capital gain and qualified dividends</span>
 <span class="sd">        (AMT) rate 4</span>
+<span class="sd">    AMT_CG_rt1250: float</span>
+<span class="sd">        Unrecaptured Section 1250 gain (AMT) rate</span>
 <span class="sd">    f6251: int</span>
 <span class="sd">        1 if Form 6251 (AMT) attached to return, otherwise 0</span>
 <span class="sd">    e62900: float</span>
@@ -3046,10 +3048,11 @@
             <span class="n">linex2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line30</span> <span class="o">-</span> <span class="n">linex1</span><span class="p">)</span>
         <span class="n">cgtax3</span> <span class="o">=</span> <span class="n">line33</span> <span class="o">*</span> <span class="n">AMT_CG_rt3</span>           <span class="c1"># line 34 = 20% * line 33</span>
         <span class="n">cgtax4</span> <span class="o">=</span> <span class="n">linex2</span> <span class="o">*</span> <span class="n">AMT_CG_rt4</span>
-        <span class="k">if</span> <span class="n">line14</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>                       <span class="c1"># line 35-37: §1250 25%</span>
+        <span class="k">if</span> <span class="n">line14</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>                       <span class="c1"># line 35-37: §1250 taxation</span>
             <span class="n">line37</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">line37</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line6</span> <span class="o">-</span> <span class="n">line17</span> <span class="o">-</span> <span class="n">line32</span> <span class="o">-</span> <span class="n">line33</span> <span class="o">-</span> <span class="n">linex2</span><span class="p">)</span>
+            <span class="n">line36</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line6</span> <span class="o">-</span> <span class="n">line17</span> <span class="o">-</span> <span class="n">line32</span> <span class="o">-</span> <span class="n">line33</span> <span class="o">-</span> <span class="n">linex2</span><span class="p">)</span>
+            <span class="n">line37</span> <span class="o">=</span> <span class="n">AMT_CG_rt1250</span> <span class="o">*</span> <span class="n">line36</span>
         <span class="n">line38</span> <span class="o">=</span> <span class="n">line18</span> <span class="o">+</span> <span class="n">cgtax1</span> <span class="o">+</span> <span class="n">cgtax2</span> <span class="o">+</span> <span class="n">cgtax3</span> <span class="o">+</span> <span class="n">cgtax4</span> <span class="o">+</span> <span class="n">line37</span>
         <span class="n">line40</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">flat_rate_tax</span><span class="p">,</span> <span class="n">line38</span><span class="p">)</span>    <span class="c1"># min(line 38, line 39)</span>
         <span class="n">line7</span> <span class="o">=</span> <span class="n">line40</span>
