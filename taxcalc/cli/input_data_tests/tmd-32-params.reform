@@ -45,7 +45,6 @@
 2032 STD_Dep 1560.22
 2032 STD_Dep_earned_add 520.08
 2032 STD_Aged [2369.22 1906.95 1906.95 2369.22 1906.95]
-2032 STD_allow_charity_ded_nonitemizers True
 2032 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]
 2032 II_credit [0. 0. 0. 0. 0.]
 2032 II_credit_ps [0. 0. 0. 0. 0.]

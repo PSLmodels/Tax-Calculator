@@ -3175,71 +3175,6 @@
             "cps": true
         }
     },
-    "STD_allow_charity_ded_nonitemizers": {
-        "title": "Allow standard deduction filers to take the charitable contributions deduction",
-        "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction and make cash donations.  The same percent-of-AGI cap applied to itemized deduction for charitable contributions also apply here, as well as a max on the dollar amount for cash charitable deductions for those taking the standard deduction.",
-        "section_1": "",
-        "section_2": "",
-        "indexable": false,
-        "indexed": false,
-        "type": "bool",
-        "value": [
-            {
-                "year": 2013,
-                "value": false
-            },
-            {
-                "year": 2014,
-                "value": false
-            },
-            {
-                "year": 2015,
-                "value": false
-            },
-            {
-                "year": 2016,
-                "value": false
-            },
-            {
-                "year": 2017,
-                "value": false
-            },
-            {
-                "year": 2018,
-                "value": false
-            },
-            {
-                "year": 2019,
-                "value": false
-            },
-            {
-                "year": 2020,
-                "value": true
-            },
-            {
-                "year": 2021,
-                "value": true
-            },
-            {
-                "year": 2022,
-                "value": false
-            },
-            {
-                "year": 2026,
-                "value": true
-            }
-        ],
-        "validators": {
-            "range": {
-                "min": false,
-                "max": true
-            }
-        },
-        "compatible_data": {
-            "puf": true,
-            "cps": true
-        }
-    },
     "STD_charity_ded_nonitemizers_max": {
         "title": "Ceiling amount (in dollars) for cash charitable deductions for nonitemizers",
         "description": "Puts a ceiling on the dollar of amount of cash charitable contributions deductions for taxpayers who take the standard deduction.",
@@ -3282,12 +3217,12 @@
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 600.0
+                "value": 300.0
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 300.0
+                "value": 150.0
             },
             {
                 "year": 2020,
@@ -3296,6 +3231,31 @@
             },
             {
                 "year": 2020,
+                "MARS": "widow",
+                "value": 300.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 300.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 600.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 300.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 300.0
+            },
+            {
+                "year": 2021,
                 "MARS": "widow",
                 "value": 300.0
             },

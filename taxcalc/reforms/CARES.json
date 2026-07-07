@@ -4,19 +4,17 @@
 // Reform_Baseline: policy_current_law.json
 // Reform_Description:
 // - Raise ceiling on chartitable deductions for itemizers (1)
-// - Allows an above the line deductions for charitable contributions (2)
-// - Limit charitable deductions for non-itemizers to $300 (3)
-// - Provide recovery rebate credits of $1200 per adult and $500 per child (4)
+// - Limit charitable deductions for non-itemizers to $300 (2)
+// - Provide recovery rebate credits of $1200 per adult and $500 per child (3)
 // Reform_Parameter_Map:
 // - 1: ID_Charity_crt_all
-// - 2: STD_allow_charity_ded_nonitemizers
-// - 3: STD_charity_ded_nonitemizers_max
-// - 4: RRC_*
+// - 2: STD_charity_ded_nonitemizers_max
+// - 3: RRC_*
 {
     "ID_Charity_crt_all": {"2020": 1.0, "2022": 0.6},
-    "STD_allow_charity_ded_nonitemizers": {"2020": true, "2022": false},
     "STD_charity_ded_nonitemizers_max": {
-        "2020": [300, 600, 300, 300, 300],
+        "2020": [300, 300, 150, 300, 300],
+        "2021": [300, 600, 300, 300, 300],
         "2022": [  0,   0,   0,   0,   0]
     },
     "RRC_ps": {"2020": [75000, 150000, 75000, 112500,150000],
