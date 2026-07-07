@@ -73,7 +73,6 @@
     "ID_Miscellaneous_hc": {"2026": 1.0},
 
     // Group K: Standard Deduction (Charity for Non-Itemizers)
-    "STD_allow_charity_ded_nonitemizers": {"2026": true},
     "STD_charity_ded_nonitemizers_max": {"2026": [1000, 2000, 1000, 1000, 1000]},
 
     // Group L: Itemized Deductions (Pease Limitation)

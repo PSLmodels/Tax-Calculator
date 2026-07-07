@@ -145,6 +145,10 @@ class Policy(Parameters):
         # following parameters were removed in PR 3082
         'eitc_claim_thd': 'was removed in Tax-Calculator 6.7.0',
         'actc_claim_thd': 'was removed in Tax-Calculator 6.7.0',
+        # following parameter was removed in PR 3092
+        'STD_allow_charity_ded_nonitemizers': (
+            'was removed in Tax-Calculator 6.7.2'
+        ),
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}

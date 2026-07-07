@@ -45,7 +45,6 @@
 2029 STD_Dep 1458.62
 2029 STD_Dep_earned_add 486.22
 2029 STD_Aged [2214.94 1782.76 1782.76 2214.94 1782.76]
-2029 STD_allow_charity_ded_nonitemizers True
 2029 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]
 2029 II_credit [0. 0. 0. 0. 0.]
 2029 II_credit_ps [0. 0. 0. 0. 0.]

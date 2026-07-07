@@ -45,7 +45,6 @@
 2034 STD_Dep 1631.54
 2034 STD_Dep_earned_add 543.85
 2034 STD_Aged [2477.51 1994.12 1994.12 2477.51 1994.12]
-2034 STD_allow_charity_ded_nonitemizers True
 2034 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]
 2034 II_credit [0. 0. 0. 0. 0.]
 2034 II_credit_ps [0. 0. 0. 0. 0.]

@@ -45,7 +45,6 @@
 2026 STD_Dep 1350.0
 2026 STD_Dep_earned_add 450.0
 2026 STD_Aged [2050. 1650. 1650. 2050. 1650.]
-2026 STD_allow_charity_ded_nonitemizers True
 2026 STD_charity_ded_nonitemizers_max [1000. 2000. 1000. 1000. 1000.]
 2026 II_credit [0. 0. 0. 0. 0.]
 2026 II_credit_ps [0. 0. 0. 0. 0.]
