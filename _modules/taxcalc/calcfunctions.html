@@ -1965,8 +1965,7 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">StdDed</span><span class="p">(</span><span class="n">DSI</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">STD</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">STD_Aged</span><span class="p">,</span> <span class="n">STD_Dep</span><span class="p">,</span>
            <span class="n">STD_Dep_earned_add</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">MIDR</span><span class="p">,</span> <span class="n">blind_head</span><span class="p">,</span> <span class="n">blind_spouse</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span>
-           <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">,</span> <span class="n">e19800</span><span class="p">,</span> <span class="n">ID_Charity_crt_all</span><span class="p">,</span>
-           <span class="n">c00100</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">):</span>
+           <span class="n">e19800</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes standard deduction (Form 1040 line 12).</span>
 
@@ -1984,9 +1983,8 @@
 <span class="sd">    3. Aged/blind add-on: STD_Aged[MARS-1] per checked box (filer 65+,</span>
 <span class="sd">       filer blind, spouse 65+, spouse blind). Spouse boxes only count</span>
 <span class="sd">       for MFJ filers.</span>
-<span class="sd">    4. Reform/legacy CARES cash-charity add-on for nonitemizers (off</span>
-<span class="sd">       under current law; STD_allow_charity_ded_nonitemizers defaults</span>
-<span class="sd">       to False).</span>
+<span class="sd">    4. Cash-charity-deduction add-on for nonitemizers active under</span>
+<span class="sd">       CARES (2020-21) and OBBBA (2026-).</span>
 
 <span class="sd">    The Records-bound output is `standard` (Form 1040 line 12);</span>
 <span class="sd">    downstream `TaxInc` consumes it into Form 1040 line 14.</span>
@@ -2025,19 +2023,11 @@
 <span class="sd">        1 if spouse is blind, 0 otherwise (spouse blind box; MFJ only)</span>
 <span class="sd">    standard: float</span>
 <span class="sd">        Records-bound output: standard deduction (zero for itemizers)</span>
-<span class="sd">    -- Reform/legacy CARES nonitemizer charity add-on --</span>
-<span class="sd">    STD_allow_charity_ded_nonitemizers: bool</span>
-<span class="sd">        Allow standard deduction filers to take the charitable</span>
-<span class="sd">        contributions deduction (off under current law)</span>
 <span class="sd">    e19800: float</span>
 <span class="sd">        Schedule A line 11 cash charitable contributions</span>
-<span class="sd">    ID_Charity_crt_all: float</span>
-<span class="sd">        Fraction-of-AGI cap on all charitable deductions</span>
-<span class="sd">    c00100: float</span>
-<span class="sd">        Federal AGI (Form 1040 line 11)</span>
 <span class="sd">    STD_charity_ded_nonitemizers_max: list</span>
 <span class="sd">        Per-MARS ceiling amount (in dollars) on the nonitemizer</span>
-<span class="sd">        charitable contributions deduction</span>
+<span class="sd">        cash charitable contributions deduction</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -2080,13 +2070,9 @@
     <span class="n">extra_stded</span> <span class="o">=</span> <span class="n">num_extra_stded</span> <span class="o">*</span> <span class="n">STD_Aged</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">standard</span> <span class="o">=</span> <span class="n">basic_stded</span> <span class="o">+</span> <span class="n">extra_stded</span>
     <span class="c1"># ----------------------------------------------------------------</span>
-    <span class="c1"># Reform/legacy CARES cash-charity add-on for nonitemizers</span>
-    <span class="c1"># (STD_allow_charity_ded_nonitemizers defaults to False under</span>
-    <span class="c1"># current law; active in 2020-2021 and under reforms).</span>
+    <span class="c1"># Cash-charity-deduction add-on for nonitemizers</span>
     <span class="c1"># ----------------------------------------------------------------</span>
-    <span class="k">if</span> <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">:</span>
-        <span class="n">capped_ded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e19800</span><span class="p">,</span> <span class="n">ID_Charity_crt_all</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">)</span>
-        <span class="n">standard</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">capped_ded</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">standard</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e19800</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">standard</span>
 
 
