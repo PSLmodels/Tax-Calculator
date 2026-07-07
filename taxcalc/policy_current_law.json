@@ -3217,12 +3217,12 @@
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 600.0
+                "value": 300.0
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 300.0
+                "value": 150.0
             },
             {
                 "year": 2020,
@@ -3231,6 +3231,31 @@
             },
             {
                 "year": 2020,
+                "MARS": "widow",
+                "value": 300.0
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 300.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 600.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 300.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 300.0
+            },
+            {
+                "year": 2021,
                 "MARS": "widow",
                 "value": 300.0
             },
