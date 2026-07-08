@@ -227,6 +227,16 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
         bin_edges.insert(-1, bin_edges[-2] + 0.5 * bin_width)  # top of 90-95
         bin_edges.insert(-1, bin_edges[-2] + 0.4 * bin_width)  # top of 95-99
         num_bins += 4
+        # When the weight of the filing units with non-positive income_measure
+        # exceeds one decile, the top-of-negatives and top-of-zeros edges
+        # inserted above can exceed a following decile edge, making bin_edges
+        # non-monotonic and causing pd.cut() to raise a ValueError (see
+        # Tax-Calculator issue #2460).  Nudge any non-increasing edge up to the
+        # smallest float greater than the prior edge so that bin_edges are
+        # strictly increasing (any bin thereby emptied contributes a zero row).
+        for idx in range(1, len(bin_edges)):
+            if bin_edges[idx] <= bin_edges[idx - 1]:
+                bin_edges[idx] = np.nextafter(bin_edges[idx - 1], np.inf)
     labels = range(1, (num_bins + 1))
     dframe['table_row'] = pd.cut(dframe['cumsum_temp'], bin_edges,
                                  right=False, labels=labels)

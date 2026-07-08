@@ -549,6 +549,26 @@ def test_add_quantile_trow_var():
                                               100, decile_details=True)
 
 
+def test_add_quantile_trow_var_cut_error():
+    """
+    Test the fix for the Pandas cut() error reported in Tax-Calculator
+    Github issue #2460.  When more than 10% of the weighted filing units
+    have non-positive income_measure and decile_details=True, the bottom
+    decile subdivision used to produce non-monotonic bin_edges, which
+    caused the pd.cut() call in add_quantile_table_row_variable() to raise
+    a 'bins must increase monotonically' ValueError.  The function must
+    now produce the full set of decile-detail rows without raising.
+    """
+    edata = [-1.0] * 3 + list(range(1, 21))  # 3 non-positive + 20 positive
+    weights = [100.0] * 3 + [10.0] * 20  # non-positive units have >10% weight
+    dfx = pd.DataFrame({'expanded_income': edata, 's006': weights})
+    dfb = add_quantile_table_row_variable(dfx, 'expanded_income',
+                                          10, decile_details=True)
+    assert 'table_row' in dfb
+    # decile_details adds four extra rows to the ten deciles
+    assert set(dfb['table_row'].unique()).issubset(set(range(1, 15)))
+
+
 def test_dist_table_sum_row(cps_subsample):
     """Test docstring"""
     rec = Records.cps_constructor(data=cps_subsample)
