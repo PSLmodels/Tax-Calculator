@@ -13,7 +13,48 @@ import copy
 import pytest
 import numpy as np
 import pandas as pd
+import taxcalc as tc
 from taxcalc import GrowFactors, Policy, Records, Calculator, Consumption
+
+
+# ExpandIncome calcfunction used by test_custom_calculator_market_income
+# below to override the standard definition of expanded_income; this
+# must be defined at module level (not nested in the test function)
+# because the iterate_jit decorator parses the function's source text,
+# which must be unindented top-level code.
+@tc.iterate_jit(nopython=True)
+def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
+                 e00700, e00800, e00900, e01100, e01200, e01400, e01500,
+                 e02000, e02100, p22250, p23250, cmbtp, ptax_was,
+                 expanded_income):
+    """
+    Calculates expanded_income as "market income" from component
+    income types.
+    """
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-locals
+    expanded_income = (
+        e00200 +
+        pencon_p +
+        pencon_s +
+        e00300 +
+        e00400 +
+        e00600 +
+        e00700 +
+        e00800 +
+        e00900 +
+        e01100 +
+        e01200 +
+        e01400 +
+        e01500 +
+        e02000 +
+        e02100 +
+        p22250 +
+        p23250 +
+        cmbtp +
+        0.5 * ptax_was
+    )
+    return expanded_income
 
 
 def test_make_calculator(cps_subsample):
@@ -951,3 +992,87 @@ def test_credit_reforms(cps_subsample):
     assert itax2 < itax1  # because refundable credits lower revenues
     assert itax3 > itax2  # because nonrefundable credits lower revenues less
     assert itax3 < itax1  # because nonrefundable credits lower revenues some
+
+
+def test_custom_calculator_market_income(cps_subsample, tests_path):
+    """
+    Test the customized-Calculator-class technique (illustrated by
+    recipe05.py in the repository root) that overrides ExpandIncome
+    so that expanded_income is redefined as "market income", and then
+    checks that this customized Calculator class continues to work
+    seamlessly with the weighted_total and difference_table methods.
+    """
+    # pylint: disable=too-many-locals
+
+    class Calculator(tc.Calculator):  # pylint: disable=redefined-outer-name
+        """
+        Customized Calculator class that inherits all tc.Calculator data
+        and methods, overriding one method to get the desired
+        customization.  The class name must match the parent tc.Calculator
+        class name so that the name-mangled __policy and __records
+        attributes set by the parent's __init__ remain accessible here.
+        """
+        def calc_all(self, zero_out_calc_vars=False):
+            """
+            Call all tax-calculation functions for the current_year.
+            """
+            tc.BenefitPrograms(self)
+            self._calc_one_year(zero_out_calc_vars)
+            # pylint: disable=no-value-for-parameter
+            tc.FairShareTax(self.__policy, self.__records)
+            tc.LumpSumTax(self.__policy, self.__records)
+            ExpandIncome(self.__policy, self.__records)  # customized above
+            tc.AfterTaxIncome(self.__policy, self.__records)
+            # pylint: enable=no-value-for-parameter
+
+    # specify Policy object for pre-TCJA policy
+    reforms_path = os.path.join(tests_path, '..', 'reforms')
+    reform1 = tc.Policy.read_json_reform(
+        os.path.join(reforms_path, '2017_law.json')
+    )
+    reform2 = tc.Policy.read_json_reform(
+        os.path.join(reforms_path, 'TCJA.json')
+    )
+    bpolicy = tc.Policy()
+    bpolicy.implement_reform(reform1, print_warnings=False,
+                             raise_errors=False)
+    assert not bpolicy.parameter_errors
+
+    # specify Policy object for TCJA reform relative to pre-TCJA policy
+    rpolicy = tc.Policy()
+    rpolicy.implement_reform(reform1, print_warnings=False,
+                             raise_errors=False)
+    assert not rpolicy.parameter_errors
+    rpolicy.implement_reform(reform2, print_warnings=False,
+                             raise_errors=False)
+    assert not rpolicy.parameter_errors
+
+    # specify customized Calculator objects using bpolicy and rpolicy
+    recs = tc.Records.cps_constructor(data=cps_subsample)
+    calc1 = Calculator(policy=bpolicy, records=recs)
+    calc2 = Calculator(policy=rpolicy, records=recs)
+
+    cyr = 2018
+    calc1.advance_to_year(cyr)
+    calc1.calc_all()
+    calc2.advance_to_year(cyr)
+    calc2.calc_all()
+
+    # compare aggregate individual income tax revenue in cyr
+    iitax_rev1 = calc1.weighted_total('iitax')
+    iitax_rev2 = calc2.weighted_total('iitax')
+    assert isinstance(iitax_rev1, float)
+    assert isinstance(iitax_rev2, float)
+
+    # construct reform-vs-baseline difference table with results
+    # for income deciles, which exercises the customized (market)
+    # expanded_income used to construct the decile bins
+    diff_table = calc1.difference_table(calc2, 'weighted_deciles', 'iitax')
+    assert isinstance(diff_table, pd.DataFrame)
+    dif_colnames = ['count', 'tax_cut', 'tax_inc',
+                    'tot_change', 'mean', 'pc_aftertaxinc']
+    assert all(cname in diff_table.columns for cname in dif_colnames)
+    debug = False
+    if debug:
+        print(diff_table)
+        assert not debug
