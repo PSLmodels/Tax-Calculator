@@ -567,7 +567,7 @@ def test_reform_documentation():
     dump = False  # set to True to print documentation and force test failure
     if dump:
         print(doc)
-        assert False, 'ERROR: reform_documentation above'
+        assert False, 'DUMP: reform_documentation below'
 
 
 def test_distribution_tables(cps_subsample):
@@ -1077,4 +1077,4 @@ def test_custom_calculator_market_income(cps_subsample, tests_path):
     dump = False  # set to True to print diff_table and force test failure
     if dump:
         print(diff_table)
-        assert not dump
+        assert False, 'DUMP: generated diff_table below'
