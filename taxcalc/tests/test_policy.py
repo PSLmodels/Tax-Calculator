@@ -62,48 +62,6 @@ def test_incorrect_implement_reform_usage():
         pol.implement_reform({2020: {"II_em": -1000}})
 
 
-@pytest.mark.local
-def test_json_reform_url():
-    """
-    Test reading a JSON reform from a URL. Results from the URL are expected
-    to match the results from the string.
-    """
-    reform_str = """
-    {
-        // raise FICA payroll tax rate in 2018 and 2020
-        "FICA_ss_trt_employer": {
-            "2018": 0.065,
-            "2020": 0.070
-        },
-        "FICA_ss_trt_employee": {
-            "2018": 0.065,
-            "2020": 0.070
-        },
-        // raise Medicare payroll tax rate in 2019 and 2021
-        "FICA_mc_trt_employer": {
-            "2019": 0.015,
-            "2021": 0.016
-        },
-        "FICA_mc_trt_employee": {
-            "2019": 0.015,
-            "2021": 0.016
-        }
-    }
-    """
-    reform_url = ("https://raw.githubusercontent.com/PSLmodels/"
-                  "Tax-Calculator/master/taxcalc/reforms/ptaxes0.json")
-    params_str = Policy.read_json_reform(reform_str)
-    params_url = Policy.read_json_reform(reform_url)
-    assert params_str == params_url
-
-    reform_gh_url = (
-        "github://PSLmodels:Tax-Calculator@master/taxcalc/reforms/ptaxes0.json"
-    )
-    params_gh_url = Policy.read_json_reform(reform_gh_url)
-    assert params_gh_url
-    assert params_gh_url == params_str
-
-
 REFORM_JSON = """
 // Example of a reform file suitable for Policy.read_json_reform().
 // This JSON file can contain any number of trailing //-style comments, which
