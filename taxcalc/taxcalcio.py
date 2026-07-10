@@ -8,6 +8,7 @@ Tax-Calculator Input-Output class.
 import os
 import gc
 import copy
+import json
 import sqlite3
 from pathlib import Path
 import numpy as np
@@ -434,6 +435,7 @@ class TaxCalcIO():
     def analyze(
             self,
             output_params=False,
+            output_jsonparams=False,
             output_tables=False,
             output_graphs=False,
             output_dump=False,
@@ -447,6 +449,10 @@ class TaxCalcIO():
         output_params: boolean
            whether or not to write baseline and reform policy parameter
            values to separate text files
+
+        output_jsonparams: boolean
+           whether the baseline and reform policy parameter files written
+           when output_params is True use JSON format rather than text format
 
         output_tables: boolean
            whether or not to generate and write distributional tables
@@ -471,9 +477,9 @@ class TaxCalcIO():
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         # pylint: disable=too-many-branches,too-many-locals
         doing_calcs = output_tables or output_graphs or output_dump
-        # optionally write --params output to text files
+        # optionally write --params output files
         if output_params:
-            self.write_policy_params_files()
+            self.write_policy_params_files(output_jsonparams)
         if not doing_calcs:
             return
         # do output calculations
@@ -525,12 +531,14 @@ class TaxCalcIO():
                 mtr_ptax_bas, mtr_itax_bas,
             )
 
-    def write_policy_params_files(self):
+    def write_policy_params_files(self, jsonparams=False):
         """
         Write baseline and reform policy parameter values to separate files.
         """
-        self._write_params(self.calc_bas, '-params.baseline', 'baseline')
-        self._write_params(self.calc_ref, '-params.reform', 'reform')
+        self._write_params(self.calc_bas, '-params.baseline', 'baseline',
+                           jsonparams)
+        self._write_params(self.calc_ref, '-params.reform', 'reform',
+                           jsonparams)
 
     BASE_DUMPVARS = [
         'RECID',
@@ -738,16 +746,29 @@ class TaxCalcIO():
                 br_dump[vname].to_numpy(dtype=vdtype, copy=True)
             )
 
-    def _write_params(self, calc, ext, label):
+    def _write_params(self, calc, ext, label, jsonparams=False):
         """
         Write policy parameter values from calc to the ext output file.
         """
         year = calc.current_year
         fname = self.output_filename.replace('.xxx', ext)
-        with open(fname, 'w', encoding='utf-8') as pfile:
+        if jsonparams:
+            pdict = {}
             for pname in Policy.parameter_list():
                 pval = calc.policy_param(pname)
-                pfile.write(f'{year} {pname} {pval}\n')
+                if isinstance(pval, np.ndarray):
+                    pval = pval.tolist()
+                elif isinstance(pval, np.generic):
+                    pval = pval.item()
+                pdict[pname] = {year: pval}
+            with open(fname, 'w', encoding='utf-8') as pfile:
+                json.dump(pdict, pfile, indent=4)
+                pfile.write('\n')
+        else:
+            with open(fname, 'w', encoding='utf-8') as pfile:
+                for pname in Policy.parameter_list():
+                    pval = calc.policy_param(pname)
+                    pfile.write(f'{year} {pname} {pval}\n')
         if not self.silent:
             print(  # pragma: no cover
                 f'Write {label} policy parameter values to file {fname}'

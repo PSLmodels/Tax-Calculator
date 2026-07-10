@@ -41,7 +41,7 @@ def cli_tc_main():
         ),
         (
             '          '
-            '[--params] [--tables] [--graphs] '
+            '[--params] [--jsonparams] [--tables] [--graphs] '
             '[--dumpdb] [--dumpvars DUMPVARS]\n'
         ),
         (
@@ -110,6 +110,12 @@ def cli_tc_main():
                         help=('optional flag that causes policy parameter '
                               'values for baseline and reform to be written '
                               'to separate text files.'),
+                        default=False,
+                        action='store_true')
+    parser.add_argument('--jsonparams',
+                        help=('optional flag that causes the policy parameter '
+                              'files written by the --params option to use '
+                              'JSON format rather than text format.'),
                         default=False,
                         action='store_true')
     parser.add_argument('--tables',
@@ -248,6 +254,16 @@ def cli_tc_main():
             sys.stderr.write(msg)
             sys.stderr.write('USAGE: tc --help\n')
         return 1
+    # check args.params and args.jsonparams consistency
+    if not args.params and args.jsonparams:
+        msg = 'ERROR: --jsonparams option specified without --params option\n'
+        if using_error_file:
+            with open(efilename, 'w', encoding='utf-8') as efile:
+                efile.write(msg)
+        else:
+            sys.stderr.write(msg)
+            sys.stderr.write('USAGE: tc --help\n')
+        return 1
     # specify dumpvars_str from args.dumpvars file
     dumpvars_str = ''
     if args.dumpvars:
@@ -332,6 +348,7 @@ def cli_tc_main():
         return 1
     tcio.analyze(
         output_params=args.params,
+        output_jsonparams=args.jsonparams,
         output_tables=args.tables,
         output_graphs=args.graphs,
         output_dump=args.dumpdb,
@@ -353,6 +370,7 @@ def cli_tc_main():
         tcio.advance_to_year(taxyear + xyear)
         tcio.analyze(
             output_params=args.params,
+            output_jsonparams=args.jsonparams,
             output_tables=args.tables,
             output_graphs=args.graphs,
             output_dump=args.dumpdb,

@@ -8,6 +8,7 @@ Tests for Tax-Calculator TaxCalcIO class.
 # pylint: disable=too-many-lines
 
 import os
+import json
 from io import StringIO
 from pathlib import Path
 import tempfile
@@ -505,6 +506,42 @@ def test_write_policy_param_files(reformfile1):
         filepath = outfilepath.replace('.xxx', ext)
         if os.path.isfile(filepath):
             os.remove(filepath)
+
+
+def test_write_json_policy_param_files(reformfile1):
+    """
+    Test write_policy_params_files with jsonparams=True.
+    """
+    taxyear = 2021
+    tcio = TaxCalcIO(
+        input_data=pd.read_csv(StringIO(RAWINPUT)),
+        tax_year=taxyear,
+        baseline=None,
+        reform=reformfile1.name,
+        assump=None,
+        behavior=None,
+    )
+    assert not tcio.errmsg
+    tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
+              tax_year=taxyear,
+              baseline=None,
+              reform=reformfile1.name,
+              assump=None,
+              behavior=None,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    tcio.write_policy_params_files(jsonparams=True)
+    for ext in ['-params.baseline', '-params.reform']:
+        filepath = tcio.output_filename.replace('.xxx', ext)
+        assert os.path.isfile(filepath)
+        with open(filepath, 'r', encoding='utf-8') as pfile:
+            pdict = json.load(pfile)
+        # each parameter maps to a dict containing its year and value
+        assert isinstance(pdict, dict)
+        assert len(pdict) > 0
+        for pval in pdict.values():
+            assert set(pval.keys()) == {f'{taxyear}'}
+        os.remove(filepath)
 
 
 def test_no_tables_or_graphs(reformfile1):
