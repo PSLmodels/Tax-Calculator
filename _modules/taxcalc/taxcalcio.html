@@ -401,6 +401,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">gc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -837,6 +838,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">output_params</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">output_jsonparams</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">output_tables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">output_graphs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">output_dump</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -850,6 +852,10 @@
 <span class="sd">        output_params: boolean</span>
 <span class="sd">           whether or not to write baseline and reform policy parameter</span>
 <span class="sd">           values to separate text files</span>
+
+<span class="sd">        output_jsonparams: boolean</span>
+<span class="sd">           whether the baseline and reform policy parameter files written</span>
+<span class="sd">           when output_params is True use JSON format rather than text format</span>
 
 <span class="sd">        output_tables: boolean</span>
 <span class="sd">           whether or not to generate and write distributional tables</span>
@@ -874,9 +880,9 @@
         <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
         <span class="c1"># pylint: disable=too-many-branches,too-many-locals</span>
         <span class="n">doing_calcs</span> <span class="o">=</span> <span class="n">output_tables</span> <span class="ow">or</span> <span class="n">output_graphs</span> <span class="ow">or</span> <span class="n">output_dump</span>
-        <span class="c1"># optionally write --params output to text files</span>
+        <span class="c1"># optionally write --params output files</span>
         <span class="k">if</span> <span class="n">output_params</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_policy_params_files</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_policy_params_files</span><span class="p">(</span><span class="n">output_jsonparams</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">doing_calcs</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="c1"># do output calculations</span>
@@ -929,12 +935,14 @@
             <span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">write_policy_params_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_policy_params_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jsonparams</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write baseline and reform policy parameter values to separate files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="p">,</span> <span class="s1">&#39;-params.baseline&#39;</span><span class="p">,</span> <span class="s1">&#39;baseline&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="p">,</span> <span class="s1">&#39;-params.reform&#39;</span><span class="p">,</span> <span class="s1">&#39;reform&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="p">,</span> <span class="s1">&#39;-params.baseline&#39;</span><span class="p">,</span> <span class="s1">&#39;baseline&#39;</span><span class="p">,</span>
+                           <span class="n">jsonparams</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="p">,</span> <span class="s1">&#39;-params.reform&#39;</span><span class="p">,</span> <span class="s1">&#39;reform&#39;</span><span class="p">,</span>
+                           <span class="n">jsonparams</span><span class="p">)</span>
 
     <span class="n">BASE_DUMPVARS</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s1">&#39;RECID&#39;</span><span class="p">,</span>
@@ -1142,16 +1150,29 @@
                 <span class="n">br_dump</span><span class="p">[</span><span class="n">vname</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">vdtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_write_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calc</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">jsonparams</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write policy parameter values from calc to the ext output file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">year</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">current_year</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.xxx&#39;</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">jsonparams</span><span class="p">:</span>
+            <span class="n">pdict</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">Policy</span><span class="o">.</span><span class="n">parameter_list</span><span class="p">():</span>
                 <span class="n">pval</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
-                <span class="n">pfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pval</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pval</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="n">pval</span> <span class="o">=</span> <span class="n">pval</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pval</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">):</span>
+                    <span class="n">pval</span> <span class="o">=</span> <span class="n">pval</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="n">pdict</span><span class="p">[</span><span class="n">pname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">year</span><span class="p">:</span> <span class="n">pval</span><span class="p">}</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pdict</span><span class="p">,</span> <span class="n">pfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">pfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">Policy</span><span class="o">.</span><span class="n">parameter_list</span><span class="p">():</span>
+                    <span class="n">pval</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
+                    <span class="n">pfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">pval</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
                 <span class="sa">f</span><span class="s1">&#39;Write </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1"> policy parameter values to file </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&#39;</span>
