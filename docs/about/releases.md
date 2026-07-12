@@ -5,6 +5,40 @@ Go
 for a complete commit history.
 
 
+2026-07-12 Release 6.7.2
+------------------------
+(last merged pull request is
+[#3099](https://github.com/PSLmodels/Tax-Calculator/pull/3099))
+
+**This is a minor enhancement and bug fix release.**
+
+**API Changes**
+
+**New Features**
+- Add parameter for AMT tax rate on unrecaptured Section 1250 gains
+  [[#3093](https://github.com/PSLmodels/Tax-Calculator/pull/3093)
+   by Martin Holmer]
+- Add parameter for AMT medical itemized deduction add-back calculations
+  [[#3094](https://github.com/PSLmodels/Tax-Calculator/pull/3094)
+   by Martin Holmer]
+- Streamline `test_itemded_component_amounts` comparison logic
+  [[#3095](https://github.com/PSLmodels/Tax-Calculator/pull/3095)
+   by Martin Holmer]
+- Add --jsonparams option to Tax-Calculator CLI to fix #2610
+  [[#3099](https://github.com/PSLmodels/Tax-Calculator/pull/3099)
+   by Martin Holmer]
+
+**Bug Fixes**
+- Fix logic that calculates cash-charity-deduction amounts for nonitemizers
+  [[#3092](https://github.com/PSLmodels/Tax-Calculator/pull/3092)
+   by Martin Holmer]
+- Fix table-construction bug reported in issue #2460 and
+  add test similar to old `receipe05.py` 
+  [[#3096](https://github.com/PSLmodels/Tax-Calculator/pull/3096) and
+   [#3097](https://github.com/PSLmodels/Tax-Calculator/pull/3097) and
+   by Martin Holmer]
+
+
 2026-07-02 Release 6.7.1
 ------------------------
 (last merged pull request is
