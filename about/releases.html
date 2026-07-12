@@ -454,6 +454,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-7-2">2026-07-12 Release 6.7.2</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-7-1">2026-07-02 Release 6.7.1</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-7-0">2026-06-24 Release 6.7.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-6-2">2026-06-05 Release 6.6.2</a></li>
@@ -600,6 +601,39 @@
 <p>Go
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<section id="release-6-7-2">
+<h2>2026-07-12 Release 6.7.2<a class="headerlink" href="#release-6-7-2" title="Link to this heading">#</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3099">#3099</a>)</p>
+<p><strong>This is a minor enhancement and bug fix release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Add parameter for AMT tax rate on unrecaptured Section 1250 gains
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3093">#3093</a>
+by Martin Holmer]</p></li>
+<li><p>Add parameter for AMT medical itemized deduction add-back calculations
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3094">#3094</a>
+by Martin Holmer]</p></li>
+<li><p>Streamline <code class="docutils literal notranslate"><span class="pre">test_itemded_component_amounts</span></code> comparison logic
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3095">#3095</a>
+by Martin Holmer]</p></li>
+<li><p>Add –jsonparams option to Tax-Calculator CLI to fix #2610
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3099">#3099</a>
+by Martin Holmer]</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul class="simple">
+<li><p>Fix logic that calculates cash-charity-deduction amounts for nonitemizers
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3092">#3092</a>
+by Martin Holmer]</p></li>
+<li><p>Fix table-construction bug reported in issue #2460 and
+add test similar to old <code class="docutils literal notranslate"><span class="pre">receipe05.py</span></code>
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3096">#3096</a> and
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3097">#3097</a> and
+by Martin Holmer]</p></li>
+</ul>
+</section>
 <section id="release-6-7-1">
 <h2>2026-07-02 Release 6.7.1<a class="headerlink" href="#release-6-7-1" title="Link to this heading">#</a></h2>
 <p>(last merged pull request is
@@ -3877,6 +3911,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-7-2">2026-07-12 Release 6.7.2</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-7-1">2026-07-02 Release 6.7.1</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-7-0">2026-06-24 Release 6.7.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-6-2">2026-06-05 Release 6.6.2</a></li>
