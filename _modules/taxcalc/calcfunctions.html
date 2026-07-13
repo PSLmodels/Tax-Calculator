@@ -2455,6 +2455,7 @@
     <span class="n">brk7</span> <span class="o">=</span> <span class="n">II_brk7</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">taxable_income</span> <span class="o">&lt;=</span> <span class="n">brk7</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt7</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk6</span><span class="p">)</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt7</span> <span class="o">*</span> <span class="p">(</span><span class="n">brk7</span> <span class="o">-</span> <span class="n">brk6</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">tax</span> <span class="o">+</span> <span class="n">II_rt8</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable_income</span> <span class="o">-</span> <span class="n">brk7</span><span class="p">)</span></div>
 
 
