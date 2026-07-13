@@ -12,8 +12,7 @@ import re
 import ast
 import numpy as np
 import pytest
-from taxcalc.records import Records
-from taxcalc import calcfunctions
+from taxcalc import Policy, Records, calcfunctions
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -1086,3 +1085,40 @@ def test_MiscDed(test_tuple, expected_value, skip_jit):
     test_value = calcfunctions.MiscDed(*test_tuple)
     print('Returned from MiscDed function: ', test_value)
     assert np.allclose(test_value, expected_value)
+
+
+def test_SchXYZ():
+    """
+    Tests the SchXYZ function for a single (MARS==1) tax unit that has
+    2026 taxable income of $100 million under a 2026 policy reform that
+    sets the top bracket threshold (II_brk7) to $20 million for all
+    filers and the top marginal tax rate (II_rt8) to 0.44, leaving all
+    other policy parameters at their 2026 current-law values.
+    """
+    pol = Policy()
+    pol.set_year(2026)
+    # current-law 2026 rate and (upper) bracket-threshold parameters
+    rates = [float(getattr(pol, f'II_rt{i}')[0]) for i in range(1, 9)]
+    brks = [np.array(getattr(pol, f'II_brk{i}')[0]) for i in range(1, 8)]
+    # apply 2026 reform: II_brk7 = $20M for all filers and II_rt8 = 0.44
+    brks[6] = np.array([20e6] * 5)
+    rates[7] = 0.44
+    # expected income tax liability computed independently of SchXYZ:
+    # a single (MARS==1) filer with $100M of taxable income is taxed at
+    # each bracket rate on the income falling within that bracket
+    taxable_income = 100e6
+    upper = [brks[b][0] for b in range(7)] + [taxable_income]
+    lower = 0.0
+    expect = 0.0
+    for rate, top in zip(rates, upper):
+        expect += rate * (min(taxable_income, top) - lower)
+        lower = min(taxable_income, top)
+    assert np.allclose(expect, 42555957.25)
+    actual = calcfunctions.SchXYZ(
+        taxable_income, 1,
+        rates[0], rates[1], rates[2], rates[3],
+        rates[4], rates[5], rates[6], rates[7],
+        brks[0], brks[1], brks[2], brks[3],
+        brks[4], brks[5], brks[6])
+    print(f'Actual value returned from SchXYZ function = {actual:.2f}')
+    assert np.allclose(actual, expect), f'{actual:.2f} != {expect:.2f}'

@@ -2057,6 +2057,7 @@ def SchXYZ(taxable_income, MARS,
     brk7 = II_brk7[MARS - 1]
     if taxable_income <= brk7:
         return tax + II_rt7 * (taxable_income - brk6)
+    tax = tax + II_rt7 * (brk7 - brk6)
     return tax + II_rt8 * (taxable_income - brk7)
 
 
