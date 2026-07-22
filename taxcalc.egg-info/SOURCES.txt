@@ -5,7 +5,6 @@ MANIFEST.in
 Makefile
 PSL_catalog.json
 README.md
-codecov.yml
 csv_show.sh
 csv_vars.sh
 environment.yml
