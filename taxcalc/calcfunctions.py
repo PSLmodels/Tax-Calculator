@@ -4200,52 +4200,66 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Schedule 3 (2025) Part I + Form 1040 line 19: sequential limit
     # against remaining tax liability, mirroring the on-form line
     # order with reform-construct credits appended.
-    avail = c05800
+    #
+    # Two sign guards keep the sequential logic well behaved when an
+    # input is negative (both are no-ops for non-negative inputs, and
+    # so leave current-law results unchanged):
+    #   * max(0., c05800) -- a negative tax before credits would
+    #     otherwise be handed to the first min() below and emitted as a
+    #     negative credit;
+    #   * max(0., <credit>) on each amount -- a negative credit would
+    #     otherwise be passed through and would raise avail above the
+    #     remaining tax liability, letting a later credit exceed it.
+    # Together they ensure every limited credit is non-negative and
+    # that their sum never exceeds c05800.
+    avail = max(0., c05800)
     # (A) Sch 3 Part I lines 1-4
     # Sch 3 line 1 -- Foreign tax credit (Form 1116)
-    c07300 = min(e07300 * (1. - CR_ForeignTax_hc), avail)
+    c07300 = min(max(0., e07300 * (1. - CR_ForeignTax_hc)), avail)
     avail = avail - c07300
     # Sch 3 line 2 -- Credit for child and dependent care expenses (Form 2441)
-    c07180 = min(c07180, avail)
+    c07180 = min(max(0., c07180), avail)
     avail = avail - c07180
     # Sch 3 line 3 -- Education credits (Form 8863 line 19)
-    c07230 = min(c07230, avail)
+    c07230 = min(max(0., c07230), avail)
     avail = avail - c07230
     # Sch 3 line 4 -- Retirement savings contributions credit (Form 8880)
-    c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
+    c07240 = min(max(0., e07240 * (1. - CR_RetirementSavings_hc)), avail)
     avail = avail - c07240
     # (B) Form 1040 line 19 -- CTC + Credit for Other Dependents (Sch 8812);
     # each component independently skipped under its reform-only refundability
     # switch (routed to refundable side in IITAX / CTC_new).
     # Form 1040 line 19 CTC component
     if not CTC_is_refundable:
-        c07220 = min(c07220, avail)
+        c07220 = min(max(0., c07220), avail)
         avail = avail - c07220
     # Form 1040 line 19 ODC component
     if not ODC_is_refundable:
-        odc = min(odc, avail)
+        odc = min(max(0., odc), avail)
         avail = avail - odc
     # (C) Sch 3 Part I lines 5a, 6a, 6b, 6d, 6z (carryforward-eligible
     # credits come after CTC/ODC, which have no carryforward)
     # Sch 3 line 5a -- Residential clean energy credit (Form 5695 line 15)
-    c07260 = min(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
+    c07260 = min(max(0., e07260 * (1. - CR_ResidentialEnergy_hc)), avail)
     avail = avail - c07260
     # Sch 3 line 6a -- General business credit (Form 3800)
-    c07400 = min(e07400 * (1. - CR_GeneralBusiness_hc), avail)
+    c07400 = min(max(0., e07400 * (1. - CR_GeneralBusiness_hc)), avail)
     avail = avail - c07400
     # Sch 3 line 6b -- Prior-year minimum tax credit (Form 8801)
-    c07600 = min(e07600 * (1. - CR_MinimumTax_hc), avail)
+    c07600 = min(max(0., e07600 * (1. - CR_MinimumTax_hc)), avail)
     avail = avail - c07600
     # Sch 3 line 6d -- Credit for the elderly or the disabled (Sch R)
-    c07200 = min(c07200, avail)
+    c07200 = min(max(0., c07200), avail)
     avail = avail - c07200
     # Sch 3 line 6z -- Other nonrefundable credits
-    c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
+    c08000 = min(max(0., p08000 * (1. - CR_OtherCredits_hc)), avail)
     avail = avail - c08000
     # (D) Reform-only nonrefundable credits (current-law inert)
-    charity_credit = min(charity_credit, avail)
+    charity_credit = min(max(0., charity_credit), avail)
     avail = avail - charity_credit
-    personal_nonrefundable_credit = min(personal_nonrefundable_credit, avail)
+    personal_nonrefundable_credit = min(
+        max(0., personal_nonrefundable_credit), avail
+    )
     avail = avail - personal_nonrefundable_credit
     return (c07180, c07200, c07220, c07230, c07240, odc,
             c07260, c07300, c07400, c07600, c08000, charity_credit,
