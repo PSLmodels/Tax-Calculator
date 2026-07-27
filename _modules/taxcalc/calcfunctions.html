@@ -4649,52 +4649,66 @@
     <span class="c1"># Schedule 3 (2025) Part I + Form 1040 line 19: sequential limit</span>
     <span class="c1"># against remaining tax liability, mirroring the on-form line</span>
     <span class="c1"># order with reform-construct credits appended.</span>
-    <span class="n">avail</span> <span class="o">=</span> <span class="n">c05800</span>
+    <span class="c1">#</span>
+    <span class="c1"># Two sign guards keep the sequential logic well behaved when an</span>
+    <span class="c1"># input is negative (both are no-ops for non-negative inputs, and</span>
+    <span class="c1"># so leave current-law results unchanged):</span>
+    <span class="c1">#   * max(0., c05800) -- a negative tax before credits would</span>
+    <span class="c1">#     otherwise be handed to the first min() below and emitted as a</span>
+    <span class="c1">#     negative credit;</span>
+    <span class="c1">#   * max(0., &lt;credit&gt;) on each amount -- a negative credit would</span>
+    <span class="c1">#     otherwise be passed through and would raise avail above the</span>
+    <span class="c1">#     remaining tax liability, letting a later credit exceed it.</span>
+    <span class="c1"># Together they ensure every limited credit is non-negative and</span>
+    <span class="c1"># that their sum never exceeds c05800.</span>
+    <span class="n">avail</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span><span class="p">)</span>
     <span class="c1"># (A) Sch 3 Part I lines 1-4</span>
     <span class="c1"># Sch 3 line 1 -- Foreign tax credit (Form 1116)</span>
-    <span class="n">c07300</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07300</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_ForeignTax_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">c07300</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e07300</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_ForeignTax_hc</span><span class="p">)),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07300</span>
     <span class="c1"># Sch 3 line 2 -- Credit for child and dependent care expenses (Form 2441)</span>
-    <span class="n">c07180</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07180</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">c07180</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c07180</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07180</span>
     <span class="c1"># Sch 3 line 3 -- Education credits (Form 8863 line 19)</span>
-    <span class="n">c07230</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07230</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">c07230</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c07230</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07230</span>
     <span class="c1"># Sch 3 line 4 -- Retirement savings contributions credit (Form 8880)</span>
-    <span class="n">c07240</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07240</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_RetirementSavings_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">c07240</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e07240</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_RetirementSavings_hc</span><span class="p">)),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07240</span>
     <span class="c1"># (B) Form 1040 line 19 -- CTC + Credit for Other Dependents (Sch 8812);</span>
     <span class="c1"># each component independently skipped under its reform-only refundability</span>
     <span class="c1"># switch (routed to refundable side in IITAX / CTC_new).</span>
     <span class="c1"># Form 1040 line 19 CTC component</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>
-        <span class="n">c07220</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07220</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
+        <span class="n">c07220</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c07220</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
         <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07220</span>
     <span class="c1"># Form 1040 line 19 ODC component</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ODC_is_refundable</span><span class="p">:</span>
-        <span class="n">odc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">odc</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
+        <span class="n">odc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">odc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
         <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">odc</span>
     <span class="c1"># (C) Sch 3 Part I lines 5a, 6a, 6b, 6d, 6z (carryforward-eligible</span>
     <span class="c1"># credits come after CTC/ODC, which have no carryforward)</span>
     <span class="c1"># Sch 3 line 5a -- Residential clean energy credit (Form 5695 line 15)</span>
-    <span class="n">c07260</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07260</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_ResidentialEnergy_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">c07260</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e07260</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_ResidentialEnergy_hc</span><span class="p">)),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07260</span>
     <span class="c1"># Sch 3 line 6a -- General business credit (Form 3800)</span>
-    <span class="n">c07400</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07400</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_GeneralBusiness_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">c07400</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e07400</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_GeneralBusiness_hc</span><span class="p">)),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07400</span>
     <span class="c1"># Sch 3 line 6b -- Prior-year minimum tax credit (Form 8801)</span>
-    <span class="n">c07600</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07600</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_MinimumTax_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">c07600</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e07600</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_MinimumTax_hc</span><span class="p">)),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07600</span>
     <span class="c1"># Sch 3 line 6d -- Credit for the elderly or the disabled (Sch R)</span>
-    <span class="n">c07200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07200</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">c07200</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c07200</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07200</span>
     <span class="c1"># Sch 3 line 6z -- Other nonrefundable credits</span>
-    <span class="n">c08000</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p08000</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_OtherCredits_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">c08000</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">p08000</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_OtherCredits_hc</span><span class="p">)),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c08000</span>
     <span class="c1"># (D) Reform-only nonrefundable credits (current-law inert)</span>
-    <span class="n">charity_credit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">charity_credit</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">charity_credit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">charity_credit</span>
-    <span class="n">personal_nonrefundable_credit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">personal_nonrefundable_credit</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
+    <span class="n">personal_nonrefundable_credit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+        <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">personal_nonrefundable_credit</span><span class="p">),</span> <span class="n">avail</span>
+    <span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">personal_nonrefundable_credit</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c07180</span><span class="p">,</span> <span class="n">c07200</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">c07230</span><span class="p">,</span> <span class="n">c07240</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span>
             <span class="n">c07260</span><span class="p">,</span> <span class="n">c07300</span><span class="p">,</span> <span class="n">c07400</span><span class="p">,</span> <span class="n">c07600</span><span class="p">,</span> <span class="n">c08000</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">,</span>
