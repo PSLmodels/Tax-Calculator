@@ -2833,6 +2833,8 @@
         <span class="n">c04470</span><span class="p">,</span> <span class="n">c20800</span><span class="p">,</span> <span class="n">c21040</span><span class="p">,</span> <span class="n">e24515</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">dwks18</span><span class="p">,</span>
         <span class="n">dwks14</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">e62900</span><span class="p">,</span> <span class="n">e00700</span><span class="p">,</span> <span class="n">dwks10</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span>
         <span class="n">earned</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span>
+        <span class="n">tip_income_deduction</span><span class="p">,</span> <span class="n">overtime_income_deduction</span><span class="p">,</span>
+        <span class="n">auto_loan_interest_deduction</span><span class="p">,</span>
         <span class="n">AMT_child_em_c_age</span><span class="p">,</span> <span class="n">AMT_brk1</span><span class="p">,</span>
         <span class="n">AMT_em</span><span class="p">,</span> <span class="n">AMT_prt</span><span class="p">,</span> <span class="n">AMT_rt1</span><span class="p">,</span> <span class="n">AMT_rt2_addon</span><span class="p">,</span>
         <span class="n">AMT_child_em</span><span class="p">,</span> <span class="n">AMT_em_ps</span><span class="p">,</span> <span class="n">AMT_em_pe</span><span class="p">,</span> <span class="n">AMT_Medical_frt</span><span class="p">,</span>
@@ -2850,10 +2852,17 @@
 <span class="sd">    before credits c05800 = taxbc + c09600.</span>
 
 <span class="sd">    Form 6251 structure:</span>
-<span class="sd">      - Part I (lines 1a-4): AMTI = taxable income (Form 1040 line 15)</span>
-<span class="sd">        plus AMT-disallowed deductions (SALT line 2a, Sch A misc) and</span>
-<span class="sd">        the unmodeled prefs/adjustments (lines 2c-2t + 3) captured in</span>
-<span class="sd">        cmbtp; line 2b refunds (e00700) are subtracted.  Pre-2017 law</span>
+<span class="sd">      - Part I (lines 1a-4): line 1a = Form 1040 line 14 less Sch 1-A</span>
+<span class="sd">        line 37 and line 1b = Form 1040 line 11b less line 1a, which</span>
+<span class="sd">        together are AGI less the standard-or-itemized deduction, less</span>
+<span class="sd">        QBID, and less the Sch 1-A tip/overtime/auto-loan deductions.</span>
+<span class="sd">        The Sch 1-A senior deduction (line 37) is not allowed for the</span>
+<span class="sd">        AMT and so is never subtracted here.  Line 2a then adds back</span>
+<span class="sd">        the AMT-disallowed deduction: SALT (Sch A line 7) for</span>
+<span class="sd">        itemizers, the standard deduction (IRC 56(b)(1)(E)) for</span>
+<span class="sd">        nonitemizers.  Sch A misc is added back, line 2b refunds</span>
+<span class="sd">        (e00700) are subtracted, and the unmodeled prefs/adjustments</span>
+<span class="sd">        (lines 2c-2t + 3) are captured in cmbtp.  Pre-2017 law</span>
 <span class="sd">        also added back the medical expenses deducted under the</span>
 <span class="sd">        regular tax&#39;s lower floor but disallowed under the AMT&#39;s</span>
 <span class="sd">        higher floor: max(0, min(c17000, AMT_Medical_frt * c00100)).</span>
@@ -2896,7 +2905,14 @@
 <span class="sd">        Taxable refunds of state and local income taxes</span>
 <span class="sd">        (Form 6251 line 2b subtraction)</span>
 <span class="sd">    qbided: float</span>
-<span class="sd">        Qualified business income deduction (Form 1040 line 13)</span>
+<span class="sd">        Qualified business income deduction (Form 1040 line 13a)</span>
+<span class="sd">    tip_income_deduction: float</span>
+<span class="sd">        Sch 1-A Part II tip deduction (line 13); allowed for the AMT</span>
+<span class="sd">    overtime_income_deduction: float</span>
+<span class="sd">        Sch 1-A Part III overtime deduction (line 21); allowed for AMT</span>
+<span class="sd">    auto_loan_interest_deduction: float</span>
+<span class="sd">        Sch 1-A Part IV auto-loan-interest deduction (line 30);</span>
+<span class="sd">        allowed for the AMT</span>
 <span class="sd">    c04470: float</span>
 <span class="sd">        Itemized deductions after Pease phase-out (zero for non-</span>
 <span class="sd">        itemizers); Form 1040 line 12 itemized portion</span>
@@ -3012,25 +3028,34 @@
 <span class="sd">        Total (regular + AMT) income tax liability before credits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
-    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># --------------------------------------------------------------------</span>
     <span class="c1"># Form 6251 Part I (lines 1a-4): Alternative Minimum Taxable Income</span>
-    <span class="c1"># ----------------------------------------------------------------</span>
-    <span class="c1"># Form 6251 line 1 = Form 1040 line 15 = AGI - (STD or itemized) - QBID.</span>
+    <span class="c1"># --------------------------------------------------------------------</span>
+    <span class="c1"># Form 6251 lines 1a-1b = AGI - (STD or itemized) - QBID - the Sch 1-A</span>
+    <span class="c1"># deductions other than the senior deduction, which is added back by</span>
+    <span class="c1"># the line 1a subtraction of Sch 1-A line 37.</span>
+    <span class="n">sch1a_amount</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">tip_income_deduction</span>            <span class="c1"># Sch 1-A Part II</span>
+        <span class="o">+</span> <span class="n">overtime_income_deduction</span>     <span class="c1"># Sch 1-A Part III</span>
+        <span class="o">+</span> <span class="n">auto_loan_interest_deduction</span>  <span class="c1"># Sch 1-A Part IV</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="n">standard</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
         <span class="n">c62100</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">c04470</span> <span class="o">+</span>
+            <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">sch1a_amount</span> <span class="o">-</span> <span class="n">c04470</span> <span class="o">+</span>
             <span class="n">c18300</span> <span class="o">+</span>    <span class="c1"># SALT add-back (Form 6251 line 2a)</span>
             <span class="n">c20800</span> <span class="o">-</span>    <span class="c1"># Sch A misc add-back (TCJA-suspended 2018-2025)</span>
             <span class="n">c21040</span> <span class="o">+</span>    <span class="c1"># Pease undone for AMT</span>
             <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c17000</span><span class="p">,</span> <span class="n">AMT_Medical_frt</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">))</span>  <span class="c1"># medical add-back</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="n">standard</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">c62100</span> <span class="o">=</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">standard</span>
+        <span class="c1"># the standard deduction subtracted on line 1b is added back on</span>
+        <span class="c1"># line 2a (IRC 56(b)(1)(E)), so it nets out of AMTI entirely</span>
+        <span class="n">c62100</span> <span class="o">=</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">e00700</span> <span class="o">-</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">sch1a_amount</span>
     <span class="n">c62100</span> <span class="o">+=</span> <span class="n">cmbtp</span>  <span class="c1"># Form 6251 lines 2c-2t + 3: AMT prefs/adjustments</span>
     <span class="c1"># c62100 is AMT taxable income = Form 6251 line 4</span>
-    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># --------------------------------------------------------------------</span>
     <span class="c1"># Form 6251 Part II top (lines 5-6): exemption and AMTI less exemption</span>
-    <span class="c1"># ----------------------------------------------------------------</span>
+    <span class="c1"># --------------------------------------------------------------------</span>
     <span class="c1"># line 5: AMT exemption amount (with phase-out)</span>
     <span class="n">line5</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_em</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">AMT_prt</span> <span class="o">*</span>
                 <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c62100</span> <span class="o">-</span> <span class="n">AMT_em_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>

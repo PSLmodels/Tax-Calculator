@@ -675,8 +675,8 @@ concern about side effects from Calculator method calls on calc1.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020_CLP_itax_rev($B)= 773.525
-2020_REF_itax_rev($B)= 777.701
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020_CLP_itax_rev($B)= 773.587
+2020_REF_itax_rev($B)= 777.762
 </pre></div>
 </div>
 </div>
@@ -734,7 +734,7 @@ concern about side effects from Calculator method calls on calc1.</p>
     </style>
     <div>
         <a href="https://bokeh.org" target="_blank" class="bk-notebook-logo"></a>
-        <span id="e979bd57-d23d-4eb0-a285-9567864264e5">Loading BokehJS ...</span>
+        <span id="c2835439-2851-4dec-b23a-e987256154c0">Loading BokehJS ...</span>
     </div>
 </div><script type="application/javascript">'use strict';
 (function(root) {
@@ -899,7 +899,7 @@ const JS_MIME_TYPE = 'application/javascript';
      "</div>"}};
 
   function display_loaded(error = null) {
-    const el = document.getElementById("e979bd57-d23d-4eb0-a285-9567864264e5");
+    const el = document.getElementById("c2835439-2851-4dec-b23a-e987256154c0");
     if (el != null) {
       const html = (() => {
         if (typeof root.Bokeh === "undefined") {
@@ -1007,7 +1007,7 @@ const JS_MIME_TYPE = 'application/javascript';
     document.body.appendChild(element);
   }
 
-  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.9.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.9.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.9.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.9.1.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.9.1.min.js"];
+  const js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-3.9.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-3.9.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.9.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.9.2.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.9.2.min.js"];
   const css_urls = [];
 
   const inline_js = [    function(Bokeh) {
@@ -1033,7 +1033,7 @@ function(Bokeh) {
       console.log("Bokeh: BokehJS failed to load within specified timeout.");
       root._bokeh_failed_load = true;
     } else if (force !== true) {
-      const cell = $(document.getElementById("e979bd57-d23d-4eb0-a285-9567864264e5")).parents('.cell').data().cell;
+      const cell = $(document.getElementById("c2835439-2851-4dec-b23a-e987256154c0")).parents('.cell').data().cell;
       cell.output_area.append_execute_result(NB_LOAD_WARNING)
     }
   }
@@ -1048,11 +1048,11 @@ function(Bokeh) {
     });
   }
 }(window));</script><div class="output text_html">
-  <div id="d7a15013-9c04-4b97-b0e3-96fe1002143e" data-root-id="p1006" style="display: contents;"></div>
+  <div id="a34e882f-0c3a-40ad-a384-6129e9244bc9" data-root-id="p1006" style="display: contents;"></div>
 </div><script type="application/javascript">(function(root) {
   function embed_document(root) {
-  const docs_json = {"e44860a2-53d4-40b1-bed3-944ee7f3de22":{"version":"3.9.1","title":"Bokeh Application","config":{"type":"object","name":"DocumentConfig","id":"p1071","attributes":{"notifications":{"type":"object","name":"Notifications","id":"p1072"}}},"roots":[{"type":"object","name":"Figure","id":"p1006","attributes":{"width":850,"height":500,"x_range":{"type":"object","name":"DataRange1d","id":"p1007"},"y_range":{"type":"object","name":"DataRange1d","id":"p1008"},"x_scale":{"type":"object","name":"LinearScale","id":"p1016"},"y_scale":{"type":"object","name":"LinearScale","id":"p1017"},"title":{"type":"object","name":"Title","id":"p1009","attributes":{"text":"Percentage Change in After-Tax Expanded Income by Income Percentile for 2020","text_font_size":"12pt"}},"renderers":[{"type":"object","name":"GlyphRenderer","id":"p1047","attributes":{"data_source":{"type":"object","name":"ColumnDataSource","id":"p1041","attributes":{"selected":{"type":"object","name":"Selection","id":"p1042","attributes":{"indices":[],"line_indices":[]}},"selection_policy":{"type":"object","name":"UnionRenderers","id":"p1043"},"data":{"type":"map","entries":[["x",{"type":"ndarray","array":{"type":"bytes","data":"H4sIAAEAAAAA/w3D5zaCAQAA0O+PIklWGSWbhhXZIclKCKHMeP93cO85tycIgpBhe+0zYr9RB4w5aNwhhx1x1DETJh13wkmnTJl22owzzjrnvAsuuuSyK2bNmbfgqmuuu+GmRbfctuSOu+6574GHHln22BNPrXhm1XNrXnjpldfeWPfWhnfe+2DTR598tuWLr77ZtuO7H3765bc/dv31z3/MkJd0fAEAAA=="},"shape":[95],"dtype":"int32","order":"little"}],["y",{"type":"ndarray","array":{"type":"bytes","data":"H4sIAAEAAAAA/2NgoC6YNRMEdto/rBJZ5/7wlL1mTP+hrxpn7Attua4vLjiLQcPkYephdNAOudbXgSfsD3/VAJpw1B6k25bruD1MHMY3BoPDcHl0cXT9MH41yHlVR+wh7j1pj4uPrh9mPro4un9h7oSJw+yB0WDv7TiHM5xg8kuAvr6++II9jA+JrQv2MJqQPLp6dH3o8jDzYDS6elzi6Oag80GpIKb/kr08yNtyVzFoSHgixNH5kPi5Ao2nK/bg5HD9sj3MXA9wQF+EhxMsnmDpERJ+8/afPQMCf/YDADMYrjf4AgAA"},"shape":[95],"dtype":"float64","order":"little"}]]}}},"view":{"type":"object","name":"CDSView","id":"p1048","attributes":{"filter":{"type":"object","name":"AllIndices","id":"p1049"}}},"glyph":{"type":"object","name":"Line","id":"p1044","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"line_color":"blue","line_width":3}},"nonselection_glyph":{"type":"object","name":"Line","id":"p1045","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"line_color":"blue","line_alpha":0.1,"line_width":3}},"muted_glyph":{"type":"object","name":"Line","id":"p1046","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"line_color":"blue","line_alpha":0.2,"line_width":3}}}},{"type":"object","name":"GlyphRenderer","id":"p1056","attributes":{"visible":false,"data_source":{"type":"object","name":"ColumnDataSource","id":"p1050","attributes":{"selected":{"type":"object","name":"Selection","id":"p1051","attributes":{"indices":[],"line_indices":[]}},"selection_policy":{"type":"object","name":"UnionRenderers","id":"p1052"},"data":{"type":"map"}}},"view":{"type":"object","name":"CDSView","id":"p1057","attributes":{"filter":{"type":"object","name":"AllIndices","id":"p1058"}}},"glyph":{"type":"object","name":"Scatter","id":"p1053","attributes":{"x":{"type":"value","value":0},"y":{"type":"value","value":0},"line_color":{"type":"value","value":"#1f77b4"},"fill_color":{"type":"value","value":"#1f77b4"}}},"nonselection_glyph":{"type":"object","name":"Scatter","id":"p1054","attributes":{"x":{"type":"value","value":0},"y":{"type":"value","value":0},"line_color":{"type":"value","value":"#1f77b4"},"line_alpha":{"type":"value","value":0.1},"fill_color":{"type":"value","value":"#1f77b4"},"fill_alpha":{"type":"value","value":0.1},"hatch_alpha":{"type":"value","value":0.1}}},"muted_glyph":{"type":"object","name":"Scatter","id":"p1055","attributes":{"x":{"type":"value","value":0},"y":{"type":"value","value":0},"line_color":{"type":"value","value":"#1f77b4"},"line_alpha":{"type":"value","value":0.2},"fill_color":{"type":"value","value":"#1f77b4"},"fill_alpha":{"type":"value","value":0.2},"hatch_alpha":{"type":"value","value":0.2}}}}},{"type":"object","name":"GlyphRenderer","id":"p1065","attributes":{"data_source":{"type":"object","name":"ColumnDataSource","id":"p1059","attributes":{"selected":{"type":"object","name":"Selection","id":"p1060","attributes":{"indices":[],"line_indices":[]}},"selection_policy":{"type":"object","name":"UnionRenderers","id":"p1061"},"data":{"type":"map","entries":[["x",{"type":"ndarray","array":{"type":"bytes","data":"H4sIAAEAAAAA/w3D5zaCAQAA0O+PIklWGSWbhhXZIclKCKHMeP93cO85tycIgpBhe+0zYr9RB4w5aNwhhx1x1DETJh13wkmnTJl22owzzjrnvAsuuuSyK2bNmbfgqmuuu+GmRbfctuSOu+6574GHHln22BNPrXhm1XNrXnjpldfeWPfWhnfe+2DTR598tuWLr77ZtuO7H3765bc/dv31z3/MkJd0fAEAAA=="},"shape":[95],"dtype":"int32","order":"little"}],["y",[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]]}}},"view":{"type":"object","name":"CDSView","id":"p1066","attributes":{"filter":{"type":"object","name":"AllIndices","id":"p1067"}}},"glyph":{"type":"object","name":"Line","id":"p1062","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"}}},"nonselection_glyph":{"type":"object","name":"Line","id":"p1063","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"line_alpha":0.1}},"muted_glyph":{"type":"object","name":"Line","id":"p1064","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"line_alpha":0.2}}}}],"toolbar":{"type":"object","name":"Toolbar","id":"p1015","attributes":{"tools":[{"type":"object","name":"PanTool","id":"p1028"},{"type":"object","name":"WheelZoomTool","id":"p1029","attributes":{"renderers":"auto"}},{"type":"object","name":"BoxZoomTool","id":"p1030","attributes":{"overlay":{"type":"object","name":"BoxAnnotation","id":"p1031","attributes":{"syncable":false,"line_color":"black","line_alpha":1.0,"line_width":2,"line_dash":[4,4],"fill_color":"lightgrey","fill_alpha":0.5,"level":"overlay","visible":false,"left":{"type":"number","value":"nan"},"right":{"type":"number","value":"nan"},"top":{"type":"number","value":"nan"},"bottom":{"type":"number","value":"nan"},"left_units":"canvas","right_units":"canvas","top_units":"canvas","bottom_units":"canvas","handles":{"type":"object","name":"BoxInteractionHandles","id":"p1037","attributes":{"all":{"type":"object","name":"AreaVisuals","id":"p1036","attributes":{"fill_color":"white","hover_fill_color":"lightgray"}}}}}}}},{"type":"object","name":"SaveTool","id":"p1038"},{"type":"object","name":"ResetTool","id":"p1039"},{"type":"object","name":"HelpTool","id":"p1040"}]}},"left":[{"type":"object","name":"LinearAxis","id":"p1023","attributes":{"ticker":{"type":"object","name":"BasicTicker","id":"p1024","attributes":{"mantissas":[1,2,5]}},"formatter":{"type":"object","name":"PrintfTickFormatter","id":"p1068","attributes":{"format":"%.1f"}},"axis_label":"Change in After-Tax Expanded Income","axis_label_text_font_size":"12pt","axis_label_text_font_style":"normal","major_label_policy":{"type":"object","name":"AllLabels","id":"p1026"}}}],"below":[{"type":"object","name":"LinearAxis","id":"p1018","attributes":{"ticker":{"type":"object","name":"BasicTicker","id":"p1019","attributes":{"mantissas":[1,2,5]}},"formatter":{"type":"object","name":"BasicTickFormatter","id":"p1020"},"axis_label":"Baseline Expanded-Income Percentile","axis_label_text_font_size":"12pt","axis_label_text_font_style":"normal","major_label_policy":{"type":"object","name":"AllLabels","id":"p1021"}}}],"center":[{"type":"object","name":"Grid","id":"p1022","attributes":{"axis":{"id":"p1018"}}},{"type":"object","name":"Grid","id":"p1027","attributes":{"dimension":1,"axis":{"id":"p1023"}}}]}}]}};
-  const render_items = [{"docid":"e44860a2-53d4-40b1-bed3-944ee7f3de22","roots":{"p1006":"d7a15013-9c04-4b97-b0e3-96fe1002143e"},"root_ids":["p1006"]}];
+  const docs_json = {"40bbea81-b388-4e6e-84c6-0968f161dfa5":{"version":"3.9.2","title":"Bokeh Application","config":{"type":"object","name":"DocumentConfig","id":"p1071","attributes":{"notifications":{"type":"object","name":"Notifications","id":"p1072"}}},"roots":[{"type":"object","name":"Figure","id":"p1006","attributes":{"width":850,"height":500,"x_range":{"type":"object","name":"DataRange1d","id":"p1007"},"y_range":{"type":"object","name":"DataRange1d","id":"p1008"},"x_scale":{"type":"object","name":"LinearScale","id":"p1016"},"y_scale":{"type":"object","name":"LinearScale","id":"p1017"},"title":{"type":"object","name":"Title","id":"p1009","attributes":{"text":"Percentage Change in After-Tax Expanded Income by Income Percentile for 2020","text_font_size":"12pt"}},"renderers":[{"type":"object","name":"GlyphRenderer","id":"p1047","attributes":{"data_source":{"type":"object","name":"ColumnDataSource","id":"p1041","attributes":{"selected":{"type":"object","name":"Selection","id":"p1042","attributes":{"indices":[],"line_indices":[]}},"selection_policy":{"type":"object","name":"UnionRenderers","id":"p1043"},"data":{"type":"map","entries":[["x",{"type":"ndarray","array":{"type":"bytes","data":"H4sIAAEAAAAA/w3D5zaCAQAA0O+PIklWGSWbhhXZIclKCKHMeP93cO85tycIgpBhe+0zYr9RB4w5aNwhhx1x1DETJh13wkmnTJl22owzzjrnvAsuuuSyK2bNmbfgqmuuu+GmRbfctuSOu+6574GHHln22BNPrXhm1XNrXnjpldfeWPfWhnfe+2DTR598tuWLr77ZtuO7H3765bc/dv31z3/MkJd0fAEAAA=="},"shape":[95],"dtype":"int32","order":"little"}],["y",{"type":"ndarray","array":{"type":"bytes","data":"H4sIAAEAAAAA/2NgoC6YNRMEdto/rBJZ5/7wlL1mTP+hrxpn7Attua4vLjiLQcPkYephdNAOudbXgSfsD3/VAJpw1B6k25bruD1MHMY3BoPDcHl0cXT9MH41yHlVR+wh7j1pj4uPrh9mPro4un9h7oSJw+yB0WDv7TiHM5xg8kuAvr6++II9jA+JrQv2MJqQPLp6dH3o8jDzYDS6elzi6Oag80GpIKb/kr08yNtyVzFoSHgixNH5kPi5Ao2nK/bg5HD9sj3MXA9wQF+EhxMsnmDpERJ+8/afPQMCf/YDADMYrjf4AgAA"},"shape":[95],"dtype":"float64","order":"little"}]]}}},"view":{"type":"object","name":"CDSView","id":"p1048","attributes":{"filter":{"type":"object","name":"AllIndices","id":"p1049"}}},"glyph":{"type":"object","name":"Line","id":"p1044","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"line_color":"blue","line_width":3}},"nonselection_glyph":{"type":"object","name":"Line","id":"p1045","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"line_color":"blue","line_alpha":0.1,"line_width":3}},"muted_glyph":{"type":"object","name":"Line","id":"p1046","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"line_color":"blue","line_alpha":0.2,"line_width":3}}}},{"type":"object","name":"GlyphRenderer","id":"p1056","attributes":{"visible":false,"data_source":{"type":"object","name":"ColumnDataSource","id":"p1050","attributes":{"selected":{"type":"object","name":"Selection","id":"p1051","attributes":{"indices":[],"line_indices":[]}},"selection_policy":{"type":"object","name":"UnionRenderers","id":"p1052"},"data":{"type":"map"}}},"view":{"type":"object","name":"CDSView","id":"p1057","attributes":{"filter":{"type":"object","name":"AllIndices","id":"p1058"}}},"glyph":{"type":"object","name":"Scatter","id":"p1053","attributes":{"x":{"type":"value","value":0},"y":{"type":"value","value":0},"line_color":{"type":"value","value":"#1f77b4"},"fill_color":{"type":"value","value":"#1f77b4"}}},"nonselection_glyph":{"type":"object","name":"Scatter","id":"p1054","attributes":{"x":{"type":"value","value":0},"y":{"type":"value","value":0},"line_color":{"type":"value","value":"#1f77b4"},"line_alpha":{"type":"value","value":0.1},"fill_color":{"type":"value","value":"#1f77b4"},"fill_alpha":{"type":"value","value":0.1},"hatch_alpha":{"type":"value","value":0.1}}},"muted_glyph":{"type":"object","name":"Scatter","id":"p1055","attributes":{"x":{"type":"value","value":0},"y":{"type":"value","value":0},"line_color":{"type":"value","value":"#1f77b4"},"line_alpha":{"type":"value","value":0.2},"fill_color":{"type":"value","value":"#1f77b4"},"fill_alpha":{"type":"value","value":0.2},"hatch_alpha":{"type":"value","value":0.2}}}}},{"type":"object","name":"GlyphRenderer","id":"p1065","attributes":{"data_source":{"type":"object","name":"ColumnDataSource","id":"p1059","attributes":{"selected":{"type":"object","name":"Selection","id":"p1060","attributes":{"indices":[],"line_indices":[]}},"selection_policy":{"type":"object","name":"UnionRenderers","id":"p1061"},"data":{"type":"map","entries":[["x",{"type":"ndarray","array":{"type":"bytes","data":"H4sIAAEAAAAA/w3D5zaCAQAA0O+PIklWGSWbhhXZIclKCKHMeP93cO85tycIgpBhe+0zYr9RB4w5aNwhhx1x1DETJh13wkmnTJl22owzzjrnvAsuuuSyK2bNmbfgqmuuu+GmRbfctuSOu+6574GHHln22BNPrXhm1XNrXnjpldfeWPfWhnfe+2DTR598tuWLr77ZtuO7H3765bc/dv31z3/MkJd0fAEAAA=="},"shape":[95],"dtype":"int32","order":"little"}],["y",[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]]}}},"view":{"type":"object","name":"CDSView","id":"p1066","attributes":{"filter":{"type":"object","name":"AllIndices","id":"p1067"}}},"glyph":{"type":"object","name":"Line","id":"p1062","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"}}},"nonselection_glyph":{"type":"object","name":"Line","id":"p1063","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"line_alpha":0.1}},"muted_glyph":{"type":"object","name":"Line","id":"p1064","attributes":{"x":{"type":"field","field":"x"},"y":{"type":"field","field":"y"},"line_alpha":0.2}}}}],"toolbar":{"type":"object","name":"Toolbar","id":"p1015","attributes":{"tools":[{"type":"object","name":"PanTool","id":"p1028"},{"type":"object","name":"WheelZoomTool","id":"p1029","attributes":{"renderers":"auto"}},{"type":"object","name":"BoxZoomTool","id":"p1030","attributes":{"overlay":{"type":"object","name":"BoxAnnotation","id":"p1031","attributes":{"syncable":false,"line_color":"black","line_alpha":1.0,"line_width":2,"line_dash":[4,4],"fill_color":"lightgrey","fill_alpha":0.5,"level":"overlay","visible":false,"left":{"type":"number","value":"nan"},"right":{"type":"number","value":"nan"},"top":{"type":"number","value":"nan"},"bottom":{"type":"number","value":"nan"},"left_units":"canvas","right_units":"canvas","top_units":"canvas","bottom_units":"canvas","handles":{"type":"object","name":"BoxInteractionHandles","id":"p1037","attributes":{"all":{"type":"object","name":"AreaVisuals","id":"p1036","attributes":{"fill_color":"white","hover_fill_color":"lightgray"}}}}}}}},{"type":"object","name":"SaveTool","id":"p1038"},{"type":"object","name":"ResetTool","id":"p1039"},{"type":"object","name":"HelpTool","id":"p1040"}]}},"left":[{"type":"object","name":"LinearAxis","id":"p1023","attributes":{"ticker":{"type":"object","name":"BasicTicker","id":"p1024","attributes":{"mantissas":[1,2,5]}},"formatter":{"type":"object","name":"PrintfTickFormatter","id":"p1068","attributes":{"format":"%.1f"}},"axis_label":"Change in After-Tax Expanded Income","axis_label_text_font_size":"12pt","axis_label_text_font_style":"normal","major_label_policy":{"type":"object","name":"AllLabels","id":"p1026"}}}],"below":[{"type":"object","name":"LinearAxis","id":"p1018","attributes":{"ticker":{"type":"object","name":"BasicTicker","id":"p1019","attributes":{"mantissas":[1,2,5]}},"formatter":{"type":"object","name":"BasicTickFormatter","id":"p1020"},"axis_label":"Baseline Expanded-Income Percentile","axis_label_text_font_size":"12pt","axis_label_text_font_style":"normal","major_label_policy":{"type":"object","name":"AllLabels","id":"p1021"}}}],"center":[{"type":"object","name":"Grid","id":"p1022","attributes":{"axis":{"id":"p1018"}}},{"type":"object","name":"Grid","id":"p1027","attributes":{"dimension":1,"axis":{"id":"p1023"}}}]}}]}};
+  const render_items = [{"docid":"40bbea81-b388-4e6e-84c6-0968f161dfa5","roots":{"p1006":"a34e882f-0c3a-40ad-a384-6129e9244bc9"},"root_ids":["p1006"]}];
   void root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
   }
   if (root.Bokeh !== undefined) {
@@ -1117,19 +1117,19 @@ function(Bokeh) {
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>27.710</td>
+      <td>27.730</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>751.927</td>
+      <td>752.076</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>176.770</td>
+      <td>176.760</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>3076.650</td>
+      <td>3076.415</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
@@ -1137,27 +1137,27 @@ function(Bokeh) {
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>8619.446</td>
+      <td>8619.530</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1498.020</td>
+      <td>1498.038</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>7876.417</td>
+      <td>10952.969</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>0.493</td>
+      <td>0.537</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.060</td>
+      <td>0.070</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1498.514</td>
+      <td>1498.575</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
@@ -1177,7 +1177,7 @@ function(Bokeh) {
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>773.525</td>
+      <td>773.587</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
@@ -1185,11 +1185,11 @@ function(Bokeh) {
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>1991.466</td>
+      <td>1991.528</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>135.410</td>
+      <td>135.400</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
@@ -1251,19 +1251,19 @@ function(Bokeh) {
     </tr>
     <tr>
       <th>Itemizers (#m)</th>
-      <td>27.640</td>
+      <td>27.650</td>
     </tr>
     <tr>
       <th>Itemized Deduction ($b)</th>
-      <td>749.442</td>
+      <td>749.594</td>
     </tr>
     <tr>
       <th>Standard Deduction Filers (#m)</th>
-      <td>176.850</td>
+      <td>176.830</td>
     </tr>
     <tr>
       <th>Standard Deduction ($b)</th>
-      <td>3077.994</td>
+      <td>3077.754</td>
     </tr>
     <tr>
       <th>Personal Exemption ($b)</th>
@@ -1271,27 +1271,27 @@ function(Bokeh) {
     </tr>
     <tr>
       <th>Taxable Income ($b)</th>
-      <td>8371.662</td>
+      <td>8371.745</td>
     </tr>
     <tr>
       <th>Regular Tax ($b)</th>
-      <td>1499.846</td>
+      <td>1499.863</td>
     </tr>
     <tr>
       <th>AMT Income ($b)</th>
-      <td>7879.108</td>
+      <td>10957.001</td>
     </tr>
     <tr>
       <th>AMT Liability ($b)</th>
-      <td>0.499</td>
+      <td>0.544</td>
     </tr>
     <tr>
       <th>AMT Filers (#m)</th>
-      <td>0.060</td>
+      <td>0.070</td>
     </tr>
     <tr>
       <th>Tax before Credits ($b)</th>
-      <td>1500.345</td>
+      <td>1500.407</td>
     </tr>
     <tr>
       <th>Refundable Credits ($b)</th>
@@ -1311,7 +1311,7 @@ function(Bokeh) {
     </tr>
     <tr>
       <th>Ind Income Tax ($b)</th>
-      <td>777.701</td>
+      <td>777.762</td>
     </tr>
     <tr>
       <th>Payroll Taxes ($b)</th>
@@ -1319,15 +1319,15 @@ function(Bokeh) {
     </tr>
     <tr>
       <th>Combined Liability ($b)</th>
-      <td>1995.642</td>
+      <td>1995.703</td>
     </tr>
     <tr>
       <th>With Income Tax &lt;= 0 (#m)</th>
-      <td>137.570</td>
+      <td>137.560</td>
     </tr>
     <tr>
       <th>With Combined Tax &lt;= 0 (#m)</th>
-      <td>97.860</td>
+      <td>97.850</td>
     </tr>
     <tr>
       <th>UBI Benefits ($b)</th>
@@ -1406,82 +1406,82 @@ function(Bokeh) {
     <tr>
       <th>10-20</th>
       <td>20.448902</td>
-      <td>-51.033360</td>
-      <td>-51.379856</td>
-      <td>306.922994</td>
-      <td>307.269490</td>
+      <td>-51.032191</td>
+      <td>-51.378666</td>
+      <td>306.921825</td>
+      <td>307.268299</td>
     </tr>
     <tr>
       <th>20-30</th>
       <td>20.447972</td>
-      <td>-52.108361</td>
-      <td>-53.124056</td>
-      <td>541.322300</td>
-      <td>542.337995</td>
+      <td>-52.105279</td>
+      <td>-53.120997</td>
+      <td>541.319218</td>
+      <td>542.334937</td>
     </tr>
     <tr>
       <th>30-40</th>
       <td>20.448551</td>
-      <td>-44.354625</td>
-      <td>-45.607079</td>
-      <td>715.655469</td>
-      <td>716.907923</td>
+      <td>-44.346304</td>
+      <td>-45.598561</td>
+      <td>715.647148</td>
+      <td>716.899405</td>
     </tr>
     <tr>
       <th>40-50</th>
       <td>20.448614</td>
-      <td>-41.799605</td>
-      <td>-43.510350</td>
-      <td>885.454944</td>
-      <td>887.165690</td>
+      <td>-41.796791</td>
+      <td>-43.507410</td>
+      <td>885.452131</td>
+      <td>887.162750</td>
     </tr>
     <tr>
       <th>50-60</th>
       <td>20.448520</td>
-      <td>-37.680549</td>
-      <td>-40.323118</td>
-      <td>1098.748895</td>
-      <td>1101.391464</td>
+      <td>-37.680448</td>
+      <td>-40.323017</td>
+      <td>1098.748794</td>
+      <td>1101.391362</td>
     </tr>
     <tr>
       <th>60-70</th>
       <td>20.448182</td>
-      <td>-28.584357</td>
-      <td>-32.247243</td>
-      <td>1379.848991</td>
-      <td>1383.511877</td>
+      <td>-28.577619</td>
+      <td>-32.240598</td>
+      <td>1379.842253</td>
+      <td>1383.505231</td>
     </tr>
     <tr>
       <th>70-80</th>
       <td>20.448218</td>
-      <td>3.962813</td>
-      <td>-0.866496</td>
-      <td>1741.327674</td>
-      <td>1746.156983</td>
+      <td>3.971282</td>
+      <td>-0.858011</td>
+      <td>1741.319205</td>
+      <td>1746.148498</td>
     </tr>
     <tr>
       <th>80-90</th>
       <td>20.447460</td>
-      <td>85.055506</td>
-      <td>76.871220</td>
-      <td>2292.697520</td>
-      <td>2300.881806</td>
+      <td>85.058903</td>
+      <td>76.874671</td>
+      <td>2292.694123</td>
+      <td>2300.878355</td>
     </tr>
     <tr>
       <th>90-100</th>
       <td>20.449858</td>
-      <td>982.914585</td>
-      <td>1010.734622</td>
-      <td>4742.729255</td>
-      <td>4714.909218</td>
+      <td>982.941978</td>
+      <td>1010.761603</td>
+      <td>4742.701863</td>
+      <td>4714.882238</td>
     </tr>
     <tr>
       <th>ALL</th>
       <td>204.484164</td>
-      <td>773.525096</td>
-      <td>777.700692</td>
-      <td>13781.731202</td>
-      <td>13777.555605</td>
+      <td>773.586579</td>
+      <td>777.762063</td>
+      <td>13781.669719</td>
+      <td>13777.494235</td>
     </tr>
     <tr>
       <th>90-95</th>
@@ -1494,18 +1494,18 @@ function(Bokeh) {
     <tr>
       <th>95-99</th>
       <td>8.177219</td>
-      <td>320.487022</td>
-      <td>318.139847</td>
-      <td>1823.880447</td>
-      <td>1826.227622</td>
+      <td>320.487093</td>
+      <td>318.139935</td>
+      <td>1823.880376</td>
+      <td>1826.227534</td>
     </tr>
     <tr>
       <th>Top 1%</th>
       <td>2.047027</td>
-      <td>521.060717</td>
-      <td>556.779513</td>
-      <td>1386.212540</td>
-      <td>1350.493743</td>
+      <td>521.088038</td>
+      <td>556.806406</td>
+      <td>1386.185219</td>
+      <td>1350.466850</td>
     </tr>
   </tbody>
 </table>
@@ -1568,30 +1568,30 @@ function(Bokeh) {
     <tr>
       <th>10-20</th>
       <td>20.448902</td>
-      <td>-0.346496</td>
-      <td>-16.944488</td>
-      <td>0.112894</td>
+      <td>-0.346475</td>
+      <td>-16.943439</td>
+      <td>0.112887</td>
     </tr>
     <tr>
       <th>20-30</th>
       <td>20.447972</td>
-      <td>-1.015695</td>
-      <td>-49.672180</td>
-      <td>0.187632</td>
+      <td>-1.015719</td>
+      <td>-49.673318</td>
+      <td>0.187638</td>
     </tr>
     <tr>
       <th>30-40</th>
       <td>20.448551</td>
-      <td>-1.252454</td>
-      <td>-61.249042</td>
-      <td>0.175008</td>
+      <td>-1.252257</td>
+      <td>-61.239383</td>
+      <td>0.174982</td>
     </tr>
     <tr>
       <th>40-50</th>
       <td>20.448614</td>
-      <td>-1.710746</td>
-      <td>-83.660720</td>
-      <td>0.193205</td>
+      <td>-1.710619</td>
+      <td>-83.654528</td>
+      <td>0.193192</td>
     </tr>
     <tr>
       <th>50-60</th>
@@ -1603,37 +1603,37 @@ function(Bokeh) {
     <tr>
       <th>60-70</th>
       <td>20.448182</td>
-      <td>-3.662886</td>
-      <td>-179.130172</td>
-      <td>0.265456</td>
+      <td>-3.662979</td>
+      <td>-179.134680</td>
+      <td>0.265464</td>
     </tr>
     <tr>
       <th>70-80</th>
       <td>20.448218</td>
-      <td>-4.829309</td>
-      <td>-236.172600</td>
+      <td>-4.829293</td>
+      <td>-236.171839</td>
       <td>0.277335</td>
     </tr>
     <tr>
       <th>80-90</th>
       <td>20.447460</td>
-      <td>-8.184286</td>
-      <td>-400.259300</td>
-      <td>0.356972</td>
+      <td>-8.184232</td>
+      <td>-400.256663</td>
+      <td>0.356970</td>
     </tr>
     <tr>
       <th>90-100</th>
       <td>20.449858</td>
-      <td>27.820037</td>
-      <td>1360.402501</td>
-      <td>-0.586583</td>
+      <td>27.819625</td>
+      <td>1360.382342</td>
+      <td>-0.586578</td>
     </tr>
     <tr>
       <th>ALL</th>
       <td>204.484164</td>
-      <td>4.175596</td>
-      <td>20.420144</td>
-      <td>-0.030298</td>
+      <td>4.175483</td>
+      <td>20.419593</td>
+      <td>-0.030297</td>
     </tr>
     <tr>
       <th>90-95</th>
@@ -1645,16 +1645,16 @@ function(Bokeh) {
     <tr>
       <th>95-99</th>
       <td>8.177219</td>
-      <td>-2.347175</td>
-      <td>-287.038246</td>
-      <td>0.128691</td>
+      <td>-2.347159</td>
+      <td>-287.036298</td>
+      <td>0.128690</td>
     </tr>
     <tr>
       <th>Top 1%</th>
       <td>2.047027</td>
-      <td>35.718796</td>
-      <td>17449.105127</td>
-      <td>-2.576719</td>
+      <td>35.718368</td>
+      <td>17448.895957</td>
+      <td>-2.576739</td>
     </tr>
   </tbody>
 </table>
