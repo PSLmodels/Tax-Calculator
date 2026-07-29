@@ -2387,6 +2387,8 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         c04470, c20800, c21040, e24515, MARS, dwks18,
         dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
         earned, cmbtp, qbided,
+        tip_income_deduction, overtime_income_deduction,
+        auto_loan_interest_deduction,
         AMT_child_em_c_age, AMT_brk1,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2_addon,
         AMT_child_em, AMT_em_ps, AMT_em_pe, AMT_Medical_frt,
@@ -2404,10 +2406,17 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
     before credits c05800 = taxbc + c09600.
 
     Form 6251 structure:
-      - Part I (lines 1a-4): AMTI = taxable income (Form 1040 line 15)
-        plus AMT-disallowed deductions (SALT line 2a, Sch A misc) and
-        the unmodeled prefs/adjustments (lines 2c-2t + 3) captured in
-        cmbtp; line 2b refunds (e00700) are subtracted.  Pre-2017 law
+      - Part I (lines 1a-4): line 1a = Form 1040 line 14 less Sch 1-A
+        line 37 and line 1b = Form 1040 line 11b less line 1a, which
+        together are AGI less the standard-or-itemized deduction, less
+        QBID, and less the Sch 1-A tip/overtime/auto-loan deductions.
+        The Sch 1-A senior deduction (line 37) is not allowed for the
+        AMT and so is never subtracted here.  Line 2a then adds back
+        the AMT-disallowed deduction: SALT (Sch A line 7) for
+        itemizers, the standard deduction (IRC 56(b)(1)(E)) for
+        nonitemizers.  Sch A misc is added back, line 2b refunds
+        (e00700) are subtracted, and the unmodeled prefs/adjustments
+        (lines 2c-2t + 3) are captured in cmbtp.  Pre-2017 law
         also added back the medical expenses deducted under the
         regular tax's lower floor but disallowed under the AMT's
         higher floor: max(0, min(c17000, AMT_Medical_frt * c00100)).
@@ -2450,7 +2459,14 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         Taxable refunds of state and local income taxes
         (Form 6251 line 2b subtraction)
     qbided: float
-        Qualified business income deduction (Form 1040 line 13)
+        Qualified business income deduction (Form 1040 line 13a)
+    tip_income_deduction: float
+        Sch 1-A Part II tip deduction (line 13); allowed for the AMT
+    overtime_income_deduction: float
+        Sch 1-A Part III overtime deduction (line 21); allowed for AMT
+    auto_loan_interest_deduction: float
+        Sch 1-A Part IV auto-loan-interest deduction (line 30);
+        allowed for the AMT
     c04470: float
         Itemized deductions after Pease phase-out (zero for non-
         itemizers); Form 1040 line 12 itemized portion
@@ -2566,25 +2582,34 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         Total (regular + AMT) income tax liability before credits
     """
     # pylint: disable=too-many-statements,too-many-branches
-    # ----------------------------------------------------------------
+    # --------------------------------------------------------------------
     # Form 6251 Part I (lines 1a-4): Alternative Minimum Taxable Income
-    # ----------------------------------------------------------------
-    # Form 6251 line 1 = Form 1040 line 15 = AGI - (STD or itemized) - QBID.
+    # --------------------------------------------------------------------
+    # Form 6251 lines 1a-1b = AGI - (STD or itemized) - QBID - the Sch 1-A
+    # deductions other than the senior deduction, which is added back by
+    # the line 1a subtraction of Sch 1-A line 37.
+    sch1a_amount = (
+        tip_income_deduction            # Sch 1-A Part II
+        + overtime_income_deduction     # Sch 1-A Part III
+        + auto_loan_interest_deduction  # Sch 1-A Part IV
+    )
     if standard == 0.0:
         c62100 = (
-            c00100 - e00700 - qbided - c04470 +
+            c00100 - e00700 - qbided - sch1a_amount - c04470 +
             c18300 +    # SALT add-back (Form 6251 line 2a)
             c20800 -    # Sch A misc add-back (TCJA-suspended 2018-2025)
             c21040 +    # Pease undone for AMT
             max(0., min(c17000, AMT_Medical_frt * c00100))  # medical add-back
         )
     if standard > 0.0:
-        c62100 = c00100 - e00700 - qbided - standard
+        # the standard deduction subtracted on line 1b is added back on
+        # line 2a (IRC 56(b)(1)(E)), so it nets out of AMTI entirely
+        c62100 = c00100 - e00700 - qbided - sch1a_amount
     c62100 += cmbtp  # Form 6251 lines 2c-2t + 3: AMT prefs/adjustments
     # c62100 is AMT taxable income = Form 6251 line 4
-    # ----------------------------------------------------------------
+    # --------------------------------------------------------------------
     # Form 6251 Part II top (lines 5-6): exemption and AMTI less exemption
-    # ----------------------------------------------------------------
+    # --------------------------------------------------------------------
     # line 5: AMT exemption amount (with phase-out)
     line5 = max(0., AMT_em[MARS - 1] - AMT_prt *
                 max(0., c62100 - AMT_em_ps[MARS - 1]))
