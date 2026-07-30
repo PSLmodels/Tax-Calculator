@@ -5,6 +5,27 @@ Go
 for a complete commit history.
 
 
+2026-07-30 Release 6.7.3
+------------------------
+(last merged pull request is
+[#3109](https://github.com/PSLmodels/Tax-Calculator/pull/3109))
+
+**This is a bug fix release.**
+
+**API Changes**
+
+**New Features**
+
+**Bug Fixes**
+- Add test and fix `SchXYZ` function logic for extra top income tax bracket
+  [[#3102](https://github.com/PSLmodels/Tax-Calculator/pull/3102) and
+   [#3104](https://github.com/PSLmodels/Tax-Calculator/pull/3104)
+   by Martin Holmer]
+- Fix calculation of AMT taxable income, `c62100`, for nonitemizers
+  [[#3109](https://github.com/PSLmodels/Tax-Calculator/pull/3109)
+   by Martin Holmer]
+
+
 2026-07-12 Release 6.7.2
 ------------------------
 (last merged pull request is
