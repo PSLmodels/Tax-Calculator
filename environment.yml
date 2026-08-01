@@ -23,4 +23,3 @@ dependencies:
 - pip:
     - "jupyter-book<2.0"
     - "paramtools>=0.20.0"
-    - "mcp[cli]>=2.0.0"
