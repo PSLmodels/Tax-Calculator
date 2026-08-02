@@ -20,5 +20,9 @@ The [contributor
 guide](https://taxcalc.pslmodels.org/contributing/contributor_guide.html)
 explains the workflow involved in contributing model enhancements.
 
-Complete documentation is available
+Complete documentation (on the model's structure and its Python API
+and its CLI) is available
 [here](https://PSLmodels.github.io/Tax-Calculator/).
+
+Documentation on the newer AI-assisted approaches to using and
+enhancing the model is available [here](agents/README.md).
