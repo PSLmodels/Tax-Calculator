@@ -4,7 +4,7 @@ This workflow outlines the steps involved in preparing a local git
 branch that contains Tax-Calculator changes that enable the model to
 simulate a specified policy reform that cannot be simulated by the
 current version of Tax-Calculator.  This workflow is intended to be
-used by a Tax-Calculator user, who has a forked Tax-Calculator
+used by a Tax-Calculator user, who has forked the Tax-Calculator
 repository on this computer.
 
 STEP 1: GATHER INFORMATION
@@ -29,7 +29,10 @@ STEP 2: CREATE GIT BRANCH
           how to proceed before making any changes
 - Action: if currently on master branch, synchronize master with the
           central GitHub repository using the "make git-sync" command
-- Action: create git branch off master branch if currently on master branch
+          and then create the new branch off the master branch
+- Action: if currently on a branch other than master, ask the user
+          whether to continue working on that branch or to switch to
+          master and create the new branch there
 
 STEP 3: MAKE BRANCH CHANGES
 - Identify any new parameters for `policy_current_law.json`
@@ -55,18 +58,30 @@ STEP 3: MAKE BRANCH CHANGES
 
 STEP 4: TEST BRANCH CHANGES
 
+Execute every command in this step in the top-level Tax-Calculator
+repo folder.
+
 Before executing the test commands below, execute the fast
-"cd taxcalc ; pytest tests/test_calcfunctions.py" command, which catches
+"pytest taxcalc/tests/test_calcfunctions.py" command, which catches
 inconsistencies among `calcfunctions.py`, `calculator.py`,
 `policy_current_law.json`, and `records_variables.json` without
 incurring the cost of the slower test commands
 
-Then execute the following test commands until all four pass.  If a
-test command fails, return to step 3 revising changes until all tests
-pass.  Execute the test commands in the top-level Tax-Calculator repo
-folder.  Note that the brtest and idtest commands build and install
-the taxcalc package, and therefore take considerably longer than the
-other commands.
+Also, confirm that the three national TMD files (`tmd.csv`,
+`tmd_weights.csv.gz`, and `tmd_growfactors.csv`) are in the top-level
+repo folder, where they are ignored by git version control.  The idtest
+command cannot run without them.
+
+Then execute the following test commands, in the order listed, until
+they all pass.  If a test command fails, return to step 3 revising
+changes until all tests pass.  These tests should all pass because a
+structural enhancment **adds** capabilities; it does not change how
+taxes are calculated under current-law policy or under the reforms that
+are already parameterized.  The order matters: the pytest-all command
+uninstalls the local taxcalc package that the brtest and idtest
+commands build and install.  Because they build and install the
+package, the brtest and idtest commands take considerably longer than
+the other commands.
 
 - Execute the "make cstest > rescs 2>&1" command
   * Test fails if the rescs file is not empty
@@ -75,26 +90,30 @@ other commands.
     diagnose the failure; do not rely on the last line of respy alone,
     because collection errors and crashes are reported differently from
     test failures)
-- Execute the "make brtest > resbr 2>&1" command
-  * Test fails if any line in the resbr file contains the word differ
-- Execute the "make idtest > resid 2>&1" command
-  * Test fails if any line in the resid file contains the word differ
+- Execute the "make brtest > resbr 2>&1" command and then, if the three
+  TMD files are available, the "make idtest > resid 2>&1" command
+  * Both these commands execute shell scripts that report mismatches but
+    always exit with a zero status, so check their output by executing
+    the "grep -Ei 'differ|error|traceback' resbr resid" command
+  * Test fails if that grep command generates any output; matching the
+    error and traceback patterns, as well as the differ pattern, guards
+    against a test that appears to pass only because it never ran
 
 The brtest and idtest commands, and some of the pytest-all tests,
 compare results against stored expected results.  When such a
-comparison fails, distinguish between these two cases:
-- The enhancement is supposed to leave current-law results unchanged, in
-  which case a difference indicates a bug in the branch changes that must
-  be fixed in step 3.
-- The enhancement is expected to change results, in which case the stored
-  expected results need to be updated.
-NEVER revise a test, or a file containing expected test results, in order
-to make a failing test pass without first asking the user for approval.
+comparison fails, the difference indicates a bug in the branch changes
+that must be fixed in step 3.  Never revise a test, or a file
+containing expected test results, in order to make a failing test pass
+without first asking the user for approval.
 
 STEP 5: ASK IF SHOULD COMMIT CHANGES
 - Action: remove the rescs, respy, resbr, and resid files generated in
           step 4, because they are not ignored by git and must not be
           committed
+- Action: check "git status" for stray test output files, such as
+          df-??-#-* files, which are left behind when a failing
+          pytest-all command aborts before the Makefile pytest-cleanup
+          step runs
 - Action: ask if should commit changes or leave that up to the user.
 - Action: do not push the branch to GitHub and do not open a pull request;
           those actions are outside the scope of this workflow.
