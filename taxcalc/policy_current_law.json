@@ -23343,6 +23343,56 @@
             "cps": true
         }
     },
+    "CR_InterestPaid_rt": {
+        "title": "Interest Paid Credit rate",
+        "description": "If greater than zero, this decimal fraction represents the portion of interest paid provided as a tax credit.  Credit claimed will be rt*e19200, which is available to all filing units whether or not they itemize deductions.",
+        "section_1": "",
+        "section_2": "",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CR_InterestPaid_refundable": {
+        "title": "Whether the interest paid credit is refundable",
+        "description": "If true, the interest paid credit is fully refundable; if false, the credit is nonrefundable.",
+        "section_1": "",
+        "section_2": "",
+        "indexable": false,
+        "indexed": false,
+        "type": "bool",
+        "value": [
+            {
+                "year": 2013,
+                "value": false
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": false,
+                "max": true
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "SeniorDed_c": {
         "title": "Senior deduction amount per elderly head/spouse",
         "description": "Senior deduction is capped at this level per elderly head/spouse.",

@@ -1122,3 +1122,77 @@ def test_SchXYZ():
         brks[4], brks[5], brks[6])
     print(f'Actual value returned from SchXYZ function = {actual:.2f}')
     assert np.allclose(actual, expect), f'{actual:.2f} != {expect:.2f}'
+
+
+@pytest.mark.parametrize(
+    'e19200,rate,expect',
+    [(20_000.0, 0.0, 0.0),      # current-law rate ==> inert
+     (20_000.0, 0.10, 2_000.0),  # 0.10 * 20_000
+     (0.0, 0.10, 0.0),          # no interest paid ==> no credit
+     (-500.0, 0.10, 0.0)]       # negative interest paid guarded to zero
+)
+def test_InterestPaidCredit(e19200, rate, expect, skip_jit):
+    """
+    Tests the InterestPaidCredit function, whose credit is the product
+    of the CR_InterestPaid_rt rate and non-negative interest paid.
+    """
+    actual = calcfunctions.InterestPaidCredit(e19200, rate, 0.0)
+    assert np.allclose(actual, expect)
+
+
+@pytest.mark.parametrize('refundable', [False, True])
+def test_intpaid_credit_flow(refundable, skip_jit):
+    """
+    Tests the flow of the interest paid credit through the
+    NonrefundableCredits, C1040, and IITAX functions for a filing unit
+    that has $1_000 of tax before credits, $20_000 of interest paid,
+    a CR_InterestPaid_rt of 0.10, and no other credits or other taxes.
+
+    Expected results computed independently of the calcfunctions code:
+      credit = 0.10 * 20_000 = 2_000
+      when NOT refundable:
+        credit is limited to the 1_000 of tax before credits, so
+        c07100 = 1_000 and c09200 = max(0, 1_000 - 1_000) + 0 = 0
+        refund = 0 and iitax = 0 - 0 = 0
+      when refundable:
+        credit is not limited and is excluded from c07100, so
+        c07100 = 0 and c09200 = max(0, 1_000 - 0) + 0 = 1_000
+        refund = 2_000 and iitax = 1_000 - 2_000 = -1_000
+    """
+    tax = 1_000.0
+    credit = calcfunctions.InterestPaidCredit(20_000.0, 0.10, 0.0)
+    assert np.allclose(credit, 2_000.0)
+    # limit nonrefundable credits against tax before credits; returns
+    # (c07180, c07200, c07220, c07230, c07240, odc, c07260, c07300,
+    #  c07400, c07600, c08000, charity_credit, intpaid_credit,
+    #  personal_nonrefundable_credit)
+    nrc = calcfunctions.NonrefundableCredits(
+        tax, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        False, False,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        credit, refundable,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    assert np.allclose(nrc[12], 2_000.0 if refundable else 1_000.0)
+    # assemble Form 1040 lines 21-24; returns (c07100, othertaxes, c09200)
+    f1040 = calcfunctions.C1040(
+        tax, nrc[0], nrc[1], nrc[2], nrc[3], nrc[4], nrc[6], nrc[7],
+        nrc[8], nrc[9], nrc[10], 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, nrc[5], nrc[11],
+        nrc[12], nrc[13],
+        False, False, refundable)
+    assert np.allclose(f1040[1], 0.0)
+    assert np.allclose(f1040[0], 0.0 if refundable else 1_000.0)
+    assert np.allclose(f1040[2], 1_000.0 if refundable else 0.0)
+    # net refundable credits out of tax liability; returned tuple is
+    # (eitc, refund, ctc_total, ctc_refundable, ctc_nonrefundable,
+    #  iitax, payrolltax, combined)
+    iit = calcfunctions.IITAX(
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        f1040[2], 0.0, 0.0,
+        0.0, nrc[2], nrc[5], False, False,
+        nrc[12], refundable,
+        True, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0)
+    assert np.allclose(iit[1], 2_000.0 if refundable else 0.0)
+    assert np.allclose(iit[5], -1_000.0 if refundable else 0.0)

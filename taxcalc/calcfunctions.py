@@ -4049,6 +4049,48 @@ def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
 
 
 @iterate_jit(nopython=True)
+def InterestPaidCredit(e19200, CR_InterestPaid_rt, intpaid_credit):
+    """
+    Computes credit for interest paid (a reform construct with no IRS
+    form correspondence; not part of current-law policy).  Under
+    current law `CR_InterestPaid_rt` defaults to 0.0, so
+    `intpaid_credit` is identically 0 and the function is inert.
+
+    Under reform the credit equals
+        CR_InterestPaid_rt * e19200
+    where `e19200` is the input variable for itemizable interest paid.
+    Because the base is the input variable rather than the `ItemDed`
+    output `c19200`, the credit is available to every filing unit with
+    interest paid, whether or not it itemizes deductions, and it is
+    unaffected by the `ID_InterestPaid_hc` haircut and the
+    `ID_InterestPaid_c` cap.
+
+    Downstream consumers: `intpaid_credit` is fed to
+    `NonrefundableCredits`, where it is sequentially limited against
+    the remaining tax-before-credits (`avail`) unless the reform-only
+    `CR_InterestPaid_refundable` switch is true, in which case the
+    credit is left unlimited there and is added on the refundable side
+    in `IITAX`.
+
+    Parameters
+    ----------
+    e19200: float
+        Itemizable interest paid (Sch A line 15)
+    CR_InterestPaid_rt: float
+        Interest paid credit rate (reform-only; 0 under current law)
+    intpaid_credit: float
+        Records-bound output, computed below.
+
+    Returns
+    -------
+    intpaid_credit: float
+        Credit for interest paid
+    """
+    intpaid_credit = CR_InterestPaid_rt * max(0., e19200)
+    return intpaid_credit
+
+
+@iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          e07600, p08000, odc,
                          personal_nonrefundable_credit,
@@ -4056,6 +4098,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
                          CR_MinimumTax_hc, CR_OtherCredits_hc, charity_credit,
+                         intpaid_credit, CR_InterestPaid_refundable,
                          c07180, c07200, c07220, c07230, c07240,
                          c07260, c07300, c07400, c07600, c08000):
     """
@@ -4078,7 +4121,10 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
           -> PrYrMin -> SchR -> Other); unmodeled on-form items are
           5b, 6c, 6e-6m
       (D) Reform-only nonrefundable credits (charity_credit,
-          personal_nonrefundable_credit); inert under current law
+          intpaid_credit, personal_nonrefundable_credit); inert under
+          current law.  The intpaid_credit capping is skipped under
+          reform-only `CR_InterestPaid_refundable`, which routes that
+          credit to the refundable side in `IITAX`
 
     CTC/ODC placement between Sch 3 line 4 and line 5a is consistent
     with Sch 8812 Credit Limit Worksheet A, which subtracts only Sch 3
@@ -4092,7 +4138,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
         applied here, then `min` against remaining tax.  All `CR_*_hc`
         parameters default to 0.0 (current-law inert).
       * **Pre-computed credits** `c07180`, `c07200`, `c07220`,
-        `c07230`, `odc`, `charity_credit`,
+        `c07230`, `odc`, `charity_credit`, `intpaid_credit`,
         `personal_nonrefundable_credit`: the source function already
         applied any haircut and its own Credit Limit Worksheet; this
         function re-caps against remaining tax (belt-and-braces, and
@@ -4104,7 +4150,8 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     `ChildDepTaxCredit` (which produces `c07220` and `odc`) and the
     other per-credit source functions (`F2441` -> `c07180`,
     `EducationTaxCredit` -> `c07230`, `SchR` -> `c07200`,
-    `CharityCredit` -> `charity_credit`, `PersonalTaxCredit` ->
+    `CharityCredit` -> `charity_credit`, `InterestPaidCredit` ->
+    `intpaid_credit`, `PersonalTaxCredit` ->
     `personal_nonrefundable_credit`), and before `AdditionalCTC` /
     `C1040`.
 
@@ -4163,6 +4210,13 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     charity_credit: float
         Reform-only nonrefundable charity credit from `CharityCredit`;
         current-law inert
+    intpaid_credit: float
+        Reform-only interest paid credit from `InterestPaidCredit`;
+        current-law inert
+    CR_InterestPaid_refundable: bool
+        Reform-only switch (default false): when true, the interest
+        paid credit is not limited here and is routed to the
+        refundable side in `IITAX`
     c07180: float
         Credit for child and dependent care expenses from Form 2441
         (Sch 3 line 2); pre-computed by `F2441`
@@ -4219,6 +4273,9 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
         Limited other nonrefundable credits (Sch 3 line 6z)
     charity_credit: float
         Limited reform-only nonrefundable charity credit
+    intpaid_credit: float
+        Limited reform-only interest paid credit; unchanged when
+        `CR_InterestPaid_refundable`
     personal_nonrefundable_credit: float
         Limited reform-only personal nonrefundable credit
     """
@@ -4282,13 +4339,16 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # (D) Reform-only nonrefundable credits (current-law inert)
     charity_credit = min(max(0., charity_credit), avail)
     avail = avail - charity_credit
+    if not CR_InterestPaid_refundable:
+        intpaid_credit = min(max(0., intpaid_credit), avail)
+        avail = avail - intpaid_credit
     personal_nonrefundable_credit = min(
         max(0., personal_nonrefundable_credit), avail
     )
     avail = avail - personal_nonrefundable_credit
     return (c07180, c07200, c07220, c07230, c07240, odc,
             c07260, c07300, c07400, c07600, c08000, charity_credit,
-            personal_nonrefundable_credit)
+            intpaid_credit, personal_nonrefundable_credit)
 
 
 @iterate_jit(nopython=True)
@@ -4421,8 +4481,9 @@ def AdditionalCTC(actc_claim_prob_min, actc_claim_prob_scale, credit_claim_urn,
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, niit, setax,
           ptax_amc, othertaxes, c07100, c09200, odc, charity_credit,
-          personal_nonrefundable_credit,
-          CTC_is_refundable, ODC_is_refundable):
+          intpaid_credit, personal_nonrefundable_credit,
+          CTC_is_refundable, ODC_is_refundable,
+          CR_InterestPaid_refundable):
     """
     Assembles Form 1040 (2025) lines 22-24 + Schedule 2 (2025) Part II
     line 21:
@@ -4468,6 +4529,10 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
       * `ODC_is_refundable` -- when true, ODC (`odc`) is excluded
         from `c07100` here and `NonrefundableCredits` skips ODC
         capping; ODC is routed to the refundable side via `IITAX`.
+      * `CR_InterestPaid_refundable` -- when true, the interest paid
+        credit (`intpaid_credit`) is excluded from `c07100` here and
+        `NonrefundableCredits` skips its capping; the credit is routed
+        to the refundable side via `IITAX`.
 
     Calling order (calculator.py): invoked after `NonrefundableCredits`
     and `AdditionalCTC` (so each per-credit input has had its final
@@ -4539,6 +4604,8 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
         `ODC_is_refundable`
     charity_credit: float
         Reform-only nonrefundable charity credit (current-law inert)
+    intpaid_credit: float
+        Reform-only interest paid credit (current-law inert)
     personal_nonrefundable_credit: float
         Reform-only personal nonrefundable credit (current-law inert)
     CTC_is_refundable: bool
@@ -4547,6 +4614,10 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     ODC_is_refundable: bool
         Reform-only switch (default false): when true, ODC is routed
         to the refundable side rather than included in `c07100`
+    CR_InterestPaid_refundable: bool
+        Reform-only switch (default false): when true, the interest
+        paid credit is routed to the refundable side rather than
+        included in `c07100`
 
     Returns
     -------
@@ -4576,6 +4647,8 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
               + c07260                              # Sch 3 line 5a ResEnergy
               + odc * (1. - ODC_is_refundable)      # 1040 line 19 ODC
               + charity_credit                      # reform-only
+              + intpaid_credit * (
+                  1. - CR_InterestPaid_refundable)  # reform-only
               + personal_nonrefundable_credit)      # reform-only
     # (B) Form 1040 (2025) line 22 = max(0, line 18 - line 21):
     # tax remaining after nonrefundable credits applied.
@@ -4738,6 +4811,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           c09200, CDCC_refund, recovery_rebate_credit,
           eitc, c07220, odc, CTC_is_refundable, ODC_is_refundable,
+          intpaid_credit, CR_InterestPaid_refundable,
           soi_iitax, setax, e09800, ptax_amc, refund,
           ctc_total, ctc_refundable, ctc_nonrefundable,
           iitax, payrolltax, combined):
@@ -4757,11 +4831,13 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
 
     Body sections:
 
-      (A) Reform-only refundable conversions. When `CTC_is_refundable` or
-          `ODC_is_refundable` are true (both default false under current
-          law), the CTC (c07220) and ODC (odc) amounts that were applied
-          as nonrefundable credits in `NonrefundableCredits` / `C1040` are
-          added on the refundable side here.
+      (A) Reform-only refundable conversions. When `CTC_is_refundable`,
+          `ODC_is_refundable`, or `CR_InterestPaid_refundable` are true
+          (all default false under current law), the CTC (c07220), ODC
+          (odc), and interest paid credit (intpaid_credit) amounts that
+          would otherwise be applied as nonrefundable credits in
+          `NonrefundableCredits` / `C1040` are added on the refundable
+          side here.
       (B) Form 1040 line 32 build. Each addend is annotated with its 1040
           line (27a EIC / 28 ACTC / 29 AOC / 30 historical RRC / 31 Sch 3
           line 13 refundable CDCC) or reform-only label (no form line).
@@ -4836,6 +4912,14 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     ODC_is_refundable: bool
         Reform-only switch (default false): when true, ODC is treated as
         refundable (`odc` is added to `refund` here)
+    intpaid_credit: float
+        Reform-only interest paid credit from `InterestPaidCredit`
+        (no Form 1040 line; default 0 under current law)
+    CR_InterestPaid_refundable: bool
+        Reform-only switch (default false): when true, the interest paid
+        credit is treated as refundable (`intpaid_credit` is added to
+        `refund` here rather than being applied against tax in
+        `NonrefundableCredits` / `C1040`)
     soi_iitax: bool
         Bucketing switch: when true, `setax`, `e09800`, and `ptax_amc`
         remain in `iitax` via `c09200` (SOI/IRS concept, matching the
@@ -4900,6 +4984,7 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     # (A) reform-only refundable conversions of CTC / ODC
     ctc_refund = c07220 if CTC_is_refundable else 0.
     odc_refund = odc if ODC_is_refundable else 0.
+    intpaid_refund = intpaid_credit if CR_InterestPaid_refundable else 0.
     # (B) Form 1040 line 32: refundable-credit sum
     refund = (eitc +                       # Form 1040 line 27a (EIC)
               c11070 +                     # Form 1040 line 28 (ACTC)
@@ -4910,7 +4995,8 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
               ctc_new +                     # reform-only (no form line)
               rptc +                        # reform-only (no form line)
               ctc_refund +                  # reform-only (CTC_is_refundable)
-              odc_refund)                   # reform-only (ODC_is_refundable)
+              odc_refund +                  # reform-only (ODC_is_refundable)
+              intpaid_refund)               # reform-only (CR_InterestPaid_*)
     # (C) records-bound CTC diagnostic (not on the form)
     ctc_total = c07220 + c11070 + odc + ctc_new
     ctc_refundable = ctc_refund + c11070 + odc_refund + ctc_new

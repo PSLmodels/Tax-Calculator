@@ -1059,6 +1059,11 @@
       "desc": "Credit for charitable giving",
       "form": {"2013-20??": "calculated variable"}
     },
+    "intpaid_credit": {
+      "type": "float",
+      "desc": "Credit for interest paid",
+      "form": {"2013-20??": "calculated variable"}
+    },
     "dwks10": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
