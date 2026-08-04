@@ -14,8 +14,8 @@ Before making **any** file change, check the current branch using the
   using `make git-sync`, and create the new branch off master.
   If the current branch is not `master`, work on that branch as usual.
 
-This rule applies to every kind of task, not just the workflow described below.
-Never commit to `master` directly.
+This rule applies to every kind of task, not just the workflow
+described below.  Never commit to `master` directly.
 
 ## Which workflow to follow
 
@@ -39,20 +39,7 @@ code, etc.) follow no special workflow.  Just do the requested work,
 subject to the master-branch rule above and the coding style described
 below.
 
-## Repository orientation
-
-Tax-Calculator is an open-source microsimulation model (PSL-cataloged,
-package name `taxcalc`) for conventional analysis of USA federal
-individual income and payroll taxes. Supported Python versions are
-3.11–3.13.
-
-- **`taxcalc/policy_current_law.json`**: policy parameters in
-  paramtools schema (value + validation + indexing metadata per
-  parameter, keyed by year), spanning `JSON_START_YEAR = 2013` through
-  `LAST_BUDGET_YEAR`.
-
-- **`taxcalc/records_variables.json`**: input variables (`read`
-  section) and calculated variables (`calc` section).
+## Repository notes
 
 - **`taxcalc/calcfunctions.py`**: the tax logic: one function per tax
   concept (`EI_PayrollTax`, `AGI`, `StdDed`, `ItemDed`, `EITC`, `AMT`,
@@ -65,11 +52,6 @@ individual income and payroll taxes. Supported Python versions are
   ordering lives in `_calc_one_year()`, which computes tax both with
   the standard deduction and with itemized deductions and picks
   whichever yields lower tax per filing unit.
-
-- **`Policy`**: (`policy.py`) extends `Parameters` (`parameters.py`, a
-  `paramtools` subclass);
-
-- **`Records`** (`records.py`) extends `Data` (`data.py`).
 
 - **JIT decorators** (`decorators.py`): `iterate_jit`/`JIT` let
   numba compile calcfunctions and vectorize the per-filing-unit
