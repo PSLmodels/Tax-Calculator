@@ -1,126 +1,105 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working in this
-repository.
+This file provides guidance to Claude Code (claude.ai/code) when
+working in this repository.
 
-## Sole purpose: structural enhancements
+## Never edit files on the master branch
 
-Claude Code is used in this repository for exactly one task: **preparing a local
-git branch containing a tested Tax-Calculator structural enhancement** — that is,
-code changes that enable the model to simulate a specified policy reform that
-cannot be simulated by the current version of Tax-Calculator. The workflow to
-follow is in `./structural-enhancement.md`; read it at the start of every session
-and follow its steps in order.
+Before making **any** file change, check the current branch using the
+`git branch --show-current` command.
 
-Do **not** use this repository to analyze parametric tax reforms (reforms that
-can be simulated by the current model simply by changing existing policy
-parameter values). That kind of analysis is the focus of a different repository
-containing a Tax-Calculator Assistant agent that uses a collection of MCP tools
-with an existing version of Tax-Calculator. If asked to analyze a parametric
-reform here, point the user to that Assistant instead.
+- If the current branch is `master`, do not edit anything. Ask the
+  user what the new branch name should be, then confirm the working
+  tree is clean, synchronize master with the central GitHub repository
+  using `make git-sync`, and create the new branch off master.
+  If the current branch is not `master`, work on that branch as usual.
 
-## The workflow (summary)
+This rule applies to every kind of task, not just the workflow
+described below.  Never commit to `master` directly.
 
-`./structural-enhancement.md` is authoritative; in brief:
+## Which workflow to follow
 
-1. **Gather information** — ask the user for the repository folder, the
-   specified reform that cannot currently be simulated, and the new branch name.
-2. **Create the git branch** off `master` with the specified name.
-3. **Plan and develop the branch changes** (see next section for where changes go).
-4. **Test the branch changes** with the four test commands below, revising until
-   all four pass.
-5. **Ask before committing** — confirm no additional changes are needed, then
-   commit.
+- **Structural enhancements**: if the user asks for a model
+enhancement that would allow simulation of a policy reform that the
+current version of Tax-Calculator cannot simulate, follow the workflow
+in `taxcalc/structural-enhancement.md`.  Read that file at the start
+of such a session and follow its five steps in order; it is
+authoritative, and the summary below is only a reminder:
 
-## Where structural-enhancement changes go
+1. Gather information — repository folder, the specified reform, reform details
+   (first applicable year, inflation indexing), and the new branch name.
+2. Create the git branch.
+3. Make the branch changes.
+4. Test the branch changes.
+5. Ask whether to commit; do not push or open a pull request.
 
-Tax-Calculator is an open-source microsimulation model (PSL-cataloged, package
-name `taxcalc`) for static analysis of USA federal individual income and payroll
-taxes. Supported Python versions are 3.11–3.13. A structural enhancement
-typically touches these files:
+- **Everything else**: for any other request (code refactoring, bug
+searching, documentation, test cleanup, answering questions about the
+code, etc.) follow no special workflow.  Just do the requested work,
+subject to the master-branch rule above and the coding style described
+below.
 
-- **`taxcalc/policy_current_law.json`** — add any new policy parameters
-  (paramtools schema: value + validation + indexing metadata per parameter,
-  keyed by year). Avoid creating new `section_1` and `section_2` values; reuse
-  existing section headings. Parameters span `JSON_START_YEAR = 2013` through
-  `LAST_BUDGET_YEAR`. Keep the JSON coding-style clean — `make cstest` runs
-  `pycodestyle` over the JSON files too.
+## Repository notes
 
-- **`taxcalc/records_variables.json`** — add any new input or output variables,
-  placed in either the `read` or `calc` section as appropriate.
+- **`taxcalc/calcfunctions.py`**: the tax logic: one function per tax
+  concept (`EI_PayrollTax`, `AGI`, `StdDed`, `ItemDed`, `EITC`, `AMT`,
+  `C1040`, `IITAX`, etc.), each operating in-place on the NumPy arrays
+  of a `Records` object using scalar `Policy` parameters, with a
+  consistent function-arguments ordering scheme.
 
-- **`taxcalc/calcfunctions.py`** — the actual tax logic: one function per tax
-  concept (`EI_PayrollTax`, `AGI`, `StdDed`, `ItemDed`, `EITC`, `AMT`, `C1040`,
-  `IITAX`, etc.), invoked in order by the `Calculator`. Each operates in-place
-  on the NumPy arrays of a `Records` object using scalar `Policy` parameters.
-  New code must use the new parameters and variables and follow the current
-  function-arguments ordering scheme used throughout the module.
+- **`Calculator`** (`calculator.py`) orchestrates:
+  `calc_all()` runs the full sequence for the current year; the core
+  ordering lives in `_calc_one_year()`, which computes tax both with
+  the standard deduction and with itemized deductions and picks
+  whichever yields lower tax per filing unit.
 
-- **`taxcalc/tests/test_calcfunctions.py`** — add unit tests for new
-  parameters, variables, and code to maintain coverage. Ask the user for
-  guidance on the nature of the unit tests (possibly an example). **Always
-  calculate expected unit-test results without referring to the new code in
-  `calcfunctions.py`** (work them out independently, e.g. by hand from the
-  reform specification).
+- **JIT decorators** (`decorators.py`): `iterate_jit`/`JIT` let
+  numba compile calcfunctions and vectorize the per-filing-unit
+  loop. Set env var `NOTAXCALCJIT` to run pure Python when debugging,
+  since JIT'd code is not steppable and obscures tracebacks.
 
-Supporting architecture context (all classes re-exported from
-`taxcalc/__init__.py`):
+- **`docs/guide/*.md`** files (`policy_params.md`, `input_vars.md`,
+  `output_vars.md`, `assumption_params.md`) are generated from the
+  JSON files by scripts in `docs/guide/make`; never hand-edit them.
 
-- **`Calculator`** (`calculator.py`) orchestrates: `calc_all()` runs the full
-  sequence of calcfunctions for the current year; the core ordering lives in
-  `_calc_one_year()`, which computes tax both with the standard deduction and
-  with itemized deductions, then picks whichever yields lower tax per filing
-  unit. If an enhancement adds a new calcfunction, it must be wired into this
-  ordering.
-- **`Policy`** (`policy.py`) extends `Parameters` (`parameters.py`, a
-  `paramtools` subclass); defaults come from `policy_current_law.json`.
-- **`Records`** (`records.py`) extends `Data` (`data.py`); variable metadata is
-  declared in `records_variables.json`.
-- **JIT decorators** (`decorators.py`) — `iterate_jit`/`JIT` wrap calcfunctions
-  so numba compiles them and vectorizes the per-filing-unit loop. Set env var
-  `NOTAXCALCJIT` to run pure Python when debugging, since JIT'd code is not
-  steppable and obscures tracebacks.
+## Test commands
 
-## Required test commands
+Run these from the top-level repository folder. The fast `pytest
+taxcalc/tests/test_calcfunctions.py` command catches inconsistencies
+among `calcfunctions.py`, `calculator.py`, `policy_current_law.json`,
+and `records_variables.json` without the cost of the slower commands
+below.
 
-Execute these in the top-level repository folder until **all four pass**; if
-any fails, return to revising the branch changes (Step 3 of the workflow):
+- `make cstest > rescs 2>&1` — coding-style checks; fails if `rescs`
+  is not empty.
 
-- `make cstest > rescs` — coding-style checks (`pycodestyle` + `pylint`).
-  **Fails if the `rescs` file is not empty.**
-- `make pytest-all > respy` — full test suite; requires `puf.csv` and `tmd.csv`
-  present in the repo root.
-  **Fails if the last line of the `respy` file contains the word `failed`.**
-- `make brtest > resbr` — behavioral-responses CLI tests.
-  **Fails if any line of the `resbr` file contains the word `differ`.**
-- `make idtest > resid` — input-data CLI tests.
-  **Fails if any line of the `resid` file contains the word `differ`.**
+- `make pytest-all > respy 2>&1 ; echo EXIT=$?` - full test suite;
+  fails if the EXIT value is not zero. Diagnose failures by consulting
+  `respy`; do not rely on its last line alone, since collection errors
+  and crashes are reported differently from test failures.
+  
+- `make brtest > resbr 2>&1` and, if tmd data files are present,
+  `make idtest > resid 2>&1` — CLI tests. Both always exit zero, so
+  check them with `grep -Ei 'differ|error|traceback' resbr resid`; any
+  output means failure.  The `idtest` requires `tmd.csv`,
+  `tmd_weights.csv.gz`, and `tmd_growfactors.csv` in the top-level
+  repo folder. `pytest-all` uninstalls the local package that `brtest`
+  and `idtest` build and install, so run `pytest-all` before them.
 
-During development, quicker iterations are available with `make package`
-(build and `pip install -e .` the local package) and a single test run:
+The `rescs`, `respy`, `resbr`, and `resid` files are not git-ignored;
+delete them when done, and check `git status` for stray test output
+such as `df-??-#-*` files left behind by an aborted `pytest-all` run.
 
-```
-cd taxcalc && pytest tests/test_calcfunctions.py::test_SchXYZ
-```
-
-Note that structural enhancements often change expected results in existing
-tests (e.g. `taxcalc/reforms/*.out.csv` companions or dump comparisons); such
-changes are legitimate only when they follow directly from the enhancement —
-never adjust expected values just to make a test pass.
+Never revise a test, or a file containing expected test results, in
+order to make a failing test pass without first asking the user for
+approval. A failing comparison against stored expected results
+indicates a bug in the branch changes.
 
 ## Coding style
 
-CI enforces `pycodestyle` (ignoring W503, W504, E712) and `pylint` (disabling
-`locally-disabled,duplicate-code,cyclic-import`, with quote-consistency checking
-on) across everything except `docs/` and `taxcalc/validation/`. calcfunctions
-use short mathematical variable names (`# pylint: disable=invalid-name`) that
-mirror IRS form line items — match that convention rather than renaming for
-clarity.
-
-## Git conventions
-
-Work happens on a new branch created off local `master` (Step 2 of the
-workflow); never commit to `master` directly. Commit only after the user
-confirms no additional changes are needed (Step 5). The repository follows the
-fork-and-PR model against `PSLmodels/Tax-Calculator` `master`, but opening the
-PR is the user's job, not part of this workflow.
+CI enforces `pycodestyle` (ignoring W503, W504, E712) and `pylint`
+(disabling `locally-disabled,duplicate-code,cyclic-import`, with
+quote-consistency checking on) across everything except `docs/` and
+`taxcalc/validation/`. The calcfunctions use short mathematical
+variable names (`# pylint: disable=invalid-name`) that mirror IRS form
+line items — match that convention rather than renaming for clarity.
