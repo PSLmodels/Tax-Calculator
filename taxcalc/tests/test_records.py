@@ -200,6 +200,7 @@ def test_read_data(csv):
         Records(data=df)
 
 
+@pytest.mark.param_var_count
 def test_for_duplicate_names():
     """Test docstring"""
     records_varinfo = Records(data=None)
