@@ -360,6 +360,7 @@ def test_ctor_init_with_cps_files():
     assert tcio.errmsg
 
 
+@pytest.mark.param_var_count
 @pytest.mark.parametrize('dumpvar_str, str_valid, num_vars', [
     ("""
     MARS;iitax	payrolltax|combined,

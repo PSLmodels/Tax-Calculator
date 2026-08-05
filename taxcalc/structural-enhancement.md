@@ -65,7 +65,9 @@ Before executing the test commands below, execute the fast
 "pytest taxcalc/tests/test_calcfunctions.py" command, which catches
 inconsistencies among `calcfunctions.py`, `calculator.py`,
 `policy_current_law.json`, and `records_variables.json` without
-incurring the cost of the slower test commands
+incurring the cost of the slower test commands.
+
+And execute the fast "pytest . -m param_var_count" command as well.
 
 Also, confirm that the three national TMD files (`tmd.csv`,
 `tmd_weights.csv.gz`, and `tmd_growfactors.csv`) are in the top-level
