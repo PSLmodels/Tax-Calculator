@@ -14,6 +14,10 @@ for yr in {25..35}; do
 done
 
 # use TMD input files
+if ! [[ -f ../../../tmd.csv ]]; then
+    echo "Skipping TMD input data test" >&2
+    exit 0
+fi
 tc ../../../tmd.csv 2025 --numyears 11 --exact --tables --silent
 for yr in {25..35}; do
     diff -q tmd-$yr-#-#-#-#.tables tmd-$yr.tables
