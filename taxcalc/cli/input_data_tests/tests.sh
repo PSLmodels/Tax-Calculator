@@ -18,6 +18,14 @@ if ! [[ -f ../../../tmd.csv ]]; then
     echo "Skipping TMD input data test" >&2
     exit 0
 fi
+if ! [[ -f ../../../tmd_weights.csv.gz ]]; then
+    echo "Skipping TMD input data test" >&2
+    exit 0
+fi
+if ! [[ -f ../../../tmd_growfactors.csv ]]; then
+    echo "Skipping TMD input data test" >&2
+    exit 0
+fi
 tc ../../../tmd.csv 2025 --numyears 11 --exact --tables --silent
 for yr in {25..35}; do
     diff -q tmd-$yr-#-#-#-#.tables tmd-$yr.tables

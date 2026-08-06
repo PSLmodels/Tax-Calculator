@@ -78,13 +78,14 @@ below.
   `respy`; do not rely on its last line alone, since collection errors
   and crashes are reported differently from test failures.
   
-- `make brtest > resbr 2>&1` and, if tmd data files are present,
-  `make idtest > resid 2>&1` — CLI tests. Both always exit zero, so
-  check them with `grep -Ei 'differ|error|traceback' resbr resid`; any
-  output means failure.  The `idtest` requires `tmd.csv`,
-  `tmd_weights.csv.gz`, and `tmd_growfactors.csv` in the top-level
-  repo folder. `pytest-all` uninstalls the local package that `brtest`
-  and `idtest` build and install, so run `pytest-all` before them.
+- `make brtest > resbr 2>&1` and `make idtest > resid 2>&1` — CLI tests.
+  Both always exit zero, so check them using this command:
+  `grep -Ei 'differ|error|traceback' resbr resid`; any output means failure.
+  The `idtest` skips the TMD input data test if `tmd.csv`,
+  `tmd_weights.csv.gz`, and `tmd_growfactors.csv` are not present in
+  the top-level repo folder. `pytest-all` uninstalls the local package
+  that `brtest` and `idtest` build and install, so run `pytest-all`
+  before them.
 
 The `rescs`, `respy`, `resbr`, and `resid` files are not git-ignored;
 delete them when done, and check `git status` for stray test output
