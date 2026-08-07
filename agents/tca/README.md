@@ -30,12 +30,13 @@ move to that TCA-work folder and execute the "./tca-exec" command.
 If you have not already created such a TCA-work folder, move to the
 `agents/tca` folder in the Tax-Calculator repository tree and execute
 the following command (where, for illustration, we assume your new
-TCA-work folder name is `~/TCA/myproject`):
+TCA-work folder name is `~/TCA/project1` where the `~/TCA` folder
+already exists):
 ```
-(taxcalc-dev) tca> ./install.sh ~/TCA/myproject
+(taxcalc-dev) tca> ./install.sh ~/TCA/project1
 ```
 
-Follow the instructions written to the terminal screen.
+Then follow the instructions written to the terminal screen.
 
 If the install test fails or you have other problems using TCA, please
 raise an issue [here](https://github.com/PSLmodels/Tax-Calculator/issues).

@@ -17,7 +17,11 @@ if [[ -d $FOLDER ]]; then
 fi
 
 # create new FOLDER
-mkdir $FOLDER
+ERRMSG=$({ mkdir $FOLDER } 2>&1)
+if [[ -n $ERRMSG ]]; then
+    echo "The mkdir command failed with error: $ERRMSG"
+    exit 1
+fi
 
 # optionally copy TMD input data files to new FOLDER
 TMDV=../../tmd.csv
