@@ -17,10 +17,11 @@ conda environment activated, execute this command:
 ```
 The model-development agent can do a wide variety of things for a
 developer.  In particular, it has been supplied with a detailed
-workflow for making a local **structural enhancement** (that is,
-adding parameters, variables, logic, and tests) so that the model can
-simulate a reform that the public version of the model cannot analyze.
-Here is an [example](https://github.com/PSLmodels/Tax-Calculator/pull/3116).
+workflow for making a local, and therefore, private **structural
+enhancement** (that is, adding parameters, variables, logic, and
+tests) so that the local version of the model can simulate a reform
+that the public version of the model cannot analyze.  Here is an
+[example](https://github.com/PSLmodels/Tax-Calculator/pull/3116).
 
 ### Model-Use Agent
 
