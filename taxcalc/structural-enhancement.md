@@ -67,12 +67,7 @@ inconsistencies among `calcfunctions.py`, `calculator.py`,
 `policy_current_law.json`, and `records_variables.json` without
 incurring the cost of the slower test commands.
 
-And execute the fast "pytest . -m param_var_count" command as well.
-
-Also, confirm that the three national TMD files (`tmd.csv`,
-`tmd_weights.csv.gz`, and `tmd_growfactors.csv`) are in the top-level
-repo folder, where they are ignored by git version control.  The idtest
-command cannot run without them.
+And also execute the fast "pytest . -m param_var_count" command.
 
 Then execute the following test commands, in the order listed, until
 they all pass.  If a test command fails, return to step 3 revising
@@ -92,8 +87,8 @@ the other commands.
     diagnose the failure; do not rely on the last line of respy alone,
     because collection errors and crashes are reported differently from
     test failures)
-- Execute the "make brtest > resbr 2>&1" command and then, if the three
-  TMD files are available, the "make idtest > resid 2>&1" command
+- Execute the "make brtest > resbr 2>&1" command and then the
+  "make idtest > resid 2>&1" command
   * Both these commands execute shell scripts that report mismatches but
     always exit with a zero status, so check their output by executing
     the "grep -Ei 'differ|error|traceback' resbr resid" command
