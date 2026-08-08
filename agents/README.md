@@ -1,7 +1,7 @@
 # Tax-Calculator Agents
 
 There are currently two AI-assisted agents that can facilitate
-model-development work and model-use work.
+model-development work and model-use work.  Both are optional.
 
 Both require Claude Code and an Anthropic subscription to its LLMs
 (like Sonnet and Opus).  The cheapest Pro subscription is likely to be

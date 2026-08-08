@@ -5,6 +5,31 @@ Go
 for a complete commit history.
 
 
+2026-08-11 Release 6.8.0
+------------------------
+(last merged pull request is
+[#3121](https://github.com/PSLmodels/Tax-Calculator/pull/3121))
+
+**This is a major enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Add mention of ongoing model use by Congressional Research Service (CRS)
+  [[#3121](https://github.com/PSLmodels/Tax-Calculator/pull/3121)
+   by Jason DeBacker]
+- Add initial versions of agent workflows and associated documentation
+  [[#3115](https://github.com/PSLmodels/Tax-Calculator/pull/3115),
+   [#3117](https://github.com/PSLmodels/Tax-Calculator/pull/3117) and
+   [#3120](https://github.com/PSLmodels/Tax-Calculator/pull/3120)
+   by Martin Holmer]
+- Add focus on AI-assisted model-dev and model-use agents to project roadmap
+  [[#3114](https://github.com/PSLmodels/Tax-Calculator/pull/3114)
+   by Martin Holmer]
+   
+**Bug Fixes**
+
+
 2026-07-30 Release 6.7.3
 ------------------------
 (last merged pull request is

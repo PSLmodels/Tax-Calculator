@@ -50,7 +50,7 @@ cross-model validation work with NBER's TAXSIM-35 model is described
 
 ## Latest release
 
-{doc}`6.7.3 (2026-07-30) <about/releases>`
+{doc}`6.8.0 (2026-08-11) <about/releases>`
 
 If you are already using Tax-Calculator, upgrade using the following command:
 ```
