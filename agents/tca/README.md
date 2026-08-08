@@ -46,9 +46,9 @@ raise an issue [here](https://github.com/PSLmodels/Tax-Calculator/issues).
 
 ### Examples
 
-The question you pose to TCA is called a prompt.
+An assignment you give TCA is called a prompt.
 
-Here are a couple of prompt examples that are used in the testing of TCA.
+Here are a couple of prompts that are used in TCA testing.
 
 **Prompt 1:**
 
