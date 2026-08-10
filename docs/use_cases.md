@@ -1,6 +1,11 @@
 Recorded use cases
 ==================
 
+\[81\] Keightley, Mark P. and Brendan McDermott. A Comparison of Two Open-Source Tax Microsimulation Models. Congressional Research Services.
+July 30, 2026. URL:
+<https://www.congress.gov/crs-product/R49052/>
+(visited on 2026-08-10).
+
 \[80\] Alex Brill. The Next Tax Fight: SALT. American Enterprise Institute.
 February 13, 2024. URL:
 <https://www.aei.org/economics/the-next-tax-fight-salt/>
