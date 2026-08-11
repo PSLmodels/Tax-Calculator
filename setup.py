@@ -25,8 +25,7 @@ config = {
         "pandas>=2.2",
         "bokeh>=2.4",
         "numba",
-        "paramtools>=0.20.0",
-        "behresp"
+        "paramtools>=0.20.0"
     ],
     "classifiers": [
         "Development Status :: 4 - Beta",

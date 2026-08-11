@@ -14,7 +14,7 @@ kernelspec:
 # Recipe 2: Estimating Behavioral Response to Reform
 
 This is an advanced recipe that should be followed only after mastering the basic recipe.
-This recipe shows how to analyze the behavioral responses to a tax reform using the Behavioral-Responses behresp package.
+This recipe shows how to analyze the behavioral responses to a tax reform using the Tax-Calculator behresp module.
 
 ```{code-cell} ipython3
 :tags: [remove-cell]
@@ -30,14 +30,13 @@ if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
     sys.path.append('/usr/local/lib/python3.8/site-packages')
     # Install PSL packages from Anaconda
     !yes | conda install -c conda-forge paramtools
-    !yes | conda install -c PSLmodels taxcalc behresp
+    !yes | conda install -c PSLmodels taxcalc
 ```
 
 ```{code-cell} ipython3
 :hide-output: false
 
 import taxcalc as tc
-import behresp
 
 # use publicly-available CPS input file
 recs = tc.Records.cps_constructor()
@@ -68,7 +67,7 @@ response_elasticities = {'sub': 0.25}
 # specify Calculator object for analysis of reform with behavioral responses
 calc2 = tc.Calculator(policy=pol, records=recs)
 calc2.advance_to_year(CYR)
-_, df2br = behresp.response(calc1, calc2, response_elasticities)
+_, df2br = tc.response(calc1, calc2, response_elasticities)
 
 # calculate reform income tax liabilities for CYR with behavioral response
 itax_rev2br = (df2br['iitax'] * df2br['s006']).sum()
@@ -96,7 +95,7 @@ year_list3 = list()
 for year in range(CYR, CYR + NUM_YEARS):
     calc1.advance_to_year(year)
     calc2.advance_to_year(year)
-    _, df2br = behresp.response(calc1, calc2, response_elasticities)
+    _, df2br = tc.response(calc1, calc2, response_elasticities)
     dvar_list3.append(df2br)
     year_list3.append(year)
 dtable3 = tc.create_diagnostic_table(dvar_list3, year_list3)

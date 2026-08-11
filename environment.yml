@@ -17,7 +17,6 @@ dependencies:
 - pycodestyle
 - pylint
 - coverage
-- behresp
 - openpyxl
 - pip
 - pip:

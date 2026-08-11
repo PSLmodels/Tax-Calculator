@@ -31,14 +31,13 @@ if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
     sys.path.append('/usr/local/lib/python3.8/site-packages')
     # Install PSL packages from Anaconda
     !yes | conda install -c conda-forge paramtools
-    !yes | conda install -c PSLmodels taxcalc behresp
+    !yes | conda install -c PSLmodels taxcalc
 ```
 
 ```{code-cell} ipython3
 :hide-output: false
 
 import taxcalc as tc
-import behresp
 
 # use publicly-available CPS input file
 recs = tc.Records.cps_constructor()
@@ -99,13 +98,13 @@ idx = 0
 for grp_interval, grp in gbydf:
     funits = grp['s006'].sum() * 1e-6
     tot_funits += funits
-    response = behresp.quantity_response(grp['e19800'],
-                                         PRICE_ELASTICITY[idx],
-                                         grp['price1'],
-                                         grp['price2'],
-                                         INCOME_ELASTICITY[idx],
-                                         grp['atinc1'],
-                                         grp['atinc2'])
+    response = tc.quantity_response(grp['e19800'],
+                                    PRICE_ELASTICITY[idx],
+                                    grp['price1'],
+                                    grp['price2'],
+                                    INCOME_ELASTICITY[idx],
+                                    grp['atinc1'],
+                                    grp['atinc2'])
     grp_response = (response * grp['s006']).sum() * 1e-9
     tot_response += grp_response
     grp_baseline = (grp['e19800'] * grp['s006']).sum() * 1e-9

@@ -1,6 +1,7 @@
 """
 Specify what is available to import from the taxcalc package.
 """
+from taxcalc.behresp import *
 from taxcalc.calculator import *
 from taxcalc.consumption import *
 from taxcalc.data import *

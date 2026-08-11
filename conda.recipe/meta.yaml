@@ -16,7 +16,6 @@ requirements:
     - numba
     - curl
     - openpyxl
-    - behresp
 
   run:
     - "python>=3.11, <3.14"
@@ -27,7 +26,6 @@ requirements:
     - numba
     - curl
     - openpyxl
-    - behresp
 
 test:
   commands:

@@ -14,9 +14,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import paramtools
-import behresp
 from taxcalc.policy import Policy
 from taxcalc.records import Records
+from taxcalc.behresp import response
 from taxcalc.consumption import Consumption
 from taxcalc.growdiff import GrowDiff
 from taxcalc.growfactors import GrowFactors
@@ -484,7 +484,7 @@ class TaxCalcIO():
             return
         # do output calculations
         if self.behvdict:  # if assuming behavioral responses
-            br_dump_bas, br_dump_ref = behresp.response(
+            br_dump_bas, br_dump_ref = response(
                 self.calc_bas, self.calc_ref,
                 self.behvdict, dump=True,
             )

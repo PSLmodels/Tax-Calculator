@@ -31,7 +31,7 @@ if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
     sys.path.append('/usr/local/lib/python3.8/site-packages')
     # Install PSL packages from Anaconda
     !yes | conda install -c conda-forge paramtools
-    !yes | conda install -c PSLmodels taxcalc behresp
+    !yes | conda install -c PSLmodels taxcalc
 ```
 
 ```{code-cell} ipython3
@@ -40,7 +40,6 @@ if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
 import taxcalc as tc
 import pandas as pd
 import numpy as np
-import behresp
 
 # use publicly-available CPS input file
 recs = tc.Records.cps_constructor()
@@ -98,21 +97,21 @@ vdf_2 = vdf_2.loc[vdf_2['price_elasticity']==-0.4]
 
 # Calculate response based on features of each filing unit.
 # Call quantity_response for each subset (i.e. vdf_1 and vdf_2)
-vdf_1['response'] = behresp.quantity_response(quantity=vdf_1.e19800,
-                                              price_elasticity=-0.1,
-                                              aftertax_price1=vdf_1.price1,
-                                              aftertax_price2=vdf_1.price2,
-                                              income_elasticity=0.1,
-                                              aftertax_income1=vdf_1.atinc1,
-                                              aftertax_income2=vdf_1.atinc2)
+vdf_1['response'] = tc.quantity_response(quantity=vdf_1.e19800,
+                                         price_elasticity=-0.1,
+                                         aftertax_price1=vdf_1.price1,
+                                         aftertax_price2=vdf_1.price2,
+                                         income_elasticity=0.1,
+                                         aftertax_income1=vdf_1.atinc1,
+                                         aftertax_income2=vdf_1.atinc2)
 
-vdf_2['response'] = behresp.quantity_response(quantity=vdf_2.e19800,
-                                              price_elasticity=-0.4,
-                                              aftertax_price1=vdf_2.price1,
-                                              aftertax_price2=vdf_2.price2,
-                                              income_elasticity=0.1,
-                                              aftertax_income1=vdf_2.atinc1,
-                                              aftertax_income2=vdf_2.atinc2)
+vdf_2['response'] = tc.quantity_response(quantity=vdf_2.e19800,
+                                         price_elasticity=-0.4,
+                                         aftertax_price1=vdf_2.price1,
+                                         aftertax_price2=vdf_2.price2,
+                                         income_elasticity=0.1,
+                                         aftertax_income1=vdf_2.atinc1,
+                                         aftertax_income2=vdf_2.atinc2)
 
 vdf = pd.concat([vdf_1, vdf_2])
 
