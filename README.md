@@ -24,5 +24,5 @@ Complete documentation (on the model's structure and its Python API
 and its CLI) is available
 [here](https://PSLmodels.github.io/Tax-Calculator/).
 
-Documentation on the newer AI-assisted approaches to using and
-enhancing the model is available [here](agents/README.md).
+Documentation on the newer optional AI-assisted approaches to using
+and enhancing the model is available [here](agents/README.md).
