@@ -260,6 +260,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/public_api.html">Tax-Calculator Python API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -273,6 +274,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/taxcalcio.html">Tax-Calculator IO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Tax-Calculator Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -555,7 +557,7 @@
   <section class="tex2jax_ignore mathjax_ignore" id="recipe-2-estimating-behavioral-response-to-reform">
 <h1>Recipe 2: Estimating Behavioral Response to Reform<a class="headerlink" href="#recipe-2-estimating-behavioral-response-to-reform" title="Link to this heading">#</a></h1>
 <p>This is an advanced recipe that should be followed only after mastering the basic recipe.
-This recipe shows how to analyze the behavioral responses to a tax reform using the Behavioral-Responses behresp package.</p>
+This recipe shows how to analyze the behavioral responses to a tax reform using the Tax-Calculator behresp module.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
@@ -570,7 +572,6 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">taxcalc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tc</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">behresp</span>
 
 <span class="c1"># use publicly-available CPS input file</span>
 <span class="n">recs</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
@@ -601,7 +602,7 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <span class="c1"># specify Calculator object for analysis of reform with behavioral responses</span>
 <span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
 <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
-<span class="n">_</span><span class="p">,</span> <span class="n">df2br</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span> <span class="n">response_elasticities</span><span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">df2br</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span> <span class="n">response_elasticities</span><span class="p">)</span>
 
 <span class="c1"># calculate reform income tax liabilities for CYR with behavioral response</span>
 <span class="n">itax_rev2br</span> <span class="o">=</span> <span class="p">(</span><span class="n">df2br</span><span class="p">[</span><span class="s1">&#39;iitax&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df2br</span><span class="p">[</span><span class="s1">&#39;s006&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -638,7 +639,7 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">CYR</span> <span class="o">+</span> <span class="n">NUM_YEARS</span><span class="p">):</span>
     <span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
     <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">df2br</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span> <span class="n">response_elasticities</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">df2br</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span> <span class="n">response_elasticities</span><span class="p">)</span>
     <span class="n">dvar_list3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df2br</span><span class="p">)</span>
     <span class="n">year_list3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
 <span class="n">dtable3</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">create_diagnostic_table</span><span class="p">(</span><span class="n">dvar_list3</span><span class="p">,</span> <span class="n">year_list3</span><span class="p">)</span>

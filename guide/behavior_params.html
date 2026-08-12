@@ -260,6 +260,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/public_api.html">Tax-Calculator Python API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -273,6 +274,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/taxcalcio.html">Tax-Calculator IO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Tax-Calculator Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -507,11 +509,9 @@
 <h1>Behavior parameters<a class="headerlink" href="#behavior-parameters" title="Link to this heading">#</a></h1>
 <p>Note that logic that uses assumed behavior parameters to compute
 changes in input variables caused by a tax reform in a
-partial-equilibrium setting is not part of Tax-Calculator.  The
-<a class="reference external" href="https://github.com/PSLmodels/Behavioral-Responses/blob/232abc1e6b9f0a2b2f224ad887af3c19019d28d3/behresp/behavior.py#L13-L50"><code class="docutils literal notranslate"><span class="pre">response</span></code>
+partial-equilibrium setting is contained in the <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behresp.py"><code class="docutils literal notranslate"><span class="pre">response</span></code>
 function</a>
-in the PSLmodels Behavioral-Responses <code class="docutils literal notranslate"><span class="pre">behresp</span></code> package contains that
-logic.</p>
+in the Tax-Calculator <code class="docutils literal notranslate"><span class="pre">behresp</span></code> module.</p>
 <p>By default Tax-Calculator assumes no behavioral responses to a tax
 reform, which is the same as saying the behavior parameters (or
 elasticities) are assumed to be zero by default.  The elasticities can

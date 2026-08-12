@@ -264,6 +264,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="public_api.html">Tax-Calculator Python API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="consumption.html">Tax-Calculator Consumption</a></li>
@@ -277,6 +278,7 @@
 <li class="toctree-l2"><a class="reference internal" href="taxcalcio.html">Tax-Calculator IO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Tax-Calculator Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="consumption.html">Tax-Calculator Consumption</a></li>
@@ -589,13 +591,13 @@ government cost of providing the in-kind benefits</p></li>
 <p class="rubric">Notes</p>
 <p>The most efficient way to specify current-law and reform Calculator
 objects is as follows:</p>
-<blockquote>
-<div><p>pol = Policy()
-rec = Records.cps_constructor()
-calc1 = Calculator(policy=pol, records=rec)  # current-law
-pol.implement_reform(…)
-calc2 = Calculator(policy=pol, records=rec)  # reform</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pol</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">()</span>
+<span class="n">rec</span> <span class="o">=</span> <span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
+<span class="n">calc1</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">rec</span><span class="p">)</span>  <span class="c1"># current-law</span>
+<span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">calc2</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">rec</span><span class="p">)</span>  <span class="c1"># reform</span>
+</pre></div>
+</div>
 <p>All calculations are done on the internal copies of the Policy and
 Records objects passed to each of the two Calculator constructors.</p>
 <dl class="py method">
@@ -756,22 +758,32 @@ in self and the reform expanded_income in calc are different.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p></li>
-<li><p><strong>groupby</strong> (<em>String object</em>) – options for input: ‘weighted_deciles’, ‘standard_income_bins’
-determines how the columns in resulting Pandas DataFrame are sorted</p></li>
-<li><p><strong>tax_to_diff</strong> (<em>String object</em>) – options for input: ‘iitax’, ‘payrolltax’, ‘combined’
-specifies which tax to difference</p></li>
+<li><p><strong>groupby</strong> (<em>String object</em>) – determines how the columns in the resulting Pandas DataFrame
+are sorted; options for input are ‘weighted_deciles’ and
+‘standard_income_bins’</p></li>
+<li><p><strong>tax_to_diff</strong> (<em>String object</em>) – specifies which tax to difference; options for input are
+‘iitax’, ‘payrolltax’, and ‘combined’</p></li>
 <li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
 of people (True) or an equal number of filing units (False)</p></li>
-<li><p><strong>usage</strong> (<em>Returns and typical</em>)</p></li>
-<li><p><strong>-------------------------</strong></p></li>
-<li><p><strong>calc1.difference_table</strong><strong>(</strong><strong>calc2</strong> (<em>diff =</em>)</p></li>
-<li><p><strong>'weighted_deciles'</strong></p></li>
-<li><p><strong>'iitax'</strong><strong>)</strong></p></li>
-<li><p><strong>object</strong> (<em>(</em><em>where calc1 is a baseline Calculator</em>)</p></li>
-<li><p><strong>object</strong><strong>)</strong><strong>.</strong> (<em>and calc2 is a reform Calculator</em>)</p></li>
-<li><p><strong>DataFrame</strong> (<em>The returned diff is a difference table as a Pandas</em>)</p></li>
-<li><p><strong>rows.</strong> (<em>with DIST_TABLE_COLUMNS and groupby</em>)</p></li>
-<li><p><strong>NOTE</strong> (<em>when groupby is 'weighted_deciles'</em><em>, </em><em>the returned table has three</em>) – extra rows containing top-decile detail consisting of statistics
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>The returned diff is a difference table as a Pandas DataFrame</em></p></li>
+<li><p><em>with DIST_TABLE_COLUMNS and groupby rows.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Typical usage is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">difference_table</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span> <span class="s1">&#39;weighted_deciles&#39;</span><span class="p">,</span> <span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where calc1 is a baseline Calculator object and calc2 is a reform
+Calculator object.</p>
+<p>NOTE: when groupby is ‘weighted_deciles’, the returned table has three
+extra rows containing top-decile detail consisting of statistics
 for the 0.90-0.95 quantile range (bottom half of top decile),
 for the 0.95-0.99 quantile range, and
 for the 0.99-1.00 quantile range (top one percent); and the
@@ -779,10 +791,7 @@ returned table splits the bottom decile into filing units with
 negative (denoted by a 0-10n row label),
 zero (denoted by a 0-10z row label), and
 positive (denoted by a 0-10p row label) values of the
-specified income_measure.</p></li>
-</ul>
-</dd>
-</dl>
+specified income_measure.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -800,30 +809,35 @@ in self and the reform expanded_income in calc are different.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>calc</strong> (<em>Calculator object</em><em> or </em><em>None</em>) – typically represents the reform while self represents the baseline;
 if calc is None, the second returned table is None</p></li>
-<li><p><strong>groupby</strong> (<em>String object</em>) – <dl class="simple">
-<dt>options for input: ‘weighted_deciles’, ‘standard_income_bins’,</dt><dd><p>’soi_agi_bins’</p>
-</dd>
-</dl>
-<p>determines how the columns in resulting Pandas DataFrame are sorted</p>
-</p></li>
+<li><p><strong>groupby</strong> (<em>String object</em>) – determines how the columns in the resulting Pandas DataFrame
+are sorted; options for input are ‘weighted_deciles’,
+‘standard_income_bins’, and ‘soi_agi_bins’</p></li>
 <li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
 of people (True) or an equal number of filing units (False)</p></li>
 <li><p><strong>scaling</strong> (<em>boolean</em>) – specifies create_distribution_table utility function argument
 that determines whether table entry values are scaled or not</p></li>
-<li><p><strong>usage</strong> (<em>Return and typical</em>)</p></li>
-<li><p><strong>------------------------</strong></p></li>
-<li><p><strong>dist1</strong></p></li>
-<li><p><strong>calc1.distribution_tables</strong><strong>(</strong><strong>calc2</strong> (<em>dist2 =</em>)</p></li>
-<li><p><strong>'weighted_deciles'</strong><strong>)</strong></p></li>
-<li><p><strong>OR</strong></p></li>
-<li><p><strong>dist1</strong></p></li>
-<li><p><strong>calc1.distribution_tables</strong><strong>(</strong><strong>None</strong> (<em>_ =</em>)</p></li>
-<li><p><strong>'weighted_deciles'</strong><strong>)</strong></p></li>
-<li><p><strong>object</strong> (<em>(</em><em>where calc1 is a baseline Calculator</em>)</p></li>
-<li><p><strong>object</strong><strong>)</strong><strong>.</strong> (<em>and calc2 is a reform Calculator</em>)</p></li>
-<li><p><strong>a</strong> (<em>Each</em><em> of </em><em>the dist1 and optional dist2 is a distribution table as</em>)</p></li>
-<li><p><strong>rows.</strong> (<em>Pandas DataFrame with DIST_TABLE_COLUMNS and groupby</em>)</p></li>
-<li><p><strong>NOTE</strong> (<em>when groupby is 'weighted_deciles'</em><em>, </em><em>the returned tables have 3</em>) – extra rows containing top-decile detail consisting of statistics
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Each of the dist1 and optional dist2 is a distribution table as a</em></p></li>
+<li><p><em>Pandas DataFrame with DIST_TABLE_COLUMNS and groupby rows.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Typical usage is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dist1</span><span class="p">,</span> <span class="n">dist2</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">distribution_tables</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span>
+                                         <span class="s1">&#39;weighted_deciles&#39;</span><span class="p">)</span>
+<span class="c1"># OR</span>
+<span class="n">dist1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">distribution_tables</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;weighted_deciles&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where calc1 is a baseline Calculator object and calc2 is a reform
+Calculator object.</p>
+<p>NOTE: when groupby is ‘weighted_deciles’, the returned tables have 3
+extra rows containing top-decile detail consisting of statistics
 for the 0.90-0.95 quantile range (bottom half of top decile),
 for the 0.95-0.99 quantile range, and
 for the 0.99-1.00 quantile range (top one percent); and the
@@ -831,10 +845,7 @@ returned table splits the bottom decile into filing units with
 negative (denoted by a 0-10n row label),
 zero (denoted by a 0-10z row label), and
 positive (denoted by a 0-10p row label) values of the
-specified income_measure.</p></li>
-</ul>
-</dd>
-</dl>
+specified income_measure.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -892,7 +903,8 @@ that includes the employer share of OASDI and HI payroll taxes.</p></li>
 <li><p><em>A tuple of numpy arrays in the following order</em></p></li>
 <li><p><strong>mtr_payrolltax</strong> (<em>an array of marginal payroll tax rates.</em>)</p></li>
 <li><p><strong>mtr_incometax</strong> (<em>an array of marginal individual income tax rates.</em>)</p></li>
-<li><p><strong>mtr_combined</strong> (<em>an array of marginal combined tax rates, which is</em>) – the sum of mtr_payrolltax and mtr_incometax.</p></li>
+<li><p><strong>mtr_combined</strong> (<em>an array of marginal combined tax rates, which is</em>)</p></li>
+<li><p><em>the sum of mtr_payrolltax and mtr_incometax.</em></p></li>
 </ul>
 </p>
 </dd>
@@ -1049,15 +1061,17 @@ If assump is None, the dict in all the other key:dict pairs is empty.</p>
 containing a valid JSON string (rather than a local filename).</p>
 <p>Either of the two function arguments can also be a valid URL string
 beginning with ‘http’ and pointing to a valid JSON file hosted online.</p>
-<p>The reform file/URL contents or JSON string must be like this:
-{“policy”: {…}} OR {…}
-(in other words, the top-level policy key is optional)
-and the assump file/URL contents or JSON string must be like this:
-{“consumption”: {…},</p>
-<blockquote>
-<div><p>“growdiff_baseline”: {…},
-“growdiff_response”: {…}}</p>
-</div></blockquote>
+<p>The reform file/URL contents or JSON string must be like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}}</span> <span class="n">OR</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>(in other words, the top-level policy key is optional)
+and the assump file/URL contents or JSON string must be like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;consumption&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span>
+ <span class="s2">&quot;growdiff_baseline&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span>
+ <span class="s2">&quot;growdiff_response&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}}</span>
+</pre></div>
+</div>
 <p>The {…} should be empty like this {} if not specifying a policy
 reform or if not specifying any non-default economic assumptions
 of that type.</p>

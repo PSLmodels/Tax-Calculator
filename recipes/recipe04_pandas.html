@@ -260,6 +260,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/public_api.html">Tax-Calculator Python API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -273,6 +274,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/taxcalcio.html">Tax-Calculator IO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Tax-Calculator Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -573,7 +575,6 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">taxcalc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">behresp</span>
 
 <span class="c1"># use publicly-available CPS input file</span>
 <span class="n">recs</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
@@ -631,21 +632,21 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 
 <span class="c1"># Calculate response based on features of each filing unit.</span>
 <span class="c1"># Call quantity_response for each subset (i.e. vdf_1 and vdf_2)</span>
-<span class="n">vdf_1</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">quantity_response</span><span class="p">(</span><span class="n">quantity</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">e19800</span><span class="p">,</span>
-                                              <span class="n">price_elasticity</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span>
-                                              <span class="n">aftertax_price1</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">price1</span><span class="p">,</span>
-                                              <span class="n">aftertax_price2</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">price2</span><span class="p">,</span>
-                                              <span class="n">income_elasticity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                                              <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">atinc1</span><span class="p">,</span>
-                                              <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">atinc2</span><span class="p">)</span>
+<span class="n">vdf_1</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">quantity_response</span><span class="p">(</span><span class="n">quantity</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">e19800</span><span class="p">,</span>
+                                         <span class="n">price_elasticity</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span>
+                                         <span class="n">aftertax_price1</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">price1</span><span class="p">,</span>
+                                         <span class="n">aftertax_price2</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">price2</span><span class="p">,</span>
+                                         <span class="n">income_elasticity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                                         <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">atinc1</span><span class="p">,</span>
+                                         <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">vdf_1</span><span class="o">.</span><span class="n">atinc2</span><span class="p">)</span>
 
-<span class="n">vdf_2</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">quantity_response</span><span class="p">(</span><span class="n">quantity</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">e19800</span><span class="p">,</span>
-                                              <span class="n">price_elasticity</span><span class="o">=-</span><span class="mf">0.4</span><span class="p">,</span>
-                                              <span class="n">aftertax_price1</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">price1</span><span class="p">,</span>
-                                              <span class="n">aftertax_price2</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">price2</span><span class="p">,</span>
-                                              <span class="n">income_elasticity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                                              <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">atinc1</span><span class="p">,</span>
-                                              <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">atinc2</span><span class="p">)</span>
+<span class="n">vdf_2</span><span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">quantity_response</span><span class="p">(</span><span class="n">quantity</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">e19800</span><span class="p">,</span>
+                                         <span class="n">price_elasticity</span><span class="o">=-</span><span class="mf">0.4</span><span class="p">,</span>
+                                         <span class="n">aftertax_price1</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">price1</span><span class="p">,</span>
+                                         <span class="n">aftertax_price2</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">price2</span><span class="p">,</span>
+                                         <span class="n">income_elasticity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                                         <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">atinc1</span><span class="p">,</span>
+                                         <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">vdf_2</span><span class="o">.</span><span class="n">atinc2</span><span class="p">)</span>
 
 <span class="n">vdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">vdf_1</span><span class="p">,</span> <span class="n">vdf_2</span><span class="p">])</span>
 

@@ -264,6 +264,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="public_api.html">Tax-Calculator Python API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="consumption.html">Tax-Calculator Consumption</a></li>
@@ -277,6 +278,7 @@
 <li class="toctree-l2"><a class="reference internal" href="taxcalcio.html">Tax-Calculator IO</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Tax-Calculator Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="consumption.html">Tax-Calculator Consumption</a></li>
@@ -712,14 +714,11 @@ and return the difference statistics as a table.</p>
 on the basesline Calculator object</p></li>
 <li><p><strong>vdf2</strong> (<em>Pandas DataFrame including columns in the DIFF_VARIABLES list</em>) – for example, object returned from a dataframe(DIFF_VARIABLES) call
 on the reform Calculator object</p></li>
-<li><p><strong>groupby</strong> (<em>String object</em>) – <dl class="simple">
-<dt>options for input: ‘weighted_deciles’ or</dt><dd><p>’standard_income_bins’ or ‘soi_agi_bins’</p>
-</dd>
-</dl>
-<p>determines how the rows in the resulting Pandas DataFrame are sorted</p>
-</p></li>
-<li><p><strong>tax_to_diff</strong> (<em>String object</em>) – options for input: ‘iitax’, ‘payrolltax’, ‘combined’
-specifies which tax to difference</p></li>
+<li><p><strong>groupby</strong> (<em>String object</em>) – determines how the rows in the resulting Pandas DataFrame are
+sorted; options for input are ‘weighted_deciles’,
+‘standard_income_bins’, and ‘soi_agi_bins’</p></li>
+<li><p><strong>tax_to_diff</strong> (<em>String object</em>) – specifies which tax to difference; options for input are
+‘iitax’, ‘payrolltax’, and ‘combined’</p></li>
 <li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
 of people (True) or an equal number of filing units (False)</p></li>
 </ul>
@@ -728,15 +727,16 @@ of people (True) or an equal number of filing units (False)</p></li>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>difference table as a Pandas DataFrame with DIFF_TABLE_COLUMNS and</em></p></li>
 <li><p><em>groupby rows.</em></p></li>
-<li><p><strong>NOTE</strong> (<em>when groupby is ‘weighted_deciles’, the returned table has three</em>) – extra rows containing top-decile detail consisting of statistics
-for the 0.90-0.95 quantile range (bottom half of top decile),
-for the 0.95-0.99 quantile range, and
-for the 0.99-1.00 quantile range (top one percent); and the
-returned table splits the bottom decile into filing units with
-negative (denoted by a 0-10n row label),
-zero (denoted by a 0-10z row label), and
-positive (denoted by a 0-10p row label) values of the
-specified income_measure.</p></li>
+<li><p><strong>NOTE</strong> (<em>when groupby is ‘weighted_deciles’, the returned table has three</em>)</p></li>
+<li><p><em>extra rows containing top-decile detail consisting of statistics</em></p></li>
+<li><p><em>for the 0.90-0.95 quantile range (bottom half of top decile),</em></p></li>
+<li><p><em>for the 0.95-0.99 quantile range, and</em></p></li>
+<li><p><em>for the 0.99-1.00 quantile range (top one percent); and the</em></p></li>
+<li><p><em>returned table splits the bottom decile into filing units with</em></p></li>
+<li><p><em>negative (denoted by a 0-10n row label),</em></p></li>
+<li><p><em>zero (denoted by a 0-10z row label), and</em></p></li>
+<li><p><em>positive (denoted by a 0-10p row label) values of the</em></p></li>
+<li><p><em>specified income_measure.</em></p></li>
 </ul>
 </p>
 </dd>
@@ -753,14 +753,11 @@ and return them as a table.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>vdf</strong> (<em>Pandas DataFrame including columns named in DIST_TABLE_COLUMNS list</em>) – for example, an object returned from the distribution_table_dataframe
 function in the Calculator distribution_tables method</p></li>
-<li><p><strong>groupby</strong> (<em>String object</em>) – <dl class="simple">
-<dt>options for input: ‘weighted_deciles’ or</dt><dd><p>’standard_income_bins’ or ‘soi_agi_bins’</p>
-</dd>
-</dl>
-<p>determines how the rows in the resulting Pandas DataFrame are sorted</p>
-</p></li>
-<li><p><strong>income_measure</strong> (<em>String object</em>) – options for input: ‘expanded_income’ or ‘expanded_income_baseline’
-determines which variable is used to sort rows</p></li>
+<li><p><strong>groupby</strong> (<em>String object</em>) – determines how the rows in the resulting Pandas DataFrame are
+sorted; options for input are ‘weighted_deciles’,
+‘standard_income_bins’, and ‘soi_agi_bins’</p></li>
+<li><p><strong>income_measure</strong> (<em>String object</em>) – determines which variable is used to sort rows; options for input
+are ‘expanded_income’ and ‘expanded_income_baseline’</p></li>
 <li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
 of people (True) or an equal number of filing units (False)</p></li>
 <li><p><strong>scaling</strong> (<em>boolean</em>) – specifies whether or not table entry values are scaled</p></li>
@@ -770,15 +767,16 @@ of people (True) or an equal number of filing units (False)</p></li>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>distribution table as a Pandas DataFrame with DIST_TABLE_COLUMNS and</em></p></li>
 <li><p><em>groupby rows.</em></p></li>
-<li><p><strong>NOTE</strong> (<em>when groupby is ‘weighted_deciles’, the returned table has three</em>) – extra rows containing top-decile detail consisting of statistics
-for the 0.90-0.95 quantile range (bottom half of top decile),
-for the 0.95-0.99 quantile range, and
-for the 0.99-1.00 quantile range (top one percent); and the
-returned table splits the bottom decile into filing units with
-negative (denoted by a 0-10n row label),
-zero (denoted by a 0-10z row label), and
-positive (denoted by a 0-10p row label) values of the
-specified income_measure.</p></li>
+<li><p><strong>NOTE</strong> (<em>when groupby is ‘weighted_deciles’, the returned table has three</em>)</p></li>
+<li><p><em>extra rows containing top-decile detail consisting of statistics</em></p></li>
+<li><p><em>for the 0.90-0.95 quantile range (bottom half of top decile),</em></p></li>
+<li><p><em>for the 0.95-0.99 quantile range, and</em></p></li>
+<li><p><em>for the 0.99-1.00 quantile range (top one percent); and the</em></p></li>
+<li><p><em>returned table splits the bottom decile into filing units with</em></p></li>
+<li><p><em>negative (denoted by a 0-10n row label),</em></p></li>
+<li><p><em>zero (denoted by a 0-10z row label), and</em></p></li>
+<li><p><em>positive (denoted by a 0-10p row label) values of the</em></p></li>
+<li><p><em>specified income_measure.</em></p></li>
 </ul>
 </p>
 </dd>

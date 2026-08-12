@@ -259,6 +259,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/public_api.html">Tax-Calculator Python API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -272,6 +273,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/taxcalcio.html">Tax-Calculator IO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">Tax-Calculator Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -454,9 +456,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">paramtools</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">behresp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.policy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Policy</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.records</span><span class="w"> </span><span class="kn">import</span> <span class="n">Records</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.behresp</span><span class="w"> </span><span class="kn">import</span> <span class="n">response</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.consumption</span><span class="w"> </span><span class="kn">import</span> <span class="n">Consumption</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.growdiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">GrowDiff</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.growfactors</span><span class="w"> </span><span class="kn">import</span> <span class="n">GrowFactors</span>
@@ -934,7 +936,7 @@
             <span class="k">return</span>
         <span class="c1"># do output calculations</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">behvdict</span><span class="p">:</span>  <span class="c1"># if assuming behavioral responses</span>
-            <span class="n">br_dump_bas</span><span class="p">,</span> <span class="n">br_dump_ref</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">response</span><span class="p">(</span>
+            <span class="n">br_dump_bas</span><span class="p">,</span> <span class="n">br_dump_ref</span> <span class="o">=</span> <span class="n">response</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">behvdict</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>

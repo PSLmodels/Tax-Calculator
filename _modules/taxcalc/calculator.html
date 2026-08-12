@@ -259,6 +259,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/public_api.html">Tax-Calculator Python API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -272,6 +273,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/taxcalcio.html">Tax-Calculator IO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">Tax-Calculator Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -522,12 +524,14 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The most efficient way to specify current-law and reform Calculator</span>
-<span class="sd">    objects is as follows:</span>
-<span class="sd">         pol = Policy()</span>
-<span class="sd">         rec = Records.cps_constructor()</span>
-<span class="sd">         calc1 = Calculator(policy=pol, records=rec)  # current-law</span>
-<span class="sd">         pol.implement_reform(...)</span>
-<span class="sd">         calc2 = Calculator(policy=pol, records=rec)  # reform</span>
+<span class="sd">    objects is as follows::</span>
+
+<span class="sd">        pol = Policy()</span>
+<span class="sd">        rec = Records.cps_constructor()</span>
+<span class="sd">        calc1 = Calculator(policy=pol, records=rec)  # current-law</span>
+<span class="sd">        pol.implement_reform(...)</span>
+<span class="sd">        calc2 = Calculator(policy=pol, records=rec)  # reform</span>
+
 <span class="sd">    All calculations are done on the internal copies of the Policy and</span>
 <span class="sd">    Records objects passed to each of the two Calculator constructors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -862,9 +866,9 @@
 <span class="sd">            if calc is None, the second returned table is None</span>
 
 <span class="sd">        groupby : String object</span>
-<span class="sd">            options for input: &#39;weighted_deciles&#39;, &#39;standard_income_bins&#39;,</span>
-<span class="sd">                               &#39;soi_agi_bins&#39;</span>
-<span class="sd">            determines how the columns in resulting Pandas DataFrame are sorted</span>
+<span class="sd">            determines how the columns in the resulting Pandas DataFrame</span>
+<span class="sd">            are sorted; options for input are &#39;weighted_deciles&#39;,</span>
+<span class="sd">            &#39;standard_income_bins&#39;, and &#39;soi_agi_bins&#39;</span>
 
 <span class="sd">        pop_quantiles : boolean</span>
 <span class="sd">            specifies whether or not weighted_deciles contain an equal number</span>
@@ -874,25 +878,33 @@
 <span class="sd">            specifies create_distribution_table utility function argument</span>
 <span class="sd">            that determines whether table entry values are scaled or not</span>
 
-<span class="sd">        Return and typical usage</span>
-<span class="sd">        ------------------------</span>
-<span class="sd">        dist1, dist2 = calc1.distribution_tables(calc2, &#39;weighted_deciles&#39;)</span>
-<span class="sd">        OR</span>
-<span class="sd">        dist1, _ = calc1.distribution_tables(None, &#39;weighted_deciles&#39;)</span>
-<span class="sd">        (where calc1 is a baseline Calculator object</span>
-<span class="sd">        and calc2 is a reform Calculator object).</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
 <span class="sd">        Each of the dist1 and optional dist2 is a distribution table as a</span>
 <span class="sd">        Pandas DataFrame with DIST_TABLE_COLUMNS and groupby rows.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Typical usage is::</span>
+
+<span class="sd">            dist1, dist2 = calc1.distribution_tables(calc2,</span>
+<span class="sd">                                                     &#39;weighted_deciles&#39;)</span>
+<span class="sd">            # OR</span>
+<span class="sd">            dist1, _ = calc1.distribution_tables(None, &#39;weighted_deciles&#39;)</span>
+
+<span class="sd">        where calc1 is a baseline Calculator object and calc2 is a reform</span>
+<span class="sd">        Calculator object.</span>
+
 <span class="sd">        NOTE: when groupby is &#39;weighted_deciles&#39;, the returned tables have 3</span>
-<span class="sd">              extra rows containing top-decile detail consisting of statistics</span>
-<span class="sd">              for the 0.90-0.95 quantile range (bottom half of top decile),</span>
-<span class="sd">              for the 0.95-0.99 quantile range, and</span>
-<span class="sd">              for the 0.99-1.00 quantile range (top one percent); and the</span>
-<span class="sd">              returned table splits the bottom decile into filing units with</span>
-<span class="sd">              negative (denoted by a 0-10n row label),</span>
-<span class="sd">              zero (denoted by a 0-10z row label), and</span>
-<span class="sd">              positive (denoted by a 0-10p row label) values of the</span>
-<span class="sd">              specified income_measure.</span>
+<span class="sd">        extra rows containing top-decile detail consisting of statistics</span>
+<span class="sd">        for the 0.90-0.95 quantile range (bottom half of top decile),</span>
+<span class="sd">        for the 0.95-0.99 quantile range, and</span>
+<span class="sd">        for the 0.99-1.00 quantile range (top one percent); and the</span>
+<span class="sd">        returned table splits the bottom decile into filing units with</span>
+<span class="sd">        negative (denoted by a 0-10n row label),</span>
+<span class="sd">        zero (denoted by a 0-10z row label), and</span>
+<span class="sd">        positive (denoted by a 0-10p row label) values of the</span>
+<span class="sd">        specified income_measure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># nested functions used only by this method</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">distribution_table_dataframe</span><span class="p">(</span><span class="n">calcobj</span><span class="p">):</span>
@@ -977,34 +989,42 @@
 <span class="sd">            calc represents the reform while self represents the baseline</span>
 
 <span class="sd">        groupby : String object</span>
-<span class="sd">            options for input: &#39;weighted_deciles&#39;, &#39;standard_income_bins&#39;</span>
-<span class="sd">            determines how the columns in resulting Pandas DataFrame are sorted</span>
+<span class="sd">            determines how the columns in the resulting Pandas DataFrame</span>
+<span class="sd">            are sorted; options for input are &#39;weighted_deciles&#39; and</span>
+<span class="sd">            &#39;standard_income_bins&#39;</span>
 
 <span class="sd">        tax_to_diff : String object</span>
-<span class="sd">            options for input: &#39;iitax&#39;, &#39;payrolltax&#39;, &#39;combined&#39;</span>
-<span class="sd">            specifies which tax to difference</span>
+<span class="sd">            specifies which tax to difference; options for input are</span>
+<span class="sd">            &#39;iitax&#39;, &#39;payrolltax&#39;, and &#39;combined&#39;</span>
 
 <span class="sd">        pop_quantiles : boolean</span>
 <span class="sd">            specifies whether or not weighted_deciles contain an equal number</span>
 <span class="sd">            of people (True) or an equal number of filing units (False)</span>
 
-<span class="sd">        Returns and typical usage</span>
-<span class="sd">        -------------------------</span>
-<span class="sd">        diff = calc1.difference_table(calc2, &#39;weighted_deciles&#39;, &#39;iitax&#39;)</span>
-<span class="sd">        (where calc1 is a baseline Calculator object</span>
-<span class="sd">        and calc2 is a reform Calculator object).</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
 <span class="sd">        The returned diff is a difference table as a Pandas DataFrame</span>
 <span class="sd">        with DIST_TABLE_COLUMNS and groupby rows.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Typical usage is::</span>
+
+<span class="sd">            diff = calc1.difference_table(calc2, &#39;weighted_deciles&#39;, &#39;iitax&#39;)</span>
+
+<span class="sd">        where calc1 is a baseline Calculator object and calc2 is a reform</span>
+<span class="sd">        Calculator object.</span>
+
 <span class="sd">        NOTE: when groupby is &#39;weighted_deciles&#39;, the returned table has three</span>
-<span class="sd">              extra rows containing top-decile detail consisting of statistics</span>
-<span class="sd">              for the 0.90-0.95 quantile range (bottom half of top decile),</span>
-<span class="sd">              for the 0.95-0.99 quantile range, and</span>
-<span class="sd">              for the 0.99-1.00 quantile range (top one percent); and the</span>
-<span class="sd">              returned table splits the bottom decile into filing units with</span>
-<span class="sd">              negative (denoted by a 0-10n row label),</span>
-<span class="sd">              zero (denoted by a 0-10z row label), and</span>
-<span class="sd">              positive (denoted by a 0-10p row label) values of the</span>
-<span class="sd">              specified income_measure.</span>
+<span class="sd">        extra rows containing top-decile detail consisting of statistics</span>
+<span class="sd">        for the 0.90-0.95 quantile range (bottom half of top decile),</span>
+<span class="sd">        for the 0.95-0.99 quantile range, and</span>
+<span class="sd">        for the 0.99-1.00 quantile range (top one percent); and the</span>
+<span class="sd">        returned table splits the bottom decile into filing units with</span>
+<span class="sd">        negative (denoted by a 0-10n row label),</span>
+<span class="sd">        zero (denoted by a 0-10z row label), and</span>
+<span class="sd">        positive (denoted by a 0-10p row label) values of the</span>
+<span class="sd">        specified income_measure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">calc</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_year</span>
@@ -1091,7 +1111,7 @@
 <span class="sd">        mtr_payrolltax: an array of marginal payroll tax rates.</span>
 <span class="sd">        mtr_incometax: an array of marginal individual income tax rates.</span>
 <span class="sd">        mtr_combined: an array of marginal combined tax rates, which is</span>
-<span class="sd">                      the sum of mtr_payrolltax and mtr_incometax.</span>
+<span class="sd">        the sum of mtr_payrolltax and mtr_incometax.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1579,13 +1599,17 @@
 <span class="sd">        Either of the two function arguments can also be a valid URL string</span>
 <span class="sd">        beginning with &#39;http&#39; and pointing to a valid JSON file hosted online.</span>
 
-<span class="sd">        The reform file/URL contents or JSON string must be like this:</span>
-<span class="sd">        {&quot;policy&quot;: {...}} OR {...}</span>
+<span class="sd">        The reform file/URL contents or JSON string must be like this::</span>
+
+<span class="sd">            {&quot;policy&quot;: {...}} OR {...}</span>
+
 <span class="sd">        (in other words, the top-level policy key is optional)</span>
-<span class="sd">        and the assump file/URL contents or JSON string must be like this:</span>
-<span class="sd">        {&quot;consumption&quot;: {...},</span>
-<span class="sd">         &quot;growdiff_baseline&quot;: {...},</span>
-<span class="sd">         &quot;growdiff_response&quot;: {...}}</span>
+<span class="sd">        and the assump file/URL contents or JSON string must be like this::</span>
+
+<span class="sd">            {&quot;consumption&quot;: {...},</span>
+<span class="sd">             &quot;growdiff_baseline&quot;: {...},</span>
+<span class="sd">             &quot;growdiff_response&quot;: {...}}</span>
+
 <span class="sd">        The {...} should be empty like this {} if not specifying a policy</span>
 <span class="sd">        reform or if not specifying any non-default economic assumptions</span>
 <span class="sd">        of that type.</span>

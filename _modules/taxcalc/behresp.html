@@ -1,0 +1,965 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>taxcalc.behresp &#8212; Tax-Calculator</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/taxcalc/behresp';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/PSL.svg" class="logo__image only-light" alt="Tax-Calculator - Home"/>
+    <img src="../../_static/PSL.svg" class="logo__image only-dark pst-js-only" alt="Tax-Calculator - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    Tax-Calculator
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Usage</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../usage/starting.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/overview.html">Structural overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/data.html">Data for Tax-Calculator</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../guide/index.html">User guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/python_interface.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/cli.html">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/policy_params.html">Policy parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/input_vars.html">Input variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/output_vars.html">Output variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/assumption_params.html">Assumption parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../guide/behavior_params.html">Behavior parameters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../recipes/index.html">Recipes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../recipes/recipe00.html">Basic Recipe: Static Analysis of a Simple Reform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../recipes/recipe01.html">Recipe 1: Directly Comparing Two Reforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../recipes/recipe02.html">Recipe 2: Estimating Behavioral Response to Reform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../recipes/recipe03.html">Recipe 3: Creating a Custom Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../recipes/recipe04.html">Recipe 4: Estimating Differential Reform Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../recipes/recipe04_pandas.html">Recipe 4: Estimating Differential Reform Response - pandas version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../recipes/recipe05.html">Recipe 5: Redefining Expanded Income</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../recipes/recipe06.html">Recipe 6: Analyzing a Non-Parametric Reform</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../about/history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/releases.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/LICENSE.html">License</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../contributing/contributor_guide.html">Contributor guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing/pr_workflow.html">Pull request workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing/param_naming.html">Policy parameter naming and placing conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing/testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing/RELEASING.html">Releasing Tax-Calculator Packages</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/public_api.html">Tax-Calculator Python API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/calculator.html">Tax-Calculator Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/consumption.html">Tax-Calculator Consumption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/data.html">Tax-Calculator Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/decorators.html">Tax-Calculator Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/growdiff.html">Tax-Calculator GrowDiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/growfactors.html">Tax-Calculator GrowFactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/parameters.html">Tax-Calculator Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/policy.html">Tax-Calculator Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/records.html">Tax-Calculator Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/taxcalcio.html">Tax-Calculator IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">Tax-Calculator Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/calculator.html">Tax-Calculator Calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/consumption.html">Tax-Calculator Consumption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/data.html">Tax-Calculator Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/decorators.html">Tax-Calculator Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/growdiff.html">Tax-Calculator GrowDiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/growfactors.html">Tax-Calculator GrowFactors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/parameters.html">Tax-Calculator Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/policy.html">Tax-Calculator Policy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/records.html">Tax-Calculator Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/taxcalcio.html">Tax-Calculator IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">Tax-Calculator Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tax-Calculator use cases</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../use_cases.html">Recorded use cases</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2F_modules/taxcalc/behresp.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for taxcalc.behresp</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Partial-equilibrium elasticity-based behavioral-responses logic.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># CODING-STYLE CHECKS:</span>
+<span class="c1"># pycodestyle behresp.py</span>
+<span class="c1"># pylint --disable=locally-disabled behresp.py</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.calculator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Calculator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.records</span><span class="w"> </span><span class="kn">import</span> <span class="n">Records</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">DIST_VARIABLES</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">,</span> <span class="s1">&#39;quantity_response&#39;</span><span class="p">,</span> <span class="s1">&#39;labor_response&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="response">
+<a class="viewcode-back" href="../../api/behresp.html#taxcalc.behresp.response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">response</span><span class="p">(</span><span class="n">calc_1</span><span class="p">,</span> <span class="n">calc_2</span><span class="p">,</span> <span class="n">elasticities</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements &quot;Partial Equilibrium Simulation&quot; conventional analysis,</span>
+<span class="sd">    returning results as a tuple of Pandas DataFrame objects (df1, df2)</span>
+<span class="sd">    where df1 is extracted from a baseline-policy calc_1 copy, and df2 is</span>
+<span class="sd">    extracted from a reform-policy calc_2 copy that incorporates the</span>
+<span class="sd">    behavioral responses given by the nature of the baseline-to-reform</span>
+<span class="sd">    change in policy and elasticities in the specified behavior dictionary.</span>
+
+<span class="sd">    Note: this function internally modifies a copy of calc_2 records to</span>
+<span class="sd">    account for behavioral responses that arise from the policy reform that</span>
+<span class="sd">    involves moving from calc1 policy to calc2 policy.  Neither calc_1 nor</span>
+<span class="sd">    calc_2 need to have had calc_all() executed before calling the response</span>
+<span class="sd">    function.  And neither calc_1 nor calc_2 are affected by this response</span>
+<span class="sd">    function.</span>
+
+<span class="sd">    The elasticities argument is a dictionary containing the assumed response</span>
+<span class="sd">    elasticities.  Omitting an elasticity key:value pair in the dictionary</span>
+<span class="sd">    implies the omitted elasticity is assumed to be zero.  Here is the full</span>
+<span class="sd">    dictionary content and each elasticity&#39;s internal name:</span>
+
+<span class="sd">     be_sub = elasticities[&#39;sub&#39;]</span>
+<span class="sd">       Substitution elasticity of taxable income.</span>
+<span class="sd">       Defined as proportional change in taxable income divided by</span>
+<span class="sd">       proportional change in marginal net-of-tax rate (1-MTR) on taxpayer</span>
+<span class="sd">       earnings caused by the reform.  Must be zero or positive.</span>
+
+<span class="sd">     be_inc = elasticities[&#39;inc&#39;]</span>
+<span class="sd">       Income elasticity of taxable income.</span>
+<span class="sd">       Defined as dollar change in taxable income divided by dollar change</span>
+<span class="sd">       in after-tax income caused by the reform.  Must be zero or negative.</span>
+
+<span class="sd">     be_cg = elasticities[&#39;cg&#39;]</span>
+<span class="sd">       Semi-elasticity of long-term capital gains.</span>
+<span class="sd">       Defined as change in logarithm of long-term capital gains divided by</span>
+<span class="sd">       change in marginal tax rate (MTR) on long-term capital gains caused by</span>
+<span class="sd">       the reform.  Must be zero or negative.</span>
+<span class="sd">       Read response function documentation (see below) for discussion of</span>
+<span class="sd">       appropriate values.</span>
+
+<span class="sd">    The optional dump argument controls the number of variables included</span>
+<span class="sd">    in the two returned DataFrame objects.  When dump=False (its default</span>
+<span class="sd">    value), the variables in the two returned DataFrame objects include</span>
+<span class="sd">    just the variables in the Tax-Calculator DIST_VARIABLES list, which</span>
+<span class="sd">    is sufficient for constructing the standard Tax-Calculator tables.</span>
+<span class="sd">    When dump=True, the variables in the two returned DataFrame objects</span>
+<span class="sd">    include all the Tax-Calculator input and calculated output variables,</span>
+<span class="sd">    which is the same output as produced by the Tax-Calculator tc --dump</span>
+<span class="sd">    option except for one difference: the tc --dump option provides two</span>
+<span class="sd">    calculated variables, mtr_inctax and mtr_paytax, that are replaced</span>
+<span class="sd">    in the dump output of this response function by mtr_combined, which</span>
+<span class="sd">    is the sum of mtr_inctax and mtr_paytax.</span>
+
+<span class="sd">    Note: the use here of a dollar-change income elasticity (rather than</span>
+<span class="sd">      a proportional-change elasticity) is consistent with Feldstein and</span>
+<span class="sd">      Feenberg, &quot;The Taxation of Two Earner Families&quot;, NBER Working Paper</span>
+<span class="sd">      No. 5155 (June 1995).  A proportional-change elasticity was used by</span>
+<span class="sd">      Gruber and Saez, &quot;The elasticity of taxable income: evidence and</span>
+<span class="sd">      implications&quot;, Journal of Public Economics 84:1-32 (2002) [see</span>
+<span class="sd">      equation 2 on page 10].</span>
+
+<span class="sd">    Note: the nature of the capital-gains elasticity used here is similar</span>
+<span class="sd">      to that used in Joint Committee on Taxation, &quot;New Evidence on the</span>
+<span class="sd">      Tax Elasticity of Capital Gains: A Joint Working Paper of the Staff</span>
+<span class="sd">      of the Joint Committee on Taxation and the Congressional Budget</span>
+<span class="sd">      Office&quot;, (JCX-56-12), June 2012.  In particular, the elasticity</span>
+<span class="sd">      use here is equivalent to the term inside the square brackets on</span>
+<span class="sd">      the right-hand side of equation (4) on page 11 --- not the epsilon</span>
+<span class="sd">      variable on the left-hand side of equation (4), which is equal to</span>
+<span class="sd">      the elasticity used here times the weighted average marginal tax</span>
+<span class="sd">      rate on long-term capital gains.  So, the JCT-CBO estimate of</span>
+<span class="sd">      -0.792 for the epsilon elasticity (see JCT-CBO, Table 5) translates</span>
+<span class="sd">      into a much larger absolute value for the be_cg semi-elasticity</span>
+<span class="sd">      used by Tax-Calculator.</span>
+<span class="sd">      To calculate the elasticity from a semi-elasticity, we multiply by</span>
+<span class="sd">      MTRs from TC and weight by shares of taxable gains. To avoid those</span>
+<span class="sd">      with zero MTRs, we restrict this to the top 40% of tax units by AGI.</span>
+<span class="sd">      Using this function, a semi-elasticity of -3.45 corresponds to a tax</span>
+<span class="sd">      rate elasticity of -0.792.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-locals,too-many-statements,too-many-branches</span>
+
+    <span class="c1"># Check function argument types and elasticity values</span>
+    <span class="n">calc1</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc_1</span><span class="p">)</span>
+    <span class="n">calc2</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc_2</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elasticities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+    <span class="n">be_sub</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;sub&#39;</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">be_inc</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">&#39;inc&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;inc&#39;</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">be_cg</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">&#39;cg&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;cg&#39;</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="k">assert</span> <span class="n">be_sub</span> <span class="o">&gt;=</span> <span class="mf">0.0</span>
+    <span class="k">assert</span> <span class="n">be_inc</span> <span class="o">&lt;=</span> <span class="mf">0.0</span>
+    <span class="k">assert</span> <span class="n">be_cg</span> <span class="o">&lt;=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># Begin nested functions used only in this response function</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_ordinary_income</span><span class="p">(</span><span class="n">taxinc_change</span><span class="p">,</span> <span class="n">calc</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implement total taxable income change induced by behavioral response.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># compute AGI minus itemized deductions, agi_m_ided</span>
+        <span class="n">agi</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c00100&#39;</span><span class="p">)</span>
+        <span class="n">ided</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04470&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;standard&#39;</span><span class="p">),</span>
+                        <span class="mf">0.</span><span class="p">,</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04470&#39;</span><span class="p">))</span>
+        <span class="n">agi_m_ided</span> <span class="o">=</span> <span class="n">agi</span> <span class="o">-</span> <span class="n">ided</span>
+        <span class="c1"># assume behv response only for filing units with positive agi_m_ided</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">agi_m_ided</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="n">delta_income</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">taxinc_change</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+        <span class="c1"># allocate delta_income into three parts</span>
+        <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
+        <span class="n">winc</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e00200&#39;</span><span class="p">)</span>
+        <span class="n">delta_winc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">agi</span><span class="p">)</span>
+        <span class="n">delta_winc</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_income</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">*</span> <span class="n">winc</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">/</span> <span class="n">agi_m_ided</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+        <span class="n">oinc</span> <span class="o">=</span> <span class="n">agi</span> <span class="o">-</span> <span class="n">winc</span>
+        <span class="n">delta_oinc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">agi</span><span class="p">)</span>
+        <span class="n">delta_oinc</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_income</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">*</span> <span class="n">oinc</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">/</span> <span class="n">agi_m_ided</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+        <span class="n">delta_ided</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">agi</span><span class="p">)</span>
+        <span class="n">delta_ided</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_income</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">*</span> <span class="n">ided</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">/</span> <span class="n">agi_m_ided</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+        <span class="c1"># confirm that the three parts are consistent with delta_income</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">delta_income</span><span class="p">,</span> <span class="n">delta_winc</span> <span class="o">+</span> <span class="n">delta_oinc</span> <span class="o">-</span> <span class="n">delta_ided</span><span class="p">)</span>
+        <span class="c1"># add the three parts to different records variables embedded in calc</span>
+        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e00200&#39;</span><span class="p">,</span> <span class="n">delta_winc</span><span class="p">)</span>
+        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span> <span class="n">delta_winc</span><span class="p">)</span>
+        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e00300&#39;</span><span class="p">,</span> <span class="n">delta_oinc</span><span class="p">)</span>
+        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e19200&#39;</span><span class="p">,</span> <span class="n">delta_ided</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">calc</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_cap_gain_income</span><span class="p">(</span><span class="n">cap_gain_change</span><span class="p">,</span> <span class="n">calc</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implement capital gain change induced by behavioral responses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;p23250&#39;</span><span class="p">,</span> <span class="n">cap_gain_change</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">calc</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mtr12</span><span class="p">(</span><span class="n">calc__1</span><span class="p">,</span> <span class="n">calc__2</span><span class="p">,</span> <span class="n">mtr_of</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span> <span class="n">tax_type</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes marginal tax rates for Calculator objects calc__1 and calc__2</span>
+<span class="sd">        for specified mtr_of income type and specified tax_type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">tax_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span> <span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">iitax1</span><span class="p">,</span> <span class="n">combined1</span> <span class="o">=</span> <span class="n">calc__1</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">mtr_of</span><span class="p">,</span> <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">iitax2</span><span class="p">,</span> <span class="n">combined2</span> <span class="o">=</span> <span class="n">calc__2</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">mtr_of</span><span class="p">,</span> <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tax_type</span> <span class="o">==</span> <span class="s1">&#39;combined&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">combined1</span><span class="p">,</span> <span class="n">combined2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">iitax1</span><span class="p">,</span> <span class="n">iitax2</span><span class="p">)</span>
+    <span class="c1"># End nested functions used only in this response function</span>
+
+    <span class="c1"># Begin main logic of response function</span>
+    <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+    <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span> <span class="o">==</span> <span class="n">calc2</span><span class="o">.</span><span class="n">array_len</span>
+    <span class="k">assert</span> <span class="n">calc1</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="n">calc2</span><span class="o">.</span><span class="n">current_year</span>
+    <span class="n">mtr_cap</span> <span class="o">=</span> <span class="mf">0.99</span>
+    <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
+        <span class="n">recs_vinfo</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># contains records VARINFO only</span>
+        <span class="n">dvars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">recs_vinfo</span><span class="o">.</span><span class="n">USABLE_READ_VARS</span> <span class="o">|</span> <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">CALCULATED_VARS</span><span class="p">)</span>
+    <span class="c1"># Calculate sum of substitution and income effects</span>
+    <span class="k">if</span> <span class="n">be_sub</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">be_inc</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">zero_sub_and_inc</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">si_chg</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># is not used when zero_sub_and_inc is True</span>
+        <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
+            <span class="n">wage_mtr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
+            <span class="n">wage_mtr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc2</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">zero_sub_and_inc</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># calculate marginal combined tax rates on taxpayer wages+salary</span>
+        <span class="c1"># (e00200p is taxpayer&#39;s wages+salary)</span>
+        <span class="n">wage_mtr1</span><span class="p">,</span> <span class="n">wage_mtr2</span> <span class="o">=</span> <span class="n">_mtr12</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span>
+                                      <span class="n">mtr_of</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span>
+                                      <span class="n">tax_type</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">)</span>
+        <span class="c1"># calculate magnitude of substitution effect</span>
+        <span class="k">if</span> <span class="n">be_sub</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">sub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># proportional change in marginal net-of-tax rates on earnings</span>
+            <span class="n">mtr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">wage_mtr1</span> <span class="o">&gt;</span> <span class="n">mtr_cap</span><span class="p">,</span> <span class="n">mtr_cap</span><span class="p">,</span> <span class="n">wage_mtr1</span><span class="p">)</span>
+            <span class="n">mtr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">wage_mtr2</span> <span class="o">&gt;</span> <span class="n">mtr_cap</span><span class="p">,</span> <span class="n">mtr_cap</span><span class="p">,</span> <span class="n">wage_mtr2</span><span class="p">)</span>
+            <span class="n">pch</span> <span class="o">=</span> <span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">mtr2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">mtr1</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.</span>
+            <span class="c1"># Note: c04800 is filing unit&#39;s taxable income</span>
+            <span class="n">sub</span> <span class="o">=</span> <span class="n">be_sub</span> <span class="o">*</span> <span class="n">pch</span> <span class="o">*</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04800&#39;</span><span class="p">)</span>
+        <span class="c1"># calculate magnitude of income effect</span>
+        <span class="k">if</span> <span class="n">be_inc</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">inc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># dollar change in after-tax income</span>
+            <span class="c1"># Note: combined is f.unit&#39;s income+payroll tax liability</span>
+            <span class="n">dch</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;combined&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">calc2</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;combined&#39;</span><span class="p">)</span>
+            <span class="n">inc</span> <span class="o">=</span> <span class="n">be_inc</span> <span class="o">*</span> <span class="n">dch</span>
+        <span class="c1"># calculate sum of substitution and income effects</span>
+        <span class="n">si_chg</span> <span class="o">=</span> <span class="n">sub</span> <span class="o">+</span> <span class="n">inc</span>
+    <span class="c1"># Calculate long-term capital-gains effect</span>
+    <span class="k">if</span> <span class="n">be_cg</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">ltcg_chg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># calculate marginal tax rates on long-term capital gains</span>
+        <span class="c1">#  p23250 is filing units&#39; long-term capital gains</span>
+        <span class="n">ltcg_mtr1</span><span class="p">,</span> <span class="n">ltcg_mtr2</span> <span class="o">=</span> <span class="n">_mtr12</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span>
+                                      <span class="n">mtr_of</span><span class="o">=</span><span class="s1">&#39;p23250&#39;</span><span class="p">,</span>
+                                      <span class="n">tax_type</span><span class="o">=</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+        <span class="n">rch</span> <span class="o">=</span> <span class="n">ltcg_mtr2</span> <span class="o">-</span> <span class="n">ltcg_mtr1</span>
+        <span class="n">exp_term</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">be_cg</span> <span class="o">*</span> <span class="n">rch</span><span class="p">)</span>
+        <span class="n">new_ltcg</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;p23250&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">exp_term</span>
+        <span class="n">ltcg_chg</span> <span class="o">=</span> <span class="n">new_ltcg</span> <span class="o">-</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;p23250&#39;</span><span class="p">)</span>
+    <span class="c1"># Extract dataframe from calc1</span>
+    <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
+        <span class="n">df1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span>
+        <span class="n">df1</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;mtr_inctax&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df1</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;mtr_paytax&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df1</span><span class="p">[</span><span class="s1">&#39;mtr_combined&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wage_mtr1</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">DIST_VARIABLES</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">calc1</span>
+    <span class="c1"># Add behavioral-response changes to income sources</span>
+    <span class="n">calc2_behv</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc2</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">calc2</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">zero_sub_and_inc</span><span class="p">:</span>
+        <span class="n">calc2_behv</span> <span class="o">=</span> <span class="n">_update_ordinary_income</span><span class="p">(</span><span class="n">si_chg</span><span class="p">,</span> <span class="n">calc2_behv</span><span class="p">)</span>
+    <span class="n">calc2_behv</span> <span class="o">=</span> <span class="n">_update_cap_gain_income</span><span class="p">(</span><span class="n">ltcg_chg</span><span class="p">,</span> <span class="n">calc2_behv</span><span class="p">)</span>
+    <span class="c1"># Recalculate post-reform taxes incorporating behavioral responses</span>
+    <span class="n">calc2_behv</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+    <span class="c1"># Extract dataframe from calc2_behv</span>
+    <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
+        <span class="n">df2</span> <span class="o">=</span> <span class="n">calc2_behv</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span>
+        <span class="n">df2</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;mtr_inctax&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df2</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;mtr_paytax&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df2</span><span class="p">[</span><span class="s1">&#39;mtr_combined&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wage_mtr2</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df2</span> <span class="o">=</span> <span class="n">calc2_behv</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">DIST_VARIABLES</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">calc2_behv</span>
+    <span class="c1"># Return the two dataframes</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pch_response</span><span class="p">(</span><span class="n">elasticity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                 <span class="n">val1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                 <span class="n">val2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the percentage change response, given an elasticity and</span>
+<span class="sd">    original/new values. Can be used to calculate substitution or</span>
+<span class="sd">    income effects.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    elasticity: value or numpy array representing elasticity(ies).</span>
+<span class="sd">        Defaults to zero.</span>
+
+<span class="sd">    val1: value or numpy array representing original value(s).</span>
+<span class="sd">        Defaults to zero.</span>
+
+<span class="sd">    val2: value or numpy array representing new value(s).</span>
+<span class="sd">        Defaults to zero.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pch_response: numpy array</span>
+<span class="sd">        Percentage change in the response, calculated essentially as:</span>
+<span class="sd">        elasticity * (val2 / val1 - 1).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">val1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">val1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">val1</span><span class="p">)</span>  <span class="c1"># Avoids a warning.</span>
+    <span class="n">pch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">val1</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">val2</span> <span class="o">/</span> <span class="n">val1</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">elasticity</span> <span class="o">*</span> <span class="n">pch</span>
+
+
+<div class="viewcode-block" id="quantity_response">
+<a class="viewcode-back" href="../../api/behresp.html#taxcalc.behresp.quantity_response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">quantity_response</span><span class="p">(</span><span class="n">quantity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
+                      <span class="n">price_elasticity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                      <span class="n">aftertax_price1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                      <span class="n">aftertax_price2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                      <span class="n">income_elasticity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                      <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                      <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate dollar change in quantity using a log-log response equation,</span>
+<span class="sd">    which assumes that the proportional change in the quantity is equal to</span>
+<span class="sd">    the sum of two terms:</span>
+
+<span class="sd">    (1) the proportional change in the quantity&#39;s marginal aftertax price</span>
+<span class="sd">        times an assumed price elasticity, and</span>
+
+<span class="sd">    (2) the proportional change in aftertax income</span>
+<span class="sd">        times an assumed income elasticity.</span>
+
+<span class="sd">    Not all inputs are required, so it&#39;s possible to calculate only the price</span>
+<span class="sd">    or income effects by providing a subset of arguments. Accepts arrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    quantity: numpy array</span>
+<span class="sd">        pre-response quantity whose response is being calculated.</span>
+<span class="sd">        Defaults to 1.</span>
+
+<span class="sd">    price_elasticity: float</span>
+<span class="sd">        coefficient of the percentage change in aftertax price of</span>
+<span class="sd">        the quantity in the log-log response equation. Defaults to 0.</span>
+
+<span class="sd">    aftertax_price1: numpy array</span>
+<span class="sd">        marginal aftertax price of the quantity under baseline policy.</span>
+
+<span class="sd">        Note that this function forces prices to be in [0.01, inf] range,</span>
+<span class="sd">        but the caller of this function may want to constrain negative</span>
+<span class="sd">        or very small prices to be somewhat larger in order to avoid extreme</span>
+<span class="sd">        proportional changes in price. Defaults to 0.</span>
+
+<span class="sd">        Note this is NOT an array of marginal tax rates (MTR), but rather</span>
+<span class="sd">        usually 1-MTR (or in the case of quantities, like charitable</span>
+<span class="sd">        giving, whose MTR values are non-positive, 1+MTR).</span>
+
+<span class="sd">    aftertax_price2: numpy array</span>
+<span class="sd">        marginal aftertax price of the quantity under reform policy.</span>
+
+<span class="sd">        Note that this function forces prices to be in [0.01, inf] range,</span>
+<span class="sd">        but the caller of this function may want to constrain negative</span>
+<span class="sd">        or very small prices to be somewhat larger in order to avoid extreme</span>
+<span class="sd">        proportional changes in price. Defaults to 0.</span>
+
+<span class="sd">        Note this is NOT an array of marginal tax rates (MTR), but rather</span>
+<span class="sd">        usually 1-MTR (or in the case of quantities, like charitable</span>
+<span class="sd">        giving, whose MTR values are non-positive, 1+MTR).</span>
+
+<span class="sd">    income_elasticity: float</span>
+<span class="sd">        coefficient of the percentage change in aftertax income in the</span>
+<span class="sd">        log-log response equation. Defaults to 0.</span>
+
+<span class="sd">    aftertax_income1: numpy array</span>
+<span class="sd">        aftertax income under baseline policy.</span>
+
+<span class="sd">        Note that this function forces income to be in [1, inf] range,</span>
+<span class="sd">        but the caller of this function may want to constrain negative</span>
+<span class="sd">        or small incomes to be somewhat larger in order to avoid extreme</span>
+<span class="sd">        proportional changes in aftertax income. Defaults to 0.</span>
+
+<span class="sd">    aftertax_income2: numpy array</span>
+<span class="sd">        aftertax income under reform policy.</span>
+
+<span class="sd">        Note that this function forces income to be in [1, inf] range,</span>
+<span class="sd">        but the caller of this function may want to constrain negative</span>
+<span class="sd">        or small incomes to be somewhat larger in order to avoid extreme</span>
+<span class="sd">        proportional changes in aftertax income. Defaults to 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    response: numpy array</span>
+<span class="sd">        dollar change in quantity calculated from log-log response equation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
+    <span class="n">substitution_effect</span> <span class="o">=</span> <span class="n">pch_response</span><span class="p">(</span>
+        <span class="n">price_elasticity</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">aftertax_price1</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">aftertax_price2</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">))</span>
+    <span class="n">income_effect</span> <span class="o">=</span> <span class="n">pch_response</span><span class="p">(</span>
+        <span class="n">income_elasticity</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">aftertax_income1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">aftertax_income2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">quantity</span> <span class="o">*</span> <span class="p">(</span><span class="n">substitution_effect</span> <span class="o">+</span> <span class="n">income_effect</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="labor_response">
+<a class="viewcode-back" href="../../api/behresp.html#taxcalc.behresp.labor_response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">labor_response</span><span class="p">(</span><span class="n">earnings</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
+                   <span class="n">substitution_eti</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                   <span class="n">mtr1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                   <span class="n">mtr2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                   <span class="n">income_elasticity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                   <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                   <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate labor response given earnings, substitution elasticity of taxable</span>
+<span class="sd">    income, initial and new marginal tax rates, income elasticity, and initial</span>
+<span class="sd">    and new after-tax income. Accepts arrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    earnings: numpy array</span>
+<span class="sd">        pre-response earnings whose response is being calculated.</span>
+<span class="sd">        Defaults to 1.</span>
+
+<span class="sd">    substitution_eti: float or numpy array</span>
+<span class="sd">        coefficient of the substitution elasticity of taxable income.</span>
+<span class="sd">        Defaults to 0.</span>
+
+<span class="sd">    mtr1: numpy array</span>
+<span class="sd">        marginal tax rate of earnings under baseline policy.</span>
+
+<span class="sd">        Note that this function forces MTRs to be in [-inf, 0.99] range,</span>
+<span class="sd">        but the caller of this function may want to constrain large MTRs</span>
+<span class="sd">        to be somewhat smaller in order to avoid extreme</span>
+<span class="sd">        proportional changes in earnings. Defaults to 0.</span>
+
+<span class="sd">    mtr2: numpy array</span>
+<span class="sd">        marginal tax rate of earnings under reform policy.</span>
+
+<span class="sd">        Note that this function forces MTRs to be in [-inf, 0.99] range,</span>
+<span class="sd">        but the caller of this function may want to constrain large MTRs</span>
+<span class="sd">        to be somewhat smaller in order to avoid extreme</span>
+<span class="sd">        proportional changes in earnings. Defaults to 0.</span>
+
+<span class="sd">    income_elasticity: float</span>
+<span class="sd">        coefficient of the percentage change in aftertax income in the</span>
+<span class="sd">        log-log response equation. Defaults to 0.</span>
+
+<span class="sd">    aftertax_income1: numpy array</span>
+<span class="sd">        aftertax income under baseline policy.</span>
+
+<span class="sd">        Note that this function forces income to be in [1, inf] range,</span>
+<span class="sd">        but the caller of this function may want to constrain negative</span>
+<span class="sd">        or small incomes to be somewhat larger in order to avoid extreme</span>
+<span class="sd">        proportional changes in aftertax income. Defaults to 0.</span>
+
+<span class="sd">    aftertax_income2: numpy array</span>
+<span class="sd">        aftertax income under reform policy.</span>
+
+<span class="sd">        Note that this function forces income to be in [1, inf] range,</span>
+<span class="sd">        but the caller of this function may want to constrain negative</span>
+<span class="sd">        or small incomes to be somewhat larger in order to avoid extreme</span>
+<span class="sd">        proportional changes in aftertax income. Defaults to 0.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    response: numpy array</span>
+<span class="sd">        dollar change in earnings calculated from log-log response equation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
+    <span class="k">return</span> <span class="n">quantity_response</span><span class="p">(</span>
+        <span class="n">quantity</span><span class="o">=</span><span class="n">earnings</span><span class="p">,</span>
+        <span class="n">price_elasticity</span><span class="o">=</span><span class="n">substitution_eti</span><span class="p">,</span>
+        <span class="n">aftertax_price1</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mtr1</span><span class="p">,</span>
+        <span class="n">aftertax_price2</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mtr2</span><span class="p">,</span>
+        <span class="n">income_elasticity</span><span class="o">=</span><span class="n">income_elasticity</span><span class="p">,</span>
+        <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">aftertax_income1</span><span class="p">,</span>
+        <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">aftertax_income2</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Policy Simulation Library
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

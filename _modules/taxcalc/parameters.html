@@ -259,6 +259,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/public_api.html">Tax-Calculator Python API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -272,6 +273,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/taxcalcio.html">Tax-Calculator IO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">Tax-Calculator Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -1189,18 +1191,19 @@
 <span class="sd">        the top-level JSON keys, the ``obj`` is assumed to be a</span>
 <span class="sd">        non-compound-revision JSON text for the specified ``topkey``.</span>
 
-<span class="sd">        Some examples of valid links are:</span>
+<span class="sd">        Some examples of valid links are::</span>
 
-<span class="sd">        - HTTP: ``https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/</span>
-<span class="sd">                  master/taxcalc/reforms/2017_law.json``</span>
+<span class="sd">            HTTP: https://raw.githubusercontent.com/PSLmodels/</span>
+<span class="sd">                  Tax-Calculator/master/taxcalc/reforms/2017_law.json</span>
 
-<span class="sd">        - Github API: ``github://PSLmodels:Tax-Calculator@master/taxcalc/</span>
-<span class="sd">                        reforms/2017_law.json``</span>
+<span class="sd">            Github API: github://PSLmodels:Tax-Calculator@master/</span>
+<span class="sd">                        taxcalc/reforms/2017_law.json</span>
 
-<span class="sd">        Checkout the ParamTools</span>
-<span class="sd">        `docs &lt;https://paramtools.dev/_modules/paramtools/</span>
-<span class="sd">                       parameters.html#Parameters.read_params&gt;`_</span>
-<span class="sd">        for more information on valid file URLs.</span>
+<span class="sd">        Checkout the ParamTools `docs`_ for more information on valid</span>
+<span class="sd">        file URLs.</span>
+
+<span class="sd">        .. _docs: https://paramtools.dev/_modules/paramtools/</span>
+<span class="sd">           parameters.html#Parameters.read_params</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># embedded function used only in _read_json_revision staticmethod</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">convert_year_to_int</span><span class="p">(</span><span class="n">syr_dict</span><span class="p">):</span>
@@ -1393,7 +1396,7 @@
 <span class="sd">                &quot;ss_rate&quot;: [{&quot;year&quot;: 2024, &quot;value&quot;: 0.2}]}</span>
 <span class="sd">            }</span>
 
-<span class="sd">    Returns:</span>
+<span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    bool:</span>
 <span class="sd">      Whether ``params`` is likely to be a ParamTools formatted</span>

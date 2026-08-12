@@ -259,6 +259,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/public_api.html">Tax-Calculator Python API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -272,6 +273,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../api/taxcalcio.html">Tax-Calculator IO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">Tax-Calculator Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/consumption.html">Tax-Calculator Consumption</a></li>
@@ -761,13 +763,13 @@
 <span class="sd">        function in the Calculator distribution_tables method</span>
 
 <span class="sd">    groupby : String object</span>
-<span class="sd">        options for input: &#39;weighted_deciles&#39; or</span>
-<span class="sd">                           &#39;standard_income_bins&#39; or &#39;soi_agi_bins&#39;</span>
-<span class="sd">        determines how the rows in the resulting Pandas DataFrame are sorted</span>
+<span class="sd">        determines how the rows in the resulting Pandas DataFrame are</span>
+<span class="sd">        sorted; options for input are &#39;weighted_deciles&#39;,</span>
+<span class="sd">        &#39;standard_income_bins&#39;, and &#39;soi_agi_bins&#39;</span>
 
 <span class="sd">    income_measure: String object</span>
-<span class="sd">        options for input: &#39;expanded_income&#39; or &#39;expanded_income_baseline&#39;</span>
-<span class="sd">        determines which variable is used to sort rows</span>
+<span class="sd">        determines which variable is used to sort rows; options for input</span>
+<span class="sd">        are &#39;expanded_income&#39; and &#39;expanded_income_baseline&#39;</span>
 
 <span class="sd">    pop_quantiles : boolean</span>
 <span class="sd">        specifies whether or not weighted_deciles contain an equal number</span>
@@ -780,16 +782,17 @@
 <span class="sd">    -------</span>
 <span class="sd">    distribution table as a Pandas DataFrame with DIST_TABLE_COLUMNS and</span>
 <span class="sd">    groupby rows.</span>
+
 <span class="sd">    NOTE: when groupby is &#39;weighted_deciles&#39;, the returned table has three</span>
-<span class="sd">          extra rows containing top-decile detail consisting of statistics</span>
-<span class="sd">          for the 0.90-0.95 quantile range (bottom half of top decile),</span>
-<span class="sd">          for the 0.95-0.99 quantile range, and</span>
-<span class="sd">          for the 0.99-1.00 quantile range (top one percent); and the</span>
-<span class="sd">          returned table splits the bottom decile into filing units with</span>
-<span class="sd">          negative (denoted by a 0-10n row label),</span>
-<span class="sd">          zero (denoted by a 0-10z row label), and</span>
-<span class="sd">          positive (denoted by a 0-10p row label) values of the</span>
-<span class="sd">          specified income_measure.</span>
+<span class="sd">    extra rows containing top-decile detail consisting of statistics</span>
+<span class="sd">    for the 0.90-0.95 quantile range (bottom half of top decile),</span>
+<span class="sd">    for the 0.95-0.99 quantile range, and</span>
+<span class="sd">    for the 0.99-1.00 quantile range (top one percent); and the</span>
+<span class="sd">    returned table splits the bottom decile into filing units with</span>
+<span class="sd">    negative (denoted by a 0-10n row label),</span>
+<span class="sd">    zero (denoted by a 0-10z row label), and</span>
+<span class="sd">    positive (denoted by a 0-10p row label) values of the</span>
+<span class="sd">    specified income_measure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
     <span class="c1"># nested function that returns calculated column statistics as a DataFrame</span>
@@ -914,13 +917,13 @@
 <span class="sd">           on the reform Calculator object</span>
 
 <span class="sd">    groupby : String object</span>
-<span class="sd">        options for input: &#39;weighted_deciles&#39; or</span>
-<span class="sd">                           &#39;standard_income_bins&#39; or &#39;soi_agi_bins&#39;</span>
-<span class="sd">        determines how the rows in the resulting Pandas DataFrame are sorted</span>
+<span class="sd">        determines how the rows in the resulting Pandas DataFrame are</span>
+<span class="sd">        sorted; options for input are &#39;weighted_deciles&#39;,</span>
+<span class="sd">        &#39;standard_income_bins&#39;, and &#39;soi_agi_bins&#39;</span>
 
 <span class="sd">    tax_to_diff : String object</span>
-<span class="sd">        options for input: &#39;iitax&#39;, &#39;payrolltax&#39;, &#39;combined&#39;</span>
-<span class="sd">        specifies which tax to difference</span>
+<span class="sd">        specifies which tax to difference; options for input are</span>
+<span class="sd">        &#39;iitax&#39;, &#39;payrolltax&#39;, and &#39;combined&#39;</span>
 
 <span class="sd">    pop_quantiles : boolean</span>
 <span class="sd">        specifies whether or not weighted_deciles contain an equal number</span>
@@ -930,16 +933,17 @@
 <span class="sd">    -------</span>
 <span class="sd">    difference table as a Pandas DataFrame with DIFF_TABLE_COLUMNS and</span>
 <span class="sd">    groupby rows.</span>
+
 <span class="sd">    NOTE: when groupby is &#39;weighted_deciles&#39;, the returned table has three</span>
-<span class="sd">          extra rows containing top-decile detail consisting of statistics</span>
-<span class="sd">          for the 0.90-0.95 quantile range (bottom half of top decile),</span>
-<span class="sd">          for the 0.95-0.99 quantile range, and</span>
-<span class="sd">          for the 0.99-1.00 quantile range (top one percent); and the</span>
-<span class="sd">          returned table splits the bottom decile into filing units with</span>
-<span class="sd">          negative (denoted by a 0-10n row label),</span>
-<span class="sd">          zero (denoted by a 0-10z row label), and</span>
-<span class="sd">          positive (denoted by a 0-10p row label) values of the</span>
-<span class="sd">          specified income_measure.</span>
+<span class="sd">    extra rows containing top-decile detail consisting of statistics</span>
+<span class="sd">    for the 0.90-0.95 quantile range (bottom half of top decile),</span>
+<span class="sd">    for the 0.95-0.99 quantile range, and</span>
+<span class="sd">    for the 0.99-1.00 quantile range (top one percent); and the</span>
+<span class="sd">    returned table splits the bottom decile into filing units with</span>
+<span class="sd">    negative (denoted by a 0-10n row label),</span>
+<span class="sd">    zero (denoted by a 0-10z row label), and</span>
+<span class="sd">    positive (denoted by a 0-10p row label) values of the</span>
+<span class="sd">    specified income_measure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements,too-many-locals,too-many-branches</span>
     <span class="c1"># nested function that creates dataframe containing additive statistics</span>

@@ -264,6 +264,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="public_api.html">Tax-Calculator Python API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="consumption.html">Tax-Calculator Consumption</a></li>
@@ -277,6 +278,7 @@
 <li class="toctree-l2"><a class="reference internal" href="taxcalcio.html">Tax-Calculator IO</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Tax-Calculator Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utilsprvt.html">Tax-Calculator Private Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="behresp.html">Tax-Calculator Behavioral Responses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calcfunctions.html">Tax-Calculator CalcFunctions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="calculator.html">Tax-Calculator Calculator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="consumption.html">Tax-Calculator Consumption</a></li>
@@ -548,19 +550,18 @@ default value is None.
 NOTE: when using custom data, set this argument to a DataFrame.
 NOTE: to use your own data for a specific year with Tax-Calculator,
 be sure to read the documentation on creating your own data file and
-then construct a Records object like this:
-mydata = pd.read_csv(&lt;mydata.csv&gt;)
-myrec = Records(data=mydata, start_year=&lt;mydata_year&gt;,</p>
-<blockquote>
-<div><p>gfactors=None, weights=None)</p>
-</div></blockquote>
-<dl class="simple">
-<dt>NOTE: data=None is allowed but the returned instance contains only</dt><dd><p>the data variable information in the specified VARINFO file.</p>
-</dd>
-</dl>
+then construct a Records object like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mydata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="o">&lt;</span><span class="n">mydata</span><span class="o">.</span><span class="n">csv</span><span class="o">&gt;</span><span class="p">)</span>
+<span class="n">myrec</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">mydata</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=&lt;</span><span class="n">mydata_year</span><span class="o">&gt;</span><span class="p">,</span>
+                <span class="n">gfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>NOTE: data=None is allowed but the returned instance contains only
+the data variable information in the specified VARINFO file.</p>
 </p></li>
-<li><p><strong>start_year</strong> (<em>integer</em><em> or </em><em>None</em>) – specifies calendar year of the input data;</p></li>
-<li><p><strong>None.</strong> (<em>default value is</em>) – Note that if specifying your own data (see above NOTE) as being
+<li><p><strong>start_year</strong> (<em>integer</em><em> or </em><em>None</em>) – specifies calendar year of the input data;
+default value is None.
+Note that if specifying your own data (see above NOTE) as being
 a custom data set, be sure to explicitly set start_year to the
 custom data’s calendar year.</p></li>
 <li><p><strong>gfactors</strong> (<em>GrowFactors class instance</em><em> or </em><em>None</em>) – containing record data growth (or extrapolation) factors.
@@ -574,10 +575,11 @@ NOTE: see weights_scale documentation below.</p></li>
 None creates empty adjustment-ratios DataFrame;
 default value is None.
 NOTE: when using custom ratios, set this argument to a DataFrame.
-NOTE: if specifying a DataFrame, set adjust_ratios to my_df defined as:</p>
-<blockquote>
-<div><p>my_df = pd.read_csv(‘&lt;my_ratios.csv&gt;’, index_col=0).transpose()</p>
-</div></blockquote>
+NOTE: if specifying a DataFrame, set adjust_ratios to my_df
+defined as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;&lt;my_ratios.csv&gt;&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+</pre></div>
+</div>
 </p></li>
 <li><p><strong>exact_calculations</strong> (<em>boolean</em>) – specifies whether or not exact tax calculations are done without
 any smoothing of stair-step provisions in income tax law;
