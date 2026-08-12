@@ -96,6 +96,7 @@ docs/usage/data.md
 docs/usage/overview.md
 docs/usage/starting.md
 taxcalc/__init__.py
+taxcalc/behresp.py
 taxcalc/calcfunctions.py
 taxcalc/calculator.py
 taxcalc/conftest.py

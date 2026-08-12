@@ -25,7 +25,6 @@ jobs:
         shell: bash -l {0}
         run: |
           pip install "jupyter-book<2"
-          conda install -c pslmodels behresp
           pip install -e .
           python docs/guide/make/make_uguide.py
           cd docs

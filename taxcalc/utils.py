@@ -304,13 +304,13 @@ def create_distribution_table(vdf, groupby, income_measure,
         function in the Calculator distribution_tables method
 
     groupby : String object
-        options for input: 'weighted_deciles' or
-                           'standard_income_bins' or 'soi_agi_bins'
-        determines how the rows in the resulting Pandas DataFrame are sorted
+        determines how the rows in the resulting Pandas DataFrame are
+        sorted; options for input are 'weighted_deciles',
+        'standard_income_bins', and 'soi_agi_bins'
 
     income_measure: String object
-        options for input: 'expanded_income' or 'expanded_income_baseline'
-        determines which variable is used to sort rows
+        determines which variable is used to sort rows; options for input
+        are 'expanded_income' and 'expanded_income_baseline'
 
     pop_quantiles : boolean
         specifies whether or not weighted_deciles contain an equal number
@@ -323,16 +323,17 @@ def create_distribution_table(vdf, groupby, income_measure,
     -------
     distribution table as a Pandas DataFrame with DIST_TABLE_COLUMNS and
     groupby rows.
+
     NOTE: when groupby is 'weighted_deciles', the returned table has three
-          extra rows containing top-decile detail consisting of statistics
-          for the 0.90-0.95 quantile range (bottom half of top decile),
-          for the 0.95-0.99 quantile range, and
-          for the 0.99-1.00 quantile range (top one percent); and the
-          returned table splits the bottom decile into filing units with
-          negative (denoted by a 0-10n row label),
-          zero (denoted by a 0-10z row label), and
-          positive (denoted by a 0-10p row label) values of the
-          specified income_measure.
+    extra rows containing top-decile detail consisting of statistics
+    for the 0.90-0.95 quantile range (bottom half of top decile),
+    for the 0.95-0.99 quantile range, and
+    for the 0.99-1.00 quantile range (top one percent); and the
+    returned table splits the bottom decile into filing units with
+    negative (denoted by a 0-10n row label),
+    zero (denoted by a 0-10z row label), and
+    positive (denoted by a 0-10p row label) values of the
+    specified income_measure.
     """
     # pylint: disable=too-many-statements,too-many-branches
     # nested function that returns calculated column statistics as a DataFrame
@@ -454,13 +455,13 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
            on the reform Calculator object
 
     groupby : String object
-        options for input: 'weighted_deciles' or
-                           'standard_income_bins' or 'soi_agi_bins'
-        determines how the rows in the resulting Pandas DataFrame are sorted
+        determines how the rows in the resulting Pandas DataFrame are
+        sorted; options for input are 'weighted_deciles',
+        'standard_income_bins', and 'soi_agi_bins'
 
     tax_to_diff : String object
-        options for input: 'iitax', 'payrolltax', 'combined'
-        specifies which tax to difference
+        specifies which tax to difference; options for input are
+        'iitax', 'payrolltax', and 'combined'
 
     pop_quantiles : boolean
         specifies whether or not weighted_deciles contain an equal number
@@ -470,16 +471,17 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
     -------
     difference table as a Pandas DataFrame with DIFF_TABLE_COLUMNS and
     groupby rows.
+
     NOTE: when groupby is 'weighted_deciles', the returned table has three
-          extra rows containing top-decile detail consisting of statistics
-          for the 0.90-0.95 quantile range (bottom half of top decile),
-          for the 0.95-0.99 quantile range, and
-          for the 0.99-1.00 quantile range (top one percent); and the
-          returned table splits the bottom decile into filing units with
-          negative (denoted by a 0-10n row label),
-          zero (denoted by a 0-10z row label), and
-          positive (denoted by a 0-10p row label) values of the
-          specified income_measure.
+    extra rows containing top-decile detail consisting of statistics
+    for the 0.90-0.95 quantile range (bottom half of top decile),
+    for the 0.95-0.99 quantile range, and
+    for the 0.99-1.00 quantile range (top one percent); and the
+    returned table splits the bottom decile into filing units with
+    negative (denoted by a 0-10n row label),
+    zero (denoted by a 0-10z row label), and
+    positive (denoted by a 0-10p row label) values of the
+    specified income_measure.
     """
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
     # nested function that creates dataframe containing additive statistics

@@ -80,12 +80,14 @@ class Calculator():
     Notes
     -----
     The most efficient way to specify current-law and reform Calculator
-    objects is as follows:
-         pol = Policy()
-         rec = Records.cps_constructor()
-         calc1 = Calculator(policy=pol, records=rec)  # current-law
-         pol.implement_reform(...)
-         calc2 = Calculator(policy=pol, records=rec)  # reform
+    objects is as follows::
+
+        pol = Policy()
+        rec = Records.cps_constructor()
+        calc1 = Calculator(policy=pol, records=rec)  # current-law
+        pol.implement_reform(...)
+        calc2 = Calculator(policy=pol, records=rec)  # reform
+
     All calculations are done on the internal copies of the Policy and
     Records objects passed to each of the two Calculator constructors.
     """
@@ -370,9 +372,9 @@ class Calculator():
             if calc is None, the second returned table is None
 
         groupby : String object
-            options for input: 'weighted_deciles', 'standard_income_bins',
-                               'soi_agi_bins'
-            determines how the columns in resulting Pandas DataFrame are sorted
+            determines how the columns in the resulting Pandas DataFrame
+            are sorted; options for input are 'weighted_deciles',
+            'standard_income_bins', and 'soi_agi_bins'
 
         pop_quantiles : boolean
             specifies whether or not weighted_deciles contain an equal number
@@ -382,25 +384,33 @@ class Calculator():
             specifies create_distribution_table utility function argument
             that determines whether table entry values are scaled or not
 
-        Return and typical usage
-        ------------------------
-        dist1, dist2 = calc1.distribution_tables(calc2, 'weighted_deciles')
-        OR
-        dist1, _ = calc1.distribution_tables(None, 'weighted_deciles')
-        (where calc1 is a baseline Calculator object
-        and calc2 is a reform Calculator object).
+        Returns
+        -------
         Each of the dist1 and optional dist2 is a distribution table as a
         Pandas DataFrame with DIST_TABLE_COLUMNS and groupby rows.
+
+        Notes
+        -----
+        Typical usage is::
+
+            dist1, dist2 = calc1.distribution_tables(calc2,
+                                                     'weighted_deciles')
+            # OR
+            dist1, _ = calc1.distribution_tables(None, 'weighted_deciles')
+
+        where calc1 is a baseline Calculator object and calc2 is a reform
+        Calculator object.
+
         NOTE: when groupby is 'weighted_deciles', the returned tables have 3
-              extra rows containing top-decile detail consisting of statistics
-              for the 0.90-0.95 quantile range (bottom half of top decile),
-              for the 0.95-0.99 quantile range, and
-              for the 0.99-1.00 quantile range (top one percent); and the
-              returned table splits the bottom decile into filing units with
-              negative (denoted by a 0-10n row label),
-              zero (denoted by a 0-10z row label), and
-              positive (denoted by a 0-10p row label) values of the
-              specified income_measure.
+        extra rows containing top-decile detail consisting of statistics
+        for the 0.90-0.95 quantile range (bottom half of top decile),
+        for the 0.95-0.99 quantile range, and
+        for the 0.99-1.00 quantile range (top one percent); and the
+        returned table splits the bottom decile into filing units with
+        negative (denoted by a 0-10n row label),
+        zero (denoted by a 0-10z row label), and
+        positive (denoted by a 0-10p row label) values of the
+        specified income_measure.
         """
         # nested functions used only by this method
         def distribution_table_dataframe(calcobj):
@@ -482,34 +492,42 @@ class Calculator():
             calc represents the reform while self represents the baseline
 
         groupby : String object
-            options for input: 'weighted_deciles', 'standard_income_bins'
-            determines how the columns in resulting Pandas DataFrame are sorted
+            determines how the columns in the resulting Pandas DataFrame
+            are sorted; options for input are 'weighted_deciles' and
+            'standard_income_bins'
 
         tax_to_diff : String object
-            options for input: 'iitax', 'payrolltax', 'combined'
-            specifies which tax to difference
+            specifies which tax to difference; options for input are
+            'iitax', 'payrolltax', and 'combined'
 
         pop_quantiles : boolean
             specifies whether or not weighted_deciles contain an equal number
             of people (True) or an equal number of filing units (False)
 
-        Returns and typical usage
-        -------------------------
-        diff = calc1.difference_table(calc2, 'weighted_deciles', 'iitax')
-        (where calc1 is a baseline Calculator object
-        and calc2 is a reform Calculator object).
+        Returns
+        -------
         The returned diff is a difference table as a Pandas DataFrame
         with DIST_TABLE_COLUMNS and groupby rows.
+
+        Notes
+        -----
+        Typical usage is::
+
+            diff = calc1.difference_table(calc2, 'weighted_deciles', 'iitax')
+
+        where calc1 is a baseline Calculator object and calc2 is a reform
+        Calculator object.
+
         NOTE: when groupby is 'weighted_deciles', the returned table has three
-              extra rows containing top-decile detail consisting of statistics
-              for the 0.90-0.95 quantile range (bottom half of top decile),
-              for the 0.95-0.99 quantile range, and
-              for the 0.99-1.00 quantile range (top one percent); and the
-              returned table splits the bottom decile into filing units with
-              negative (denoted by a 0-10n row label),
-              zero (denoted by a 0-10z row label), and
-              positive (denoted by a 0-10p row label) values of the
-              specified income_measure.
+        extra rows containing top-decile detail consisting of statistics
+        for the 0.90-0.95 quantile range (bottom half of top decile),
+        for the 0.95-0.99 quantile range, and
+        for the 0.99-1.00 quantile range (top one percent); and the
+        returned table splits the bottom decile into filing units with
+        negative (denoted by a 0-10n row label),
+        zero (denoted by a 0-10z row label), and
+        positive (denoted by a 0-10p row label) values of the
+        specified income_measure.
         """
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
@@ -593,7 +611,7 @@ class Calculator():
         mtr_payrolltax: an array of marginal payroll tax rates.
         mtr_incometax: an array of marginal individual income tax rates.
         mtr_combined: an array of marginal combined tax rates, which is
-                      the sum of mtr_payrolltax and mtr_incometax.
+        the sum of mtr_payrolltax and mtr_incometax.
 
         Notes
         -----
@@ -1069,13 +1087,17 @@ class Calculator():
         Either of the two function arguments can also be a valid URL string
         beginning with 'http' and pointing to a valid JSON file hosted online.
 
-        The reform file/URL contents or JSON string must be like this:
-        {"policy": {...}} OR {...}
+        The reform file/URL contents or JSON string must be like this::
+
+            {"policy": {...}} OR {...}
+
         (in other words, the top-level policy key is optional)
-        and the assump file/URL contents or JSON string must be like this:
-        {"consumption": {...},
-         "growdiff_baseline": {...},
-         "growdiff_response": {...}}
+        and the assump file/URL contents or JSON string must be like this::
+
+            {"consumption": {...},
+             "growdiff_baseline": {...},
+             "growdiff_response": {...}}
+
         The {...} should be empty like this {} if not specifying a policy
         reform or if not specifying any non-default economic assumptions
         of that type.
