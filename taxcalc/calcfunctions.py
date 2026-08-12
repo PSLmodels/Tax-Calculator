@@ -2993,6 +2993,7 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
       - phase-in:  phasein_rate * earnings
       - plateau:   max_amount
       - phase-out: max_amount - phaseout_rate * (max(earnings, AGI) - ps)
+
     English parameter names are used because the EIC Table is published
     rather than the algebraic formula; `basic_frac` is a reform-only
     knob (0 under current law) that shifts the schedule so a fraction

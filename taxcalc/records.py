@@ -30,16 +30,18 @@ class Records(Data):
         NOTE: when using custom data, set this argument to a DataFrame.
         NOTE: to use your own data for a specific year with Tax-Calculator,
         be sure to read the documentation on creating your own data file and
-        then construct a Records object like this:
-        mydata = pd.read_csv(<mydata.csv>)
-        myrec = Records(data=mydata, start_year=<mydata_year>,
-                        gfactors=None, weights=None)
+        then construct a Records object like this::
+
+            mydata = pd.read_csv(<mydata.csv>)
+            myrec = Records(data=mydata, start_year=<mydata_year>,
+                            gfactors=None, weights=None)
+
         NOTE: data=None is allowed but the returned instance contains only
-              the data variable information in the specified VARINFO file.
+        the data variable information in the specified VARINFO file.
 
     start_year: integer or None
         specifies calendar year of the input data;
-    default value is None.
+        default value is None.
         Note that if specifying your own data (see above NOTE) as being
         a custom data set, be sure to explicitly set start_year to the
         custom data's calendar year.
@@ -60,8 +62,10 @@ class Records(Data):
         None creates empty adjustment-ratios DataFrame;
         default value is None.
         NOTE: when using custom ratios, set this argument to a DataFrame.
-        NOTE: if specifying a DataFrame, set adjust_ratios to my_df defined as:
-              my_df = pd.read_csv('<my_ratios.csv>', index_col=0).transpose()
+        NOTE: if specifying a DataFrame, set adjust_ratios to my_df
+        defined as::
+
+            my_df = pd.read_csv('<my_ratios.csv>', index_col=0).transpose()
 
     exact_calculations: boolean
         specifies whether or not exact tax calculations are done without

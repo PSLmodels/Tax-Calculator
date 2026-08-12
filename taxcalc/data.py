@@ -25,7 +25,7 @@ class Data():
         string describes CSV file in which data reside;
         DataFrame already contains cross-sectional data for start_year.
         NOTE: data=None is allowed but the returned instance contains only
-              the data variable information in the specified VARINFO file.
+        the data variable information in the specified VARINFO file.
         NOTE: when using custom data, set this argument to a DataFrame.
 
     start_year: integer

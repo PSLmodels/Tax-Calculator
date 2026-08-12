@@ -42,6 +42,7 @@ parts:
   chapters:
   - file: api/public_api
     sections:
+    - file: api/behresp
     - file: api/calcfunctions
     - file: api/calculator
     - file: api/consumption

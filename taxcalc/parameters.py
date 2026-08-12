@@ -721,18 +721,19 @@ class Parameters(paramtools.Parameters):
         the top-level JSON keys, the ``obj`` is assumed to be a
         non-compound-revision JSON text for the specified ``topkey``.
 
-        Some examples of valid links are:
+        Some examples of valid links are::
 
-        - HTTP: ``https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/
-                  master/taxcalc/reforms/2017_law.json``
+            HTTP: https://raw.githubusercontent.com/PSLmodels/
+                  Tax-Calculator/master/taxcalc/reforms/2017_law.json
 
-        - Github API: ``github://PSLmodels:Tax-Calculator@master/taxcalc/
-                        reforms/2017_law.json``
+            Github API: github://PSLmodels:Tax-Calculator@master/
+                        taxcalc/reforms/2017_law.json
 
-        Checkout the ParamTools
-        `docs <https://paramtools.dev/_modules/paramtools/
-                       parameters.html#Parameters.read_params>`_
-        for more information on valid file URLs.
+        Checkout the ParamTools `docs`_ for more information on valid
+        file URLs.
+
+        .. _docs: https://paramtools.dev/_modules/paramtools/
+           parameters.html#Parameters.read_params
         """
         # embedded function used only in _read_json_revision staticmethod
         def convert_year_to_int(syr_dict):
@@ -912,7 +913,7 @@ def is_paramtools_format(params: Union[TaxcalcReform, ParamToolsAdjustment]):
                 "ss_rate": [{"year": 2024, "value": 0.2}]}
             }
 
-    Returns:
+    Returns
     -------
     bool:
       Whether ``params`` is likely to be a ParamTools formatted
