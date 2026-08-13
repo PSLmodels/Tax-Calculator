@@ -2,7 +2,7 @@
 Test example JSON assumption files in taxcalc/assumptions directory
 """
 # CODING-STYLE CHECKS:
-# pycodestyle est_responses.py
+# pycodestyle test_responses.py
 # pylint --disable=locally-disabled test_assumptions.py
 
 import os
@@ -16,7 +16,6 @@ def test_assumptions_json(tests_path):
     Check that each JSON file can be converted into a dictionary that
     can be used to construct Consumption and GrowDiff objects.
     """
-    # pylinx: disable=too-many-locals
     assumptions_path = os.path.join(tests_path, '..', 'assumptions', '*.json')
     for jpf in glob.glob(assumptions_path):
         # read contents of jpf (JSON parameter filename)

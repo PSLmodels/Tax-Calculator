@@ -192,7 +192,6 @@ taxcalc/tests/test_parameters.py
 taxcalc/tests/test_policy.py
 taxcalc/tests/test_records.py
 taxcalc/tests/test_reforms.py
-taxcalc/tests/test_responses.py
 taxcalc/tests/test_taxcalcio.py
 taxcalc/tests/test_utils.py
 taxcalc/validation/CSV_INPUT_VARS.md
