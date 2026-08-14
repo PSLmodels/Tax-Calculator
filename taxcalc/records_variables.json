@@ -762,6 +762,11 @@
       "desc": "Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was)",
       "form": {"2013-20??": "OASDI+HI FICA"}
     },
+    "payrolltax_er": {
+      "type": "float",
+      "desc": "Employer share of payrolltax, including the employer-equivalent half of any self-employment tax bucketed into payrolltax (the employee share is payrolltax minus payrolltax_er)",
+      "form": {"2013-20??": "calculated variable"}
+    },
     "refund": {
       "type": "float",
       "desc": "Total refundable income tax credits",

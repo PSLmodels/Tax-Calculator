@@ -88,7 +88,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   FICA_mc_trt_employer, FICA_mc_trt_employee,
                   ALD_SelfEmploymentTax_hc, SS_Earnings_thd, SECA_Earnings_thd,
                   e00900p, e00900s, e02100p, e02100s, k1bx14p,
-                  k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
+                  k1bx14s, payrolltax, payrolltax_er, ptax_was, setax,
+                  c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s,
                   was_plus_sey_p, was_plus_sey_s):
     """
@@ -148,6 +149,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     payrolltax: float
         Total (employee and employer) payroll tax liability
         payrolltax = ptax_was
+    payrolltax_er: float
+        Employer share of payrolltax
     ptax_was: float
         Employee and employer OASDI plus HI FICA tax
     setax: float
@@ -178,6 +181,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     payrolltax: float
         Total (employee and employer) payroll tax liability
         payrolltax = ptax_was
+    payrolltax_er: float
+        Employer share of payrolltax
     ptax_was: float
         Employee and employer OASDI plus HI FICA tax
     setax: float
@@ -258,6 +263,14 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
 
     # filing-unit payroll tax and OASDI-only part (HI excluded from ptax_oasdi)
     payrolltax = ptax_was + extra_payrolltax
+    # employer share of payrolltax: employer-rate portion of the FICA on
+    # wages and salaries plus the employer-rate portion of the reform-only
+    # extra OASDI tax (SECA is in setax, which is not part of payrolltax)
+    payrolltax_er = (
+        FICA_ss_trt_employer * (txearn_was_p + txearn_was_s +
+                                extra_ss_income_p + extra_ss_income_s) +
+        FICA_mc_trt_employer * (gross_ws_p + gross_ws_s)
+    )
     ptax_oasdi = (ptax_ss_ws_p + ptax_ss_ws_s +
                   setax_ss_p + setax_ss_s +
                   extra_payrolltax)
@@ -271,7 +284,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
     earned_s = max(0., (e00200s + sey_s -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
-    return (sey, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
+    return (sey, payrolltax, payrolltax_er, ptax_was, setax, c03260,
+            ptax_oasdi,
             earned, earned_p, earned_s, was_plus_sey_p, was_plus_sey_s)
 
 
@@ -4741,7 +4755,7 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           eitc, c07220, odc, CTC_is_refundable, ODC_is_refundable,
           soi_iitax, setax, e09800, ptax_amc, refund,
           ctc_total, ctc_refundable, ctc_nonrefundable,
-          iitax, payrolltax, combined):
+          iitax, payrolltax, payrolltax_er, combined):
     """
     Final assembly: sums refundable credits and computes total income-tax
     liability net of those credits. Maps to Form 1040 (2025) lines 22-37
@@ -4867,6 +4881,10 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         Total (employee + employer) payroll tax liability from
         `EI_PayrollTax`; re-computed here when `soi_iitax` is false to
         absorb `setax + e09800 + ptax_amc` from `iitax`
+    payrolltax_er: float
+        Employer share of payrolltax from `EI_PayrollTax`; re-computed
+        here when `soi_iitax` is false to absorb the employer-equivalent
+        half of `setax` (`e09800` and `ptax_amc` are employee-only)
     combined: float
         Records-bound output (re-computed)
 
@@ -4893,6 +4911,9 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     payrolltax: float
         Final payroll tax: unchanged from input when `soi_iitax` is
         true; equals input + (setax + e09800 + ptax_amc) when false
+    payrolltax_er: float
+        Final employer share of payrolltax: unchanged from input when
+        `soi_iitax` is true; equals input + 0.5 * setax when false
     combined: float
         iitax + payrolltax (lumpsum_tax added later by `LumpSumTax`);
         invariant under `soi_iitax` by construction
@@ -4930,9 +4951,12 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         shift = setax + e09800 + ptax_amc
         iitax = (c09200 - shift) - refund
         payrolltax = payrolltax + shift
+        # of the shifted items only SECA has an employer-equivalent half;
+        # e09800 and ptax_amc are employee-only payroll taxes
+        payrolltax_er = payrolltax_er + 0.5 * setax
     combined = iitax + payrolltax
     return (eitc, refund, ctc_total, ctc_refundable, ctc_nonrefundable,
-            iitax, payrolltax, combined)
+            iitax, payrolltax, payrolltax_er, combined)
 
 
 @iterate_jit(nopython=True)

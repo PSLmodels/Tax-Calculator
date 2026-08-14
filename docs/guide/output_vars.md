@@ -133,7 +133,14 @@ _IRS Form Location:_
 _Description_: Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was)  
 _Datatype_: float  
 _IRS Form Location:_  
-2013-20??: OASDI+HI FICA  
+2013-20??: OASDI+HI FICA
+
+
+##  `payrolltax_er`
+_Description_: Employer share of payrolltax, including the employer-equivalent half of any self-employment tax bucketed into payrolltax (the employee share is payrolltax minus payrolltax_er)
+_Datatype_: float
+_IRS Form Location:_
+2013-20??: calculated variable
 
 
 ##  `refund`  
