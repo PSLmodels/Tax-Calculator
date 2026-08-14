@@ -4960,7 +4960,8 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
 
 
 @iterate_jit(nopython=True)
-def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
+def FairShareTax(c00100, MARS, ptax_was, payrolltax_er, soi_iitax,
+                 setax, ptax_amc,
                  FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
                  fstax, iitax, combined, surtax):
     """
@@ -4972,10 +4973,15 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
     Mechanics (when active under reform):
       tentative = c00100 * FST_AGI_trt - iitax - employee_share
-      where employee_share = 0.5*ptax_was + 0.5*setax + ptax_amc
-      (the worker-borne half of OASDI+HI FICA and SECA, plus the
-      employee-paid Additional Medicare Tax — credited against the
-      minimum to avoid double-counting payroll already paid).
+      where employee_share = (ptax_was - payrolltax_er_wage) + 0.5*setax
+                              + ptax_amc
+      and payrolltax_er_wage is `payrolltax_er` with any self-employment-
+      tax bucketing added by `IITAX` backed out (see below), leaving just
+      the employer share of OASDI+HI FICA on wages, using the actual
+      employee/employer rate split rather than assuming a 50/50 split.
+      Adding back half of SECA and the employee-paid Additional Medicare
+      Tax gives the full worker-borne share, credited against the
+      minimum to avoid double-counting payroll already paid.
     The tentative amount is floored at 0, then linearly phased in
     between `FST_AGI_thd_lo` and `FST_AGI_thd_hi` (MARS-indexed),
     fully imposed at or above the high threshold.
@@ -4985,8 +4991,12 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
     `combined` (iitax + payrolltax + lumpsum_tax), and `surtax`
     (records-bound diagnostic also incremented by `AGIsurtax`; see
     row 18). Called by `Calculator.calc_all` after `_calc_one_year`
-    finishes, so `iitax`, `ptax_was`, `setax`, and `ptax_amc` are
-    already final.
+    finishes, so `iitax`, `ptax_was`, `payrolltax_er`, `setax`, and
+    `ptax_amc` are already final. `IITAX` (part of `_calc_one_year`)
+    runs before this function and, when `soi_iitax` is false, adds
+    `0.5 * setax` into `payrolltax_er` to bucket the employer-equivalent
+    half of SECA into `payrolltax`; that addition is undone here so
+    `payrolltax_er_wage` reflects wages only, matching `ptax_was`.
 
     Parameters
     ----------
@@ -4997,7 +5007,15 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
                                   4=household-head, 5=widow(er))
     ptax_was: float
         Employee and employer OASDI plus HI FICA tax on wages and
-        salaries (`EI_PayrollTax` output)
+        salaries (`EI_PayrollTax` output; never mutated afterward)
+    payrolltax_er: float
+        Employer share of payrolltax (`EI_PayrollTax` output, possibly
+        adjusted by `IITAX`'s SECA bucketing; see body docstring above)
+    soi_iitax: bool
+        True when `IITAX` keeps `setax`/`e09800`/`ptax_amc` in `iitax`
+        (SOI concept, `payrolltax_er` left untouched by `IITAX`); false
+        when `IITAX` shifts them into `payrolltax`/`payrolltax_er`
+        (tax-analysis concept, the current-law default)
     setax: float
         Self-employment tax (`EI_PayrollTax` output)
     ptax_amc: float
@@ -5037,9 +5055,11 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
         fstax = 0.
         return (fstax, iitax, combined, surtax)
     thd_hi = FST_AGI_thd_hi[MARS - 1]
-    # Tentative minimum tax: rate * AGI, credited for income tax and the
-    # worker-borne half of payroll (½ FICA + ½ SECA + employee AMC).
-    employee_share = 0.5 * ptax_was + 0.5 * setax + ptax_amc
+    # Undo IITAX's SECA bucketing (if any) to isolate the wage-only
+    # employer share, then compute the worker-borne share of payroll
+    # (employee-rate wage FICA + ½ SECA + AMC).
+    payrolltax_er_wage = payrolltax_er - (0. if soi_iitax else 0.5 * setax)
+    employee_share = (ptax_was - payrolltax_er_wage) + 0.5 * setax + ptax_amc
     fstax = max(c00100 * FST_AGI_trt - iitax - employee_share, 0.)
     # Linear phase-in between thd_lo and thd_hi (no phase-in if equal).
     thd_gap = max(thd_hi - thd_lo, 0.)
@@ -5102,7 +5122,8 @@ def LumpSumTax(DSI, num, XTOT,
 @iterate_jit(nopython=True)
 def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
                  e00700, e00800, e00900, e01100, e01200, e01400, e01500,
-                 e02000, e02100, p22250, p23250, cmbtp, ptax_was,
+                 e02000, e02100, p22250, p23250, cmbtp, payrolltax_er,
+                 soi_iitax, setax,
                  benefit_value_total, expanded_income):
     """
     Computes the records-bound `expanded_income` aggregate — a broad
@@ -5116,7 +5137,8 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
       + adding back DC pension contributions (`pencon_p`, `pencon_s`),
         so wage compensation enters gross rather than net of pension
         deferrals already removed from `e00200`,
-      + adding the employer share of FICA (`0.5 * ptax_was`),
+      + adding the employer share of FICA on wages (`payrolltax_er`,
+        with any `IITAX` SECA bucketing backed out; see body docstring),
       + adding non-AGI AMT preference items (`cmbtp`, from Form 6251),
       + adding the consumption value of transfer benefits
         (`benefit_value_total`, from `BenefitPrograms`),
@@ -5135,7 +5157,13 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     `BenefitPrograms` (which produces `benefit_value_total`) and after
     `_calc_one_year` / `FairShareTax` / `LumpSumTax`; it precedes
     `AfterTaxIncome`, which subtracts the `combined` total tax to
-    produce `aftertax_income`.
+    produce `aftertax_income`. `IITAX` (part of `_calc_one_year`) runs
+    before this function and, when `soi_iitax` is false, adds
+    `0.5 * setax` into `payrolltax_er` to bucket the employer-equivalent
+    half of SECA into `payrolltax`; that addition is undone here so the
+    wage-compensation add-on reflects wages only, not self-employment
+    income (which enters `expanded_income` gross, via `e00900`/`e02000`,
+    with no employer-side gross-up).
 
     Parameters
     ----------
@@ -5176,10 +5204,17 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
       Schedule D net long term capital gains/losses
     cmbtp: float
       Estimate of income on (AMT) Form 6251 but not in AGI
-    ptax_was: float
-      Employee + employer OASDI and HI FICA tax on wages (from
-      `EI_PayrollTax`); half is the employer share, added here as
-      employer-side compensation not present in `e00200`.
+    payrolltax_er: float
+      Employer share of payrolltax (from `EI_PayrollTax`, possibly
+      adjusted by `IITAX`'s SECA bucketing; see body docstring above),
+      added here as employer-side compensation not present in `e00200`.
+    soi_iitax: bool
+      True when `IITAX` leaves `payrolltax_er` untouched by SECA
+      bucketing; false (current-law default) when it adds `0.5*setax`
+    setax: float
+      Self-employment tax (`EI_PayrollTax` output); used only to undo
+      `IITAX`'s SECA bucketing of `payrolltax_er` when `soi_iitax` is
+      false
     benefit_value_total: float
       Consumption value of all benefits received by tax unit
       (from `BenefitPrograms`); included in expanded income.
@@ -5216,7 +5251,8 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         # ---- (E) AMT non-AGI add-backs (Form 6251 items not in AGI) ----
         cmbtp +  # other AMT taxable income items from Form 6251
         # ---- (F) Employer-side FICA share (compensation not in e00200) ----
-        0.5 * ptax_was +  # employer share of FICA taxes on wages/salaries
+        # undo IITAX's SECA bucketing (if any) to isolate wages only
+        (payrolltax_er - (0. if soi_iitax else 0.5 * setax)) +
         # ---- (G) Consumption value of transfer benefits ----
         benefit_value_total  # see BenefitPrograms for the per-program
         # cash-vs-in-kind valuation rule producing benefit_value_total

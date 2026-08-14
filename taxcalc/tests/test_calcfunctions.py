@@ -302,7 +302,7 @@ def test_ExpandIncome(skip_jit):
     Tests the ExpandIncome function
     '''
     test_tuple = (10000, 1000, 500, 100, 200, 300, 400, 20, 500, 50, 250, 10,
-                  20, 30, 40, 60, 70, 80, 1500, 2000, 16380)
+                  20, 30, 40, 60, 70, 80, 750, True, 0, 2000, 16380)
     test_value = calcfunctions.ExpandIncome(*test_tuple)
     expected_value = 16380
     assert np.allclose(test_value, expected_value)
@@ -334,23 +334,23 @@ def test_LumpSumTax(test_tuple, expected_value, skip_jit):
 
 FST_AGI_thd_lo_in = [1000000, 1000000, 500000, 1000000, 1000000]
 FST_AGI_thd_hi_in = [2000000, 2000000, 1000000, 2000000, 2000000]
-tuple1 = (1100000, 1, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple1 = (1100000, 1, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple2 = (2100000, 1, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple2 = (2100000, 1, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple3 = (1100000, 1, 1000, 100, 100, 0, FST_AGI_thd_lo_in,
+tuple3 = (1100000, 1, 1000, 500, True, 100, 100, 0, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple4 = (1100000, 2, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple4 = (1100000, 2, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple5 = (2100000, 2, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple5 = (2100000, 2, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple6 = (1100000, 2, 1000, 100, 100, 0, FST_AGI_thd_lo_in,
+tuple6 = (1100000, 2, 1000, 500, True, 100, 100, 0, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple7 = (510000, 3, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple7 = (510000, 3, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple8 = (1100000, 3, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple8 = (1100000, 3, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple9 = (510000, 3, 1000, 100, 100, 0, FST_AGI_thd_lo_in,
+tuple9 = (510000, 3, 1000, 500, True, 100, 100, 0, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
 expected1 = (10915, 11115, 12915, 11215)
 expected2 = (209150, 209350, 211150, 209450)
