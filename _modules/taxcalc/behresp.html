@@ -638,6 +638,12 @@
             <span class="n">mtr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">wage_mtr2</span> <span class="o">&gt;</span> <span class="n">mtr_cap</span><span class="p">,</span> <span class="n">mtr_cap</span><span class="p">,</span> <span class="n">wage_mtr2</span><span class="p">)</span>
             <span class="n">pch</span> <span class="o">=</span> <span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">mtr2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">mtr1</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.</span>
             <span class="c1"># Note: c04800 is filing unit&#39;s taxable income</span>
+            <span class="c1"># The substitution effect is scaled by taxable income, which</span>
+            <span class="c1"># includes long-term capital gains, so its magnitude is not</span>
+            <span class="c1"># independent of the filing unit&#39;s LTCG amount.  This is by</span>
+            <span class="c1"># design, but note that it differs from the labor_response</span>
+            <span class="c1"># and quantity_response functions below, which scale the</span>
+            <span class="c1"># substitution effect by earnings (that is, by quantity).</span>
             <span class="n">sub</span> <span class="o">=</span> <span class="n">be_sub</span> <span class="o">*</span> <span class="n">pch</span> <span class="o">*</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04800&#39;</span><span class="p">)</span>
         <span class="c1"># calculate magnitude of income effect</span>
         <span class="k">if</span> <span class="n">be_inc</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
