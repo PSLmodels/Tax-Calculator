@@ -133,14 +133,7 @@ _IRS Form Location:_
 _Description_: Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was)  
 _Datatype_: float  
 _IRS Form Location:_  
-2013-20??: OASDI+HI FICA
-
-
-##  `payrolltax_er`
-_Description_: Employer share of payrolltax, including the employer-equivalent half of any self-employment tax bucketed into payrolltax (the employee share is payrolltax minus payrolltax_er)
-_Datatype_: float
-_IRS Form Location:_
-2013-20??: calculated variable
+2013-20??: OASDI+HI FICA  
 
 
 ##  `refund`  
@@ -634,6 +627,20 @@ _Datatype_: float
 _IRS Form Location:_  
 2013-2013: 1040 line 60a  
 2014-2016: 1040 line 62a  
+
+
+##  `ptax_er_p`  
+_Description_: Taxpayer's employer share of OASDI+HI FICA payroll tax on wages and salaries; excludes self-employment tax (which has no employer share) and is therefore invariant under the soi_iitax bucketing switch  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `ptax_er_s`  
+_Description_: Spouse's employer share of OASDI+HI FICA payroll tax on wages and salaries; excludes self-employment tax (which has no employer share) and is therefore invariant under the soi_iitax bucketing switch  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
 
 
 ##  `ptax_oasdi`  

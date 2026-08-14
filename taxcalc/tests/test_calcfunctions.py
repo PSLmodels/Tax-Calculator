@@ -232,38 +232,43 @@ def test_StdDed(test_tuple, expected_value, skip_jit):
 tuple1 = (120000, 10000, 15000, 100, 2000,
           0.06, 0.06, 0.015, 0.015, 0, 99999999999,
           400, 0, 0, 0, 0, 0, 0, None, None, None, None, None, None,
-          None, None, None, None, None, None)
+          None, None, None, None, None, None, None)
 tuple2 = (120000, 10000, 15000, 100, 2000,
           0.06, 0.06, 0.015, 0.015, 0, 99999999999,
           400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None,
-          None, None, None, None, None, None, None)
+          None, None, None, None, None, None, None, None)
 tuple3 = (120000, 150000, 15000, 100, 2000,
           0.06, 0.06, 0.015, 0.015, 0, 99999999999,
           400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None,
-          None, None, None, None, None, None, None)
+          None, None, None, None, None, None, None, None)
 tuple4 = (120000, 500000, 15000, 100, 2000,
           0.06, 0.06, 0.015, 0.015, 0, 400000,
           400, 2000, 0, 10000, 0, 0, 3000, None, None, None, None, None,
-          None, None, None, None, None, None, None)
+          None, None, None, None, None, None, None, None)
 tuple5 = (120000, 10000, 15000, 100, 2000,
           0.06, 0.06, 0.015, 0.015, 0, 99999999999,
           400, 300, 0, 0, 0, 0, 0, None, None, None, None, None,
-          None, None, None, None, None, None, None)
+          None, None, None, None, None, None, None, None)
 tuple6 = (120000, 10000, 15000, 100, 2000,
           0.06, 0.06, 0.015, 0.015, 0, 99999999999,
           400, 0, 0, 0, 0, -40000, 0, None, None, None, None, None,
-          None, None, None, None, None, None, None)
-expected1 = (0, 4065, 2032.5, 4065, 0, 0, 3252, 25000, 10000, 15000, 10100,
-             17000)
-expected2 = (15000, 4065, 2032.5, 4065, 2081.25, 1040.625, 4917, 38959.375,
-             21167.5, 17791.875, 21380, 19820)
-expected3 = (15000, 21453, 10726.5, 21453, 749.25, 374.625, 16773, 179625.375,
-             161833.5, 17791.875, 161380, 19820)
-expected4 = (15000, 45318.6, 22659.3, 31953, 749.25, 374.625, 30138.6,
+          None, None, None, None, None, None, None, None)
+# In each expected tuple the third and fourth values are ptax_er_p and
+# ptax_er_s; their sum equals the single payrolltax_er value that these
+# tests expected before that variable was split into taxpayer and spouse
+# components.  All other expected values are unchanged.
+expected1 = (0, 4065, 757.5, 1275, 4065, 0, 0, 3252, 25000, 10000, 15000,
+             10100, 17000)
+expected2 = (15000, 4065, 757.5, 1275, 4065, 2081.25, 1040.625, 4917,
+             38959.375, 21167.5, 17791.875, 21380, 19820)
+expected3 = (15000, 21453, 9451.5, 1275, 21453, 749.25, 374.625, 16773,
+             179625.375, 161833.5, 17791.875, 161380, 19820)
+expected4 = (15000, 45318.6, 21384.3, 1275, 31953, 749.25, 374.625, 30138.6,
              529625.375, 511833.5, 17791.875, 511380, 19820)
-expected5 = (300, 4065, 2032.5, 4065, 0, 0, 3285.3, 25300, 10279.1875, 15000,
-             10382, 17000)
-expected6 = (-40000, 4065, 2032.5, 4065, 0, 0, 3252, 0, 0, 15000, 10100, 17000)
+expected5 = (300, 4065, 757.5, 1275, 4065, 0, 0, 3285.3, 25300, 10279.1875,
+             15000, 10382, 17000)
+expected6 = (-40000, 4065, 757.5, 1275, 4065, 0, 0, 3252, 0, 0, 15000, 10100,
+             17000)
 
 
 @pytest.mark.parametrize(
@@ -302,7 +307,7 @@ def test_ExpandIncome(skip_jit):
     Tests the ExpandIncome function
     '''
     test_tuple = (10000, 1000, 500, 100, 200, 300, 400, 20, 500, 50, 250, 10,
-                  20, 30, 40, 60, 70, 80, 750, True, 0, 2000, 16380)
+                  20, 30, 40, 60, 70, 80, 500, 250, 2000, 16380)
     test_value = calcfunctions.ExpandIncome(*test_tuple)
     expected_value = 16380
     assert np.allclose(test_value, expected_value)
@@ -334,23 +339,23 @@ def test_LumpSumTax(test_tuple, expected_value, skip_jit):
 
 FST_AGI_thd_lo_in = [1000000, 1000000, 500000, 1000000, 1000000]
 FST_AGI_thd_hi_in = [2000000, 2000000, 1000000, 2000000, 2000000]
-tuple1 = (1100000, 1, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple1 = (1100000, 1, 1000, 300, 200, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple2 = (2100000, 1, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple2 = (2100000, 1, 1000, 300, 200, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple3 = (1100000, 1, 1000, 500, True, 100, 100, 0, FST_AGI_thd_lo_in,
+tuple3 = (1100000, 1, 1000, 300, 200, 100, 100, 0, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple4 = (1100000, 2, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple4 = (1100000, 2, 1000, 300, 200, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple5 = (2100000, 2, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple5 = (2100000, 2, 1000, 300, 200, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple6 = (1100000, 2, 1000, 500, True, 100, 100, 0, FST_AGI_thd_lo_in,
+tuple6 = (1100000, 2, 1000, 300, 200, 100, 100, 0, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple7 = (510000, 3, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple7 = (510000, 3, 1000, 300, 200, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple8 = (1100000, 3, 1000, 500, True, 100, 100, 0.1, FST_AGI_thd_lo_in,
+tuple8 = (1100000, 3, 1000, 300, 200, 100, 100, 0.1, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
-tuple9 = (510000, 3, 1000, 500, True, 100, 100, 0, FST_AGI_thd_lo_in,
+tuple9 = (510000, 3, 1000, 300, 200, 100, 100, 0, FST_AGI_thd_lo_in,
           FST_AGI_thd_hi_in, 100, 200, 2000, 300)
 expected1 = (10915, 11115, 12915, 11215)
 expected2 = (209150, 209350, 211150, 209450)

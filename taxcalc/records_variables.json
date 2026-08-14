@@ -762,11 +762,6 @@
       "desc": "Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was)",
       "form": {"2013-20??": "OASDI+HI FICA"}
     },
-    "payrolltax_er": {
-      "type": "float",
-      "desc": "Employer share of payrolltax, including the employer-equivalent half of any self-employment tax bucketed into payrolltax (the employee share is payrolltax minus payrolltax_er)",
-      "form": {"2013-20??": "calculated variable"}
-    },
     "refund": {
       "type": "float",
       "desc": "Total refundable income tax credits",
@@ -1124,6 +1119,16 @@
       "desc": "Additional Medicare Tax from Form 8959 (included in othertaxes and iitax)",
       "form": {"2013-2013": "1040 line 60a",
                "2014-2016": "1040 line 62a"}
+    },
+    "ptax_er_p": {
+      "type": "float",
+      "desc": "Taxpayer's employer share of OASDI+HI FICA payroll tax on wages and salaries; excludes self-employment tax (which has no employer share) and is therefore invariant under the soi_iitax bucketing switch",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "ptax_er_s": {
+      "type": "float",
+      "desc": "Spouse's employer share of OASDI+HI FICA payroll tax on wages and salaries; excludes self-employment tax (which has no employer share) and is therefore invariant under the soi_iitax bucketing switch",
+      "form": {"2013-20??": "calculated variable"}
     },
     "ptax_oasdi": {
       "type": "float",
