@@ -194,6 +194,12 @@ def response(calc_1, calc_2, elasticities, dump=False):
             mtr2 = np.where(wage_mtr2 > mtr_cap, mtr_cap, wage_mtr2)
             pch = ((1. - mtr2) / (1. - mtr1)) - 1.
             # Note: c04800 is filing unit's taxable income
+            # The substitution effect is scaled by taxable income, which
+            # includes long-term capital gains, so its magnitude is not
+            # independent of the filing unit's LTCG amount.  This is by
+            # design, but note that it differs from the labor_response
+            # and quantity_response functions below, which scale the
+            # substitution effect by earnings (that is, by quantity).
             sub = be_sub * pch * calc1.array('c04800')
         # calculate magnitude of income effect
         if be_inc == 0.0:

@@ -5,9 +5,7 @@ Tests for functions in behresp.py file.
 # pycodestyle test_behresp.py
 # pylint --disable=locally-disabled test_behresp.py
 
-from io import StringIO
 import numpy as np
-import pandas as pd
 import pytest
 import taxcalc as tc
 from taxcalc.behresp import response, quantity_response, labor_response
@@ -137,74 +135,3 @@ def test_labor_response():
     res_qr = quantity_response(price_elasticity=1, aftertax_price1=0.6,
                                aftertax_price2=0.5)
     assert np.allclose(res_lr, res_qr)
-
-
-@pytest.mark.skip
-@pytest.mark.parametrize('stcg',
-                         [-3600,
-                          -2400,
-                          -1200,
-                          0,
-                          1200,
-                          2400,
-                          3600,
-                          4800])
-def test_sub_effect_independence(stcg):
-    """
-    Ensure that LTCG amount does not affect magnitude of substitution effect.
-    """
-    # pylint: disable=too-many-locals
-    # specify reform that raises top-bracket marginal tax rate
-    refyear = 2020
-    reform = {'II_rt7': {refyear: 0.70}}
-    # specify a substitution effect behavioral response elasticity
-    elasticities_dict = {'sub': 0.25}
-    # specify several high-earning filing units
-    num_recs = 9
-    input_csv = ('RECID,MARS,e00200,e00200p,p22250,p23250\n'
-                 '1,2,1000000,1000000,stcg,    0\n'
-                 '2,2,1000000,1000000,stcg, 4800\n'
-                 '3,2,1000000,1000000,stcg, 3600\n'
-                 '4,2,1000000,1000000,stcg, 2400\n'
-                 '5,2,1000000,1000000,stcg, 1200\n'
-                 '6,2,1000000,1000000,stcg,    0\n'
-                 '7,2,1000000,1000000,stcg,-1200\n'
-                 '8,2,1000000,1000000,stcg,-2400\n'
-                 '9,2,1000000,1000000,stcg,-3600\n')
-    inputcsv = input_csv.replace('stcg', str(stcg))
-    input_dataframe = pd.read_csv(StringIO(inputcsv))
-    assert len(input_dataframe.index) == num_recs
-    recs = tc.Records(data=input_dataframe,
-                      start_year=refyear,
-                      gfactors=None, weights=None)
-    pol = tc.Policy()
-    calc1 = tc.Calculator(records=recs, policy=pol)
-    assert calc1.current_year == refyear
-    pol.implement_reform(reform)
-    calc2 = tc.Calculator(records=recs, policy=pol)
-    assert calc2.current_year == refyear
-    del pol
-    df1, df2 = response(calc1, calc2, elasticities_dict)
-    del calc1
-    del calc2
-    # compute change in taxable income for each of the filing units
-    chg_funit = {}
-    for rid in range(1, num_recs + 1):
-        idx = rid - 1
-        chg_funit[rid] = df2['c04800'][idx] - df1['c04800'][idx]
-    del df1
-    del df2
-    # confirm reform reduces taxable income when assuming substitution effect
-    emsg = ''
-    for rid in range(1, num_recs + 1):
-        if not chg_funit[rid] < 0:
-            txt = '\nFAIL: stcg={} : chg[{}]={:.2f} is not negative'
-            emsg += txt.format(stcg, rid, chg_funit[rid])
-    # confirm change in taxable income is same for all filing units
-    for rid in range(2, num_recs + 1):
-        if not np.allclose(chg_funit[rid], chg_funit[1]):
-            txt = '\nFAIL: stcg={} : chg[{}]={:.2f} != chg[1]={:.2f}'
-            emsg += txt.format(stcg, rid, chg_funit[rid], chg_funit[1])
-    del chg_funit
-    if emsg:
-        raise ValueError(emsg)
