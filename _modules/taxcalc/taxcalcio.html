@@ -936,6 +936,12 @@
             <span class="k">return</span>
         <span class="c1"># do output calculations</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">behvdict</span><span class="p">:</span>  <span class="c1"># if assuming behavioral responses</span>
+            <span class="c1"># The response function does its own calc_all calls on copies</span>
+            <span class="c1"># of the two calc objects and returns results as dataframes,</span>
+            <span class="c1"># so the results are copied back into the two calc objects in</span>
+            <span class="c1"># order that the --tables, --graphs, and --dumpdb output logic</span>
+            <span class="c1"># below can use the behavior-adjusted results in the same way</span>
+            <span class="c1"># it uses static results.</span>
             <span class="n">br_dump_bas</span><span class="p">,</span> <span class="n">br_dump_ref</span> <span class="o">=</span> <span class="n">response</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">calc_bas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_ref</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">behvdict</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1183,6 +1189,15 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy behavioral-response dump DataFrame values back into the calc</span>
 <span class="sd">        object, skipping the marginal-tax-rate columns.</span>
+
+<span class="sd">        Note that after this method is called, the calc object contains</span>
+<span class="sd">        input and output variables that incorporate behavioral responses,</span>
+<span class="sd">        which means those variables are no longer the ones that a plain</span>
+<span class="sd">        calc_all() call on the calc object would generate from its own</span>
+<span class="sd">        Policy parameters.  Any subsequent calc_all() call on the calc</span>
+<span class="sd">        object would recalculate output variables from the response-</span>
+<span class="sd">        adjusted input variables; the mtr method is called with</span>
+<span class="sd">        calc_all_already_called=True in order to avoid doing that.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">int_variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">recs_bas</span><span class="o">.</span><span class="n">INTEGER_VARS</span>
         <span class="n">vnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">br_dump</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
