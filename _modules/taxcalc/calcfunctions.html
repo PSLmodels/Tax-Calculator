@@ -533,7 +533,8 @@
                   <span class="n">FICA_mc_trt_employer</span><span class="p">,</span> <span class="n">FICA_mc_trt_employee</span><span class="p">,</span>
                   <span class="n">ALD_SelfEmploymentTax_hc</span><span class="p">,</span> <span class="n">SS_Earnings_thd</span><span class="p">,</span> <span class="n">SECA_Earnings_thd</span><span class="p">,</span>
                   <span class="n">e00900p</span><span class="p">,</span> <span class="n">e00900s</span><span class="p">,</span> <span class="n">e02100p</span><span class="p">,</span> <span class="n">e02100s</span><span class="p">,</span> <span class="n">k1bx14p</span><span class="p">,</span>
-                  <span class="n">k1bx14s</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span>
+                  <span class="n">k1bx14s</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">ptax_er_p</span><span class="p">,</span> <span class="n">ptax_er_s</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span>
+                  <span class="n">c03260</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span>
                   <span class="n">sey</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span>
                   <span class="n">was_plus_sey_p</span><span class="p">,</span> <span class="n">was_plus_sey_s</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -593,6 +594,10 @@
 <span class="sd">    payrolltax: float</span>
 <span class="sd">        Total (employee and employer) payroll tax liability</span>
 <span class="sd">        payrolltax = ptax_was</span>
+<span class="sd">    ptax_er_p: float</span>
+<span class="sd">        Taxpayer&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">    ptax_er_s: float</span>
+<span class="sd">        Spouse&#39;s employer share of payrolltax on wages and salaries</span>
 <span class="sd">    ptax_was: float</span>
 <span class="sd">        Employee and employer OASDI plus HI FICA tax</span>
 <span class="sd">    setax: float</span>
@@ -623,6 +628,10 @@
 <span class="sd">    payrolltax: float</span>
 <span class="sd">        Total (employee and employer) payroll tax liability</span>
 <span class="sd">        payrolltax = ptax_was</span>
+<span class="sd">    ptax_er_p: float</span>
+<span class="sd">        Taxpayer&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">    ptax_er_s: float</span>
+<span class="sd">        Spouse&#39;s employer share of payrolltax on wages and salaries</span>
 <span class="sd">    ptax_was: float</span>
 <span class="sd">        Employee and employer OASDI plus HI FICA tax</span>
 <span class="sd">    setax: float</span>
@@ -703,6 +712,26 @@
 
     <span class="c1"># filing-unit payroll tax and OASDI-only part (HI excluded from ptax_oasdi)</span>
     <span class="n">payrolltax</span> <span class="o">=</span> <span class="n">ptax_was</span> <span class="o">+</span> <span class="n">extra_payrolltax</span>
+    <span class="c1"># employer share of payrolltax, computed separately for taxpayer and</span>
+    <span class="c1"># spouse: employer-rate portion of the FICA on wages and salaries plus</span>
+    <span class="c1"># the employer-rate portion of the reform-only extra OASDI tax.  The</span>
+    <span class="c1"># per-person split is required because the OASDI cap (SS_Earnings_c)</span>
+    <span class="c1"># and threshold (SS_Earnings_thd) apply per person, so the filing-unit</span>
+    <span class="c1"># total cannot be apportioned from wage shares alone.  SECA is</span>
+    <span class="c1"># excluded: the self-employed pay both halves themselves, so there is</span>
+    <span class="c1"># no employer share.  This makes both variables invariant under</span>
+    <span class="c1"># soi_iitax, which only moves setax between iitax and payrolltax for</span>
+    <span class="c1"># reporting purposes.  Note that extra_ss_income_* derives from</span>
+    <span class="c1"># was_plus_sey_*, so under an SS_Earnings_thd reform these amounts</span>
+    <span class="c1"># blend wage and self-employment earnings.</span>
+    <span class="n">ptax_er_p</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">FICA_ss_trt_employer</span> <span class="o">*</span> <span class="p">(</span><span class="n">txearn_was_p</span> <span class="o">+</span> <span class="n">extra_ss_income_p</span><span class="p">)</span> <span class="o">+</span>
+        <span class="n">FICA_mc_trt_employer</span> <span class="o">*</span> <span class="n">gross_ws_p</span>
+    <span class="p">)</span>
+    <span class="n">ptax_er_s</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">FICA_ss_trt_employer</span> <span class="o">*</span> <span class="p">(</span><span class="n">txearn_was_s</span> <span class="o">+</span> <span class="n">extra_ss_income_s</span><span class="p">)</span> <span class="o">+</span>
+        <span class="n">FICA_mc_trt_employer</span> <span class="o">*</span> <span class="n">gross_ws_s</span>
+    <span class="p">)</span>
     <span class="n">ptax_oasdi</span> <span class="o">=</span> <span class="p">(</span><span class="n">ptax_ss_ws_p</span> <span class="o">+</span> <span class="n">ptax_ss_ws_s</span> <span class="o">+</span>
                   <span class="n">setax_ss_p</span> <span class="o">+</span> <span class="n">setax_ss_s</span> <span class="o">+</span>
                   <span class="n">extra_payrolltax</span><span class="p">)</span>
@@ -716,7 +745,8 @@
                         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_SelfEmploymentTax_hc</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">setax_p</span><span class="p">))</span>
     <span class="n">earned_s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">e00200s</span> <span class="o">+</span> <span class="n">sey_s</span> <span class="o">-</span>
                         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_SelfEmploymentTax_hc</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">setax_s</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">sey</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">sey</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">ptax_er_p</span><span class="p">,</span> <span class="n">ptax_er_s</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span>
+            <span class="n">ptax_oasdi</span><span class="p">,</span>
             <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">was_plus_sey_p</span><span class="p">,</span> <span class="n">was_plus_sey_s</span><span class="p">)</span>
 
 
@@ -5381,13 +5411,19 @@
         <span class="n">shift</span> <span class="o">=</span> <span class="n">setax</span> <span class="o">+</span> <span class="n">e09800</span> <span class="o">+</span> <span class="n">ptax_amc</span>
         <span class="n">iitax</span> <span class="o">=</span> <span class="p">(</span><span class="n">c09200</span> <span class="o">-</span> <span class="n">shift</span><span class="p">)</span> <span class="o">-</span> <span class="n">refund</span>
         <span class="n">payrolltax</span> <span class="o">=</span> <span class="n">payrolltax</span> <span class="o">+</span> <span class="n">shift</span>
+        <span class="c1"># Note: `ptax_er_p`/`ptax_er_s` are deliberately NOT adjusted here.</span>
+        <span class="c1"># They are defined as the employer share of FICA on wages and</span>
+        <span class="c1"># salaries, a concept independent of where SECA is bucketed, so</span>
+        <span class="c1"># they are invariant under `soi_iitax`.  (SECA has no employer:</span>
+        <span class="c1"># the self-employed pay both halves themselves.)</span>
     <span class="n">combined</span> <span class="o">=</span> <span class="n">iitax</span> <span class="o">+</span> <span class="n">payrolltax</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span>
             <span class="n">iitax</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">FairShareTax</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">ptax_amc</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">FairShareTax</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">ptax_er_p</span><span class="p">,</span> <span class="n">ptax_er_s</span><span class="p">,</span>
+                 <span class="n">setax</span><span class="p">,</span> <span class="n">ptax_amc</span><span class="p">,</span>
                  <span class="n">FST_AGI_trt</span><span class="p">,</span> <span class="n">FST_AGI_thd_lo</span><span class="p">,</span> <span class="n">FST_AGI_thd_hi</span><span class="p">,</span>
                  <span class="n">fstax</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">,</span> <span class="n">surtax</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -5399,10 +5435,15 @@
 
 <span class="sd">    Mechanics (when active under reform):</span>
 <span class="sd">      tentative = c00100 * FST_AGI_trt - iitax - employee_share</span>
-<span class="sd">      where employee_share = 0.5*ptax_was + 0.5*setax + ptax_amc</span>
-<span class="sd">      (the worker-borne half of OASDI+HI FICA and SECA, plus the</span>
-<span class="sd">      employee-paid Additional Medicare Tax — credited against the</span>
-<span class="sd">      minimum to avoid double-counting payroll already paid).</span>
+<span class="sd">      where employee_share = (ptax_was - ptax_er_p - ptax_er_s)</span>
+<span class="sd">                              + 0.5*setax + ptax_amc</span>
+<span class="sd">      and `ptax_er_p`/`ptax_er_s` are the taxpayer and spouse employer</span>
+<span class="sd">      shares of OASDI+HI FICA on wages, so the first term uses the</span>
+<span class="sd">      actual employee/employer rate split rather than assuming a</span>
+<span class="sd">      50/50 split.  Adding back half of</span>
+<span class="sd">      SECA and the employee-paid Additional Medicare Tax gives the full</span>
+<span class="sd">      worker-borne share, credited against the minimum to avoid</span>
+<span class="sd">      double-counting payroll already paid.</span>
 <span class="sd">    The tentative amount is floored at 0, then linearly phased in</span>
 <span class="sd">    between `FST_AGI_thd_lo` and `FST_AGI_thd_hi` (MARS-indexed),</span>
 <span class="sd">    fully imposed at or above the high threshold.</span>
@@ -5412,8 +5453,10 @@
 <span class="sd">    `combined` (iitax + payrolltax + lumpsum_tax), and `surtax`</span>
 <span class="sd">    (records-bound diagnostic also incremented by `AGIsurtax`; see</span>
 <span class="sd">    row 18). Called by `Calculator.calc_all` after `_calc_one_year`</span>
-<span class="sd">    finishes, so `iitax`, `ptax_was`, `setax`, and `ptax_amc` are</span>
-<span class="sd">    already final.</span>
+<span class="sd">    finishes, so `iitax`, `ptax_was`, `ptax_er_p`, `ptax_er_s`, `setax`,</span>
+<span class="sd">    and `ptax_amc` are already final. Because the employer-share</span>
+<span class="sd">    variables cover wages only — matching `ptax_was` — the employee-share</span>
+<span class="sd">    arithmetic here is invariant under the `soi_iitax` bucketing switch.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -5424,7 +5467,13 @@
 <span class="sd">                                  4=household-head, 5=widow(er))</span>
 <span class="sd">    ptax_was: float</span>
 <span class="sd">        Employee and employer OASDI plus HI FICA tax on wages and</span>
-<span class="sd">        salaries (`EI_PayrollTax` output)</span>
+<span class="sd">        salaries (`EI_PayrollTax` output; never mutated afterward)</span>
+<span class="sd">    ptax_er_p: float</span>
+<span class="sd">        Taxpayer&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">        (`EI_PayrollTax` output; never mutated afterward)</span>
+<span class="sd">    ptax_er_s: float</span>
+<span class="sd">        Spouse&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">        (`EI_PayrollTax` output; never mutated afterward)</span>
 <span class="sd">    setax: float</span>
 <span class="sd">        Self-employment tax (`EI_PayrollTax` output)</span>
 <span class="sd">    ptax_amc: float</span>
@@ -5464,9 +5513,10 @@
         <span class="n">fstax</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">fstax</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">,</span> <span class="n">surtax</span><span class="p">)</span>
     <span class="n">thd_hi</span> <span class="o">=</span> <span class="n">FST_AGI_thd_hi</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="c1"># Tentative minimum tax: rate * AGI, credited for income tax and the</span>
-    <span class="c1"># worker-borne half of payroll (½ FICA + ½ SECA + employee AMC).</span>
-    <span class="n">employee_share</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ptax_was</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">setax</span> <span class="o">+</span> <span class="n">ptax_amc</span>
+    <span class="c1"># Worker-borne share of payroll: employee-rate wage FICA (ptax_was</span>
+    <span class="c1"># net of the employer share) + ½ SECA + AMC.</span>
+    <span class="n">employee_share</span> <span class="o">=</span> <span class="p">((</span><span class="n">ptax_was</span> <span class="o">-</span> <span class="n">ptax_er_p</span> <span class="o">-</span> <span class="n">ptax_er_s</span><span class="p">)</span> <span class="o">+</span>
+                      <span class="mf">0.5</span> <span class="o">*</span> <span class="n">setax</span> <span class="o">+</span> <span class="n">ptax_amc</span><span class="p">)</span>
     <span class="n">fstax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span> <span class="o">*</span> <span class="n">FST_AGI_trt</span> <span class="o">-</span> <span class="n">iitax</span> <span class="o">-</span> <span class="n">employee_share</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
     <span class="c1"># Linear phase-in between thd_lo and thd_hi (no phase-in if equal).</span>
     <span class="n">thd_gap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">thd_hi</span> <span class="o">-</span> <span class="n">thd_lo</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
@@ -5529,7 +5579,8 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">ExpandIncome</span><span class="p">(</span><span class="n">e00200</span><span class="p">,</span> <span class="n">pencon_p</span><span class="p">,</span> <span class="n">pencon_s</span><span class="p">,</span> <span class="n">e00300</span><span class="p">,</span> <span class="n">e00400</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span>
                  <span class="n">e00700</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span> <span class="n">e01400</span><span class="p">,</span> <span class="n">e01500</span><span class="p">,</span>
-                 <span class="n">e02000</span><span class="p">,</span> <span class="n">e02100</span><span class="p">,</span> <span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span>
+                 <span class="n">e02000</span><span class="p">,</span> <span class="n">e02100</span><span class="p">,</span> <span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span>
+                 <span class="n">ptax_er_p</span><span class="p">,</span> <span class="n">ptax_er_s</span><span class="p">,</span>
                  <span class="n">benefit_value_total</span><span class="p">,</span> <span class="n">expanded_income</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the records-bound `expanded_income` aggregate — a broad</span>
@@ -5543,7 +5594,8 @@
 <span class="sd">      + adding back DC pension contributions (`pencon_p`, `pencon_s`),</span>
 <span class="sd">        so wage compensation enters gross rather than net of pension</span>
 <span class="sd">        deferrals already removed from `e00200`,</span>
-<span class="sd">      + adding the employer share of FICA (`0.5 * ptax_was`),</span>
+<span class="sd">      + adding the employer share of FICA on wages (`ptax_er_p` plus</span>
+<span class="sd">        `ptax_er_s`),</span>
 <span class="sd">      + adding non-AGI AMT preference items (`cmbtp`, from Form 6251),</span>
 <span class="sd">      + adding the consumption value of transfer benefits</span>
 <span class="sd">        (`benefit_value_total`, from `BenefitPrograms`),</span>
@@ -5562,7 +5614,10 @@
 <span class="sd">    `BenefitPrograms` (which produces `benefit_value_total`) and after</span>
 <span class="sd">    `_calc_one_year` / `FairShareTax` / `LumpSumTax`; it precedes</span>
 <span class="sd">    `AfterTaxIncome`, which subtracts the `combined` total tax to</span>
-<span class="sd">    produce `aftertax_income`.</span>
+<span class="sd">    produce `aftertax_income`. The employer-share add-on covers wages</span>
+<span class="sd">    only, not self-employment income (which enters `expanded_income`</span>
+<span class="sd">    gross, via `e00900`/`e02000`, with no employer-side gross-up), and</span>
+<span class="sd">    is therefore invariant under the `soi_iitax` bucketing switch.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -5603,10 +5658,14 @@
 <span class="sd">      Schedule D net long term capital gains/losses</span>
 <span class="sd">    cmbtp: float</span>
 <span class="sd">      Estimate of income on (AMT) Form 6251 but not in AGI</span>
-<span class="sd">    ptax_was: float</span>
-<span class="sd">      Employee + employer OASDI and HI FICA tax on wages (from</span>
-<span class="sd">      `EI_PayrollTax`); half is the employer share, added here as</span>
-<span class="sd">      employer-side compensation not present in `e00200`.</span>
+<span class="sd">    ptax_er_p: float</span>
+<span class="sd">      Taxpayer&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">      (from `EI_PayrollTax`), added here as employer-side compensation</span>
+<span class="sd">      not present in `e00200`.</span>
+<span class="sd">    ptax_er_s: float</span>
+<span class="sd">      Spouse&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">      (from `EI_PayrollTax`), added here as employer-side compensation</span>
+<span class="sd">      not present in `e00200`.</span>
 <span class="sd">    benefit_value_total: float</span>
 <span class="sd">      Consumption value of all benefits received by tax unit</span>
 <span class="sd">      (from `BenefitPrograms`); included in expanded income.</span>
@@ -5643,7 +5702,8 @@
         <span class="c1"># ---- (E) AMT non-AGI add-backs (Form 6251 items not in AGI) ----</span>
         <span class="n">cmbtp</span> <span class="o">+</span>  <span class="c1"># other AMT taxable income items from Form 6251</span>
         <span class="c1"># ---- (F) Employer-side FICA share (compensation not in e00200) ----</span>
-        <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ptax_was</span> <span class="o">+</span>  <span class="c1"># employer share of FICA taxes on wages/salaries</span>
+        <span class="n">ptax_er_p</span> <span class="o">+</span>  <span class="c1"># wages only; SECA has no employer-side gross-up</span>
+        <span class="n">ptax_er_s</span> <span class="o">+</span>
         <span class="c1"># ---- (G) Consumption value of transfer benefits ----</span>
         <span class="n">benefit_value_total</span>  <span class="c1"># see BenefitPrograms for the per-program</span>
         <span class="c1"># cash-vs-in-kind valuation rule producing benefit_value_total</span>
