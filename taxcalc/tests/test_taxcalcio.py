@@ -368,9 +368,9 @@ def test_ctor_init_with_cps_files():
     surtax
     """, True, 6),  # these 6 variables minus MARS plus RECID
 
-    ('ALL', True, 209),
-    # 209 =
-    # all 212 vars in records_variables.json (see test_records.py)
+    ('ALL', True, 211),
+    # 211 =
+    # all 214 vars in records_variables.json (see test_records.py)
     # minus 5 TaxCalcIO.BASE_DUMPVARS omitting RECID (see taxcalcio.py)
     # plus 2 TaxCalcIO.MTR_DUMPVARS (see taxcalcio.py)
 

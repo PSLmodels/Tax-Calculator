@@ -88,7 +88,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   FICA_mc_trt_employer, FICA_mc_trt_employee,
                   ALD_SelfEmploymentTax_hc, SS_Earnings_thd, SECA_Earnings_thd,
                   e00900p, e00900s, e02100p, e02100s, k1bx14p,
-                  k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
+                  k1bx14s, payrolltax, ptax_er_p, ptax_er_s, ptax_was, setax,
+                  c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s,
                   was_plus_sey_p, was_plus_sey_s):
     """
@@ -148,6 +149,10 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     payrolltax: float
         Total (employee and employer) payroll tax liability
         payrolltax = ptax_was
+    ptax_er_p: float
+        Taxpayer's employer share of payrolltax on wages and salaries
+    ptax_er_s: float
+        Spouse's employer share of payrolltax on wages and salaries
     ptax_was: float
         Employee and employer OASDI plus HI FICA tax
     setax: float
@@ -178,6 +183,10 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     payrolltax: float
         Total (employee and employer) payroll tax liability
         payrolltax = ptax_was
+    ptax_er_p: float
+        Taxpayer's employer share of payrolltax on wages and salaries
+    ptax_er_s: float
+        Spouse's employer share of payrolltax on wages and salaries
     ptax_was: float
         Employee and employer OASDI plus HI FICA tax
     setax: float
@@ -258,6 +267,26 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
 
     # filing-unit payroll tax and OASDI-only part (HI excluded from ptax_oasdi)
     payrolltax = ptax_was + extra_payrolltax
+    # employer share of payrolltax, computed separately for taxpayer and
+    # spouse: employer-rate portion of the FICA on wages and salaries plus
+    # the employer-rate portion of the reform-only extra OASDI tax.  The
+    # per-person split is required because the OASDI cap (SS_Earnings_c)
+    # and threshold (SS_Earnings_thd) apply per person, so the filing-unit
+    # total cannot be apportioned from wage shares alone.  SECA is
+    # excluded: the self-employed pay both halves themselves, so there is
+    # no employer share.  This makes both variables invariant under
+    # soi_iitax, which only moves setax between iitax and payrolltax for
+    # reporting purposes.  Note that extra_ss_income_* derives from
+    # was_plus_sey_*, so under an SS_Earnings_thd reform these amounts
+    # blend wage and self-employment earnings.
+    ptax_er_p = (
+        FICA_ss_trt_employer * (txearn_was_p + extra_ss_income_p) +
+        FICA_mc_trt_employer * gross_ws_p
+    )
+    ptax_er_s = (
+        FICA_ss_trt_employer * (txearn_was_s + extra_ss_income_s) +
+        FICA_mc_trt_employer * gross_ws_s
+    )
     ptax_oasdi = (ptax_ss_ws_p + ptax_ss_ws_s +
                   setax_ss_p + setax_ss_s +
                   extra_payrolltax)
@@ -271,7 +300,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
     earned_s = max(0., (e00200s + sey_s -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
-    return (sey, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
+    return (sey, payrolltax, ptax_er_p, ptax_er_s, ptax_was, setax, c03260,
+            ptax_oasdi,
             earned, earned_p, earned_s, was_plus_sey_p, was_plus_sey_s)
 
 
@@ -4930,13 +4960,19 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         shift = setax + e09800 + ptax_amc
         iitax = (c09200 - shift) - refund
         payrolltax = payrolltax + shift
+        # Note: `ptax_er_p`/`ptax_er_s` are deliberately NOT adjusted here.
+        # They are defined as the employer share of FICA on wages and
+        # salaries, a concept independent of where SECA is bucketed, so
+        # they are invariant under `soi_iitax`.  (SECA has no employer:
+        # the self-employed pay both halves themselves.)
     combined = iitax + payrolltax
     return (eitc, refund, ctc_total, ctc_refundable, ctc_nonrefundable,
             iitax, payrolltax, combined)
 
 
 @iterate_jit(nopython=True)
-def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
+def FairShareTax(c00100, MARS, ptax_was, ptax_er_p, ptax_er_s,
+                 setax, ptax_amc,
                  FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
                  fstax, iitax, combined, surtax):
     """
@@ -4948,10 +4984,15 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
     Mechanics (when active under reform):
       tentative = c00100 * FST_AGI_trt - iitax - employee_share
-      where employee_share = 0.5*ptax_was + 0.5*setax + ptax_amc
-      (the worker-borne half of OASDI+HI FICA and SECA, plus the
-      employee-paid Additional Medicare Tax — credited against the
-      minimum to avoid double-counting payroll already paid).
+      where employee_share = (ptax_was - ptax_er_p - ptax_er_s)
+                              + 0.5*setax + ptax_amc
+      and `ptax_er_p`/`ptax_er_s` are the taxpayer and spouse employer
+      shares of OASDI+HI FICA on wages, so the first term uses the
+      actual employee/employer rate split rather than assuming a
+      50/50 split.  Adding back half of
+      SECA and the employee-paid Additional Medicare Tax gives the full
+      worker-borne share, credited against the minimum to avoid
+      double-counting payroll already paid.
     The tentative amount is floored at 0, then linearly phased in
     between `FST_AGI_thd_lo` and `FST_AGI_thd_hi` (MARS-indexed),
     fully imposed at or above the high threshold.
@@ -4961,8 +5002,10 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
     `combined` (iitax + payrolltax + lumpsum_tax), and `surtax`
     (records-bound diagnostic also incremented by `AGIsurtax`; see
     row 18). Called by `Calculator.calc_all` after `_calc_one_year`
-    finishes, so `iitax`, `ptax_was`, `setax`, and `ptax_amc` are
-    already final.
+    finishes, so `iitax`, `ptax_was`, `ptax_er_p`, `ptax_er_s`, `setax`,
+    and `ptax_amc` are already final. Because the employer-share
+    variables cover wages only — matching `ptax_was` — the employee-share
+    arithmetic here is invariant under the `soi_iitax` bucketing switch.
 
     Parameters
     ----------
@@ -4973,7 +5016,13 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
                                   4=household-head, 5=widow(er))
     ptax_was: float
         Employee and employer OASDI plus HI FICA tax on wages and
-        salaries (`EI_PayrollTax` output)
+        salaries (`EI_PayrollTax` output; never mutated afterward)
+    ptax_er_p: float
+        Taxpayer's employer share of payrolltax on wages and salaries
+        (`EI_PayrollTax` output; never mutated afterward)
+    ptax_er_s: float
+        Spouse's employer share of payrolltax on wages and salaries
+        (`EI_PayrollTax` output; never mutated afterward)
     setax: float
         Self-employment tax (`EI_PayrollTax` output)
     ptax_amc: float
@@ -5013,9 +5062,10 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
         fstax = 0.
         return (fstax, iitax, combined, surtax)
     thd_hi = FST_AGI_thd_hi[MARS - 1]
-    # Tentative minimum tax: rate * AGI, credited for income tax and the
-    # worker-borne half of payroll (½ FICA + ½ SECA + employee AMC).
-    employee_share = 0.5 * ptax_was + 0.5 * setax + ptax_amc
+    # Worker-borne share of payroll: employee-rate wage FICA (ptax_was
+    # net of the employer share) + ½ SECA + AMC.
+    employee_share = ((ptax_was - ptax_er_p - ptax_er_s) +
+                      0.5 * setax + ptax_amc)
     fstax = max(c00100 * FST_AGI_trt - iitax - employee_share, 0.)
     # Linear phase-in between thd_lo and thd_hi (no phase-in if equal).
     thd_gap = max(thd_hi - thd_lo, 0.)
@@ -5078,7 +5128,8 @@ def LumpSumTax(DSI, num, XTOT,
 @iterate_jit(nopython=True)
 def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
                  e00700, e00800, e00900, e01100, e01200, e01400, e01500,
-                 e02000, e02100, p22250, p23250, cmbtp, ptax_was,
+                 e02000, e02100, p22250, p23250, cmbtp,
+                 ptax_er_p, ptax_er_s,
                  benefit_value_total, expanded_income):
     """
     Computes the records-bound `expanded_income` aggregate — a broad
@@ -5092,7 +5143,8 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
       + adding back DC pension contributions (`pencon_p`, `pencon_s`),
         so wage compensation enters gross rather than net of pension
         deferrals already removed from `e00200`,
-      + adding the employer share of FICA (`0.5 * ptax_was`),
+      + adding the employer share of FICA on wages (`ptax_er_p` plus
+        `ptax_er_s`),
       + adding non-AGI AMT preference items (`cmbtp`, from Form 6251),
       + adding the consumption value of transfer benefits
         (`benefit_value_total`, from `BenefitPrograms`),
@@ -5111,7 +5163,10 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     `BenefitPrograms` (which produces `benefit_value_total`) and after
     `_calc_one_year` / `FairShareTax` / `LumpSumTax`; it precedes
     `AfterTaxIncome`, which subtracts the `combined` total tax to
-    produce `aftertax_income`.
+    produce `aftertax_income`. The employer-share add-on covers wages
+    only, not self-employment income (which enters `expanded_income`
+    gross, via `e00900`/`e02000`, with no employer-side gross-up), and
+    is therefore invariant under the `soi_iitax` bucketing switch.
 
     Parameters
     ----------
@@ -5152,10 +5207,14 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
       Schedule D net long term capital gains/losses
     cmbtp: float
       Estimate of income on (AMT) Form 6251 but not in AGI
-    ptax_was: float
-      Employee + employer OASDI and HI FICA tax on wages (from
-      `EI_PayrollTax`); half is the employer share, added here as
-      employer-side compensation not present in `e00200`.
+    ptax_er_p: float
+      Taxpayer's employer share of payrolltax on wages and salaries
+      (from `EI_PayrollTax`), added here as employer-side compensation
+      not present in `e00200`.
+    ptax_er_s: float
+      Spouse's employer share of payrolltax on wages and salaries
+      (from `EI_PayrollTax`), added here as employer-side compensation
+      not present in `e00200`.
     benefit_value_total: float
       Consumption value of all benefits received by tax unit
       (from `BenefitPrograms`); included in expanded income.
@@ -5192,7 +5251,8 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         # ---- (E) AMT non-AGI add-backs (Form 6251 items not in AGI) ----
         cmbtp +  # other AMT taxable income items from Form 6251
         # ---- (F) Employer-side FICA share (compensation not in e00200) ----
-        0.5 * ptax_was +  # employer share of FICA taxes on wages/salaries
+        ptax_er_p +  # wages only; SECA has no employer-side gross-up
+        ptax_er_s +
         # ---- (G) Consumption value of transfer benefits ----
         benefit_value_total  # see BenefitPrograms for the per-program
         # cash-vs-in-kind valuation rule producing benefit_value_total

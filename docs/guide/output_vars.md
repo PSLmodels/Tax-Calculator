@@ -629,6 +629,20 @@ _IRS Form Location:_
 2014-2016: 1040 line 62a  
 
 
+##  `ptax_er_p`  
+_Description_: Taxpayer's employer share of OASDI+HI FICA payroll tax on wages and salaries; excludes self-employment tax (which has no employer share) and is therefore invariant under the soi_iitax bucketing switch  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
+##  `ptax_er_s`  
+_Description_: Spouse's employer share of OASDI+HI FICA payroll tax on wages and salaries; excludes self-employment tax (which has no employer share) and is therefore invariant under the soi_iitax bucketing switch  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
 ##  `ptax_oasdi`  
 _Description_: Employee + employer OASDI FICA tax plus self-employment tax  
 _Datatype_: float  
