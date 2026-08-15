@@ -1958,25 +1958,49 @@
         <span class="n">std_taxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c05800&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># Set standard deduction to zero, calculate taxes w/o</span>
         <span class="c1"># standard deduction, and store AMT + Regular Tax</span>
+        <span class="c1"># Note: the itemized deduction component variables must be</span>
+        <span class="c1"># restored here, and not just c04470/c21060/c21040, because the</span>
+        <span class="c1"># AMT function uses several of them (c17000, c18300, c20800) to</span>
+        <span class="c1"># compute the AMT preference add-backs.  Leaving them zeroed</span>
+        <span class="c1"># from the standard-deduction calculation above understates</span>
+        <span class="c1"># item_taxes for AMT filing units that itemize.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zeroarray</span><span class="p">(</span><span class="s1">&#39;standard&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c21060&#39;</span><span class="p">,</span> <span class="n">item_no_limit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c21040&#39;</span><span class="p">,</span> <span class="n">item_phaseout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04470&#39;</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cvname</span> <span class="ow">in</span> <span class="n">item_component_variable_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cvname</span><span class="p">,</span> <span class="n">item_cvar</span><span class="p">[</span><span class="n">cvname</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_taxinc_to_amt</span><span class="p">()</span>
         <span class="n">item_taxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c05800&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># Replace standard deduction with zero so the filing unit</span>
         <span class="c1"># would always be better off itemizing</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">item_taxes</span> <span class="o">&lt;</span> <span class="n">std_taxes</span><span class="p">,</span>
-                                        <span class="mf">0.</span><span class="p">,</span> <span class="n">std</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04470&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">item_taxes</span> <span class="o">&lt;</span> <span class="n">std_taxes</span><span class="p">,</span>
-                                      <span class="n">item</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c21060&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">item_taxes</span> <span class="o">&lt;</span> <span class="n">std_taxes</span><span class="p">,</span>
-                                      <span class="n">item_no_limit</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c21040&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">item_taxes</span> <span class="o">&lt;</span> <span class="n">std_taxes</span><span class="p">,</span>
-                                      <span class="n">item_phaseout</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+        <span class="c1"># Note: the two tax amounts are equal for a filing unit on the</span>
+        <span class="c1"># AMT whose itemized deductions are all AMT preference items,</span>
+        <span class="c1"># because the add-back offsets the regular-tax reduction,</span>
+        <span class="c1"># leaving c05800 unchanged.  Such a unit is treated as itemizing</span>
+        <span class="c1"># only when its itemized deductions exceed its standard</span>
+        <span class="c1"># deduction, which is what a filing unit facing equal tax under</span>
+        <span class="c1"># the two deductions would do.  Without that condition, every</span>
+        <span class="c1"># filing unit whose tax does not depend on its deduction (most</span>
+        <span class="c1"># obviously, every unit owing no tax under either) would be</span>
+        <span class="c1"># treated as itemizing.  The tie-break is also limited to filing</span>
+        <span class="c1"># units owing tax, because a unit owing no tax under either</span>
+        <span class="c1"># deduction has no reason to itemize.  The two tax amounts are</span>
+        <span class="c1"># compared using a tolerance because the two branches reach the</span>
+        <span class="c1"># same amount by different arithmetic paths, so a tie that is</span>
+        <span class="c1"># exact in real arithmetic can differ in the last bits.</span>
+        <span class="n">tie_tol</span> <span class="o">=</span> <span class="mf">0.01</span>  <span class="c1"># one cent</span>
+        <span class="n">tied</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">item_taxes</span> <span class="o">-</span> <span class="n">std_taxes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tie_tol</span><span class="p">,</span>
+            <span class="n">std_taxes</span> <span class="o">&gt;</span> <span class="mf">0.</span>
+        <span class="p">)</span>
+        <span class="n">itemizing</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tied</span><span class="p">,</span> <span class="n">item</span> <span class="o">&gt;</span> <span class="n">std</span><span class="p">,</span> <span class="n">item_taxes</span> <span class="o">&lt;</span> <span class="n">std_taxes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">itemizing</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">std</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04470&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">itemizing</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c21060&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">itemizing</span><span class="p">,</span> <span class="n">item_no_limit</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c21040&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">itemizing</span><span class="p">,</span> <span class="n">item_phaseout</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">cvname</span> <span class="ow">in</span> <span class="n">item_component_variable_names</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cvname</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">item_taxes</span> <span class="o">&lt;</span> <span class="n">std_taxes</span><span class="p">,</span>
-                                        <span class="n">item_cvar</span><span class="p">[</span><span class="n">cvname</span><span class="p">],</span> <span class="mf">0.</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cvname</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">itemizing</span><span class="p">,</span> <span class="n">item_cvar</span><span class="p">[</span><span class="n">cvname</span><span class="p">],</span> <span class="mf">0.</span><span class="p">))</span>
         <span class="k">del</span> <span class="n">std</span>
         <span class="k">del</span> <span class="n">item</span>
         <span class="k">del</span> <span class="n">item_no_limit</span>

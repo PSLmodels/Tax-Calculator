@@ -779,16 +779,10 @@ independent of the filing unit’s LTCG amount.</p>
 <blockquote>
 <div><p>The sum of the substitution and income effects is a change in
 taxable income that must be mapped back onto the input variables
-used in the tax calculation.  This function uses AGI minus itemized
-deductions (agi_m_ided) as a proxy for taxable income, so the
-mapping ignores the standard deduction, personal exemptions, and
-the qualified business income deduction.  Itemized deductions
-(c04470) are counted only for filing units that actually itemize
-(that is, only when c04470 is no less than the standard deduction).</p>
-<p>The dollar change in taxable income is allocated in proportion to
-the three components of agi_m_ided — wage and salary income
-(e00200), other AGI (c00100 minus e00200), and itemized deductions
-— and the three parts are added to these input variables:</p>
+used in the tax calculation.  The dollar change is allocated in
+proportion to three components — wage and salary income (e00200),
+other AGI (c00100 minus e00200), and itemized deductions — and
+the three parts are added to these input variables:</p>
 <blockquote>
 <div><p>the wage part is added to both e00200 and e00200p
 the other-income part is added to e00300 (taxable interest)
@@ -801,12 +795,48 @@ up in dump output as changes in e00300 and e19200 even for filing
 units whose actual behavior would involve other income or deduction
 items.  The capital-gains response, by contrast, is applied
 directly to p23250.</p>
+<p>The denominator used to form the three allocation shares, called
+alloc_base in the code, is AGI minus itemized deductions, where
+itemized deductions (c04470) are counted only for filing units that
+actually itemize (that is, only when c04470 is no less than the
+standard deduction).  This is NOT an approximation of taxable
+income, and it must not be replaced by the calculated taxable
+income variable, c04800.  Because other AGI is defined as AGI minus
+wages, the three components sum to alloc_base by construction, so
+the three shares sum to one and the allocated parts sum to the
+intended dollar change.  Dividing by any other quantity — c04800
+included — would scale the delivered change by the ratio of
+alloc_base to that quantity.  Taxable income is used where taxable
+income is the concept called for: c04800 scales the substitution
+effect, as described in the response equations above.</p>
+<p>The mapping does assume that a dollar added to e00200, e00300, or
+e19200 moves taxable income by a dollar.  That is exact for a
+filing unit in the interior of the rate schedule, but not for one
+whose AGI change also moves an AGI-linked provision (taxable Social
+Security benefits, phase-outs such as the EITC, the qualified
+business income deduction, or the itemized deduction limitation).
+The realized change in aggregate taxable income therefore differs
+somewhat from the intended change: for a top-bracket rate reform
+applied to CPS data for 2026, with be_sub of 0.25 and be_inc of
+-0.1, the realized change exceeded the intended change by about
+four percent, with under one percent of responding filing units
+differing by more than ten dollars.</p>
 </div></blockquote>
 <p>Filing units excluded from the response, and capped values:</p>
 <blockquote>
 <div><p>The substitution and income effects are applied only to filing
-units with positive agi_m_ided; all other filing units are assumed
-to have no ordinary-income response.  Within that group, filing
+units with positive alloc_base; all other filing units are assumed
+to have no ordinary-income response.  That condition is a guard on
+the allocation arithmetic rather than an economic screen: it keeps
+the denominator away from zero and prevents the negative shares
+that a negative alloc_base would produce.  It excludes no filing
+unit that has positive taxable income, because c04800 is positive
+only when alloc_base is positive.  Note that the converse does not
+hold: a filing unit with positive alloc_base and zero taxable
+income does respond, which is intended, because such a unit can
+still owe payroll tax and therefore can still have an income
+effect.  For that reason the condition must not be tightened to
+require positive c04800.  Within the responding group, filing
 units that do not itemize receive no change in e19200.  Earnings
 marginal tax rates above mtr_cap (0.99) are capped at mtr_cap in
 order to avoid extreme or negative net-of-tax rates.  There is no

@@ -602,17 +602,10 @@
 
 <span class="sd">      The sum of the substitution and income effects is a change in</span>
 <span class="sd">      taxable income that must be mapped back onto the input variables</span>
-<span class="sd">      used in the tax calculation.  This function uses AGI minus itemized</span>
-<span class="sd">      deductions (agi_m_ided) as a proxy for taxable income, so the</span>
-<span class="sd">      mapping ignores the standard deduction, personal exemptions, and</span>
-<span class="sd">      the qualified business income deduction.  Itemized deductions</span>
-<span class="sd">      (c04470) are counted only for filing units that actually itemize</span>
-<span class="sd">      (that is, only when c04470 is no less than the standard deduction).</span>
-
-<span class="sd">      The dollar change in taxable income is allocated in proportion to</span>
-<span class="sd">      the three components of agi_m_ided --- wage and salary income</span>
-<span class="sd">      (e00200), other AGI (c00100 minus e00200), and itemized deductions</span>
-<span class="sd">      --- and the three parts are added to these input variables:</span>
+<span class="sd">      used in the tax calculation.  The dollar change is allocated in</span>
+<span class="sd">      proportion to three components --- wage and salary income (e00200),</span>
+<span class="sd">      other AGI (c00100 minus e00200), and itemized deductions --- and</span>
+<span class="sd">      the three parts are added to these input variables:</span>
 
 <span class="sd">        the wage part is added to both e00200 and e00200p</span>
 <span class="sd">        the other-income part is added to e00300 (taxable interest)</span>
@@ -626,11 +619,49 @@
 <span class="sd">      items.  The capital-gains response, by contrast, is applied</span>
 <span class="sd">      directly to p23250.</span>
 
+<span class="sd">      The denominator used to form the three allocation shares, called</span>
+<span class="sd">      alloc_base in the code, is AGI minus itemized deductions, where</span>
+<span class="sd">      itemized deductions (c04470) are counted only for filing units that</span>
+<span class="sd">      actually itemize (that is, only when c04470 is no less than the</span>
+<span class="sd">      standard deduction).  This is NOT an approximation of taxable</span>
+<span class="sd">      income, and it must not be replaced by the calculated taxable</span>
+<span class="sd">      income variable, c04800.  Because other AGI is defined as AGI minus</span>
+<span class="sd">      wages, the three components sum to alloc_base by construction, so</span>
+<span class="sd">      the three shares sum to one and the allocated parts sum to the</span>
+<span class="sd">      intended dollar change.  Dividing by any other quantity --- c04800</span>
+<span class="sd">      included --- would scale the delivered change by the ratio of</span>
+<span class="sd">      alloc_base to that quantity.  Taxable income is used where taxable</span>
+<span class="sd">      income is the concept called for: c04800 scales the substitution</span>
+<span class="sd">      effect, as described in the response equations above.</span>
+
+<span class="sd">      The mapping does assume that a dollar added to e00200, e00300, or</span>
+<span class="sd">      e19200 moves taxable income by a dollar.  That is exact for a</span>
+<span class="sd">      filing unit in the interior of the rate schedule, but not for one</span>
+<span class="sd">      whose AGI change also moves an AGI-linked provision (taxable Social</span>
+<span class="sd">      Security benefits, phase-outs such as the EITC, the qualified</span>
+<span class="sd">      business income deduction, or the itemized deduction limitation).</span>
+<span class="sd">      The realized change in aggregate taxable income therefore differs</span>
+<span class="sd">      somewhat from the intended change: for a top-bracket rate reform</span>
+<span class="sd">      applied to CPS data for 2026, with be_sub of 0.25 and be_inc of</span>
+<span class="sd">      -0.1, the realized change exceeded the intended change by about</span>
+<span class="sd">      four percent, with under one percent of responding filing units</span>
+<span class="sd">      differing by more than ten dollars.</span>
+
 <span class="sd">    Filing units excluded from the response, and capped values:</span>
 
 <span class="sd">      The substitution and income effects are applied only to filing</span>
-<span class="sd">      units with positive agi_m_ided; all other filing units are assumed</span>
-<span class="sd">      to have no ordinary-income response.  Within that group, filing</span>
+<span class="sd">      units with positive alloc_base; all other filing units are assumed</span>
+<span class="sd">      to have no ordinary-income response.  That condition is a guard on</span>
+<span class="sd">      the allocation arithmetic rather than an economic screen: it keeps</span>
+<span class="sd">      the denominator away from zero and prevents the negative shares</span>
+<span class="sd">      that a negative alloc_base would produce.  It excludes no filing</span>
+<span class="sd">      unit that has positive taxable income, because c04800 is positive</span>
+<span class="sd">      only when alloc_base is positive.  Note that the converse does not</span>
+<span class="sd">      hold: a filing unit with positive alloc_base and zero taxable</span>
+<span class="sd">      income does respond, which is intended, because such a unit can</span>
+<span class="sd">      still owe payroll tax and therefore can still have an income</span>
+<span class="sd">      effect.  For that reason the condition must not be tightened to</span>
+<span class="sd">      require positive c04800.  Within the responding group, filing</span>
 <span class="sd">      units that do not itemize receive no change in e19200.  Earnings</span>
 <span class="sd">      marginal tax rates above mtr_cap (0.99) are capped at mtr_cap in</span>
 <span class="sd">      order to avoid extreme or negative net-of-tax rates.  There is no</span>
@@ -684,10 +715,8 @@
     <span class="c1"># pylint: disable=too-many-locals,too-many-statements,too-many-branches</span>
 
     <span class="c1"># Check function argument types and elasticity values</span>
-    <span class="n">calc1</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc_1</span><span class="p">)</span>
-    <span class="n">calc2</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc_2</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc_1</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc_2</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elasticities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
     <span class="n">be_sub</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;sub&#39;</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
     <span class="n">be_inc</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">&#39;inc&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;inc&#39;</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
@@ -695,32 +724,43 @@
     <span class="k">assert</span> <span class="n">be_sub</span> <span class="o">&gt;=</span> <span class="mf">0.0</span>
     <span class="k">assert</span> <span class="n">be_inc</span> <span class="o">&lt;=</span> <span class="mf">0.0</span>
     <span class="k">assert</span> <span class="n">be_cg</span> <span class="o">&lt;=</span> <span class="mf">0.0</span>
+    <span class="n">calc1</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc_1</span><span class="p">)</span>
+    <span class="n">calc2</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc_2</span><span class="p">)</span>
 
     <span class="c1"># Begin nested functions used only in this response function</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_ordinary_income</span><span class="p">(</span><span class="n">taxinc_change</span><span class="p">,</span> <span class="n">calc</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Implement total taxable income change induced by behavioral response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># compute AGI minus itemized deductions, agi_m_ided</span>
+        <span class="c1"># compute allocation base: AGI minus itemized deductions</span>
+        <span class="c1"># Note: alloc_base is not an approximation of taxable income and</span>
+        <span class="c1"># must not be replaced by the c04800 taxable income variable; it</span>
+        <span class="c1"># is the sum of the three components being adjusted below, which</span>
+        <span class="c1"># is what makes the three allocation shares sum to one.  See the</span>
+        <span class="c1"># response function docstring for details.</span>
         <span class="n">agi</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c00100&#39;</span><span class="p">)</span>
         <span class="n">ided</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04470&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;standard&#39;</span><span class="p">),</span>
                         <span class="mf">0.</span><span class="p">,</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04470&#39;</span><span class="p">))</span>
-        <span class="n">agi_m_ided</span> <span class="o">=</span> <span class="n">agi</span> <span class="o">-</span> <span class="n">ided</span>
-        <span class="c1"># assume behv response only for filing units with positive agi_m_ided</span>
-        <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">agi_m_ided</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-        <span class="n">delta_income</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">taxinc_change</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="c1"># allocate delta_income into three parts</span>
+        <span class="n">alloc_base</span> <span class="o">=</span> <span class="n">agi</span> <span class="o">-</span> <span class="n">ided</span>
+        <span class="c1"># apply response only where the allocation arithmetic is valid</span>
+        <span class="c1"># Note: this guards against a zero denominator and against the</span>
+        <span class="c1"># negative shares implied by a negative alloc_base.  It is not an</span>
+        <span class="c1"># economic screen and must not be tightened to require positive</span>
+        <span class="c1"># c04800: a filing unit with zero taxable income can still owe</span>
+        <span class="c1"># payroll tax and therefore can still have an income effect.</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">alloc_base</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="c1"># allocate change in taxable income into three parts</span>
+        <span class="c1"># Note: because oinc is agi minus winc, the three parts always</span>
+        <span class="c1"># satisfy delta_winc + delta_oinc - delta_ided == taxinc_change</span>
+        <span class="c1"># for the pos filing units, so there is nothing to check here.</span>
         <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
         <span class="n">winc</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e00200&#39;</span><span class="p">)</span>
-        <span class="n">delta_winc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">agi</span><span class="p">)</span>
-        <span class="n">delta_winc</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_income</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">*</span> <span class="n">winc</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">/</span> <span class="n">agi_m_ided</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
         <span class="n">oinc</span> <span class="o">=</span> <span class="n">agi</span> <span class="o">-</span> <span class="n">winc</span>
-        <span class="n">delta_oinc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">agi</span><span class="p">)</span>
-        <span class="n">delta_oinc</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_income</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">*</span> <span class="n">oinc</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">/</span> <span class="n">agi_m_ided</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
-        <span class="n">delta_ided</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">agi</span><span class="p">)</span>
-        <span class="n">delta_ided</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_income</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">*</span> <span class="n">ided</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">/</span> <span class="n">agi_m_ided</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
-        <span class="c1"># confirm that the three parts are consistent with delta_income</span>
-        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">delta_income</span><span class="p">,</span> <span class="n">delta_winc</span> <span class="o">+</span> <span class="n">delta_oinc</span> <span class="o">-</span> <span class="n">delta_ided</span><span class="p">)</span>
+        <span class="n">share</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">agi</span><span class="p">)</span>
+        <span class="n">share</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">taxinc_change</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">/</span> <span class="n">alloc_base</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+        <span class="n">delta_winc</span> <span class="o">=</span> <span class="n">share</span> <span class="o">*</span> <span class="n">winc</span>
+        <span class="n">delta_oinc</span> <span class="o">=</span> <span class="n">share</span> <span class="o">*</span> <span class="n">oinc</span>
+        <span class="n">delta_ided</span> <span class="o">=</span> <span class="n">share</span> <span class="o">*</span> <span class="n">ided</span>
         <span class="c1"># add the three parts to different records variables embedded in calc</span>
         <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e00200&#39;</span><span class="p">,</span> <span class="n">delta_winc</span><span class="p">)</span>
         <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span> <span class="n">delta_winc</span><span class="p">)</span>
@@ -728,49 +768,54 @@
         <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e19200&#39;</span><span class="p">,</span> <span class="n">delta_ided</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">calc</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_update_cap_gain_income</span><span class="p">(</span><span class="n">cap_gain_change</span><span class="p">,</span> <span class="n">calc</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Implement capital gain change induced by behavioral responses.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;p23250&#39;</span><span class="p">,</span> <span class="n">cap_gain_change</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">calc</span>
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_mtr12</span><span class="p">(</span><span class="n">calc__1</span><span class="p">,</span> <span class="n">calc__2</span><span class="p">,</span> <span class="n">mtr_of</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span> <span class="n">tax_type</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes marginal tax rates for Calculator objects calc__1 and calc__2</span>
 <span class="sd">        for specified mtr_of income type and specified tax_type.</span>
+
+<span class="sd">        Both calc__1 and calc__2 must already have had their calc_all</span>
+<span class="sd">        method called, which allows the mtr method to skip one of the two</span>
+<span class="sd">        calc_all calls it would otherwise make for each Calculator object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">tax_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span> <span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">iitax1</span><span class="p">,</span> <span class="n">combined1</span> <span class="o">=</span> <span class="n">calc__1</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">mtr_of</span><span class="p">,</span> <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">iitax2</span><span class="p">,</span> <span class="n">combined2</span> <span class="o">=</span> <span class="n">calc__2</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">mtr_of</span><span class="p">,</span> <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">iitax1</span><span class="p">,</span> <span class="n">combined1</span> <span class="o">=</span> <span class="n">calc__1</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">mtr_of</span><span class="p">,</span>
+                                           <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">iitax2</span><span class="p">,</span> <span class="n">combined2</span> <span class="o">=</span> <span class="n">calc__2</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">mtr_of</span><span class="p">,</span>
+                                           <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                           <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">tax_type</span> <span class="o">==</span> <span class="s1">&#39;combined&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">combined1</span><span class="p">,</span> <span class="n">combined2</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">iitax1</span><span class="p">,</span> <span class="n">iitax2</span><span class="p">)</span>
     <span class="c1"># End nested functions used only in this response function</span>
 
     <span class="c1"># Begin main logic of response function</span>
-    <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-    <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span> <span class="o">==</span> <span class="n">calc2</span><span class="o">.</span><span class="n">array_len</span>
     <span class="k">assert</span> <span class="n">calc1</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="n">calc2</span><span class="o">.</span><span class="n">current_year</span>
+    <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+    <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
     <span class="n">mtr_cap</span> <span class="o">=</span> <span class="mf">0.99</span>
     <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
         <span class="n">recs_vinfo</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># contains records VARINFO only</span>
-        <span class="n">dvars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">recs_vinfo</span><span class="o">.</span><span class="n">USABLE_READ_VARS</span> <span class="o">|</span> <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">CALCULATED_VARS</span><span class="p">)</span>
+        <span class="n">dvars</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">recs_vinfo</span><span class="o">.</span><span class="n">USABLE_READ_VARS</span> <span class="o">|</span>
+                       <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">CALCULATED_VARS</span><span class="p">)</span>
     <span class="c1"># Calculate sum of substitution and income effects</span>
-    <span class="k">if</span> <span class="n">be_sub</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">be_inc</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">zero_sub_and_inc</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">si_chg</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># is not used when zero_sub_and_inc is True</span>
-        <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
-            <span class="n">wage_mtr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
-            <span class="n">wage_mtr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc2</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
+    <span class="n">zero_sub_and_inc</span> <span class="o">=</span> <span class="n">be_sub</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">be_inc</span> <span class="o">==</span> <span class="mf">0.0</span>
+    <span class="c1"># Note: the wage marginal tax rates are used only by the substitution</span>
+    <span class="c1"># effect and by the dump output, so they are not computed when be_sub</span>
+    <span class="c1"># is zero unless they are needed for the dump output</span>
+    <span class="k">if</span> <span class="n">be_sub</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">zero_sub_and_inc</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">dump</span><span class="p">):</span>
+        <span class="n">wage_mtr1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
+        <span class="n">wage_mtr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc2</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">zero_sub_and_inc</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1"># calculate marginal combined tax rates on taxpayer wages+salary</span>
         <span class="c1"># (e00200p is taxpayer&#39;s wages+salary)</span>
         <span class="n">wage_mtr1</span><span class="p">,</span> <span class="n">wage_mtr2</span> <span class="o">=</span> <span class="n">_mtr12</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span>
                                       <span class="n">mtr_of</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span>
                                       <span class="n">tax_type</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">zero_sub_and_inc</span><span class="p">:</span>
+        <span class="n">si_chg</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># is not used when zero_sub_and_inc is True</span>
+    <span class="k">else</span><span class="p">:</span>
         <span class="c1"># calculate magnitude of substitution effect</span>
         <span class="k">if</span> <span class="n">be_sub</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">sub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
@@ -810,25 +855,25 @@
     <span class="c1"># Extract dataframe from calc1</span>
     <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
         <span class="n">df1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span>
-        <span class="n">df1</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;mtr_inctax&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">df1</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;mtr_paytax&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df1</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;mtr_inctax&#39;</span><span class="p">,</span> <span class="s1">&#39;mtr_paytax&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">df1</span><span class="p">[</span><span class="s1">&#39;mtr_combined&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wage_mtr1</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">df1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">DIST_VARIABLES</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">calc1</span>
     <span class="c1"># Add behavioral-response changes to income sources</span>
-    <span class="n">calc2_behv</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">calc2</span><span class="p">)</span>
+    <span class="c1"># Note: calc2 is already a private deepcopy of the calc_2 argument,</span>
+    <span class="c1"># so it can be modified without making another deepcopy of it</span>
+    <span class="n">calc2_behv</span> <span class="o">=</span> <span class="n">calc2</span>
     <span class="k">del</span> <span class="n">calc2</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">zero_sub_and_inc</span><span class="p">:</span>
         <span class="n">calc2_behv</span> <span class="o">=</span> <span class="n">_update_ordinary_income</span><span class="p">(</span><span class="n">si_chg</span><span class="p">,</span> <span class="n">calc2_behv</span><span class="p">)</span>
-    <span class="n">calc2_behv</span> <span class="o">=</span> <span class="n">_update_cap_gain_income</span><span class="p">(</span><span class="n">ltcg_chg</span><span class="p">,</span> <span class="n">calc2_behv</span><span class="p">)</span>
+    <span class="n">calc2_behv</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;p23250&#39;</span><span class="p">,</span> <span class="n">ltcg_chg</span><span class="p">)</span>
     <span class="c1"># Recalculate post-reform taxes incorporating behavioral responses</span>
     <span class="n">calc2_behv</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
     <span class="c1"># Extract dataframe from calc2_behv</span>
     <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
         <span class="n">df2</span> <span class="o">=</span> <span class="n">calc2_behv</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span>
-        <span class="n">df2</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;mtr_inctax&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">df2</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;mtr_paytax&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df2</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;mtr_inctax&#39;</span><span class="p">,</span> <span class="s1">&#39;mtr_paytax&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">df2</span><span class="p">[</span><span class="s1">&#39;mtr_combined&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wage_mtr2</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">df2</span> <span class="o">=</span> <span class="n">calc2_behv</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">DIST_VARIABLES</span><span class="p">)</span>
