@@ -16,3 +16,14 @@ document](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavi
 provides access to a template behavioral responses file that assumes
 no behavioral responses because all the response parameters are
 assumed to be zero.
+
+The three response parameters are documented on the [behavior
+parameters
+page](https://taxcalc.pslmodels.org/guide/behavior_params.html), and
+the logic that uses them is documented in the [`behresp` module API
+documentation](https://taxcalc.pslmodels.org/api/behresp.html).
+
+Note that a behavioral responses file used with the `tc --behavior`
+option must contain all three of the `sub`, `inc`, and `cg` keys,
+whereas the `response` function in the Python API assumes that an
+omitted elasticity is zero.

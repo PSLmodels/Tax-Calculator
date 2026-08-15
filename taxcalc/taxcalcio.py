@@ -484,6 +484,12 @@ class TaxCalcIO():
             return
         # do output calculations
         if self.behvdict:  # if assuming behavioral responses
+            # The response function does its own calc_all calls on copies
+            # of the two calc objects and returns results as dataframes,
+            # so the results are copied back into the two calc objects in
+            # order that the --tables, --graphs, and --dumpdb output logic
+            # below can use the behavior-adjusted results in the same way
+            # it uses static results.
             br_dump_bas, br_dump_ref = response(
                 self.calc_bas, self.calc_ref,
                 self.behvdict, dump=True,
@@ -730,6 +736,15 @@ class TaxCalcIO():
         """
         Copy behavioral-response dump DataFrame values back into the calc
         object, skipping the marginal-tax-rate columns.
+
+        Note that after this method is called, the calc object contains
+        input and output variables that incorporate behavioral responses,
+        which means those variables are no longer the ones that a plain
+        calc_all() call on the calc object would generate from its own
+        Policy parameters.  Any subsequent calc_all() call on the calc
+        object would recalculate output variables from the response-
+        adjusted input variables; the mtr method is called with
+        calc_all_already_called=True in order to avoid doing that.
         """
         int_variables = self.recs_bas.INTEGER_VARS
         vnames = list(br_dump.columns)

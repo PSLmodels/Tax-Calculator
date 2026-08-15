@@ -96,7 +96,9 @@ def cli_tc_main():
                         default=None)
     parser.add_argument('--behavior',
                         help=('BEHAVIOR is name of optional JSON behavioral '
-                              'response elasticities file. No --behavior '
+                              'response elasticities file, which must '
+                              'contain all three of the "sub", "inc", and '
+                              '"cg" elasticities. No --behavior '
                               'implies use of zero elasticities; that is, '
                               'no response to reform.'),
                         default=None)

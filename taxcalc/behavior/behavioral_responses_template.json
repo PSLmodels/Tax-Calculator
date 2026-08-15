@@ -2,11 +2,24 @@
 //
 // This JSON file serves as a template for specifying behavioral response
 // elasticities that specify how individuals respond to a tax reform.
+// All three keys must be present; use 0.0 to turn off a response channel.
 //
-// Detailed documentation on these parameters can be found in the
-// response function docstring in behresp.py module, which is at
-// the following URL:
-// https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behresp.py
+//   "sub" : substitution elasticity of taxable income; zero or positive;
+//           empirical estimates are typically in the 0.1 to 0.4 range.
+//
+//   "inc" : income elasticity of taxable income; zero or negative;
+//           values used in practice are typically in the 0.0 to -0.2 range.
+//
+//   "cg"  : SEMI-elasticity of long-term capital gains; zero or negative.
+//           This is NOT the tax-rate elasticity usually reported in the
+//           literature: a tax-rate elasticity of -0.792 corresponds to a
+//           "cg" value of about -3.45.
+//
+// Detailed documentation on these parameters, including their exact
+// definitions and the response equations in which they are used, can be
+// found at the following URLs:
+// https://taxcalc.pslmodels.org/guide/behavior_params.html
+// https://taxcalc.pslmodels.org/api/behresp.html
 {
     "sub": 0.0,
     "inc": 0.0,
