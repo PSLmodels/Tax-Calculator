@@ -1,5 +1,32 @@
 """
 Partial-equilibrium elasticity-based behavioral-responses logic.
+
+This module contains two independent sets of functions that are not
+used by each other:
+
+(1) The response function, which conducts a complete partial-equilibrium
+    analysis of a baseline-to-reform policy change: it computes the
+    behavioral response implied by the assumed elasticities, adds that
+    response to the reform filing units' input variables, recalculates
+    reform taxes, and returns baseline and reform DataFrame objects.
+    This is the function used by the tc CLI --behavior option and by
+    cookbook recipe 2.
+
+(2) The quantity_response and labor_response functions (and their
+    pch_response helper), which are stand-alone array arithmetic that
+    evaluate a log-log response equation for a caller-supplied quantity,
+    elasticities, prices, and incomes.  They conduct no tax calculations
+    and know nothing about Calculator objects; a caller must compute the
+    marginal tax rates and incomes and apply the returned dollar change.
+
+Beyond being unrelated in the code, the two sets of functions differ in
+their economics: the response function scales its substitution effect by
+taxable income (c04800), whereas labor_response and quantity_response
+scale theirs by the quantity (for example, earnings) passed in by the
+caller.  They also handle extreme values differently: the response
+function caps marginal tax rates at 0.99 and applies no floor to
+after-tax income, whereas quantity_response forces after-tax prices into
+the [0.01, inf] range and after-tax income into the [1, inf] range.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle behresp.py
@@ -23,49 +50,162 @@ def response(calc_1, calc_2, elasticities, dump=False):
     behavioral responses given by the nature of the baseline-to-reform
     change in policy and elasticities in the specified behavior dictionary.
 
-    Note: this function internally modifies a copy of calc_2 records to
+    This function internally modifies a copy of the calc_2 records to
     account for behavioral responses that arise from the policy reform that
-    involves moving from calc1 policy to calc2 policy.  Neither calc_1 nor
+    involves moving from calc_1 policy to calc_2 policy.  Neither calc_1 nor
     calc_2 need to have had calc_all() executed before calling the response
     function.  And neither calc_1 nor calc_2 are affected by this response
     function.
 
-    The elasticities argument is a dictionary containing the assumed response
-    elasticities.  Omitting an elasticity key:value pair in the dictionary
-    implies the omitted elasticity is assumed to be zero.  Here is the full
-    dictionary content and each elasticity's internal name:
+    Parameters
+    ----------
+    calc_1: Calculator object
+        represents baseline policy; must be advanced to the analysis year.
 
-     be_sub = elasticities['sub']
-       Substitution elasticity of taxable income.
-       Defined as proportional change in taxable income divided by
-       proportional change in marginal net-of-tax rate (1-MTR) on taxpayer
-       earnings caused by the reform.  Must be zero or positive.
+    calc_2: Calculator object
+        represents reform policy; must be advanced to the same analysis
+        year as calc_1 and must contain the same number of filing units.
 
-     be_inc = elasticities['inc']
-       Income elasticity of taxable income.
-       Defined as dollar change in taxable income divided by dollar change
-       in after-tax income caused by the reform.  Must be zero or negative.
+    elasticities: dictionary
+        contains the assumed response elasticities.  Omitting an
+        elasticity key:value pair implies the omitted elasticity is
+        assumed to be zero.  (Note that the tc CLI --behavior option is
+        stricter: a JSON behavior file must contain all three keys.)
+        Here is the full dictionary content and each elasticity's
+        internal name:
 
-     be_cg = elasticities['cg']
-       Semi-elasticity of long-term capital gains.
-       Defined as change in logarithm of long-term capital gains divided by
-       change in marginal tax rate (MTR) on long-term capital gains caused by
-       the reform.  Must be zero or negative.
-       Read response function documentation (see below) for discussion of
-       appropriate values.
+        be_sub = elasticities['sub']
+          Substitution elasticity of taxable income.
+          Defined as proportional change in taxable income divided by
+          proportional change in marginal net-of-tax rate (1-MTR) on
+          taxpayer earnings caused by the reform.
+          Must be zero or positive.
 
-    The optional dump argument controls the number of variables included
-    in the two returned DataFrame objects.  When dump=False (its default
-    value), the variables in the two returned DataFrame objects include
-    just the variables in the Tax-Calculator DIST_VARIABLES list, which
-    is sufficient for constructing the standard Tax-Calculator tables.
-    When dump=True, the variables in the two returned DataFrame objects
-    include all the Tax-Calculator input and calculated output variables,
-    which is the same output as produced by the Tax-Calculator tc --dump
-    option except for one difference: the tc --dump option provides two
-    calculated variables, mtr_inctax and mtr_paytax, that are replaced
-    in the dump output of this response function by mtr_combined, which
-    is the sum of mtr_inctax and mtr_paytax.
+        be_inc = elasticities['inc']
+          Income elasticity of taxable income.
+          Defined as dollar change in taxable income divided by dollar
+          change in after-tax income caused by the reform.
+          Must be zero or negative.
+
+        be_cg = elasticities['cg']
+          Semi-elasticity of long-term capital gains.
+          Defined as change in logarithm of long-term capital gains
+          divided by change in marginal tax rate (MTR) on long-term
+          capital gains caused by the reform.
+          Must be zero or negative.
+          See the capital-gains note below for a discussion of
+          appropriate values; be_cg is NOT the tax-rate elasticity
+          usually reported in the literature.
+
+    dump: boolean
+        controls the number of variables included in the two returned
+        DataFrame objects.  When dump=False (its default value), the
+        variables in the two returned DataFrame objects include just the
+        variables in the Tax-Calculator DIST_VARIABLES list, which is
+        sufficient for constructing the standard Tax-Calculator tables.
+        When dump=True, the variables in the two returned DataFrame
+        objects include all the Tax-Calculator input and calculated
+        output variables, which is the same output as produced by the
+        Tax-Calculator tc --dumpdb option except for one difference: the
+        tc dump output provides two calculated variables, mtr_inctax and
+        mtr_paytax, that are replaced in the dump output of this response
+        function by mtr_combined, which is the sum of mtr_inctax and
+        mtr_paytax.  Two cautions about the mtr_combined column: it is
+        expressed in percentage points (that is, it is 100 times the
+        rates returned by the Calculator.mtr method), and it contains all
+        zeros when both be_sub and be_inc are zero, because in that case
+        no earnings marginal tax rates are computed.
+
+    Returns
+    -------
+    (df1, df2): tuple of two Pandas DataFrame objects
+        df1 contains baseline-policy results extracted from a copy of
+        calc_1, and df2 contains reform-policy results, incorporating
+        the behavioral responses, extracted from a copy of calc_2.
+        Both have one row per filing unit, in input-data order, and
+        contain the columns described in the dump argument documentation.
+
+    Notes
+    -----
+    Response equations:
+
+      The substitution and income effects on taxable income are computed,
+      in dollars per filing unit, as follows, where mtr1 and mtr2 are the
+      baseline and reform combined (income plus payroll) marginal tax
+      rates on the taxpayer's earnings (e00200p) computed with respect to
+      full compensation and capped at mtr_cap (0.99), where c04800 is
+      baseline taxable income, and where combined1 and combined2 are the
+      baseline and reform combined income and payroll tax liabilities:
+
+        sub = be_sub * (((1 - mtr2) / (1 - mtr1)) - 1) * c04800
+
+        inc = be_inc * (combined1 - combined2)
+
+      The long-term capital gains response is computed, in dollars per
+      filing unit, as follows, where ltcg_mtr1 and ltcg_mtr2 are the
+      baseline and reform income-tax marginal tax rates on long-term
+      capital gains (p23250):
+
+        new_p23250 = p23250 * exp(be_cg * (ltcg_mtr2 - ltcg_mtr1))
+
+        ltcg_chg = new_p23250 - p23250
+
+      Note that the substitution effect is scaled by taxable income,
+      which includes long-term capital gains, so its magnitude is not
+      independent of the filing unit's LTCG amount.
+
+    How responses are applied to input variables:
+
+      The sum of the substitution and income effects is a change in
+      taxable income that must be mapped back onto the input variables
+      used in the tax calculation.  This function uses AGI minus itemized
+      deductions (agi_m_ided) as a proxy for taxable income, so the
+      mapping ignores the standard deduction, personal exemptions, and
+      the qualified business income deduction.  Itemized deductions
+      (c04470) are counted only for filing units that actually itemize
+      (that is, only when c04470 is no less than the standard deduction).
+
+      The dollar change in taxable income is allocated in proportion to
+      the three components of agi_m_ided --- wage and salary income
+      (e00200), other AGI (c00100 minus e00200), and itemized deductions
+      --- and the three parts are added to these input variables:
+
+        the wage part is added to both e00200 and e00200p
+        the other-income part is added to e00300 (taxable interest)
+        the deduction part is added to e19200 (interest paid deduction)
+
+      Two consequences are worth noting.  First, the spouse's earnings
+      variable, e00200s, is not adjusted, so after a response e00200 is
+      no longer the sum of e00200p and e00200s.  Second, a response shows
+      up in dump output as changes in e00300 and e19200 even for filing
+      units whose actual behavior would involve other income or deduction
+      items.  The capital-gains response, by contrast, is applied
+      directly to p23250.
+
+    Filing units excluded from the response, and capped values:
+
+      The substitution and income effects are applied only to filing
+      units with positive agi_m_ided; all other filing units are assumed
+      to have no ordinary-income response.  Within that group, filing
+      units that do not itemize receive no change in e19200.  Earnings
+      marginal tax rates above mtr_cap (0.99) are capped at mtr_cap in
+      order to avoid extreme or negative net-of-tax rates.  There is no
+      analogous cap on the capital-gains response, whose exponential form
+      can generate large proportional changes when the change in the
+      capital-gains marginal tax rate is large.
+
+    What is not modeled:
+
+      Each analysis year is handled independently: this function contains
+      no logic that carries a response in one year over into another
+      year, so retiming behavior --- most notably the realization timing
+      of capital gains --- is not modeled.  There are no response margins
+      for the spouse's earnings, for short-term capital gains, for
+      deduction items other than the mechanical e19200 adjustment
+      described above, or for any margin not represented by the three
+      elasticities.  Being a partial-equilibrium calculation, the
+      analysis holds constant all prices, wages, and macroeconomic
+      aggregates.
 
     Note: the use here of a dollar-change income elasticity (rather than
       a proportional-change elasticity) is consistent with Feldstein and
@@ -93,7 +233,9 @@ def response(calc_1, calc_2, elasticities, dump=False):
       with zero MTRs, we restrict this to the top 40% of tax units by AGI.
       Using this function, a semi-elasticity of -3.45 corresponds to a tax
       rate elasticity of -0.792.
-
+      Specifying be_cg equal to a published tax-rate elasticity such as
+      -0.792 is therefore a common mistake that generates a much smaller
+      capital-gains response than intended.
     """
     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
 
@@ -194,12 +336,9 @@ def response(calc_1, calc_2, elasticities, dump=False):
             mtr2 = np.where(wage_mtr2 > mtr_cap, mtr_cap, wage_mtr2)
             pch = ((1. - mtr2) / (1. - mtr1)) - 1.
             # Note: c04800 is filing unit's taxable income
-            # The substitution effect is scaled by taxable income, which
-            # includes long-term capital gains, so its magnitude is not
-            # independent of the filing unit's LTCG amount.  This is by
-            # design, but note that it differs from the labor_response
-            # and quantity_response functions below, which scale the
-            # substitution effect by earnings (that is, by quantity).
+            # Scaling by taxable income (rather than by earnings, as the
+            # labor_response and quantity_response functions do) is by
+            # design; see the module docstring.
             sub = be_sub * pch * calc1.array('c04800')
         # calculate magnitude of income effect
         if be_inc == 0.0:
@@ -261,6 +400,14 @@ def pch_response(elasticity=np.zeros(1),
     Calculate the percentage change response, given an elasticity and
     original/new values. Can be used to calculate substitution or
     income effects.
+
+    This is a helper function for the quantity_response function; it is
+    not part of the public API of this module (it is not in __all__) and
+    it is not used by the response function.
+
+    A val1 element equal to zero implies an undefined proportional
+    change, so this function returns a zero response for such elements
+    rather than generating a divide-by-zero warning.
 
     Parameters
     ----------

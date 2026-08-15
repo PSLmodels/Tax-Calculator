@@ -16,6 +16,9 @@ kernelspec:
 This is an advanced recipe that should be followed only after mastering the basic recipe.
 This recipe shows how to analyze the behavioral responses to a tax reform using the Tax-Calculator behresp module.
 
+The assumed elasticities below specify a substitution elasticity of taxable income of 0.25 and leave the income elasticity (`inc`) and the capital-gains semi-elasticity (`cg`) at their default value of zero, so only the substitution response channel is active.
+Each elasticity is documented on the [behavior parameters](../guide/behavior_params) page.
+
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
@@ -62,14 +65,21 @@ calc2.calc_all()
 itax_rev2sa = calc2.weighted_total('iitax')
 
 # specify assumed non-zero response-function substitution elasticity
+# (the omitted 'inc' and 'cg' elasticities are assumed to be zero)
 response_elasticities = {'sub': 0.25}
 
 # specify Calculator object for analysis of reform with behavioral responses
+# (the response function returns baseline and reform DataFrame objects and
+#  leaves calc1 and calc2 unchanged; the discarded first DataFrame contains
+#  the baseline results, which are the same as the calc1 results above)
 calc2 = tc.Calculator(policy=pol, records=recs)
 calc2.advance_to_year(CYR)
 _, df2br = tc.response(calc1, calc2, response_elasticities)
 
 # calculate reform income tax liabilities for CYR with behavioral response
+# (weighted_total cannot be used here because the response function returns
+#  a DataFrame rather than a Calculator object, so the weighting by the s006
+#  filing-unit sampling weight must be done explicitly)
 itax_rev2br = (df2br['iitax'] * df2br['s006']).sum()
 
 # print total income tax revenue estimates for CYR
@@ -83,6 +93,9 @@ Create multi-year diagnostic tables for
 1. baseline,
 2. reform excluding behavioral responses, and
 3. reform including behavioral responses
+
+Each year in the loop below is analyzed independently: the response function is called once per year and no response computed in one year is carried over into another year.
+This means that retiming behavior, most notably the realization timing of capital gains, is not being modeled.
 
 ```{code-cell} ipython3
 :hide-output: false
