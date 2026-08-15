@@ -1434,25 +1434,49 @@ class Calculator():
         std_taxes = self.array('c05800').copy()
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
+        # Note: the itemized deduction component variables must be
+        # restored here, and not just c04470/c21060/c21040, because the
+        # AMT function uses several of them (c17000, c18300, c20800) to
+        # compute the AMT preference add-backs.  Leaving them zeroed
+        # from the standard-deduction calculation above understates
+        # item_taxes for AMT filing units that itemize.
         self.zeroarray('standard')
         self.array('c21060', item_no_limit)
         self.array('c21040', item_phaseout)
         self.array('c04470', item)
+        for cvname in item_component_variable_names:
+            self.array(cvname, item_cvar[cvname])
         self._taxinc_to_amt()
         item_taxes = self.array('c05800').copy()
         # Replace standard deduction with zero so the filing unit
         # would always be better off itemizing
-        self.array('standard', np.where(item_taxes < std_taxes,
-                                        0., std))
-        self.array('c04470', np.where(item_taxes < std_taxes,
-                                      item, 0.))
-        self.array('c21060', np.where(item_taxes < std_taxes,
-                                      item_no_limit, 0.))
-        self.array('c21040', np.where(item_taxes < std_taxes,
-                                      item_phaseout, 0.))
+        # Note: the two tax amounts are equal for a filing unit on the
+        # AMT whose itemized deductions are all AMT preference items,
+        # because the add-back offsets the regular-tax reduction,
+        # leaving c05800 unchanged.  Such a unit is treated as itemizing
+        # only when its itemized deductions exceed its standard
+        # deduction, which is what a filing unit facing equal tax under
+        # the two deductions would do.  Without that condition, every
+        # filing unit whose tax does not depend on its deduction (most
+        # obviously, every unit owing no tax under either) would be
+        # treated as itemizing.  The tie-break is also limited to filing
+        # units owing tax, because a unit owing no tax under either
+        # deduction has no reason to itemize.  The two tax amounts are
+        # compared using a tolerance because the two branches reach the
+        # same amount by different arithmetic paths, so a tie that is
+        # exact in real arithmetic can differ in the last bits.
+        tie_tol = 0.01  # one cent
+        tied = np.logical_and(
+            np.absolute(item_taxes - std_taxes) < tie_tol,
+            std_taxes > 0.
+        )
+        itemizing = np.where(tied, item > std, item_taxes < std_taxes)
+        self.array('standard', np.where(itemizing, 0., std))
+        self.array('c04470', np.where(itemizing, item, 0.))
+        self.array('c21060', np.where(itemizing, item_no_limit, 0.))
+        self.array('c21040', np.where(itemizing, item_phaseout, 0.))
         for cvname in item_component_variable_names:
-            self.array(cvname, np.where(item_taxes < std_taxes,
-                                        item_cvar[cvname], 0.))
+            self.array(cvname, np.where(itemizing, item_cvar[cvname], 0.))
         del std
         del item
         del item_no_limit
