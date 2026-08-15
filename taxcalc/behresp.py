@@ -158,17 +158,10 @@ def response(calc_1, calc_2, elasticities, dump=False):
 
       The sum of the substitution and income effects is a change in
       taxable income that must be mapped back onto the input variables
-      used in the tax calculation.  This function uses AGI minus itemized
-      deductions (agi_m_ided) as a proxy for taxable income, so the
-      mapping ignores the standard deduction, personal exemptions, and
-      the qualified business income deduction.  Itemized deductions
-      (c04470) are counted only for filing units that actually itemize
-      (that is, only when c04470 is no less than the standard deduction).
-
-      The dollar change in taxable income is allocated in proportion to
-      the three components of agi_m_ided --- wage and salary income
-      (e00200), other AGI (c00100 minus e00200), and itemized deductions
-      --- and the three parts are added to these input variables:
+      used in the tax calculation.  The dollar change is allocated in
+      proportion to three components --- wage and salary income (e00200),
+      other AGI (c00100 minus e00200), and itemized deductions --- and
+      the three parts are added to these input variables:
 
         the wage part is added to both e00200 and e00200p
         the other-income part is added to e00300 (taxable interest)
@@ -182,11 +175,49 @@ def response(calc_1, calc_2, elasticities, dump=False):
       items.  The capital-gains response, by contrast, is applied
       directly to p23250.
 
+      The denominator used to form the three allocation shares, called
+      alloc_base in the code, is AGI minus itemized deductions, where
+      itemized deductions (c04470) are counted only for filing units that
+      actually itemize (that is, only when c04470 is no less than the
+      standard deduction).  This is NOT an approximation of taxable
+      income, and it must not be replaced by the calculated taxable
+      income variable, c04800.  Because other AGI is defined as AGI minus
+      wages, the three components sum to alloc_base by construction, so
+      the three shares sum to one and the allocated parts sum to the
+      intended dollar change.  Dividing by any other quantity --- c04800
+      included --- would scale the delivered change by the ratio of
+      alloc_base to that quantity.  Taxable income is used where taxable
+      income is the concept called for: c04800 scales the substitution
+      effect, as described in the response equations above.
+
+      The mapping does assume that a dollar added to e00200, e00300, or
+      e19200 moves taxable income by a dollar.  That is exact for a
+      filing unit in the interior of the rate schedule, but not for one
+      whose AGI change also moves an AGI-linked provision (taxable Social
+      Security benefits, phase-outs such as the EITC, the qualified
+      business income deduction, or the itemized deduction limitation).
+      The realized change in aggregate taxable income therefore differs
+      somewhat from the intended change: for a top-bracket rate reform
+      applied to CPS data for 2026, with be_sub of 0.25 and be_inc of
+      -0.1, the realized change exceeded the intended change by about
+      four percent, with under one percent of responding filing units
+      differing by more than ten dollars.
+
     Filing units excluded from the response, and capped values:
 
       The substitution and income effects are applied only to filing
-      units with positive agi_m_ided; all other filing units are assumed
-      to have no ordinary-income response.  Within that group, filing
+      units with positive alloc_base; all other filing units are assumed
+      to have no ordinary-income response.  That condition is a guard on
+      the allocation arithmetic rather than an economic screen: it keeps
+      the denominator away from zero and prevents the negative shares
+      that a negative alloc_base would produce.  It excludes no filing
+      unit that has positive taxable income, because c04800 is positive
+      only when alloc_base is positive.  Note that the converse does not
+      hold: a filing unit with positive alloc_base and zero taxable
+      income does respond, which is intended, because such a unit can
+      still owe payroll tax and therefore can still have an income
+      effect.  For that reason the condition must not be tightened to
+      require positive c04800.  Within the responding group, filing
       units that do not itemize receive no change in e19200.  Earnings
       marginal tax rates above mtr_cap (0.99) are capped at mtr_cap in
       order to avoid extreme or negative net-of-tax rates.  There is no
@@ -240,10 +271,8 @@ def response(calc_1, calc_2, elasticities, dump=False):
     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
 
     # Check function argument types and elasticity values
-    calc1 = copy.deepcopy(calc_1)
-    calc2 = copy.deepcopy(calc_2)
-    assert isinstance(calc1, Calculator)
-    assert isinstance(calc2, Calculator)
+    assert isinstance(calc_1, Calculator)
+    assert isinstance(calc_2, Calculator)
     assert isinstance(elasticities, dict)
     be_sub = elasticities['sub'] if 'sub' in elasticities else 0.0
     be_inc = elasticities['inc'] if 'inc' in elasticities else 0.0
@@ -251,32 +280,43 @@ def response(calc_1, calc_2, elasticities, dump=False):
     assert be_sub >= 0.0
     assert be_inc <= 0.0
     assert be_cg <= 0.0
+    calc1 = copy.deepcopy(calc_1)
+    calc2 = copy.deepcopy(calc_2)
 
     # Begin nested functions used only in this response function
     def _update_ordinary_income(taxinc_change, calc):
         """
         Implement total taxable income change induced by behavioral response.
         """
-        # compute AGI minus itemized deductions, agi_m_ided
+        # compute allocation base: AGI minus itemized deductions
+        # Note: alloc_base is not an approximation of taxable income and
+        # must not be replaced by the c04800 taxable income variable; it
+        # is the sum of the three components being adjusted below, which
+        # is what makes the three allocation shares sum to one.  See the
+        # response function docstring for details.
         agi = calc.array('c00100')
         ided = np.where(calc.array('c04470') < calc.array('standard'),
                         0., calc.array('c04470'))
-        agi_m_ided = agi - ided
-        # assume behv response only for filing units with positive agi_m_ided
-        pos = np.array(agi_m_ided > 0., dtype=bool)
-        delta_income = np.where(pos, taxinc_change, 0.)
-        # allocate delta_income into three parts
+        alloc_base = agi - ided
+        # apply response only where the allocation arithmetic is valid
+        # Note: this guards against a zero denominator and against the
+        # negative shares implied by a negative alloc_base.  It is not an
+        # economic screen and must not be tightened to require positive
+        # c04800: a filing unit with zero taxable income can still owe
+        # payroll tax and therefore can still have an income effect.
+        pos = np.array(alloc_base > 0., dtype=bool)
+        # allocate change in taxable income into three parts
+        # Note: because oinc is agi minus winc, the three parts always
+        # satisfy delta_winc + delta_oinc - delta_ided == taxinc_change
+        # for the pos filing units, so there is nothing to check here.
         # pylint: disable=unsupported-assignment-operation
         winc = calc.array('e00200')
-        delta_winc = np.zeros_like(agi)
-        delta_winc[pos] = delta_income[pos] * winc[pos] / agi_m_ided[pos]
         oinc = agi - winc
-        delta_oinc = np.zeros_like(agi)
-        delta_oinc[pos] = delta_income[pos] * oinc[pos] / agi_m_ided[pos]
-        delta_ided = np.zeros_like(agi)
-        delta_ided[pos] = delta_income[pos] * ided[pos] / agi_m_ided[pos]
-        # confirm that the three parts are consistent with delta_income
-        assert np.allclose(delta_income, delta_winc + delta_oinc - delta_ided)
+        share = np.zeros_like(agi)
+        share[pos] = taxinc_change[pos] / alloc_base[pos]
+        delta_winc = share * winc
+        delta_oinc = share * oinc
+        delta_ided = share * ided
         # add the three parts to different records variables embedded in calc
         calc.incarray('e00200', delta_winc)
         calc.incarray('e00200p', delta_winc)
@@ -284,49 +324,54 @@ def response(calc_1, calc_2, elasticities, dump=False):
         calc.incarray('e19200', delta_ided)
         return calc
 
-    def _update_cap_gain_income(cap_gain_change, calc):
-        """
-        Implement capital gain change induced by behavioral responses.
-        """
-        calc.incarray('p23250', cap_gain_change)
-        return calc
-
     def _mtr12(calc__1, calc__2, mtr_of='e00200p', tax_type='combined'):
         """
         Computes marginal tax rates for Calculator objects calc__1 and calc__2
         for specified mtr_of income type and specified tax_type.
+
+        Both calc__1 and calc__2 must already have had their calc_all
+        method called, which allows the mtr method to skip one of the two
+        calc_all calls it would otherwise make for each Calculator object.
         """
         assert tax_type in ('combined', 'iitax')
-        _, iitax1, combined1 = calc__1.mtr(mtr_of, wrt_full_compensation=True)
-        _, iitax2, combined2 = calc__2.mtr(mtr_of, wrt_full_compensation=True)
+        _, iitax1, combined1 = calc__1.mtr(mtr_of,
+                                           calc_all_already_called=True,
+                                           wrt_full_compensation=True)
+        _, iitax2, combined2 = calc__2.mtr(mtr_of,
+                                           calc_all_already_called=True,
+                                           wrt_full_compensation=True)
         if tax_type == 'combined':
             return (combined1, combined2)
         return (iitax1, iitax2)
     # End nested functions used only in this response function
 
     # Begin main logic of response function
-    calc1.calc_all()
-    calc2.calc_all()
     assert calc1.array_len == calc2.array_len
     assert calc1.current_year == calc2.current_year
+    calc1.calc_all()
+    calc2.calc_all()
     mtr_cap = 0.99
     if dump:
         recs_vinfo = Records(data=None)  # contains records VARINFO only
-        dvars = list(recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS)
+        dvars = sorted(recs_vinfo.USABLE_READ_VARS |
+                       recs_vinfo.CALCULATED_VARS)
     # Calculate sum of substitution and income effects
-    if be_sub == 0.0 and be_inc == 0.0:
-        zero_sub_and_inc = True
-        si_chg = None  # is not used when zero_sub_and_inc is True
-        if dump:
-            wage_mtr1 = np.zeros(calc1.array_len)
-            wage_mtr2 = np.zeros(calc2.array_len)
+    zero_sub_and_inc = be_sub == 0.0 and be_inc == 0.0
+    # Note: the wage marginal tax rates are used only by the substitution
+    # effect and by the dump output, so they are not computed when be_sub
+    # is zero unless they are needed for the dump output
+    if be_sub == 0.0 and (zero_sub_and_inc or not dump):
+        wage_mtr1 = np.zeros(calc1.array_len)
+        wage_mtr2 = np.zeros(calc2.array_len)
     else:
-        zero_sub_and_inc = False
         # calculate marginal combined tax rates on taxpayer wages+salary
         # (e00200p is taxpayer's wages+salary)
         wage_mtr1, wage_mtr2 = _mtr12(calc1, calc2,
                                       mtr_of='e00200p',
                                       tax_type='combined')
+    if zero_sub_and_inc:
+        si_chg = None  # is not used when zero_sub_and_inc is True
+    else:
         # calculate magnitude of substitution effect
         if be_sub == 0.0:
             sub = np.zeros(calc1.array_len)
@@ -366,25 +411,25 @@ def response(calc_1, calc_2, elasticities, dump=False):
     # Extract dataframe from calc1
     if dump:
         df1 = calc1.dataframe(dvars)
-        df1.drop('mtr_inctax', axis='columns', inplace=True)
-        df1.drop('mtr_paytax', axis='columns', inplace=True)
+        df1.drop(['mtr_inctax', 'mtr_paytax'], axis='columns', inplace=True)
         df1['mtr_combined'] = wage_mtr1 * 100
     else:
         df1 = calc1.dataframe(DIST_VARIABLES)
     del calc1
     # Add behavioral-response changes to income sources
-    calc2_behv = copy.deepcopy(calc2)
+    # Note: calc2 is already a private deepcopy of the calc_2 argument,
+    # so it can be modified without making another deepcopy of it
+    calc2_behv = calc2
     del calc2
     if not zero_sub_and_inc:
         calc2_behv = _update_ordinary_income(si_chg, calc2_behv)
-    calc2_behv = _update_cap_gain_income(ltcg_chg, calc2_behv)
+    calc2_behv.incarray('p23250', ltcg_chg)
     # Recalculate post-reform taxes incorporating behavioral responses
     calc2_behv.calc_all()
     # Extract dataframe from calc2_behv
     if dump:
         df2 = calc2_behv.dataframe(dvars)
-        df2.drop('mtr_inctax', axis='columns', inplace=True)
-        df2.drop('mtr_paytax', axis='columns', inplace=True)
+        df2.drop(['mtr_inctax', 'mtr_paytax'], axis='columns', inplace=True)
         df2['mtr_combined'] = wage_mtr2 * 100
     else:
         df2 = calc2_behv.dataframe(DIST_VARIABLES)
