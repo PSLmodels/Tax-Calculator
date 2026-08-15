@@ -240,10 +240,8 @@ def response(calc_1, calc_2, elasticities, dump=False):
     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
 
     # Check function argument types and elasticity values
-    calc1 = copy.deepcopy(calc_1)
-    calc2 = copy.deepcopy(calc_2)
-    assert isinstance(calc1, Calculator)
-    assert isinstance(calc2, Calculator)
+    assert isinstance(calc_1, Calculator)
+    assert isinstance(calc_2, Calculator)
     assert isinstance(elasticities, dict)
     be_sub = elasticities['sub'] if 'sub' in elasticities else 0.0
     be_inc = elasticities['inc'] if 'inc' in elasticities else 0.0
@@ -251,6 +249,8 @@ def response(calc_1, calc_2, elasticities, dump=False):
     assert be_sub >= 0.0
     assert be_inc <= 0.0
     assert be_cg <= 0.0
+    calc1 = copy.deepcopy(calc_1)
+    calc2 = copy.deepcopy(calc_2)
 
     # Begin nested functions used only in this response function
     def _update_ordinary_income(taxinc_change, calc):
@@ -264,19 +264,18 @@ def response(calc_1, calc_2, elasticities, dump=False):
         agi_m_ided = agi - ided
         # assume behv response only for filing units with positive agi_m_ided
         pos = np.array(agi_m_ided > 0., dtype=bool)
-        delta_income = np.where(pos, taxinc_change, 0.)
-        # allocate delta_income into three parts
+        # allocate change in taxable income into three parts
+        # Note: because oinc is agi minus winc, the three parts always
+        # satisfy delta_winc + delta_oinc - delta_ided == taxinc_change
+        # for the pos filing units, so there is nothing to check here.
         # pylint: disable=unsupported-assignment-operation
         winc = calc.array('e00200')
-        delta_winc = np.zeros_like(agi)
-        delta_winc[pos] = delta_income[pos] * winc[pos] / agi_m_ided[pos]
         oinc = agi - winc
-        delta_oinc = np.zeros_like(agi)
-        delta_oinc[pos] = delta_income[pos] * oinc[pos] / agi_m_ided[pos]
-        delta_ided = np.zeros_like(agi)
-        delta_ided[pos] = delta_income[pos] * ided[pos] / agi_m_ided[pos]
-        # confirm that the three parts are consistent with delta_income
-        assert np.allclose(delta_income, delta_winc + delta_oinc - delta_ided)
+        share = np.zeros_like(agi)
+        share[pos] = taxinc_change[pos] / agi_m_ided[pos]
+        delta_winc = share * winc
+        delta_oinc = share * oinc
+        delta_ided = share * ided
         # add the three parts to different records variables embedded in calc
         calc.incarray('e00200', delta_winc)
         calc.incarray('e00200p', delta_winc)
@@ -284,49 +283,54 @@ def response(calc_1, calc_2, elasticities, dump=False):
         calc.incarray('e19200', delta_ided)
         return calc
 
-    def _update_cap_gain_income(cap_gain_change, calc):
-        """
-        Implement capital gain change induced by behavioral responses.
-        """
-        calc.incarray('p23250', cap_gain_change)
-        return calc
-
     def _mtr12(calc__1, calc__2, mtr_of='e00200p', tax_type='combined'):
         """
         Computes marginal tax rates for Calculator objects calc__1 and calc__2
         for specified mtr_of income type and specified tax_type.
+
+        Both calc__1 and calc__2 must already have had their calc_all
+        method called, which allows the mtr method to skip one of the two
+        calc_all calls it would otherwise make for each Calculator object.
         """
         assert tax_type in ('combined', 'iitax')
-        _, iitax1, combined1 = calc__1.mtr(mtr_of, wrt_full_compensation=True)
-        _, iitax2, combined2 = calc__2.mtr(mtr_of, wrt_full_compensation=True)
+        _, iitax1, combined1 = calc__1.mtr(mtr_of,
+                                           calc_all_already_called=True,
+                                           wrt_full_compensation=True)
+        _, iitax2, combined2 = calc__2.mtr(mtr_of,
+                                           calc_all_already_called=True,
+                                           wrt_full_compensation=True)
         if tax_type == 'combined':
             return (combined1, combined2)
         return (iitax1, iitax2)
     # End nested functions used only in this response function
 
     # Begin main logic of response function
-    calc1.calc_all()
-    calc2.calc_all()
     assert calc1.array_len == calc2.array_len
     assert calc1.current_year == calc2.current_year
+    calc1.calc_all()
+    calc2.calc_all()
     mtr_cap = 0.99
     if dump:
         recs_vinfo = Records(data=None)  # contains records VARINFO only
-        dvars = list(recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS)
+        dvars = sorted(recs_vinfo.USABLE_READ_VARS |
+                       recs_vinfo.CALCULATED_VARS)
     # Calculate sum of substitution and income effects
-    if be_sub == 0.0 and be_inc == 0.0:
-        zero_sub_and_inc = True
-        si_chg = None  # is not used when zero_sub_and_inc is True
-        if dump:
-            wage_mtr1 = np.zeros(calc1.array_len)
-            wage_mtr2 = np.zeros(calc2.array_len)
+    zero_sub_and_inc = be_sub == 0.0 and be_inc == 0.0
+    # Note: the wage marginal tax rates are used only by the substitution
+    # effect and by the dump output, so they are not computed when be_sub
+    # is zero unless they are needed for the dump output
+    if be_sub == 0.0 and (zero_sub_and_inc or not dump):
+        wage_mtr1 = np.zeros(calc1.array_len)
+        wage_mtr2 = np.zeros(calc2.array_len)
     else:
-        zero_sub_and_inc = False
         # calculate marginal combined tax rates on taxpayer wages+salary
         # (e00200p is taxpayer's wages+salary)
         wage_mtr1, wage_mtr2 = _mtr12(calc1, calc2,
                                       mtr_of='e00200p',
                                       tax_type='combined')
+    if zero_sub_and_inc:
+        si_chg = None  # is not used when zero_sub_and_inc is True
+    else:
         # calculate magnitude of substitution effect
         if be_sub == 0.0:
             sub = np.zeros(calc1.array_len)
@@ -366,25 +370,25 @@ def response(calc_1, calc_2, elasticities, dump=False):
     # Extract dataframe from calc1
     if dump:
         df1 = calc1.dataframe(dvars)
-        df1.drop('mtr_inctax', axis='columns', inplace=True)
-        df1.drop('mtr_paytax', axis='columns', inplace=True)
+        df1.drop(['mtr_inctax', 'mtr_paytax'], axis='columns', inplace=True)
         df1['mtr_combined'] = wage_mtr1 * 100
     else:
         df1 = calc1.dataframe(DIST_VARIABLES)
     del calc1
     # Add behavioral-response changes to income sources
-    calc2_behv = copy.deepcopy(calc2)
+    # Note: calc2 is already a private deepcopy of the calc_2 argument,
+    # so it can be modified without making another deepcopy of it
+    calc2_behv = calc2
     del calc2
     if not zero_sub_and_inc:
         calc2_behv = _update_ordinary_income(si_chg, calc2_behv)
-    calc2_behv = _update_cap_gain_income(ltcg_chg, calc2_behv)
+    calc2_behv.incarray('p23250', ltcg_chg)
     # Recalculate post-reform taxes incorporating behavioral responses
     calc2_behv.calc_all()
     # Extract dataframe from calc2_behv
     if dump:
         df2 = calc2_behv.dataframe(dvars)
-        df2.drop('mtr_inctax', axis='columns', inplace=True)
-        df2.drop('mtr_paytax', axis='columns', inplace=True)
+        df2.drop(['mtr_inctax', 'mtr_paytax'], axis='columns', inplace=True)
         df2['mtr_combined'] = wage_mtr2 * 100
     else:
         df2 = calc2_behv.dataframe(DIST_VARIABLES)
