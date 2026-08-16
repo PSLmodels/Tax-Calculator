@@ -70,7 +70,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
         contains the assumed response elasticities.  Omitting an
         elasticity key:value pair implies the omitted elasticity is
         assumed to be zero.  (Note that the tc CLI --behavior option is
-        stricter: a JSON behavior file must contain all three keys.)
+        stricter: a JSON behavior file must contain all the keys.)
         Here is the full dictionary content and each elasticity's
         internal name:
 
@@ -350,7 +350,8 @@ def response(calc_1, calc_2, elasticities, dump=False):
     assert calc1.current_year == calc2.current_year
     calc1.calc_all()
     calc2.calc_all()
-    mtr_cap = 0.99
+    # mtr_cap = 0.99
+    mtr_cap = 9e99  # no mtr_cap
     if dump:
         recs_vinfo = Records(data=None)  # contains records VARINFO only
         dvars = sorted(recs_vinfo.USABLE_READ_VARS |
