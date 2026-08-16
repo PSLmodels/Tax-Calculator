@@ -24,9 +24,10 @@ their economics: the response function scales its substitution effect by
 taxable income (c04800), whereas labor_response and quantity_response
 scale theirs by the quantity (for example, earnings) passed in by the
 caller.  They also handle extreme values differently: the response
-function caps marginal tax rates at 0.99 and applies no floor to
-after-tax income, whereas quantity_response forces after-tax prices into
-the [0.01, inf] range and after-tax income into the [1, inf] range.
+function caps nothing --- it applies no cap to marginal tax rates and no
+floor to after-tax income --- whereas quantity_response forces after-tax
+prices into the [0.01, inf] range and after-tax income into the
+[1, inf] range.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle behresp.py
@@ -70,7 +71,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
         contains the assumed response elasticities.  Omitting an
         elasticity key:value pair implies the omitted elasticity is
         assumed to be zero.  (Note that the tc CLI --behavior option is
-        stricter: a JSON behavior file must contain all three keys.)
+        stricter: a JSON behavior file must contain all the keys.)
         Here is the full dictionary content and each elasticity's
         internal name:
 
@@ -133,7 +134,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
       in dollars per filing unit, as follows, where mtr1 and mtr2 are the
       baseline and reform combined (income plus payroll) marginal tax
       rates on the taxpayer's earnings (e00200p) computed with respect to
-      full compensation and capped at mtr_cap (0.99), where c04800 is
+      full compensation (and not capped in any way), where c04800 is
       baseline taxable income, and where combined1 and combined2 are the
       baseline and reform combined income and payroll tax liabilities:
 
@@ -203,7 +204,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
       four percent, with under one percent of responding filing units
       differing by more than ten dollars.
 
-    Filing units excluded from the response, and capped values:
+    Filing units excluded from the response:
 
       The substitution and income effects are applied only to filing
       units with positive alloc_base; all other filing units are assumed
@@ -218,10 +219,13 @@ def response(calc_1, calc_2, elasticities, dump=False):
       still owe payroll tax and therefore can still have an income
       effect.  For that reason the condition must not be tightened to
       require positive c04800.  Within the responding group, filing
-      units that do not itemize receive no change in e19200.  Earnings
-      marginal tax rates above mtr_cap (0.99) are capped at mtr_cap in
-      order to avoid extreme or negative net-of-tax rates.  There is no
-      analogous cap on the capital-gains response, whose exponential form
+      units that do not itemize receive no change in e19200.  Aside from
+      this positive alloc_base condition, the response function applies
+      no adhoc limits: earnings marginal tax rates are used exactly as
+      computed, with no cap, so a marginal tax rate at or above one
+      generates a zero or negative baseline net-of-tax rate and hence an
+      extreme substitution effect for that filing unit.  Likewise, there
+      is no limit on the capital-gains response, whose exponential form
       can generate large proportional changes when the change in the
       capital-gains marginal tax rate is large.
 
@@ -350,7 +354,6 @@ def response(calc_1, calc_2, elasticities, dump=False):
     assert calc1.current_year == calc2.current_year
     calc1.calc_all()
     calc2.calc_all()
-    mtr_cap = 0.99
     if dump:
         recs_vinfo = Records(data=None)  # contains records VARINFO only
         dvars = sorted(recs_vinfo.USABLE_READ_VARS |
@@ -377,9 +380,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
             sub = np.zeros(calc1.array_len)
         else:
             # proportional change in marginal net-of-tax rates on earnings
-            mtr1 = np.where(wage_mtr1 > mtr_cap, mtr_cap, wage_mtr1)
-            mtr2 = np.where(wage_mtr2 > mtr_cap, mtr_cap, wage_mtr2)
-            pch = ((1. - mtr2) / (1. - mtr1)) - 1.
+            pch = ((1. - wage_mtr2) / (1. - wage_mtr1)) - 1.
             # Note: c04800 is filing unit's taxable income
             # Scaling by taxable income (rather than by earnings, as the
             # labor_response and quantity_response functions do) is by
