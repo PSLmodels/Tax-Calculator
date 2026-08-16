@@ -1,0 +1,6 @@
+{
+    "policy": {
+        // include all earnings in FICA/SECA tax base beginning in 2028
+        "SS_Earnings_c": {"2028": 9e99}
+    }
+}
