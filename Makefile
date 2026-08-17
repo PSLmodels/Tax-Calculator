@@ -104,7 +104,7 @@ idtest: package
 	@cd taxcalc/cli/input_data_tests ; ./tests.sh
 
 define coverage-cleanup
-rm -f .coverage htmlcov/*
+rm -f .coverage .coverage.* htmlcov/*
 endef
 
 COVMARK = "not requires_puf and not requires_tmd"
@@ -114,8 +114,7 @@ OS := $(shell uname -s)
 .PHONY=coverage
 coverage:
 	@$(coverage-cleanup)
-	@coverage run -m pytest -v -m $(COVMARK) > /dev/null
-	@coverage html --ignore-errors
+	@pytest -v -n6 -m $(COVMARK) --cov --cov-report=html:htmlcov > /dev/null
 ifeq ($(OS), Darwin) # on Mac OS X
 	@open htmlcov/index.html
 else

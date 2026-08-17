@@ -42,13 +42,13 @@ def test_for_consistency(tests_path):
     # pylint: disable=too-many-locals
     dev_pkgs = set([
         'pytest',
+        'pytest-cov',
         'pytest-xdist',
         'pytest-asyncio',
         'requests',
         'aiohttp',
         'pycodestyle',
         'pylint',
-        'coverage',
         'pip',
         'jupyter-book<2.0',
         'setuptools'

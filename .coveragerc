@@ -6,3 +6,6 @@ omit =
     taxcalc/cli/*
     taxcalc/tests/*
     taxcalc/validation/*
+
+[report]
+ignore_errors = True

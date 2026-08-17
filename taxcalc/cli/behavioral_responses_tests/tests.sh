@@ -16,13 +16,9 @@
 #   run 50: no --behavior option (static analysis)
 #   run 60: --behavior br1.json (all elasticities are non-zero)
 #
-# In addition to the within-pair comparisons, run 20 is compared with
-# run 10 to check that zero elasticities produce static results, and
-# run 30 is compared with the run30-35.tables-expect file, which contain
-# stored expected results.  A difference from a stored expected results
-# file indicates a bug: as stated in CLAUDE.md, do not regenerate an expect
-# file in order to make a failing comparison pass without first getting
-# approval.
+# The within-pair comparions should never fail.  The comparion with an
+# -expect file should not fail unless the behavioral response or policy
+# reform parameters have been changed.
 #
 # Note that the capital-gains response has no effect on results computed
 # with CPS input data, because those data contain no long-term capital

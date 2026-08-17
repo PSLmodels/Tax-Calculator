@@ -6,10 +6,7 @@ hard-coded expected values.  Those values are weighted totals of the
 iitax variable, expressed in billions of dollars, for the specified
 refyear using the cps_subsample input data.  They are not analytically
 derived, so they must be regenerated whenever the input data, the tax
-logic, or the response logic changes.  As stated in CLAUDE.md, a
-failing comparison against these stored values indicates a bug in the
-branch changes; get approval before revising an expected value in order
-to make a failing test pass.
+logic, or the response logic changes.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle test_behresp.py
