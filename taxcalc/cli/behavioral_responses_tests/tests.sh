@@ -34,9 +34,19 @@
 ERRORS=0
 
 tc cps.csv 2035 --numyears 1                     --runid 10 \
-   --reform refA.json --exact --tables --silent
+   --reform refA.json --exact --tables --silent &
 tc cps.csv 2028 --numyears 8                     --runid 11 \
-   --reform refA.json --exact --tables --silent
+   --reform refA.json --exact --tables --silent &
+tc cps.csv 2035 --numyears 1 --behavior br0.json --runid 20 \
+   --reform refA.json --exact --tables --silent &
+wait
+tc cps.csv 2028 --numyears 8 --behavior br0.json --runid 21 \
+   --reform refA.json --exact --tables --silent &
+tc cps.csv 2035 --numyears 1 --behavior br1.json --runid 30 \
+   --reform refA.json --exact --tables --silent &
+tc cps.csv 2028 --numyears 8 --behavior br1.json --runid 31 \
+   --reform refA.json --exact --tables --graphs --silent &
+wait
 cmp run11-35.tables run11-35.tables-expect
 if [ $? -ne 0 ]; then
     ERRORS=1
@@ -47,37 +57,26 @@ if [ $? -ne 0 ]; then
     ERRORS=1
     echo Differences between run11-35.tables run10-35.tables
 fi
-
-tc cps.csv 2035 --numyears 1 --behavior br0.json --runid 20 \
-   --reform refA.json --exact --tables --silent
 cmp run20-35.tables run10-35.tables
 if [ $? -ne 0 ]; then
     ERRORS=1
     echo Differences between run20-35.tables run10-35.tables
 fi
-tc cps.csv 2028 --numyears 8 --behavior br0.json --runid 21 \
-   --reform refA.json --exact --tables --silent
 cmp run21-35.tables run20-35.tables
 if [ $? -ne 0 ]; then
     ERRORS=1
     echo Differences between run21-35.tables run20-35.tables
 fi
-
-tc cps.csv 2035 --numyears 1 --behavior br1.json --runid 30 \
-   --reform refA.json --exact --tables --silent
 cmp run30-35.tables run30-35.tables-expect
 if [ $? -ne 0 ]; then
     ERRORS=1
     echo Differences between run30-35.tables run30-35.tables-expect
 fi
-tc cps.csv 2028 --numyears 8 --behavior br1.json --runid 31 \
-   --reform refA.json --exact --tables --graphs --silent
 cmp run31-35.tables run30-35.tables
 if [ $? -ne 0 ]; then
     ERRORS=1
     echo Differences between run31-35.tables run30-35.tables
 fi
-
 if [ $ERRORS -eq 0 ]; then
     rm -f run??-??.tables
     rm -f run31-??-???.html
@@ -96,22 +95,21 @@ if ! [[ -f ../../../tmd_growfactors.csv ]]; then
     echo "Skipping TMD input data test" >&2
     exit 0
 fi
-
 tc ../../../tmd.csv 2035 --numyears 1 --runid 50 \
-   --reform refB.json --exact --tables --silent
+   --reform refB.json --exact --tables --silent &
+tc ../../../tmd.csv 2035 --numyears 1 --behavior br1.json --runid 60 \
+   --reform refB.json --exact --tables --silent &
+wait
 cmp run50-35.tables run50-35.tables-expect
 if [ $? -ne 0 ]; then
     ERRORS=1
     echo Differences between run50-35.tables run50-35.tables-expect
 fi
-tc ../../../tmd.csv 2035 --numyears 1 --behavior br1.json --runid 60 \
-   --reform refB.json --exact --tables --silent
 cmp run60-35.tables run60-35.tables-expect
 if [ $? -ne 0 ]; then
     ERRORS=1
     echo Differences between run60-35.tables run60-35.tables-expect
 fi
-
 if [ $ERRORS -eq 0 ]; then
     rm -f run??-??.tables
 fi
