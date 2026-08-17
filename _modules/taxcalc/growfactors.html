@@ -440,9 +440,9 @@
                 <article class="bd-article">
                   
   <h1>Source code for taxcalc.growfactors</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Tax-Calculator GrowFactors class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="c1"># CODING-STYLE CHECKS:</span>
 <span class="c1"># pycodestyle growfactors.py</span>
 <span class="c1"># pylint --disable=locally-disabled growfactors.py</span>
@@ -456,7 +456,7 @@
 <div class="viewcode-block" id="GrowFactors">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GrowFactors</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Constructor for the GrowFactors class.</span>
 
 <span class="sd">    Parameters</span>
@@ -477,23 +477,23 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Typical usage is &quot;gfactor = GrowFactors()&quot;, which produces an object</span>
+<span class="sd">    Typical usage is "gfactor = GrowFactors()", which produces an object</span>
 <span class="sd">    containing baseline growth factors in the GrowFactors.FILE_NAME file,</span>
 <span class="sd">    which is used to extrapolate cps and puf data from the taxdata repository,</span>
 <span class="sd">    and is used to index policy parameters.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">PACKAGE_FILE_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;growfactors.csv&#39;</span><span class="p">]</span>
+    <span class="n">PACKAGE_FILE_NAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'growfactors.csv'</span><span class="p">]</span>
     <span class="n">FILE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 
-    <span class="n">VALID_NAMES</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;ABOOK&#39;</span><span class="p">,</span> <span class="s1">&#39;ACGNS&#39;</span><span class="p">,</span> <span class="s1">&#39;ACPIM&#39;</span><span class="p">,</span> <span class="s1">&#39;ACPIU&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;ADIVS&#39;</span><span class="p">,</span> <span class="s1">&#39;AINTS&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;AIPD&#39;</span><span class="p">,</span> <span class="s1">&#39;ASCHCI&#39;</span><span class="p">,</span> <span class="s1">&#39;ASCHCL&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;ASCHEI&#39;</span><span class="p">,</span> <span class="s1">&#39;ASCHEL&#39;</span><span class="p">,</span> <span class="s1">&#39;ASCHF&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;ASOCSEC&#39;</span><span class="p">,</span> <span class="s1">&#39;ATXPY&#39;</span><span class="p">,</span> <span class="s1">&#39;AUCOMP&#39;</span><span class="p">,</span> <span class="s1">&#39;AWAGE&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;ABENOTHER&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENMCARE&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENMCAID&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;ABENSSI&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENSNAP&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENWIC&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;ABENHOUSING&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENTANF&#39;</span><span class="p">,</span> <span class="s1">&#39;ABENVET&#39;</span><span class="p">])</span>
+    <span class="n">VALID_NAMES</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">'ABOOK'</span><span class="p">,</span> <span class="s1">'ACGNS'</span><span class="p">,</span> <span class="s1">'ACPIM'</span><span class="p">,</span> <span class="s1">'ACPIU'</span><span class="p">,</span>
+                       <span class="s1">'ADIVS'</span><span class="p">,</span> <span class="s1">'AINTS'</span><span class="p">,</span>
+                       <span class="s1">'AIPD'</span><span class="p">,</span> <span class="s1">'ASCHCI'</span><span class="p">,</span> <span class="s1">'ASCHCL'</span><span class="p">,</span>
+                       <span class="s1">'ASCHEI'</span><span class="p">,</span> <span class="s1">'ASCHEL'</span><span class="p">,</span> <span class="s1">'ASCHF'</span><span class="p">,</span>
+                       <span class="s1">'ASOCSEC'</span><span class="p">,</span> <span class="s1">'ATXPY'</span><span class="p">,</span> <span class="s1">'AUCOMP'</span><span class="p">,</span> <span class="s1">'AWAGE'</span><span class="p">,</span>
+                       <span class="s1">'ABENOTHER'</span><span class="p">,</span> <span class="s1">'ABENMCARE'</span><span class="p">,</span> <span class="s1">'ABENMCAID'</span><span class="p">,</span>
+                       <span class="s1">'ABENSSI'</span><span class="p">,</span> <span class="s1">'ABENSNAP'</span><span class="p">,</span> <span class="s1">'ABENWIC'</span><span class="p">,</span>
+                       <span class="s1">'ABENHOUSING'</span><span class="p">,</span> <span class="s1">'ABENTANF'</span><span class="p">,</span> <span class="s1">'ABENVET'</span><span class="p">])</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">growfactors_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># read grow factors from specified growfactors_filename</span>
@@ -501,28 +501,28 @@
         <span class="k">if</span> <span class="n">growfactors_filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># read puf/cps growfactors from package</span>
             <span class="n">gfdf</span> <span class="o">=</span> <span class="n">read_egg_csv</span><span class="p">(</span><span class="n">GrowFactors</span><span class="o">.</span><span class="n">PACKAGE_FILE_NAMES</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+                                <span class="n">index_col</span><span class="o">=</span><span class="s1">'YEAR'</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">growfactors_filename</span> <span class="ow">in</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">PACKAGE_FILE_NAMES</span><span class="p">:</span>
                 <span class="c1"># read growfactors from package</span>
                 <span class="n">gfdf</span> <span class="o">=</span> <span class="n">read_egg_csv</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">,</span>
-                                    <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+                                    <span class="n">index_col</span><span class="o">=</span><span class="s1">'YEAR'</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">):</span>
-                    <span class="n">gfdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;YEAR&#39;</span><span class="p">)</span>
+                    <span class="n">gfdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">growfactors_filename</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s1">'YEAR'</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>  <span class="c1"># file does not exist</span>
                     <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;growfactors file </span><span class="si">{</span><span class="n">growfactors_filename</span><span class="si">}</span><span class="s1"> &#39;</span>
-                        <span class="s1">&#39;does not exist&#39;</span>
+                        <span class="sa">f</span><span class="s1">'growfactors file </span><span class="si">{</span><span class="n">growfactors_filename</span><span class="si">}</span><span class="s1"> '</span>
+                        <span class="s1">'does not exist'</span>
                     <span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;growfactors_filename is not a string&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'growfactors_filename is not a string'</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gfdf</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
         <span class="c1"># check validity of gfdf column names</span>
         <span class="n">gfdf_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">gfdf</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">gfdf_names</span> <span class="o">!=</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;missing names are: </span><span class="si">{}</span><span class="s1"> and invalid names are: </span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'missing names are: </span><span class="si">{}</span><span class="s1"> and invalid names are: </span><span class="si">{}</span><span class="s1">'</span>
             <span class="n">missing</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span> <span class="o">-</span> <span class="n">gfdf_names</span>
             <span class="n">invalid</span> <span class="o">=</span> <span class="n">gfdf_names</span> <span class="o">-</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing</span><span class="p">,</span> <span class="n">invalid</span><span class="p">))</span>
@@ -531,42 +531,42 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_year</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">gfdf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
         <span class="c1"># set gfdf as attribute of class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;gfdf&#39;</span><span class="p">,</span> <span class="n">gfdf</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'gfdf'</span><span class="p">,</span> <span class="n">gfdf</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
         <span class="k">del</span> <span class="n">gfdf</span>
         <span class="c1"># specify factors as being unused (that is, not yet accessed)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">first_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        GrowFactors class first_year property.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_year</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">last_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        GrowFactors class last_year property.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_year</span>
 
 <div class="viewcode-block" id="GrowFactors.price_inflation_rates">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.price_inflation_rates">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">price_inflation_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return list of price inflation rates rounded to four decimal digits.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">firstyear</span> <span class="o">&gt;</span> <span class="n">lastyear</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;first_year=</span><span class="si">{}</span><span class="s1"> &gt; last_year=</span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'first_year=</span><span class="si">{}</span><span class="s1"> &gt; last_year=</span><span class="si">{}</span><span class="s1">'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">firstyear</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;firstyear=</span><span class="si">{}</span><span class="s1"> &lt; GrowFactors.first_year=</span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'firstyear=</span><span class="si">{}</span><span class="s1"> &lt; GrowFactors.first_year=</span><span class="si">{}</span><span class="s1">'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">firstyear</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">lastyear</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;last_year=</span><span class="si">{}</span><span class="s1"> &gt; GrowFactors.last_year=</span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'last_year=</span><span class="si">{}</span><span class="s1"> &gt; GrowFactors.last_year=</span><span class="si">{}</span><span class="s1">'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lastyear</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">))</span>
-        <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="p">[</span><span class="s1">&#39;ACPIU&#39;</span><span class="p">][</span><span class="n">cyr</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="p">[</span><span class="s1">'ACPIU'</span><span class="p">][</span><span class="n">cyr</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
                  <span class="k">for</span> <span class="n">cyr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">rates</span></div>
 
@@ -574,20 +574,20 @@
 <div class="viewcode-block" id="GrowFactors.wage_growth_rates">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.wage_growth_rates">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">wage_growth_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return list of wage growth rates rounded to four decimal digits.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">firstyear</span> <span class="o">&gt;</span> <span class="n">lastyear</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;firstyear=</span><span class="si">{}</span><span class="s1"> &gt; lastyear=</span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'firstyear=</span><span class="si">{}</span><span class="s1"> &gt; lastyear=</span><span class="si">{}</span><span class="s1">'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">firstyear</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;firstyear=</span><span class="si">{}</span><span class="s1"> &lt; GrowFactors.first_year=</span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'firstyear=</span><span class="si">{}</span><span class="s1"> &lt; GrowFactors.first_year=</span><span class="si">{}</span><span class="s1">'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">firstyear</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">lastyear</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;lastyear=</span><span class="si">{}</span><span class="s1"> &gt; GrowFactors.last_year=</span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'lastyear=</span><span class="si">{}</span><span class="s1"> &gt; GrowFactors.last_year=</span><span class="si">{}</span><span class="s1">'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lastyear</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">))</span>
-        <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="p">[</span><span class="s1">&#39;AWAGE&#39;</span><span class="p">][</span><span class="n">cyr</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="p">[</span><span class="s1">'AWAGE'</span><span class="p">][</span><span class="n">cyr</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
                  <span class="k">for</span> <span class="n">cyr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">firstyear</span><span class="p">,</span> <span class="n">lastyear</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">rates</span></div>
 
@@ -595,18 +595,18 @@
 <div class="viewcode-block" id="GrowFactors.factor_value">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.factor_value">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">factor_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return value of factor with specified name for specified year.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;name=</span><span class="si">{}</span><span class="s1"> not in GrowFactors.VALID_NAMES&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'name=</span><span class="si">{}</span><span class="s1"> not in GrowFactors.VALID_NAMES'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">year</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;year=</span><span class="si">{}</span><span class="s1"> &lt; GrowFactors.first_year=</span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'year=</span><span class="si">{}</span><span class="s1"> &lt; GrowFactors.first_year=</span><span class="si">{}</span><span class="s1">'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;year=</span><span class="si">{}</span><span class="s1"> &gt; GrowFactors.last_year=</span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'year=</span><span class="si">{}</span><span class="s1"> &gt; GrowFactors.last_year=</span><span class="si">{}</span><span class="s1">'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gfdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">year</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span></div>
 
@@ -614,11 +614,11 @@
 <div class="viewcode-block" id="GrowFactors.update">
 <a class="viewcode-back" href="../../api/growfactors.html#taxcalc.growfactors.GrowFactors.update">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Add to self.gfdf (for name and year) the specified diff amount.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">used</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;cannot update growfactors after they have been used&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'cannot update growfactors after they have been used'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_year</span> <span class="o">&lt;=</span> <span class="n">year</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_year</span><span class="p">:</span>

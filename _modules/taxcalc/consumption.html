@@ -440,9 +440,9 @@
                 <article class="bd-article">
                   
   <h1>Source code for taxcalc.consumption</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Tax-Calculator Consumption class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="c1"># CODING-STYLE CHECKS:</span>
 <span class="c1"># pycodestyle consumption.py</span>
 <span class="c1"># pylint --disable=locally-disabled consumption.py</span>
@@ -456,7 +456,7 @@
 <div class="viewcode-block" id="Consumption">
 <a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Consumption</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Consumption is a subclass of the abstract Parameters class, and</span>
 <span class="sd">    therefore, inherits its methods (none of which are shown here).</span>
 
@@ -470,10 +470,10 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    class instance: Consumption</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">JSON_START_YEAR</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
-    <span class="n">DEFAULTS_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;consumption.json&#39;</span>
+    <span class="n">DEFAULTS_FILE_NAME</span> <span class="o">=</span> <span class="s1">'consumption.json'</span>
     <span class="n">DEFAULTS_FILE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_budget_year</span><span class="o">=</span><span class="n">Policy</span><span class="o">.</span><span class="n">LAST_BUDGET_YEAR</span><span class="p">):</span>
@@ -485,45 +485,45 @@
 <a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption.read_json_update">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">read_json_update</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a revision dictionary suitable for use with update_consumption</span>
 <span class="sd">        method derived from the specified JSON object, which can be None or</span>
-<span class="sd">        a string containing a local filename, a URL beginning with &#39;http&#39;</span>
+<span class="sd">        a string containing a local filename, a URL beginning with 'http'</span>
 <span class="sd">        pointing to a valid JSON file hosted online, or a valid JSON text.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;consumption&#39;</span><span class="p">)</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">'consumption'</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Consumption.update_consumption">
 <a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption.update_consumption">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_consumption</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span>
                            <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update consumption default values using specified revision dictionary.</span>
 <span class="sd">        See Parameters._update for argument documentation and details about</span>
 <span class="sd">        the expected structure of the revision dictionary.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">revision</span><span class="p">,</span> <span class="n">print_warnings</span><span class="p">,</span> <span class="n">raise_errors</span><span class="p">)</span></div>
 
 
-    <span class="n">RESPONSE_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;e17500&#39;</span><span class="p">,</span> <span class="s1">&#39;e18400&#39;</span><span class="p">,</span> <span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="s1">&#39;e20400&#39;</span><span class="p">])</span>
-    <span class="n">BENEFIT_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;housing&#39;</span><span class="p">,</span> <span class="s1">&#39;snap&#39;</span><span class="p">,</span> <span class="s1">&#39;tanf&#39;</span><span class="p">,</span> <span class="s1">&#39;vet&#39;</span><span class="p">,</span> <span class="s1">&#39;wic&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;mcare&#39;</span><span class="p">,</span> <span class="s1">&#39;mcaid&#39;</span><span class="p">,</span> <span class="s1">&#39;other&#39;</span><span class="p">])</span>
+    <span class="n">RESPONSE_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">'e17500'</span><span class="p">,</span> <span class="s1">'e18400'</span><span class="p">,</span> <span class="s1">'e19800'</span><span class="p">,</span> <span class="s1">'e20400'</span><span class="p">])</span>
+    <span class="n">BENEFIT_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">'housing'</span><span class="p">,</span> <span class="s1">'snap'</span><span class="p">,</span> <span class="s1">'tanf'</span><span class="p">,</span> <span class="s1">'vet'</span><span class="p">,</span> <span class="s1">'wic'</span><span class="p">,</span>
+                        <span class="s1">'mcare'</span><span class="p">,</span> <span class="s1">'mcaid'</span><span class="p">,</span> <span class="s1">'other'</span><span class="p">])</span>
 
 <div class="viewcode-block" id="Consumption.has_response">
 <a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption.has_response">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_response</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return true if any MPC parameters are positive for current_year or</span>
 <span class="sd">        if any BEN value parameters are less than one for current_year;</span>
 <span class="sd">        return false if all MPC parameters are zero and all BEN value</span>
 <span class="sd">        parameters are one</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">Consumption</span><span class="o">.</span><span class="n">RESPONSE_VARS</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;MPC_</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'MPC_</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">Consumption</span><span class="o">.</span><span class="n">BENEFIT_VARS</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;BEN_</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1">_value&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'BEN_</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1">_value'</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
@@ -531,32 +531,32 @@
 <div class="viewcode-block" id="Consumption.response">
 <a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption.response">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">records</span><span class="p">,</span> <span class="n">income_change</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Changes consumption-related records variables given income_change</span>
 <span class="sd">        and the current values of the MPC consumption parameters</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">Records</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;records is not a Records object&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'records is not a Records object'</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">Consumption</span><span class="o">.</span><span class="n">RESPONSE_VARS</span><span class="p">:</span>
             <span class="n">records_var</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
-            <span class="n">mpc_var</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;MPC_</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">mpc_var</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'MPC_</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
             <span class="n">records_var</span><span class="p">[:]</span> <span class="o">+=</span> <span class="n">mpc_var</span> <span class="o">*</span> <span class="n">income_change</span></div>
 
 
 <div class="viewcode-block" id="Consumption.benval_params">
 <a class="viewcode-back" href="../../api/consumption.html#taxcalc.consumption.Consumption.benval_params">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">benval_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns list of BEN_*_value parameter values</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;BEN_</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1">_value&#39;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'BEN_</span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1">_value'</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">Consumption</span><span class="o">.</span><span class="n">BENEFIT_VARS</span><span class="p">]</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">set_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Consumption class has no parameter indexing rates.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 
 </pre></div>
 

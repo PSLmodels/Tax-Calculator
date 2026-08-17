@@ -440,9 +440,9 @@
                 <article class="bd-article">
                   
   <h1>Source code for taxcalc.growdiff</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Tax-Calculator GrowDiff class that is used to modify GrowFactors.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="c1"># CODING-STYLE CHECKS:</span>
 <span class="c1"># pycodestyle growdiff.py</span>
 <span class="c1"># pylint --disable=locally-disabled growdiff.py</span>
@@ -456,7 +456,7 @@
 <div class="viewcode-block" id="GrowDiff">
 <a class="viewcode-back" href="../../api/growdiff.html#taxcalc.growdiff.GrowDiff">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GrowDiff</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    GrowDiff is a subclass of the abstract Parameters class, and</span>
 <span class="sd">    therefore, inherits its methods (none of which are shown here).</span>
 
@@ -470,10 +470,10 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    class instance: GrowDiff</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">JSON_START_YEAR</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
-    <span class="n">DEFAULTS_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;growdiff.json&#39;</span>
+    <span class="n">DEFAULTS_FILE_NAME</span> <span class="o">=</span> <span class="s1">'growdiff.json'</span>
     <span class="n">DEFAULTS_FILE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_budget_year</span><span class="o">=</span><span class="n">Policy</span><span class="o">.</span><span class="n">LAST_BUDGET_YEAR</span><span class="p">):</span>
@@ -485,13 +485,13 @@
 <a class="viewcode-back" href="../../api/growdiff.html#taxcalc.growdiff.GrowDiff.read_json_update">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">read_json_update</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">topkey</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a revision dictionary suitable for use with update_growdiff</span>
 <span class="sd">        method generated from the specified JSON object, which can be None or</span>
-<span class="sd">        a string containing a local filename, a URL beginning with &#39;http&#39;</span>
+<span class="sd">        a string containing a local filename, a URL beginning with 'http'</span>
 <span class="sd">        pointing to a valid JSON file hosted online, or a valid JSON text.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">topkey</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;growdiff_baseline&#39;</span><span class="p">,</span> <span class="s1">&#39;growdiff_response&#39;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="k">assert</span> <span class="n">topkey</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'growdiff_baseline'</span><span class="p">,</span> <span class="s1">'growdiff_response'</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">topkey</span><span class="p">)</span></div>
 
 
@@ -499,23 +499,23 @@
 <a class="viewcode-back" href="../../api/growdiff.html#taxcalc.growdiff.GrowDiff.update_growdiff">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_growdiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span>
                         <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update growdiff default values using specified revision dictionary.</span>
 <span class="sd">        See Parameters._update for argument documentation and details about</span>
 <span class="sd">        the expected structure of the revision dictionary.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">revision</span><span class="p">,</span> <span class="n">print_warnings</span><span class="p">,</span> <span class="n">raise_errors</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GrowDiff.has_any_response">
 <a class="viewcode-back" href="../../api/growdiff.html#taxcalc.growdiff.GrowDiff.has_any_response">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_any_response</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns true if any parameter is non-zero for any year;</span>
 <span class="sd">        returns false if all parameters are zero in all years.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"_</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">year</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
@@ -526,12 +526,12 @@
 <div class="viewcode-block" id="GrowDiff.apply_to">
 <a class="viewcode-back" href="../../api/growdiff.html#taxcalc.growdiff.GrowDiff.apply_to">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">growfactors</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Apply updated GrowDiff values to specified GrowFactors instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">growfactors</span><span class="p">,</span> <span class="n">GrowFactors</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">gfvn</span> <span class="ow">in</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span><span class="p">:</span>
-            <span class="n">_gfvn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">gfvn</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">_gfvn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'_</span><span class="si">{</span><span class="n">gfvn</span><span class="si">}</span><span class="s1">'</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_years</span><span class="p">):</span>
                 <span class="n">cyr</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span>
                 <span class="n">diff_array</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_gfvn</span><span class="p">)</span>
@@ -539,9 +539,9 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">set_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        GrowDiff class has no parameter indexing rates.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 
 </pre></div>
 

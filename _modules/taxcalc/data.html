@@ -440,9 +440,9 @@
                 <article class="bd-article">
                   
   <h1>Source code for taxcalc.data</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Tax-Calculator abstract base data class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="c1"># CODING-STYLE CHECKS:</span>
 <span class="c1"># pycodestyle data.py</span>
 <span class="c1"># pylint --disable=locally-disabled data.py</span>
@@ -458,7 +458,7 @@
 <div class="viewcode-block" id="Data">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Data</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Inherit from this class for Records and other collections of</span>
 <span class="sd">    cross-sectional data that need to have growth factors and sample</span>
 <span class="sd">    weights to age the data to years after the start_year.</span>
@@ -506,7 +506,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    class instance: Data</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-instance-attributes,invalid-name</span>
 
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
@@ -533,10 +533,10 @@
             <span class="k">elif</span> <span class="n">gfactors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__aging_data</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;gfactors and weights are inconsistent&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'gfactors and weights are inconsistent'</span><span class="p">)</span>
             <span class="c1"># check start_year type and remember specified start_year</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_year</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;start_year is not an integer&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'start_year is not an integer'</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__data_year</span> <span class="o">=</span> <span class="n">start_year</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span> <span class="o">=</span> <span class="n">start_year</span>
             <span class="c1"># read specified data</span>
@@ -544,7 +544,7 @@
             <span class="c1"># handle growth factors</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__aging_data</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gfactors</span><span class="p">,</span> <span class="n">GrowFactors</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;gfactors is not a GrowFactors instance&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'gfactors is not a GrowFactors instance'</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">gfactors</span> <span class="o">=</span> <span class="n">gfactors</span>
             <span class="c1"># read sample weights</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">WT</span> <span class="o">=</span> <span class="kc">None</span>
@@ -553,7 +553,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_read_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
                 <span class="c1"># ... weights must be same size as data</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_length</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Data has more records than weights.&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Data has more records than weights.'</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_length</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
                     <span class="c1"># scale-up sub-sample weights by year-specific factor</span>
                     <span class="n">sum_full_weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -562,49 +562,49 @@
                     <span class="n">factor</span> <span class="o">=</span> <span class="n">sum_full_weights</span> <span class="o">/</span> <span class="n">sum_sub_weights</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">WT</span> <span class="o">*=</span> <span class="n">factor</span>
                 <span class="c1"># ... construct sample weights for current_year</span>
-                <span class="n">wt_colname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;WT</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">wt_colname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'WT</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="si">}</span><span class="s1">'</span>
                 <span class="k">assert</span> <span class="n">wt_colname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;no weights for start year </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="sa">f</span><span class="s1">'no weights for start year </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="si">}</span><span class="s1">'</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">s006</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="p">[</span><span class="n">wt_colname</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_scale</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">data_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Data class original data year property.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data_year</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">current_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Data class current calendar year property.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">array_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Length of arrays in Data class&#39;s DataFrame.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Length of arrays in Data class's DataFrame.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dim</span>
 
 <div class="viewcode-block" id="Data.increment_year">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data.increment_year">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">increment_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Add one to current year; and also does extrapolation &amp; reweighting</span>
 <span class="sd">        of data for the new current year if self._aging_data is True.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># move to next year</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__aging_data</span><span class="p">:</span>
             <span class="c1"># ... apply variable extrapolation growth factors</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_extrapolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span><span class="p">)</span>
             <span class="c1"># ... specify current-year sample weights</span>
-            <span class="n">wt_colname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;WT</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">wt_colname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'WT</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span><span class="si">}</span><span class="s1">'</span>
             <span class="k">assert</span> <span class="n">wt_colname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;no weights for new year </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">'no weights for new year </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="si">}</span><span class="s1">'</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">s006</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WT</span><span class="p">[</span><span class="n">wt_colname</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_scale</span></div>
 
@@ -614,35 +614,35 @@
 <div class="viewcode-block" id="Data._read_var_info">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._read_var_info">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_var_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Read Data variables metadata from JSON file and</span>
 <span class="sd">        specifies static variable name sets listed above.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">VARINFO_FILE_NAME</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">VARINFO_FILE_PATH</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VARINFO_FILE_PATH</span><span class="p">,</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">VARINFO_FILE_NAME</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">pfile</span><span class="p">:</span>
                 <span class="n">json_text</span> <span class="o">=</span> <span class="n">pfile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="n">vardict</span> <span class="o">=</span> <span class="n">json_to_dict</span><span class="p">(</span><span class="n">json_text</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># find file in taxcalc package</span>
             <span class="n">vardict</span> <span class="o">=</span> <span class="n">read_egg_json</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">VARINFO_FILE_NAME</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">INTEGER_READ_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">&#39;read&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                                     <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span>
-        <span class="n">FLOAT_READ_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">&#39;read&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                              <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;float&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">MUST_READ_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">&#39;read&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                                  <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">INTEGER_READ_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">'read'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                                     <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'int'</span><span class="p">)</span>
+        <span class="n">FLOAT_READ_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">'read'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                              <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'float'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MUST_READ_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">'read'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                                  <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'required'</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">USABLE_READ_VARS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">INTEGER_READ_VARS</span> <span class="o">|</span> <span class="n">FLOAT_READ_VARS</span>
-        <span class="n">INT_CALCULATED_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">&#39;calc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                                  <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span>
-        <span class="n">FLOAT_CALCULATED_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">&#39;calc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                                    <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;float&#39;</span><span class="p">)</span>
-        <span class="n">FIXED_CALCULATED_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">&#39;calc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                                    <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;unchanging_float&#39;</span><span class="p">)</span>
+        <span class="n">INT_CALCULATED_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">'calc'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                                  <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'int'</span><span class="p">)</span>
+        <span class="n">FLOAT_CALCULATED_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">'calc'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                                    <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'float'</span><span class="p">)</span>
+        <span class="n">FIXED_CALCULATED_VARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vardict</span><span class="p">[</span><span class="s1">'calc'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                                    <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'unchanging_float'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">CALCULATED_VARS</span> <span class="o">=</span> <span class="p">(</span><span class="n">INT_CALCULATED_VARS</span> <span class="o">|</span>
                                 <span class="n">FLOAT_CALCULATED_VARS</span> <span class="o">|</span>
                                 <span class="n">FIXED_CALCULATED_VARS</span><span class="p">)</span>
@@ -653,9 +653,9 @@
 <div class="viewcode-block" id="Data._read_data">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._read_data">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Read data from file or use specified DataFrame as data.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># pylint: disable=too-many-branches</span>
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>  <span class="c1"># because there are no data to read</span>
@@ -668,7 +668,7 @@
             <span class="k">else</span><span class="p">:</span>  <span class="c1"># find file in conda package</span>
                 <span class="n">taxdf</span> <span class="o">=</span> <span class="n">read_egg_csv</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;data is neither a string nor a Pandas DataFrame&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'data is neither a string nor a Pandas DataFrame'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">taxdf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__index</span> <span class="o">=</span> <span class="n">taxdf</span><span class="o">.</span><span class="n">index</span>
@@ -694,7 +694,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">IGNORED_VARS</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">varname</span><span class="p">)</span>
         <span class="c1"># check that MUST_READ_VARS are all present in taxdf</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">MUST_READ_VARS</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">READ_VARS</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;data missing one or more MUST_READ_VARS&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'data missing one or more MUST_READ_VARS'</span><span class="p">)</span>
         <span class="c1"># delete intermediate taxdf object</span>
         <span class="k">del</span> <span class="n">taxdf</span>
         <span class="c1"># create other class variables that are set to all zeros</span>
@@ -722,9 +722,9 @@
 <div class="viewcode-block" id="Data.zero_out_changing_calculated_vars">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data.zero_out_changing_calculated_vars">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">zero_out_changing_calculated_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Set to zero all variables in the self.CHANGING_CALCULATED_VARS set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">for</span> <span class="n">varname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">CHANGING_CALCULATED_VARS</span><span class="p">:</span>
             <span class="n">var</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varname</span><span class="p">)</span>
             <span class="n">var</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
@@ -734,11 +734,11 @@
 <div class="viewcode-block" id="Data._read_weights">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._read_weights">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Read sample weights from file or</span>
 <span class="sd">        use specified DataFrame as weights or</span>
 <span class="sd">        create empty DataFrame if None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
@@ -750,19 +750,19 @@
                 <span class="n">WT</span> <span class="o">=</span> <span class="n">read_egg_csv</span><span class="p">(</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">weights</span><span class="p">))</span>  <span class="c1"># pragma: no cover</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;weights is not None or a string or a Pandas DataFrame&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'weights is not None or a string or a Pandas DataFrame'</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">WT</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;WT&#39;</span><span class="p">,</span> <span class="n">WT</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'WT'</span><span class="p">,</span> <span class="n">WT</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
         <span class="k">del</span> <span class="n">WT</span></div>
 
 
 <div class="viewcode-block" id="Data._extrapolate">
 <a class="viewcode-back" href="../../api/data.html#taxcalc.data.Data._extrapolate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_extrapolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Apply to data variables the growth factor values for specified year.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 </div>
 
         <span class="c1"># Override this empty method in subclass</span>

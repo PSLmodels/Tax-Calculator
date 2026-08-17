@@ -777,7 +777,7 @@ of people (True) or an equal number of filing units (False)</p></li>
 </dl>
 <p class="rubric">Notes</p>
 <p>Typical usage is:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">difference_table</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span> <span class="s1">&#39;weighted_deciles&#39;</span><span class="p">,</span> <span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">diff</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">difference_table</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span> <span class="s1">'weighted_deciles'</span><span class="p">,</span> <span class="s1">'iitax'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>where calc1 is a baseline Calculator object and calc2 is a reform
@@ -829,9 +829,9 @@ that determines whether table entry values are scaled or not</p></li>
 <p class="rubric">Notes</p>
 <p>Typical usage is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dist1</span><span class="p">,</span> <span class="n">dist2</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">distribution_tables</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span>
-                                         <span class="s1">&#39;weighted_deciles&#39;</span><span class="p">)</span>
+                                         <span class="s1">'weighted_deciles'</span><span class="p">)</span>
 <span class="c1"># OR</span>
-<span class="n">dist1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">distribution_tables</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;weighted_deciles&#39;</span><span class="p">)</span>
+<span class="n">dist1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">distribution_tables</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'weighted_deciles'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>where calc1 is a baseline Calculator object and calc2 is a reform
@@ -1062,14 +1062,14 @@ containing a valid JSON string (rather than a local filename).</p>
 <p>Either of the two function arguments can also be a valid URL string
 beginning with ‘http’ and pointing to a valid JSON file hosted online.</p>
 <p>The reform file/URL contents or JSON string must be like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;policy&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}}</span> <span class="n">OR</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">"policy"</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}}</span> <span class="n">OR</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
 </pre></div>
 </div>
 <p>(in other words, the top-level policy key is optional)
 and the assump file/URL contents or JSON string must be like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;consumption&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span>
- <span class="s2">&quot;growdiff_baseline&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span>
- <span class="s2">&quot;growdiff_response&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">"consumption"</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span>
+ <span class="s2">"growdiff_baseline"</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span>
+ <span class="s2">"growdiff_response"</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}}</span>
 </pre></div>
 </div>
 <p>The {…} should be empty like this {} if not specifying a policy

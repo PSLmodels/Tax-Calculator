@@ -440,10 +440,10 @@
                 <article class="bd-article">
                   
   <h1>Source code for taxcalc.decorators</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Implement numba JIT decorators used to speed-up the execution</span>
 <span class="sd">of Tax-Calculator functions in the calcfunctions.py module.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="c1"># CODING-STYLE CHECKS:</span>
 <span class="c1"># pycodestyle decorators.py</span>
 <span class="c1"># pylint --disable=locally-disabled decorators.py</span>
@@ -459,7 +459,7 @@
 <span class="n">DO_JIT</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="c1"># One way to use the Python debugger is to do these two things:</span>
 <span class="c1">#  (a) change the line immediately above this comment from</span>
-<span class="c1">#      &quot;DO_JIT = True&quot; to &quot;DO_JIT = False&quot;, and</span>
+<span class="c1">#      "DO_JIT = True" to "DO_JIT = False", and</span>
 <span class="c1">#  (b) import pdb package and call pdb.set_trace() in either the</span>
 <span class="c1">#      calculator.py or calcfunctions.py file.</span>
 
@@ -467,24 +467,24 @@
 <div class="viewcode-block" id="id_wrapper">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.id_wrapper">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">id_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">dec_args</span><span class="p">,</span> <span class="o">**</span><span class="n">dec_kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function wrapper when numba package is not being used during debugging.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">wrap</span><span class="p">(</span><span class="n">fnc</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        wrap function nested in id_wrapper function.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">wrapped_f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            wrapped_f function nested in wrap function.</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            """</span>
             <span class="k">return</span> <span class="n">fnc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wrapped_f</span>
     <span class="k">return</span> <span class="n">wrap</span></div>
 
 
 
-<span class="k">if</span> <span class="n">DO_JIT</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="s2">&quot;NOTAXCALCJIT&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">DO_JIT</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="s2">"NOTAXCALCJIT"</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
     <span class="n">JIT</span> <span class="o">=</span> <span class="n">id_wrapper</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">JIT</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jit</span>
@@ -493,15 +493,15 @@
 <div class="viewcode-block" id="GetReturnNode">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.GetReturnNode">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GetReturnNode</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A NodeVisitor to get the return tuple names from a calc-style function.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 <div class="viewcode-block" id="GetReturnNode.visit_Return">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.GetReturnNode.visit_Return">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">visit_Return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>  <span class="c1"># pylint: disable=invalid-name</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        visit_Return is used by NodeVisitor.visit method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Tuple</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">elts</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">]</span></div>
@@ -512,7 +512,7 @@
 <div class="viewcode-block" id="create_apply_function_string">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.create_apply_function_string">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_apply_function_string</span><span class="p">(</span><span class="n">sigout</span><span class="p">,</span> <span class="n">sigin</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Create a string for a function of the form::</span>
 
 <span class="sd">       def ap_fuc(x_0, x_1, x_2, ...):</span>
@@ -536,22 +536,22 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    a String representing the function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">fstr</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
     <span class="n">total_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigin</span><span class="p">)</span>
-    <span class="n">out_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">))]</span>
-    <span class="n">in_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">),</span> <span class="n">total_len</span><span class="p">)]</span>
+    <span class="n">out_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"x_"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">))]</span>
+    <span class="n">in_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"x_"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">),</span> <span class="n">total_len</span><span class="p">)]</span>
 
-    <span class="n">all_args</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_args</span> <span class="o">+</span> <span class="n">in_args</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;def ap_func(</span><span class="si">{</span><span class="n">all_args</span><span class="si">}</span><span class="s2">):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;  for i in range(len(x_0)):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">out_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="s2">&quot;[i]&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">out_args</span><span class="p">]</span>
+    <span class="n">all_args</span> <span class="o">=</span> <span class="s2">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_args</span> <span class="o">+</span> <span class="n">in_args</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"def ap_func(</span><span class="si">{</span><span class="n">all_args</span><span class="si">}</span><span class="s2">):</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"  for i in range(len(x_0)):</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">out_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="s2">"[i]"</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">out_args</span><span class="p">]</span>
     <span class="n">in_index</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">_var</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">in_args</span><span class="p">,</span> <span class="n">sigin</span><span class="p">):</span>
-        <span class="n">in_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span> <span class="o">+</span> <span class="s2">&quot;[i]&quot;</span> <span class="k">if</span> <span class="n">_var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameters</span> <span class="k">else</span> <span class="n">arg</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    &quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; = &quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;jitted_f(&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">in_index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;  return &quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_args</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">in_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span> <span class="o">+</span> <span class="s2">"[i]"</span> <span class="k">if</span> <span class="n">_var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameters</span> <span class="k">else</span> <span class="n">arg</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"    "</span> <span class="o">+</span> <span class="s2">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" = "</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"jitted_f("</span> <span class="o">+</span> <span class="s2">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">in_index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">")</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"  return "</span> <span class="o">+</span> <span class="s2">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_args</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fstr</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
 
 
@@ -559,7 +559,7 @@
 <div class="viewcode-block" id="create_toplevel_function_string">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.create_toplevel_function_string">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_toplevel_function_string</span><span class="p">(</span><span class="n">args_out</span><span class="p">,</span> <span class="n">args_in</span><span class="p">,</span> <span class="n">pm_or_pf</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Create a string for a function of the form:</span>
 
 <span class="sd">        def hl_func(x_0, x_1, x_2, ...):</span>
@@ -578,42 +578,42 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    a String representing the function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">fstr</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;def hl_func(pm, pf&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    from pandas import DataFrame</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    import numpy as np</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    import pandas as pd</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    def get_values(x):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;        if isinstance(x, pd.Series):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;            return x.values</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;        else:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;            return x</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    outputs = </span><span class="se">\\\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"def hl_func(pm, pf"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"):</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"    from pandas import DataFrame</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"    import numpy as np</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"    import pandas as pd</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"    def get_values(x):</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"        if isinstance(x, pd.Series):</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"            return x.values</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"        else:</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"            return x</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"    outputs = </span><span class="se">\\\n</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="n">outs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">ppp</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pm_or_pf</span><span class="p">,</span> <span class="n">args_out</span> <span class="o">+</span> <span class="n">args_in</span><span class="p">):</span>
-        <span class="n">outs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ppp</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">attr</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="p">)</span>
-    <span class="n">outs</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_or_f</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">m_or_f</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pm_or_pf</span><span class="p">,</span> <span class="n">args_out</span><span class="p">)]</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;        (&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;) = </span><span class="se">\\\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;        &quot;</span> <span class="o">+</span> <span class="s2">&quot;applied_f(&quot;</span><span class="p">)</span>
+        <span class="n">outs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ppp</span> <span class="o">+</span> <span class="s2">"."</span> <span class="o">+</span> <span class="n">attr</span> <span class="o">+</span> <span class="s2">", "</span><span class="p">)</span>
+    <span class="n">outs</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_or_f</span> <span class="o">+</span> <span class="s2">"."</span> <span class="o">+</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">m_or_f</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pm_or_pf</span><span class="p">,</span> <span class="n">args_out</span><span class="p">)]</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"        ("</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">") = </span><span class="se">\\\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"        "</span> <span class="o">+</span> <span class="s2">"applied_f("</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ppp</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pm_or_pf</span><span class="p">,</span> <span class="n">args_out</span> <span class="o">+</span> <span class="n">args_in</span><span class="p">):</span>
         <span class="c1"># Bring Policy parameter values down a dimension.</span>
-        <span class="k">if</span> <span class="n">ppp</span> <span class="o">==</span> <span class="s2">&quot;pm&quot;</span><span class="p">:</span>
-            <span class="n">attr</span> <span class="o">+=</span> <span class="s2">&quot;[0]&quot;</span>
-        <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;get_values(&quot;</span> <span class="o">+</span> <span class="n">ppp</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">attr</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    header = [&quot;</span><span class="p">)</span>
-    <span class="n">col_headers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="n">out</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span> <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">args_out</span><span class="p">]</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col_headers</span><span class="p">))</span>
-    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ppp</span> <span class="o">==</span> <span class="s2">"pm"</span><span class="p">:</span>
+            <span class="n">attr</span> <span class="o">+=</span> <span class="s2">"[0]"</span>
+        <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"get_values("</span> <span class="o">+</span> <span class="n">ppp</span> <span class="o">+</span> <span class="s2">"."</span> <span class="o">+</span> <span class="n">attr</span> <span class="o">+</span> <span class="s2">")"</span> <span class="o">+</span> <span class="s2">", "</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">")</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"    header = ["</span><span class="p">)</span>
+    <span class="n">col_headers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"'"</span> <span class="o">+</span> <span class="n">out</span> <span class="o">+</span> <span class="s2">"'"</span> <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">args_out</span><span class="p">]</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col_headers</span><span class="p">))</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"]</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args_out</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    return DataFrame(data=outputs,&quot;</span>
-                   <span class="s2">&quot;columns=header)&quot;</span><span class="p">)</span>
+        <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"    return DataFrame(data=outputs,"</span>
+                   <span class="s2">"columns=header)"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    return DataFrame(data=np.column_stack(&quot;</span>
-                   <span class="s2">&quot;outputs),columns=header)&quot;</span><span class="p">)</span>
+        <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"    return DataFrame(data=np.column_stack("</span>
+                   <span class="s2">"outputs),columns=header)"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fstr</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
 
 
@@ -622,7 +622,7 @@
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.make_apply_function">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">out_args</span><span class="p">,</span> <span class="n">in_args</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span>
                         <span class="n">do_jit</span><span class="o">=</span><span class="n">DO_JIT</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Takes a calc-style function and creates the necessary Python code for</span>
 <span class="sd">    an apply-style function. Will also jit the function if desired.</span>
 
@@ -643,43 +643,43 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    apply-style function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">do_jit</span><span class="p">:</span>
         <span class="n">jitted_f</span> <span class="o">=</span> <span class="n">JIT</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">jitted_f</span> <span class="o">=</span> <span class="n">func</span>
     <span class="n">apfunc</span> <span class="o">=</span> <span class="n">create_apply_function_string</span><span class="p">(</span><span class="n">out_args</span><span class="p">,</span> <span class="n">in_args</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-    <span class="n">func_code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">apfunc</span><span class="p">,</span> <span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;exec&quot;</span><span class="p">)</span>
+    <span class="n">func_code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">apfunc</span><span class="p">,</span> <span class="s2">"&lt;string&gt;"</span><span class="p">,</span> <span class="s2">"exec"</span><span class="p">)</span>
     <span class="n">fakeglobals</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="nb">eval</span><span class="p">(</span><span class="n">func_code</span><span class="p">,</span>  <span class="c1"># pylint: disable=eval-used</span>
-         <span class="p">{</span><span class="s2">&quot;jitted_f&quot;</span><span class="p">:</span> <span class="n">jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
+         <span class="p">{</span><span class="s2">"jitted_f"</span><span class="p">:</span> <span class="n">jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">do_jit</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">JIT</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">fakeglobals</span><span class="p">[</span><span class="s2">&quot;ap_func&quot;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s2">&quot;ap_func&quot;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">JIT</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">fakeglobals</span><span class="p">[</span><span class="s2">"ap_func"</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s2">"ap_func"</span><span class="p">]</span></div>
 
 
 
 <div class="viewcode-block" id="apply_jit">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.apply_jit">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">apply_jit</span><span class="p">(</span><span class="n">dtype_sig_out</span><span class="p">,</span> <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Make a decorator that takes in a calc-style function, handle apply step.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters</span><span class="p">:</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">make_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        make_wrapper function nested in apply_jit function.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">theargs</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
         <span class="n">jitted_apply</span> <span class="o">=</span> <span class="n">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dtype_sig_out</span><span class="p">,</span>
                                            <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            wrapper function nested in make_wrapper function.</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            """</span>
             <span class="n">in_arrays</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">out_arrays</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">farg</span> <span class="ow">in</span> <span class="n">theargs</span><span class="p">:</span>
@@ -704,25 +704,25 @@
 <div class="viewcode-block" id="iterate_jit">
 <a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.iterate_jit">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">iterate_jit</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Public decorator for a calc-style function (see calcfunctions.py) that</span>
 <span class="sd">    transforms the calc-style function into an apply-style function that</span>
 <span class="sd">    can be called by Calculator class methods (see calculator.py).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters</span><span class="p">:</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">make_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        make_wrapper function nested in iterate_jit decorator</span>
 <span class="sd">        wraps specified func using apply_jit.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># pylint: disable=too-many-locals</span>
         <span class="c1"># Get the input arguments from the function</span>
         <span class="n">in_args</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
         <span class="c1"># Get the numba.jit arguments</span>
-        <span class="n">jit_args_list</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">JIT</span><span class="p">)</span><span class="o">.</span><span class="n">args</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;nopython&quot;</span><span class="p">]</span>
+        <span class="n">jit_args_list</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">JIT</span><span class="p">)</span><span class="o">.</span><span class="n">args</span> <span class="o">+</span> <span class="p">[</span><span class="s2">"nopython"</span><span class="p">]</span>
         <span class="n">kwargs_for_jit</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">jit_args_list</span><span class="p">:</span>
@@ -746,12 +746,12 @@
         <span class="c1"># the AST of the function</span>
         <span class="n">grn</span> <span class="o">=</span> <span class="n">GetReturnNode</span><span class="p">()</span>
         <span class="n">all_out_args</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">))):</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">))):</span>
             <span class="n">all_out_args</span> <span class="o">=</span> <span class="n">grn</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">all_out_args</span><span class="p">:</span>
                 <span class="k">break</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">all_out_args</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find return statement in function!&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Can't find return statement in function!"</span><span class="p">)</span>
 
         <span class="c1"># Now create the apply-style possibly-jitted function</span>
         <span class="n">applied_jitted_f</span> <span class="o">=</span> <span class="n">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span>
@@ -762,12 +762,12 @@
                                                <span class="o">**</span><span class="n">kwargs_for_jit</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""</span>
 <span class="sd">            wrapper function nested in make_wrapper function nested</span>
 <span class="sd">            in iterate_jit decorator.</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            """</span>
             <span class="c1"># os TESTING environment only accepts string arguments</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TESTING&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"TESTING"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"True"</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="n">in_arrays</span> <span class="o">=</span> <span class="p">[]</span>
@@ -775,19 +775,19 @@
             <span class="k">for</span> <span class="n">farg</span> <span class="ow">in</span> <span class="n">all_out_args</span> <span class="o">+</span> <span class="n">in_args</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">farg</span><span class="p">):</span>
                     <span class="n">in_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">farg</span><span class="p">))</span>
-                    <span class="n">pm_or_pf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;pm&quot;</span><span class="p">)</span>
+                    <span class="n">pm_or_pf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"pm"</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">farg</span><span class="p">):</span>
                     <span class="n">in_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">farg</span><span class="p">))</span>
-                    <span class="n">pm_or_pf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;pf&quot;</span><span class="p">)</span>
+                    <span class="n">pm_or_pf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"pf"</span><span class="p">)</span>
             <span class="c1"># Create the high level function</span>
             <span class="n">high_level_func</span> <span class="o">=</span> <span class="n">create_toplevel_function_string</span><span class="p">(</span><span class="n">all_out_args</span><span class="p">,</span>
                                                               <span class="nb">list</span><span class="p">(</span><span class="n">in_args</span><span class="p">),</span>
                                                               <span class="n">pm_or_pf</span><span class="p">)</span>
-            <span class="n">func_code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">high_level_func</span><span class="p">,</span> <span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;exec&quot;</span><span class="p">)</span>
+            <span class="n">func_code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">high_level_func</span><span class="p">,</span> <span class="s2">"&lt;string&gt;"</span><span class="p">,</span> <span class="s2">"exec"</span><span class="p">)</span>
             <span class="n">fakeglobals</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="nb">eval</span><span class="p">(</span><span class="n">func_code</span><span class="p">,</span>  <span class="c1"># pylint: disable=eval-used</span>
-                 <span class="p">{</span><span class="s2">&quot;applied_f&quot;</span><span class="p">:</span> <span class="n">applied_jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
-            <span class="n">high_level_fn</span> <span class="o">=</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s2">&quot;hl_func&quot;</span><span class="p">]</span>
+                 <span class="p">{</span><span class="s2">"applied_f"</span><span class="p">:</span> <span class="n">applied_jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
+            <span class="n">high_level_fn</span> <span class="o">=</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s2">"hl_func"</span><span class="p">]</span>
             <span class="n">ans</span> <span class="o">=</span> <span class="n">high_level_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ans</span>
 

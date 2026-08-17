@@ -440,9 +440,9 @@
                 <article class="bd-article">
                   
   <h1>Source code for taxcalc.policy</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Tax-Calculator federal tax policy Policy class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="c1"># CODING-STYLE CHECKS:</span>
 <span class="c1"># pycodestyle policy.py</span>
 <span class="c1"># pylint --disable=locally-disabled policy.py</span>
@@ -457,7 +457,7 @@
 <div class="viewcode-block" id="Policy">
 <a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Policy</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Policy is a subclass of the abstract Parameters class, and</span>
 <span class="sd">    therefore, inherits its methods (none of which are shown here).</span>
 
@@ -480,9 +480,9 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    class instance: Policy</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">DEFAULTS_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;policy_current_law.json&#39;</span>
+    <span class="n">DEFAULTS_FILE_NAME</span> <span class="o">=</span> <span class="s1">'policy_current_law.json'</span>
     <span class="n">DEFAULTS_FILE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
     <span class="n">JSON_START_YEAR</span> <span class="o">=</span> <span class="mi">2013</span>  <span class="c1"># remains the same unless earlier data added</span>
     <span class="n">LAST_KNOWN_YEAR</span> <span class="o">=</span> <span class="mi">2026</span>  <span class="c1"># last year for which indexed param vals are known</span>
@@ -492,112 +492,112 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">number_of_years</span><span class="p">(</span><span class="n">last_budget_year</span><span class="o">=</span><span class="n">LAST_BUDGET_YEAR</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Static method returns number of policy parameters years given</span>
 <span class="sd">        user-defined last_budget_year.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">last_budget_year</span> <span class="o">-</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="c1"># NOTE: the following three data structures use internal parameter names:</span>
     <span class="c1"># (1) specify which Policy parameters have been removed or renamed</span>
     <span class="n">REMOVED_PARAMS</span> <span class="o">=</span> <span class="p">{</span>
         <span class="c1"># following parameters were renamed in PR 2918</span>
-        <span class="s1">&#39;SS_thd50&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed SS_thd1 in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;SS_thd85&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed SS_thd2 in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">'SS_thd50'</span><span class="p">:</span> <span class="s1">'was renamed SS_thd1 in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'SS_thd85'</span><span class="p">:</span> <span class="s1">'was renamed SS_thd2 in Tax-Calculator 5.0.0'</span><span class="p">,</span>
         <span class="c1"># following parameters were removed in PR 2919</span>
-        <span class="s1">&#39;PT_rt1&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_rt2&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_rt3&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_rt4&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_rt5&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_rt6&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_rt7&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_rt8&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_brk1&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_brk2&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_brk3&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_brk4&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_brk5&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_brk6&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_brk7&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_EligibleRate_active&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_EligibleRate_passive&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_wages_active_income&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;PT_top_stacking&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">'PT_rt1'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_rt2'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_rt3'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_rt4'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_rt5'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_rt6'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_rt7'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_rt8'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_brk1'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_brk2'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_brk3'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_brk4'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_brk5'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_brk6'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_brk7'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_EligibleRate_active'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_EligibleRate_passive'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_wages_active_income'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'PT_top_stacking'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
         <span class="c1"># following parameters were removed in PR 2920</span>
-        <span class="s1">&#39;ID_AmountCap_Switch&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;ID_AmountCap_rt&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;ID_BenefitCap_Switch&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;ID_BenefitCap_rt&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;ID_BenefitSurtax_Switch&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;ID_BenefitSurtax_crt&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;ID_BenefitSurtax_trt&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;ID_BenefitSurtax_em&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 5.0.0&#39;</span><span class="p">,</span>
+        <span class="s1">'ID_AmountCap_Switch'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'ID_AmountCap_rt'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'ID_BenefitCap_Switch'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'ID_BenefitCap_rt'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'ID_BenefitSurtax_Switch'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'ID_BenefitSurtax_crt'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'ID_BenefitSurtax_trt'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
+        <span class="s1">'ID_BenefitSurtax_em'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 5.0.0'</span><span class="p">,</span>
         <span class="c1"># following parameters were renamed in PR 2928</span>
-        <span class="s1">&#39;CDCC_ps&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed CDCC_ps1 in Tax-Calculator 5.1.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;CDCC_crt&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed CDCC_po1_rate_max in Tax-Calculator 5.1.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;CDCC_frt&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed CDCC_po1_rate_min in Tax-Calculator 5.1.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;CDCC_po_step_size&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was renamed CDCC_po1_step_size in Tax-Calculator 5.1.0&#39;</span>
+        <span class="s1">'CDCC_ps'</span><span class="p">:</span> <span class="s1">'was renamed CDCC_ps1 in Tax-Calculator 5.1.0'</span><span class="p">,</span>
+        <span class="s1">'CDCC_crt'</span><span class="p">:</span> <span class="s1">'was renamed CDCC_po1_rate_max in Tax-Calculator 5.1.0'</span><span class="p">,</span>
+        <span class="s1">'CDCC_frt'</span><span class="p">:</span> <span class="s1">'was renamed CDCC_po1_rate_min in Tax-Calculator 5.1.0'</span><span class="p">,</span>
+        <span class="s1">'CDCC_po_step_size'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was renamed CDCC_po1_step_size in Tax-Calculator 5.1.0'</span>
         <span class="p">),</span>
         <span class="c1"># following parameter was renamed in PR 2929</span>
-        <span class="s1">&#39;II_prt&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed II_em_prt in Tax-Calculator 5.1.0&#39;</span><span class="p">,</span>
+        <span class="s1">'II_prt'</span><span class="p">:</span> <span class="s1">'was renamed II_em_prt in Tax-Calculator 5.1.0'</span><span class="p">,</span>
         <span class="c1"># following parameter was renamed in PR 2932</span>
-        <span class="s1">&#39;ID_Charity_crt_cash&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was renamed ID_Charity_crt_all in Tax-Calculator 5.1.0&#39;</span>
+        <span class="s1">'ID_Charity_crt_cash'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was renamed ID_Charity_crt_all in Tax-Calculator 5.1.0'</span>
         <span class="p">),</span>
         <span class="c1"># following parameters were renamed in PR 2939</span>
-        <span class="s1">&#39;ID_reduction_salt_rate&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was renamed ID_reduction_rate in Tax-Calculator 5.1.0&#39;</span>
+        <span class="s1">'ID_reduction_salt_rate'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was renamed ID_reduction_rate in Tax-Calculator 5.1.0'</span>
         <span class="p">),</span>
-        <span class="s1">&#39;ID_reduction_other_rate&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was renamed ID_reduction_rate in Tax-Calculator 5.1.0&#39;</span>
+        <span class="s1">'ID_reduction_other_rate'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was renamed ID_reduction_rate in Tax-Calculator 5.1.0'</span>
         <span class="p">),</span>
         <span class="c1"># following parameters were renamed in PR 2965</span>
-        <span class="s1">&#39;AMT_rt2&#39;</span><span class="p">:</span> <span class="s1">&#39;was renamed AMT_rt2_addon in Tax-Calculator 6.1.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;EITC_ps_MarriedJ&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was renamed EITC_ps_addon_MarriedJ in Tax-Calculator 6.1.0&#39;</span>
+        <span class="s1">'AMT_rt2'</span><span class="p">:</span> <span class="s1">'was renamed AMT_rt2_addon in Tax-Calculator 6.1.0'</span><span class="p">,</span>
+        <span class="s1">'EITC_ps_MarriedJ'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was renamed EITC_ps_addon_MarriedJ in Tax-Calculator 6.1.0'</span>
         <span class="p">),</span>
         <span class="c1"># following parameters were removed in PR 2991</span>
-        <span class="s1">&#39;ALD_OvertimeIncome_hc&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 6.4.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;ALD_TipIncome_hc&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 6.4.0&#39;</span><span class="p">,</span>
+        <span class="s1">'ALD_OvertimeIncome_hc'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 6.4.0'</span><span class="p">,</span>
+        <span class="s1">'ALD_TipIncome_hc'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 6.4.0'</span><span class="p">,</span>
         <span class="c1"># following parameters were renamed in PR 2991</span>
-        <span class="s1">&#39;ALD_OvertimeIncome_c&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was renamed OvertimeIncomeDed_c in Tax-Calculator 6.4.0&#39;</span>
+        <span class="s1">'ALD_OvertimeIncome_c'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was renamed OvertimeIncomeDed_c in Tax-Calculator 6.4.0'</span>
         <span class="p">),</span>
-        <span class="s1">&#39;ALD_OvertimeIncome_ps&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was renamed OvertimeIncomeDed_ps in Tax-Calculator 6.4.0&#39;</span>
+        <span class="s1">'ALD_OvertimeIncome_ps'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was renamed OvertimeIncomeDed_ps in Tax-Calculator 6.4.0'</span>
         <span class="p">),</span>
-        <span class="s1">&#39;ALD_OvertimeIncome_prt&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was replaced by OvertimeIncomeDed_po_step_size and &#39;</span>
-            <span class="s1">&#39;OvertimeIncomeDed_po_rate_per_step in Tax-Calculator 6.4.0&#39;</span>
+        <span class="s1">'ALD_OvertimeIncome_prt'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was replaced by OvertimeIncomeDed_po_step_size and '</span>
+            <span class="s1">'OvertimeIncomeDed_po_rate_per_step in Tax-Calculator 6.4.0'</span>
         <span class="p">),</span>
-        <span class="s1">&#39;ALD_TipIncome_c&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was renamed TipIncomeDed_c in Tax-Calculator 6.4.0&#39;</span>
+        <span class="s1">'ALD_TipIncome_c'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was renamed TipIncomeDed_c in Tax-Calculator 6.4.0'</span>
         <span class="p">),</span>
-        <span class="s1">&#39;ALD_TipIncome_ps&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was renamed TipIncomeDed_ps in Tax-Calculator 6.4.0&#39;</span>
+        <span class="s1">'ALD_TipIncome_ps'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was renamed TipIncomeDed_ps in Tax-Calculator 6.4.0'</span>
         <span class="p">),</span>
-        <span class="s1">&#39;ALD_TipIncome_prt&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was replaced by TipIncomeDed_po_step_size and &#39;</span>
-            <span class="s1">&#39;TipIncomeDed_po_rate_per_step in Tax-Calculator 6.4.0&#39;</span>
+        <span class="s1">'ALD_TipIncome_prt'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was replaced by TipIncomeDed_po_step_size and '</span>
+            <span class="s1">'TipIncomeDed_po_rate_per_step in Tax-Calculator 6.4.0'</span>
         <span class="p">),</span>
         <span class="c1"># following parameter was renamed in PR 3026</span>
-        <span class="s1">&#39;ALD_AlimonyReceived_hc&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was renamed AlimonyReceived_frac_in_AGI in Tax-Calculator 6.6.0&#39;</span>
+        <span class="s1">'ALD_AlimonyReceived_hc'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was renamed AlimonyReceived_frac_in_AGI in Tax-Calculator 6.6.0'</span>
         <span class="p">),</span>
         <span class="c1"># following parameters were removed in PR 3082</span>
-        <span class="s1">&#39;eitc_claim_thd&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 6.7.0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;actc_claim_thd&#39;</span><span class="p">:</span> <span class="s1">&#39;was removed in Tax-Calculator 6.7.0&#39;</span><span class="p">,</span>
+        <span class="s1">'eitc_claim_thd'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 6.7.0'</span><span class="p">,</span>
+        <span class="s1">'actc_claim_thd'</span><span class="p">:</span> <span class="s1">'was removed in Tax-Calculator 6.7.0'</span><span class="p">,</span>
         <span class="c1"># following parameter was removed in PR 3092</span>
-        <span class="s1">&#39;STD_allow_charity_ded_nonitemizers&#39;</span><span class="p">:</span> <span class="p">(</span>
-            <span class="s1">&#39;was removed in Tax-Calculator 6.7.2&#39;</span>
+        <span class="s1">'STD_allow_charity_ded_nonitemizers'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'was removed in Tax-Calculator 6.7.2'</span>
         <span class="p">),</span>
     <span class="p">}</span>
     <span class="c1"># (2) specify which Policy parameters have been redefined</span>
     <span class="n">REDEFINED_PARAMS</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># (3) specify which Policy parameters are wage (rather than price) indexed</span>
-    <span class="n">WAGE_INDEXED_PARAMS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SS_Earnings_c&#39;</span><span class="p">,</span> <span class="s1">&#39;SS_Earnings_thd&#39;</span><span class="p">]</span>
+    <span class="n">WAGE_INDEXED_PARAMS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'SS_Earnings_c'</span><span class="p">,</span> <span class="s1">'SS_Earnings_thd'</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">gfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -611,7 +611,7 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gfactors</span><span class="p">,</span> <span class="n">GrowFactors</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span> <span class="o">=</span> <span class="n">gfactors</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;gfactors is not None or a GrowFactors instance&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'gfactors is not None or a GrowFactors instance'</span><span class="p">)</span>
         <span class="c1"># read default parameters and initialize</span>
         <span class="n">syr</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
         <span class="n">nyrs</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">number_of_years</span><span class="p">(</span><span class="n">last_budget_year</span><span class="p">)</span>
@@ -626,25 +626,25 @@
 <a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.read_json_reform">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">read_json_reform</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a reform dictionary suitable for use with implement_reform</span>
 <span class="sd">        method generated from the specified JSON object, which can be None or</span>
-<span class="sd">        a string containing a local filename, a URL beginning with &#39;http&#39;</span>
+<span class="sd">        a string containing a local filename, a URL beginning with 'http'</span>
 <span class="sd">        pointing to a valid JSON file hosted online, or a valid JSON text.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;policy&#39;</span><span class="p">)</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">'policy'</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Policy.implement_reform">
 <a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.implement_reform">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">implement_reform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reform</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
                          <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Implement reform using a Tax-Calculator-style reform dictionary.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
-                <span class="p">{</span><span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;schema&#39;</span><span class="p">:</span> <span class="s1">&#39;reform must be a dictionary&#39;</span><span class="p">}},</span>
+                <span class="p">{</span><span class="s1">'errors'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'schema'</span><span class="p">:</span> <span class="s1">'reform must be a dictionary'</span><span class="p">}},</span>
                 <span class="kc">None</span>
             <span class="p">)</span>
         <span class="n">deprecated_parameters</span> <span class="o">=</span> <span class="p">[</span>
@@ -652,10 +652,10 @@
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">reform</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">deprecated_parameters</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
-                    <span class="sa">f</span><span class="s1">&#39;DEPRECATION WARNING: the </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1"> policy parameter</span><span class="se">\n</span><span class="s1">&#39;</span>
-                    <span class="s1">&#39;is scheduled to be removed in Tax-Calculator 6.0.0;</span><span class="se">\n</span><span class="s1">&#39;</span>
-                    <span class="s1">&#39;if you think this removal should not happen, open an</span><span class="se">\n</span><span class="s1">&#39;</span>
-                    <span class="s1">&#39;issue on GitHub to make your case for non-removal.&#39;</span>
+                    <span class="sa">f</span><span class="s1">'DEPRECATION WARNING: the </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s1"> policy parameter</span><span class="se">\n</span><span class="s1">'</span>
+                    <span class="s1">'is scheduled to be removed in Tax-Calculator 6.0.0;</span><span class="se">\n</span><span class="s1">'</span>
+                    <span class="s1">'if you think this removal should not happen, open an</span><span class="se">\n</span><span class="s1">'</span>
+                    <span class="s1">'issue on GitHub to make your case for non-removal.'</span>
                 <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="n">print_warnings</span><span class="p">,</span> <span class="n">raise_errors</span><span class="p">)</span></div>
 
@@ -664,31 +664,31 @@
 <a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.parameter_list">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parameter_list</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns list of parameter names in the policy_current_law.json file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="n">Policy</span><span class="o">.</span><span class="n">DEFAULTS_FILE_PATH</span><span class="p">,</span>
             <span class="n">Policy</span><span class="o">.</span><span class="n">DEFAULTS_FILE_NAME</span>
         <span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">defaults</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=protected-access</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">defaults</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;schema&#39;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">defaults</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">'schema'</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Policy.set_rates">
 <a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.set_rates">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize policy parameter indexing rates.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cpi_vals</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">vo</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="k">for</span>
-            <span class="n">vo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;parameter_indexing_CPI_offset&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+            <span class="n">vo</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span> <span class="k">for</span>
+            <span class="n">vo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">'parameter_indexing_CPI_offset'</span><span class="p">][</span><span class="s1">'value'</span><span class="p">]</span>
         <span class="p">]</span>
         <span class="c1"># parameter_indexing_CPI_offset parameter is no longer used, so check:</span>
         <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">cpi_vals</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">,</span> \
-            <span class="s1">&#39;obsolete parameter_indexing_CPI_offset values must all be zero&#39;</span>
+            <span class="s1">'obsolete parameter_indexing_CPI_offset values must all be zero'</span>
         <span class="n">syr</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">first_year</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">price_inflation_rates</span><span class="p">(</span>
             <span class="n">syr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span>

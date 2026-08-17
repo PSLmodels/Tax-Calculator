@@ -764,23 +764,23 @@ operating systems), which is automatically installed as part of the
 Anaconda Python distribution.  Full <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> documentation is
 <a class="reference external" href="https://sqlite.org/cli.html">here</a>.</p>
 <p>Here is a quick way to see the structure of the dump database:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">echo</span> <span class="s2">&quot;.schema&quot;</span> <span class="o">|</span> <span class="n">sqlite3</span> <span class="n">cps</span><span class="o">-</span><span class="mi">20</span><span class="o">-</span><span class="c1">#-#-#-#.db</span>
-<span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">IF</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="s2">&quot;base&quot;</span> <span class="p">(</span>
-<span class="s2">&quot;RECID&quot;</span> <span class="n">INTEGER</span><span class="p">,</span>
-  <span class="s2">&quot;s006&quot;</span> <span class="n">REAL</span><span class="p">,</span>
-  <span class="s2">&quot;data_source&quot;</span> <span class="n">INTEGER</span><span class="p">,</span>
-  <span class="s2">&quot;XTOT&quot;</span> <span class="n">INTEGER</span><span class="p">,</span>
-  <span class="s2">&quot;MARS&quot;</span> <span class="n">INTEGER</span><span class="p">,</span>
-  <span class="s2">&quot;expanded_income&quot;</span> <span class="n">REAL</span><span class="p">,</span>
-  <span class="s2">&quot;income_group&quot;</span> <span class="n">INTEGER</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">echo</span> <span class="s2">".schema"</span> <span class="o">|</span> <span class="n">sqlite3</span> <span class="n">cps</span><span class="o">-</span><span class="mi">20</span><span class="o">-</span><span class="c1">#-#-#-#.db</span>
+<span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">IF</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="s2">"base"</span> <span class="p">(</span>
+<span class="s2">"RECID"</span> <span class="n">INTEGER</span><span class="p">,</span>
+  <span class="s2">"s006"</span> <span class="n">REAL</span><span class="p">,</span>
+  <span class="s2">"data_source"</span> <span class="n">INTEGER</span><span class="p">,</span>
+  <span class="s2">"XTOT"</span> <span class="n">INTEGER</span><span class="p">,</span>
+  <span class="s2">"MARS"</span> <span class="n">INTEGER</span><span class="p">,</span>
+  <span class="s2">"expanded_income"</span> <span class="n">REAL</span><span class="p">,</span>
+  <span class="s2">"income_group"</span> <span class="n">INTEGER</span>
 <span class="p">);</span>
-<span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">IF</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="s2">&quot;baseline&quot;</span> <span class="p">(</span>
-<span class="s2">&quot;RECID&quot;</span> <span class="n">INTEGER</span><span class="p">,</span>
-  <span class="s2">&quot;iitax&quot;</span> <span class="n">REAL</span>
+<span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">IF</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="s2">"baseline"</span> <span class="p">(</span>
+<span class="s2">"RECID"</span> <span class="n">INTEGER</span><span class="p">,</span>
+  <span class="s2">"iitax"</span> <span class="n">REAL</span>
 <span class="p">);</span>
-<span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">IF</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="s2">&quot;reform&quot;</span> <span class="p">(</span>
-<span class="s2">&quot;RECID&quot;</span> <span class="n">INTEGER</span><span class="p">,</span>
-  <span class="s2">&quot;iitax&quot;</span> <span class="n">REAL</span>
+<span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">IF</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="s2">"reform"</span> <span class="p">(</span>
+<span class="s2">"RECID"</span> <span class="n">INTEGER</span><span class="p">,</span>
+  <span class="s2">"iitax"</span> <span class="n">REAL</span>
 <span class="p">);</span>
 </pre></div>
 </div>
@@ -807,7 +807,7 @@ simple policy reform specified in the <code class="docutils literal notranslate"
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">ref3</span><span class="o">.</span><span class="n">json</span> <span class="n">raises</span> <span class="n">personal</span> <span class="n">exemption</span> <span class="n">amount</span> <span class="n">to</span> <span class="mi">8000</span> <span class="ow">in</span> <span class="mi">2022</span><span class="p">,</span>
 <span class="o">//</span> <span class="n">after</span> <span class="n">which</span> <span class="n">it</span> <span class="n">continues</span> <span class="n">to</span> <span class="n">be</span> <span class="n">indexed</span> <span class="n">to</span> <span class="n">price</span> <span class="n">inflation</span><span class="o">.</span>
 <span class="p">{</span>
-    <span class="s2">&quot;II_em&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;2022&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">}</span>
+    <span class="s2">"II_em"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"2022"</span><span class="p">:</span> <span class="mi">8000</span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -908,7 +908,7 @@ exploratory data analysis.</p>
 
 <span class="o">%</span> <span class="n">sqlite3</span> <span class="n">cps</span><span class="o">-</span><span class="mi">24</span><span class="o">-</span><span class="c1">#-ref3-#-#.db</span>
 <span class="n">SQLite</span> <span class="n">version</span> <span class="mf">3.39.5</span> <span class="mi">2022</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">14</span> <span class="mi">20</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">05</span>
-<span class="n">Enter</span> <span class="s2">&quot;.help&quot;</span> <span class="k">for</span> <span class="n">usage</span> <span class="n">hints</span><span class="o">.</span>
+<span class="n">Enter</span> <span class="s2">".help"</span> <span class="k">for</span> <span class="n">usage</span> <span class="n">hints</span><span class="o">.</span>
 <span class="n">sqlite</span><span class="o">&gt;</span> <span class="n">YOUR</span> <span class="n">FIRST</span> <span class="n">SQL</span> <span class="n">COMMAND</span> <span class="n">GOES</span> <span class="n">HERE</span>
 <span class="n">sqlite</span><span class="o">&gt;</span> <span class="n">YOUR</span> <span class="n">SECOND</span> <span class="n">SQL</span> <span class="n">COMMAND</span> <span class="n">GOES</span> <span class="n">HERE</span>
 <span class="n">sqlite</span><span class="o">&gt;</span> <span class="o">...</span>
@@ -938,7 +938,7 @@ FROM base
 GROUP BY MARS;
 .headers off
 SELECT
-  &#39;A&#39;,                                  -- tax filing status
+  'A',                                  -- tax filing status
   ROUND(SUM(s006)*1e-6, 3) AS wgh_count -- weighted count of tax units (#M)
 FROM base;
 .headers on
@@ -966,7 +966,7 @@ FROM base JOIN baseline AS b USING(RECID) JOIN reform AS r USING(RECID)
 GROUP BY income_group; 
 .headers off
 SELECT
-  &#39;A&#39;                                        AS g,       -- all income groups
+  'A'                                        AS g,       -- all income groups
   ROUND(SUM(s006)*1e-6, 3)                   AS units,   -- tax units (#M)
   ROUND(SUM(s006*b.iitax)*1e-9, 3)           AS b_iitax, -- baseline iitax ($B)
   ROUND(SUM(s006*r.iitax)*1e-9, 3)           AS r_iitax, -- reform iitax ($B)
@@ -1083,7 +1083,7 @@ fourth column, we can look at the ten-year results quickly:</p>
 <p>A simple way to sum up the ten annual changes is to use the <a class="reference external" href="https://www.gnu.org/software/gawk/manual/gawk.html"><code class="docutils literal notranslate"><span class="pre">awk</span></code>
 program</a>, which
 could be called <code class="docutils literal notranslate"><span class="pre">gawk</span></code> or <code class="docutils literal notranslate"><span class="pre">gawk.exe</span></code> on your computer, as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tail -1 tmd-??-*tables.text | awk &#39;$1~/A/{n++;c+=$4}END{print n,c}&#39;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>% tail -1 tmd-??-*tables.text | awk '$1~/A/{n++;c+=$4}END{print n,c}'
 10 -3085.1
 </pre></div>
 </div>

@@ -576,7 +576,7 @@ methods.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">taxcalc</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tc</span>
 
 
-<span class="c1"># override the ExpandIncome calcfunction that computes &quot;market income&quot;</span>
+<span class="c1"># override the ExpandIncome calcfunction that computes "market income"</span>
 
 
 <span class="nd">@tc</span><span class="o">.</span><span class="n">iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -584,9 +584,9 @@ methods.</p>
                  <span class="n">e00700</span><span class="p">,</span> <span class="n">e00800</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span> <span class="n">e01400</span><span class="p">,</span> <span class="n">e01500</span><span class="p">,</span>
                  <span class="n">e02000</span><span class="p">,</span> <span class="n">e02100</span><span class="p">,</span> <span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span>
                  <span class="n">expanded_income</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculates expanded_income as &quot;market income&quot; from component income types.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Calculates expanded_income as "market income" from component income types.</span>
+<span class="sd">    """</span>
     <span class="n">expanded_income</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">e00200</span> <span class="o">+</span>  <span class="c1"># wage and salary income net of DC pension contributions</span>
         <span class="n">pencon_p</span> <span class="o">+</span>  <span class="c1"># tax-advantaged DC pension contributions for taxpayer</span>
@@ -617,10 +617,10 @@ methods.</p>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Calculator</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Customized Calculator class that inherits all tc.Calculator data and</span>
 <span class="sd">    methods, overriding one method to get the desired customization.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">sync_years</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">consumption</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># use same class constructor arguments as tc.Calculator class</span>
@@ -629,9 +629,9 @@ methods.</p>
                          <span class="n">consumption</span><span class="o">=</span><span class="n">consumption</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">calc_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Call all tax-calculation functions for the current_year.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">tc</span><span class="o">.</span><span class="n">BenefitPrograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_calc_one_year</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="p">)</span>
         <span class="n">tc</span><span class="o">.</span><span class="n">BenefitSurtax</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -646,13 +646,13 @@ methods.</p>
 
 <span class="c1"># top-level logic of program that uses customized Calculator class</span>
 
-<span class="c1"># read an &quot;old&quot; reform file</span>
-<span class="c1"># (&quot;old&quot; means the reform file is defined relative to pre-TCJA policy)</span>
+<span class="c1"># read an "old" reform file</span>
+<span class="c1"># ("old" means the reform file is defined relative to pre-TCJA policy)</span>
 <span class="c1"># specify reform dictionary for pre-TCJA policy</span>
-<span class="n">reform1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:examples@main/psl_examples/taxcalc/2017_law.json&#39;</span><span class="p">)</span>
+<span class="n">reform1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">'github://PSLmodels:examples@main/psl_examples/taxcalc/2017_law.json'</span><span class="p">)</span>
 
 <span class="c1"># specify reform dictionary for TCJA as passed by Congress in late 2017</span>
-<span class="n">reform2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;github://PSLmodels:examples@main/psl_examples/taxcalc/TCJA.json&#39;</span><span class="p">)</span>
+<span class="n">reform2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">'github://PSLmodels:examples@main/psl_examples/taxcalc/TCJA.json'</span><span class="p">)</span>
 
 <span class="c1"># specify Policy object for pre-TCJA policy</span>
 <span class="n">bpolicy</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>
@@ -680,31 +680,31 @@ methods.</p>
 <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
 
 <span class="c1"># compare aggregate individual income tax revenue in CYR</span>
-<span class="n">iitax_rev1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
-<span class="n">iitax_rev2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+<span class="n">iitax_rev1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">'iitax'</span><span class="p">)</span>
+<span class="n">iitax_rev2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">'iitax'</span><span class="p">)</span>
 
 <span class="c1"># construct reform-vs-baseline difference table with results for income deciles</span>
-<span class="n">diff_table</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">difference_table</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span> <span class="s1">&#39;standard_income_bins&#39;</span><span class="p">,</span> <span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+<span class="n">diff_table</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">difference_table</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span> <span class="s1">'standard_income_bins'</span><span class="p">,</span> <span class="s1">'iitax'</span><span class="p">)</span>
 <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diff_table</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
 <span class="n">diff_extract</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-<span class="n">dif_colnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;tax_cut&#39;</span><span class="p">,</span> <span class="s1">&#39;tax_inc&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;tot_change&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;pc_aftertaxinc&#39;</span><span class="p">]</span>
-<span class="n">ext_colnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;funits(#m)&#39;</span><span class="p">,</span> <span class="s1">&#39;taxfall(#m)&#39;</span><span class="p">,</span> <span class="s1">&#39;taxrise(#m)&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;agg_diff($b)&#39;</span><span class="p">,</span> <span class="s1">&#39;mean_diff($)&#39;</span><span class="p">,</span> <span class="s1">&#39;aftertax_income_diff(%)&#39;</span><span class="p">]</span>
+<span class="n">dif_colnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'count'</span><span class="p">,</span> <span class="s1">'tax_cut'</span><span class="p">,</span> <span class="s1">'tax_inc'</span><span class="p">,</span>
+                <span class="s1">'tot_change'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">,</span> <span class="s1">'pc_aftertaxinc'</span><span class="p">]</span>
+<span class="n">ext_colnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'funits(#m)'</span><span class="p">,</span> <span class="s1">'taxfall(#m)'</span><span class="p">,</span> <span class="s1">'taxrise(#m)'</span><span class="p">,</span>
+                <span class="s1">'agg_diff($b)'</span><span class="p">,</span> <span class="s1">'mean_diff($)'</span><span class="p">,</span> <span class="s1">'aftertax_income_diff(%)'</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">dname</span><span class="p">,</span> <span class="n">ename</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dif_colnames</span><span class="p">,</span> <span class="n">ext_colnames</span><span class="p">):</span>
     <span class="n">diff_extract</span><span class="p">[</span><span class="n">ename</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff_table</span><span class="p">[</span><span class="n">dname</span><span class="p">]</span>
 
 <span class="c1"># print total revenue estimates for CYR</span>
 <span class="c1"># (estimates in billons of dollars)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_REFORM1_iitax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">iitax_rev1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_REFORM2_iitax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">iitax_rev2</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="si">{}</span><span class="s1">_REFORM1_iitax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">iitax_rev1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="si">{}</span><span class="s1">_REFORM2_iitax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">iitax_rev2</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
 
 <span class="c1"># print reform2-vs-reform1 difference table</span>
-<span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Extract of </span><span class="si">{}</span><span class="s1"> income-tax difference table by expanded-income decile&#39;</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s1">'Extract of </span><span class="si">{}</span><span class="s1"> income-tax difference table by expanded-income decile'</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">title</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;(taxfall is count of funits with cut in income tax in reform 2 vs 1)&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;(taxrise is count of funits with rise in income tax in reform 2 vs 1)&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'(taxfall is count of funits with cut in income tax in reform 2 vs 1)'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'(taxrise is count of funits with rise in income tax in reform 2 vs 1)'</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">diff_extract</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
 </pre></div>
 </div>

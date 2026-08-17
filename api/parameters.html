@@ -621,20 +621,20 @@ Tax-Calculator styled adjustments can continue to do so
 without making any changes to how they handle adjustments.</p>
 <p>Converts reforms that are compatible with Tax-Calculator:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">adjustment</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;standard_deduction&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">2024</span><span class="p">:</span> <span class="p">[</span><span class="mf">10000.0</span><span class="p">,</span> <span class="mf">10000.0</span><span class="p">]},</span>
-    <span class="s2">&quot;ss_rate&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">2024</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}</span>
+    <span class="s2">"standard_deduction"</span><span class="p">:</span> <span class="p">{</span><span class="mi">2024</span><span class="p">:</span> <span class="p">[</span><span class="mf">10000.0</span><span class="p">,</span> <span class="mf">10000.0</span><span class="p">]},</span>
+    <span class="s2">"ss_rate"</span><span class="p">:</span> <span class="p">{</span><span class="mi">2024</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>into reforms that are compatible with ParamTools:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;standard_deduction&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;marital_status&quot;</span><span class="p">:</span> <span class="s2">&quot;single&quot;</span><span class="p">,</span>
-         <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">10000.0</span><span class="p">},</span>
-        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;marital_status&quot;</span><span class="p">:</span> <span class="s2">&quot;joint&quot;</span><span class="p">,</span>
-         <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">10000.0</span><span class="p">}</span>
+    <span class="s2">"standard_deduction"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"year"</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">"marital_status"</span><span class="p">:</span> <span class="s2">"single"</span><span class="p">,</span>
+         <span class="s2">"value"</span><span class="p">:</span> <span class="mf">10000.0</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"year"</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">"marital_status"</span><span class="p">:</span> <span class="s2">"joint"</span><span class="p">,</span>
+         <span class="s2">"value"</span><span class="p">:</span> <span class="mf">10000.0</span><span class="p">}</span>
     <span class="p">],</span>
-    <span class="s2">&quot;ss_rate&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}]}</span>
+    <span class="s2">"ss_rate"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"year"</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}]}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -649,13 +649,13 @@ without making any changes to how they handle adjustments.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>params_or_path</strong> (<em>Dict</em><em>, </em><em>str</em>) – <p>New parameter values in the paramtools format. For example:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;standard_deduction&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;year&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;marital_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;single&quot;</span><span class="p">,</span>
-<span class="w">         </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10000.0</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;year&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;marital_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;joint&quot;</span><span class="p">,</span>
-<span class="w">         </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10000.0</span><span class="p">}</span>
+<span class="w">    </span><span class="nt">"standard_deduction"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"year"</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">"marital_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"single"</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">10000.0</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"year"</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">"marital_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"joint"</span><span class="p">,</span>
+<span class="w">         </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">10000.0</span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;ss_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;year&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">}]}</span>
+<span class="w">    </span><span class="nt">"ss_rate"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">"year"</span><span class="p">:</span><span class="w"> </span><span class="mi">2024</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">}]}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -792,12 +792,12 @@ Otherwise, it is likely to be a ParamTools format.</p>
 <dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – <p>Either a ParamTools or Tax-Calculator styled parameters <code class="docutils literal notranslate"><span class="pre">dict</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ParamTools style format:</span>
 <span class="p">{</span>
-    <span class="s2">&quot;ss_rate&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">2024</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}</span>
+    <span class="s2">"ss_rate"</span><span class="p">:</span> <span class="p">{</span><span class="mi">2024</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}</span>
 <span class="p">}</span>
 
 <span class="c1"># Tax-Calculator style format:</span>
 <span class="p">{</span>
-    <span class="s2">&quot;ss_rate&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}]}</span>
+    <span class="s2">"ss_rate"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"year"</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}]}</span>
 <span class="p">}</span>
 </pre></div>
 </div>

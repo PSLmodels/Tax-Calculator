@@ -440,7 +440,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for taxcalc.behresp</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Partial-equilibrium elasticity-based behavioral-responses logic.</span>
 
 <span class="sd">This module contains two independent sets of functions that are not</span>
@@ -449,7 +449,7 @@
 <span class="sd">(1) The response function, which conducts a complete partial-equilibrium</span>
 <span class="sd">    analysis of a baseline-to-reform policy change: it computes the</span>
 <span class="sd">    behavioral response implied by the assumed elasticities, adds that</span>
-<span class="sd">    response to the reform filing units&#39; input variables, recalculates</span>
+<span class="sd">    response to the reform filing units' input variables, recalculates</span>
 <span class="sd">    reform taxes, and returns baseline and reform DataFrame objects.</span>
 <span class="sd">    This is the function used by the tc CLI --behavior option and by</span>
 <span class="sd">    cookbook recipe 2.</span>
@@ -470,7 +470,7 @@
 <span class="sd">floor to after-tax income --- whereas quantity_response forces after-tax</span>
 <span class="sd">prices into the [0.01, inf] range and after-tax income into the</span>
 <span class="sd">[1, inf] range.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="c1"># CODING-STYLE CHECKS:</span>
 <span class="c1"># pycodestyle behresp.py</span>
 <span class="c1"># pylint --disable=locally-disabled behresp.py</span>
@@ -481,14 +481,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.records</span><span class="w"> </span><span class="kn">import</span> <span class="n">Records</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">taxcalc.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">DIST_VARIABLES</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;response&#39;</span><span class="p">,</span> <span class="s1">&#39;quantity_response&#39;</span><span class="p">,</span> <span class="s1">&#39;labor_response&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'response'</span><span class="p">,</span> <span class="s1">'quantity_response'</span><span class="p">,</span> <span class="s1">'labor_response'</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="response">
 <a class="viewcode-back" href="../../api/behresp.html#taxcalc.behresp.response">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">response</span><span class="p">(</span><span class="n">calc_1</span><span class="p">,</span> <span class="n">calc_2</span><span class="p">,</span> <span class="n">elasticities</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Implements &quot;Partial Equilibrium Simulation&quot; conventional analysis,</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Implements "Partial Equilibrium Simulation" conventional analysis,</span>
 <span class="sd">    returning results as a tuple of Pandas DataFrame objects (df1, df2)</span>
 <span class="sd">    where df1 is extracted from a baseline-policy calc_1 copy, and df2 is</span>
 <span class="sd">    extracted from a reform-policy calc_2 copy that incorporates the</span>
@@ -516,23 +516,23 @@
 <span class="sd">        elasticity key:value pair implies the omitted elasticity is</span>
 <span class="sd">        assumed to be zero.  (Note that the tc CLI --behavior option is</span>
 <span class="sd">        stricter: a JSON behavior file must contain all the keys.)</span>
-<span class="sd">        Here is the full dictionary content and each elasticity&#39;s</span>
+<span class="sd">        Here is the full dictionary content and each elasticity's</span>
 <span class="sd">        internal name:</span>
 
-<span class="sd">        be_sub = elasticities[&#39;sub&#39;]</span>
+<span class="sd">        be_sub = elasticities['sub']</span>
 <span class="sd">          Substitution elasticity of taxable income.</span>
 <span class="sd">          Defined as proportional change in taxable income divided by</span>
 <span class="sd">          proportional change in marginal net-of-tax rate (1-MTR) on</span>
 <span class="sd">          taxpayer earnings caused by the reform.</span>
 <span class="sd">          Must be zero or positive.</span>
 
-<span class="sd">        be_inc = elasticities[&#39;inc&#39;]</span>
+<span class="sd">        be_inc = elasticities['inc']</span>
 <span class="sd">          Income elasticity of taxable income.</span>
 <span class="sd">          Defined as dollar change in taxable income divided by dollar</span>
 <span class="sd">          change in after-tax income caused by the reform.</span>
 <span class="sd">          Must be zero or negative.</span>
 
-<span class="sd">        be_cg = elasticities[&#39;cg&#39;]</span>
+<span class="sd">        be_cg = elasticities['cg']</span>
 <span class="sd">          Semi-elasticity of long-term capital gains.</span>
 <span class="sd">          Defined as change in logarithm of long-term capital gains</span>
 <span class="sd">          divided by change in marginal tax rate (MTR) on long-term</span>
@@ -577,7 +577,7 @@
 <span class="sd">      The substitution and income effects on taxable income are computed,</span>
 <span class="sd">      in dollars per filing unit, as follows, where mtr1 and mtr2 are the</span>
 <span class="sd">      baseline and reform combined (income plus payroll) marginal tax</span>
-<span class="sd">      rates on the taxpayer&#39;s earnings (e00200p) computed with respect to</span>
+<span class="sd">      rates on the taxpayer's earnings (e00200p) computed with respect to</span>
 <span class="sd">      full compensation (and not capped in any way), where c04800 is</span>
 <span class="sd">      baseline taxable income, and where combined1 and combined2 are the</span>
 <span class="sd">      baseline and reform combined income and payroll tax liabilities:</span>
@@ -597,7 +597,7 @@
 
 <span class="sd">      Note that the substitution effect is scaled by taxable income,</span>
 <span class="sd">      which includes long-term capital gains, so its magnitude is not</span>
-<span class="sd">      independent of the filing unit&#39;s LTCG amount.</span>
+<span class="sd">      independent of the filing unit's LTCG amount.</span>
 
 <span class="sd">    How responses are applied to input variables:</span>
 
@@ -612,7 +612,7 @@
 <span class="sd">        the other-income part is added to e00300 (taxable interest)</span>
 <span class="sd">        the deduction part is added to e19200 (interest paid deduction)</span>
 
-<span class="sd">      Two consequences are worth noting.  First, the spouse&#39;s earnings</span>
+<span class="sd">      Two consequences are worth noting.  First, the spouse's earnings</span>
 <span class="sd">      variable, e00200s, is not adjusted, so after a response e00200 is</span>
 <span class="sd">      no longer the sum of e00200p and e00200s.  Second, a response shows</span>
 <span class="sd">      up in dump output as changes in e00300 and e19200 even for filing</span>
@@ -679,7 +679,7 @@
 <span class="sd">      no logic that carries a response in one year over into another</span>
 <span class="sd">      year, so retiming behavior --- most notably the realization timing</span>
 <span class="sd">      of capital gains --- is not modeled.  There are no response margins</span>
-<span class="sd">      for the spouse&#39;s earnings, for short-term capital gains, for</span>
+<span class="sd">      for the spouse's earnings, for short-term capital gains, for</span>
 <span class="sd">      deduction items other than the mechanical e19200 adjustment</span>
 <span class="sd">      described above, or for any margin not represented by the three</span>
 <span class="sd">      elasticities.  Being a partial-equilibrium calculation, the</span>
@@ -688,17 +688,17 @@
 
 <span class="sd">    Note: the use here of a dollar-change income elasticity (rather than</span>
 <span class="sd">      a proportional-change elasticity) is consistent with Feldstein and</span>
-<span class="sd">      Feenberg, &quot;The Taxation of Two Earner Families&quot;, NBER Working Paper</span>
+<span class="sd">      Feenberg, "The Taxation of Two Earner Families", NBER Working Paper</span>
 <span class="sd">      No. 5155 (June 1995).  A proportional-change elasticity was used by</span>
-<span class="sd">      Gruber and Saez, &quot;The elasticity of taxable income: evidence and</span>
-<span class="sd">      implications&quot;, Journal of Public Economics 84:1-32 (2002) [see</span>
+<span class="sd">      Gruber and Saez, "The elasticity of taxable income: evidence and</span>
+<span class="sd">      implications", Journal of Public Economics 84:1-32 (2002) [see</span>
 <span class="sd">      equation 2 on page 10].</span>
 
 <span class="sd">    Note: the nature of the capital-gains elasticity used here is similar</span>
-<span class="sd">      to that used in Joint Committee on Taxation, &quot;New Evidence on the</span>
+<span class="sd">      to that used in Joint Committee on Taxation, "New Evidence on the</span>
 <span class="sd">      Tax Elasticity of Capital Gains: A Joint Working Paper of the Staff</span>
 <span class="sd">      of the Joint Committee on Taxation and the Congressional Budget</span>
-<span class="sd">      Office&quot;, (JCX-56-12), June 2012.  In particular, the elasticity</span>
+<span class="sd">      Office", (JCX-56-12), June 2012.  In particular, the elasticity</span>
 <span class="sd">      use here is equivalent to the term inside the square brackets on</span>
 <span class="sd">      the right-hand side of equation (4) on page 11 --- not the epsilon</span>
 <span class="sd">      variable on the left-hand side of equation (4), which is equal to</span>
@@ -715,16 +715,16 @@
 <span class="sd">      Specifying be_cg equal to a published tax-rate elasticity such as</span>
 <span class="sd">      -0.792 is therefore a common mistake that generates a much smaller</span>
 <span class="sd">      capital-gains response than intended.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-locals,too-many-statements,too-many-branches</span>
 
     <span class="c1"># Check function argument types and elasticity values</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc_1</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc_2</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elasticities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-    <span class="n">be_sub</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">&#39;sub&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;sub&#39;</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
-    <span class="n">be_inc</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">&#39;inc&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;inc&#39;</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
-    <span class="n">be_cg</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">&#39;cg&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;cg&#39;</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">be_sub</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">'sub'</span><span class="p">]</span> <span class="k">if</span> <span class="s1">'sub'</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">be_inc</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">'inc'</span><span class="p">]</span> <span class="k">if</span> <span class="s1">'inc'</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">be_cg</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">'cg'</span><span class="p">]</span> <span class="k">if</span> <span class="s1">'cg'</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
     <span class="k">assert</span> <span class="n">be_sub</span> <span class="o">&gt;=</span> <span class="mf">0.0</span>
     <span class="k">assert</span> <span class="n">be_inc</span> <span class="o">&lt;=</span> <span class="mf">0.0</span>
     <span class="k">assert</span> <span class="n">be_cg</span> <span class="o">&lt;=</span> <span class="mf">0.0</span>
@@ -733,18 +733,18 @@
 
     <span class="c1"># Begin nested functions used only in this response function</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_ordinary_income</span><span class="p">(</span><span class="n">taxinc_change</span><span class="p">,</span> <span class="n">calc</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Implement total taxable income change induced by behavioral response.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># compute allocation base: AGI minus itemized deductions</span>
         <span class="c1"># Note: alloc_base is not an approximation of taxable income and</span>
         <span class="c1"># must not be replaced by the c04800 taxable income variable; it</span>
         <span class="c1"># is the sum of the three components being adjusted below, which</span>
         <span class="c1"># is what makes the three allocation shares sum to one.  See the</span>
         <span class="c1"># response function docstring for details.</span>
-        <span class="n">agi</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c00100&#39;</span><span class="p">)</span>
-        <span class="n">ided</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04470&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;standard&#39;</span><span class="p">),</span>
-                        <span class="mf">0.</span><span class="p">,</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04470&#39;</span><span class="p">))</span>
+        <span class="n">agi</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'c00100'</span><span class="p">)</span>
+        <span class="n">ided</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'c04470'</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'standard'</span><span class="p">),</span>
+                        <span class="mf">0.</span><span class="p">,</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'c04470'</span><span class="p">))</span>
         <span class="n">alloc_base</span> <span class="o">=</span> <span class="n">agi</span> <span class="o">-</span> <span class="n">ided</span>
         <span class="c1"># apply response only where the allocation arithmetic is valid</span>
         <span class="c1"># Note: this guards against a zero denominator and against the</span>
@@ -758,7 +758,7 @@
         <span class="c1"># satisfy delta_winc + delta_oinc - delta_ided == taxinc_change</span>
         <span class="c1"># for the pos filing units, so there is nothing to check here.</span>
         <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
-        <span class="n">winc</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e00200&#39;</span><span class="p">)</span>
+        <span class="n">winc</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'e00200'</span><span class="p">)</span>
         <span class="n">oinc</span> <span class="o">=</span> <span class="n">agi</span> <span class="o">-</span> <span class="n">winc</span>
         <span class="n">share</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">agi</span><span class="p">)</span>
         <span class="n">share</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">taxinc_change</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">/</span> <span class="n">alloc_base</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
@@ -766,29 +766,29 @@
         <span class="n">delta_oinc</span> <span class="o">=</span> <span class="n">share</span> <span class="o">*</span> <span class="n">oinc</span>
         <span class="n">delta_ided</span> <span class="o">=</span> <span class="n">share</span> <span class="o">*</span> <span class="n">ided</span>
         <span class="c1"># add the three parts to different records variables embedded in calc</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e00200&#39;</span><span class="p">,</span> <span class="n">delta_winc</span><span class="p">)</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span> <span class="n">delta_winc</span><span class="p">)</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e00300&#39;</span><span class="p">,</span> <span class="n">delta_oinc</span><span class="p">)</span>
-        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;e19200&#39;</span><span class="p">,</span> <span class="n">delta_ided</span><span class="p">)</span>
+        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">'e00200'</span><span class="p">,</span> <span class="n">delta_winc</span><span class="p">)</span>
+        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">'e00200p'</span><span class="p">,</span> <span class="n">delta_winc</span><span class="p">)</span>
+        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">'e00300'</span><span class="p">,</span> <span class="n">delta_oinc</span><span class="p">)</span>
+        <span class="n">calc</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">'e19200'</span><span class="p">,</span> <span class="n">delta_ided</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">calc</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_mtr12</span><span class="p">(</span><span class="n">calc__1</span><span class="p">,</span> <span class="n">calc__2</span><span class="p">,</span> <span class="n">mtr_of</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span> <span class="n">tax_type</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mtr12</span><span class="p">(</span><span class="n">calc__1</span><span class="p">,</span> <span class="n">calc__2</span><span class="p">,</span> <span class="n">mtr_of</span><span class="o">=</span><span class="s1">'e00200p'</span><span class="p">,</span> <span class="n">tax_type</span><span class="o">=</span><span class="s1">'combined'</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Computes marginal tax rates for Calculator objects calc__1 and calc__2</span>
 <span class="sd">        for specified mtr_of income type and specified tax_type.</span>
 
 <span class="sd">        Both calc__1 and calc__2 must already have had their calc_all</span>
 <span class="sd">        method called, which allows the mtr method to skip one of the two</span>
 <span class="sd">        calc_all calls it would otherwise make for each Calculator object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">tax_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;combined&#39;</span><span class="p">,</span> <span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="k">assert</span> <span class="n">tax_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'combined'</span><span class="p">,</span> <span class="s1">'iitax'</span><span class="p">)</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">iitax1</span><span class="p">,</span> <span class="n">combined1</span> <span class="o">=</span> <span class="n">calc__1</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">mtr_of</span><span class="p">,</span>
                                            <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                            <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">iitax2</span><span class="p">,</span> <span class="n">combined2</span> <span class="o">=</span> <span class="n">calc__2</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">mtr_of</span><span class="p">,</span>
                                            <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                            <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">tax_type</span> <span class="o">==</span> <span class="s1">&#39;combined&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tax_type</span> <span class="o">==</span> <span class="s1">'combined'</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">combined1</span><span class="p">,</span> <span class="n">combined2</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">iitax1</span><span class="p">,</span> <span class="n">iitax2</span><span class="p">)</span>
     <span class="c1"># End nested functions used only in this response function</span>
@@ -812,10 +812,10 @@
         <span class="n">wage_mtr2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc2</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># calculate marginal combined tax rates on taxpayer wages+salary</span>
-        <span class="c1"># (e00200p is taxpayer&#39;s wages+salary)</span>
+        <span class="c1"># (e00200p is taxpayer's wages+salary)</span>
         <span class="n">wage_mtr1</span><span class="p">,</span> <span class="n">wage_mtr2</span> <span class="o">=</span> <span class="n">_mtr12</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span>
-                                      <span class="n">mtr_of</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span>
-                                      <span class="n">tax_type</span><span class="o">=</span><span class="s1">&#39;combined&#39;</span><span class="p">)</span>
+                                      <span class="n">mtr_of</span><span class="o">=</span><span class="s1">'e00200p'</span><span class="p">,</span>
+                                      <span class="n">tax_type</span><span class="o">=</span><span class="s1">'combined'</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">zero_sub_and_inc</span><span class="p">:</span>
         <span class="n">si_chg</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># is not used when zero_sub_and_inc is True</span>
     <span class="k">else</span><span class="p">:</span>
@@ -825,18 +825,18 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># proportional change in marginal net-of-tax rates on earnings</span>
             <span class="n">pch</span> <span class="o">=</span> <span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">wage_mtr2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">wage_mtr1</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.</span>
-            <span class="c1"># Note: c04800 is filing unit&#39;s taxable income</span>
+            <span class="c1"># Note: c04800 is filing unit's taxable income</span>
             <span class="c1"># Scaling by taxable income (rather than by earnings, as the</span>
             <span class="c1"># labor_response and quantity_response functions do) is by</span>
             <span class="c1"># design; see the module docstring.</span>
-            <span class="n">sub</span> <span class="o">=</span> <span class="n">be_sub</span> <span class="o">*</span> <span class="n">pch</span> <span class="o">*</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c04800&#39;</span><span class="p">)</span>
+            <span class="n">sub</span> <span class="o">=</span> <span class="n">be_sub</span> <span class="o">*</span> <span class="n">pch</span> <span class="o">*</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'c04800'</span><span class="p">)</span>
         <span class="c1"># calculate magnitude of income effect</span>
         <span class="k">if</span> <span class="n">be_inc</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">inc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># dollar change in after-tax income</span>
-            <span class="c1"># Note: combined is f.unit&#39;s income+payroll tax liability</span>
-            <span class="n">dch</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;combined&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">calc2</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;combined&#39;</span><span class="p">)</span>
+            <span class="c1"># Note: combined is f.unit's income+payroll tax liability</span>
+            <span class="n">dch</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'combined'</span><span class="p">)</span> <span class="o">-</span> <span class="n">calc2</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'combined'</span><span class="p">)</span>
             <span class="n">inc</span> <span class="o">=</span> <span class="n">be_inc</span> <span class="o">*</span> <span class="n">dch</span>
         <span class="c1"># calculate sum of substitution and income effects</span>
         <span class="n">si_chg</span> <span class="o">=</span> <span class="n">sub</span> <span class="o">+</span> <span class="n">inc</span>
@@ -845,19 +845,19 @@
         <span class="n">ltcg_chg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># calculate marginal tax rates on long-term capital gains</span>
-        <span class="c1">#  p23250 is filing units&#39; long-term capital gains</span>
+        <span class="c1">#  p23250 is filing units' long-term capital gains</span>
         <span class="n">ltcg_mtr1</span><span class="p">,</span> <span class="n">ltcg_mtr2</span> <span class="o">=</span> <span class="n">_mtr12</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span>
-                                      <span class="n">mtr_of</span><span class="o">=</span><span class="s1">&#39;p23250&#39;</span><span class="p">,</span>
-                                      <span class="n">tax_type</span><span class="o">=</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+                                      <span class="n">mtr_of</span><span class="o">=</span><span class="s1">'p23250'</span><span class="p">,</span>
+                                      <span class="n">tax_type</span><span class="o">=</span><span class="s1">'iitax'</span><span class="p">)</span>
         <span class="n">rch</span> <span class="o">=</span> <span class="n">ltcg_mtr2</span> <span class="o">-</span> <span class="n">ltcg_mtr1</span>
         <span class="n">exp_term</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">be_cg</span> <span class="o">*</span> <span class="n">rch</span><span class="p">)</span>
-        <span class="n">new_ltcg</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;p23250&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">exp_term</span>
-        <span class="n">ltcg_chg</span> <span class="o">=</span> <span class="n">new_ltcg</span> <span class="o">-</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;p23250&#39;</span><span class="p">)</span>
+        <span class="n">new_ltcg</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'p23250'</span><span class="p">)</span> <span class="o">*</span> <span class="n">exp_term</span>
+        <span class="n">ltcg_chg</span> <span class="o">=</span> <span class="n">new_ltcg</span> <span class="o">-</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'p23250'</span><span class="p">)</span>
     <span class="c1"># Extract dataframe from calc1</span>
     <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
         <span class="n">df1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span>
-        <span class="n">df1</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;mtr_inctax&#39;</span><span class="p">,</span> <span class="s1">&#39;mtr_paytax&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">df1</span><span class="p">[</span><span class="s1">&#39;mtr_combined&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wage_mtr1</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="n">df1</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">'mtr_inctax'</span><span class="p">,</span> <span class="s1">'mtr_paytax'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="s1">'columns'</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df1</span><span class="p">[</span><span class="s1">'mtr_combined'</span><span class="p">]</span> <span class="o">=</span> <span class="n">wage_mtr1</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">df1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">DIST_VARIABLES</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">calc1</span>
@@ -868,14 +868,14 @@
     <span class="k">del</span> <span class="n">calc2</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">zero_sub_and_inc</span><span class="p">:</span>
         <span class="n">calc2_behv</span> <span class="o">=</span> <span class="n">_update_ordinary_income</span><span class="p">(</span><span class="n">si_chg</span><span class="p">,</span> <span class="n">calc2_behv</span><span class="p">)</span>
-    <span class="n">calc2_behv</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">&#39;p23250&#39;</span><span class="p">,</span> <span class="n">ltcg_chg</span><span class="p">)</span>
+    <span class="n">calc2_behv</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">'p23250'</span><span class="p">,</span> <span class="n">ltcg_chg</span><span class="p">)</span>
     <span class="c1"># Recalculate post-reform taxes incorporating behavioral responses</span>
     <span class="n">calc2_behv</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
     <span class="c1"># Extract dataframe from calc2_behv</span>
     <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
         <span class="n">df2</span> <span class="o">=</span> <span class="n">calc2_behv</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span>
-        <span class="n">df2</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;mtr_inctax&#39;</span><span class="p">,</span> <span class="s1">&#39;mtr_paytax&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">df2</span><span class="p">[</span><span class="s1">&#39;mtr_combined&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wage_mtr2</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="n">df2</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">'mtr_inctax'</span><span class="p">,</span> <span class="s1">'mtr_paytax'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="s1">'columns'</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df2</span><span class="p">[</span><span class="s1">'mtr_combined'</span><span class="p">]</span> <span class="o">=</span> <span class="n">wage_mtr2</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">df2</span> <span class="o">=</span> <span class="n">calc2_behv</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">DIST_VARIABLES</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">calc2_behv</span>
@@ -887,7 +887,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">pch_response</span><span class="p">(</span><span class="n">elasticity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
                  <span class="n">val1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
                  <span class="n">val2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculate the percentage change response, given an elasticity and</span>
 <span class="sd">    original/new values. Can be used to calculate substitution or</span>
 <span class="sd">    income effects.</span>
@@ -916,7 +916,7 @@
 <span class="sd">    pch_response: numpy array</span>
 <span class="sd">        Percentage change in the response, calculated essentially as:</span>
 <span class="sd">        elasticity * (val2 / val1 - 1).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">val1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">val1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">val1</span><span class="p">)</span>  <span class="c1"># Avoids a warning.</span>
     <span class="n">pch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">val1</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">val2</span> <span class="o">/</span> <span class="n">val1</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">elasticity</span> <span class="o">*</span> <span class="n">pch</span>
@@ -931,18 +931,18 @@
                       <span class="n">income_elasticity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
                       <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
                       <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculate dollar change in quantity using a log-log response equation,</span>
 <span class="sd">    which assumes that the proportional change in the quantity is equal to</span>
 <span class="sd">    the sum of two terms:</span>
 
-<span class="sd">    (1) the proportional change in the quantity&#39;s marginal aftertax price</span>
+<span class="sd">    (1) the proportional change in the quantity's marginal aftertax price</span>
 <span class="sd">        times an assumed price elasticity, and</span>
 
 <span class="sd">    (2) the proportional change in aftertax income</span>
 <span class="sd">        times an assumed income elasticity.</span>
 
-<span class="sd">    Not all inputs are required, so it&#39;s possible to calculate only the price</span>
+<span class="sd">    Not all inputs are required, so it's possible to calculate only the price</span>
 <span class="sd">    or income effects by providing a subset of arguments. Accepts arrays.</span>
 
 <span class="sd">    Parameters</span>
@@ -1003,7 +1003,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    response: numpy array</span>
 <span class="sd">        dollar change in quantity calculated from log-log response equation</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
     <span class="n">substitution_effect</span> <span class="o">=</span> <span class="n">pch_response</span><span class="p">(</span>
         <span class="n">price_elasticity</span><span class="p">,</span>
@@ -1026,7 +1026,7 @@
                    <span class="n">income_elasticity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
                    <span class="n">aftertax_income1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
                    <span class="n">aftertax_income2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculate labor response given earnings, substitution elasticity of taxable</span>
 <span class="sd">    income, initial and new marginal tax rates, income elasticity, and initial</span>
 <span class="sd">    and new after-tax income. Accepts arrays.</span>
@@ -1081,7 +1081,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    response: numpy array</span>
 <span class="sd">        dollar change in earnings calculated from log-log response equation</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
     <span class="k">return</span> <span class="n">quantity_response</span><span class="p">(</span>
         <span class="n">quantity</span><span class="o">=</span><span class="n">earnings</span><span class="p">,</span>

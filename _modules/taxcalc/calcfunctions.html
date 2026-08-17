@@ -440,13 +440,13 @@
                 <article class="bd-article">
                   
   <h1>Source code for taxcalc.calcfunctions</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Tax-Calculator functions that calculate payroll and individual income taxes.</span>
 
 <span class="sd">These functions are imported into the Calculator class.</span>
 
 <span class="sd">Note: the parameter_indexing_CPI_offset parameter is no longer used.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="c1"># CODING-STYLE CHECKS:</span>
 <span class="c1"># pycodestyle calcfunctions.py</span>
 <span class="c1"># pylint --disable=locally-disabled calcfunctions.py</span>
@@ -465,14 +465,14 @@
 <div class="viewcode-block" id="BenefitPrograms">
 <a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.BenefitPrograms">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">BenefitPrograms</span><span class="p">(</span><span class="n">calc</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Aggregate per-record government cost and consumption value of the</span>
 <span class="sd">    non-tax benefit programs tracked by Tax-Calculator and write them</span>
 <span class="sd">    to the Records arrays `benefit_cost_total` and `benefit_value_total`.</span>
 
 <span class="sd">    This function does not implement any IRS form; it is a model-internal</span>
 <span class="sd">    aggregator. For each program a `BEN_*_repeal` policy parameter, when</span>
-<span class="sd">    set, zeroes the program&#39;s per-record array before the sums are</span>
+<span class="sd">    set, zeroes the program's per-record array before the sums are</span>
 <span class="sd">    formed (UBI has no repeal flag because UBI is itself a reform</span>
 <span class="sd">    construct that is zero under current law). In-kind programs are</span>
 <span class="sd">    weighted by a `BEN_*_value` consumption parameter; cash programs</span>
@@ -489,24 +489,24 @@
 <span class="sd">    -------</span>
 <span class="sd">    None:</span>
 <span class="sd">        The function modifies calc</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># programs aggregated below, in a fixed order:</span>
     <span class="c1">#   (record_array_name, repeal_param_or_None, value_param_or_None)</span>
     <span class="c1"># repeal_param=None ==&gt; program has no repeal flag (UBI only).</span>
     <span class="c1"># value_param=None  ==&gt; cash benefit, valued at full dollar cost.</span>
     <span class="n">programs</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;housing_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_housing_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_housing_value&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;ssi_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_ssi_repeal&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;snap_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_snap_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_snap_value&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;tanf_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_tanf_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_tanf_value&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;vet_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_vet_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_vet_value&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;wic_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_wic_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_wic_value&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;mcare_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_mcare_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_mcare_value&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;mcaid_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_mcaid_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_mcaid_value&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;e02400&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_oasdi_repeal&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># OASDI Social Security</span>
-        <span class="p">(</span><span class="s1">&#39;e02300&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_ui_repeal&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># Unemployment Insurance</span>
-        <span class="p">(</span><span class="s1">&#39;ubi&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># UBI reform construct</span>
-        <span class="p">(</span><span class="s1">&#39;other_ben&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_other_repeal&#39;</span><span class="p">,</span> <span class="s1">&#39;BEN_other_value&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'housing_ben'</span><span class="p">,</span> <span class="s1">'BEN_housing_repeal'</span><span class="p">,</span> <span class="s1">'BEN_housing_value'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'ssi_ben'</span><span class="p">,</span> <span class="s1">'BEN_ssi_repeal'</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'snap_ben'</span><span class="p">,</span> <span class="s1">'BEN_snap_repeal'</span><span class="p">,</span> <span class="s1">'BEN_snap_value'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'tanf_ben'</span><span class="p">,</span> <span class="s1">'BEN_tanf_repeal'</span><span class="p">,</span> <span class="s1">'BEN_tanf_value'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'vet_ben'</span><span class="p">,</span> <span class="s1">'BEN_vet_repeal'</span><span class="p">,</span> <span class="s1">'BEN_vet_value'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'wic_ben'</span><span class="p">,</span> <span class="s1">'BEN_wic_repeal'</span><span class="p">,</span> <span class="s1">'BEN_wic_value'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'mcare_ben'</span><span class="p">,</span> <span class="s1">'BEN_mcare_repeal'</span><span class="p">,</span> <span class="s1">'BEN_mcare_value'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'mcaid_ben'</span><span class="p">,</span> <span class="s1">'BEN_mcaid_repeal'</span><span class="p">,</span> <span class="s1">'BEN_mcaid_value'</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'e02400'</span><span class="p">,</span> <span class="s1">'BEN_oasdi_repeal'</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># OASDI Social Security</span>
+        <span class="p">(</span><span class="s1">'e02300'</span><span class="p">,</span> <span class="s1">'BEN_ui_repeal'</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># Unemployment Insurance</span>
+        <span class="p">(</span><span class="s1">'ubi'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># UBI reform construct</span>
+        <span class="p">(</span><span class="s1">'other_ben'</span><span class="p">,</span> <span class="s1">'BEN_other_repeal'</span><span class="p">,</span> <span class="s1">'BEN_other_value'</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="c1"># zero out benefits delivered by repealed programs</span>
     <span class="n">zero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
@@ -515,7 +515,7 @@
             <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
     <span class="c1"># calculate government cost of all benefits</span>
     <span class="n">cost</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">programs</span><span class="p">)</span>
-    <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;benefit_cost_total&#39;</span><span class="p">,</span> <span class="n">cost</span><span class="p">)</span>
+    <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'benefit_cost_total'</span><span class="p">,</span> <span class="n">cost</span><span class="p">)</span>
     <span class="c1"># calculate consumption value of all benefits</span>
     <span class="c1"># (cash benefits are valued at full dollar cost)</span>
     <span class="n">value</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
@@ -523,7 +523,7 @@
         <span class="k">else</span> <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc</span><span class="o">.</span><span class="n">consump_param</span><span class="p">(</span><span class="n">vparam</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">vparam</span> <span class="ow">in</span> <span class="n">programs</span>
     <span class="p">)</span>
-    <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;benefit_value_total&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+    <span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'benefit_value_total'</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 
 
@@ -537,7 +537,7 @@
                   <span class="n">c03260</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span>
                   <span class="n">sey</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span>
                   <span class="n">was_plus_sey_p</span><span class="p">,</span> <span class="n">was_plus_sey_s</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Compute part of total OASDI+HI payroll taxes and earned income variables.</span>
 
 <span class="sd">    Parameters</span>
@@ -595,9 +595,9 @@
 <span class="sd">        Total (employee and employer) payroll tax liability</span>
 <span class="sd">        payrolltax = ptax_was</span>
 <span class="sd">    ptax_er_p: float</span>
-<span class="sd">        Taxpayer&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">        Taxpayer's employer share of payrolltax on wages and salaries</span>
 <span class="sd">    ptax_er_s: float</span>
-<span class="sd">        Spouse&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">        Spouse's employer share of payrolltax on wages and salaries</span>
 <span class="sd">    ptax_was: float</span>
 <span class="sd">        Employee and employer OASDI plus HI FICA tax</span>
 <span class="sd">    setax: float</span>
@@ -629,9 +629,9 @@
 <span class="sd">        Total (employee and employer) payroll tax liability</span>
 <span class="sd">        payrolltax = ptax_was</span>
 <span class="sd">    ptax_er_p: float</span>
-<span class="sd">        Taxpayer&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">        Taxpayer's employer share of payrolltax on wages and salaries</span>
 <span class="sd">    ptax_er_s: float</span>
-<span class="sd">        Spouse&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">        Spouse's employer share of payrolltax on wages and salaries</span>
 <span class="sd">    ptax_was: float</span>
 <span class="sd">        Employee and employer OASDI plus HI FICA tax</span>
 <span class="sd">    setax: float</span>
@@ -652,7 +652,7 @@
 <span class="sd">        Wage and salary income plus taxable self employment income for taxpayer</span>
 <span class="sd">    was_plus_sey_s: float</span>
 <span class="sd">        Wage and salary income plus taxable self employment income for spouse</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># combined OASDI and HI FICA rates (employer + employee shares)</span>
     <span class="n">ss_rate</span> <span class="o">=</span> <span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span>
     <span class="n">mc_rate</span> <span class="o">=</span> <span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span>
@@ -663,7 +663,7 @@
     <span class="n">sey</span> <span class="o">=</span> <span class="n">sey_p</span> <span class="o">+</span> <span class="n">sey_s</span>  <span class="c1"># total self-employment income for filing unit</span>
 
     <span class="c1"># ---------- FICA on wages and salaries ----------</span>
-    <span class="c1"># compute gross wage and salary income (&#39;was&#39; denotes &#39;wage and salary&#39;)</span>
+    <span class="c1"># compute gross wage and salary income ('was' denotes 'wage and salary')</span>
     <span class="n">gross_ws_p</span> <span class="o">=</span> <span class="n">e00200p</span> <span class="o">+</span> <span class="n">pencon_p</span>
     <span class="n">gross_ws_s</span> <span class="o">=</span> <span class="n">e00200s</span> <span class="o">+</span> <span class="n">pencon_s</span>
 
@@ -695,7 +695,7 @@
     <span class="n">setax_p</span> <span class="o">=</span> <span class="n">setax_ss_p</span> <span class="o">+</span> <span class="n">setax_mc_p</span>
     <span class="n">setax_s</span> <span class="o">=</span> <span class="n">setax_ss_s</span> <span class="o">+</span> <span class="n">setax_mc_s</span>
     <span class="c1"># Sch SE line 12: zero out if filing-unit SE earnings are below the</span>
-    <span class="c1"># $400 floor (Sch SE line 4: &quot;stop; you do not owe SE tax&quot;)</span>
+    <span class="c1"># $400 floor (Sch SE line 4: "stop; you do not owe SE tax")</span>
     <span class="k">if</span> <span class="n">sey</span> <span class="o">*</span> <span class="n">seca_frac</span> <span class="o">&gt;</span> <span class="n">SECA_Earnings_thd</span><span class="p">:</span>
         <span class="n">setax</span> <span class="o">=</span> <span class="n">setax_p</span> <span class="o">+</span> <span class="n">setax_s</span>
     <span class="k">else</span><span class="p">:</span>
@@ -755,7 +755,7 @@
                   <span class="n">MARS</span><span class="p">,</span> <span class="n">ALD_Dependents_thd</span><span class="p">,</span> <span class="n">ALD_Dependents_hc</span><span class="p">,</span>
                   <span class="n">ALD_Dependents_Child_c</span><span class="p">,</span> <span class="n">ALD_Dependents_Elder_c</span><span class="p">,</span>
                   <span class="n">care_deduction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the dependent-care above-the-line deduction.</span>
 
 <span class="sd">    Reform-only construct (originally specified for the 2016 Trump campaign</span>
@@ -795,7 +795,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    care_deduction: float</span>
 <span class="sd">        Total above the line deductions for dependent care.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">earned_thd</span> <span class="o">=</span> <span class="n">ALD_Dependents_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">earned</span> <span class="o">&lt;=</span> <span class="n">earned_thd</span><span class="p">:</span>
         <span class="n">hc_frac</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_Dependents_hc</span>
@@ -817,7 +817,7 @@
         <span class="n">ALD_IRAContributions_hc</span><span class="p">,</span> <span class="n">ALD_StudentLoan_hc</span><span class="p">,</span>
         <span class="n">ALD_Tuition_hc</span><span class="p">,</span> <span class="n">ALD_DomesticProduction_hc</span><span class="p">,</span>
         <span class="n">c02900</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).</span>
 <span class="sd">    Summands are ordered to match 2025 Schedule 1, Part II.</span>
 
@@ -876,7 +876,7 @@
 <span class="sd">    c02900: float</span>
 <span class="sd">        Total above-the-line income adjustments (Sch 1 line 26;</span>
 <span class="sd">        flows to Form 1040 line 10)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Sch 1 Part II lines not modeled: line 12 (reservist/artist/fee-basis</span>
     <span class="c1"># gov-official biz expenses, Form 2106), line 14 (moving expenses for</span>
     <span class="c1"># Armed Forces, Form 3903), line 23 (Archer MSA), and lines 24a-24z /</span>
@@ -903,7 +903,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">ALD_InvInc_ec_base</span><span class="p">(</span><span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span>
                        <span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e01100</span><span class="p">,</span> <span class="n">e01200</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
                        <span class="n">invinc_ec_base</span><span class="p">,</span> <span class="n">Capital_loss_limitation</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes invinc_ec_base, the base amount of investment income that</span>
 <span class="sd">    the reform parameter ALD_InvInc_ec_rt multiplies in AGIIncome to</span>
 <span class="sd">    produce invinc_agi_ec, the dollar amount of investment income</span>
@@ -948,7 +948,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    invinc_ec_base: float</span>
 <span class="sd">        Base investment income subject to the reform exclusion</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Schedule D line 21 / IRC §1211(b): cap any net capital loss at the</span>
     <span class="c1"># MARS-indexed limit. Re-derived here (rather than reusing c01000)</span>
     <span class="c1"># because CapGainsLoss has not yet run; result equals c01000.</span>
@@ -962,7 +962,7 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">CapGainsLoss</span><span class="p">(</span><span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">Capital_loss_limitation</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
                  <span class="n">c23650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Schedule D Part III netting of short-term and long-term capital</span>
 <span class="sd">    gains and losses, capped by the per-MARS net-capital-loss</span>
 <span class="sd">    deduction limit.</span>
@@ -992,7 +992,7 @@
 <span class="sd">      Net capital gain/(loss) before loss limitation</span>
 <span class="sd">    c01000: float</span>
 <span class="sd">      Net capital gain/(loss) after loss limitation</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Schedule D line 16: combine net short-term and net long-term</span>
     <span class="n">c23650</span> <span class="o">=</span> <span class="n">p23250</span> <span class="o">+</span> <span class="n">p22250</span>
     <span class="c1"># Schedule D line 21: cap any net loss at MARS-indexed limit</span>
@@ -1009,7 +1009,7 @@
               <span class="n">CG_nodiff</span><span class="p">,</span> <span class="n">CG_ec</span><span class="p">,</span> <span class="n">CG_reinvest_ec_rt</span><span class="p">,</span>
               <span class="n">ALD_BusinessLosses_c</span><span class="p">,</span> <span class="n">AlimonyReceived_frac_in_AGI</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
               <span class="n">ymod</span><span class="p">,</span> <span class="n">ymod1</span><span class="p">,</span> <span class="n">invinc_agi_ec</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Builds ymod1 (Form 1040 income lines + Schedule 1 Part I, the</span>
 <span class="sd">    AGI building-block consumed by AGI()) and ymod (the modified-AGI</span>
 <span class="sd">    used by SSBenefits to determine the taxable portion of OASDI</span>
@@ -1111,7 +1111,7 @@
 <span class="sd">    ymod: float</span>
 <span class="sd">    ymod1: float</span>
 <span class="sd">    invinc_agi_ec: float</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># investment income (1040 lines 2b, 3b, 7 + Sch 1 line 4 + capgain distrib)</span>
     <span class="n">invinc</span> <span class="o">=</span> <span class="n">e00300</span> <span class="o">+</span> <span class="n">e00600</span> <span class="o">+</span> <span class="n">c01000</span> <span class="o">+</span> <span class="n">e01100</span> <span class="o">+</span> <span class="n">e01200</span>
     <span class="c1"># reform: exclude a fraction of investment income from AGI</span>
@@ -1134,8 +1134,8 @@
         <span class="n">ymod1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">ymod1</span> <span class="o">-</span> <span class="n">qdcg_exclusion</span><span class="p">)</span>
         <span class="n">invinc_agi_ec</span> <span class="o">+=</span> <span class="n">qdcg_exclusion</span>
     <span class="c1"># ymod = modAGI used by the SS-benefits worksheet (Pub. 915).</span>
-    <span class="c1"># Worksheet line 6 = &quot;Schedule 1, lines 11 through 20, and 23 and</span>
-    <span class="c1"># 25&quot; — it excludes Sch 1 line 21 (student loan interest) and the</span>
+    <span class="c1"># Worksheet line 6 = "Schedule 1, lines 11 through 20, and 23 and</span>
+    <span class="c1"># 25" — it excludes Sch 1 line 21 (student loan interest) and the</span>
     <span class="c1"># legacy tuition / domestic-production lines. ymod3 adds back the</span>
     <span class="c1"># exact amount Adj subtracted into c02900 for those three items so</span>
     <span class="c1"># the worksheet line 6 omission is undone symmetrically.</span>
@@ -1150,13 +1150,13 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">SSBenefits</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">SS_all_in_agi</span><span class="p">,</span> <span class="n">SS_thd1</span><span class="p">,</span> <span class="n">SS_thd2</span><span class="p">,</span>
                <span class="n">SS_percentage1</span><span class="p">,</span> <span class="n">SS_percentage2</span><span class="p">,</span> <span class="n">c02500</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculates the taxable portion of OASDI benefits, c02500</span>
 <span class="sd">    (Form 1040 line 6b), per the Social Security Benefits Worksheet</span>
 <span class="sd">    in the Form 1040 instructions (also published as Pub. 915).</span>
 
 <span class="sd">    The three-branch form below is algebraically equivalent to the</span>
-<span class="sd">    worksheet&#39;s all-min/max formulation:</span>
+<span class="sd">    worksheet's all-min/max formulation:</span>
 <span class="sd">      * ymod &lt; thd1                : worksheet line 9 &lt;= 0</span>
 <span class="sd">                                     -&gt; c02500 = 0</span>
 <span class="sd">      * thd1 &lt;= ymod &lt; thd2        : worksheet line 11 = 0</span>
@@ -1170,11 +1170,11 @@
 <span class="sd">    where ymod is the worksheet line 7 amount built in AGIIncome.</span>
 
 <span class="sd">    MARS=3 (MFS) sub-case modeling gap: worksheet line 8 gives a base</span>
-<span class="sd">    of $0 for MFS filers who &quot;lived with [their] spouse at any time</span>
-<span class="sd">    during the year&quot; (instructions further direct such filers to skip</span>
+<span class="sd">    of $0 for MFS filers who "lived with [their] spouse at any time</span>
+<span class="sd">    during the year" (instructions further direct such filers to skip</span>
 <span class="sd">    lines 8-15 and enter 0.85 * line 1 directly on line 16, i.e. 85%</span>
 <span class="sd">    of OASDI is taxable). `SS_thd1[2]`/`SS_thd2[2]` ($25,000/$34,000)</span>
-<span class="sd">    encode only the &quot;MFS lived apart all year&quot; case. Tax-Calculator</span>
+<span class="sd">    encode only the "MFS lived apart all year" case. Tax-Calculator</span>
 <span class="sd">    records do not carry a lived-apart-all-year flag (same data-gap</span>
 <span class="sd">    pattern as Schedule R row 26 in CODE_REVIEW_2025.md), so the code</span>
 <span class="sd">    unconditionally treats every MARS=3 filer as lived-apart and</span>
@@ -1211,7 +1211,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    c02500: float</span>
 <span class="sd">        Taxable OASDI benefits (Form 1040 line 6b)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># reform: include all OASDI in AGI (override worksheet)</span>
     <span class="k">if</span> <span class="n">SS_all_in_agi</span><span class="p">:</span>
         <span class="n">c02500</span> <span class="o">=</span> <span class="n">e02400</span>
@@ -1238,7 +1238,7 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">UBI</span><span class="p">(</span><span class="n">nu18</span><span class="p">,</span> <span class="n">n1820</span><span class="p">,</span> <span class="n">n21</span><span class="p">,</span> <span class="n">UBI_u18</span><span class="p">,</span> <span class="n">UBI_1820</span><span class="p">,</span> <span class="n">UBI_21</span><span class="p">,</span> <span class="n">UBI_ecrt</span><span class="p">,</span>
         <span class="n">ubi</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span> <span class="n">nontaxable_ubi</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculates total and taxable Universal Basic Income (UBI) amount.</span>
 
 <span class="sd">    Reform construct with no IRS-form correspondence. The per-person UBI</span>
@@ -1284,7 +1284,7 @@
 <span class="sd">        Amount of UBI that is taxable (is added to AGI)</span>
 <span class="sd">    nontaxable_ubi: float</span>
 <span class="sd">        Amount of UBI that is excluded from AGI</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ubi</span> <span class="o">=</span> <span class="n">nu18</span> <span class="o">*</span> <span class="n">UBI_u18</span> <span class="o">+</span> <span class="n">n1820</span> <span class="o">*</span> <span class="n">UBI_1820</span> <span class="o">+</span> <span class="n">n21</span> <span class="o">*</span> <span class="n">UBI_21</span>
     <span class="n">taxable_ubi</span> <span class="o">=</span> <span class="n">ubi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">UBI_ecrt</span><span class="p">)</span>
     <span class="n">nontaxable_ubi</span> <span class="o">=</span> <span class="n">ubi</span> <span class="o">-</span> <span class="n">taxable_ubi</span>
@@ -1295,7 +1295,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">AGI</span><span class="p">(</span><span class="n">ymod1</span><span class="p">,</span> <span class="n">c02500</span><span class="p">,</span> <span class="n">c02900</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">DSI</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span>
         <span class="n">II_em</span><span class="p">,</span> <span class="n">II_em_ps</span><span class="p">,</span> <span class="n">II_em_po_step_size</span><span class="p">,</span> <span class="n">II_em_prt</span><span class="p">,</span> <span class="n">II_no_em_nu18</span><span class="p">,</span>
         <span class="n">e02300</span><span class="p">,</span> <span class="n">UI_thd</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">pre_c04600</span><span class="p">,</span> <span class="n">c04600</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes Adjusted Gross Income (c00100, Form 1040 line 11) and</span>
 <span class="sd">    the reform-only personal exemption amount (pre_c04600 and c04600;</span>
 <span class="sd">    no current-law form correspondence — TCJA repealed exemptions).</span>
@@ -1358,7 +1358,7 @@
 <span class="sd">        Personal exemption before phase-out (reform-only)</span>
 <span class="sd">    c04600: float</span>
 <span class="sd">        Personal exemptions after phase-out (reform-only)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="c1"># Form 1040 line 11: Adjusted Gross Income</span>
     <span class="c1"># ----------------------------------------------------------------</span>
@@ -1385,7 +1385,7 @@
         <span class="n">pre_c04600</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="c1"># Personal exemption phase-out (PEP)</span>
-    <span class="c1"># Pre-TCJA &quot;Deduction for Exemptions Worksheet&quot; (lines 5-7);</span>
+    <span class="c1"># Pre-TCJA "Deduction for Exemptions Worksheet" (lines 5-7);</span>
     <span class="c1"># reform-only.</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
@@ -1420,7 +1420,7 @@
             <span class="n">overtime_income_deduction</span><span class="p">,</span>
             <span class="n">tip_income_deduction</span><span class="p">,</span>
             <span class="n">auto_loan_interest_deduction</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the four below-the-line additional deductions on</span>
 <span class="sd">    Schedule 1-A (new for 2025): qualified tips (Part II), qualified</span>
 <span class="sd">    overtime compensation (Part III), qualified passenger-vehicle</span>
@@ -1441,8 +1441,8 @@
 <span class="sd">    inputs are not modeled in Tax-Calculator records, so `c00100`</span>
 <span class="sd">    (Form 1040 line 11 AGI) is used directly as the MAGI proxy.</span>
 
-<span class="sd">    MFS (`MARS=3`): Parts II/III/V state &quot;If married, you must file</span>
-<span class="sd">    jointly to claim this deduction&quot;; the function therefore zeroes</span>
+<span class="sd">    MFS (`MARS=3`): Parts II/III/V state "If married, you must file</span>
+<span class="sd">    jointly to claim this deduction"; the function therefore zeroes</span>
 <span class="sd">    the tip, overtime, and senior deductions when `MARS=3`. Part IV</span>
 <span class="sd">    (auto loan) carries no MFS restriction and is allowed for MFS.</span>
 
@@ -1526,7 +1526,7 @@
 <span class="sd">    auto_loan_interest_deduction: float</span>
 <span class="sd">        Sch 1-A line 30 (qualified passenger vehicle loan interest</span>
 <span class="sd">        deduction)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="c1"># Sch 1-A Part I (lines 1-3): Modified AGI</span>
@@ -1577,8 +1577,8 @@
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="c1"># Sch 1-A Part IV (lines 22-30): No Tax on Car Loan Interest</span>
     <span class="c1"># No MFS restriction on the form; allowed for all MARS values.</span>
-    <span class="c1"># Step rounding is CEIL (line 28 &quot;increase to next higher whole</span>
-    <span class="c1"># number&quot;), unlike Parts II/III which FLOOR.</span>
+    <span class="c1"># Step rounding is CEIL (line 28 "increase to next higher whole</span>
+    <span class="c1"># number"), unlike Parts II/III which FLOOR.</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">auto_loan_interest_deduction</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">if</span> <span class="n">AutoLoanInterestDed_c</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">auto_loan_interest</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
@@ -1636,10 +1636,10 @@
             <span class="n">ID_AllTaxes_c_ps</span><span class="p">,</span> <span class="n">ID_AllTaxes_c_po_rate</span><span class="p">,</span> <span class="n">ID_AllTaxes_c_po_floor</span><span class="p">,</span>
             <span class="n">ID_StateLocalTax_crt</span><span class="p">,</span> <span class="n">ID_RealEstate_crt</span><span class="p">,</span> <span class="n">ID_Charity_f</span><span class="p">,</span>
             <span class="n">ID_reduction_rate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculates itemized deductions, Schedule A (Form 1040).</span>
 
-<span class="sd">    Body sections mirror Schedule A&#39;s six-section structure:</span>
+<span class="sd">    Body sections mirror Schedule A's six-section structure:</span>
 <span class="sd">      Medical (lines 1-4) → Taxes (5-7) → Interest (8-10) →</span>
 <span class="sd">      Charity (11-14) → Casualty (15) → Other (16) → Total (17).</span>
 
@@ -1661,8 +1661,8 @@
 <span class="sd">    property taxes), line 6 (other taxes), line 13 (charity carryover</span>
 <span class="sd">    from prior year). Mortgage interest (line 8) and investment</span>
 <span class="sd">    interest (line 9) are pre-aggregated in input variable ``e19200``.</span>
-<span class="sd">    The OBBBA SALT-cap phaseout (line 5e text: &quot;If Form 1040 line 11b</span>
-<span class="sd">    is more than $500,000 ($250,000 MFS), see instructions&quot;) is</span>
+<span class="sd">    The OBBBA SALT-cap phaseout (line 5e text: "If Form 1040 line 11b</span>
+<span class="sd">    is more than $500,000 ($250,000 MFS), see instructions") is</span>
 <span class="sd">    implemented via ``ID_AllTaxes_c`` + ``ID_AllTaxes_c_ps`` +</span>
 <span class="sd">    ``ID_AllTaxes_c_po_rate`` + ``ID_AllTaxes_c_po_floor``.</span>
 
@@ -1760,7 +1760,7 @@
 <span class="sd">        Reform haircut on casualty deduction</span>
 <span class="sd">    ID_Casualty_c: list</span>
 <span class="sd">        Reform per-MARS dollar cap on casualty deduction</span>
-<span class="sd">    -- Sch A Other Itemized Deductions (line 16, &quot;miscellaneous&quot;) --</span>
+<span class="sd">    -- Sch A Other Itemized Deductions (line 16, "miscellaneous") --</span>
 <span class="sd">    e20400: float</span>
 <span class="sd">        Gross miscellaneous deductions</span>
 <span class="sd">    ID_Miscellaneous_frt: float</span>
@@ -1806,7 +1806,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    c17000, c18300, c19200, c19700, c20500, c20800, c21040, c21060, c04470</span>
 <span class="sd">    (see Records-bound section above for line correspondences)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-statements</span>
     <span class="n">posagi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
     <span class="c1"># ----------------------------------------------------------------</span>
@@ -1859,7 +1859,7 @@
     <span class="c1"># Sch A Gifts to Charity (lines 11-14)</span>
     <span class="c1"># On-form: e19800 = line 11 (cash), e20100 = line 12 (noncash);</span>
     <span class="c1"># line 13 (carryover) not modeled. Reform/OBBBA plumbing:</span>
-    <span class="c1"># ID_Charity_frt (AGI-fraction floor; OBBBA&#39;s 0.5% kicks in 2026+),</span>
+    <span class="c1"># ID_Charity_frt (AGI-fraction floor; OBBBA's 0.5% kicks in 2026+),</span>
     <span class="c1"># ID_Charity_f (dollar floor), ID_Charity_crt_noncash (AGI cap on</span>
     <span class="c1"># noncash), ID_Charity_crt_all (AGI cap on total per IRC §170(b)),</span>
     <span class="c1"># ID_Charity_hc, ID_Charity_c. The floor is applied once against</span>
@@ -1890,7 +1890,7 @@
               <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Casualty_hc</span><span class="p">))</span>  <span class="c1"># line 15</span>
     <span class="n">c20500</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c20500</span><span class="p">,</span> <span class="n">ID_Casualty_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># reform cap</span>
     <span class="c1"># ----------------------------------------------------------------</span>
-    <span class="c1"># Sch A Other Itemized Deductions (line 16, &quot;miscellaneous&quot; in code)</span>
+    <span class="c1"># Sch A Other Itemized Deductions (line 16, "miscellaneous" in code)</span>
     <span class="c1"># The pre-TCJA 2%-of-AGI miscellaneous deductions are repealed for</span>
     <span class="c1"># current law (ID_Miscellaneous_hc = 1.0); parameters retained for</span>
     <span class="c1"># reform use.</span>
@@ -1910,7 +1910,7 @@
     <span class="c1"># (2) OBBBA top-bracket reduction (ID_reduction_rate). Mutually</span>
     <span class="c1">#     exclusive with Pease via the assert.</span>
     <span class="c1"># (3) Reform hard cap ID_c on total itemized deductions.</span>
-    <span class="c1"># No attempt is made to adjust c04470&#39;s components for any of these</span>
+    <span class="c1"># No attempt is made to adjust c04470's components for any of these</span>
     <span class="c1"># post-total limitations.</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">nonlimited</span> <span class="o">=</span> <span class="n">c17000</span> <span class="o">+</span> <span class="n">c20500</span>
@@ -1925,7 +1925,7 @@
         <span class="n">c04470</span> <span class="o">=</span> <span class="n">c21060</span>
     <span class="n">reduction</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">if</span> <span class="n">ID_reduction_rate</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">c21040</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Pease and OBBBA cannot both be in effect&#39;</span>
+        <span class="k">assert</span> <span class="n">c21040</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">'Pease and OBBBA cannot both be in effect'</span>
         <span class="n">tincome</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="n">c04600</span><span class="p">)</span>
         <span class="n">texcess</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">tincome</span> <span class="o">-</span> <span class="n">II_brk6</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">reduction</span> <span class="o">=</span> <span class="n">ID_reduction_rate</span> <span class="o">*</span> <span class="n">texcess</span>
@@ -1942,7 +1942,7 @@
                           <span class="n">FICA_mc_trt_employer</span><span class="p">,</span> <span class="n">FICA_mc_trt_employee</span><span class="p">,</span>
                           <span class="n">AMEDT_ec</span><span class="p">,</span> <span class="n">AMEDT_rt</span><span class="p">,</span>
                           <span class="n">ptax_amc</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Form 8959 Additional Medicare Tax. Liability flows into Schedule 2</span>
 <span class="sd">    line 11 via `othertaxes` in `C1040` and ultimately into `iitax`.</span>
 
@@ -1960,7 +1960,7 @@
 <span class="sd">    substitutes for Form 8959 line 4 (the sum of lines 1+2+3).</span>
 
 <span class="sd">    Form 8959 line 8 (Sch SE Part I line 6) is reconstructed per-spouse:</span>
-<span class="sd">    Sch SE is filed separately by each spouse, so each spouse&#39;s net SE</span>
+<span class="sd">    Sch SE is filed separately by each spouse, so each spouse's net SE</span>
 <span class="sd">    earnings are floored at zero independently before the joint total is</span>
 <span class="sd">    formed. The records-bound `sey` is the unfloored sum, which would</span>
 <span class="sd">    over-net a positive-sey spouse against a negative-sey spouse; this</span>
@@ -2016,7 +2016,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ptax_amc: float</span>
 <span class="sd">        Additional Medicare Tax (Form 8959 line 18)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">threshold</span> <span class="o">=</span> <span class="n">AMEDT_ec</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># line 5 (also line 9; same value)</span>
     <span class="n">seca_frac</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span> <span class="o">+</span>
                             <span class="n">FICA_mc_trt_employer</span> <span class="o">+</span> <span class="n">FICA_mc_trt_employee</span><span class="p">)</span>
@@ -2045,18 +2045,18 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">StdDed</span><span class="p">(</span><span class="n">DSI</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">STD</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">STD_Aged</span><span class="p">,</span> <span class="n">STD_Dep</span><span class="p">,</span>
            <span class="n">STD_Dep_earned_add</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">MIDR</span><span class="p">,</span> <span class="n">blind_head</span><span class="p">,</span> <span class="n">blind_spouse</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span>
            <span class="n">e19800</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes standard deduction (Form 1040 line 12).</span>
 
-<span class="sd">    Mirrors the &quot;Standard Deduction for—&quot; chart on Form 1040 line 12 and</span>
-<span class="sd">    the &quot;Standard Deduction Worksheet for Dependents&quot; in the 2025 Form</span>
+<span class="sd">    Mirrors the "Standard Deduction for—" chart on Form 1040 line 12 and</span>
+<span class="sd">    the "Standard Deduction Worksheet for Dependents" in the 2025 Form</span>
 <span class="sd">    1040 instructions. The body is split into four sections:</span>
 
 <span class="sd">    1. MFS-and-spouse-itemizes override (line-12 chart bullet 3): if the</span>
 <span class="sd">       filer files married-separately and the spouse itemizes, the</span>
 <span class="sd">       standard deduction is zero (filer must itemize).</span>
 <span class="sd">    2. Basic standard deduction: either the dependent-worksheet amount</span>
-<span class="sd">       (if claimed as a dependent) or the line-12 chart&#39;s STD[MARS-1].</span>
+<span class="sd">       (if claimed as a dependent) or the line-12 chart's STD[MARS-1].</span>
 <span class="sd">       The dependent worksheet caps the deduction at STD[MARS-1] but</span>
 <span class="sd">       floors it at max(earned + STD_Dep_earned_add, STD_Dep).</span>
 <span class="sd">    3. Aged/blind add-on: STD_Aged[MARS-1] per checked box (filer 65+,</span>
@@ -2112,10 +2112,10 @@
 <span class="sd">    -------</span>
 <span class="sd">    standard: float</span>
 <span class="sd">        Standard deduction (zero for itemizers)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="c1"># MFS-and-spouse-itemizes override (Form 1040 line-12 instructions:</span>
-    <span class="c1"># &quot;Married filing separately and your spouse itemizes deductions&quot;).</span>
+    <span class="c1"># "Married filing separately and your spouse itemizes deductions").</span>
     <span class="c1"># Implementation invariant: MIDR=1 only occurs when MARS=3.</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">MIDR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -2167,7 +2167,7 @@
            <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span>
            <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">PT_qbid_min_ded</span><span class="p">,</span> <span class="n">PT_qbid_min_qbi</span><span class="p">,</span>
            <span class="n">c04800</span><span class="p">,</span> <span class="n">qbided</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Form 1040 lines 13-15 (2025): the §199A pass-through Qualified</span>
 <span class="sd">    Business Income deduction (line 13, from Form 8995 or Form 8995-A)</span>
 <span class="sd">    and regular taxable income (line 15 = AGI - line 14).</span>
@@ -2181,8 +2181,8 @@
 <span class="sd">        window of width PT_qbid_taxinc_gap[MARS-1] ($50,000 /</span>
 <span class="sd">        $100,000 MFJ) above the threshold:</span>
 <span class="sd">          * Specified Service Trade or Business (SSTB) filers have QBI</span>
-<span class="sd">            and W-2 wages / UBIA scaled by Schedule A&#39;s &quot;applicable</span>
-<span class="sd">            percentage&quot; = (upper_thd - taxinc) / gap, with full</span>
+<span class="sd">            and W-2 wages / UBIA scaled by Schedule A's "applicable</span>
+<span class="sd">            percentage" = (upper_thd - taxinc) / gap, with full</span>
 <span class="sd">            disallowance once taxinc &gt;= upper_thd.</span>
 <span class="sd">          * Non-SSTB filers face the W-2/UBIA cap with a Part III</span>
 <span class="sd">            phase-in reduction; above the window the cap binds in full.</span>
@@ -2203,7 +2203,7 @@
 <span class="sd">    Pre-QBID taxable income (Form 8995 line 11 / Form 8995-A line 33)</span>
 <span class="sd">    subtracts from AGI: max(itemized, standard) + personal exemption</span>
 <span class="sd">    (reform-only `c04600`) + Sch 1-A senior/overtime/tip/auto-loan</span>
-<span class="sd">    deductions. The QBID is &quot;stacked last&quot; so that c04800 = max(0,</span>
+<span class="sd">    deductions. The QBID is "stacked last" so that c04800 = max(0,</span>
 <span class="sd">    pre_qbid_taxinc - qbided).</span>
 
 <span class="sd">    Reform-only constructs (no IRS form analogue):</span>
@@ -2275,10 +2275,10 @@
 <span class="sd">        1 = QBI is from a Specified Service Trade or Business; 0 = QBI</span>
 <span class="sd">        is from a qualified (non-SSTB) trade or business</span>
 <span class="sd">    PT_binc_w2_wages: float</span>
-<span class="sd">        Filing unit&#39;s allocable share of W-2 wages paid by the</span>
+<span class="sd">        Filing unit's allocable share of W-2 wages paid by the</span>
 <span class="sd">        pass-through business (Form 8995-A line 4)</span>
 <span class="sd">    PT_ubia_property: float</span>
-<span class="sd">        Filing unit&#39;s allocable share of unadjusted basis immediately</span>
+<span class="sd">        Filing unit's allocable share of unadjusted basis immediately</span>
 <span class="sd">        after acquisition of qualified property (Form 8995-A line 7)</span>
 <span class="sd">    PT_qbid_rt: float</span>
 <span class="sd">        QBID rate (Form 8995 line 5 / 8995-A line 3 multiplier; 20% in</span>
@@ -2319,11 +2319,11 @@
 <span class="sd">        Regular taxable income (Form 1040 line 15)</span>
 <span class="sd">    qbided: float</span>
 <span class="sd">        Qualified Business Income deduction (Form 1040 line 13)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="c1"># Pre-QBID taxable income (Form 8995 line 11 / Form 8995-A line 33)</span>
-    <span class="c1"># = Form 1040 line 15 with the QBID line removed. QBID is &quot;stacked</span>
-    <span class="c1"># last&quot; so all other below-AGI deductions are subtracted here:</span>
+    <span class="c1"># = Form 1040 line 15 with the QBID line removed. QBID is "stacked</span>
+    <span class="c1"># last" so all other below-AGI deductions are subtracted here:</span>
     <span class="c1"># max(itemized, standard) + reform-only personal exemption +</span>
     <span class="c1"># Sch 1-A senior/overtime/tip/auto-loan deductions.</span>
     <span class="c1"># ----------------------------------------------------------------</span>
@@ -2455,7 +2455,7 @@
            <span class="n">II_rt6</span><span class="p">,</span> <span class="n">II_rt7</span><span class="p">,</span> <span class="n">II_rt8</span><span class="p">,</span>
            <span class="n">II_brk1</span><span class="p">,</span> <span class="n">II_brk2</span><span class="p">,</span> <span class="n">II_brk3</span><span class="p">,</span> <span class="n">II_brk4</span><span class="p">,</span> <span class="n">II_brk5</span><span class="p">,</span>
            <span class="n">II_brk6</span><span class="p">,</span> <span class="n">II_brk7</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function that returns tax amount given the progressive tax rate</span>
 <span class="sd">    schedule specified by the II_rt? and (upper) II_brk? parameters and</span>
 <span class="sd">    given taxable income and filing status (MARS).</span>
@@ -2501,7 +2501,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Regular individual income tax liability on all taxable income</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-return-statements</span>
     <span class="c1"># IRS 2025 Tax Rate Schedules X (single), Y-1 (MFJ/QW), Y-2 (MFS),</span>
     <span class="c1"># Z (HoH): MARS - 1 selects the schedule via II_brk?[MARS - 1].</span>
@@ -2545,12 +2545,12 @@
               <span class="n">II_rt6</span><span class="p">,</span> <span class="n">II_rt7</span><span class="p">,</span> <span class="n">II_rt8</span><span class="p">,</span>
               <span class="n">II_brk1</span><span class="p">,</span> <span class="n">II_brk2</span><span class="p">,</span> <span class="n">II_brk3</span><span class="p">,</span> <span class="n">II_brk4</span><span class="p">,</span> <span class="n">II_brk5</span><span class="p">,</span>
               <span class="n">II_brk6</span><span class="p">,</span> <span class="n">II_brk7</span><span class="p">,</span> <span class="n">c05200</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Function that routes c04800 (regular taxable income) through the</span>
 <span class="sd">    SchXYZ rate-schedule function and stores the result in c05200 (tax</span>
 <span class="sd">    amount from Tax Rate Schedules X, Y-1, Y-2, Z). See the SchXYZ function</span>
 <span class="sd">    for the semantics of MARS, II_rt?, and II_brk?.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">c05200</span> <span class="o">=</span> <span class="n">SchXYZ</span><span class="p">(</span>
         <span class="n">c04800</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span>
         <span class="n">II_rt1</span><span class="p">,</span> <span class="n">II_rt2</span><span class="p">,</span> <span class="n">II_rt3</span><span class="p">,</span> <span class="n">II_rt4</span><span class="p">,</span> <span class="n">II_rt5</span><span class="p">,</span> <span class="n">II_rt6</span><span class="p">,</span> <span class="n">II_rt7</span><span class="p">,</span> <span class="n">II_rt8</span><span class="p">,</span>
@@ -2567,7 +2567,7 @@
              <span class="n">CG_nodiff</span><span class="p">,</span>
              <span class="n">CG_rt1</span><span class="p">,</span> <span class="n">CG_rt2</span><span class="p">,</span> <span class="n">CG_rt3</span><span class="p">,</span> <span class="n">CG_rt4</span><span class="p">,</span> <span class="n">CG_brk1</span><span class="p">,</span> <span class="n">CG_brk2</span><span class="p">,</span> <span class="n">CG_brk3</span><span class="p">,</span>
              <span class="n">dwks10</span><span class="p">,</span> <span class="n">dwks13</span><span class="p">,</span> <span class="n">dwks14</span><span class="p">,</span> <span class="n">dwks18</span><span class="p">,</span> <span class="n">dwks43</span><span class="p">,</span> <span class="n">c05700</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the regular-tax preference for long-term capital gains and</span>
 <span class="sd">    qualified dividends.  Implements both IRS worksheets in a single body:</span>
 
@@ -2700,7 +2700,7 @@
 <span class="sd">        Lump sum distributions</span>
 <span class="sd">    taxbc: float</span>
 <span class="sd">        Regular tax on regular taxable income before credits</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-statements</span>
     <span class="n">has_qdivltcg</span> <span class="o">=</span> <span class="p">(</span>
         <span class="ow">not</span> <span class="n">CG_nodiff</span> <span class="ow">and</span>
@@ -2804,7 +2804,7 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">AGIsurtax</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">AGI_surtax_trt</span><span class="p">,</span> <span class="n">AGI_surtax_thd</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span> <span class="n">surtax</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes a flat surtax on the portion of Adjusted Gross Income (AGI)</span>
 <span class="sd">    above a MARS-indexed threshold.</span>
 
@@ -2818,7 +2818,7 @@
 <span class="sd">      - `taxbc` (regular tax on regular taxable income before credits)</span>
 <span class="sd">        so the surtax flows through `c05800` into `iitax` downstream;</span>
 <span class="sd">      - `surtax` (records-bound diagnostic accumulator, also incremented</span>
-<span class="sd">        by `FairShareTax` for the &quot;Buffett Rule&quot; reform construct).</span>
+<span class="sd">        by `FairShareTax` for the "Buffett Rule" reform construct).</span>
 
 <span class="sd">    Called in `Calculator.calc_all` after `GainsTax` (so `taxbc` already</span>
 <span class="sd">    reflects the rate-schedule + qualified-div/LTCG tax) and before</span>
@@ -2849,7 +2849,7 @@
 <span class="sd">        Input `taxbc` augmented by the AGI surtax</span>
 <span class="sd">    surtax: float</span>
 <span class="sd">        Input `surtax` augmented by the AGI surtax</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Reform construct: inert under current law (AGI_surtax_trt = 0).</span>
     <span class="k">if</span> <span class="n">AGI_surtax_trt</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="n">agi_surtax</span> <span class="o">=</span> <span class="p">(</span>
@@ -2872,12 +2872,12 @@
         <span class="n">AMT_child_em</span><span class="p">,</span> <span class="n">AMT_em_ps</span><span class="p">,</span> <span class="n">AMT_em_pe</span><span class="p">,</span> <span class="n">AMT_Medical_frt</span><span class="p">,</span>
         <span class="n">AMT_CG_brk1</span><span class="p">,</span> <span class="n">AMT_CG_brk2</span><span class="p">,</span> <span class="n">AMT_CG_brk3</span><span class="p">,</span> <span class="n">AMT_CG_rt1</span><span class="p">,</span> <span class="n">AMT_CG_rt2</span><span class="p">,</span>
         <span class="n">AMT_CG_rt3</span><span class="p">,</span> <span class="n">AMT_CG_rt4</span><span class="p">,</span> <span class="n">AMT_CG_rt1250</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span> <span class="n">c09600</span><span class="p">,</span> <span class="n">c62100</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes Form 6251 (2025) Alternative Minimum Tax (AMT).</span>
 
 <span class="sd">    Builds AMT taxable income c62100 (Form 6251 line 4), tentative</span>
 <span class="sd">    minimum tax via either the flat-rate computation (line 7) or</span>
-<span class="sd">    Part III&#39;s maximum-capital-gains-rates worksheet (lines 12-40),</span>
+<span class="sd">    Part III's maximum-capital-gains-rates worksheet (lines 12-40),</span>
 <span class="sd">    subtracts AMT foreign tax credit (line 8) to yield tentative</span>
 <span class="sd">    minimum tax (line 9), and subtracts the regular-tax base</span>
 <span class="sd">    (line 10) to yield AMT liability c09600 (line 11). Total tax</span>
@@ -2896,7 +2896,7 @@
 <span class="sd">        (e00700) are subtracted, and the unmodeled prefs/adjustments</span>
 <span class="sd">        (lines 2c-2t + 3) are captured in cmbtp.  Pre-2017 law</span>
 <span class="sd">        also added back the medical expenses deducted under the</span>
-<span class="sd">        regular tax&#39;s lower floor but disallowed under the AMT&#39;s</span>
+<span class="sd">        regular tax's lower floor but disallowed under the AMT's</span>
 <span class="sd">        higher floor: max(0, min(c17000, AMT_Medical_frt * c00100)).</span>
 <span class="sd">        AMT_Medical_frt is zero beginning in 2017, when TCJA (and now</span>
 <span class="sd">        OBBBA) harmonized the regular and AMT Sch A medical floors at</span>
@@ -2905,7 +2905,7 @@
 <span class="sd">        (line 5 = AMT_em - AMT_prt * max(0, AMTI - AMT_em_ps));</span>
 <span class="sd">        line 6 = AMTI - exemption.</span>
 <span class="sd">      - Part II tax (line 7): flat-rate AMT tax (26% below AMT_brk1,</span>
-<span class="sd">        28% above) OR Part III&#39;s cap-gains-aware tax (line 40).</span>
+<span class="sd">        28% above) OR Part III's cap-gains-aware tax (line 40).</span>
 <span class="sd">      - Part III (lines 12-40): tax computation using maximum</span>
 <span class="sd">        capital gains rates (0% / 15% / 20% / 25% unrecap §1250)</span>
 <span class="sd">        paralleling QDCGTW / Sch D Tax Worksheet.</span>
@@ -2914,7 +2914,7 @@
 
 <span class="sd">    Special rules:</span>
 <span class="sd">      - MARS == 3 (MFS): exemption fully phased out when</span>
-<span class="sd">        c62100 &gt; AMT_em_pe (IRC §55(d)(3) &quot;$900,350 see instructions&quot;</span>
+<span class="sd">        c62100 &gt; AMT_em_pe (IRC §55(d)(3) "$900,350 see instructions"</span>
 <span class="sd">        cliff).</span>
 <span class="sd">      - IRC §59(j) kiddie AMT: for filers under AMT_child_em_c_age</span>
 <span class="sd">        (no qualifying older spouse), exemption capped at</span>
@@ -2958,7 +2958,7 @@
 <span class="sd">        Itemized deductions that are phased out by Pease</span>
 <span class="sd">        (subtracted to undo Pease for AMT)</span>
 <span class="sd">    c17000: float</span>
-<span class="sd">        Schedule A medical expense deduction under the regular tax&#39;s</span>
+<span class="sd">        Schedule A medical expense deduction under the regular tax's</span>
 <span class="sd">        floor (used in the pre-2017 AMT medical add-back)</span>
 <span class="sd">    AMT_Medical_frt: float</span>
 <span class="sd">        Floor (as a decimal fraction of AGI) for the AMT medical</span>
@@ -3058,7 +3058,7 @@
 <span class="sd">        Alternative Minimum Tax (AMT) tax liability (Form 6251 line 11)</span>
 <span class="sd">    c05800: float</span>
 <span class="sd">        Total (regular + AMT) income tax liability before credits</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
     <span class="c1"># --------------------------------------------------------------------</span>
     <span class="c1"># Form 6251 Part I (lines 1a-4): Alternative Minimum Taxable Income</span>
@@ -3173,7 +3173,7 @@
         <span class="n">line8</span> <span class="o">=</span> <span class="n">e07300</span>                         <span class="c1"># regular FTC proxy</span>
     <span class="n">line9</span> <span class="o">=</span> <span class="n">line7</span> <span class="o">-</span> <span class="n">line8</span>                      <span class="c1"># tentative minimum tax</span>
     <span class="c1"># line 10 regular-tax base = max(0, taxbc - e07300 - c05700);</span>
-    <span class="c1"># c05700 corresponds to &quot;minus any tax from Form 4972&quot;.</span>
+    <span class="c1"># c05700 corresponds to "minus any tax from Form 4972".</span>
     <span class="n">c09600</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line9</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">taxbc</span> <span class="o">-</span> <span class="n">e07300</span> <span class="o">-</span> <span class="n">c05700</span><span class="p">))</span>
     <span class="n">c05800</span> <span class="o">=</span> <span class="n">taxbc</span> <span class="o">+</span> <span class="n">c09600</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c62100</span><span class="p">,</span> <span class="n">c09600</span><span class="p">,</span> <span class="n">c05800</span><span class="p">)</span>
@@ -3182,10 +3182,10 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">NetInvIncTax</span><span class="p">(</span><span class="n">e00300</span><span class="p">,</span> <span class="n">e00600</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
                  <span class="n">c00100</span><span class="p">,</span> <span class="n">NIIT_thd</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">NIIT_PT_taxed</span><span class="p">,</span> <span class="n">NIIT_rt</span><span class="p">,</span> <span class="n">niit</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the Net Investment Income Tax (NIIT) per Form 8960 (2025),</span>
 <span class="sd">    Parts I and III for individuals.  Output `niit` flows downstream</span>
-<span class="sd">    through `C1040` to Schedule 2 line 12 (&quot;Other Taxes&quot;) and thence to</span>
+<span class="sd">    through `C1040` to Schedule 2 line 12 ("Other Taxes") and thence to</span>
 <span class="sd">    Form 1040 line 23 / `iitax`.</span>
 
 <span class="sd">    Form structure:</span>
@@ -3272,7 +3272,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    niit: float</span>
 <span class="sd">        Net investment income tax from Form 8960 line 17</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># ---- Part I: investment income (Form 8960 lines 1-8) ----</span>
     <span class="n">line1</span> <span class="o">=</span> <span class="n">e00300</span>                                  <span class="c1"># line 1</span>
     <span class="n">line2</span> <span class="o">=</span> <span class="n">e00600</span>                                  <span class="c1"># line 2</span>
@@ -3302,7 +3302,7 @@
           <span class="n">CDCC_po2_rate_min</span><span class="p">,</span> <span class="n">CDCC_po1_step_size</span><span class="p">,</span> <span class="n">CDCC_po2_step_size</span><span class="p">,</span>
           <span class="n">CDCC_po_rate_per_step</span><span class="p">,</span> <span class="n">CDCC_refundable</span><span class="p">,</span>
           <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c32800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculates Form 2441 (2025) Child and Dependent Care Expenses credit.</span>
 
 <span class="sd">    Maps to Form 2441 Part II lines 2-11:</span>
@@ -3402,7 +3402,7 @@
 <span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
 <span class="sd">    CDCC_refund: float</span>
 <span class="sd">        Refundable amount of c07180 amount</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># ---- Form 2441 Part II ------------------------------------------------</span>
     <span class="c1"># line 3: qualifying expenses, capped at min(f2441,2) * CDCC_c</span>
     <span class="n">max_credit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">f2441</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">CDCC_c</span>
@@ -3426,7 +3426,7 @@
         <span class="p">)</span>
         <span class="c1"># ... second phase-down from CDCC_po1_rate_min to CDCC_po2_rate_min</span>
         <span class="n">ps2</span> <span class="o">=</span> <span class="n">CDCC_ps2</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="k">assert</span> <span class="n">ps2</span> <span class="o">&gt;=</span> <span class="n">ps1</span><span class="p">,</span> <span class="s1">&#39;CDCC_ps2 must be no less than CDCC_ps1&#39;</span>
+        <span class="k">assert</span> <span class="n">ps2</span> <span class="o">&gt;=</span> <span class="n">ps1</span><span class="p">,</span> <span class="s1">'CDCC_ps2 must be no less than CDCC_ps1'</span>
         <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">ps2</span><span class="p">:</span>
             <span class="n">step2</span> <span class="o">=</span> <span class="n">CDCC_po2_step_size</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
             <span class="n">steps_fractional</span> <span class="o">=</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">ps2</span><span class="p">)</span> <span class="o">/</span> <span class="n">step2</span>
@@ -3463,7 +3463,7 @@
 <span class="nd">@JIT</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">EITCamount</span><span class="p">(</span><span class="n">basic_frac</span><span class="p">,</span> <span class="n">phasein_rate</span><span class="p">,</span> <span class="n">earnings</span><span class="p">,</span> <span class="n">max_amount</span><span class="p">,</span>
                <span class="n">phaseout_start</span><span class="p">,</span> <span class="n">agi</span><span class="p">,</span> <span class="n">phaseout_rate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns the EIC Worksheet A (or B) line 6 amount: the smaller of</span>
 <span class="sd">    the earned-income-based credit (line 2, an EIC-Table lookup keyed</span>
 <span class="sd">    on earnings) and the AGI-based credit (line 5, the same lookup</span>
@@ -3504,7 +3504,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    eitc: float</span>
 <span class="sd">        Earned Income Credit (EIC Worksheet A line 6)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">basic_frac</span> <span class="o">*</span> <span class="n">max_amount</span> <span class="o">+</span>
                 <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">basic_frac</span><span class="p">)</span> <span class="o">*</span> <span class="n">phasein_rate</span> <span class="o">*</span> <span class="n">earnings</span><span class="p">),</span> <span class="n">max_amount</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">earnings</span> <span class="o">&gt;</span> <span class="n">phaseout_start</span> <span class="ow">or</span> <span class="n">agi</span> <span class="o">&gt;</span> <span class="n">phaseout_start</span><span class="p">:</span>
@@ -3523,19 +3523,19 @@
          <span class="n">EITC_rt</span><span class="p">,</span> <span class="n">EITC_c</span><span class="p">,</span> <span class="n">EITC_prt</span><span class="p">,</span> <span class="n">EITC_basic_frac</span><span class="p">,</span>
          <span class="n">EITC_InvestIncome_c</span><span class="p">,</span> <span class="n">EITC_excess_InvestIncome_rt</span><span class="p">,</span>
          <span class="n">EITC_indiv</span><span class="p">,</span> <span class="n">EITC_sep_filers_elig</span><span class="p">,</span> <span class="n">c59660</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes Earned Income Tax Credit (Form 1040 line 27a).</span>
 
 <span class="sd">    Implements EIC Worksheet A (Form 1040 instructions) and the Pub 596</span>
-<span class="sd">    &quot;Rules If You Have a Qualifying Child&quot; / &quot;Rules If You Do Not Have</span>
-<span class="sd">    a Qualifying Child&quot; eligibility tests.  Schedule EIC supplies the</span>
+<span class="sd">    "Rules If You Have a Qualifying Child" / "Rules If You Do Not Have</span>
+<span class="sd">    a Qualifying Child" eligibility tests.  Schedule EIC supplies the</span>
 <span class="sd">    qualifying-child count (the `EIC` Records variable); per-child</span>
 <span class="sd">    EITC parameters (`EITC_rt`/`EITC_c`/`EITC_prt`/`EITC_ps`) are</span>
 <span class="sd">    length-5 lists indexed by `EIC` ∈ {0, 1, 2, 3, 4} with index 4</span>
-<span class="sd">    cloned from 3 to encode the &quot;3 or more&quot; plateau.</span>
+<span class="sd">    cloned from 3 to encode the "3 or more" plateau.</span>
 
 <span class="sd">    EIC Worksheet B (for filers with self-employment income) is not</span>
-<span class="sd">    represented separately because Tax-Calculator&#39;s `earned` input</span>
+<span class="sd">    represented separately because Tax-Calculator's `earned` input</span>
 <span class="sd">    (built by `EI_PayrollTax`) already includes net SE earnings, so</span>
 <span class="sd">    Worksheets A and B collapse to a single `EITCamount` call.</span>
 
@@ -3557,7 +3557,7 @@
 <span class="sd">          interest (`e00400`) + ordinary dividends (`e00600`) + net</span>
 <span class="sd">          capital gain (`max(0, c01000)`) + net non-passive rents and</span>
 <span class="sd">          royalties (`max(0, e02000 - e26270)`, removing Sch E</span>
-<span class="sd">          partnership/S-corp).  The form&#39;s hard cliff at</span>
+<span class="sd">          partnership/S-corp).  The form's hard cliff at</span>
 <span class="sd">          `EITC_InvestIncome_c` ($11,950 for 2025) is modeled as a</span>
 <span class="sd">          smooth phaseout at `EITC_excess_InvestIncome_rt` (default</span>
 <span class="sd">          9e+99 → behaviorally identical to the cliff).</span>
@@ -3648,7 +3648,7 @@
 <span class="sd">    EITC_excess_InvestIncome_rt: float</span>
 <span class="sd">        Rate at which the EITC is reduced per dollar of investment</span>
 <span class="sd">        income above `EITC_InvestIncome_c`; default 9e+99 makes the</span>
-<span class="sd">        smooth phaseout behaviorally equivalent to the form&#39;s hard</span>
+<span class="sd">        smooth phaseout behaviorally equivalent to the form's hard</span>
 <span class="sd">        cliff</span>
 <span class="sd">    EITC_indiv: bool</span>
 <span class="sd">        Reform-only: if true, MFJ EITC is computed per spouse on</span>
@@ -3664,7 +3664,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    c59660: float</span>
 <span class="sd">        Earned Income Tax Credit (Form 1040 line 27a)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-branches</span>
 
     <span class="c1"># ---------------- (A) EIC Worksheet A: credit amount -------------</span>
@@ -3734,7 +3734,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">RefundablePayrollTaxCredit</span><span class="p">(</span><span class="n">was_plus_sey_p</span><span class="p">,</span> <span class="n">was_plus_sey_s</span><span class="p">,</span>
                                <span class="n">RPTC_c</span><span class="p">,</span> <span class="n">RPTC_rt</span><span class="p">,</span>
                                <span class="n">rptc_p</span><span class="p">,</span> <span class="n">rptc_s</span><span class="p">,</span> <span class="n">rptc</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the Refundable Payroll Tax Credit (RPTC).</span>
 
 <span class="sd">    Reform construct with no IRS form correspondence: RPTC is a</span>
@@ -3748,7 +3748,7 @@
 <span class="sd">    0.0 for all years (2013+), so `rptc_p = rptc_s = rptc = 0`.</span>
 
 <span class="sd">    Body (per spouse): pre-phaseout credit = min(rate * earnings, cap),</span>
-<span class="sd">    where &quot;earnings&quot; is `was_plus_sey_*` (gross wages-and-salaries plus</span>
+<span class="sd">    where "earnings" is `was_plus_sey_*` (gross wages-and-salaries plus</span>
 <span class="sd">    the reform-only extra-OASDI taxable SE component) as produced by</span>
 <span class="sd">    `EI_PayrollTax`.  The filing-unit total `rptc` is the sum of the</span>
 <span class="sd">    two per-spouse credits.</span>
@@ -3762,10 +3762,10 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    was_plus_sey_p: float</span>
-<span class="sd">        Taxpayer&#39;s gross wages-and-salaries plus reform-only extra-OASDI</span>
+<span class="sd">        Taxpayer's gross wages-and-salaries plus reform-only extra-OASDI</span>
 <span class="sd">        taxable self-employment earnings (set by `EI_PayrollTax`).</span>
 <span class="sd">    was_plus_sey_s: float</span>
-<span class="sd">        Spouse&#39;s gross wages-and-salaries plus reform-only extra-OASDI</span>
+<span class="sd">        Spouse's gross wages-and-salaries plus reform-only extra-OASDI</span>
 <span class="sd">        taxable self-employment earnings (set by `EI_PayrollTax`).</span>
 <span class="sd">    RPTC_c: float</span>
 <span class="sd">        Per-spouse maximum refundable payroll tax credit (reform-only;</span>
@@ -3788,7 +3788,7 @@
 <span class="sd">        RPTC for spouse.</span>
 <span class="sd">    rptc: float</span>
 <span class="sd">        RPTC for filing unit.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">rptc_p</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">was_plus_sey_p</span> <span class="o">*</span> <span class="n">RPTC_rt</span><span class="p">,</span> <span class="n">RPTC_c</span><span class="p">)</span>
     <span class="n">rptc_s</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">was_plus_sey_s</span> <span class="o">*</span> <span class="n">RPTC_rt</span><span class="p">,</span> <span class="n">RPTC_c</span><span class="p">)</span>
     <span class="n">rptc</span> <span class="o">=</span> <span class="n">rptc_p</span> <span class="o">+</span> <span class="n">rptc_s</span>
@@ -3807,7 +3807,7 @@
                       <span class="n">CTC_c_under6_bonus</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span>
                       <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
                       <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">codtc_limited</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes nonrefundable Child Tax Credit and Credit for Other Dependents</span>
 <span class="sd">    on Schedule 8812 Part I (and Credit Limit Worksheet A).</span>
 <span class="sd">    https://www.irs.gov/pub/irs-pdf/f1040s8.pdf</span>
@@ -3877,10 +3877,10 @@
 <span class="sd">    codtc_limited: float</span>
 <span class="sd">        Tentative credit not yet absorbed by tax liability (Sch 8812 line 12</span>
 <span class="sd">        minus the nonrefundable amount); used by AdditionalCTC.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Sch 8812 lines 1-3: modified AGI (no foreign earned income exclusion)</span>
     <span class="n">modAGI</span> <span class="o">=</span> <span class="n">c00100</span>
-    <span class="c1"># reform-only: redefine &quot;qualifying child&quot; as under 18 instead of under 17</span>
+    <span class="c1"># reform-only: redefine "qualifying child" as under 18 instead of under 17</span>
     <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
         <span class="n">tu18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">age_head</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>   <span class="c1"># taxpayer is under age 18</span>
         <span class="n">su18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>  <span class="c1"># spouse is under age 18</span>
@@ -3938,7 +3938,7 @@
                       <span class="n">personal_refundable_credit</span><span class="p">,</span>
                       <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
                       <span class="n">recovery_rebate_credit</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes three reform-construct credits. None corresponds to a 2025</span>
 <span class="sd">    current-law IRS form line:</span>
 
@@ -4030,7 +4030,7 @@
 <span class="sd">        Personal nonrefundable credit</span>
 <span class="sd">    recovery_rebate_credit: float</span>
 <span class="sd">        Recovery rebate credit</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># ---- Personal refundable credit (reform-only) ----</span>
     <span class="n">ii_ps</span> <span class="o">=</span> <span class="n">II_credit_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">personal_refundable_credit</span> <span class="o">=</span> <span class="n">II_credit</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
@@ -4070,7 +4070,7 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">AmOppCreditParts</span><span class="p">(</span><span class="n">exact</span><span class="p">,</span> <span class="n">e87521</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CR_AmOppRefundable_hc</span><span class="p">,</span>
                      <span class="n">CR_AmOppNonRefundable_hc</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">c87668</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the American Opportunity Credit (AOTC) refundable and</span>
 <span class="sd">    nonrefundable amounts from Form 8863 Part I (2025).</span>
 
@@ -4146,7 +4146,7 @@
 <span class="sd">    c87668: float</span>
 <span class="sd">        Nonrefundable AOTC after the reform haircut (Form 8863 Part II</span>
 <span class="sd">        line 9 input).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">e87521</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="c1"># ---- Phaseout fraction (Form 8863 lines 2-6) ----</span>
         <span class="n">line4</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">90000.</span> <span class="o">*</span> <span class="n">num</span> <span class="o">-</span> <span class="n">c00100</span><span class="p">)</span>         <span class="c1"># line 2 - line 3</span>
@@ -4172,7 +4172,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">SchR</span><span class="p">(</span><span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span>
          <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">e02400</span><span class="p">,</span> <span class="n">c02500</span><span class="p">,</span> <span class="n">e01500</span><span class="p">,</span> <span class="n">e01700</span><span class="p">,</span> <span class="n">CR_SchR_hc</span><span class="p">,</span>
          <span class="n">c07200</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculates Schedule R (2025) Credit for the Elderly or the Disabled,</span>
 <span class="sd">    c07200 (Schedule 3 line 6d, nonrefundable).</span>
 
@@ -4189,12 +4189,12 @@
 <span class="sd">      Box 8  MFS 65+ lived apart all year MARS==3 and age_head&gt;=65</span>
 <span class="sd">    Boxes 2/4/5/6/9 (disability) are unreachable — Tax-Calculator records</span>
 <span class="sd">    do not encode disability or taxable disability income, so the Part I</span>
-<span class="sd">    &quot;disabled under 65&quot; paths are not modeled and line 12 reduces to</span>
+<span class="sd">    "disabled under 65" paths are not modeled and line 12 reduces to</span>
 <span class="sd">    line 10 (no smaller-of-line-10-or-line-11 step).</span>
 
 <span class="sd">    Box 8 over-credit (model-input-data gap): the 2025 Schedule R</span>
-<span class="sd">    instructions disallow the credit for MFS filers who &quot;lived with</span>
-<span class="sd">    [their] spouse at any time during 2025&quot;; Box 8 applies only to</span>
+<span class="sd">    instructions disallow the credit for MFS filers who "lived with</span>
+<span class="sd">    [their] spouse at any time during 2025"; Box 8 applies only to</span>
 <span class="sd">    MFS filers who lived apart from their spouse for all of 2025.</span>
 <span class="sd">    Tax-Calculator records do not encode whether MFS filers lived</span>
 <span class="sd">    apart all year, so this code treats every MARS==3 filer with</span>
@@ -4220,8 +4220,8 @@
 <span class="sd">      line 22 ................... min(line20, line21), with haircut applied</span>
 
 <span class="sd">    The line-13b approximation (max(0, e01500 - e01700)) treats every</span>
-<span class="sd">    dollar of gross pension above taxable pension as &quot;nontaxable&quot; under</span>
-<span class="sd">    line-13b. It is exact when all of a filer&#39;s pensions are uniformly</span>
+<span class="sd">    dollar of gross pension above taxable pension as "nontaxable" under</span>
+<span class="sd">    line-13b. It is exact when all of a filer's pensions are uniformly</span>
 <span class="sd">    fully taxable or uniformly partially taxable; for filers receiving</span>
 <span class="sd">    both a fully-taxable pension and a partially-taxable pension it</span>
 <span class="sd">    over-states the line-13b add-back and biases the credit downward.</span>
@@ -4281,7 +4281,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    c07200: float</span>
 <span class="sd">        Schedule R credit for the elderly and the disabled (Sch 3 line 6d)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># ---- eligibility gate: 65+ paths only (disability not modeled) ----</span>
     <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span> <span class="ow">or</span> <span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">):</span>
         <span class="c1"># ---- Part I -&gt; Part III line 10 (base) and line 15 (AGI threshold) --</span>
@@ -4318,7 +4318,7 @@
         <span class="c1"># in Tax-Calculator records. Sch 3 line 3 (Education credits,</span>
         <span class="c1"># c07230) is NOT subtracted on the on-form worksheet;</span>
         <span class="c1"># EducationTaxCredit is computed AFTER SchR in calc_all and</span>
-        <span class="c1"># Form 8863&#39;s own CLW subtracts c07200 instead. Final</span>
+        <span class="c1"># Form 8863's own CLW subtracts c07200 instead. Final</span>
         <span class="c1"># sequential nonrefundable limiting is enforced downstream</span>
         <span class="c1"># by NonrefundableCredits.</span>
         <span class="n">line21</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">e07300</span> <span class="o">-</span> <span class="n">c07180</span><span class="p">)</span>
@@ -4335,9 +4335,9 @@
                        <span class="n">LLC_Expense_c</span><span class="p">,</span> <span class="n">ETC_pe_Single</span><span class="p">,</span> <span class="n">ETC_pe_Married</span><span class="p">,</span>
                        <span class="n">CR_Education_hc</span><span class="p">,</span>
                        <span class="n">c07230</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes Education Tax Credits (`c07230`, Schedule 3 line 3) from</span>
-<span class="sd">    Form 8863 (2025) Part II &quot;Nonrefundable Education Credits&quot; and the</span>
+<span class="sd">    Form 8863 (2025) Part II "Nonrefundable Education Credits" and the</span>
 <span class="sd">    Credit Limit Worksheet (CLW) in the Form 8863 instructions.</span>
 
 <span class="sd">    Part II line-by-line mapping:</span>
@@ -4368,13 +4368,13 @@
 <span class="sd">        CLW line 7  = min(CLW line 3, CLW line 6)        (nonref ed credits)</span>
 <span class="sd">    The code applies CLW lines 5-7 sequentially (LLC first, then nonref</span>
 <span class="sd">    AOTC, subtracting LLC from remaining tax-availability before AOTC);</span>
-<span class="sd">    this is algebraically equivalent to the form&#39;s single combined</span>
+<span class="sd">    this is algebraically equivalent to the form's single combined</span>
 <span class="sd">    `min(line 3, line 6)` because both portions are bounded above by</span>
 <span class="sd">    the same tax-availability quantity (line 6).</span>
 
 <span class="sd">    `ETC_pe_Single` / `ETC_pe_Married` are stored in thousands of</span>
-<span class="sd">    dollars per `policy_current_law.json` (descriptions say &quot;in</span>
-<span class="sd">    thousands&quot;), so the `* 1000.` factors convert them to the dollar</span>
+<span class="sd">    dollars per `policy_current_law.json` (descriptions say "in</span>
+<span class="sd">    thousands"), so the `* 1000.` factors convert them to the dollar</span>
 <span class="sd">    thresholds the form prints on line 13.</span>
 
 <span class="sd">    `CR_Education_hc` is a reform construct (haircut) with no IRS-form</span>
@@ -4435,7 +4435,7 @@
 <span class="sd">    c07230: float</span>
 <span class="sd">        Education tax credits nonrefundable amount (Form 8863 line 19;</span>
 <span class="sd">        Sch 3 line 3) with reform haircut applied.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># ---- Form 8863 Part II lines 10-12 (LLC tentative) ----------------</span>
     <span class="c1"># line 11 caps qualified expenses at LLC_Expense_c ($10,000 on form);</span>
     <span class="c1"># line 12 multiplies by 20% to get the pre-phaseout LLC.</span>
@@ -4461,7 +4461,7 @@
     <span class="c1"># CLW line 6 = c05800 - (FTC + CDCC + SchR); Sch 3 lines 6f/6l/6m</span>
     <span class="c1"># also subtracted on-form but unmodeled here.  Sequential</span>
     <span class="c1"># application of LLC then nonref-AOTC below is algebraically</span>
-    <span class="c1"># equivalent to the form&#39;s single min(CLW line 3, CLW line 6).</span>
+    <span class="c1"># equivalent to the form's single min(CLW line 3, CLW line 6).</span>
     <span class="n">clw_line6</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="p">(</span><span class="n">e07300</span> <span class="o">+</span> <span class="n">c07180</span> <span class="o">+</span> <span class="n">c07200</span><span class="p">))</span>
     <span class="n">llc_used</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line18</span><span class="p">,</span> <span class="n">clw_line6</span><span class="p">)</span>
     <span class="n">aotc_used</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c87668</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">clw_line6</span> <span class="o">-</span> <span class="n">llc_used</span><span class="p">))</span>
@@ -4474,7 +4474,7 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">CharityCredit</span><span class="p">(</span><span class="n">e19800</span><span class="p">,</span> <span class="n">e20100</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CR_Charity_rt</span><span class="p">,</span> <span class="n">CR_Charity_f</span><span class="p">,</span>
                   <span class="n">CR_Charity_frt</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes nonrefundable credit for charitable giving (a reform</span>
 <span class="sd">    construct with no IRS form correspondence; not part of current-law</span>
 <span class="sd">    policy).  Under current law `CR_Charity_rt`, `CR_Charity_f`, and</span>
@@ -4521,7 +4521,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    charity_credit: float</span>
 <span class="sd">        Credit for charitable giving</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">total_charity</span> <span class="o">=</span> <span class="n">e19800</span> <span class="o">+</span> <span class="n">e20100</span>
     <span class="n">dollar_floor</span> <span class="o">=</span> <span class="n">CR_Charity_f</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">CR_Charity_frt</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">dollar_floor</span><span class="p">)</span>
@@ -4540,7 +4540,7 @@
                          <span class="n">CR_MinimumTax_hc</span><span class="p">,</span> <span class="n">CR_OtherCredits_hc</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">,</span>
                          <span class="n">c07180</span><span class="p">,</span> <span class="n">c07200</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">c07230</span><span class="p">,</span> <span class="n">c07240</span><span class="p">,</span>
                          <span class="n">c07260</span><span class="p">,</span> <span class="n">c07300</span><span class="p">,</span> <span class="n">c07400</span><span class="p">,</span> <span class="n">c07600</span><span class="p">,</span> <span class="n">c08000</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Sequentially limits nonrefundable credits against remaining income</span>
 <span class="sd">    tax liability and returns the limited per-credit amounts.  The</span>
 <span class="sd">    limited amounts are summed by `C1040` into Form 1040 line 22 via</span>
@@ -4703,7 +4703,7 @@
 <span class="sd">        Limited reform-only nonrefundable charity credit</span>
 <span class="sd">    personal_nonrefundable_credit: float</span>
 <span class="sd">        Limited reform-only personal nonrefundable credit</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Schedule 3 (2025) Part I + Form 1040 line 19: sequential limit</span>
     <span class="c1"># against remaining tax liability, mirroring the on-form line</span>
     <span class="c1"># order with reform-construct credits appended.</span>
@@ -4781,7 +4781,7 @@
                   <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span>
                   <span class="n">ptax_was</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">c59660</span><span class="p">,</span> <span class="n">e11200</span><span class="p">,</span>
                   <span class="n">c11070</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculates refundable Additional Child Tax Credit (ACTC), c11070,</span>
 <span class="sd">    following Schedule 8812 Part II (Parts II-A, II-B, II-C).</span>
 
@@ -4832,7 +4832,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    c11070: float</span>
 <span class="sd">        Child tax credit (refunded) from Form 8812</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># pylint: disable=too-many-branches</span>
     <span class="c1"># Sch 8812 line 16a: leftover Part I tentative credit</span>
     <span class="n">line16a</span> <span class="o">=</span> <span class="n">codtc_limited</span>
@@ -4840,7 +4840,7 @@
     <span class="k">if</span> <span class="n">CTC_is_refundable</span><span class="p">:</span>  <span class="c1"># reform-only: refundable portion handled in Part I</span>
         <span class="n">line16b</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># reform-only: redefine &quot;qualifying child&quot; as under 18 instead</span>
+        <span class="c1"># reform-only: redefine "qualifying child" as under 18 instead</span>
         <span class="c1">#              of under 17</span>
         <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
             <span class="n">tu18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">age_head</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>   <span class="c1"># taxpayer is under age 18</span>
@@ -4871,7 +4871,7 @@
             <span class="k">if</span> <span class="n">line20</span> <span class="o">&gt;=</span> <span class="n">line17</span><span class="p">:</span>
                 <span class="n">c11070</span> <span class="o">=</span> <span class="n">line17</span>
             <span class="k">else</span><span class="p">:</span>  <span class="c1"># Part II-B</span>
-                <span class="c1"># Sch 8812 line 22: SS+Medicare+Add&#39;l Medicare withheld</span>
+                <span class="c1"># Sch 8812 line 22: SS+Medicare+Add'l Medicare withheld</span>
                 <span class="n">line22</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ptax_was</span>
                 <span class="c1"># Sch 8812 line 23: deductible SE tax + unreported FICA</span>
                 <span class="n">line23</span> <span class="o">=</span> <span class="n">c03260</span> <span class="o">+</span> <span class="n">e09800</span>
@@ -4905,7 +4905,7 @@
           <span class="n">ptax_amc</span><span class="p">,</span> <span class="n">othertaxes</span><span class="p">,</span> <span class="n">c07100</span><span class="p">,</span> <span class="n">c09200</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">,</span>
           <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
           <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">ODC_is_refundable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Assembles Form 1040 (2025) lines 22-24 + Schedule 2 (2025) Part II</span>
 <span class="sd">    line 21:</span>
 <span class="sd">      * `c07100` = Form 1040 line 21 = total nonrefundable credits used</span>
@@ -4913,7 +4913,7 @@
 <span class="sd">        re-summed here from the per-credit limited amounts produced by</span>
 <span class="sd">        `NonrefundableCredits` and `ChildDepTaxCredit`.</span>
 <span class="sd">      * `othertaxes` = Sch 2 line 21 = Form 1040 line 23, the sum of</span>
-<span class="sd">        the six modeled &quot;Other Taxes&quot; items.</span>
+<span class="sd">        the six modeled "Other Taxes" items.</span>
 <span class="sd">      * `c09200` = Form 1040 line 24 = line 22 + line 23, total tax</span>
 <span class="sd">        before refundable credits and withholding (which are payments,</span>
 <span class="sd">        not taxes, and are applied later by `IITAX`).</span>
@@ -5041,7 +5041,7 @@
 <span class="sd">    c09200: float</span>
 <span class="sd">        Total tax before refundable credits = Form 1040 line 24</span>
 <span class="sd">        = line 22 + line 23</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># (A) Form 1040 line 21 = Sch 3 line 8 + Form 1040 line 19:</span>
     <span class="c1"># sum of limited nonrefundable credits produced by</span>
     <span class="c1"># NonrefundableCredits and ChildDepTaxCredit (= total credits</span>
@@ -5084,7 +5084,7 @@
             <span class="n">CTC_new_refund_limited_all_payroll</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span>
             <span class="n">n24</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span>
             <span class="n">c09200</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes a reform-construct refundable Child Tax Credit (`ctc_new`)</span>
 <span class="sd">    that is added on top of, not in place of, the current-law CTC/ODC</span>
 <span class="sd">    machinery in `ChildDepTaxCredit` and `AdditionalCTC`.</span>
@@ -5181,7 +5181,7 @@
 <span class="sd">    ctc_new: float</span>
 <span class="sd">        Reform-only new refundable child tax credit; fed into `IITAX` on</span>
 <span class="sd">        the refundable side.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># (A) qualifying-child count (under-18 widening is reform-only)</span>
     <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
         <span class="n">tu18</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">age_head</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span>   <span class="c1"># taxpayer is under age 18</span>
@@ -5223,7 +5223,7 @@
           <span class="n">soi_iitax</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">ptax_amc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span>
           <span class="n">ctc_total</span><span class="p">,</span> <span class="n">ctc_refundable</span><span class="p">,</span> <span class="n">ctc_nonrefundable</span><span class="p">,</span>
           <span class="n">iitax</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Final assembly: sums refundable credits and computes total income-tax</span>
 <span class="sd">    liability net of those credits. Maps to Form 1040 (2025) lines 22-37</span>
 <span class="sd">    with two model-specific simplifications:</span>
@@ -5256,7 +5256,7 @@
 <span class="sd">          `combined` = iitax + payrolltax; `lumpsum_tax` is added later</span>
 <span class="sd">          by `LumpSumTax` (also a reform construct, inert under current</span>
 <span class="sd">          law).  The `soi_iitax` switch determines whether the three</span>
-<span class="sd">          employment-related &quot;other taxes&quot; already folded into `c09200`</span>
+<span class="sd">          employment-related "other taxes" already folded into `c09200`</span>
 <span class="sd">          by `C1040` (`setax`, `e09800`, `ptax_amc`) stay in `iitax`</span>
 <span class="sd">          (true, SOI/IRS concept) or are shifted from `iitax` to</span>
 <span class="sd">          `payrolltax` (false, tax-analysis concept).  `c09200` itself</span>
@@ -5377,7 +5377,7 @@
 <span class="sd">    combined: float</span>
 <span class="sd">        iitax + payrolltax (lumpsum_tax added later by `LumpSumTax`);</span>
 <span class="sd">        invariant under `soi_iitax` by construction</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="n">c59660</span>
     <span class="c1"># (A) reform-only refundable conversions of CTC / ODC</span>
     <span class="n">ctc_refund</span> <span class="o">=</span> <span class="n">c07220</span> <span class="k">if</span> <span class="n">CTC_is_refundable</span> <span class="k">else</span> <span class="mf">0.</span>
@@ -5426,8 +5426,8 @@
                  <span class="n">setax</span><span class="p">,</span> <span class="n">ptax_amc</span><span class="p">,</span>
                  <span class="n">FST_AGI_trt</span><span class="p">,</span> <span class="n">FST_AGI_thd_lo</span><span class="p">,</span> <span class="n">FST_AGI_thd_hi</span><span class="p">,</span>
                  <span class="n">fstax</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">,</span> <span class="n">surtax</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes Fair Share Tax (aka &quot;Buffett Rule&quot;) — a reform-only minimum</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Computes Fair Share Tax (aka "Buffett Rule") — a reform-only minimum</span>
 <span class="sd">    tax on high-AGI filers. No IRS form correspondence: the construct</span>
 <span class="sd">    models the 2012 Paying a Fair Share Act / Buffett Rule proposal,</span>
 <span class="sd">    which was never enacted. Inert under current law because the rate</span>
@@ -5469,10 +5469,10 @@
 <span class="sd">        Employee and employer OASDI plus HI FICA tax on wages and</span>
 <span class="sd">        salaries (`EI_PayrollTax` output; never mutated afterward)</span>
 <span class="sd">    ptax_er_p: float</span>
-<span class="sd">        Taxpayer&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">        Taxpayer's employer share of payrolltax on wages and salaries</span>
 <span class="sd">        (`EI_PayrollTax` output; never mutated afterward)</span>
 <span class="sd">    ptax_er_s: float</span>
-<span class="sd">        Spouse&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">        Spouse's employer share of payrolltax on wages and salaries</span>
 <span class="sd">        (`EI_PayrollTax` output; never mutated afterward)</span>
 <span class="sd">    setax: float</span>
 <span class="sd">        Self-employment tax (`EI_PayrollTax` output)</span>
@@ -5506,7 +5506,7 @@
 <span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
 <span class="sd">    surtax: float</span>
 <span class="sd">        Individual income tax subtotal augmented by fstax</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Reform construct: inert under current law (FST_AGI_trt = 0).</span>
     <span class="n">thd_lo</span> <span class="o">=</span> <span class="n">FST_AGI_thd_lo</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">FST_AGI_trt</span> <span class="o">&lt;=</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">c00100</span> <span class="o">&lt;</span> <span class="n">thd_lo</span><span class="p">:</span>
@@ -5532,11 +5532,11 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">LumpSumTax</span><span class="p">(</span><span class="n">DSI</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span>
                <span class="n">LST</span><span class="p">,</span>
                <span class="n">lumpsum_tax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes a per-capita lump-sum (&quot;head&quot;) tax and adds it to combined taxes.</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Computes a per-capita lump-sum ("head") tax and adds it to combined taxes.</span>
 
 <span class="sd">    No IRS form correspondence: ``LST`` is a reform construct (section</span>
-<span class="sd">    &quot;Surtaxes / Lump-Sum Tax&quot; in ``policy_current_law.json``) and defaults</span>
+<span class="sd">    "Surtaxes / Lump-Sum Tax" in ``policy_current_law.json``) and defaults</span>
 <span class="sd">    to 0.0 from 2013 onward, so this function is inert under current law.</span>
 
 <span class="sd">    When active, every member of a non-dependent filing unit pays ``LST``</span>
@@ -5567,7 +5567,7 @@
 <span class="sd">        Lumpsum (or head) tax</span>
 <span class="sd">    combined: float</span>
 <span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">LST</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">DSI</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">lumpsum_tax</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">else</span><span class="p">:</span>
@@ -5582,7 +5582,7 @@
                  <span class="n">e02000</span><span class="p">,</span> <span class="n">e02100</span><span class="p">,</span> <span class="n">p22250</span><span class="p">,</span> <span class="n">p23250</span><span class="p">,</span> <span class="n">cmbtp</span><span class="p">,</span>
                  <span class="n">ptax_er_p</span><span class="p">,</span> <span class="n">ptax_er_s</span><span class="p">,</span>
                  <span class="n">benefit_value_total</span><span class="p">,</span> <span class="n">expanded_income</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the records-bound `expanded_income` aggregate — a broad</span>
 <span class="sd">    pre-tax income measure used for distributional analysis. This is a</span>
 <span class="sd">    model-internal concept with no IRS form/schedule counterpart: it is</span>
@@ -5659,11 +5659,11 @@
 <span class="sd">    cmbtp: float</span>
 <span class="sd">      Estimate of income on (AMT) Form 6251 but not in AGI</span>
 <span class="sd">    ptax_er_p: float</span>
-<span class="sd">      Taxpayer&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">      Taxpayer's employer share of payrolltax on wages and salaries</span>
 <span class="sd">      (from `EI_PayrollTax`), added here as employer-side compensation</span>
 <span class="sd">      not present in `e00200`.</span>
 <span class="sd">    ptax_er_s: float</span>
-<span class="sd">      Spouse&#39;s employer share of payrolltax on wages and salaries</span>
+<span class="sd">      Spouse's employer share of payrolltax on wages and salaries</span>
 <span class="sd">      (from `EI_PayrollTax`), added here as employer-side compensation</span>
 <span class="sd">      not present in `e00200`.</span>
 <span class="sd">    benefit_value_total: float</span>
@@ -5676,7 +5676,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    expanded_income: float</span>
 <span class="sd">      Broad pre-tax income measure (see body docstring above).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">expanded_income</span> <span class="o">=</span> <span class="p">(</span>
         <span class="c1"># ---- (A) Wage compensation gross of DC pension contributions ----</span>
         <span class="n">e00200</span> <span class="o">+</span>  <span class="c1"># wage and salary income net of DC pension contributions</span>
@@ -5713,7 +5713,7 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">AfterTaxIncome</span><span class="p">(</span><span class="n">combined</span><span class="p">,</span> <span class="n">expanded_income</span><span class="p">,</span> <span class="n">aftertax_income</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the records-bound `aftertax_income` = `expanded_income`</span>
 <span class="sd">    − `combined`. This is a model-internal distributional-analysis</span>
 <span class="sd">    aggregate with no IRS form/schedule counterpart: it is not part</span>
@@ -5738,7 +5738,7 @@
 <span class="sd">      unit (finalized in `LumpSumTax`).</span>
 <span class="sd">    expanded_income: float</span>
 <span class="sd">      Broad pre-tax income measure including `benefit_value_total`</span>
-<span class="sd">      (from `ExpandIncome`); see that function&#39;s docstring for the</span>
+<span class="sd">      (from `ExpandIncome`); see that function's docstring for the</span>
 <span class="sd">      AGI-vs-expanded-income deltas.</span>
 <span class="sd">    aftertax_income: float</span>
 <span class="sd">      Records-bound output, computed below.</span>
@@ -5747,7 +5747,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    aftertax_income: float</span>
 <span class="sd">      `expanded_income` − `combined`; can be negative.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">aftertax_income</span> <span class="o">=</span> <span class="n">expanded_income</span> <span class="o">-</span> <span class="n">combined</span>
     <span class="k">return</span> <span class="n">aftertax_income</span>
 </pre></div>
