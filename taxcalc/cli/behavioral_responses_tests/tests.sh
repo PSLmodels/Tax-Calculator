@@ -27,6 +27,7 @@
 # This script always exits zero, so check its output for the word
 # "Differences" rather than relying on its exit status.
 
+SECONDS=0
 ERRORS=0
 
 tc cps.csv 2035 --numyears 1                     --runid 10 \
@@ -79,18 +80,22 @@ if [ $ERRORS -eq 0 ]; then
 fi
 
 # use TMD input files
+SKIP=0
 if ! [[ -f ../../../tmd.csv ]]; then
-    echo "Skipping TMD input data test" >&2
-    exit 0
+    SKIP=1
 fi
 if ! [[ -f ../../../tmd_weights.csv.gz ]]; then
-    echo "Skipping TMD input data test" >&2
-    exit 0
+    SKIP=1
 fi
 if ! [[ -f ../../../tmd_growfactors.csv ]]; then
+    SKIP=1
+fi
+if [[ $SKIP -eq 1 ]]; then
     echo "Skipping TMD input data test" >&2
+    echo "Runtime: $SECONDS seconds" >&2
     exit 0
 fi
+
 tc ../../../tmd.csv 2035 --numyears 1 --runid 50 \
    --reform refB.json --exact --tables --silent &
 tc ../../../tmd.csv 2035 --numyears 1 --behavior br1.json --runid 60 \
@@ -109,3 +114,5 @@ fi
 if [ $ERRORS -eq 0 ]; then
     rm -f run??-??.tables
 fi
+echo "Runtime: $SECONDS seconds" >&2
+exit 0
