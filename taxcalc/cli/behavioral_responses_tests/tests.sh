@@ -16,13 +16,9 @@
 #   run 50: no --behavior option (static analysis)
 #   run 60: --behavior br1.json (all elasticities are non-zero)
 #
-# In addition to the within-pair comparisons, run 20 is compared with
-# run 10 to check that zero elasticities produce static results, and
-# run 30 is compared with the run30-35.tables-expect file, which contain
-# stored expected results.  A difference from a stored expected results
-# file indicates a bug: as stated in CLAUDE.md, do not regenerate an expect
-# file in order to make a failing comparison pass without first getting
-# approval.
+# The within-pair comparions should never fail.  The comparion with an
+# -expect file should not fail unless the behavioral response or policy
+# reform parameters have been changed.
 #
 # Note that the capital-gains response has no effect on results computed
 # with CPS input data, because those data contain no long-term capital
@@ -31,6 +27,7 @@
 # This script always exits zero, so check its output for the word
 # "Differences" rather than relying on its exit status.
 
+SECONDS=0
 ERRORS=0
 
 tc cps.csv 2035 --numyears 1                     --runid 10 \
@@ -83,18 +80,22 @@ if [ $ERRORS -eq 0 ]; then
 fi
 
 # use TMD input files
+SKIP=0
 if ! [[ -f ../../../tmd.csv ]]; then
-    echo "Skipping TMD input data test" >&2
-    exit 0
+    SKIP=1
 fi
 if ! [[ -f ../../../tmd_weights.csv.gz ]]; then
-    echo "Skipping TMD input data test" >&2
-    exit 0
+    SKIP=1
 fi
 if ! [[ -f ../../../tmd_growfactors.csv ]]; then
+    SKIP=1
+fi
+if [[ $SKIP -eq 1 ]]; then
     echo "Skipping TMD input data test" >&2
+    echo "Runtime: $SECONDS seconds" >&2
     exit 0
 fi
+
 tc ../../../tmd.csv 2035 --numyears 1 --runid 50 \
    --reform refB.json --exact --tables --silent &
 tc ../../../tmd.csv 2035 --numyears 1 --behavior br1.json --runid 60 \
@@ -113,3 +114,5 @@ fi
 if [ $ERRORS -eq 0 ]; then
     rm -f run??-??.tables
 fi
+echo "Runtime: $SECONDS seconds" >&2
+exit 0

@@ -10,13 +10,13 @@ dependencies:
 - curl
 - setuptools
 - pytest
+- pytest-cov
 - pytest-xdist
 - pytest-asyncio
 - requests
 - aiohttp
 - pycodestyle
 - pylint
-- coverage
 - openpyxl
 - pip
 - pip:
