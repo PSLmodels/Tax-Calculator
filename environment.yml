@@ -2,11 +2,11 @@ name: taxcalc-dev
 channels:
   - conda-forge
 dependencies:
-- "python>=3.11, <3.14"
-- "numpy>=1.26"
-- "pandas>=2.2"
+- "python>=3.12, <3.15"
+- "numpy>=2.4"
+- "pandas>=3.0"
 - "bokeh>=3.7"
-- numba
+- "numba>=0.64"
 - curl
 - setuptools
 - pytest

@@ -12,16 +12,17 @@ Classifier: License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
 Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.11
 Classifier: Programming Language :: Python :: 3.12
 Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
 Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.12
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: numpy>=1.26
-Requires-Dist: pandas>=2.2
-Requires-Dist: bokeh>=2.4
-Requires-Dist: numba
+Requires-Dist: numpy>=2.4
+Requires-Dist: pandas>=3.0
+Requires-Dist: bokeh>=3.7
+Requires-Dist: numba>=0.64
 Requires-Dist: paramtools>=0.20.0
 Dynamic: classifier
 Dynamic: description
@@ -31,12 +32,13 @@ Dynamic: home-page
 Dynamic: license
 Dynamic: license-file
 Dynamic: requires-dist
+Dynamic: requires-python
 Dynamic: summary
 
 | | |
 | --- | --- |
 | Org | [![PSL cataloged](https://img.shields.io/badge/PSL-cataloged-a0a0a0.svg)](https://www.PSLmodels.org) [![OS License: CCO-1.0](https://img.shields.io/badge/OS%20License-CCO%201.0-yellow)](https://github.com/PSLmodels/Tax-Calculator/blob/master/LICENSE) |
-| Package | [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3118/) [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3121/) [![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/downloads/release/python-3131/)  [![PyPI Latest Release](https://img.shields.io/pypi/v/taxcalc.svg)](https://pypi.org/project/taxcalc/) [![PyPI Downloads](https://img.shields.io/pypi/dm/taxcalc.svg?label=PyPI%20downloads)](https://pypi.org/project/taxcalc/) [![Anaconda](https://img.shields.io/conda/dn/conda-forge/taxcalc?color=brightgreen&label=downloads&logo=conda-forge)](https://anaconda.org/conda-forge/taxcalc) |
+| Package | [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3121/) [![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/downloads/release/python-3131/) [![Python 3.14](https://img.shields.io/badge/python-3.14-blue.svg)](https://www.python.org/downloads/release/python-3140/)  [![PyPI Latest Release](https://img.shields.io/pypi/v/taxcalc.svg)](https://pypi.org/project/taxcalc/) [![PyPI Downloads](https://img.shields.io/pypi/dm/taxcalc.svg?label=PyPI%20downloads)](https://pypi.org/project/taxcalc/) [![Anaconda](https://img.shields.io/conda/dn/conda-forge/taxcalc?color=brightgreen&label=downloads&logo=conda-forge)](https://anaconda.org/conda-forge/taxcalc) |
 | Testing | ![example event parameter](https://github.com/PSLmodels/Tax-Calculator/actions/workflows/build_and_test.yml/badge.svg?branch=master) ![example event parameter](https://github.com/PSLmodels/Tax-Calculator/actions/workflows/deploy_jupyterbook.yml/badge.svg?branch=master)  [![Codecov](https://codecov.io/gh/PSLmodels/Tax-Calculator/branch/master/graph/badge.svg)](https://codecov.io/gh/PSLmodels/Tax-Calculator) |
 
 
