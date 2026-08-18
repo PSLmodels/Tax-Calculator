@@ -74,7 +74,7 @@ they all pass.  If a test command fails, return to step 3 revising
 changes until all tests pass.  These tests should all pass because a
 structural enhancment **adds** capabilities; it does not change how
 taxes are calculated under current-law policy or under the reforms that
-are already parameterized.  The order matters: the pytest-all command
+are already parameterized.  The order matters: the pytest command
 uninstalls the local taxcalc package that the brtest and idtest
 commands build and install.  Because they build and install the
 package, the brtest and idtest commands take considerably longer than
@@ -82,7 +82,7 @@ the other commands.
 
 - Execute the "make cstest > rescs 2>&1" command
   * Test fails if the rescs file is not empty
-- Execute the "make pytest-all > respy 2>&1 ; echo EXIT=$?" command
+- Execute the "make pytest > respy 2>&1 ; echo EXIT=$?" command
   * Test fails if the EXIT value is not zero (consult the respy file to
     diagnose the failure; do not rely on the last line of respy alone,
     because collection errors and crashes are reported differently from
@@ -96,7 +96,7 @@ the other commands.
     error and traceback patterns, as well as the differ pattern, guards
     against a test that appears to pass only because it never ran
 
-The brtest and idtest commands, and some of the pytest-all tests,
+The brtest and idtest commands, and some of the pytest tests,
 compare results against stored expected results.  When such a
 comparison fails, the difference indicates a bug in the branch changes
 that must be fixed in step 3.  Never revise a test, or a file
@@ -109,7 +109,7 @@ STEP 5: ASK IF SHOULD COMMIT CHANGES
           committed
 - Action: check "git status" for stray test output files, such as
           df-??-#-* files, which are left behind when a failing
-          pytest-all command aborts before the Makefile pytest-cleanup
+          pytest command aborts before the Makefile pytest-cleanup
           step runs
 - Action: ask if should commit changes or leave that up to the user.
 - Action: do not push the branch to GitHub and do not open a pull request;

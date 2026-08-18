@@ -13,10 +13,7 @@ In the top-level Tax-Calculator directory, do the following:
 --> on branch X-Y-Z, edit docs/about/releases.md to finalize X.Y.Z info
 --> specify release X.Y.Z in setup.py, taxcalc/__init__.py, docs/index.md
 --> run `python update_pcl.py`  [to update policy_current_law.json]
---> run `make cstest`  [to confirm project coding style is being followed]
---> run `make pytest-all`  [to confirm all pytest test are passing]
---> run `make brtest`  [to check CLI results for behavioral responses]
---> run `make idtest`  [to check CLI results for CPS and TMD input data]
+--> run `make tests `  [executes cstest, pytest, brtest, idtest]
 --> run `make tctest-jit`  [to ensure JIT decorators are not hiding bugs]
 --> commit X-Y-Z branch and push to origin
 --> open new GitHub pull request using your X-Y-Z branch
