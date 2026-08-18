@@ -40,10 +40,6 @@ clean:
 package:
 	@pip install -e . | tail -1
 
-define pytest-setup
-rm -f taxcalc/tests/reforms_actual_init
-endef
-
 define pytest-cleanup
 find . -name *cache -maxdepth 1 -exec rm -r {} \;
 rm -f df-??-#-*
@@ -52,13 +48,11 @@ endef
 
 .PHONY=pytest
 pytest: clean
-	@$(pytest-setup)
 	@cd taxcalc ; pytest -n6 --durations=0 --durations-min=15 -m "not reforms2 and not requires_puf and not requires_tmd"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
 pytest-all: clean
-	@$(pytest-setup)
 	@cd taxcalc ; pytest -n6 --durations=0 --durations-min=15 -m ""
 	@$(pytest-cleanup)
 
