@@ -270,10 +270,10 @@ def test_reform_json_and_output(reform_file, tax_year, tests_path,
         raise ValueError(msg)
 
 
-def reform_results(rid, reform_dict, cps_data, reform_2017_law,
+def reform_results(reform_dict, cps_data, reform_2017_law,
                    full_claiming_assumption):
     """
-    Return actual results of the reform specified by rid and reform_dict.
+    Return list of actual results for the reform specified by reform_dict.
     """
     # pylint: disable=too-many-locals
     rec = Records.cps_constructor(data=cps_data)
@@ -316,11 +316,8 @@ def reform_results(rid, reform_dict, cps_data, reform_2017_law,
         results.append(weighted_sum_diff)
         calc1.increment_year()
         calc2.increment_year()
-    # write actual results to actual_str
-    actual_str = f'{rid}'
-    for iyr in range(0, num_years):
-        actual_str += f',{results[iyr]:.1f}'
-    return actual_str
+    # return actual results rounded the same way as the expected results
+    return [float(f'{results[iyr]:.1f}') for iyr in range(0, num_years)]
 
 
 @pytest.fixture(scope='module', name='baseline_2017_law')
@@ -332,36 +329,89 @@ def fixture_baseline_2017_law(tests_path):
     return Policy.read_json_reform(pre_tcja_jrf)
 
 
-@pytest.fixture(scope='module', name='reforms_dict')
-def fixture_reforms_dict(tests_path):
+REFORMS_PATH = os.path.join(os.path.dirname(__file__), 'reforms.json')
+EXPECT_PATH = os.path.join(os.path.dirname(__file__), 'reforms_expect.csv')
+
+
+def read_reforms_dict():
     """
-    Read reforms.json and convert to dictionary.
+    Read reforms.json file and return its contents as a dictionary
+    whose keys are string reform ids.
     """
-    reforms_path = os.path.join(tests_path, 'reforms.json')
-    with open(reforms_path, 'r', encoding='utf-8') as rfile:
+    with open(REFORMS_PATH, 'r', encoding='utf-8') as rfile:
         rjson = rfile.read()
     return json.loads(rjson)
 
 
-NUM_REFORMS = 60  # when changing this also change num_reforms in conftest.py
+def read_reforms_expect():
+    """
+    Read reforms_expect.csv file and return dictionary whose keys are
+    string reform ids and whose values are lists of expected results.
+    """
+    expect = {}
+    with open(EXPECT_PATH, 'r', encoding='utf-8') as efile:
+        elines = efile.readlines()
+    for eline in elines[1:]:  # skip header line
+        items = eline.strip().split(',')
+        if len(items) < 2:
+            continue
+        expect[items[0]] = [float(itm) for itm in items[1:]]
+    return expect
+
+
+REFORM_IDS = sorted(read_reforms_dict().keys(), key=int)
+
+
+@pytest.fixture(scope='session', name='reforms_dict')
+def fixture_reforms_dict():
+    """
+    Return dictionary containing contents of the reforms.json file.
+    """
+    return read_reforms_dict()
+
+
+@pytest.fixture(scope='session', name='reforms_expect')
+def fixture_reforms_expect():
+    """
+    Return dictionary containing contents of the reforms_expect.csv file.
+    """
+    return read_reforms_expect()
 
 
 @pytest.mark.reforms2
-@pytest.mark.parametrize('rid', list(range(1, NUM_REFORMS + 1)))
-def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
-                 reforms_dict, cps_subsample, full_claiming_assumption):
+def test_reforms_expect_ids(reforms_dict, reforms_expect):
     """
-    Write actual reform results to files.
+    Check that reforms.json and reforms_expect.csv specify the same
+    set of reform ids.
+    """
+    assert set(reforms_dict.keys()) == set(reforms_expect.keys()), (
+        'reforms.json and reforms_expect.csv reform ids differ'
+    )
+
+
+@pytest.mark.reforms2
+@pytest.mark.parametrize('rid', REFORM_IDS)
+def test_reforms(rid, baseline_2017_law, reforms_dict, reforms_expect,
+                 cps_subsample, full_claiming_assumption):
+    """
+    Compare actual and expected results for the reform with id equal to rid.
     """
     # pylint: disable=too-many-arguments,too-many-positional-arguments
-    assert test_reforms_init == NUM_REFORMS
-    actual = reform_results(rid, reforms_dict[str(rid)],
+    actual = reform_results(reforms_dict[rid],
                             cps_subsample, baseline_2017_law,
                             full_claiming_assumption)
-    afile_path = os.path.join(tests_path, f'reform_actual_{rid}.csv')
-    with open(afile_path, 'w', encoding='utf-8') as afile:
-        afile.write('rid,res1,res2,res3,res4\n')
-        afile.write(f'{actual}\n')
+    expect = reforms_expect[rid]
+    if not np.allclose(actual, expect, atol=0.0, rtol=0.0):
+        act_str = ','.join(f'{res:.1f}' for res in actual)
+        exp_str = ','.join(f'{res:.1f}' for res in expect)
+        msg = (
+            f'ACTUAL AND EXPECTED RESULTS DIFFER FOR REFORM {rid}:\n'
+            f'  actual: {rid},{act_str}\n'
+            f'  expect: {rid},{exp_str}\n'
+            'IF ACTUAL OK, PUT THE ACTUAL LINE IN THE reforms_expect.csv '
+            'FILE AND RERUN TEST.'
+        )
+        raise ValueError(msg)
 
 
 @pytest.mark.obbba_reforms
