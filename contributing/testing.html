@@ -507,8 +507,6 @@
             </div>
             <nav aria-label="Page">
                 <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-coding-style">Testing coding style</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-with-pytest">Testing with pytest</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpreting-test-results">Interpreting test results</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-test-results">Updating test results</a></li>
 </ul>
@@ -538,48 +536,11 @@ Tax-Calculator source code.</p>
 <p>There are two phases of testing: testing that the source code
 complies with the Tax-Calculator coding style and testing that
 the source code does not contain bugs.</p>
-<section id="testing-coding-style">
-<h2>Testing coding style<a class="headerlink" href="#testing-coding-style" title="Link to this heading">#</a></h2>
-<p>The Tax-Calculator project follows <code class="docutils literal notranslate"><span class="pre">pycodestyle</span></code> and <code class="docutils literal notranslate"><span class="pre">pylint</span></code>
-recommended coding style in most cases.</p>
-<p>Check that your changes on a local branch are coding-style compliant
-by running the coding-style test in the top-level Tax-Calculator
-directory as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">cstest</span>
+<p>You can execute both phases of testing with a single command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">tests</span>
 </pre></div>
 </div>
-<p>No messages indicate the tests pass.  Fix any warnings.  When you pass
-all these coding-style tests, proceed to the second phase of testing.</p>
-</section>
-<section id="testing-with-pytest">
-<h2>Testing with pytest<a class="headerlink" href="#testing-with-pytest" title="Link to this heading">#</a></h2>
-<p>There are two variants of this second testing phase depending on
-whether or not you have access to the PUF-related and TMD-related
-input data files.</p>
-<p><strong>NO PUF AND NO TMD</strong>: If you do not have access to the PUF or TMD
-input data files, run the second-phase of testing as follows at the
-command prompt in the Tax-Calculator directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">pytest</span>
-</pre></div>
-</div>
-<p>This will start executing a pytest suite containing hundreds of tests,
-but will skip the tests that require the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file or the <code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code>
-file as input.</p>
-<p><strong>HAVE PUF AND HAVE TMD</strong>: If you do have access to the PUF-related
-files and the TMD-related files, copy them into the Tax-Calculator
-directory at the top of the repository directory tree (but <strong>never</strong>
-add them to your repository) and run the second-phase of testing as
-follows at the command prompt in the Tax-Calculator directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">pytest</span><span class="o">-</span><span class="nb">all</span>
-<span class="n">make</span> <span class="n">idtest</span>
-</pre></div>
-</div>
-<p>The first command will start executing a pytest suite containing
-hundreds of tests, including the tests that require the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file
-as input and the tests that require the <code class="docutils literal notranslate"><span class="pre">tmd.csv</span></code> file as input.  The
-second command checks that the Tax-Calculator CLI generates expected
-results when using the CPS, PUF, and TMD input data.</p>
-</section>
+<p>No messages indicate the tests pass.</p>
 <section id="interpreting-test-results">
 <h2>Interpreting test results<a class="headerlink" href="#interpreting-test-results" title="Link to this heading">#</a></h2>
 <p>If you are adding an enhancement that expands the capabilities of the
@@ -673,8 +634,6 @@ test results.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-coding-style">Testing coding style</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-with-pytest">Testing with pytest</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpreting-test-results">Interpreting test results</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-test-results">Updating test results</a></li>
 </ul>
