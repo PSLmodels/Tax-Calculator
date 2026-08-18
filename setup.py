@@ -20,11 +20,12 @@ config = {
     "packages": ["taxcalc", "taxcalc.cli"],
     "include_package_data": True,
     "name": "taxcalc",
+    "python_requires": ">=3.12",
     "install_requires": [
-        "numpy>=1.26",
-        "pandas>=2.2",
-        "bokeh>=2.4",
-        "numba",
+        "numpy>=2.4",
+        "pandas>=3.0",
+        "bokeh>=3.7",
+        "numba>=0.64",
         "paramtools>=0.20.0"
     ],
     "classifiers": [
@@ -35,9 +36,9 @@ config = {
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     "tests_require": ["pytest"],
