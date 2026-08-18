@@ -73,7 +73,7 @@ below.
 - `make cstest > rescs 2>&1` — coding-style checks; fails if `rescs`
   is not empty.
 
-- `make pytest-all > respy 2>&1 ; echo EXIT=$?` - full test suite;
+- `make pytest > respy 2>&1 ; echo EXIT=$?` - full unit test suite;
   fails if the EXIT value is not zero. Diagnose failures by consulting
   `respy`; do not rely on its last line alone, since collection errors
   and crashes are reported differently from test failures.
@@ -83,13 +83,13 @@ below.
   `grep -Ei 'differ|error|traceback' resbr resid`; any output means failure.
   The `idtest` skips the TMD input data test if `tmd.csv`,
   `tmd_weights.csv.gz`, and `tmd_growfactors.csv` are not present in
-  the top-level repo folder. `pytest-all` uninstalls the local package
-  that `brtest` and `idtest` build and install, so run `pytest-all`
+  the top-level repo folder. `pytest` uninstalls the local package
+  that `brtest` and `idtest` build and install, so run `pytest`
   before them.
 
 The `rescs`, `respy`, `resbr`, and `resid` files are not git-ignored;
 delete them when done, and check `git status` for stray test output
-such as `df-??-#-*` files left behind by an aborted `pytest-all` run.
+such as `df-??-#-*` files left behind by an aborted `pytest` run.
 
 Never revise a test, or a file containing expected test results, in
 order to make a failing test pass without first asking the user for

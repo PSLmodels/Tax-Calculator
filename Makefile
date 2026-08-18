@@ -9,24 +9,23 @@
 help:
 	@echo "USAGE: make [TARGET]"
 	@echo "TARGETS:"
-	@echo "help       : show help message"
+	@echo "help       : show this help message"
+	@echo "package    : build and install local taxcalc package"
 	@echo "clean      : remove .pyc files and local taxcalc package"
-	@echo "package    : build and install local package"
-	@echo "pytest     : generate report for and cleanup after"
-	@echo "             pytest -m 'not reforms2 and not requires_puf and not requires_tmd'"
-	@echo "pytest-all : generate report for and cleanup after"
-	@echo "             pytest -m ''"
-	@echo "tctest     : generate report for and cleanup after"
-	@echo "             tc --test"
-	@echo "tctest-jit : generate report for and cleanup after"
-	@echo "             tc --test when environment var NOTAXCALCJIT is set"
 	@echo "cstest     : generate coding-style errors using the"
-	@echo "             pycodestyle (nee pep8) and pylint tools"
+	@echo "             pycodestyle and pylint tools"
+	@echo "pytest     : generate report for and cleanup after"
+	@echo "             pytest -m ''"
 	@echo "brtest     : generate report for and cleanup after executing"
 	@echo "             taxcalc/cli/behavioral_responses_tests/tests.sh"
 	@echo "idtest     : generate report for and cleanup after executing"
 	@echo "             taxcalc/cli/input_data_tests/tests.sh"
-	@echo "coverage   : generate test coverage report"
+	@echo "tctest     : generate report for and cleanup after"
+	@echo "             tc --test"
+	@echo "tctest-jit : generate report for and cleanup after"
+	@echo "             tc --test when environment var NOTAXCALCJIT is set"
+	@echo "tests      : execute cstest, pytest, brtest, idtest"
+	@echo "coverage   : generate pytest coverage report"
 	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
 	@echo "git-pr N=n : create local pr-n branch containing upstream PR"
 
@@ -48,12 +47,7 @@ endef
 
 .PHONY=pytest
 pytest: clean
-	@cd taxcalc ; pytest -n6 --durations=0 --durations-min=15 -m "not reforms2 and not requires_puf and not requires_tmd"
-	@$(pytest-cleanup)
-
-.PHONY=pytest
-pytest-all: clean
-	@cd taxcalc ; pytest -n6 --durations=0 --durations-min=15 -m ""
+	@cd taxcalc ; pytest -n6 --durations=0 --durations-min=15
 	@$(pytest-cleanup)
 
 define tctest-cleanup
@@ -96,6 +90,9 @@ brtest: package
 idtest: package
 	@echo "Executing taxcalc/cli/input_data_tests"
 	@cd taxcalc/cli/input_data_tests ; ./tests.sh
+
+.PHONY=tests
+tests: clean cstest pytest brtest idtest
 
 define coverage-cleanup
 rm -f .coverage .coverage.* htmlcov/*

@@ -8,6 +8,7 @@ Test Records class and its methods.
 import os
 import json
 from io import StringIO
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
@@ -346,6 +347,9 @@ def test_puf_availability(tests_path, puf_data_path):
     """
     Cross-check records_variables.json data with variables in puf.csv file
     """
+    # skip test if puf.csv is not available
+    if not Path(puf_data_path).exists():
+        return
     # make set of variable names that are in the puf.csv file
     pufdf = pd.read_csv(puf_data_path)
     pufvars = set(sorted(list(pufdf)))
@@ -367,6 +371,9 @@ def test_tmd_availability(tests_path, tmd_data_path):
     """
     Cross-check records_variables.json data with variables in tmd.csv file
     """
+    # skip test if tmd.csv is not available
+    if not Path(tmd_data_path).exists():
+        return
     # make set of variable names that are in the tmd.csv file
     tmddf = pd.read_csv(tmd_data_path)
     tmdvars = set(sorted(list(tmddf)))
