@@ -12,17 +12,17 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
       - name: Setup Miniconda using Python ${{ matrix.python-version }}
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v4
         with:
           activate-environment: taxcalc-dev
           environment-file: environment.yml
           python-version: ${{ matrix.python-version }}
-          auto-activate-base: false
+          auto-activate: false
 
       - name: Build
         shell: bash -l {0}
@@ -37,10 +37,10 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && contains(github.repository, 'PSLmodels/Tax-Calculator')
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          file: ./coverage.xml
+          files: ./coverage.xml
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
