@@ -16,17 +16,10 @@ for yr in {25..35}; do
 done
 
 # use TMD input files
-SKIP=0
-if ! [[ -f ../../../tmd.csv ]]; then
-    SKIP=1
-fi
-if ! [[ -f ../../../tmd_weights.csv.gz ]]; then
-    SKIP=1
-fi
-if ! [[ -f ../../../tmd_growfactors.csv ]]; then
-    SKIP=1
-fi
-if [[ $SKIP -eq 1 ]]; then
+TMDV=../../../tmd.csv
+TMDW=../../../tmd_weights.csv.gz
+TMDF=../../../tmd_growfactors.csv
+if ! [[ -f $TMDV && -f $TMDW && -f $TMDF ]]; then
     echo "Skipping TMD input data test" >&2
     echo "Runtime: $SECONDS seconds" >&2
     exit 0
