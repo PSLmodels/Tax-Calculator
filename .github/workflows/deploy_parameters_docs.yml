@@ -21,7 +21,7 @@ jobs:
           activate-environment: taxcalc-dev
           environment-file: environment.yml
           python-version: 3.12
-          auto-activate-base: false
+          auto-activate: false
 
       - name: Build # Build Jupyter Book
         shell: bash -l {0}

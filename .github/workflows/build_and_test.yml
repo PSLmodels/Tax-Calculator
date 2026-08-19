@@ -22,7 +22,7 @@ jobs:
           activate-environment: taxcalc-dev
           environment-file: environment.yml
           python-version: ${{ matrix.python-version }}
-          auto-activate-base: false
+          auto-activate: false
 
       - name: Build
         shell: bash -l {0}
