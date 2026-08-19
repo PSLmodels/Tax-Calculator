@@ -7,14 +7,16 @@ jobs:
   build-and-deploy:
     if: github.repository == 'PSLmodels/Tax-Calculator'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
       - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v4
         with:
           activate-environment: taxcalc-dev
           environment-file: environment.yml
@@ -31,8 +33,8 @@ jobs:
           jb build .
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: docs/_build/html # The folder the action should deploy.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages # The branch the action should deploy to.
+          folder: docs/_build/html # The folder the action should deploy.
