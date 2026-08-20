@@ -5,6 +5,43 @@ Go
 for a complete commit history.
 
 
+2026-08-21 Release 6.8.1
+------------------------
+(last merged pull request is
+[#3135](https://github.com/PSLmodels/Tax-Calculator/pull/3135))
+
+**This is a minor enhancement and bug fix release.**
+
+**API Changes**
+
+**New Features**
+- Simplify `Makefile` targets and update GitHub Actions workflows
+  [[#3134](https://github.com/PSLmodels/Tax-Calculator/pull/3134) and
+   [#3135](https://github.com/PSLmodels/Tax-Calculator/pull/3135)
+   by Martin Holmer]
+- Drop support for Python 3.11 and add support for Python 3.14
+  [[#3132](https://github.com/PSLmodels/Tax-Calculator/pull/3132)
+   by Martin Holmer]
+- Make tests and CI execute faster using more parallel processing
+  [[#3130](https://github.com/PSLmodels/Tax-Calculator/pull/3130),
+   [#3131](https://github.com/PSLmodels/Tax-Calculator/pull/3131) and
+   [#3133](https://github.com/PSLmodels/Tax-Calculator/pull/3133)
+   by Martin Holmer]
+- Add `ptax_er_p` and `ptax_er_s` calculated variables
+  [[#3125](https://github.com/PSLmodels/Tax-Calculator/pull/3125)
+   by Martin Holmer]
+- Add behavioral-response functions,docs,tests from Behavioral-Responses repo
+  [[#3123](https://github.com/PSLmodels/Tax-Calculator/pull/3123),
+   [#3124](https://github.com/PSLmodels/Tax-Calculator/pull/3124) and
+   [#3126](https://github.com/PSLmodels/Tax-Calculator/pull/3126)
+   by Martin Holmer]
+
+**Bug Fixes**
+- Fix AMT calculations by adding itemized-deduction code in `calculator.py`
+  [[#3127](https://github.com/PSLmodels/Tax-Calculator/pull/3127)
+   by Martin Holmer]
+
+
 2026-08-11 Release 6.8.0
 ------------------------
 (last merged pull request is
