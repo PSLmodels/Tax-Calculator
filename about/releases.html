@@ -507,6 +507,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-1">2026-08-21 Release 6.8.1</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-0">2026-08-11 Release 6.8.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-7-3">2026-07-30 Release 6.7.3</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-7-2">2026-07-12 Release 6.7.2</a></li>
@@ -656,6 +657,42 @@
 <p>Go
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<section id="release-6-8-1">
+<h2>2026-08-21 Release 6.8.1<a class="headerlink" href="#release-6-8-1" title="Link to this heading">#</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3135">#3135</a>)</p>
+<p><strong>This is a minor enhancement and bug fix release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Simplify <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> targets and update GitHub Actions workflows
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3134">#3134</a> and
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3135">#3135</a>
+by Martin Holmer]</p></li>
+<li><p>Drop support for Python 3.11 and add support for Python 3.14
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3132">#3132</a>
+by Martin Holmer]</p></li>
+<li><p>Make tests and CI execute faster using more parallel processing
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3130">#3130</a>,
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3131">#3131</a> and
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3133">#3133</a>
+by Martin Holmer]</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">ptax_er_p</span></code> and <code class="docutils literal notranslate"><span class="pre">ptax_er_s</span></code> calculated variables
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3125">#3125</a>
+by Martin Holmer]</p></li>
+<li><p>Add behavioral-response functions,docs,tests from Behavioral-Responses repo
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3123">#3123</a>,
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3124">#3124</a> and
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3126">#3126</a>
+by Martin Holmer]</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul class="simple">
+<li><p>Fix AMT calculations by adding itemized-deduction code in <code class="docutils literal notranslate"><span class="pre">calculator.py</span></code>
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3127">#3127</a>
+by Martin Holmer]</p></li>
+</ul>
+</section>
 <section id="release-6-8-0">
 <h2>2026-08-11 Release 6.8.0<a class="headerlink" href="#release-6-8-0" title="Link to this heading">#</a></h2>
 <p>(last merged pull request is
@@ -4006,6 +4043,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-1">2026-08-21 Release 6.8.1</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-0">2026-08-11 Release 6.8.0</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-7-3">2026-07-30 Release 6.7.3</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-7-2">2026-07-12 Release 6.7.2</a></li>
