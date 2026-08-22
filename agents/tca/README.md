@@ -48,7 +48,11 @@ raise an issue [here](https://github.com/PSLmodels/Tax-Calculator/issues).
 
 An assignment you give TCA is called a prompt.
 
-Here are a couple of prompts that are used in TCA testing.
+Here are a couple of prompts that are used in TCA testing.  Note that
+LLMs produce different response wording in each session, but the
+numrical results should be the same across sessions (apart from
+differences caused by bug fixes since Tax-Calculator 6.8.1 was
+released).
 
 **Prompt 1:**
 
@@ -62,30 +66,26 @@ children, using CPS input data.
 Response:
 
 ```
-⏺ Reform: EITC_c (max EITC), KIDS=0 (childless filers), 2026:
-          $664 → $964 (+$300), indexed thereafter; children-based
-          amounts (KIDS=1,2,3) unchanged.
-          Run 4 created (cps.csv, current-law baseline, 2026–2035).
-          Executing now.
+⏺ Reform: raise childless EITC maximum by $300 (2026–2035)
 
-⏺ Ten-Year Revenue Estimate (2026–2035): EITC Expansion for Childless Filers
+  Parameter change: EITC_c (maximum EITC amount), KIDS=0 index, tax
+  year 2026: $664 → $964 current law. Amounts for filers with 1, 2, or
+  3+ children are unchanged.
 
-  Reform: Increase the maximum EITC by $300 for childless tax filing units
-          (KIDS=0: $664 → $964 in 2026, indexed for inflation thereafter);
-          EITC amounts for filers with children are unchanged.
-          CPS input data, current-law baseline.
+  Aggregate 10-year revenue effect (2026–2035, $ billions):
 
-  ┌─────────────────────────────┬──────────┬──────────┬────────────┐
-  │                             │ Baseline │  Reform  │ Difference │
-  ├─────────────────────────────┼──────────┼──────────┼────────────┤
-  │ Income tax ($B, 2026–2035)  │ 25,221.0 │ 25,210.2 │      -10.8 │
-  ├─────────────────────────────┼──────────┼──────────┼────────────┤
-  │ Payroll tax ($B, 2026–2035) │ 21,114.5 │ 21,114.5 │        0.0 │
-  └─────────────────────────────┴──────────┴──────────┴────────────┘
+  ┌───────────────────────┬──────────┬──────────┬────────────┐
+  │          Tax          │ Baseline │  Reform  │ Difference │
+  ├───────────────────────┼──────────┼──────────┼────────────┤
+  │ Individual income tax │ 25,220.6 │ 25,209.8 │ -10.8      |
+  ├───────────────────────┼──────────┼──────────┼────────────┤
+  │ Payroll tax           │ 21,114.5 │ 21,114.5 │ 0.0        │
+  └───────────────────────┴──────────┴──────────┴────────────┘
 
-  The reform reduces cumulative income tax revenue by about $10.8 billion
-  over 2026–2035 (a 0.04% decrease), with no effect on payroll tax revenue
-  since it only changes an income tax credit.
+  The reform reduces individual income tax revenue by about $10.8
+  billion over 10 years (a 0.04% reduction), with no effect on payroll
+  tax revenue, as expected since EITC only affects income tax
+  liability.
 ```
 
 **Prompt 2:**
@@ -114,50 +114,47 @@ Always show the SQL code used to produce this custom table.
 Response: The custom table looks like this:
 
 ```
-⏺ Reform confirmed:
-  - EITC_c (max EITC), KIDS=0 (childless): $664 → $964 (+$300), effective 2026
-  - STD (standard deduction), all MARS statuses reduced by 0.25%, effective 2026:
-    Single $16,100→$16,060, MFJ $32,200→$32,120, MFS $16,100→$16,060,
-    HOH $24,150→$24,090, Widow $32,200→$32,120
+⏺ Reform (2026, CPS data)
 
-⏺ Run created (run_id=3). Executing it now.
+  - EITC_c (max EITC), KIDS=0: $664 → $964 (+$300)
+  - STD (standard deduction), reduced 0.25%, rounded to nearest dollar:
+    - MARS=1 (single): $16,100 → $16,060
+    - MARS=2 (joint): $32,200 → $32,120
+    - MARS=3 (separate): $16,100 → $16,060
+    - MARS=4 (head of household): $24,150 → $24,090
+    - MARS=5 (widow): $32,200 → $32,120
 
-⏺ Run finished with no errors. Now checking the dumpdb schema for run 3,
-  year 2026 to write the tabulation SQL.
+  Custom distributional table — income tax revenue effect, 2026
 
-⏺ Distributional Effects: 2026 Compound Reform (Run 3)
+  ┌───────────────────────┬──────────────────┬───────────────────┬──────────────────┐
+  │ Baseline income group │ Filing units (M) │ Δ income tax ($B) │ Δ income tax (%) │
+  ├───────────────────────┼──────────────────┼───────────────────┼──────────────────┤
+  │ income under $100K    │           147.47 │            -0.647 │          -0.759% │
+  ├───────────────────────┼──────────────────┼───────────────────┼──────────────────┤
+  │ income $100K–$250K    │            57.64 │             0.396 │           0.071% │
+  ├───────────────────────┼──────────────────┼───────────────────┼──────────────────┤
+  │ income $250K–$500K    │            11.82 │             0.079 │           0.015% │
+  ├───────────────────────┼──────────────────┼───────────────────┼──────────────────┤
+  │ income $500K–$1M      │             2.28 │             0.015 │           0.005% │
+  ├───────────────────────┼──────────────────┼───────────────────┼──────────────────┤
+  │ income over $1M       │             0.93 │             0.017 │           0.003% │
+  ├───────────────────────┼──────────────────┼───────────────────┼──────────────────┤
+  │ ALL incomes           │           220.13 │            -0.139 │          -0.007% │
+  └───────────────────────┴──────────────────┴───────────────────┴──────────────────┘
+  
+  Sub-$100K units see a net tax cut (larger EITC benefit outweighs the
+  smaller standard deduction), while higher-income groups see a small
+  net tax increase (reduced standard deduction only, no EITC
+  eligibility).
 
-  Reform: EITC max credit for childless filers +$300 (KIDS=0: $664→$964);
-  standard deduction reduced 0.25% for all filing statuses (rounded to nearest dollar).
-  CPS data, tax year 2026.
+  SQL used
 
-  ┌───────────────────────┬───────────────┬───────────────────┬──────────────────┐
-  │ Baseline Income Group │ Tax Units (M) │ Δ Income Tax ($B) │ Δ Income Tax (%) │
-  ├───────────────────────┼───────────────┼───────────────────┼──────────────────┤
-  │ Under $100K           │        147.47 │            -0.647 │          -0.759% │
-  ├───────────────────────┼───────────────┼───────────────────┼──────────────────┤
-  │ $100K – $250K         │         57.64 │            +0.396 │          +0.071% │
-  ├───────────────────────┼───────────────┼───────────────────┼──────────────────┤
-  │ $250K – $500K         │         11.82 │            +0.079 │          +0.015% │
-  ├───────────────────────┼───────────────┼───────────────────┼──────────────────┤
-  │ $500K – $1M           │          2.28 │            +0.015 │          +0.005% │
-  ├───────────────────────┼───────────────┼───────────────────┼──────────────────┤
-  │ Over $1M              │          0.93 │            +0.017 │          +0.003% │
-  ├───────────────────────┼───────────────┼───────────────────┼──────────────────┤
-  │ ALL                   │        220.13 │            -0.139 │          -0.007% │
-  └───────────────────────┴───────────────┴───────────────────┴──────────────────┘
-
-  The EITC expansion cuts taxes for lower-income (mostly under-$100K) filers,
-  while the smaller standard deduction raises taxes slightly across all
-  groups — net effect: a modest $0.14B income tax cut, concentrated below $100K.
-```
-
-And the SQL looks like this (although different TCA runs might use
-somewhat different SQL code):
-
-```
   WITH joined AS (
-    SELECT b.RECID, b.s006, b.expanded_income, bl.iitax AS iitax_base, rf.iitax AS iitax_reform
+    SELECT b.RECID,
+           b.s006,
+           b.expanded_income,
+           bl.iitax AS iitax_base,
+           rf.iitax AS iitax_reform
     FROM base b
     JOIN baseline bl ON b.RECID = bl.RECID
     JOIN reform rf ON b.RECID = rf.RECID
@@ -165,26 +162,42 @@ somewhat different SQL code):
   grouped AS (
     SELECT
       CASE
-        WHEN expanded_income < 100000 THEN '1_Under $100K'
-        WHEN expanded_income < 250000 THEN '2_$100K-$250K'
-        WHEN expanded_income < 500000 THEN '3_$250K-$500K'
-        WHEN expanded_income < 1000000 THEN '4_$500K-$1M'
-        ELSE '5_Over $1M'
-      END AS income_group,
+        WHEN expanded_income < 100000 THEN 1
+        WHEN expanded_income < 250000 THEN 2
+        WHEN expanded_income < 500000 THEN 3
+        WHEN expanded_income < 1000000 THEN 4
+        ELSE 5
+      END AS grp,
       s006, iitax_base, iitax_reform
     FROM joined
-  ) 
-  SELECT income_group,
-         SUM(s006)/1e6 AS tax_units_millions,
-         SUM(s006*(iitax_reform-iitax_base))/1e9 AS revenue_change_billions,
-         100.0*SUM(s006*(iitax_reform-iitax_base))/SUM(s006*iitax_base) AS pct_change
-  FROM grouped
-  GROUP BY income_group
-  UNION ALL
-  SELECT 'ALL', SUM(s006)/1e6,
-         SUM(s006*(iitax_reform-iitax_base))/1e9,
-         100.0*SUM(s006*(iitax_reform-iitax_base))/SUM(s006*iitax_base)
-  FROM grouped
-  ORDER BY income_group
-```
+  ),
+  summary AS (
+    SELECT grp,
+           SUM(s006) AS wsum,
+           SUM(s006*(iitax_reform-iitax_base)) AS chg,
+           SUM(s006*iitax_base) AS base_tax
+    FROM grouped GROUP BY grp
+    UNION ALL
+    SELECT 6, SUM(s006),
+           SUM(s006*(iitax_reform-iitax_base)),
+           SUM(s006*iitax_base)
+    FROM grouped
+  )
+  SELECT
+    CASE grp
+      WHEN 1 THEN 'Baseline income under $100K'
+      WHEN 2 THEN 'Baseline income $100K-$250K'
+      WHEN 3 THEN 'Baseline income $250K-$500K'
+      WHEN 4 THEN 'Baseline income $500K-$1M'
+      WHEN 5 THEN 'Baseline income over $1M'
+      WHEN 6 THEN 'ALL baseline incomes'
+    END AS income_group_description,
+    wsum/1e6 AS num_filing_units_M,
+    chg/1e9 AS iitax_change_B,
+    100.0*chg/base_tax AS iitax_pct_change
+  FROM summary
+  ORDER BY grp;
 
+  (Run against run4-26.dumpdb; base holds RECID/s006/expanded_income,
+  baseline/reform hold each RECID's iitax under the two policies.)
+```
