@@ -8,7 +8,7 @@
 Tax-Calculator
 ==============
 
-Tax-Calculator is an open-source microsimulation model for
+Tax-Calculator is an open-source microsimulation model for static and
 conventional analysis of USA federal income and payroll taxes.
 
 We are seeking contributors and maintainers.  If you are interested in
