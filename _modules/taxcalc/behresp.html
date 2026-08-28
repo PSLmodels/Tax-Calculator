@@ -446,7 +446,7 @@
 <span class="sd">This module contains two independent sets of functions that are not</span>
 <span class="sd">used by each other:</span>
 
-<span class="sd">(1) The response function, which conducts a complete partial-equilibrium</span>
+<span class="sd">(1) The response function, which conducts partial-equilibrium</span>
 <span class="sd">    analysis of a baseline-to-reform policy change: it computes the</span>
 <span class="sd">    behavioral response implied by the assumed elasticities, adds that</span>
 <span class="sd">    response to the reform filing units' input variables, recalculates</span>
@@ -488,7 +488,8 @@
 <a class="viewcode-back" href="../../api/behresp.html#taxcalc.behresp.response">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">response</span><span class="p">(</span><span class="n">calc_1</span><span class="p">,</span> <span class="n">calc_2</span><span class="p">,</span> <span class="n">elasticities</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Implements "Partial Equilibrium Simulation" conventional analysis,</span>
+<span class="sd">    Implements conventional analysis (that is, static reform analysis</span>
+<span class="sd">    plus partial-equilibrium behavior responses to a reform),</span>
 <span class="sd">    returning results as a tuple of Pandas DataFrame objects (df1, df2)</span>
 <span class="sd">    where df1 is extracted from a baseline-policy calc_1 copy, and df2 is</span>
 <span class="sd">    extracted from a reform-policy calc_2 copy that incorporates the</span>
@@ -608,16 +609,16 @@
 <span class="sd">      other AGI (c00100 minus e00200), and itemized deductions --- and</span>
 <span class="sd">      the three parts are added to these input variables:</span>
 
-<span class="sd">        the wage part is added to both e00200 and e00200p</span>
-<span class="sd">        the other-income part is added to e00300 (taxable interest)</span>
-<span class="sd">        the deduction part is added to e19200 (interest paid deduction)</span>
+<span class="sd">        - the wage part is added to both e00200 and e00200p</span>
+<span class="sd">        - the other-income part is added to e00300 (taxable interest)</span>
+<span class="sd">        - the deduction part is added to e19200 (interest paid deduction)</span>
 
 <span class="sd">      Two consequences are worth noting.  First, the spouse's earnings</span>
-<span class="sd">      variable, e00200s, is not adjusted, so after a response e00200 is</span>
-<span class="sd">      no longer the sum of e00200p and e00200s.  Second, a response shows</span>
-<span class="sd">      up in dump output as changes in e00300 and e19200 even for filing</span>
-<span class="sd">      units whose actual behavior would involve other income or deduction</span>
-<span class="sd">      items.  The capital-gains response, by contrast, is applied</span>
+<span class="sd">      variable, e00200s, is not adjusted, so after a response both e00200</span>
+<span class="sd">      and e00200p have been adjusted by the same amount.  Second, a</span>
+<span class="sd">      response shows up in dump output as changes in e00300 and e19200 even</span>
+<span class="sd">      for filing units whose actual behavior would involve other income or</span>
+<span class="sd">      deduction items.  The capital-gains response, by contrast, is applied</span>
 <span class="sd">      directly to p23250.</span>
 
 <span class="sd">      The denominator used to form the three allocation shares, called</span>
@@ -708,7 +709,7 @@
 <span class="sd">      into a much larger absolute value for the be_cg semi-elasticity</span>
 <span class="sd">      used by Tax-Calculator.</span>
 <span class="sd">      To calculate the elasticity from a semi-elasticity, we multiply by</span>
-<span class="sd">      MTRs from TC and weight by shares of taxable gains. To avoid those</span>
+<span class="sd">      MTRs from T-C and weight by shares of taxable gains. To avoid those</span>
 <span class="sd">      with zero MTRs, we restrict this to the top 40% of tax units by AGI.</span>
 <span class="sd">      Using this function, a semi-elasticity of -3.45 corresponds to a tax</span>
 <span class="sd">      rate elasticity of -0.792.</span>
@@ -798,10 +799,6 @@
     <span class="k">assert</span> <span class="n">calc1</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="n">calc2</span><span class="o">.</span><span class="n">current_year</span>
     <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
     <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
-        <span class="n">recs_vinfo</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># contains records VARINFO only</span>
-        <span class="n">dvars</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">recs_vinfo</span><span class="o">.</span><span class="n">USABLE_READ_VARS</span> <span class="o">|</span>
-                       <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">CALCULATED_VARS</span><span class="p">)</span>
     <span class="c1"># Calculate sum of substitution and income effects</span>
     <span class="n">zero_sub_and_inc</span> <span class="o">=</span> <span class="n">be_sub</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">be_inc</span> <span class="o">==</span> <span class="mf">0.0</span>
     <span class="c1"># Note: the wage marginal tax rates are used only by the substitution</span>
@@ -855,6 +852,9 @@
         <span class="n">ltcg_chg</span> <span class="o">=</span> <span class="n">new_ltcg</span> <span class="o">-</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">'p23250'</span><span class="p">)</span>
     <span class="c1"># Extract dataframe from calc1</span>
     <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
+        <span class="n">recs_vinfo</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># contains records VARINFO only</span>
+        <span class="n">dvars</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">recs_vinfo</span><span class="o">.</span><span class="n">USABLE_READ_VARS</span> <span class="o">|</span>
+                       <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">CALCULATED_VARS</span><span class="p">)</span>
         <span class="n">df1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">dvars</span><span class="p">)</span>
         <span class="n">df1</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">'mtr_inctax'</span><span class="p">,</span> <span class="s1">'mtr_paytax'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="s1">'columns'</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">df1</span><span class="p">[</span><span class="s1">'mtr_combined'</span><span class="p">]</span> <span class="o">=</span> <span class="n">wage_mtr1</span> <span class="o">*</span> <span class="mi">100</span>

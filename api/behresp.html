@@ -533,7 +533,7 @@
 <p>This module contains two independent sets of functions that are not
 used by each other:</p>
 <ol class="arabic simple">
-<li><p>The response function, which conducts a complete partial-equilibrium
+<li><p>The response function, which conducts partial-equilibrium
 analysis of a baseline-to-reform policy change: it computes the
 behavioral response implied by the assumed elasticities, adds that
 response to the reform filing units’ input variables, recalculates
@@ -673,7 +673,8 @@ proportional changes in aftertax income. Defaults to 0.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="taxcalc.behresp.response">
 <span class="sig-prename descclassname"><span class="pre">taxcalc.behresp.</span></span><span class="sig-name descname"><span class="pre">response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elasticities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/behresp.html#response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.behresp.response" title="Link to this definition">#</a></dt>
-<dd><p>Implements “Partial Equilibrium Simulation” conventional analysis,
+<dd><p>Implements conventional analysis (that is, static reform analysis
+plus partial-equilibrium behavior responses to a reform),
 returning results as a tuple of Pandas DataFrame objects (df1, df2)
 where df1 is extracted from a baseline-policy calc_1 copy, and df2 is
 extracted from a reform-policy calc_2 copy that incorporates the
@@ -785,16 +786,18 @@ proportion to three components — wage and salary income (e00200),
 other AGI (c00100 minus e00200), and itemized deductions — and
 the three parts are added to these input variables:</p>
 <blockquote>
-<div><p>the wage part is added to both e00200 and e00200p
-the other-income part is added to e00300 (taxable interest)
-the deduction part is added to e19200 (interest paid deduction)</p>
+<div><ul class="simple">
+<li><p>the wage part is added to both e00200 and e00200p</p></li>
+<li><p>the other-income part is added to e00300 (taxable interest)</p></li>
+<li><p>the deduction part is added to e19200 (interest paid deduction)</p></li>
+</ul>
 </div></blockquote>
 <p>Two consequences are worth noting.  First, the spouse’s earnings
-variable, e00200s, is not adjusted, so after a response e00200 is
-no longer the sum of e00200p and e00200s.  Second, a response shows
-up in dump output as changes in e00300 and e19200 even for filing
-units whose actual behavior would involve other income or deduction
-items.  The capital-gains response, by contrast, is applied
+variable, e00200s, is not adjusted, so after a response both e00200
+and e00200p have been adjusted by the same amount.  Second, a
+response shows up in dump output as changes in e00300 and e19200 even
+for filing units whose actual behavior would involve other income or
+deduction items.  The capital-gains response, by contrast, is applied
 directly to p23250.</p>
 <p>The denominator used to form the three allocation shares, called
 alloc_base in the code, is AGI minus itemized deductions, where
@@ -882,7 +885,7 @@ rate on long-term capital gains.  So, the JCT-CBO estimate of
 into a much larger absolute value for the be_cg semi-elasticity
 used by Tax-Calculator.
 To calculate the elasticity from a semi-elasticity, we multiply by
-MTRs from TC and weight by shares of taxable gains. To avoid those
+MTRs from T-C and weight by shares of taxable gains. To avoid those
 with zero MTRs, we restrict this to the top 40% of tax units by AGI.
 Using this function, a semi-elasticity of -3.45 corresponds to a tax
 rate elasticity of -0.792.
