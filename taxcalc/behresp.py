@@ -4,7 +4,7 @@ Partial-equilibrium elasticity-based behavioral-responses logic.
 This module contains two independent sets of functions that are not
 used by each other:
 
-(1) The response function, which conducts a complete partial-equilibrium
+(1) The response function, which conducts partial-equilibrium
     analysis of a baseline-to-reform policy change: it computes the
     behavioral response implied by the assumed elasticities, adds that
     response to the reform filing units' input variables, recalculates
@@ -44,7 +44,8 @@ __all__ = ['response', 'quantity_response', 'labor_response']
 
 def response(calc_1, calc_2, elasticities, dump=False):
     """
-    Implements "Partial Equilibrium Simulation" conventional analysis,
+    Implements conventional analysis (that is, static reform analysis
+    plus partial-equilibrium behavior responses to a reform),
     returning results as a tuple of Pandas DataFrame objects (df1, df2)
     where df1 is extracted from a baseline-policy calc_1 copy, and df2 is
     extracted from a reform-policy calc_2 copy that incorporates the
@@ -164,16 +165,16 @@ def response(calc_1, calc_2, elasticities, dump=False):
       other AGI (c00100 minus e00200), and itemized deductions --- and
       the three parts are added to these input variables:
 
-        the wage part is added to both e00200 and e00200p
-        the other-income part is added to e00300 (taxable interest)
-        the deduction part is added to e19200 (interest paid deduction)
+        - the wage part is added to both e00200 and e00200p
+        - the other-income part is added to e00300 (taxable interest)
+        - the deduction part is added to e19200 (interest paid deduction)
 
       Two consequences are worth noting.  First, the spouse's earnings
-      variable, e00200s, is not adjusted, so after a response e00200 is
-      no longer the sum of e00200p and e00200s.  Second, a response shows
-      up in dump output as changes in e00300 and e19200 even for filing
-      units whose actual behavior would involve other income or deduction
-      items.  The capital-gains response, by contrast, is applied
+      variable, e00200s, is not adjusted, so after a response both e00200
+      and e00200p have been adjusted by the same amount.  Second, a
+      response shows up in dump output as changes in e00300 and e19200 even
+      for filing units whose actual behavior would involve other income or
+      deduction items.  The capital-gains response, by contrast, is applied
       directly to p23250.
 
       The denominator used to form the three allocation shares, called
@@ -264,7 +265,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
       into a much larger absolute value for the be_cg semi-elasticity
       used by Tax-Calculator.
       To calculate the elasticity from a semi-elasticity, we multiply by
-      MTRs from TC and weight by shares of taxable gains. To avoid those
+      MTRs from T-C and weight by shares of taxable gains. To avoid those
       with zero MTRs, we restrict this to the top 40% of tax units by AGI.
       Using this function, a semi-elasticity of -3.45 corresponds to a tax
       rate elasticity of -0.792.
@@ -354,10 +355,6 @@ def response(calc_1, calc_2, elasticities, dump=False):
     assert calc1.current_year == calc2.current_year
     calc1.calc_all()
     calc2.calc_all()
-    if dump:
-        recs_vinfo = Records(data=None)  # contains records VARINFO only
-        dvars = sorted(recs_vinfo.USABLE_READ_VARS |
-                       recs_vinfo.CALCULATED_VARS)
     # Calculate sum of substitution and income effects
     zero_sub_and_inc = be_sub == 0.0 and be_inc == 0.0
     # Note: the wage marginal tax rates are used only by the substitution
@@ -411,6 +408,9 @@ def response(calc_1, calc_2, elasticities, dump=False):
         ltcg_chg = new_ltcg - calc1.array('p23250')
     # Extract dataframe from calc1
     if dump:
+        recs_vinfo = Records(data=None)  # contains records VARINFO only
+        dvars = sorted(recs_vinfo.USABLE_READ_VARS |
+                       recs_vinfo.CALCULATED_VARS)
         df1 = calc1.dataframe(dvars)
         df1.drop(['mtr_inctax', 'mtr_paytax'], axis='columns', inplace=True)
         df1['mtr_combined'] = wage_mtr1 * 100
