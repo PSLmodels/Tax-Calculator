@@ -69,12 +69,19 @@ def response(calc_1, calc_2, elasticities, dump=False):
         year as calc_1 and must contain the same number of filing units.
 
     elasticities: dictionary
-        contains the assumed response elasticities.  Omitting an
-        elasticity key:value pair implies the omitted elasticity is
+        contains the assumed response parameters/elasticities.  Omitting an
+        key:value pair implies the omitted parameter/elasticity is
         assumed to be zero.  (Note that the tc CLI --behavior option is
         stricter: a JSON behavior file must contain all the keys.)
-        Here is the full dictionary content and each elasticity's
+        Here is the full dictionary content and each parameter/elasticity's
         internal name:
+
+        be_esf = elasticities['esf']
+          Earnings shift factor.
+          Defined as proportional change in taxable income divided by
+          proportional change in marginal net-of-tax rate (1-MTR) on
+          taxpayer earnings caused by the reform.
+          Must be in the [0,1] range.
 
         be_sub = elasticities['sub']
           Substitution elasticity of taxable income.
@@ -279,9 +286,11 @@ def response(calc_1, calc_2, elasticities, dump=False):
     assert isinstance(calc_1, Calculator)
     assert isinstance(calc_2, Calculator)
     assert isinstance(elasticities, dict)
+    be_esf = elasticities['esf'] if 'esf' in elasticities else 0.0
     be_sub = elasticities['sub'] if 'sub' in elasticities else 0.0
     be_inc = elasticities['inc'] if 'inc' in elasticities else 0.0
     be_cg = elasticities['cg'] if 'cg' in elasticities else 0.0
+    assert 0.0 <= be_esf <= 1.0
     assert be_sub >= 0.0
     assert be_inc <= 0.0
     assert be_cg <= 0.0
@@ -355,6 +364,21 @@ def response(calc_1, calc_2, elasticities, dump=False):
     assert calc1.current_year == calc2.current_year
     calc1.calc_all()
     calc2.calc_all()
+    # Calculate earnings shift caused by employer payroll tax liability change
+    earnings_shift = False
+    if be_esf > 0:
+        ptax_er_p_1 = calc1.array('ptax_er_p')
+        ptax_er_p_2 = calc2.array('ptax_er_p')
+        ptax_er_p_change = not np.allclose(ptax_er_p_1, ptax_er_p_2)
+        ptax_er_s_1 = calc1.array('ptax_er_s')
+        ptax_er_s_2 = calc2.array('ptax_er_s')
+        ptax_er_s_change = not np.allclose(ptax_er_s_1, ptax_er_s_2)
+        if ptax_er_p_change or ptax_er_s_change:
+            earnings_shift = True
+    if earnings_shift:
+        ptax_er_p_chg = ptax_er_p_2 - ptax_er_p_1
+        ptax_er_s_chg = ptax_er_s_2 - ptax_er_s_1
+
     # Calculate sum of substitution and income effects
     zero_sub_and_inc = be_sub == 0.0 and be_inc == 0.0
     # Note: the wage marginal tax rates are used only by the substitution

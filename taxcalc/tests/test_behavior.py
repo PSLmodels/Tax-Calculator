@@ -16,7 +16,7 @@ def test_responses_json(tests_path):
     can be used to construct parameters used by functions in the
     behresp.py module.
     """
-    exp_keys = sorted(['sub', 'inc', 'cg'])
+    exp_keys = sorted(['esf', 'sub', 'inc', 'cg'])
     responses_path = os.path.join(tests_path, '..', 'behavior', '*.json')
     for jpf in glob.glob(responses_path):
         # read contents of jpf (JSON parameter filename) into a dictionary
