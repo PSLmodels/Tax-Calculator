@@ -24,7 +24,7 @@ to year, and thus, have no time dimension.
 The four parameters are:
 
 - `esf`: earnings shift factor, which must be in the [0,1] range.
-  
+
 - `sub`: substitution elasticity of taxable income, which must be zero
   or positive.
 

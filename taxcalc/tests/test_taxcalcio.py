@@ -805,7 +805,48 @@ def test_init_behavior0_errors(behvfile0):
     assert not tcio.errmsg
     tcio.init(input_data=recdf, tax_year=2024, baseline=None, reform=None,
               assump=None, behavior=behv_fname, exact_calculations=True)
-    assert tcio.errmsg
+    assert 'extra or missing parameters' in tcio.errmsg
+
+
+@pytest.fixture(scope='session', name='behvfile0m')
+def fixture_behvfile0m():
+    """
+    Temporary behavior file, with .json extension, that omits the
+    esf parameter.
+    """
+    contents = """
+    {
+    "sub": 0,
+    "inc": 0,
+    "cg": 0
+    }
+    """
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as bfile:
+        bfile.write(contents)
+    yield bfile
+    if os.path.isfile(bfile.name):
+        try:
+            os.remove(bfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_init_behavior0m_errors(behvfile0m):
+    """
+    Check that a behavior file omitting the esf parameter is rejected by
+    the TaxCalcIO.init method.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    behv_fname = behvfile0m.name
+    tcio = TaxCalcIO(input_data=recdf, tax_year=2024, baseline=None,
+                     reform=None, assump=None, behavior=behv_fname)
+    assert not tcio.errmsg
+    tcio.init(input_data=recdf, tax_year=2024, baseline=None, reform=None,
+              assump=None, behavior=behv_fname, exact_calculations=True)
+    assert 'extra or missing parameters' in tcio.errmsg
 
 
 @pytest.fixture(scope='session', name='behvfile1')
@@ -845,7 +886,10 @@ def test_init_behavior1_errors(behvfile1):
     assert not tcio.errmsg
     tcio.init(input_data=recdf, tax_year=2024, baseline=None, reform=None,
               assump=None, behavior=behv_fname, exact_calculations=True)
-    assert tcio.errmsg
+    assert '"esf" outside [0,1] range' in tcio.errmsg
+    assert 'negative "sub" elasticity' in tcio.errmsg
+    assert 'positive "inc" elasticity' in tcio.errmsg
+    assert 'positive "cg" elasticity' in tcio.errmsg
 
 
 @pytest.fixture(scope='session', name='behvfile2')

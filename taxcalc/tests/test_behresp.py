@@ -195,6 +195,11 @@ def test_response_function_asserts(cps_subsample):
     del pol
     calc1.advance_to_year(refyear)
     calc2.advance_to_year(refyear)
+    # ... earnings-shift fraction must be in the [0,1] range
+    with pytest.raises(AssertionError):
+        response(calc1, calc2, {'esf': -0.1})
+    with pytest.raises(AssertionError):
+        response(calc1, calc2, {'esf': 1.5})
     # ... substitution elasticity must be zero or positive
     with pytest.raises(AssertionError):
         response(calc1, calc2, {'sub': -0.25})
@@ -311,12 +316,13 @@ def test_earnings_shift_capped_and_uncapped_regimes(cps_subsample):
     # pylint: disable=too-many-locals
     refyear = 2020
     esf = 0.85
-    ss_rate_0 = 0.062
     ss_rate_1 = 0.072
-    mc_rate = 0.0145
     reform = {'FICA_ss_trt_employer': {refyear: ss_rate_1}}
     calc1, calc2 = _esf_calcs(cps_subsample, reform, refyear)
     cap = calc1.policy_param('SS_Earnings_c')
+    ss_rate_0 = calc1.policy_param('FICA_ss_trt_employer')
+    mc_rate = calc1.policy_param('FICA_mc_trt_employer')
+    assert ss_rate_1 > ss_rate_0
     elast = {'esf': esf, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0}
     df1, df2 = response(calc1, calc2, elast, dump=True)
     del calc1
@@ -358,14 +364,17 @@ def test_earnings_shift_is_symmetric(cps_subsample):
     refyear = 2020
     esf = 0.85
     ss_rate_up = 0.072
-    ss_rate_dn = 0.052
-    mc_rate = 0.0145
     elast = {'esf': esf, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0}
     calc1, calc2 = _esf_calcs(
         cps_subsample, {'FICA_ss_trt_employer': {refyear: ss_rate_up}},
         refyear
     )
     cap = calc1.policy_param('SS_Earnings_c')
+    ss_rate_0 = calc1.policy_param('FICA_ss_trt_employer')
+    mc_rate = calc1.policy_param('FICA_mc_trt_employer')
+    assert ss_rate_up > ss_rate_0
+    # ... the rate decrease is exactly as large as the rate increase
+    ss_rate_dn = ss_rate_0 - (ss_rate_up - ss_rate_0)
     df1, df2up = response(calc1, calc2, elast, dump=True)
     del calc2
     calc1, calc2 = _esf_calcs(

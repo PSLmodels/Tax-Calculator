@@ -14,6 +14,13 @@
 #   runs 30 and 31: --behavior br1.json (all elasticities are non-zero;
 #                   esf is zero because refA.json alters no payroll tax
 #                   parameter, so a non-zero esf would have no effect)
+# Runs using CPS input data and the refB.json payroll tax reform:
+#   runs 40 and 41: --behavior br2.json (all elasticities are non-zero and
+#                   esf is non-zero, so the SS_Earnings_c reform generates
+#                   an earnings shift)
+#   run 42: --behavior br1.json (same as run 40 except that esf is zero),
+#           which is compared with run 40 to confirm that a non-zero esf
+#           changes results
 # Runs using TMD input data and the refB.json reform:
 #   run 50: no --behavior option (static analysis)
 #   run 60: --behavior br1.json (all elasticities are non-zero; esf is
@@ -76,6 +83,29 @@ cmp run31-35.tables run30-35.tables
 if [ $? -ne 0 ]; then
     ERRORS=1
     echo Differences between run31-35.tables run30-35.tables
+fi
+
+tc cps.csv 2035 --numyears 1 --behavior br2.json --runid 40 \
+   --reform refB.json --exact --tables --silent &
+tc cps.csv 2028 --numyears 8 --behavior br2.json --runid 41 \
+   --reform refB.json --exact --tables --silent &
+tc cps.csv 2035 --numyears 1 --behavior br1.json --runid 42 \
+   --reform refB.json --exact --tables --silent &
+wait
+cmp run40-35.tables run40-35.tables-expect
+if [ $? -ne 0 ]; then
+    ERRORS=1
+    echo Differences between run40-35.tables run40-35.tables-expect
+fi
+cmp run41-35.tables run40-35.tables
+if [ $? -ne 0 ]; then
+    ERRORS=1
+    echo Differences between run41-35.tables run40-35.tables
+fi
+cmp -s run40-35.tables run42-35.tables
+if [ $? -eq 0 ]; then
+    ERRORS=1
+    echo ERROR: run40-35.tables run42-35.tables same despite different esf
 fi
 if [ $ERRORS -eq 0 ]; then
     rm -f run??-??.tables

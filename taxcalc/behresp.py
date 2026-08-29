@@ -556,7 +556,6 @@ def response(calc_1, calc_2, elasticities, dump=False):
             low = np.where(below, mid, low)
             high = np.where(below, high, mid)
         return 0.5 * (low + high)
-
     # End nested functions used only in this response function
 
     # Begin main logic of response function
