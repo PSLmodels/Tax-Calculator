@@ -9,9 +9,9 @@
 //           is shifted to the employee as a decrease (increase) in earnings
 //           with the remainder shifted to the employee as a decrease (increase)
 //           in non-taxable benefits such as employer-provided health insurance;
-//           the esf valid range is [0, 1]; empirical estimate is typically
-//           0.85.  Note that any earnings shift is applied BEFORE the
-//           remaining elasticity calculations (see below) are performed.
+//           the esf valid range is [0, 1]; JCT assumes a 0.85 value.
+//           Note that any earnings shift is applied BEFORE the remaining
+//           elasticity calculations (see below) are performed.
 //
 //   "sub" : substitution elasticity of taxable income; zero or positive;
 //           empirical estimates are typically in the 0.1 to 0.4 range.

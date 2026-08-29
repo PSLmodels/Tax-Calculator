@@ -78,9 +78,10 @@ def response(calc_1, calc_2, elasticities, dump=False):
 
         be_esf = elasticities['esf']
           Earnings shift factor.
-          Defined as proportional change in taxable income divided by
-          proportional change in marginal net-of-tax rate (1-MTR) on
-          taxpayer earnings caused by the reform.
+          Defined as the fraction of the reform-induced change in employer
+          payroll tax liability that is shifted to wages rather than to
+          nontaxable employee fringe benefits such as employer-provided
+          health insurance.
           Must be in the [0,1] range.
 
         be_sub = elasticities['sub']
@@ -376,9 +377,9 @@ def response(calc_1, calc_2, elasticities, dump=False):
         if ptax_er_p_change or ptax_er_s_change:
             earnings_shift = True
     if earnings_shift:
-        ptax_er_p_chg = ptax_er_p_2 - ptax_er_p_1
-        ptax_er_s_chg = ptax_er_s_2 - ptax_er_s_1
-
+        ptax_er_p_delta = ptax_er_p_2 - ptax_er_p_1
+        ptax_er_s_delta = ptax_er_s_2 - ptax_er_s_1
+        # TODO: add earnings adjustment calculations here
     # Calculate sum of substitution and income effects
     zero_sub_and_inc = be_sub == 0.0 and be_inc == 0.0
     # Note: the wage marginal tax rates are used only by the substitution
