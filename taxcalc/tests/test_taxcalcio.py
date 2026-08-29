@@ -815,6 +815,7 @@ def fixture_behvfile1():
     """
     contents = """
     {
+    "esf": 1.5,
     "sub": -0.3,
     "inc": 0.5,
     "cg": 1
@@ -854,6 +855,7 @@ def fixture_behvfile2():
     """
     contents = """
     {
+    "esf": 0.0,
     "sub": 0.25,
     "inc": 0.0,
     "cg": 0.0

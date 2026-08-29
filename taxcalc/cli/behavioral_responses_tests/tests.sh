@@ -10,11 +10,14 @@
 #
 # Runs using CPS input data and the refA.json reform:
 #   runs 10 and 11: no --behavior option (static analysis)
-#   runs 20 and 21: --behavior br0.json (all elasticities zero)
-#   runs 30 and 31: --behavior br1.json (all elasticities are non-zero)
+#   runs 20 and 21: --behavior br0.json (all response parameters zero)
+#   runs 30 and 31: --behavior br1.json (all elasticities are non-zero;
+#                   esf is zero because refA.json alters no payroll tax
+#                   parameter, so a non-zero esf would have no effect)
 # Runs using TMD input data and the refB.json reform:
 #   run 50: no --behavior option (static analysis)
-#   run 60: --behavior br1.json (all elasticities are non-zero)
+#   run 60: --behavior br1.json (all elasticities are non-zero; esf is
+#           zero, so the SS_Earnings_c reform generates no earnings shift)
 #
 # The within-pair comparions should never fail.  The comparion with an
 # -expect file should not fail unless the behavioral response or policy

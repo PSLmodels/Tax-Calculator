@@ -96,11 +96,11 @@ def cli_tc_main():
                         default=None)
     parser.add_argument('--behavior',
                         help=('BEHAVIOR is name of optional JSON behavioral '
-                              'response elasticities file, which must '
-                              'contain all three of the "sub", "inc", and '
-                              '"cg" elasticities. No --behavior '
-                              'implies use of zero elasticities; that is, '
-                              'no response to reform.'),
+                              'response parameters file, which must '
+                              'contain all four of the "esf", "sub", "inc", '
+                              'and "cg" parameters. No --behavior '
+                              'implies use of zero parameter values; that '
+                              'is, no response to reform.'),
                         default=None)
     parser.add_argument('--exact',
                         help=('optional flag that suppresses the smoothing of '
