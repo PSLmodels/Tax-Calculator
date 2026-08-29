@@ -245,6 +245,213 @@ def test_no_response_for_nonpositive_agi(cps_subsample):
     del df2
 
 
+def _esf_calcs(cps_subsample, reform, refyear=2020):
+    """
+    Return (calc1, calc2) Calculator objects advanced to refyear for the
+    specified reform, for use by the earnings-shift tests below.
+    """
+    rec = tc.Records.cps_constructor(data=cps_subsample)
+    pol = tc.Policy()
+    calc1 = tc.Calculator(records=rec, policy=pol)
+    calc1.advance_to_year(refyear)
+    pol.implement_reform(reform)
+    calc2 = tc.Calculator(records=rec, policy=pol)
+    calc2.advance_to_year(refyear)
+    del pol
+    return (calc1, calc2)
+
+
+def test_earnings_shift_holds_compensation_fixed(cps_subsample):
+    """
+    Test that an esf of one makes the earnings shift exactly gross
+    compensation neutral for every earner with positive wages: that is,
+    that wages plus employer payroll tax liability are unchanged by a
+    reform that raises the employer OASDI payroll tax rate.  This
+    identity holds in every OASDI regime --- below the cap, above the
+    cap, and for earners whose wage cut carries them across the cap ---
+    so it tests the fixed-point solution without conditioning on the
+    regime.  Also test that the filing-unit earnings variable remains
+    the sum of the two earner variables.
+    """
+    refyear = 2020
+    reform = {'FICA_ss_trt_employer': {refyear: 0.072}}
+    calc1, calc2 = _esf_calcs(cps_subsample, reform, refyear)
+    elast = {'esf': 1.0, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0}
+    df1, df2 = response(calc1, calc2, elast, dump=True)
+    del calc1
+    del calc2
+    # ... gross compensation is unchanged for earners with positive wages
+    for who in ('p', 's'):
+        wage1 = df1[f'e00200{who}'].values
+        wage2 = df2[f'e00200{who}'].values
+        ptax1 = df1[f'ptax_er_{who}'].values
+        ptax2 = df2[f'ptax_er_{who}'].values
+        pos = wage1 > 0.
+        assert pos.sum() > 0
+        assert np.allclose(wage2[pos] + ptax2[pos],
+                           wage1[pos] + ptax1[pos], atol=0.05, rtol=0.0)
+        # ... and the shift is a wage cut, because the reform raises the
+        #     employer payroll tax rate
+        assert np.all(wage2[pos] < wage1[pos])
+    # ... filing-unit earnings remain the sum of the two earner amounts
+    assert np.allclose(df2['e00200'].values,
+                       df2['e00200p'].values + df2['e00200s'].values)
+
+
+def test_earnings_shift_capped_and_uncapped_regimes(cps_subsample):
+    """
+    Test that the earnings shift recognizes that the HI payroll tax is
+    uncapped while the OASDI payroll tax is capped, by comparing the
+    shifted wages against the closed-form solutions that apply in the two
+    interior regimes: a proportional wage cut for an earner below the
+    OASDI cap under both policies, and a lump-sum OASDI wage cut (with
+    only the uncapped HI tax feeding back) for an earner above the cap
+    under both policies.
+    """
+    # pylint: disable=too-many-locals
+    refyear = 2020
+    esf = 0.85
+    ss_rate_0 = 0.062
+    ss_rate_1 = 0.072
+    mc_rate = 0.0145
+    reform = {'FICA_ss_trt_employer': {refyear: ss_rate_1}}
+    calc1, calc2 = _esf_calcs(cps_subsample, reform, refyear)
+    cap = calc1.policy_param('SS_Earnings_c')
+    elast = {'esf': esf, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0}
+    df1, df2 = response(calc1, calc2, elast, dump=True)
+    del calc1
+    del calc2
+    for who in ('p', 's'):
+        wage1 = df1[f'e00200{who}'].values
+        wage2 = df2[f'e00200{who}'].values
+        # ... consider only earners whose employer payroll tax base is
+        #     their wages alone: no pension contributions, and hence no
+        #     difference between wages and the gross wages used by the
+        #     EI_PayrollTax function
+        simple = df1[f'pencon_{who}'].values == 0.
+        # ... earners below the OASDI cap under both policies, for whom
+        #     both the OASDI and the HI employer tax are proportional to
+        #     the wage, so the shift is proportional
+        below = simple & (wage1 > 0.) & (wage1 < 0.9 * cap)
+        assert below.sum() > 0
+        expect = wage1[below] * ((1. + esf * (ss_rate_0 + mc_rate)) /
+                                 (1. + esf * (ss_rate_1 + mc_rate)))
+        assert np.allclose(wage2[below], expect, atol=0.05, rtol=0.0)
+        # ... earners above the OASDI cap under both policies, for whom
+        #     the employer OASDI tax is the flat amount rate*cap and only
+        #     the uncapped HI tax varies with the wage, so the OASDI part
+        #     of the shift is a lump sum that is the same for all of them
+        above = simple & (wage1 > 1.05 * cap)
+        assert above.sum() > 0
+        lump = esf * (ss_rate_1 - ss_rate_0) * cap / (1. + esf * mc_rate)
+        assert np.allclose(wage2[above], wage1[above] - lump,
+                           atol=0.05, rtol=0.0)
+
+
+def test_earnings_shift_is_symmetric(cps_subsample):
+    """
+    Test that the earnings shift is symmetric: an increase in employer
+    payroll tax liability decreases wages and an equal-sized decrease
+    increases them.
+    """
+    # pylint: disable=too-many-locals
+    refyear = 2020
+    esf = 0.85
+    ss_rate_up = 0.072
+    ss_rate_dn = 0.052
+    mc_rate = 0.0145
+    elast = {'esf': esf, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0}
+    calc1, calc2 = _esf_calcs(
+        cps_subsample, {'FICA_ss_trt_employer': {refyear: ss_rate_up}},
+        refyear
+    )
+    cap = calc1.policy_param('SS_Earnings_c')
+    df1, df2up = response(calc1, calc2, elast, dump=True)
+    del calc2
+    calc1, calc2 = _esf_calcs(
+        cps_subsample, {'FICA_ss_trt_employer': {refyear: ss_rate_dn}},
+        refyear
+    )
+    _, df2dn = response(calc1, calc2, elast, dump=True)
+    del calc1
+    del calc2
+    for who in ('p', 's'):
+        wage1 = df1[f'e00200{who}'].values
+        cut = wage1 - df2up[f'e00200{who}'].values
+        rise = df2dn[f'e00200{who}'].values - wage1
+        # ... every earner with positive wages loses wages under the rate
+        #     increase and gains wages under the rate decrease
+        pos = wage1 > 0.
+        assert pos.sum() > 0
+        assert np.all(cut[pos] > 0.)
+        assert np.all(rise[pos] > 0.)
+        # ... the wage cut and the wage rise are not equal in size, even
+        #     though the two rate changes are, because the employer tax
+        #     rate that feeds back into the shifted wage differs between
+        #     the two reforms.  For an earner below the OASDI cap, where
+        #     the shift is proportional, removing that feedback leaves the
+        #     same amount, esf times the rate change times the wage.
+        below = (df1[f'pencon_{who}'].values == 0.) & pos & (
+            wage1 < 0.9 * cap
+        )
+        assert below.sum() > 0
+        assert np.allclose(cut[below] * (1. + esf * (ss_rate_up + mc_rate)),
+                           rise[below] * (1. + esf * (ss_rate_dn + mc_rate)),
+                           atol=0.05, rtol=0.0)
+
+
+def test_no_earnings_shift_without_employer_payroll_tax_change(
+        cps_subsample):
+    """
+    Test that a positive esf has no effect when the reform leaves
+    employer payroll tax liability unchanged.
+    """
+    refyear = 2020
+    reform = {'II_em': {refyear: 1500}}
+    calc1, calc2 = _esf_calcs(cps_subsample, reform, refyear)
+    _, df_esf = response(calc1, calc2, {'esf': 0.85}, dump=True)
+    _, df_nil = response(calc1, calc2, {'esf': 0.0}, dump=True)
+    del calc1
+    del calc2
+    for var in ('e00200', 'e00200p', 'e00200s', 'iitax', 'payrolltax'):
+        assert np.allclose(df_esf[var].values, df_nil[var].values)
+
+
+def test_no_earnings_shift_for_wageless_earner(cps_subsample):
+    """
+    Test that no earnings shift is applied to an earner who has no wages
+    but does have a change in employer payroll tax liability.  A reform
+    to SS_Earnings_thd creates such earners, because the base of the
+    extra OASDI bracket blends wage and self-employment earnings: a
+    self-employed earner above the threshold therefore shows a change in
+    ptax_er_p or ptax_er_s despite having no employer to shift a payroll
+    tax to, and, in the pure case, no wages to shift it onto.
+    """
+    refyear = 2020
+    reform = {'SS_Earnings_thd': {refyear: 250000.}}
+    calc1, calc2 = _esf_calcs(cps_subsample, reform, refyear)
+    elast = {'esf': 0.85, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0}
+    df1, df2 = response(calc1, calc2, elast, dump=True)
+    del calc1
+    del calc2
+    for who in ('p', 's'):
+        wage1 = df1[f'e00200{who}'].values
+        wage2 = df2[f'e00200{who}'].values
+        changed = ~np.isclose(df1[f'ptax_er_{who}'].values,
+                              df2[f'ptax_er_{who}'].values)
+        # ... a wageless earner whose employer payroll tax liability
+        #     changes keeps unchanged wages
+        wageless = changed & (wage1 == 0.)
+        assert wageless.sum() > 0
+        assert np.allclose(wage2[wageless], wage1[wageless])
+        # ... while an earner with wages does have them shifted
+        earner = changed & (wage1 > 0.)
+        assert earner.sum() > 0
+        assert np.all(wage2[earner] < wage1[earner])
+        # ... and no earner without a liability change is shifted
+        assert np.allclose(wage2[~changed], wage1[~changed])
+
+
 def test_quantity_response():
     """
     Test quantity_response function.
