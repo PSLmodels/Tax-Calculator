@@ -23,9 +23,9 @@
 #           changes results
 # Runs using TMD input data and the refB.json reform:
 #   run 50: no --behavior option (static analysis)
-#   run 60: --behavior br1.json (all elasticities are non-zero; esf is
-#           zero, so the SS_Earnings_c reform generates no earnings shift)
-#
+#   run 60: --behavior br1.json (all elasticities are non-zero)
+#   run 70: --behavior br3.json (esf=0.85, other elasticities are zero)
+
 # The within-pair comparions should never fail.  The comparion with an
 # -expect file should not fail unless the behavioral response or policy
 # reform parameters have been changed.
@@ -124,7 +124,9 @@ fi
 
 tc ../../../tmd.csv 2035 --numyears 1 --runid 50 \
    --reform refB.json --exact --tables --silent &
-tc ../../../tmd.csv 2035 --numyears 1 --behavior br1.json --runid 60 \
+tc ../../../tmd.csv 2035 --numyears 1 --behavior br0.json --runid 60 \
+   --reform refB.json --exact --tables --silent &
+tc ../../../tmd.csv 2035 --numyears 1 --behavior br3.json --runid 70 \
    --reform refB.json --exact --tables --silent &
 wait
 cmp run50-35.tables run50-35.tables-expect
@@ -132,10 +134,15 @@ if [ $? -ne 0 ]; then
     ERRORS=1
     echo Differences between run50-35.tables run50-35.tables-expect
 fi
-cmp run60-35.tables run60-35.tables-expect
+cmp run60-35.tables run50-35.tables-expect
 if [ $? -ne 0 ]; then
     ERRORS=1
-    echo Differences between run60-35.tables run60-35.tables-expect
+    echo Differences between run60-35.tables run50-35.tables-expect
+fi
+cmp run70-35.tables run70-35.tables-expect
+if [ $? -ne 0 ]; then
+    ERRORS=1
+    echo Differences between run70-35.tables run50-35.tables-expect
 fi
 if [ $ERRORS -eq 0 ]; then
     rm -f run??-??.tables
