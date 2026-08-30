@@ -77,7 +77,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
         year as calc_1 and must contain the same number of filing units.
 
     elasticities: dictionary
-        contains the assumed response parameters/elasticities.  Omitting an
+        contains the assumed response parameters/elasticities.  Omitting a
         key:value pair implies the omitted parameter/elasticity is
         assumed to be zero.  (Note that the tc CLI --behavior option is
         stricter: a JSON behavior file must contain all the keys.)
@@ -327,7 +327,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
 
     Filing units excluded from the response:
 
-      The earnings shift is skipped entirely when be_esf is zero and when
+      The earnings shift is skipped entirely when be_esf is zero or when
       the reform alters none of the four parameters of the employer
       payroll tax on wages: FICA_ss_trt_employer, FICA_mc_trt_employer,
       SS_Earnings_c, and SS_Earnings_thd.  That test is on the parameters
@@ -568,7 +568,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
     # requires no comparison of calculated tax amounts.
     esf_params = ('FICA_ss_trt_employer', 'FICA_mc_trt_employer',
                   'SS_Earnings_c', 'SS_Earnings_thd')
-    earnings_shift = be_esf > 0. and any(
+    has_earnings_shift = be_esf > 0. and any(
         calc1.policy_param(pname) != calc2.policy_param(pname)
         for pname in esf_params
     )
@@ -581,10 +581,10 @@ def response(calc_1, calc_2, elasticities, dump=False):
     # and pencon_s) and calc2 policy parameters; the calc_all at the end
     # of the shift logic below supplies calc2 its first calculation.
     calc1.calc_all()
-    if not earnings_shift:
+    if not has_earnings_shift:
         calc2.calc_all()
     # Calculate earnings shift caused by employer payroll tax liability change
-    if earnings_shift:
+    if has_earnings_shift:
         # Hold each earner's gross compensation (wages plus employer
         # payroll tax) fixed by shifting the be_esf fraction of the
         # reform-induced change in employer payroll tax liability onto
