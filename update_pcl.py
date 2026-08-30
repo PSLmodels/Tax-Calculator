@@ -681,7 +681,6 @@ NEW_KNOWN_ITEMS = {
     'ID_c': LIST_MARS_INF,
     'CG_ec': LIST_SCALAR_ZERO,
     'PT_qbid_ps': LIST_MARS_INF,
-    'RPTC_c': LIST_SCALAR_ZERO,
     'CTC_new_ps': LIST_MARS_ZERO,
     'AGI_surtax_thd': LIST_MARS_INF,
     'UBI_u18': LIST_SCALAR_ZERO,
