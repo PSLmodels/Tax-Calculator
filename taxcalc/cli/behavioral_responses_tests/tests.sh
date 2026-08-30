@@ -23,9 +23,9 @@
 #           changes results
 # Runs using TMD input data and the refB.json reform:
 #   run 50: no --behavior option (static analysis)
-#   run 60: --behavior br1.json (all elasticities are non-zero)
+#   run 60: --behavior br0.json (all response parameters zero)
 #   run 70: --behavior br3.json (esf=0.85, other elasticities are zero)
-
+#
 # The within-pair comparions should never fail.  The comparion with an
 # -expect file should not fail unless the behavioral response or policy
 # reform parameters have been changed.
@@ -103,9 +103,13 @@ if [ $? -ne 0 ]; then
     echo Differences between run41-35.tables run40-35.tables
 fi
 cmp -s run40-35.tables run42-35.tables
-if [ $? -eq 0 ]; then
+STATUS=$?
+if [ $STATUS -eq 0 ]; then
     ERRORS=1
     echo ERROR: run40-35.tables run42-35.tables same despite different esf
+elif [ $STATUS -ne 1 ]; then
+    ERRORS=1
+    echo ERROR: cmp of run40-35.tables run42-35.tables failed, status $STATUS
 fi
 if [ $ERRORS -eq 0 ]; then
     rm -f run??-??.tables
@@ -142,7 +146,7 @@ fi
 cmp run70-35.tables run70-35.tables-expect
 if [ $? -ne 0 ]; then
     ERRORS=1
-    echo Differences between run70-35.tables run50-35.tables-expect
+    echo Differences between run70-35.tables run70-35.tables-expect
 fi
 if [ $ERRORS -eq 0 ]; then
     rm -f run??-??.tables
