@@ -4,7 +4,7 @@
 // SSA Analysis: https://www.ssa.gov/OACT/solvency/SandersDeFazio_20190213.pdf
 // Reform_Baseline: policy_current_law.json
 // Reform_Description:
-//   - Apply the combined OASDI payroll tax rate on earnings above $250,000 (1)
+//   - Apply the combined OASDI payroll tax rate on wages above $250,000 (1)
 //   - Apply a separate 6.2% tax on investment income above ACA threshold (2)
 // Reform_Parameter_Map:
 //   1: SS_Earnings_thd

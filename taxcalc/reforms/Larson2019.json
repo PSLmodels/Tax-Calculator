@@ -5,7 +5,7 @@
 // Reform_Baseline: policy_current_law.json
 // Reform_Description:
 // - Raise threshold for Social Security benefit taxability to (1)
-// - Make wage and self-employment income above $400,000 subject to FICA taxes (2)
+// - Make wage and salary income above $400,000 subject to FICA taxes (2)
 // - Phase in an increase to the contribution rate starting in 2020 (3)
 // Reform_Parameter_Map:
 // - 1: SS_thd1, SS_thd2
