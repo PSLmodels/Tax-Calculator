@@ -18,6 +18,13 @@ import taxcalc as tc
 from taxcalc.behresp import response, quantity_response, labor_response
 
 
+# policy parameters that determine employer payroll tax liability on
+# wages, and hence that can generate an earnings shift; this tuple must
+# be kept in agreement with the esf_params tuple in the behresp module
+ESF_PARAMS = ('FICA_ss_trt_employer', 'FICA_mc_trt_employer',
+              'SS_Earnings_c', 'SS_Earnings_thd')
+
+
 def test_default_response_function(cps_subsample):
     """
     Test that default behavior parameters produce static results.
@@ -266,20 +273,68 @@ def _esf_calcs(cps_subsample, reform, refyear=2020):
     return (calc1, calc2)
 
 
-def test_earnings_shift_holds_compensation_fixed(cps_subsample):
+def _esf_reform(pname, refyear):
+    """
+    Return reform dictionary that raises employer payroll tax liability
+    for at least some cps_subsample earners by changing the specified
+    parameter, which must be one of the ESF_PARAMS parameters that
+    determine employer payroll tax liability on wages.
+    """
+    value = {
+        'FICA_ss_trt_employer': 0.072,   # raise employer OASDI tax rate
+        'FICA_mc_trt_employer': 0.0245,  # raise employer HI tax rate
+        'SS_Earnings_c': 250000.,        # raise OASDI maximum earnings
+        'SS_Earnings_thd': 200000.,      # add extra OASDI tax bracket
+    }[pname]
+    return {pname: {refyear: value}}
+
+
+@pytest.mark.parametrize('pname', ESF_PARAMS)
+def test_employer_payroll_tax_rule(pname, cps_subsample):
+    """
+    Test that the employer payroll tax rule restated in the behresp
+    module agrees with the ptax_er_p and ptax_er_s output variables
+    computed by the EI_PayrollTax function, under a reform to each of
+    the parameters that determine employer payroll tax liability.  The
+    response function docstring requires the two statements of that rule
+    to be kept in agreement; stating it a third time here pins them to
+    each other, because the earnings-shift tests below compare the
+    behresp statement against these output variables.
+    """
+    refyear = 2020
+    _, calc = _esf_calcs(cps_subsample, _esf_reform(pname, refyear), refyear)
+    calc.calc_all()
+    ss_rate = calc.policy_param('FICA_ss_trt_employer')
+    mc_rate = calc.policy_param('FICA_mc_trt_employer')
+    cap = calc.policy_param('SS_Earnings_c')
+    thd = calc.policy_param('SS_Earnings_thd')
+    for who in ('p', 's'):
+        # ... gross wages are wages plus employer pension contributions
+        gross = calc.array(f'e00200{who}') + calc.array(f'pencon_{who}')
+        expect = (ss_rate * (np.minimum(cap, gross) +
+                             np.maximum(0., gross - thd)) +
+                  mc_rate * gross)
+        assert np.allclose(calc.array(f'ptax_er_{who}'), expect)
+    del calc
+
+
+@pytest.mark.parametrize('pname', ESF_PARAMS)
+def test_earnings_shift_holds_compensation_fixed(pname, cps_subsample):
     """
     Test that an esf of one makes the earnings shift exactly gross
     compensation neutral for every earner with positive wages: that is,
     that wages plus employer payroll tax liability are unchanged by a
-    reform that raises the employer OASDI payroll tax rate.  This
-    identity holds in every OASDI regime --- below the cap, above the
-    cap, and for earners whose wage cut carries them across the cap ---
-    so it tests the fixed-point solution without conditioning on the
-    regime.  Also test that the filing-unit earnings variable remains
-    the sum of the two earner variables.
+    reform that raises employer payroll tax liability.  The
+    parametrization covers each of the parameters that determine that
+    liability, and the identity holds in every OASDI regime --- below
+    the cap, above the cap, above the extra-bracket threshold, and for
+    earners whose wage cut carries them across the cap --- so it tests
+    the fixed-point solution without conditioning on the regime.  Also
+    test that the filing-unit earnings variable remains the sum of the
+    two earner variables.
     """
     refyear = 2020
-    reform = {'FICA_ss_trt_employer': {refyear: 0.072}}
+    reform = _esf_reform(pname, refyear)
     calc1, calc2 = _esf_calcs(cps_subsample, reform, refyear)
     elast = {'esf': 1.0, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0}
     df1, df2 = response(calc1, calc2, elast, dump=True)
@@ -295,9 +350,13 @@ def test_earnings_shift_holds_compensation_fixed(cps_subsample):
         assert pos.sum() > 0
         assert np.allclose(wage2[pos] + ptax2[pos],
                            wage1[pos] + ptax1[pos], atol=0.05, rtol=0.0)
-        # ... and the shift is a wage cut, because the reform raises the
-        #     employer payroll tax rate
-        assert np.all(wage2[pos] < wage1[pos])
+        # ... and the shift is a wage cut for those earners whose
+        #     employer payroll tax liability the reform raises, and is
+        #     nil for the others, because the SS_Earnings_c and
+        #     SS_Earnings_thd reforms raise that liability only for
+        #     earners with high wages
+        assert np.all(wage2[pos] <= wage1[pos])
+        assert np.any(wage2[pos] < wage1[pos])
     # ... filing-unit earnings remain the sum of the two earner amounts
     assert np.allclose(df2['e00200'].values,
                        df2['e00200p'].values + df2['e00200s'].values)
@@ -352,6 +411,141 @@ def test_earnings_shift_capped_and_uncapped_regimes(cps_subsample):
         lump = esf * (ss_rate_1 - ss_rate_0) * cap / (1. + esf * mc_rate)
         assert np.allclose(wage2[above], wage1[above] - lump,
                            atol=0.05, rtol=0.0)
+
+
+def test_earnings_shift_uncapped_hi_rate_regimes(cps_subsample):
+    """
+    Test the earnings shift generated by a reform that raises the
+    uncapped employer HI payroll tax rate, for which the shift is
+    proportional to the wage in both OASDI regimes: below the OASDI cap
+    the employer OASDI tax is proportional to the wage as well, while
+    above the cap it is the flat amount rate*cap, which cancels out of
+    the fixed-point equation because the reform leaves it unchanged.
+    """
+    # pylint: disable=too-many-locals
+    refyear = 2020
+    esf = 0.85
+    mc_rate_1 = 0.0245
+    reform = _esf_reform('FICA_mc_trt_employer', refyear)
+    assert reform['FICA_mc_trt_employer'][refyear] == mc_rate_1
+    calc1, calc2 = _esf_calcs(cps_subsample, reform, refyear)
+    cap = calc1.policy_param('SS_Earnings_c')
+    ss_rate = calc1.policy_param('FICA_ss_trt_employer')
+    mc_rate_0 = calc1.policy_param('FICA_mc_trt_employer')
+    assert mc_rate_1 > mc_rate_0
+    elast = {'esf': esf, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0}
+    df1, df2 = response(calc1, calc2, elast, dump=True)
+    del calc1
+    del calc2
+    for who in ('p', 's'):
+        wage1 = df1[f'e00200{who}'].values
+        wage2 = df2[f'e00200{who}'].values
+        # ... consider only earners whose employer payroll tax base is
+        #     their wages alone: no employer pension contributions
+        simple = df1[f'pencon_{who}'].values == 0.
+        # ... earners below the OASDI cap under both policies, for whom
+        #     both the OASDI and the HI employer tax are proportional
+        below = simple & (wage1 > 0.) & (wage1 < 0.9 * cap)
+        assert below.sum() > 0
+        expect = wage1[below] * ((1. + esf * (ss_rate + mc_rate_0)) /
+                                 (1. + esf * (ss_rate + mc_rate_1)))
+        assert np.allclose(wage2[below], expect, atol=0.05, rtol=0.0)
+        # ... earners above the OASDI cap under both policies, for whom
+        #     the unchanged flat OASDI amount cancels out, leaving a
+        #     shift proportional in the HI rates alone
+        above = simple & (wage1 > 1.05 * cap)
+        assert above.sum() > 0
+        expect = wage1[above] * ((1. + esf * mc_rate_0) /
+                                 (1. + esf * mc_rate_1))
+        assert np.allclose(wage2[above], expect, atol=0.05, rtol=0.0)
+
+
+def test_earnings_shift_oasdi_cap_regimes(cps_subsample):
+    """
+    Test the earnings shift generated by a reform that raises the OASDI
+    maximum taxable earnings amount: earners below the pre-reform cap
+    owe unchanged employer payroll tax and therefore have unchanged
+    wages, while earners above the post-reform cap face a larger flat
+    OASDI amount and therefore take a lump-sum wage cut that is the same
+    for all of them.
+    """
+    # pylint: disable=too-many-locals
+    refyear = 2020
+    esf = 0.85
+    cap_1 = 250000.
+    reform = _esf_reform('SS_Earnings_c', refyear)
+    assert reform['SS_Earnings_c'][refyear] == cap_1
+    calc1, calc2 = _esf_calcs(cps_subsample, reform, refyear)
+    cap_0 = calc1.policy_param('SS_Earnings_c')
+    ss_rate = calc1.policy_param('FICA_ss_trt_employer')
+    mc_rate = calc1.policy_param('FICA_mc_trt_employer')
+    assert cap_1 > cap_0
+    elast = {'esf': esf, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0}
+    df1, df2 = response(calc1, calc2, elast, dump=True)
+    del calc1
+    del calc2
+    lump = esf * ss_rate * (cap_1 - cap_0) / (1. + esf * mc_rate)
+    for who in ('p', 's'):
+        wage1 = df1[f'e00200{who}'].values
+        wage2 = df2[f'e00200{who}'].values
+        simple = df1[f'pencon_{who}'].values == 0.
+        # ... earners below the pre-reform cap have unchanged wages
+        unaffected = simple & (wage1 > 0.) & (wage1 < 0.9 * cap_0)
+        assert unaffected.sum() > 0
+        assert np.allclose(wage2[unaffected], wage1[unaffected])
+        # ... earners above the post-reform cap take the same lump-sum
+        #     wage cut, because their extra OASDI tax is the flat amount
+        #     rate times the change in the cap
+        above = simple & (wage1 > 1.05 * cap_1)
+        assert above.sum() > 0
+        assert np.allclose(wage2[above], wage1[above] - lump,
+                           atol=0.05, rtol=0.0)
+
+
+def test_earnings_shift_extra_oasdi_bracket(cps_subsample):
+    """
+    Test the earnings shift generated by a reform that adds the extra
+    OASDI bracket above the SS_Earnings_thd threshold: earners below the
+    threshold have unchanged wages, while earners above it face an
+    employer OASDI tax that is proportional to the wage in excess of the
+    threshold, which puts the shifted wage in closed form.
+    """
+    # pylint: disable=too-many-locals
+    refyear = 2020
+    esf = 0.85
+    thd_1 = 200000.
+    reform = _esf_reform('SS_Earnings_thd', refyear)
+    assert reform['SS_Earnings_thd'][refyear] == thd_1
+    calc1, calc2 = _esf_calcs(cps_subsample, reform, refyear)
+    ss_rate = calc1.policy_param('FICA_ss_trt_employer')
+    mc_rate = calc1.policy_param('FICA_mc_trt_employer')
+    # ... under current law there is no extra OASDI bracket
+    assert calc1.policy_param('SS_Earnings_thd') > thd_1
+    elast = {'esf': esf, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0}
+    df1, df2 = response(calc1, calc2, elast, dump=True)
+    del calc1
+    del calc2
+    for who in ('p', 's'):
+        wage1 = df1[f'e00200{who}'].values
+        wage2 = df2[f'e00200{who}'].values
+        simple = df1[f'pencon_{who}'].values == 0.
+        # ... earners below the threshold have unchanged wages
+        unaffected = simple & (wage1 > 0.) & (wage1 < 0.9 * thd_1)
+        assert unaffected.sum() > 0
+        assert np.allclose(wage2[unaffected], wage1[unaffected])
+        # ... earners above the threshold under both policies, for whom
+        #     the reform-only extra OASDI tax is ss_rate times the wage
+        #     in excess of the threshold and the OASDI tax below the cap
+        #     is an unchanged flat amount that cancels out
+        above = simple & (wage1 > 1.05 * thd_1)
+        assert above.sum() > 0
+        expect = ((wage1[above] * (1. + esf * mc_rate) +
+                   esf * ss_rate * thd_1) /
+                  (1. + esf * (ss_rate + mc_rate)))
+        assert np.allclose(wage2[above], expect, atol=0.05, rtol=0.0)
+        # ... and those earners remain above the threshold, as the
+        #     closed form above assumes
+        assert np.all(wage2[above] > thd_1)
 
 
 def test_earnings_shift_is_symmetric(cps_subsample):
