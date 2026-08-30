@@ -265,14 +265,12 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     # no employer share.  This makes both variables invariant under
     # soi_iitax, which only moves setax between iitax and payrolltax for
     # reporting purposes.
-    extra_ws_p = max(0., gross_ws_p - SS_Earnings_thd)
-    extra_ws_s = max(0., gross_ws_s - SS_Earnings_thd)
     ptax_er_p = (
-        FICA_ss_trt_employer * (txearn_was_p + extra_ws_p) +
+        FICA_ss_trt_employer * (txearn_was_p + extra_ss_income_p) +
         FICA_mc_trt_employer * gross_ws_p
     )
     ptax_er_s = (
-        FICA_ss_trt_employer * (txearn_was_s + extra_ws_s) +
+        FICA_ss_trt_employer * (txearn_was_s + extra_ss_income_s) +
         FICA_mc_trt_employer * gross_ws_s
     )
     ptax_oasdi = (ptax_ss_ws_p + ptax_ss_ws_s +
