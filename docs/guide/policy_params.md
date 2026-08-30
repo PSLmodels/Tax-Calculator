@@ -3859,42 +3859,6 @@ _Valid Range:_ min = 0.0 and max = 9e+99
 _Out-of-Range Action:_ warn  
 
 
-### Refundable Payroll Tax Credit
-
-####  `RPTC_c`  
-_Description:_ This is the maximum amount of the refundable payroll tax credit for each taxpayer/spouse.  Positive values of RPTC_c and RPTC_rt can be used to emulate a payroll tax exemption, the implied value of which is RPTC_c divided by RPTC_rt.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
-_Value Type:_ float  
-_Known Values:_  
-2013: 0.0  
-2014: 0.0  
-2015: 0.0  
-2016: 0.0  
-2017: 0.0  
-2018: 0.0  
-2019: 0.0  
-_Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error  
-
-
-####  `RPTC_rt`  
-_Description:_ Pre-phaseout credit is minimum of this rate times earnings and the maximum refundable payroll tax credit, where earnings is defined as in FICA and SECA.  Positive values of RPTC_c and RPTC_rt can be used to emulate a payroll tax exemption, the implied value of which is RPTC_c divided by RPTC_rt.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
-_Value Type:_ float  
-_Known Values:_  
-2013: 0.0  
-2014: 0.0  
-2015: 0.0  
-2016: 0.0  
-2017: 0.0  
-2018: 0.0  
-2019: 0.0  
-_Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error  
-
-
 ## Surtaxes
 
 ### Lump-Sum Tax

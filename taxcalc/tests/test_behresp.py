@@ -426,50 +426,6 @@ def test_no_earnings_shift_without_employer_payroll_tax_change(
         assert np.allclose(df_esf[var].values, df_nil[var].values)
 
 
-def test_no_earnings_shift_without_employer_tax_on_wages(cps_subsample):
-    """
-    Test that no earnings shift is applied to an earner who has no
-    employer payroll tax liability on wages, even when the reform changes
-    that earner's ptax_er_p or ptax_er_s output variable.  A reform to
-    SS_Earnings_thd creates such earners, because the base of the extra
-    OASDI bracket in the EI_PayrollTax function blends wage and
-    self-employment earnings: a self-employed earner above the threshold
-    therefore shows a change in ptax_er_p or ptax_er_s despite having no
-    employer to shift a payroll tax to.  The shift must be derived from
-    the employer payroll tax on wages alone.
-    """
-    refyear = 2020
-    thd = 250000.
-    calc1, calc2 = _esf_calcs(
-        cps_subsample, {'SS_Earnings_thd': {refyear: thd}}, refyear
-    )
-    df1, df2 = response(calc1, calc2,
-                        {'esf': 0.85, 'sub': 0.0, 'inc': 0.0, 'cg': 0.0},
-                        dump=True)
-    del calc1
-    del calc2
-    for who in ('p', 's'):
-        wage1 = df1[f'e00200{who}'].values
-        wage2 = df2[f'e00200{who}'].values
-        gross1 = wage1 + df1[f'pencon_{who}'].values
-        changed = ~np.isclose(df1[f'ptax_er_{who}'].values,
-                              df2[f'ptax_er_{who}'].values)
-        # ... an earner whose gross wages are below the reform threshold
-        #     has no change in employer payroll tax liability on wages,
-        #     and hence no wage shift, even when the blended base of the
-        #     extra OASDI bracket puts that earner above the threshold
-        selfemp = changed & (gross1 <= thd)
-        assert selfemp.sum() > 0
-        assert np.allclose(wage2[selfemp], wage1[selfemp])
-        # ... while an earner with wages whose gross wages are above the
-        #     reform threshold does have a wage cut
-        earner = (gross1 > thd) & (wage1 > 0.)
-        assert earner.sum() > 0
-        assert np.all(wage2[earner] < wage1[earner])
-        # ... and no earner without a liability change is shifted
-        assert np.allclose(wage2[~changed], wage1[~changed])
-
-
 def test_quantity_response():
     """
     Test quantity_response function.

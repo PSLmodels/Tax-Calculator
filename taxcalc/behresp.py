@@ -214,16 +214,18 @@ def response(calc_1, calc_2, elasticities, dump=False):
       OASDI tax on wages above the SS_Earnings_thd threshold, plus the
       employer share of the uncapped HI tax on wages, all of them
       evaluated on gross wages, which are wages plus employer pension
-      contributions.  It is NOT the ptax_er_p and ptax_er_s output
-      variables, whose extra-OASDI part is computed on a base that blends
-      wage and self-employment earnings, as the EI_PayrollTax function
-      documents.  Using those variables would shift onto wages an
-      employer share of a tax on self-employment earnings, for which
-      there is no employer, and that would be a large error under an
-      SS_Earnings_thd reform for an earner whose self-employment earnings
-      are much larger than their wages.  The cost of computing the wage
-      part here is that the employer payroll tax rules are stated in this
-      module as well as in the EI_PayrollTax function.
+      contributions.  This is exactly the rule that the EI_PayrollTax
+      function applies to produce the ptax_er_p and ptax_er_s output
+      variables, both of which are functions of gross wages alone; that
+      is what makes an employer-payroll-tax incidence assumption
+      expressible as a shift of wages.  The baseline anchor ptax_er_1 is
+      therefore read from those output variables rather than recomputed.
+      The reform-policy function must still be evaluated here because
+      the bisection needs its value at trial wages that neither
+      Calculator object has computed, which no output variable can
+      supply; the employer payroll tax rules are consequently stated in
+      this module as well as in the EI_PayrollTax function, and the two
+      statements must be kept in agreement.
 
       The substitution and income effects on taxable income are computed,
       in dollars per filing unit, as follows, where mtr1 and mtr2 are the
@@ -330,11 +332,9 @@ def response(calc_1, calc_2, elasticities, dump=False):
       payroll tax on wages: FICA_ss_trt_employer, FICA_mc_trt_employer,
       SS_Earnings_c, and SS_Earnings_thd.  That test is on the parameters
       themselves rather than on calculated tax amounts, so it is exact.
-      Note that the employee-share rates are not among the four: they
-      affect the ptax_er_p and ptax_er_s output variables under an
-      SS_Earnings_thd reform, through the self-employment part of the
-      extra OASDI bracket base, but they do not affect the employer
-      payroll tax on wages that generates the shift.
+      Those four are the only parameters that the employer payroll tax on
+      wages depends on; in particular the employee-share rates are not
+      among them.
 
       Within a reform that does change one of the four parameters, the
       shift is applied only to earners with positive wages.  That
@@ -511,12 +511,12 @@ def response(calc_1, calc_2, elasticities, dump=False):
         contributions) under the policy embedded in the specified
         Calculator object.
 
-        Note: this duplicates the wage-and-salary part of the ptax_er_p
-        and ptax_er_s logic in the EI_PayrollTax function, which cannot
-        be used here because those two variables also contain an
-        employer-rate share of the reform-only extra OASDI bracket on
-        self-employment earnings, for which there is no employer.  See
-        the response function docstring.
+        Note: this restates the ptax_er_p and ptax_er_s logic in the
+        EI_PayrollTax function, which cannot be read from those output
+        variables here because the bisection evaluates it at trial wages
+        that neither Calculator object has computed.  The two statements
+        of the rule must be kept in agreement; see the response function
+        docstring.
         """
         ss_rate = calc.policy_param('FICA_ss_trt_employer')
         mc_rate = calc.policy_param('FICA_mc_trt_employer')
@@ -602,9 +602,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
         # wages to shift onto.
         shift = {}
         for who in ('p', 's'):
-            gross_ws_1 = (calc1.array(f'e00200{who}') +
-                          calc1.array(f'pencon_{who}'))
-            ptax_er_1 = _employer_ptax_on_wages(calc1, gross_ws_1)
+            ptax_er_1 = calc1.array(f'ptax_er_{who}')
             pencon_2 = calc2.array(f'pencon_{who}')
             wage_2 = calc2.array(f'e00200{who}')
             wage_shifted = _shifted_wage(calc2, wage_2, pencon_2,
