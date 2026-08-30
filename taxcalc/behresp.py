@@ -561,9 +561,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
     # Begin main logic of response function
     assert calc1.array_len == calc2.array_len
     assert calc1.current_year == calc2.current_year
-    calc1.calc_all()
-    calc2.calc_all()
-    # Calculate earnings shift caused by employer payroll tax liability change
+    # Determine whether the reform generates an earnings shift
     # Note: the shift depends on the wage-based part of the employer
     # payroll tax alone, so it can be skipped whenever the reform leaves
     # every parameter of that tax unchanged, which is an exact test that
@@ -574,6 +572,18 @@ def response(calc_1, calc_2, elasticities, dump=False):
         calc1.policy_param(pname) != calc2.policy_param(pname)
         for pname in esf_params
     )
+    # Note: calc1 must be calculated on every path, because the baseline
+    # employer payroll tax read by the earnings shift below, the df1
+    # variables extracted at the end of this function, and the marginal
+    # tax rates are all calculated variables.  When the earnings shift is
+    # active, calc2 is deliberately left uncalculated here, because the
+    # shift reads only calc2 input arrays (e00200p, e00200s, pencon_p,
+    # and pencon_s) and calc2 policy parameters; the calc_all at the end
+    # of the shift logic below supplies calc2 its first calculation.
+    calc1.calc_all()
+    if not earnings_shift:
+        calc2.calc_all()
+    # Calculate earnings shift caused by employer payroll tax liability change
     if earnings_shift:
         # Hold each earner's gross compensation (wages plus employer
         # payroll tax) fixed by shifting the be_esf fraction of the
