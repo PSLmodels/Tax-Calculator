@@ -383,7 +383,7 @@
     },
     "SS_Earnings_thd": {
         "title": "Additional taxable earnings threshold for OASDI payroll taxes",
-        "description": "Individual wage-and-salary earnings above this threshold are subjected to OASDI payroll tax, in addition to wage-and-salary earnings below the SS_Earnings_c threshold.",
+        "description": "Individual wage-and-salary earnings above this threshold are subjected to OASDI payroll tax, in addition to earnings below the SS_Earnings_c threshold.",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
         "indexable": true,

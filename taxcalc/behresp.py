@@ -43,6 +43,13 @@ from taxcalc.utils import DIST_VARIABLES
 __all__ = ['response', 'quantity_response', 'labor_response']
 
 
+# policy parameters that determine employer payroll tax liability on
+# wages, and hence the only parameters whose reform can generate an
+# earnings shift in the response function
+ESF_PARAMS = ('FICA_ss_trt_employer', 'FICA_mc_trt_employer',
+              'SS_Earnings_c', 'SS_Earnings_thd')
+
+
 def response(calc_1, calc_2, elasticities, dump=False):
     """
     Implements conventional analysis (that is, static reform analysis
@@ -326,12 +333,17 @@ def response(calc_1, calc_2, elasticities, dump=False):
 
       The earnings shift is skipped entirely when be_esf is zero or when
       the reform alters none of the four parameters of the employer
-      payroll tax on wages: FICA_ss_trt_employer, FICA_mc_trt_employer,
-      SS_Earnings_c, and SS_Earnings_thd.  That test is on the parameters
-      themselves rather than on calculated tax amounts, so it is exact.
-      Those four are the only parameters that the employer payroll tax on
-      wages depends on; in particular the employee-share rates are not
-      among them.
+      payroll tax on wages: the four ESF_PARAMS parameters, which are
+      FICA_ss_trt_employer, FICA_mc_trt_employer, SS_Earnings_c, and
+      SS_Earnings_thd.  Those four are the only parameters that the
+      employer payroll tax on wages depends on; in particular the
+      employee-share rates are not among them.  That test is on the
+      parameters themselves rather than on calculated tax amounts, so it
+      is exact for the documented use of this function, in which calc_1
+      and calc_2 differ only in policy.  A caller that passes two
+      Calculator objects containing different input data would get no
+      earnings shift when the two policies are the same, even though the
+      two employer payroll tax liabilities would differ.
 
       Within a reform that does change one of the four parameters, the
       shift is applied only to earners with positive wages.  That
@@ -584,20 +596,18 @@ def response(calc_1, calc_2, elasticities, dump=False):
     # payroll tax alone, so it can be skipped whenever the reform leaves
     # every parameter of that tax unchanged, which is an exact test that
     # requires no comparison of calculated tax amounts.
-    esf_params = ('FICA_ss_trt_employer', 'FICA_mc_trt_employer',
-                  'SS_Earnings_c', 'SS_Earnings_thd')
     has_earnings_shift = be_esf > 0. and any(
         calc1.policy_param(pname) != calc2.policy_param(pname)
-        for pname in esf_params
+        for pname in ESF_PARAMS
     )
     # Note: calc1 must be calculated on every path, because the baseline
     # employer payroll tax read by the earnings shift below, the df1
     # variables extracted at the end of this function, and the marginal
     # tax rates are all calculated variables.  When the earnings shift is
-    # active, calc2 is deliberately left uncalculated here, because the
-    # shift reads only calc2 input arrays (e00200p, e00200s, pencon_p,
-    # and pencon_s) and calc2 policy parameters; the calc_all at the end
-    # of the shift logic below supplies calc2 its first calculation.
+    # active, calc2 is deliberately left uncalculated until after the
+    # shift, because the shift reads only calc2 input arrays (e00200p,
+    # e00200s, pencon_p, and pencon_s) and calc2 policy parameters; the
+    # calc_all below supplies calc2 its first calculation on every path.
     calc1.calc_all()
     if has_earnings_shift:
         # Calculate earnings shift caused by the reform-induced change in
@@ -619,9 +629,7 @@ def response(calc_1, calc_2, elasticities, dump=False):
         calc2.incarray('e00200p', shift['p'])
         calc2.incarray('e00200s', shift['s'])
         calc2.incarray('e00200', shift['p'] + shift['s'])
-        calc2.calc_all()
-    else:
-        calc2.calc_all()
+    calc2.calc_all()
     # Calculate sum of substitution and income effects
     zero_sub_and_inc = be_sub == 0.0 and be_inc == 0.0
     # Note: the wage marginal tax rates are used only by the substitution

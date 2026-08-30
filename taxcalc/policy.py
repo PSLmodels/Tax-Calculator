@@ -149,6 +149,9 @@ class Policy(Parameters):
         'STD_allow_charity_ded_nonitemizers': (
             'was removed in Tax-Calculator 6.7.2'
         ),
+        # following parameters were removed in PR 3140
+        'RPTC_c': 'was removed in Tax-Calculator 6.8.2',
+        'RPTC_rt': 'was removed in Tax-Calculator 6.8.2',
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}

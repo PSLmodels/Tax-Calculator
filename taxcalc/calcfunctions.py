@@ -126,7 +126,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     SS_Earnings_thd: float
         Additional taxable earnings threshold for Social Security
         Individual wage-and-salary earnings above this threshold are subjected
-        to OASDI payroll tax, in addtion to earnings below the
+        to OASDI payroll tax, in addition to earnings below the
         maximum taxable earnings threshold.
     SECA_Earnings_thd: float
         Threshold value for self-employment income below which there is

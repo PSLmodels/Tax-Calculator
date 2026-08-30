@@ -184,7 +184,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `SS_Earnings_thd`  
-_Description:_ Individual earnings above this threshold are subjected to OASDI payroll tax, in addition to earnings below the SS_Earnings_c threshold.  
+_Description:_ Individual wage-and-salary earnings above this threshold are subjected to OASDI payroll tax, in addition to earnings below the SS_Earnings_c threshold.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
