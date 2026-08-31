@@ -25,6 +25,9 @@
 #   run 50: no --behavior option (static analysis)
 #   run 60: --behavior br0.json (all response parameters zero)
 #   run 70: --behavior br3.json (esf=0.85, other elasticities are zero)
+# Runs using TMD input data and the refC.json reform:
+#   run 80: --behavior br0.json (all response parameters zero)
+#   run 90: --behavior br3.json (esf=0.85, other elasticities are zero)
 #
 # The within-pair comparions should never fail.  The comparion with an
 # -expect file should not fail unless the behavioral response or policy
@@ -148,8 +151,26 @@ if [ $? -ne 0 ]; then
     ERRORS=1
     echo Differences between run70-35.tables run70-35.tables-expect
 fi
+
+tc ../../../tmd.csv 2035 --numyears 1                     --runid 80 \
+   --reform refC.json --exact --tables --silent &
+tc ../../../tmd.csv 2035 --numyears 1 --behavior br3.json --runid 90 \
+   --reform refC.json --exact --tables --silent &
+wait
+cmp run80-35.tables run80-35.tables-expect
+if [ $? -ne 0 ]; then
+    ERRORS=1
+    echo Differences between run80-35.tables run80-35.tables-expect
+fi
+cmp run90-35.tables run90-35.tables-expect
+if [ $? -ne 0 ]; then
+    ERRORS=1
+    echo Differences between run90-35.tables run90-35.tables-expect
+fi
+
 if [ $ERRORS -eq 0 ]; then
     rm -f run??-??.tables
 fi
 echo "Runtime: $SECONDS seconds" >&2
 exit 0
+
