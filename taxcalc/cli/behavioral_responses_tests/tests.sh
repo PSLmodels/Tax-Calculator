@@ -2,8 +2,8 @@
 # CLI tests of behavior responses logic using CPS and TMD input data.
 # These tests assume calibrated (less than full) claiming of credits.
 #
-# The runs below uses either the refA.json or refB.json policy reforms.
-# The runs are organized in pairs: the first member of each pair analyzes
+# The runs below use the refA.json, refB.json, or refC.json policy reforms.
+# Some runs are organized in pairs: the first member of each pair analyzes
 # 2035 alone and the second analyzes the eight years 2028 through 2035,
 # so that comparing their 2035 tables checks that advancing through intervening
 # years produces the same 2035 results as analyzing 2035 directly.
