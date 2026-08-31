@@ -49,6 +49,56 @@ __all__ = ['response', 'quantity_response', 'labor_response']
 ESF_PARAMS = ('FICA_ss_trt_employer', 'FICA_mc_trt_employer',
               'SS_Earnings_c', 'SS_Earnings_thd')
 
+# Number of bisection steps used to solve the earnings-shift fixed-point
+# equation in the response function.  The equation is solved by bisection
+# on a bracket that is guaranteed to contain the solution, so this count
+# is a precision setting rather than a convergence risk: each step halves
+# the bracket, making sixty steps enough to locate the shifted wage to
+# far less than a cent for any wage representable in the input data.
+ESF_BISECTION_STEPS = 60
+
+
+def employer_ptax_on_wages(ss_rate, mc_rate, cap, thd, gross_ws):
+    """
+    Returns array of employer payroll tax liability on the specified
+    array of one earner's gross wages (wages plus employer pension
+    contributions), where ss_rate and mc_rate are the employer OASDI and
+    HI payroll tax rates, cap is the SS_Earnings_c value, and thd is the
+    SS_Earnings_thd value.  Liability is increasing in gross wages and is
+    piecewise linear with breakpoints at cap and thd.
+
+    Note: this restates the ptax_er_p and ptax_er_s logic in the
+    EI_PayrollTax function, which cannot be read from those output
+    variables by the response function because it needs liability at
+    trial wages that neither Calculator object has computed.  The two
+    statements of the rule must be kept in agreement; see the response
+    function docstring.
+    """
+    return (ss_rate * (np.minimum(cap, gross_ws) +
+                       np.maximum(0., gross_ws - thd)) +
+            mc_rate * gross_ws)
+
+
+def bisect(residual, low, high, steps=ESF_BISECTION_STEPS):
+    """
+    Returns array containing the zero of the specified residual function
+    on each of the brackets given by the low and high arrays, which must
+    contain the zero: the residual must be increasing, nonpositive at
+    low, and nonnegative at high.  Each of the specified number of steps
+    halves every bracket, so the returned arrays are accurate to the
+    initial bracket width divided by two raised to the steps power.
+
+    Note: this function knows nothing about taxes; it is pure numerical
+    solution logic that operates on whatever residual function its caller
+    supplies.
+    """
+    for _ in range(steps):
+        mid = 0.5 * (low + high)
+        below = residual(mid) < 0.
+        low = np.where(below, mid, low)
+        high = np.where(below, high, mid)
+    return 0.5 * (low + high)
+
 
 def response(calc_1, calc_2, elasticities, dump=False):
     """
@@ -203,14 +253,17 @@ def response(calc_1, calc_2, elasticities, dump=False):
       band between the old and new caps under a reform to SS_Earnings_c
       itself --- the shift cannot be computed as a single average rate
       applied to all earners.  The implementation therefore solves the
-      equation segment by segment: rewritten in gross wages, its left
-      side is increasing and piecewise linear with breakpoints at
-      SS_Earnings_c and SS_Earnings_thd, so comparing its right side
-      with its left side at those two breakpoints identifies the segment
-      containing the solution, on which the equation is inverted
-      exactly.  That is an exact solution at any employer payroll tax
-      rate, and it covers all three regimes above without special-casing
-      any of them.
+      fixed-point equation numerically, by bisection on a bracket that is
+      guaranteed to contain the solution, which covers all three regimes
+      above without special-casing any of them.  The bracket follows from
+      the residual of the equation being increasing in the wage with a
+      slope of at least one, which puts the solution no farther from the
+      pre-shift wage than the residual evaluated there.  The numerical
+      solution logic is the module-level bisect function, which knows
+      nothing about payroll taxes, and the payroll tax rule is the
+      module-level employer_ptax_on_wages function, which knows nothing
+      about the equation being solved; a change in the payroll tax rule
+      therefore leaves the solution logic untouched.
 
       The ptax_er function used here is the employer payroll tax on
       wages: the employer share of the OASDI tax on wages up to the
@@ -224,12 +277,14 @@ def response(calc_1, calc_2, elasticities, dump=False):
       is what makes an employer-payroll-tax incidence assumption
       expressible as a shift of wages.  The baseline anchor ptax_er_1 is
       therefore read from those output variables rather than recomputed.
-      The reform-policy function must still be stated here because the
-      solution requires its value at the post-shift wages that neither
-      Calculator object has computed, which no output variable can
-      supply; the employer payroll tax rules are consequently stated in
-      this module as well as in the EI_PayrollTax function, and the two
-      statements must be kept in agreement.
+      The reform-policy function must still be stated here, as the
+      module-level employer_ptax_on_wages function, because the bisection
+      evaluates it at trial wages that neither Calculator object has
+      computed, which no output variable can supply; the employer payroll
+      tax rules are consequently stated in this module as well as in the
+      EI_PayrollTax function, and the two statements must be kept in
+      agreement.  The test_behresp.py module tests that agreement
+      directly.
 
       The substitution and income effects on taxable income are computed,
       in dollars per filing unit, as follows, where mtr1 and mtr2 are the
@@ -517,75 +572,40 @@ def response(calc_1, calc_2, elasticities, dump=False):
 
     def _shifted_wage(calc, wage, pencon, ptax_er_1, esf):
         """
-        Returns array of post-shift wages, which are the exact solution
-        of the fixed-point equation described in the response function
+        Returns array of post-shift wages, which are the solution of the
+        fixed-point equation described in the response function
         docstring, where wage is the array of pre-shift reform wages,
         pencon is the array of employer pension contributions, ptax_er_1
         is the array of baseline employer payroll tax liability on wages,
         esf is the earnings shift factor, and calc is the reform-policy
         Calculator object.
-
-        Note: the employer payroll tax function used here restates the
-        ptax_er_p and ptax_er_s logic in the EI_PayrollTax function,
-        which cannot be read from those output variables here because it
-        is needed at the post-shift wages that neither Calculator object
-        has computed.  The two statements of the rule must be kept in
-        agreement; see the response function docstring.
         """
         ss_rate = calc.policy_param('FICA_ss_trt_employer')
         mc_rate = calc.policy_param('FICA_mc_trt_employer')
         cap = calc.policy_param('SS_Earnings_c')
         thd = calc.policy_param('SS_Earnings_thd')
 
-        def ptax_er(gross):
+        def residual(wag):
             """
-            Reform employer payroll tax liability on the specified array
-            of gross wages.  It is increasing in gross wages and
-            piecewise linear with breakpoints at cap and thd.
+            Amount by which wag falls short of solving the fixed-point
+            equation; it is increasing in wag with a slope of at least
+            one, because employer payroll tax rates are nonnegative.
             """
-            return (ss_rate * (np.minimum(cap, gross) +
-                               np.maximum(0., gross - thd)) +
-                    mc_rate * gross)
-
-        def lhs(gross):
-            """
-            Left side of the fixed-point equation written in terms of
-            gross wages: gross wages plus esf times the reform employer
-            payroll tax on them.
-            """
-            return gross + esf * ptax_er(gross)
-        # solve lhs(gross) == rhs on whichever of the three linear
-        # segments contains the solution, where the slopes are those of
-        # lhs below the first breakpoint, between the two breakpoints,
-        # and above the second breakpoint
-        gross_2 = wage + pencon
-        rhs = gross_2 + esf * ptax_er_1
-        brk1 = min(cap, thd)
-        brk2 = max(cap, thd)
-        lhs1 = lhs(brk1)
-        lhs2 = lhs(brk2)
-        outer_slope = 1. + esf * (mc_rate + ss_rate)
-        if cap <= thd:  # OASDI is flat between the two breakpoints
-            inner_slope = 1. + esf * mc_rate
-        else:  # both the capped and the extra OASDI rate apply there
-            inner_slope = 1. + esf * (mc_rate + 2. * ss_rate)
-        gross_shifted = np.where(
-            # ... pre-shift gross wages solve the equation exactly for an
-            #     earner whose employer payroll tax liability the reform
-            #     leaves unchanged, so use them rather than the segment
-            #     arithmetic below, which is exact but rounds
-            ptax_er(gross_2) == ptax_er_1,
-            gross_2,
-            np.where(rhs <= lhs1,
-                     rhs / outer_slope,
-                     np.where(rhs <= lhs2,
-                              brk1 + (rhs - lhs1) / inner_slope,
-                              brk2 + (rhs - lhs2) / outer_slope))
-        )
+            return wag - wage + esf * (
+                employer_ptax_on_wages(ss_rate, mc_rate, cap, thd,
+                                       wag + pencon) - ptax_er_1
+            )
+        # bracket the solution: because the residual has a slope of at
+        # least one and is zero at the solution, the solution is no
+        # farther from the pre-shift wage than the residual there
+        offset = residual(wage)
+        low = np.minimum(wage, wage - offset)
+        high = np.maximum(wage, wage - offset)
+        wage_shifted = bisect(residual, low, high)
         # floor the shifted wage at zero, which binds only for an earner
         # with too little wage income to absorb the shift; see the
         # response function docstring
-        return np.maximum(0., gross_shifted - pencon)
+        return np.maximum(0., wage_shifted)
     # End nested functions used only in this response function
 
     # Begin main logic of response function

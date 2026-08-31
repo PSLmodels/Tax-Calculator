@@ -15,8 +15,8 @@ logic, or the response logic changes.
 import numpy as np
 import pytest
 import taxcalc as tc
-from taxcalc.behresp import (ESF_PARAMS, response,
-                             quantity_response, labor_response)
+from taxcalc.behresp import (ESF_PARAMS, bisect, employer_ptax_on_wages,
+                             response, quantity_response, labor_response)
 
 
 def test_default_response_function(cps_subsample):
@@ -318,13 +318,13 @@ def _assert_compensation_fixed(df1, df2):
 def test_employer_payroll_tax_rule(pname, cps_subsample):
     """
     Test that the employer payroll tax rule restated in the behresp
-    module agrees with the ptax_er_p and ptax_er_s output variables
-    computed by the EI_PayrollTax function, under a reform to each of
-    the parameters that determine employer payroll tax liability.  The
-    response function docstring requires the two statements of that rule
-    to be kept in agreement; stating it a third time here pins them to
-    each other, because the earnings-shift tests below compare the
-    behresp statement against these output variables.
+    module by the employer_ptax_on_wages function agrees with the
+    ptax_er_p and ptax_er_s output variables computed by the
+    EI_PayrollTax function, under a reform to each of the parameters
+    that determine employer payroll tax liability.  The response
+    function docstring requires the two statements of that rule to be
+    kept in agreement; this test is what detects a change in the
+    EI_PayrollTax statement that is not made in the behresp statement.
     """
     refyear = 2020
     _, calc = _esf_calcs(cps_subsample, _esf_reform(pname, refyear), refyear)
@@ -336,11 +336,34 @@ def test_employer_payroll_tax_rule(pname, cps_subsample):
     for who in ('p', 's'):
         # ... gross wages are wages plus employer pension contributions
         gross = calc.array(f'e00200{who}') + calc.array(f'pencon_{who}')
-        expect = (ss_rate * (np.minimum(cap, gross) +
-                             np.maximum(0., gross - thd)) +
-                  mc_rate * gross)
+        expect = employer_ptax_on_wages(ss_rate, mc_rate, cap, thd, gross)
         assert np.allclose(calc.array(f'ptax_er_{who}'), expect)
     del calc
+
+
+def test_bisect():
+    """
+    Test that the module-level bisect function, which contains the
+    numerical solution logic used to solve the earnings-shift
+    fixed-point equation, locates the zero of an increasing function
+    that has no closed-form inverse.  Nothing about this test involves
+    taxes, because nothing about the bisect function does.
+    """
+    def residual(x):
+        """
+        Increasing function whose zero is at x equal to one.
+        """
+        return np.exp(x) - np.e
+    low = np.array([-5.0, 0.0, 0.9999])
+    high = np.array([10.0, 100.0, 1.0001])
+    assert np.allclose(bisect(residual, low, high), 1.0)
+    # ... a degenerate bracket returns its own single point
+    point = np.array([3.0, -2.5])
+    assert np.allclose(bisect(residual, point, point), point)
+    # ... each step halves the bracket, so a two-wide bracket is located
+    #     to no better than two raised to the minus (steps plus one)
+    coarse = bisect(residual, np.array([0.0]), np.array([2.0]), steps=4)
+    assert abs(coarse[0] - 1.0) <= 0.0625
 
 
 @pytest.mark.parametrize('pname', ESF_PARAMS)
