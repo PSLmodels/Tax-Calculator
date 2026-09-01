@@ -5,6 +5,23 @@ Go
 for a complete commit history.
 
 
+2026-09-03 Release 6.8.2
+------------------------
+(last merged pull request is
+[#3140](https://github.com/PSLmodels/Tax-Calculator/pull/3140))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Add employer payroll tax shifting behavioral response
+  [[#3140](https://github.com/PSLmodels/Tax-Calculator/pull/3140)
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 5]
+
+**Bug Fixes**
+
+
 2026-08-21 Release 6.8.1
 ------------------------
 (last merged pull request is
