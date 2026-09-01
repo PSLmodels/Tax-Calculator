@@ -441,16 +441,17 @@
                   
   <h1>Source code for taxcalc.behresp</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""</span>
-<span class="sd">Partial-equilibrium elasticity-based behavioral-responses logic.</span>
+<span class="sd">Partial-equilibrium parameter-based behavioral-responses logic.</span>
 
 <span class="sd">This module contains two independent sets of functions that are not</span>
 <span class="sd">used by each other:</span>
 
 <span class="sd">(1) The response function, which conducts partial-equilibrium</span>
 <span class="sd">    analysis of a baseline-to-reform policy change: it computes the</span>
-<span class="sd">    behavioral response implied by the assumed elasticities, adds that</span>
-<span class="sd">    response to the reform filing units' input variables, recalculates</span>
-<span class="sd">    reform taxes, and returns baseline and reform DataFrame objects.</span>
+<span class="sd">    behavioral response implied by the assumed response parameters,</span>
+<span class="sd">    adds that response to the reform filing units' input variables,</span>
+<span class="sd">    recalculates reform taxes, and returns baseline and reform</span>
+<span class="sd">    DataFrame objects.</span>
 <span class="sd">    This is the function used by the tc CLI --behavior option and by</span>
 <span class="sd">    cookbook recipe 2.</span>
 
@@ -484,6 +485,63 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'response'</span><span class="p">,</span> <span class="s1">'quantity_response'</span><span class="p">,</span> <span class="s1">'labor_response'</span><span class="p">]</span>
 
 
+<span class="c1"># policy parameters that determine employer payroll tax liability on</span>
+<span class="c1"># wages, and hence the only parameters whose reform can generate an</span>
+<span class="c1"># earnings shift in the response function</span>
+<span class="n">ESF_PARAMS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'FICA_ss_trt_employer'</span><span class="p">,</span> <span class="s1">'FICA_mc_trt_employer'</span><span class="p">,</span>
+              <span class="s1">'SS_Earnings_c'</span><span class="p">,</span> <span class="s1">'SS_Earnings_thd'</span><span class="p">)</span>
+
+<span class="c1"># Number of bisection steps used to solve the earnings-shift fixed-point</span>
+<span class="c1"># equation in the response function.  The equation is solved by bisection</span>
+<span class="c1"># on a bracket that is guaranteed to contain the solution, so this count</span>
+<span class="c1"># is a precision setting rather than a convergence risk: each step halves</span>
+<span class="c1"># the bracket, making sixty steps enough to locate the shifted wage to</span>
+<span class="c1"># far less than a cent for any wage representable in the input data.</span>
+<span class="n">ESF_BISECTION_STEPS</span> <span class="o">=</span> <span class="mi">60</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">employer_ptax_on_wages</span><span class="p">(</span><span class="n">ss_rate</span><span class="p">,</span> <span class="n">mc_rate</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">thd</span><span class="p">,</span> <span class="n">gross_ws</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Returns array of employer payroll tax liability on the specified</span>
+<span class="sd">    array of one earner's gross wages (wages plus employer pension</span>
+<span class="sd">    contributions), where ss_rate and mc_rate are the employer OASDI and</span>
+<span class="sd">    HI payroll tax rates, cap is the SS_Earnings_c value, and thd is the</span>
+<span class="sd">    SS_Earnings_thd value.  Liability is increasing in gross wages and is</span>
+<span class="sd">    piecewise linear with breakpoints at cap and thd.</span>
+
+<span class="sd">    Note: this restates the ptax_er_p and ptax_er_s logic in the</span>
+<span class="sd">    EI_PayrollTax function, which cannot be read from those output</span>
+<span class="sd">    variables by the response function because it needs liability at</span>
+<span class="sd">    trial wages that neither Calculator object has computed.  The two</span>
+<span class="sd">    statements of the rule must be kept in agreement; see the response</span>
+<span class="sd">    function docstring.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">ss_rate</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">cap</span><span class="p">,</span> <span class="n">gross_ws</span><span class="p">)</span> <span class="o">+</span>
+                       <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">gross_ws</span> <span class="o">-</span> <span class="n">thd</span><span class="p">))</span> <span class="o">+</span>
+            <span class="n">mc_rate</span> <span class="o">*</span> <span class="n">gross_ws</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">bisect</span><span class="p">(</span><span class="n">residual</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="n">ESF_BISECTION_STEPS</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Returns array containing the zero of the specified residual function</span>
+<span class="sd">    on each of the brackets given by the low and high arrays, which must</span>
+<span class="sd">    contain the zero: the residual must be increasing, nonpositive at</span>
+<span class="sd">    low, and nonnegative at high.  Each of the specified number of steps</span>
+<span class="sd">    halves every bracket, so the returned arrays are accurate to the</span>
+<span class="sd">    initial bracket width divided by two raised to the steps power.</span>
+
+<span class="sd">    Note: this function knows nothing about taxes; it is pure numerical</span>
+<span class="sd">    solution logic that operates on whatever residual function its caller</span>
+<span class="sd">    supplies.</span>
+<span class="sd">    """</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+        <span class="n">mid</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span>
+        <span class="n">below</span> <span class="o">=</span> <span class="n">residual</span><span class="p">(</span><span class="n">mid</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">below</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">low</span><span class="p">)</span>
+        <span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">below</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">mid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="response">
 <a class="viewcode-back" href="../../api/behresp.html#taxcalc.behresp.response">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">response</span><span class="p">(</span><span class="n">calc_1</span><span class="p">,</span> <span class="n">calc_2</span><span class="p">,</span> <span class="n">elasticities</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -513,12 +571,26 @@
 <span class="sd">        year as calc_1 and must contain the same number of filing units.</span>
 
 <span class="sd">    elasticities: dictionary</span>
-<span class="sd">        contains the assumed response elasticities.  Omitting an</span>
-<span class="sd">        elasticity key:value pair implies the omitted elasticity is</span>
+<span class="sd">        contains the assumed response parameters/elasticities.  Omitting a</span>
+<span class="sd">        key:value pair implies the omitted parameter/elasticity is</span>
 <span class="sd">        assumed to be zero.  (Note that the tc CLI --behavior option is</span>
 <span class="sd">        stricter: a JSON behavior file must contain all the keys.)</span>
-<span class="sd">        Here is the full dictionary content and each elasticity's</span>
+<span class="sd">        Here is the full dictionary content and each parameter/elasticity's</span>
 <span class="sd">        internal name:</span>
+
+<span class="sd">        be_esf = elasticities['esf']</span>
+<span class="sd">          Earnings shift factor.</span>
+<span class="sd">          Defined as the fraction of the reform-induced change in employer</span>
+<span class="sd">          payroll tax liability that is shifted to wages rather than to</span>
+<span class="sd">          nontaxable employee fringe benefits such as employer-provided</span>
+<span class="sd">          health insurance.  The shift is sign-symmetric: an increase in</span>
+<span class="sd">          employer payroll tax liability decreases wages and a decrease</span>
+<span class="sd">          increases them, although the two shifts are not equal in size</span>
+<span class="sd">          because the employer tax rate that feeds back into the shifted</span>
+<span class="sd">          wage differs between the two reforms.  It is calculated per</span>
+<span class="sd">          earner, and it is applied before the elasticities below are</span>
+<span class="sd">          evaluated.</span>
+<span class="sd">          Must be in the [0,1] range.</span>
 
 <span class="sd">        be_sub = elasticities['sub']</span>
 <span class="sd">          Substitution elasticity of taxable income.</span>
@@ -575,6 +647,89 @@
 <span class="sd">    -----</span>
 <span class="sd">    Response equations:</span>
 
+<span class="sd">      The earnings shift is computed first, and separately for the</span>
+<span class="sd">      taxpayer and the spouse, because the OASDI cap (SS_Earnings_c) and</span>
+<span class="sd">      the reform-only extra OASDI threshold (SS_Earnings_thd) apply per</span>
+<span class="sd">      person rather than per filing unit, so a couple with two earners</span>
+<span class="sd">      just below the cap and a couple with one earner well above it have</span>
+<span class="sd">      different employer payroll tax exposure at the same filing-unit</span>
+<span class="sd">      earnings.  Writing ptax_er(wage) for an earner's employer payroll</span>
+<span class="sd">      tax liability on wages under reform policy as a function of that</span>
+<span class="sd">      earner's wages, ptax_er_1 for the same earner's baseline employer</span>
+<span class="sd">      payroll tax liability on wages, and wage2 for the earner's</span>
+<span class="sd">      pre-shift reform wages, the shifted wage is the solution of</span>
+
+<span class="sd">        wage = wage2 - be_esf * (ptax_er(wage) - ptax_er_1)</span>
+
+<span class="sd">      This holds the be_esf fraction of the earner's gross compensation</span>
+<span class="sd">      --- wages plus employer payroll tax --- fixed, and it is</span>
+<span class="sd">      sign-symmetric: an increase in employer payroll tax liability</span>
+<span class="sd">      lowers wages and a decrease raises them.  The remaining</span>
+<span class="sd">      (1 - be_esf) fraction is absorbed by nontaxable fringe benefits,</span>
+<span class="sd">      which are not represented in the input data.</span>
+
+<span class="sd">      The equation is implicit in wage because ptax_er is a function of</span>
+<span class="sd">      the wage being solved for, and it has no single closed-form</span>
+<span class="sd">      solution because that function is piecewise linear.  Writing s0 and</span>
+<span class="sd">      s1 for the baseline and reform employer OASDI rates, h for the</span>
+<span class="sd">      employer HI rate, and cap for SS_Earnings_c, the two interior</span>
+<span class="sd">      regimes are:</span>
+
+<span class="sd">        wages below the cap under both policies, where the employer</span>
+<span class="sd">        payroll tax is proportional to the wage in both its OASDI and its</span>
+<span class="sd">        HI part, so the shift is proportional:</span>
+
+<span class="sd">          wage = wage2 * (1 + be_esf * (s0 + h)) / (1 + be_esf * (s1 + h))</span>
+
+<span class="sd">        wages above the cap under both policies, where the OASDI part is</span>
+<span class="sd">        the flat amount s * cap and only the uncapped HI part varies with</span>
+<span class="sd">        the wage, so the OASDI portion of the shift is a lump sum:</span>
+
+<span class="sd">          wage = wage2 - be_esf * (s1 - s0) * cap / (1 + be_esf * h)</span>
+
+<span class="sd">      In the second regime the earner's marginal wage is unchanged by an</span>
+<span class="sd">      OASDI rate reform, so the shift is a pure income effect there,</span>
+<span class="sd">      whereas in the first regime the marginal wage falls as well.  An</span>
+<span class="sd">      earner whose wage cut carries them from above the cap to below it</span>
+<span class="sd">      is in neither regime; such an earner is on the kink, where the</span>
+<span class="sd">      wage cut shrinks their own employer OASDI liability, which in turn</span>
+<span class="sd">      feeds back into the wage.  Because of these earners --- and of the</span>
+<span class="sd">      band between the old and new caps under a reform to SS_Earnings_c</span>
+<span class="sd">      itself --- the shift cannot be computed as a single average rate</span>
+<span class="sd">      applied to all earners.  The implementation therefore solves the</span>
+<span class="sd">      fixed-point equation numerically, by bisection on a bracket that is</span>
+<span class="sd">      guaranteed to contain the solution, which covers all three regimes</span>
+<span class="sd">      above without special-casing any of them.  The bracket follows from</span>
+<span class="sd">      the residual of the equation being increasing in the wage with a</span>
+<span class="sd">      slope of at least one, which puts the solution no farther from the</span>
+<span class="sd">      pre-shift wage than the residual evaluated there.  The numerical</span>
+<span class="sd">      solution logic is the module-level bisect function, which knows</span>
+<span class="sd">      nothing about payroll taxes, and the payroll tax rule is the</span>
+<span class="sd">      module-level employer_ptax_on_wages function, which knows nothing</span>
+<span class="sd">      about the equation being solved; a change in the payroll tax rule</span>
+<span class="sd">      therefore leaves the solution logic untouched.</span>
+
+<span class="sd">      The ptax_er function used here is the employer payroll tax on</span>
+<span class="sd">      wages: the employer share of the OASDI tax on wages up to the</span>
+<span class="sd">      SS_Earnings_c cap, plus the employer share of the reform-only extra</span>
+<span class="sd">      OASDI tax on wages above the SS_Earnings_thd threshold, plus the</span>
+<span class="sd">      employer share of the uncapped HI tax on wages, all of them</span>
+<span class="sd">      evaluated on gross wages, which are wages plus employer pension</span>
+<span class="sd">      contributions.  This is exactly the rule that the EI_PayrollTax</span>
+<span class="sd">      function applies to produce the ptax_er_p and ptax_er_s output</span>
+<span class="sd">      variables, both of which are functions of gross wages alone; that</span>
+<span class="sd">      is what makes an employer-payroll-tax incidence assumption</span>
+<span class="sd">      expressible as a shift of wages.  The baseline anchor ptax_er_1 is</span>
+<span class="sd">      therefore read from those output variables rather than recomputed.</span>
+<span class="sd">      The reform-policy function must still be stated here, as the</span>
+<span class="sd">      module-level employer_ptax_on_wages function, because the bisection</span>
+<span class="sd">      evaluates it at trial wages that neither Calculator object has</span>
+<span class="sd">      computed, which no output variable can supply; the employer payroll</span>
+<span class="sd">      tax rules are consequently stated in this module as well as in the</span>
+<span class="sd">      EI_PayrollTax function, and the two statements must be kept in</span>
+<span class="sd">      agreement.  The test_behresp.py module tests that agreement</span>
+<span class="sd">      directly.</span>
+
 <span class="sd">      The substitution and income effects on taxable income are computed,</span>
 <span class="sd">      in dollars per filing unit, as follows, where mtr1 and mtr2 are the</span>
 <span class="sd">      baseline and reform combined (income plus payroll) marginal tax</span>
@@ -602,6 +757,28 @@
 
 <span class="sd">    How responses are applied to input variables:</span>
 
+<span class="sd">      The earnings shift is applied directly to the earnings variables of</span>
+<span class="sd">      the two earners it is computed for: the taxpayer part is added to</span>
+<span class="sd">      e00200p and the spouse part to e00200s, with e00200 incremented by</span>
+<span class="sd">      their sum.  Nothing else is adjusted.  In particular, the pension</span>
+<span class="sd">      contribution variables, pencon_p and pencon_s, are held fixed even</span>
+<span class="sd">      though they are part of the employer payroll tax base, because</span>
+<span class="sd">      nontaxable benefits are what the (1 - be_esf) fraction of the shift</span>
+<span class="sd">      is defined to absorb.</span>
+
+<span class="sd">      The shift is applied to a copy of calc_2 before the elasticities</span>
+<span class="sd">      below are evaluated, and that copy is recalculated, so the reform</span>
+<span class="sd">      marginal tax rates and tax liabilities that enter the substitution,</span>
+<span class="sd">      income, and capital-gains responses are all measured at post-shift</span>
+<span class="sd">      earnings.  The ordering matters because the shift is an accounting</span>
+<span class="sd">      adjustment that defines the reform being analyzed --- it holds gross</span>
+<span class="sd">      compensation fixed --- rather than a behavioral response to it, so</span>
+<span class="sd">      the elasticity-driven responses are layered on top of it.  There is</span>
+<span class="sd">      no double counting of the employer payroll tax: the substitution</span>
+<span class="sd">      effect prices earnings using marginal tax rates computed with</span>
+<span class="sd">      respect to full compensation, which is a different concept from the</span>
+<span class="sd">      wage shift itself.</span>
+
 <span class="sd">      The sum of the substitution and income effects is a change in</span>
 <span class="sd">      taxable income that must be mapped back onto the input variables</span>
 <span class="sd">      used in the tax calculation.  The dollar change is allocated in</span>
@@ -614,8 +791,10 @@
 <span class="sd">        - the deduction part is added to e19200 (interest paid deduction)</span>
 
 <span class="sd">      Two consequences are worth noting.  First, the spouse's earnings</span>
-<span class="sd">      variable, e00200s, is not adjusted, so after a response both e00200</span>
-<span class="sd">      and e00200p have been adjusted by the same amount.  Second, a</span>
+<span class="sd">      variable, e00200s, is not adjusted by this part of the response,</span>
+<span class="sd">      so the substitution and income effects adjust e00200 and e00200p by</span>
+<span class="sd">      the same amount.  (The earnings shift, in contrast, is calculated</span>
+<span class="sd">      per earner and does adjust e00200s.)  Second, a</span>
 <span class="sd">      response shows up in dump output as changes in e00300 and e19200 even</span>
 <span class="sd">      for filing units whose actual behavior would involve other income or</span>
 <span class="sd">      deduction items.  The capital-gains response, by contrast, is applied</span>
@@ -651,6 +830,42 @@
 
 <span class="sd">    Filing units excluded from the response:</span>
 
+<span class="sd">      The earnings shift is skipped entirely when be_esf is zero or when</span>
+<span class="sd">      the reform alters none of the four parameters of the employer</span>
+<span class="sd">      payroll tax on wages: the four ESF_PARAMS parameters, which are</span>
+<span class="sd">      FICA_ss_trt_employer, FICA_mc_trt_employer, SS_Earnings_c, and</span>
+<span class="sd">      SS_Earnings_thd.  Those four are the only parameters that the</span>
+<span class="sd">      employer payroll tax on wages depends on; in particular the</span>
+<span class="sd">      employee-share rates are not among them.  That test is on the</span>
+<span class="sd">      parameters themselves rather than on calculated tax amounts, so it</span>
+<span class="sd">      is exact for the documented use of this function, in which calc_1</span>
+<span class="sd">      and calc_2 differ only in policy.  A caller that passes two</span>
+<span class="sd">      Calculator objects containing different input data would get no</span>
+<span class="sd">      earnings shift when the two policies are the same, even though the</span>
+<span class="sd">      two employer payroll tax liabilities would differ.</span>
+
+<span class="sd">      Within a reform that does change one of the four parameters, the</span>
+<span class="sd">      shift is applied only to earners with positive wages.  That</span>
+<span class="sd">      excludes the self-employed, who have no employer to shift a payroll</span>
+<span class="sd">      tax to.  It also excludes an earner whose gross wages are entirely</span>
+<span class="sd">      employer pension contributions: such an earner does generate an</span>
+<span class="sd">      employer payroll tax liability, but has no wages to shift it onto,</span>
+<span class="sd">      and shifting it onto an e00200p or e00200s of zero would make that</span>
+<span class="sd">      variable negative.  Note that the employer payroll tax used for an</span>
+<span class="sd">      included earner is nevertheless computed on gross wages, so it</span>
+<span class="sd">      includes the part generated by that earner's pension</span>
+<span class="sd">      contributions.</span>
+
+<span class="sd">      The shifted wage is floored at zero.  The shift is bounded by</span>
+<span class="sd">      be_esf times the employer payroll tax rate times the gross wage,</span>
+<span class="sd">      so under any plausible reform it is a small fraction of the wage</span>
+<span class="sd">      and the floor never binds, but a reform that sets an extreme</span>
+<span class="sd">      employer rate, or an earner whose gross wages are mostly pension</span>
+<span class="sd">      contributions, could otherwise drive a wage negative.  Where the</span>
+<span class="sd">      floor does bind, the earner's gross compensation is not held</span>
+<span class="sd">      fixed, because there is not enough wage income to absorb the</span>
+<span class="sd">      be_esf fraction of the employer payroll tax change.</span>
+
 <span class="sd">      The substitution and income effects are applied only to filing</span>
 <span class="sd">      units with positive alloc_base; all other filing units are assumed</span>
 <span class="sd">      to have no ordinary-income response.  That condition is a guard on</span>
@@ -682,8 +897,12 @@
 <span class="sd">      of capital gains --- is not modeled.  There are no response margins</span>
 <span class="sd">      for the spouse's earnings, for short-term capital gains, for</span>
 <span class="sd">      deduction items other than the mechanical e19200 adjustment</span>
-<span class="sd">      described above, or for any margin not represented by the three</span>
-<span class="sd">      elasticities.  Being a partial-equilibrium calculation, the</span>
+<span class="sd">      described above, or for any margin not represented by the</span>
+<span class="sd">      elasticities.  The earnings shift assumes full backward shifting of</span>
+<span class="sd">      the be_esf fraction onto the individual earner who generated the</span>
+<span class="sd">      employer payroll tax liability, so it models neither shifting across</span>
+<span class="sd">      workers within an employer nor any forward shifting to consumers or</span>
+<span class="sd">      to capital.  Being a partial-equilibrium calculation, the</span>
 <span class="sd">      analysis holds constant all prices, wages, and macroeconomic</span>
 <span class="sd">      aggregates.</span>
 
@@ -723,9 +942,11 @@
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc_1</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calc_2</span><span class="p">,</span> <span class="n">Calculator</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elasticities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+    <span class="n">be_esf</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">'esf'</span><span class="p">]</span> <span class="k">if</span> <span class="s1">'esf'</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
     <span class="n">be_sub</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">'sub'</span><span class="p">]</span> <span class="k">if</span> <span class="s1">'sub'</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
     <span class="n">be_inc</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">'inc'</span><span class="p">]</span> <span class="k">if</span> <span class="s1">'inc'</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
     <span class="n">be_cg</span> <span class="o">=</span> <span class="n">elasticities</span><span class="p">[</span><span class="s1">'cg'</span><span class="p">]</span> <span class="k">if</span> <span class="s1">'cg'</span> <span class="ow">in</span> <span class="n">elasticities</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="k">assert</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">be_esf</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>
     <span class="k">assert</span> <span class="n">be_sub</span> <span class="o">&gt;=</span> <span class="mf">0.0</span>
     <span class="k">assert</span> <span class="n">be_inc</span> <span class="o">&lt;=</span> <span class="mf">0.0</span>
     <span class="k">assert</span> <span class="n">be_cg</span> <span class="o">&lt;=</span> <span class="mf">0.0</span>
@@ -792,12 +1013,86 @@
         <span class="k">if</span> <span class="n">tax_type</span> <span class="o">==</span> <span class="s1">'combined'</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">combined1</span><span class="p">,</span> <span class="n">combined2</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">iitax1</span><span class="p">,</span> <span class="n">iitax2</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_shifted_wage</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span> <span class="n">wage</span><span class="p">,</span> <span class="n">pencon</span><span class="p">,</span> <span class="n">ptax_er_1</span><span class="p">,</span> <span class="n">esf</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Returns array of post-shift wages, which are the solution of the</span>
+<span class="sd">        fixed-point equation described in the response function</span>
+<span class="sd">        docstring, where wage is the array of pre-shift reform wages,</span>
+<span class="sd">        pencon is the array of employer pension contributions, ptax_er_1</span>
+<span class="sd">        is the array of baseline employer payroll tax liability on wages,</span>
+<span class="sd">        esf is the earnings shift factor, and calc is the reform-policy</span>
+<span class="sd">        Calculator object.</span>
+<span class="sd">        """</span>
+        <span class="n">ss_rate</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">'FICA_ss_trt_employer'</span><span class="p">)</span>
+        <span class="n">mc_rate</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">'FICA_mc_trt_employer'</span><span class="p">)</span>
+        <span class="n">cap</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">'SS_Earnings_c'</span><span class="p">)</span>
+        <span class="n">thd</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">'SS_Earnings_thd'</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="n">wag</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">"""</span>
+<span class="sd">            Amount by which wag falls short of solving the fixed-point</span>
+<span class="sd">            equation; it is increasing in wag with a slope of at least</span>
+<span class="sd">            one, because employer payroll tax rates are nonnegative.</span>
+<span class="sd">            """</span>
+            <span class="k">return</span> <span class="n">wag</span> <span class="o">-</span> <span class="n">wage</span> <span class="o">+</span> <span class="n">esf</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="n">employer_ptax_on_wages</span><span class="p">(</span><span class="n">ss_rate</span><span class="p">,</span> <span class="n">mc_rate</span><span class="p">,</span> <span class="n">cap</span><span class="p">,</span> <span class="n">thd</span><span class="p">,</span>
+                                       <span class="n">wag</span> <span class="o">+</span> <span class="n">pencon</span><span class="p">)</span> <span class="o">-</span> <span class="n">ptax_er_1</span>
+            <span class="p">)</span>
+        <span class="c1"># bracket the solution: because the residual has a slope of at</span>
+        <span class="c1"># least one and is zero at the solution, the solution is no</span>
+        <span class="c1"># farther from the pre-shift wage than the residual there</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">residual</span><span class="p">(</span><span class="n">wage</span><span class="p">)</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">wage</span><span class="p">,</span> <span class="n">wage</span> <span class="o">-</span> <span class="n">offset</span><span class="p">)</span>
+        <span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">wage</span><span class="p">,</span> <span class="n">wage</span> <span class="o">-</span> <span class="n">offset</span><span class="p">)</span>
+        <span class="n">wage_shifted</span> <span class="o">=</span> <span class="n">bisect</span><span class="p">(</span><span class="n">residual</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+        <span class="c1"># floor the shifted wage at zero, which binds only for an earner</span>
+        <span class="c1"># with too little wage income to absorb the shift; see the</span>
+        <span class="c1"># response function docstring</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">wage_shifted</span><span class="p">)</span>
     <span class="c1"># End nested functions used only in this response function</span>
 
     <span class="c1"># Begin main logic of response function</span>
     <span class="k">assert</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array_len</span> <span class="o">==</span> <span class="n">calc2</span><span class="o">.</span><span class="n">array_len</span>
     <span class="k">assert</span> <span class="n">calc1</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="n">calc2</span><span class="o">.</span><span class="n">current_year</span>
+    <span class="c1"># Determine whether the reform generates an earnings shift</span>
+    <span class="c1"># Note: the shift depends on the wage-based part of the employer</span>
+    <span class="c1"># payroll tax alone, so it can be skipped whenever the reform leaves</span>
+    <span class="c1"># every parameter of that tax unchanged, which is an exact test that</span>
+    <span class="c1"># requires no comparison of calculated tax amounts.</span>
+    <span class="n">has_earnings_shift</span> <span class="o">=</span> <span class="n">be_esf</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+        <span class="n">calc1</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span> <span class="o">!=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="n">ESF_PARAMS</span>
+    <span class="p">)</span>
+    <span class="c1"># Note: calc1 must be calculated on every path, because the baseline</span>
+    <span class="c1"># employer payroll tax read by the earnings shift below, the df1</span>
+    <span class="c1"># variables extracted at the end of this function, and the marginal</span>
+    <span class="c1"># tax rates are all calculated variables.  When the earnings shift is</span>
+    <span class="c1"># active, calc2 is deliberately left uncalculated until after the</span>
+    <span class="c1"># shift, because the shift reads only calc2 input arrays (e00200p,</span>
+    <span class="c1"># e00200s, pencon_p, and pencon_s) and calc2 policy parameters; the</span>
+    <span class="c1"># calc_all below supplies calc2 its first calculation on every path.</span>
     <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">has_earnings_shift</span><span class="p">:</span>
+        <span class="c1"># Calculate earnings shift caused by the reform-induced change in</span>
+        <span class="c1"># employer payroll tax liability, which holds each earner's gross</span>
+        <span class="c1"># compensation fixed by shifting the be_esf fraction of that</span>
+        <span class="c1"># change onto wages.  The shift is calculated separately for the</span>
+        <span class="c1"># taxpayer and the spouse, and only for earners with wages; see</span>
+        <span class="c1"># the response function docstring for the fixed-point equation</span>
+        <span class="c1"># solved by the nested _shifted_wage function and for why the</span>
+        <span class="c1"># wageless are excluded.</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">who</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'p'</span><span class="p">,</span> <span class="s1">'s'</span><span class="p">):</span>
+            <span class="n">ptax_er_1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="sa">f</span><span class="s1">'ptax_er_</span><span class="si">{</span><span class="n">who</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="n">pencon_2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="sa">f</span><span class="s1">'pencon_</span><span class="si">{</span><span class="n">who</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="n">wage_2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="sa">f</span><span class="s1">'e00200</span><span class="si">{</span><span class="n">who</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="n">wage_shifted</span> <span class="o">=</span> <span class="n">_shifted_wage</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span> <span class="n">wage_2</span><span class="p">,</span> <span class="n">pencon_2</span><span class="p">,</span>
+                                         <span class="n">ptax_er_1</span><span class="p">,</span> <span class="n">be_esf</span><span class="p">)</span>
+            <span class="n">shift</span><span class="p">[</span><span class="n">who</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">wage_2</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">wage_shifted</span> <span class="o">-</span> <span class="n">wage_2</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+        <span class="n">calc2</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">'e00200p'</span><span class="p">,</span> <span class="n">shift</span><span class="p">[</span><span class="s1">'p'</span><span class="p">])</span>
+        <span class="n">calc2</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">'e00200s'</span><span class="p">,</span> <span class="n">shift</span><span class="p">[</span><span class="s1">'s'</span><span class="p">])</span>
+        <span class="n">calc2</span><span class="o">.</span><span class="n">incarray</span><span class="p">(</span><span class="s1">'e00200'</span><span class="p">,</span> <span class="n">shift</span><span class="p">[</span><span class="s1">'p'</span><span class="p">]</span> <span class="o">+</span> <span class="n">shift</span><span class="p">[</span><span class="s1">'s'</span><span class="p">])</span>
     <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
     <span class="c1"># Calculate sum of substitution and income effects</span>
     <span class="n">zero_sub_and_inc</span> <span class="o">=</span> <span class="n">be_sub</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">be_inc</span> <span class="o">==</span> <span class="mf">0.0</span>

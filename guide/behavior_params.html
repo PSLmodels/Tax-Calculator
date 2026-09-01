@@ -518,9 +518,25 @@ reform, which is the same as saying the behavior parameters (or
 elasticities) are assumed to be zero by default.  The elasticities can
 be set to non-zero values in a JSON file that is formatted like
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/behavioral_responses_template.json">this</a>.</p>
-<p>There are three behavior parameters, none of which has a time
+<p>There are four behavior parameters, none of which has a time
 dimension (that is, each is a single value that applies to every year
 being analyzed):</p>
+<p><code class="docutils literal notranslate"><span class="pre">esf</span></code>: earnings shift factor, defined as the fraction of the
+reform-induced increase (decrease) in employer payroll tax liability
+that is shifted to the employee as a decrease (increase) in earnings,
+with the remainder shifted to the employee as a decrease (increase) in
+nontaxable benefits such as employer-provided health insurance.  Must
+be in the [0,1] range; JCT assumes a 0.85 value.  Holding the <code class="docutils literal notranslate"><span class="pre">esf</span></code>
+fraction of gross compensation — earnings plus employer payroll tax
+— fixed in this way is an accounting convention rather than a
+behavioral response, so any earnings shift is applied <em>before</em> the
+three elasticities below are used, and their responses are then layered
+on top of it.  The shift is calculated separately for each earner,
+because the OASDI payroll tax is capped per person while the HI payroll
+tax is uncapped: an earner below the OASDI cap receives a proportional
+earnings change, whereas for an earner above the cap the OASDI portion
+of the change is a lump sum that leaves their marginal wage unaffected.
+See the <a class="reference internal" href="../api/behresp.html"><span class="doc">Tax-Calculator Behavioral Responses</span></a> page for the equations.</p>
 <p><code class="docutils literal notranslate"><span class="pre">sub</span></code>: substitution elasticity of taxable income, defined as the
 proportional change in taxable income divided by the proportional
 change in the marginal net-of-tax rate (1-MTR) on taxpayer earnings
@@ -546,7 +562,7 @@ details of this conversion.</p>
 in a dictionary passed to the <code class="docutils literal notranslate"><span class="pre">response</span></code> function, and any omitted
 elasticity is assumed to be zero.  When they are used with the <code class="docutils literal notranslate"><span class="pre">tc</span></code>
 command-line interface <code class="docutils literal notranslate"><span class="pre">--behavior</span></code> option, the JSON file must contain
-all three of the <code class="docutils literal notranslate"><span class="pre">sub</span></code>, <code class="docutils literal notranslate"><span class="pre">inc</span></code>, and <code class="docutils literal notranslate"><span class="pre">cg</span></code> keys.</p>
+all four of the <code class="docutils literal notranslate"><span class="pre">esf</span></code>, <code class="docutils literal notranslate"><span class="pre">sub</span></code>, <code class="docutils literal notranslate"><span class="pre">inc</span></code>, and <code class="docutils literal notranslate"><span class="pre">cg</span></code> keys.</p>
 </section>
 
     <script type="text/x-thebe-config">

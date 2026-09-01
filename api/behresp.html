@@ -529,15 +529,16 @@
 <p><strong>Tax-Calculator Behavioral Responses</strong></p>
 <section id="module-taxcalc.behresp">
 <span id="taxcalc-behresp"></span><h2>taxcalc.behresp<a class="headerlink" href="#module-taxcalc.behresp" title="Link to this heading">#</a></h2>
-<p>Partial-equilibrium elasticity-based behavioral-responses logic.</p>
+<p>Partial-equilibrium parameter-based behavioral-responses logic.</p>
 <p>This module contains two independent sets of functions that are not
 used by each other:</p>
 <ol class="arabic simple">
 <li><p>The response function, which conducts partial-equilibrium
 analysis of a baseline-to-reform policy change: it computes the
-behavioral response implied by the assumed elasticities, adds that
-response to the reform filing units’ input variables, recalculates
-reform taxes, and returns baseline and reform DataFrame objects.
+behavioral response implied by the assumed response parameters,
+adds that response to the reform filing units’ input variables,
+recalculates reform taxes, and returns baseline and reform
+DataFrame objects.
 This is the function used by the tc CLI –behavior option and by
 cookbook recipe 2.</p></li>
 <li><p>The quantity_response and labor_response functions (and their
@@ -692,13 +693,26 @@ function.</p>
 <li><p><strong>calc_1</strong> (<em>Calculator object</em>) – represents baseline policy; must be advanced to the analysis year.</p></li>
 <li><p><strong>calc_2</strong> (<em>Calculator object</em>) – represents reform policy; must be advanced to the same analysis
 year as calc_1 and must contain the same number of filing units.</p></li>
-<li><p><strong>elasticities</strong> (<em>dictionary</em>) – <p>contains the assumed response elasticities.  Omitting an
-elasticity key:value pair implies the omitted elasticity is
+<li><p><strong>elasticities</strong> (<em>dictionary</em>) – <p>contains the assumed response parameters/elasticities.  Omitting a
+key:value pair implies the omitted parameter/elasticity is
 assumed to be zero.  (Note that the tc CLI –behavior option is
 stricter: a JSON behavior file must contain all the keys.)
-Here is the full dictionary content and each elasticity’s
+Here is the full dictionary content and each parameter/elasticity’s
 internal name:</p>
 <dl class="simple">
+<dt>be_esf = elasticities[‘esf’]</dt><dd><p>Earnings shift factor.
+Defined as the fraction of the reform-induced change in employer
+payroll tax liability that is shifted to wages rather than to
+nontaxable employee fringe benefits such as employer-provided
+health insurance.  The shift is sign-symmetric: an increase in
+employer payroll tax liability decreases wages and a decrease
+increases them, although the two shifts are not equal in size
+because the employer tax rate that feeds back into the shifted
+wage differs between the two reforms.  It is calculated per
+earner, and it is applied before the elasticities below are
+evaluated.
+Must be in the [0,1] range.</p>
+</dd>
 <dt>be_sub = elasticities[‘sub’]</dt><dd><p>Substitution elasticity of taxable income.
 Defined as proportional change in taxable income divided by
 proportional change in marginal net-of-tax rate (1-MTR) on
@@ -754,7 +768,88 @@ contain the columns described in the dump argument documentation.</p>
 <p class="rubric">Notes</p>
 <p>Response equations:</p>
 <blockquote>
-<div><p>The substitution and income effects on taxable income are computed,
+<div><p>The earnings shift is computed first, and separately for the
+taxpayer and the spouse, because the OASDI cap (SS_Earnings_c) and
+the reform-only extra OASDI threshold (SS_Earnings_thd) apply per
+person rather than per filing unit, so a couple with two earners
+just below the cap and a couple with one earner well above it have
+different employer payroll tax exposure at the same filing-unit
+earnings.  Writing ptax_er(wage) for an earner’s employer payroll
+tax liability on wages under reform policy as a function of that
+earner’s wages, ptax_er_1 for the same earner’s baseline employer
+payroll tax liability on wages, and wage2 for the earner’s
+pre-shift reform wages, the shifted wage is the solution of</p>
+<blockquote>
+<div><p>wage = wage2 - be_esf * (ptax_er(wage) - ptax_er_1)</p>
+</div></blockquote>
+<p>This holds the be_esf fraction of the earner’s gross compensation
+— wages plus employer payroll tax — fixed, and it is
+sign-symmetric: an increase in employer payroll tax liability
+lowers wages and a decrease raises them.  The remaining
+(1 - be_esf) fraction is absorbed by nontaxable fringe benefits,
+which are not represented in the input data.</p>
+<p>The equation is implicit in wage because ptax_er is a function of
+the wage being solved for, and it has no single closed-form
+solution because that function is piecewise linear.  Writing s0 and
+s1 for the baseline and reform employer OASDI rates, h for the
+employer HI rate, and cap for SS_Earnings_c, the two interior
+regimes are:</p>
+<blockquote>
+<div><p>wages below the cap under both policies, where the employer
+payroll tax is proportional to the wage in both its OASDI and its
+HI part, so the shift is proportional:</p>
+<blockquote>
+<div><p>wage = wage2 * (1 + be_esf * (s0 + h)) / (1 + be_esf * (s1 + h))</p>
+</div></blockquote>
+<p>wages above the cap under both policies, where the OASDI part is
+the flat amount s * cap and only the uncapped HI part varies with
+the wage, so the OASDI portion of the shift is a lump sum:</p>
+<blockquote>
+<div><p>wage = wage2 - be_esf * (s1 - s0) * cap / (1 + be_esf * h)</p>
+</div></blockquote>
+</div></blockquote>
+<p>In the second regime the earner’s marginal wage is unchanged by an
+OASDI rate reform, so the shift is a pure income effect there,
+whereas in the first regime the marginal wage falls as well.  An
+earner whose wage cut carries them from above the cap to below it
+is in neither regime; such an earner is on the kink, where the
+wage cut shrinks their own employer OASDI liability, which in turn
+feeds back into the wage.  Because of these earners — and of the
+band between the old and new caps under a reform to SS_Earnings_c
+itself — the shift cannot be computed as a single average rate
+applied to all earners.  The implementation therefore solves the
+fixed-point equation numerically, by bisection on a bracket that is
+guaranteed to contain the solution, which covers all three regimes
+above without special-casing any of them.  The bracket follows from
+the residual of the equation being increasing in the wage with a
+slope of at least one, which puts the solution no farther from the
+pre-shift wage than the residual evaluated there.  The numerical
+solution logic is the module-level bisect function, which knows
+nothing about payroll taxes, and the payroll tax rule is the
+module-level employer_ptax_on_wages function, which knows nothing
+about the equation being solved; a change in the payroll tax rule
+therefore leaves the solution logic untouched.</p>
+<p>The ptax_er function used here is the employer payroll tax on
+wages: the employer share of the OASDI tax on wages up to the
+SS_Earnings_c cap, plus the employer share of the reform-only extra
+OASDI tax on wages above the SS_Earnings_thd threshold, plus the
+employer share of the uncapped HI tax on wages, all of them
+evaluated on gross wages, which are wages plus employer pension
+contributions.  This is exactly the rule that the EI_PayrollTax
+function applies to produce the ptax_er_p and ptax_er_s output
+variables, both of which are functions of gross wages alone; that
+is what makes an employer-payroll-tax incidence assumption
+expressible as a shift of wages.  The baseline anchor ptax_er_1 is
+therefore read from those output variables rather than recomputed.
+The reform-policy function must still be stated here, as the
+module-level employer_ptax_on_wages function, because the bisection
+evaluates it at trial wages that neither Calculator object has
+computed, which no output variable can supply; the employer payroll
+tax rules are consequently stated in this module as well as in the
+EI_PayrollTax function, and the two statements must be kept in
+agreement.  The test_behresp.py module tests that agreement
+directly.</p>
+<p>The substitution and income effects on taxable income are computed,
 in dollars per filing unit, as follows, where mtr1 and mtr2 are the
 baseline and reform combined (income plus payroll) marginal tax
 rates on the taxpayer’s earnings (e00200p) computed with respect to
@@ -779,7 +874,27 @@ independent of the filing unit’s LTCG amount.</p>
 </div></blockquote>
 <p>How responses are applied to input variables:</p>
 <blockquote>
-<div><p>The sum of the substitution and income effects is a change in
+<div><p>The earnings shift is applied directly to the earnings variables of
+the two earners it is computed for: the taxpayer part is added to
+e00200p and the spouse part to e00200s, with e00200 incremented by
+their sum.  Nothing else is adjusted.  In particular, the pension
+contribution variables, pencon_p and pencon_s, are held fixed even
+though they are part of the employer payroll tax base, because
+nontaxable benefits are what the (1 - be_esf) fraction of the shift
+is defined to absorb.</p>
+<p>The shift is applied to a copy of calc_2 before the elasticities
+below are evaluated, and that copy is recalculated, so the reform
+marginal tax rates and tax liabilities that enter the substitution,
+income, and capital-gains responses are all measured at post-shift
+earnings.  The ordering matters because the shift is an accounting
+adjustment that defines the reform being analyzed — it holds gross
+compensation fixed — rather than a behavioral response to it, so
+the elasticity-driven responses are layered on top of it.  There is
+no double counting of the employer payroll tax: the substitution
+effect prices earnings using marginal tax rates computed with
+respect to full compensation, which is a different concept from the
+wage shift itself.</p>
+<p>The sum of the substitution and income effects is a change in
 taxable income that must be mapped back onto the input variables
 used in the tax calculation.  The dollar change is allocated in
 proportion to three components — wage and salary income (e00200),
@@ -793,8 +908,10 @@ the three parts are added to these input variables:</p>
 </ul>
 </div></blockquote>
 <p>Two consequences are worth noting.  First, the spouse’s earnings
-variable, e00200s, is not adjusted, so after a response both e00200
-and e00200p have been adjusted by the same amount.  Second, a
+variable, e00200s, is not adjusted by this part of the response,
+so the substitution and income effects adjust e00200 and e00200p by
+the same amount.  (The earnings shift, in contrast, is calculated
+per earner and does adjust e00200s.)  Second, a
 response shows up in dump output as changes in e00300 and e19200 even
 for filing units whose actual behavior would involve other income or
 deduction items.  The capital-gains response, by contrast, is applied
@@ -828,7 +945,40 @@ differing by more than ten dollars.</p>
 </div></blockquote>
 <p>Filing units excluded from the response:</p>
 <blockquote>
-<div><p>The substitution and income effects are applied only to filing
+<div><p>The earnings shift is skipped entirely when be_esf is zero or when
+the reform alters none of the four parameters of the employer
+payroll tax on wages: the four ESF_PARAMS parameters, which are
+FICA_ss_trt_employer, FICA_mc_trt_employer, SS_Earnings_c, and
+SS_Earnings_thd.  Those four are the only parameters that the
+employer payroll tax on wages depends on; in particular the
+employee-share rates are not among them.  That test is on the
+parameters themselves rather than on calculated tax amounts, so it
+is exact for the documented use of this function, in which calc_1
+and calc_2 differ only in policy.  A caller that passes two
+Calculator objects containing different input data would get no
+earnings shift when the two policies are the same, even though the
+two employer payroll tax liabilities would differ.</p>
+<p>Within a reform that does change one of the four parameters, the
+shift is applied only to earners with positive wages.  That
+excludes the self-employed, who have no employer to shift a payroll
+tax to.  It also excludes an earner whose gross wages are entirely
+employer pension contributions: such an earner does generate an
+employer payroll tax liability, but has no wages to shift it onto,
+and shifting it onto an e00200p or e00200s of zero would make that
+variable negative.  Note that the employer payroll tax used for an
+included earner is nevertheless computed on gross wages, so it
+includes the part generated by that earner’s pension
+contributions.</p>
+<p>The shifted wage is floored at zero.  The shift is bounded by
+be_esf times the employer payroll tax rate times the gross wage,
+so under any plausible reform it is a small fraction of the wage
+and the floor never binds, but a reform that sets an extreme
+employer rate, or an earner whose gross wages are mostly pension
+contributions, could otherwise drive a wage negative.  Where the
+floor does bind, the earner’s gross compensation is not held
+fixed, because there is not enough wage income to absorb the
+be_esf fraction of the employer payroll tax change.</p>
+<p>The substitution and income effects are applied only to filing
 units with positive alloc_base; all other filing units are assumed
 to have no ordinary-income response.  That condition is a guard on
 the allocation arithmetic rather than an economic screen: it keeps
@@ -859,8 +1009,12 @@ year, so retiming behavior — most notably the realization timing
 of capital gains — is not modeled.  There are no response margins
 for the spouse’s earnings, for short-term capital gains, for
 deduction items other than the mechanical e19200 adjustment
-described above, or for any margin not represented by the three
-elasticities.  Being a partial-equilibrium calculation, the
+described above, or for any margin not represented by the
+elasticities.  The earnings shift assumes full backward shifting of
+the be_esf fraction onto the individual earner who generated the
+employer payroll tax liability, so it models neither shifting across
+workers within an employer nor any forward shifting to consumers or
+to capital.  Being a partial-equilibrium calculation, the
 analysis holds constant all prices, wages, and macroeconomic
 aggregates.</p>
 </div></blockquote>

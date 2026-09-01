@@ -597,12 +597,12 @@ page</a>.</p>
 <section id="specify-behavioral-responses">
 <h2>Specify behavioral responses<a class="headerlink" href="#specify-behavioral-responses" title="Link to this heading">#</a></h2>
 <p>For a JSON file template that can be used to specify you own values of
-each response elasticity, go to <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/README.md">this
+each response parameter, go to <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/README.md">this
 page</a>.</p>
 <p>A JSON behavior file used with the <code class="docutils literal notranslate"><span class="pre">--behavior</span></code> option must contain
-all three of the <code class="docutils literal notranslate"><span class="pre">sub</span></code>, <code class="docutils literal notranslate"><span class="pre">inc</span></code>, and <code class="docutils literal notranslate"><span class="pre">cg</span></code> elasticities; specify an
-elasticity as <code class="docutils literal notranslate"><span class="pre">0.0</span></code> to turn off that response channel.  The meaning
-and appropriate values of the three elasticities are described in
+all four of the <code class="docutils literal notranslate"><span class="pre">esf</span></code>, <code class="docutils literal notranslate"><span class="pre">sub</span></code>, <code class="docutils literal notranslate"><span class="pre">inc</span></code>, and <code class="docutils literal notranslate"><span class="pre">cg</span></code> parameters; specify a
+parameter as <code class="docutils literal notranslate"><span class="pre">0.0</span></code> to turn off that response channel.  The meaning
+and appropriate values of the four parameters are described in
 <a class="reference internal" href="behavior_params.html"><span class="doc">Behavior parameters</span></a>, and the logic that uses them is documented in
 <a class="reference internal" href="../api/behresp.html"><span class="doc">Tax-Calculator Behavioral Responses</span></a>.  Note in particular that <code class="docutils literal notranslate"><span class="pre">cg</span></code> is a
 semi-elasticity rather than the tax-rate elasticity usually reported

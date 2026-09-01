@@ -856,11 +856,6 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rrc-c-kids"><code class="docutils literal notranslate"><span class="pre">RRC_c_kids</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#refundable-payroll-tax-credit">Refundable Payroll Tax Credit</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rptc-c"><code class="docutils literal notranslate"><span class="pre">RPTC_c</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rptc-rt"><code class="docutils literal notranslate"><span class="pre">RPTC_rt</span></code></a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#surtaxes">Surtaxes</a><ul class="nav section-nav flex-column">
@@ -1147,7 +1142,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </section>
 <section id="ss-earnings-thd">
 <h4><code class="docutils literal notranslate"><span class="pre">SS_Earnings_thd</span></code><a class="headerlink" href="#ss-earnings-thd" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> Individual earnings above this threshold are subjected to OASDI payroll tax, in addition to earnings below the SS_Earnings_c threshold.<br />
+<p><em>Description:</em> Individual wage-and-salary earnings above this threshold are subjected to OASDI payroll tax, in addition to earnings below the SS_Earnings_c threshold.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> float<br />
@@ -4868,43 +4863,6 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Out-of-Range Action:</em> warn</p>
 </section>
 </section>
-<section id="refundable-payroll-tax-credit">
-<h3>Refundable Payroll Tax Credit<a class="headerlink" href="#refundable-payroll-tax-credit" title="Link to this heading">#</a></h3>
-<section id="rptc-c">
-<h4><code class="docutils literal notranslate"><span class="pre">RPTC_c</span></code><a class="headerlink" href="#rptc-c" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> This is the maximum amount of the refundable payroll tax credit for each taxpayer/spouse.  Positive values of RPTC_c and RPTC_rt can be used to emulate a payroll tax exemption, the implied value of which is RPTC_c divided by RPTC_rt.<br />
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
-<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> True<br />
-<em>Value Type:</em> float<br />
-<em>Known Values:</em><br />
-2013: 0.0<br />
-2014: 0.0<br />
-2015: 0.0<br />
-2016: 0.0<br />
-2017: 0.0<br />
-2018: 0.0<br />
-2019: 0.0<br />
-<em>Valid Range:</em> min = 0 and max = 9e+99<br />
-<em>Out-of-Range Action:</em> error</p>
-</section>
-<section id="rptc-rt">
-<h4><code class="docutils literal notranslate"><span class="pre">RPTC_rt</span></code><a class="headerlink" href="#rptc-rt" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> Pre-phaseout credit is minimum of this rate times earnings and the maximum refundable payroll tax credit, where earnings is defined as in FICA and SECA.  Positive values of RPTC_c and RPTC_rt can be used to emulate a payroll tax exemption, the implied value of which is RPTC_c divided by RPTC_rt.<br />
-<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
-<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
-<em>Value Type:</em> float<br />
-<em>Known Values:</em><br />
-2013: 0.0<br />
-2014: 0.0<br />
-2015: 0.0<br />
-2016: 0.0<br />
-2017: 0.0<br />
-2018: 0.0<br />
-2019: 0.0<br />
-<em>Valid Range:</em> min = 0 and max = 9e+99<br />
-<em>Out-of-Range Action:</em> error</p>
-</section>
-</section>
 </section>
 <section id="surtaxes">
 <h2>Surtaxes<a class="headerlink" href="#surtaxes" title="Link to this heading">#</a></h2>
@@ -6346,11 +6304,6 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rrc-prt"><code class="docutils literal notranslate"><span class="pre">RRC_prt</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rrc-c-unit"><code class="docutils literal notranslate"><span class="pre">RRC_c_unit</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rrc-c-kids"><code class="docutils literal notranslate"><span class="pre">RRC_c_kids</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#refundable-payroll-tax-credit">Refundable Payroll Tax Credit</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rptc-c"><code class="docutils literal notranslate"><span class="pre">RPTC_c</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rptc-rt"><code class="docutils literal notranslate"><span class="pre">RPTC_rt</span></code></a></li>
 </ul>
 </li>
 </ul>

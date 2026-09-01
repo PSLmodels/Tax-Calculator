@@ -535,8 +535,7 @@
                   <span class="n">e00900p</span><span class="p">,</span> <span class="n">e00900s</span><span class="p">,</span> <span class="n">e02100p</span><span class="p">,</span> <span class="n">e02100s</span><span class="p">,</span> <span class="n">k1bx14p</span><span class="p">,</span>
                   <span class="n">k1bx14s</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">ptax_er_p</span><span class="p">,</span> <span class="n">ptax_er_s</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span>
                   <span class="n">c03260</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span>
-                  <span class="n">sey</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span>
-                  <span class="n">was_plus_sey_p</span><span class="p">,</span> <span class="n">was_plus_sey_s</span><span class="p">):</span>
+                  <span class="n">sey</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Compute part of total OASDI+HI payroll taxes and earned income variables.</span>
 
@@ -571,8 +570,8 @@
 <span class="sd">        Final adjustment amount = (1-Haircut)*SelfEmploymentTaxAdjustment</span>
 <span class="sd">    SS_Earnings_thd: float</span>
 <span class="sd">        Additional taxable earnings threshold for Social Security</span>
-<span class="sd">        Individual earnings above this threshold are subjected to</span>
-<span class="sd">        OASDI payroll tax, in addtion to earnings below the</span>
+<span class="sd">        Individual wage-and-salary earnings above this threshold are subjected</span>
+<span class="sd">        to OASDI payroll tax, in addition to earnings below the</span>
 <span class="sd">        maximum taxable earnings threshold.</span>
 <span class="sd">    SECA_Earnings_thd: float</span>
 <span class="sd">        Threshold value for self-employment income below which there is</span>
@@ -616,10 +615,6 @@
 <span class="sd">        Earned income for taxpayer</span>
 <span class="sd">    earned_s: float</span>
 <span class="sd">        Earned income for spouse</span>
-<span class="sd">    was_plus_sey_p: float</span>
-<span class="sd">        Wage and salary income plus taxable self employment income for taxpayer</span>
-<span class="sd">    was_plus_sey_s: float</span>
-<span class="sd">        Wage and salary income plus taxable self employment income for spouse</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -648,10 +643,6 @@
 <span class="sd">        Earned income for taxpayer</span>
 <span class="sd">    earned_s: float</span>
 <span class="sd">        Earned income for spouse</span>
-<span class="sd">    was_plus_sey_p: float</span>
-<span class="sd">        Wage and salary income plus taxable self employment income for taxpayer</span>
-<span class="sd">    was_plus_sey_s: float</span>
-<span class="sd">        Wage and salary income plus taxable self employment income for spouse</span>
 <span class="sd">    """</span>
     <span class="c1"># combined OASDI and HI FICA rates (employer + employee shares)</span>
     <span class="n">ss_rate</span> <span class="o">=</span> <span class="n">FICA_ss_trt_employer</span> <span class="o">+</span> <span class="n">FICA_ss_trt_employee</span>
@@ -701,13 +692,10 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">setax</span> <span class="o">=</span> <span class="mf">0.0</span>
 
-    <span class="c1"># ---------- Reform-only extra OASDI bracket (not on Sch SE) ----------</span>
-    <span class="c1"># extra OASDI on the portion of (wages + taxable SE) above SS_Earnings_thd</span>
-    <span class="n">extra_frac</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ss_rate</span>
-    <span class="n">was_plus_sey_p</span> <span class="o">=</span> <span class="n">gross_ws_p</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">extra_frac</span><span class="p">)</span>
-    <span class="n">was_plus_sey_s</span> <span class="o">=</span> <span class="n">gross_ws_s</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">extra_frac</span><span class="p">)</span>
-    <span class="n">extra_ss_income_p</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">was_plus_sey_p</span> <span class="o">-</span> <span class="n">SS_Earnings_thd</span><span class="p">)</span>
-    <span class="n">extra_ss_income_s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">was_plus_sey_s</span> <span class="o">-</span> <span class="n">SS_Earnings_thd</span><span class="p">)</span>
+    <span class="c1"># ---------- Reform-only extra OASDI bracket ----------</span>
+    <span class="c1"># extra OASDI on the portion of wages and salary above SS_Earnings_thd</span>
+    <span class="n">extra_ss_income_p</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">gross_ws_p</span> <span class="o">-</span> <span class="n">SS_Earnings_thd</span><span class="p">)</span>
+    <span class="n">extra_ss_income_s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">gross_ws_s</span> <span class="o">-</span> <span class="n">SS_Earnings_thd</span><span class="p">)</span>
     <span class="n">extra_payrolltax</span> <span class="o">=</span> <span class="n">ss_rate</span> <span class="o">*</span> <span class="p">(</span><span class="n">extra_ss_income_p</span> <span class="o">+</span> <span class="n">extra_ss_income_s</span><span class="p">)</span>
 
     <span class="c1"># filing-unit payroll tax and OASDI-only part (HI excluded from ptax_oasdi)</span>
@@ -721,9 +709,7 @@
     <span class="c1"># excluded: the self-employed pay both halves themselves, so there is</span>
     <span class="c1"># no employer share.  This makes both variables invariant under</span>
     <span class="c1"># soi_iitax, which only moves setax between iitax and payrolltax for</span>
-    <span class="c1"># reporting purposes.  Note that extra_ss_income_* derives from</span>
-    <span class="c1"># was_plus_sey_*, so under an SS_Earnings_thd reform these amounts</span>
-    <span class="c1"># blend wage and self-employment earnings.</span>
+    <span class="c1"># reporting purposes.</span>
     <span class="n">ptax_er_p</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">FICA_ss_trt_employer</span> <span class="o">*</span> <span class="p">(</span><span class="n">txearn_was_p</span> <span class="o">+</span> <span class="n">extra_ss_income_p</span><span class="p">)</span> <span class="o">+</span>
         <span class="n">FICA_mc_trt_employer</span> <span class="o">*</span> <span class="n">gross_ws_p</span>
@@ -746,8 +732,7 @@
     <span class="n">earned_s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">e00200s</span> <span class="o">+</span> <span class="n">sey_s</span> <span class="o">-</span>
                         <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ALD_SelfEmploymentTax_hc</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">setax_s</span><span class="p">))</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">sey</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">ptax_er_p</span><span class="p">,</span> <span class="n">ptax_er_s</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span>
-            <span class="n">ptax_oasdi</span><span class="p">,</span>
-            <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">was_plus_sey_p</span><span class="p">,</span> <span class="n">was_plus_sey_s</span><span class="p">)</span>
+            <span class="n">ptax_oasdi</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">)</span>
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -3731,71 +3716,6 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">RefundablePayrollTaxCredit</span><span class="p">(</span><span class="n">was_plus_sey_p</span><span class="p">,</span> <span class="n">was_plus_sey_s</span><span class="p">,</span>
-                               <span class="n">RPTC_c</span><span class="p">,</span> <span class="n">RPTC_rt</span><span class="p">,</span>
-                               <span class="n">rptc_p</span><span class="p">,</span> <span class="n">rptc_s</span><span class="p">,</span> <span class="n">rptc</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Computes the Refundable Payroll Tax Credit (RPTC).</span>
-
-<span class="sd">    Reform construct with no IRS form correspondence: RPTC is a</span>
-<span class="sd">    Tax-Calculator-only credit designed to emulate a payroll-tax</span>
-<span class="sd">    exemption via the refundable-credit side of Form 1040.  Per the</span>
-<span class="sd">    `RPTC_c` policy-parameter description, positive values of `RPTC_c`</span>
-<span class="sd">    and `RPTC_rt` together emulate a payroll-tax exemption whose</span>
-<span class="sd">    implied earnings ceiling is `RPTC_c / RPTC_rt` per spouse.</span>
-
-<span class="sd">    Inert under current law: `RPTC_c` and `RPTC_rt` both default to</span>
-<span class="sd">    0.0 for all years (2013+), so `rptc_p = rptc_s = rptc = 0`.</span>
-
-<span class="sd">    Body (per spouse): pre-phaseout credit = min(rate * earnings, cap),</span>
-<span class="sd">    where "earnings" is `was_plus_sey_*` (gross wages-and-salaries plus</span>
-<span class="sd">    the reform-only extra-OASDI taxable SE component) as produced by</span>
-<span class="sd">    `EI_PayrollTax`.  The filing-unit total `rptc` is the sum of the</span>
-<span class="sd">    two per-spouse credits.</span>
-
-<span class="sd">    Calling order (calculator.py): invoked after `EITC` and before</span>
-<span class="sd">    `PersonalTaxCredit` in the refundable-credit sequence.  Downstream</span>
-<span class="sd">    consumer: `IITAX` subtracts `rptc` from total tax liability as a</span>
-<span class="sd">    fully-refundable credit (Form 1040 line 31 / Schedule 3 line 13</span>
-<span class="sd">    territory, modeled here as a standalone refundable item).</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    was_plus_sey_p: float</span>
-<span class="sd">        Taxpayer's gross wages-and-salaries plus reform-only extra-OASDI</span>
-<span class="sd">        taxable self-employment earnings (set by `EI_PayrollTax`).</span>
-<span class="sd">    was_plus_sey_s: float</span>
-<span class="sd">        Spouse's gross wages-and-salaries plus reform-only extra-OASDI</span>
-<span class="sd">        taxable self-employment earnings (set by `EI_PayrollTax`).</span>
-<span class="sd">    RPTC_c: float</span>
-<span class="sd">        Per-spouse maximum refundable payroll tax credit (reform-only;</span>
-<span class="sd">        default 0.0).</span>
-<span class="sd">    RPTC_rt: float</span>
-<span class="sd">        Phasein rate applied to per-spouse earnings before the cap</span>
-<span class="sd">        (reform-only; default 0.0).</span>
-<span class="sd">    rptc_p: float</span>
-<span class="sd">        Records-bound output: RPTC for taxpayer.</span>
-<span class="sd">    rptc_s: float</span>
-<span class="sd">        Records-bound output: RPTC for spouse.</span>
-<span class="sd">    rptc: float</span>
-<span class="sd">        Records-bound output: RPTC for filing unit (`rptc_p + rptc_s`).</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    rptc_p: float</span>
-<span class="sd">        RPTC for taxpayer.</span>
-<span class="sd">    rptc_s: float</span>
-<span class="sd">        RPTC for spouse.</span>
-<span class="sd">    rptc: float</span>
-<span class="sd">        RPTC for filing unit.</span>
-<span class="sd">    """</span>
-    <span class="n">rptc_p</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">was_plus_sey_p</span> <span class="o">*</span> <span class="n">RPTC_rt</span><span class="p">,</span> <span class="n">RPTC_c</span><span class="p">)</span>
-    <span class="n">rptc_s</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">was_plus_sey_s</span> <span class="o">*</span> <span class="n">RPTC_rt</span><span class="p">,</span> <span class="n">RPTC_c</span><span class="p">)</span>
-    <span class="n">rptc</span> <span class="o">=</span> <span class="n">rptc_p</span> <span class="o">+</span> <span class="n">rptc_s</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">rptc_p</span><span class="p">,</span> <span class="n">rptc_s</span><span class="p">,</span> <span class="n">rptc</span><span class="p">)</span>
-
-
-<span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">ChildDepTaxCredit</span><span class="p">(</span><span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">nu18</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span>
                       <span class="n">c05800</span><span class="p">,</span> <span class="n">e07260</span><span class="p">,</span> <span class="n">CR_ResidentialEnergy_hc</span><span class="p">,</span>
                       <span class="n">e07300</span><span class="p">,</span> <span class="n">CR_ForeignTax_hc</span><span class="p">,</span>
@@ -5217,7 +5137,7 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">IITAX</span><span class="p">(</span><span class="n">c59660</span><span class="p">,</span> <span class="n">c11070</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">,</span> <span class="n">rptc</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">IITAX</span><span class="p">(</span><span class="n">c59660</span><span class="p">,</span> <span class="n">c11070</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">,</span>
           <span class="n">c09200</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">,</span> <span class="n">recovery_rebate_credit</span><span class="p">,</span>
           <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">CTC_is_refundable</span><span class="p">,</span> <span class="n">ODC_is_refundable</span><span class="p">,</span>
           <span class="n">soi_iitax</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">ptax_amc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span>
@@ -5265,10 +5185,9 @@
 
 <span class="sd">    Reform constructs (no Form 1040 (2025) line):</span>
 <span class="sd">      `personal_refundable_credit` (II_credit* knobs from</span>
-<span class="sd">      `PersonalTaxCredit`), `ctc_new` (from `CTC_new`), `rptc` (from</span>
-<span class="sd">      `RefundablePayrollTaxCredit`), and the `recovery_rebate_credit`</span>
-<span class="sd">      (historically Form 1040 line 30 for 2020 CARES / 2021 ARPA RRC;</span>
-<span class="sd">      inert for 2022+).</span>
+<span class="sd">      `PersonalTaxCredit`), `ctc_new` (from `CTC_new`), and the</span>
+<span class="sd">      `recovery_rebate_credit` (historically Form 1040 line 30</span>
+<span class="sd">      for 2020 CARES / 2021 ARPA RRC; inert for 2022+).</span>
 
 <span class="sd">    Calling order: invoked by `Calculator._calc_one_year` after `CTC_new`</span>
 <span class="sd">    (so c09200, c07220, odc, c10960, c11070, c59660, CDCC_refund are all</span>
@@ -5290,9 +5209,6 @@
 <span class="sd">    ctc_new: float</span>
 <span class="sd">        Reform-only new refundable child tax credit from `CTC_new`</span>
 <span class="sd">        (no Form 1040 line; default 0 under current law)</span>
-<span class="sd">    rptc: float</span>
-<span class="sd">        Reform-only refundable payroll tax credit for filing unit from</span>
-<span class="sd">        `RefundablePayrollTaxCredit` (no Form 1040 line; default 0)</span>
 <span class="sd">    c09200: float</span>
 <span class="sd">        Total income tax (including other taxes, after nonrefundable</span>
 <span class="sd">        credits) from `C1040` (Form 1040 line 24)</span>
@@ -5390,7 +5306,6 @@
               <span class="n">CDCC_refund</span> <span class="o">+</span>                <span class="c1"># Sch 3 line 13 → Form 1040 line 31</span>
               <span class="n">personal_refundable_credit</span> <span class="o">+</span>  <span class="c1"># reform-only (no form line)</span>
               <span class="n">ctc_new</span> <span class="o">+</span>                     <span class="c1"># reform-only (no form line)</span>
-              <span class="n">rptc</span> <span class="o">+</span>                        <span class="c1"># reform-only (no form line)</span>
               <span class="n">ctc_refund</span> <span class="o">+</span>                  <span class="c1"># reform-only (CTC_is_refundable)</span>
               <span class="n">odc_refund</span><span class="p">)</span>                   <span class="c1"># reform-only (ODC_is_refundable)</span>
     <span class="c1"># (C) records-bound CTC diagnostic (not on the form)</span>

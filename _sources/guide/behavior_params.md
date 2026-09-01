@@ -14,9 +14,26 @@ elasticities) are assumed to be zero by default.  The elasticities can
 be set to non-zero values in a JSON file that is formatted like
 [this](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/behavioral_responses_template.json).
 
-There are three behavior parameters, none of which has a time
+There are four behavior parameters, none of which has a time
 dimension (that is, each is a single value that applies to every year
 being analyzed):
+
+`esf`: earnings shift factor, defined as the fraction of the
+reform-induced increase (decrease) in employer payroll tax liability
+that is shifted to the employee as a decrease (increase) in earnings,
+with the remainder shifted to the employee as a decrease (increase) in
+nontaxable benefits such as employer-provided health insurance.  Must
+be in the [0,1] range; JCT assumes a 0.85 value.  Holding the `esf`
+fraction of gross compensation --- earnings plus employer payroll tax
+--- fixed in this way is an accounting convention rather than a
+behavioral response, so any earnings shift is applied *before* the
+three elasticities below are used, and their responses are then layered
+on top of it.  The shift is calculated separately for each earner,
+because the OASDI payroll tax is capped per person while the HI payroll
+tax is uncapped: an earner below the OASDI cap receives a proportional
+earnings change, whereas for an earner above the cap the OASDI portion
+of the change is a lump sum that leaves their marginal wage unaffected.
+See the {doc}`../api/behresp` page for the equations.
 
 `sub`: substitution elasticity of taxable income, defined as the
 proportional change in taxable income divided by the proportional
@@ -46,4 +63,4 @@ When the elasticities are used in a Python program, they are supplied
 in a dictionary passed to the `response` function, and any omitted
 elasticity is assumed to be zero.  When they are used with the `tc`
 command-line interface `--behavior` option, the JSON file must contain
-all three of the `sub`, `inc`, and `cg` keys.
+all four of the `esf`, `sub`, `inc`, and `cg` keys.
