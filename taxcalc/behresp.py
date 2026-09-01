@@ -1,14 +1,15 @@
 """
-Partial-equilibrium elasticity-based behavioral-responses logic.
+Partial-equilibrium parameter-based behavioral-responses logic.
 
 This module contains two independent sets of functions that are not
 used by each other:
 
 (1) The response function, which conducts partial-equilibrium
     analysis of a baseline-to-reform policy change: it computes the
-    behavioral response implied by the assumed elasticities, adds that
-    response to the reform filing units' input variables, recalculates
-    reform taxes, and returns baseline and reform DataFrame objects.
+    behavioral response implied by the assumed response parameters,
+    adds that response to the reform filing units' input variables,
+    recalculates reform taxes, and returns baseline and reform
+    DataFrame objects.
     This is the function used by the tc CLI --behavior option and by
     cookbook recipe 2.
 
@@ -42,6 +43,63 @@ from taxcalc.utils import DIST_VARIABLES
 __all__ = ['response', 'quantity_response', 'labor_response']
 
 
+# policy parameters that determine employer payroll tax liability on
+# wages, and hence the only parameters whose reform can generate an
+# earnings shift in the response function
+ESF_PARAMS = ('FICA_ss_trt_employer', 'FICA_mc_trt_employer',
+              'SS_Earnings_c', 'SS_Earnings_thd')
+
+# Number of bisection steps used to solve the earnings-shift fixed-point
+# equation in the response function.  The equation is solved by bisection
+# on a bracket that is guaranteed to contain the solution, so this count
+# is a precision setting rather than a convergence risk: each step halves
+# the bracket, making sixty steps enough to locate the shifted wage to
+# far less than a cent for any wage representable in the input data.
+ESF_BISECTION_STEPS = 60
+
+
+def employer_ptax_on_wages(ss_rate, mc_rate, cap, thd, gross_ws):
+    """
+    Returns array of employer payroll tax liability on the specified
+    array of one earner's gross wages (wages plus employer pension
+    contributions), where ss_rate and mc_rate are the employer OASDI and
+    HI payroll tax rates, cap is the SS_Earnings_c value, and thd is the
+    SS_Earnings_thd value.  Liability is increasing in gross wages and is
+    piecewise linear with breakpoints at cap and thd.
+
+    Note: this restates the ptax_er_p and ptax_er_s logic in the
+    EI_PayrollTax function, which cannot be read from those output
+    variables by the response function because it needs liability at
+    trial wages that neither Calculator object has computed.  The two
+    statements of the rule must be kept in agreement; see the response
+    function docstring.
+    """
+    return (ss_rate * (np.minimum(cap, gross_ws) +
+                       np.maximum(0., gross_ws - thd)) +
+            mc_rate * gross_ws)
+
+
+def bisect(residual, low, high, steps=ESF_BISECTION_STEPS):
+    """
+    Returns array containing the zero of the specified residual function
+    on each of the brackets given by the low and high arrays, which must
+    contain the zero: the residual must be increasing, nonpositive at
+    low, and nonnegative at high.  Each of the specified number of steps
+    halves every bracket, so the returned arrays are accurate to the
+    initial bracket width divided by two raised to the steps power.
+
+    Note: this function knows nothing about taxes; it is pure numerical
+    solution logic that operates on whatever residual function its caller
+    supplies.
+    """
+    for _ in range(steps):
+        mid = 0.5 * (low + high)
+        below = residual(mid) < 0.
+        low = np.where(below, mid, low)
+        high = np.where(below, high, mid)
+    return 0.5 * (low + high)
+
+
 def response(calc_1, calc_2, elasticities, dump=False):
     """
     Implements conventional analysis (that is, static reform analysis
@@ -69,12 +127,26 @@ def response(calc_1, calc_2, elasticities, dump=False):
         year as calc_1 and must contain the same number of filing units.
 
     elasticities: dictionary
-        contains the assumed response elasticities.  Omitting an
-        elasticity key:value pair implies the omitted elasticity is
+        contains the assumed response parameters/elasticities.  Omitting a
+        key:value pair implies the omitted parameter/elasticity is
         assumed to be zero.  (Note that the tc CLI --behavior option is
         stricter: a JSON behavior file must contain all the keys.)
-        Here is the full dictionary content and each elasticity's
+        Here is the full dictionary content and each parameter/elasticity's
         internal name:
+
+        be_esf = elasticities['esf']
+          Earnings shift factor.
+          Defined as the fraction of the reform-induced change in employer
+          payroll tax liability that is shifted to wages rather than to
+          nontaxable employee fringe benefits such as employer-provided
+          health insurance.  The shift is sign-symmetric: an increase in
+          employer payroll tax liability decreases wages and a decrease
+          increases them, although the two shifts are not equal in size
+          because the employer tax rate that feeds back into the shifted
+          wage differs between the two reforms.  It is calculated per
+          earner, and it is applied before the elasticities below are
+          evaluated.
+          Must be in the [0,1] range.
 
         be_sub = elasticities['sub']
           Substitution elasticity of taxable income.
@@ -131,6 +203,89 @@ def response(calc_1, calc_2, elasticities, dump=False):
     -----
     Response equations:
 
+      The earnings shift is computed first, and separately for the
+      taxpayer and the spouse, because the OASDI cap (SS_Earnings_c) and
+      the reform-only extra OASDI threshold (SS_Earnings_thd) apply per
+      person rather than per filing unit, so a couple with two earners
+      just below the cap and a couple with one earner well above it have
+      different employer payroll tax exposure at the same filing-unit
+      earnings.  Writing ptax_er(wage) for an earner's employer payroll
+      tax liability on wages under reform policy as a function of that
+      earner's wages, ptax_er_1 for the same earner's baseline employer
+      payroll tax liability on wages, and wage2 for the earner's
+      pre-shift reform wages, the shifted wage is the solution of
+
+        wage = wage2 - be_esf * (ptax_er(wage) - ptax_er_1)
+
+      This holds the be_esf fraction of the earner's gross compensation
+      --- wages plus employer payroll tax --- fixed, and it is
+      sign-symmetric: an increase in employer payroll tax liability
+      lowers wages and a decrease raises them.  The remaining
+      (1 - be_esf) fraction is absorbed by nontaxable fringe benefits,
+      which are not represented in the input data.
+
+      The equation is implicit in wage because ptax_er is a function of
+      the wage being solved for, and it has no single closed-form
+      solution because that function is piecewise linear.  Writing s0 and
+      s1 for the baseline and reform employer OASDI rates, h for the
+      employer HI rate, and cap for SS_Earnings_c, the two interior
+      regimes are:
+
+        wages below the cap under both policies, where the employer
+        payroll tax is proportional to the wage in both its OASDI and its
+        HI part, so the shift is proportional:
+
+          wage = wage2 * (1 + be_esf * (s0 + h)) / (1 + be_esf * (s1 + h))
+
+        wages above the cap under both policies, where the OASDI part is
+        the flat amount s * cap and only the uncapped HI part varies with
+        the wage, so the OASDI portion of the shift is a lump sum:
+
+          wage = wage2 - be_esf * (s1 - s0) * cap / (1 + be_esf * h)
+
+      In the second regime the earner's marginal wage is unchanged by an
+      OASDI rate reform, so the shift is a pure income effect there,
+      whereas in the first regime the marginal wage falls as well.  An
+      earner whose wage cut carries them from above the cap to below it
+      is in neither regime; such an earner is on the kink, where the
+      wage cut shrinks their own employer OASDI liability, which in turn
+      feeds back into the wage.  Because of these earners --- and of the
+      band between the old and new caps under a reform to SS_Earnings_c
+      itself --- the shift cannot be computed as a single average rate
+      applied to all earners.  The implementation therefore solves the
+      fixed-point equation numerically, by bisection on a bracket that is
+      guaranteed to contain the solution, which covers all three regimes
+      above without special-casing any of them.  The bracket follows from
+      the residual of the equation being increasing in the wage with a
+      slope of at least one, which puts the solution no farther from the
+      pre-shift wage than the residual evaluated there.  The numerical
+      solution logic is the module-level bisect function, which knows
+      nothing about payroll taxes, and the payroll tax rule is the
+      module-level employer_ptax_on_wages function, which knows nothing
+      about the equation being solved; a change in the payroll tax rule
+      therefore leaves the solution logic untouched.
+
+      The ptax_er function used here is the employer payroll tax on
+      wages: the employer share of the OASDI tax on wages up to the
+      SS_Earnings_c cap, plus the employer share of the reform-only extra
+      OASDI tax on wages above the SS_Earnings_thd threshold, plus the
+      employer share of the uncapped HI tax on wages, all of them
+      evaluated on gross wages, which are wages plus employer pension
+      contributions.  This is exactly the rule that the EI_PayrollTax
+      function applies to produce the ptax_er_p and ptax_er_s output
+      variables, both of which are functions of gross wages alone; that
+      is what makes an employer-payroll-tax incidence assumption
+      expressible as a shift of wages.  The baseline anchor ptax_er_1 is
+      therefore read from those output variables rather than recomputed.
+      The reform-policy function must still be stated here, as the
+      module-level employer_ptax_on_wages function, because the bisection
+      evaluates it at trial wages that neither Calculator object has
+      computed, which no output variable can supply; the employer payroll
+      tax rules are consequently stated in this module as well as in the
+      EI_PayrollTax function, and the two statements must be kept in
+      agreement.  The test_behresp.py module tests that agreement
+      directly.
+
       The substitution and income effects on taxable income are computed,
       in dollars per filing unit, as follows, where mtr1 and mtr2 are the
       baseline and reform combined (income plus payroll) marginal tax
@@ -158,6 +313,28 @@ def response(calc_1, calc_2, elasticities, dump=False):
 
     How responses are applied to input variables:
 
+      The earnings shift is applied directly to the earnings variables of
+      the two earners it is computed for: the taxpayer part is added to
+      e00200p and the spouse part to e00200s, with e00200 incremented by
+      their sum.  Nothing else is adjusted.  In particular, the pension
+      contribution variables, pencon_p and pencon_s, are held fixed even
+      though they are part of the employer payroll tax base, because
+      nontaxable benefits are what the (1 - be_esf) fraction of the shift
+      is defined to absorb.
+
+      The shift is applied to a copy of calc_2 before the elasticities
+      below are evaluated, and that copy is recalculated, so the reform
+      marginal tax rates and tax liabilities that enter the substitution,
+      income, and capital-gains responses are all measured at post-shift
+      earnings.  The ordering matters because the shift is an accounting
+      adjustment that defines the reform being analyzed --- it holds gross
+      compensation fixed --- rather than a behavioral response to it, so
+      the elasticity-driven responses are layered on top of it.  There is
+      no double counting of the employer payroll tax: the substitution
+      effect prices earnings using marginal tax rates computed with
+      respect to full compensation, which is a different concept from the
+      wage shift itself.
+
       The sum of the substitution and income effects is a change in
       taxable income that must be mapped back onto the input variables
       used in the tax calculation.  The dollar change is allocated in
@@ -170,8 +347,10 @@ def response(calc_1, calc_2, elasticities, dump=False):
         - the deduction part is added to e19200 (interest paid deduction)
 
       Two consequences are worth noting.  First, the spouse's earnings
-      variable, e00200s, is not adjusted, so after a response both e00200
-      and e00200p have been adjusted by the same amount.  Second, a
+      variable, e00200s, is not adjusted by this part of the response,
+      so the substitution and income effects adjust e00200 and e00200p by
+      the same amount.  (The earnings shift, in contrast, is calculated
+      per earner and does adjust e00200s.)  Second, a
       response shows up in dump output as changes in e00300 and e19200 even
       for filing units whose actual behavior would involve other income or
       deduction items.  The capital-gains response, by contrast, is applied
@@ -207,6 +386,42 @@ def response(calc_1, calc_2, elasticities, dump=False):
 
     Filing units excluded from the response:
 
+      The earnings shift is skipped entirely when be_esf is zero or when
+      the reform alters none of the four parameters of the employer
+      payroll tax on wages: the four ESF_PARAMS parameters, which are
+      FICA_ss_trt_employer, FICA_mc_trt_employer, SS_Earnings_c, and
+      SS_Earnings_thd.  Those four are the only parameters that the
+      employer payroll tax on wages depends on; in particular the
+      employee-share rates are not among them.  That test is on the
+      parameters themselves rather than on calculated tax amounts, so it
+      is exact for the documented use of this function, in which calc_1
+      and calc_2 differ only in policy.  A caller that passes two
+      Calculator objects containing different input data would get no
+      earnings shift when the two policies are the same, even though the
+      two employer payroll tax liabilities would differ.
+
+      Within a reform that does change one of the four parameters, the
+      shift is applied only to earners with positive wages.  That
+      excludes the self-employed, who have no employer to shift a payroll
+      tax to.  It also excludes an earner whose gross wages are entirely
+      employer pension contributions: such an earner does generate an
+      employer payroll tax liability, but has no wages to shift it onto,
+      and shifting it onto an e00200p or e00200s of zero would make that
+      variable negative.  Note that the employer payroll tax used for an
+      included earner is nevertheless computed on gross wages, so it
+      includes the part generated by that earner's pension
+      contributions.
+
+      The shifted wage is floored at zero.  The shift is bounded by
+      be_esf times the employer payroll tax rate times the gross wage,
+      so under any plausible reform it is a small fraction of the wage
+      and the floor never binds, but a reform that sets an extreme
+      employer rate, or an earner whose gross wages are mostly pension
+      contributions, could otherwise drive a wage negative.  Where the
+      floor does bind, the earner's gross compensation is not held
+      fixed, because there is not enough wage income to absorb the
+      be_esf fraction of the employer payroll tax change.
+
       The substitution and income effects are applied only to filing
       units with positive alloc_base; all other filing units are assumed
       to have no ordinary-income response.  That condition is a guard on
@@ -238,8 +453,12 @@ def response(calc_1, calc_2, elasticities, dump=False):
       of capital gains --- is not modeled.  There are no response margins
       for the spouse's earnings, for short-term capital gains, for
       deduction items other than the mechanical e19200 adjustment
-      described above, or for any margin not represented by the three
-      elasticities.  Being a partial-equilibrium calculation, the
+      described above, or for any margin not represented by the
+      elasticities.  The earnings shift assumes full backward shifting of
+      the be_esf fraction onto the individual earner who generated the
+      employer payroll tax liability, so it models neither shifting across
+      workers within an employer nor any forward shifting to consumers or
+      to capital.  Being a partial-equilibrium calculation, the
       analysis holds constant all prices, wages, and macroeconomic
       aggregates.
 
@@ -279,9 +498,11 @@ def response(calc_1, calc_2, elasticities, dump=False):
     assert isinstance(calc_1, Calculator)
     assert isinstance(calc_2, Calculator)
     assert isinstance(elasticities, dict)
+    be_esf = elasticities['esf'] if 'esf' in elasticities else 0.0
     be_sub = elasticities['sub'] if 'sub' in elasticities else 0.0
     be_inc = elasticities['inc'] if 'inc' in elasticities else 0.0
     be_cg = elasticities['cg'] if 'cg' in elasticities else 0.0
+    assert 0.0 <= be_esf <= 1.0
     assert be_sub >= 0.0
     assert be_inc <= 0.0
     assert be_cg <= 0.0
@@ -348,12 +569,86 @@ def response(calc_1, calc_2, elasticities, dump=False):
         if tax_type == 'combined':
             return (combined1, combined2)
         return (iitax1, iitax2)
+
+    def _shifted_wage(calc, wage, pencon, ptax_er_1, esf):
+        """
+        Returns array of post-shift wages, which are the solution of the
+        fixed-point equation described in the response function
+        docstring, where wage is the array of pre-shift reform wages,
+        pencon is the array of employer pension contributions, ptax_er_1
+        is the array of baseline employer payroll tax liability on wages,
+        esf is the earnings shift factor, and calc is the reform-policy
+        Calculator object.
+        """
+        ss_rate = calc.policy_param('FICA_ss_trt_employer')
+        mc_rate = calc.policy_param('FICA_mc_trt_employer')
+        cap = calc.policy_param('SS_Earnings_c')
+        thd = calc.policy_param('SS_Earnings_thd')
+
+        def residual(wag):
+            """
+            Amount by which wag falls short of solving the fixed-point
+            equation; it is increasing in wag with a slope of at least
+            one, because employer payroll tax rates are nonnegative.
+            """
+            return wag - wage + esf * (
+                employer_ptax_on_wages(ss_rate, mc_rate, cap, thd,
+                                       wag + pencon) - ptax_er_1
+            )
+        # bracket the solution: because the residual has a slope of at
+        # least one and is zero at the solution, the solution is no
+        # farther from the pre-shift wage than the residual there
+        offset = residual(wage)
+        low = np.minimum(wage, wage - offset)
+        high = np.maximum(wage, wage - offset)
+        wage_shifted = bisect(residual, low, high)
+        # floor the shifted wage at zero, which binds only for an earner
+        # with too little wage income to absorb the shift; see the
+        # response function docstring
+        return np.maximum(0., wage_shifted)
     # End nested functions used only in this response function
 
     # Begin main logic of response function
     assert calc1.array_len == calc2.array_len
     assert calc1.current_year == calc2.current_year
+    # Determine whether the reform generates an earnings shift
+    # Note: the shift depends on the wage-based part of the employer
+    # payroll tax alone, so it can be skipped whenever the reform leaves
+    # every parameter of that tax unchanged, which is an exact test that
+    # requires no comparison of calculated tax amounts.
+    has_earnings_shift = be_esf > 0. and any(
+        calc1.policy_param(pname) != calc2.policy_param(pname)
+        for pname in ESF_PARAMS
+    )
+    # Note: calc1 must be calculated on every path, because the baseline
+    # employer payroll tax read by the earnings shift below, the df1
+    # variables extracted at the end of this function, and the marginal
+    # tax rates are all calculated variables.  When the earnings shift is
+    # active, calc2 is deliberately left uncalculated until after the
+    # shift, because the shift reads only calc2 input arrays (e00200p,
+    # e00200s, pencon_p, and pencon_s) and calc2 policy parameters; the
+    # calc_all below supplies calc2 its first calculation on every path.
     calc1.calc_all()
+    if has_earnings_shift:
+        # Calculate earnings shift caused by the reform-induced change in
+        # employer payroll tax liability, which holds each earner's gross
+        # compensation fixed by shifting the be_esf fraction of that
+        # change onto wages.  The shift is calculated separately for the
+        # taxpayer and the spouse, and only for earners with wages; see
+        # the response function docstring for the fixed-point equation
+        # solved by the nested _shifted_wage function and for why the
+        # wageless are excluded.
+        shift = {}
+        for who in ('p', 's'):
+            ptax_er_1 = calc1.array(f'ptax_er_{who}')
+            pencon_2 = calc2.array(f'pencon_{who}')
+            wage_2 = calc2.array(f'e00200{who}')
+            wage_shifted = _shifted_wage(calc2, wage_2, pencon_2,
+                                         ptax_er_1, be_esf)
+            shift[who] = np.where(wage_2 > 0., wage_shifted - wage_2, 0.)
+        calc2.incarray('e00200p', shift['p'])
+        calc2.incarray('e00200s', shift['s'])
+        calc2.incarray('e00200', shift['p'] + shift['s'])
     calc2.calc_all()
     # Calculate sum of substitution and income effects
     zero_sub_and_inc = be_sub == 0.0 and be_inc == 0.0

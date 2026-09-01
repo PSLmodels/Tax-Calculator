@@ -24,6 +24,6 @@ the logic that uses them is documented in the [`behresp` module API
 documentation](https://taxcalc.pslmodels.org/api/behresp.html).
 
 Note that a behavioral responses file used with the `tc --behavior`
-option must contain all three of the `sub`, `inc`, and `cg` keys,
+option must contain all four of the `esf`, `sub`, `inc`, and `cg` keys,
 whereas the `response` function in the Python API assumes that an
-omitted elasticity is zero.
+omitted parameter is zero.

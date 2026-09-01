@@ -65,7 +65,7 @@ calc2.calc_all()
 itax_rev2sa = calc2.weighted_total('iitax')
 
 # specify assumed non-zero response-function substitution elasticity
-# (the omitted 'inc' and 'cg' elasticities are assumed to be zero)
+# (the omitted 'esf', 'inc' and 'cg' parameters are assumed to be zero)
 response_elasticities = {'sub': 0.25}
 
 # specify Calculator object for analysis of reform with behavioral responses

@@ -269,16 +269,21 @@ class TaxCalcIO():
                 self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
                 self.errmsg += f'{valerr}'
                 return
-            # check behavior response elasticity names and values
+            # check behavior response parameter names and values
             elasticity_set = set(self.behvdict.keys())
-            if elasticity_set != set(['sub', 'inc', 'cg']):
-                msg = f'{behavior} contains extra or missing elasticities'
+            if elasticity_set != set(['esf', 'sub', 'inc', 'cg']):
+                msg = f'{behavior} contains extra or missing parameters'
                 self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
-                self.errmsg += 'Valid elasticities are "sub", "inc", "cg"'
+                self.errmsg += (
+                    'Valid parameters are "esf", "sub", "inc", "cg"'
+                )
                 return
+            if self.behvdict['esf'] < 0.0 or self.behvdict['esf'] > 1.0:
+                msg = f'{behavior} contains "esf" outside [0,1] range'
+                self.errmsg += f'ERROR: BEHAVIOR file {msg}\n'
             if self.behvdict['sub'] < 0.0:
                 msg = f'{behavior} contains negative "sub" elasticity'
-                self.errmsg = f'ERROR: BEHAVIOR file {msg}\n'
+                self.errmsg += f'ERROR: BEHAVIOR file {msg}\n'
             if self.behvdict['inc'] > 0.0:
                 msg = f'{behavior} contains positive "inc" elasticity'
                 self.errmsg += f'ERROR: BEHAVIOR file {msg}\n'

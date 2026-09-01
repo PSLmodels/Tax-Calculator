@@ -90,8 +90,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   e00900p, e00900s, e02100p, e02100s, k1bx14p,
                   k1bx14s, payrolltax, ptax_er_p, ptax_er_s, ptax_was, setax,
                   c03260, ptax_oasdi,
-                  sey, earned, earned_p, earned_s,
-                  was_plus_sey_p, was_plus_sey_s):
+                  sey, earned, earned_p, earned_s):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
 
@@ -126,8 +125,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Final adjustment amount = (1-Haircut)*SelfEmploymentTaxAdjustment
     SS_Earnings_thd: float
         Additional taxable earnings threshold for Social Security
-        Individual earnings above this threshold are subjected to
-        OASDI payroll tax, in addtion to earnings below the
+        Individual wage-and-salary earnings above this threshold are subjected
+        to OASDI payroll tax, in addition to earnings below the
         maximum taxable earnings threshold.
     SECA_Earnings_thd: float
         Threshold value for self-employment income below which there is
@@ -171,10 +170,6 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Earned income for taxpayer
     earned_s: float
         Earned income for spouse
-    was_plus_sey_p: float
-        Wage and salary income plus taxable self employment income for taxpayer
-    was_plus_sey_s: float
-        Wage and salary income plus taxable self employment income for spouse
 
     Returns
     -------
@@ -203,10 +198,6 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Earned income for taxpayer
     earned_s: float
         Earned income for spouse
-    was_plus_sey_p: float
-        Wage and salary income plus taxable self employment income for taxpayer
-    was_plus_sey_s: float
-        Wage and salary income plus taxable self employment income for spouse
     """
     # combined OASDI and HI FICA rates (employer + employee shares)
     ss_rate = FICA_ss_trt_employer + FICA_ss_trt_employee
@@ -256,13 +247,10 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     else:
         setax = 0.0
 
-    # ---------- Reform-only extra OASDI bracket (not on Sch SE) ----------
-    # extra OASDI on the portion of (wages + taxable SE) above SS_Earnings_thd
-    extra_frac = 1.0 - 0.5 * ss_rate
-    was_plus_sey_p = gross_ws_p + max(0., sey_p * extra_frac)
-    was_plus_sey_s = gross_ws_s + max(0., sey_s * extra_frac)
-    extra_ss_income_p = max(0., was_plus_sey_p - SS_Earnings_thd)
-    extra_ss_income_s = max(0., was_plus_sey_s - SS_Earnings_thd)
+    # ---------- Reform-only extra OASDI bracket ----------
+    # extra OASDI on the portion of wages and salary above SS_Earnings_thd
+    extra_ss_income_p = max(0., gross_ws_p - SS_Earnings_thd)
+    extra_ss_income_s = max(0., gross_ws_s - SS_Earnings_thd)
     extra_payrolltax = ss_rate * (extra_ss_income_p + extra_ss_income_s)
 
     # filing-unit payroll tax and OASDI-only part (HI excluded from ptax_oasdi)
@@ -276,9 +264,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     # excluded: the self-employed pay both halves themselves, so there is
     # no employer share.  This makes both variables invariant under
     # soi_iitax, which only moves setax between iitax and payrolltax for
-    # reporting purposes.  Note that extra_ss_income_* derives from
-    # was_plus_sey_*, so under an SS_Earnings_thd reform these amounts
-    # blend wage and self-employment earnings.
+    # reporting purposes.
     ptax_er_p = (
         FICA_ss_trt_employer * (txearn_was_p + extra_ss_income_p) +
         FICA_mc_trt_employer * gross_ws_p
@@ -301,8 +287,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     earned_s = max(0., (e00200s + sey_s -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (sey, payrolltax, ptax_er_p, ptax_er_s, ptax_was, setax, c03260,
-            ptax_oasdi,
-            earned, earned_p, earned_s, was_plus_sey_p, was_plus_sey_s)
+            ptax_oasdi, earned, earned_p, earned_s)
 
 
 @iterate_jit(nopython=True)
@@ -3280,71 +3265,6 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
 
 
 @iterate_jit(nopython=True)
-def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
-                               RPTC_c, RPTC_rt,
-                               rptc_p, rptc_s, rptc):
-    """
-    Computes the Refundable Payroll Tax Credit (RPTC).
-
-    Reform construct with no IRS form correspondence: RPTC is a
-    Tax-Calculator-only credit designed to emulate a payroll-tax
-    exemption via the refundable-credit side of Form 1040.  Per the
-    `RPTC_c` policy-parameter description, positive values of `RPTC_c`
-    and `RPTC_rt` together emulate a payroll-tax exemption whose
-    implied earnings ceiling is `RPTC_c / RPTC_rt` per spouse.
-
-    Inert under current law: `RPTC_c` and `RPTC_rt` both default to
-    0.0 for all years (2013+), so `rptc_p = rptc_s = rptc = 0`.
-
-    Body (per spouse): pre-phaseout credit = min(rate * earnings, cap),
-    where "earnings" is `was_plus_sey_*` (gross wages-and-salaries plus
-    the reform-only extra-OASDI taxable SE component) as produced by
-    `EI_PayrollTax`.  The filing-unit total `rptc` is the sum of the
-    two per-spouse credits.
-
-    Calling order (calculator.py): invoked after `EITC` and before
-    `PersonalTaxCredit` in the refundable-credit sequence.  Downstream
-    consumer: `IITAX` subtracts `rptc` from total tax liability as a
-    fully-refundable credit (Form 1040 line 31 / Schedule 3 line 13
-    territory, modeled here as a standalone refundable item).
-
-    Parameters
-    ----------
-    was_plus_sey_p: float
-        Taxpayer's gross wages-and-salaries plus reform-only extra-OASDI
-        taxable self-employment earnings (set by `EI_PayrollTax`).
-    was_plus_sey_s: float
-        Spouse's gross wages-and-salaries plus reform-only extra-OASDI
-        taxable self-employment earnings (set by `EI_PayrollTax`).
-    RPTC_c: float
-        Per-spouse maximum refundable payroll tax credit (reform-only;
-        default 0.0).
-    RPTC_rt: float
-        Phasein rate applied to per-spouse earnings before the cap
-        (reform-only; default 0.0).
-    rptc_p: float
-        Records-bound output: RPTC for taxpayer.
-    rptc_s: float
-        Records-bound output: RPTC for spouse.
-    rptc: float
-        Records-bound output: RPTC for filing unit (`rptc_p + rptc_s`).
-
-    Returns
-    -------
-    rptc_p: float
-        RPTC for taxpayer.
-    rptc_s: float
-        RPTC for spouse.
-    rptc: float
-        RPTC for filing unit.
-    """
-    rptc_p = min(was_plus_sey_p * RPTC_rt, RPTC_c)
-    rptc_s = min(was_plus_sey_s * RPTC_rt, RPTC_c)
-    rptc = rptc_p + rptc_s
-    return (rptc_p, rptc_s, rptc)
-
-
-@iterate_jit(nopython=True)
 def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
                       c05800, e07260, CR_ResidentialEnergy_hc,
                       e07300, CR_ForeignTax_hc,
@@ -4766,7 +4686,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
 
 
 @iterate_jit(nopython=True)
-def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
+def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new,
           c09200, CDCC_refund, recovery_rebate_credit,
           eitc, c07220, odc, CTC_is_refundable, ODC_is_refundable,
           soi_iitax, setax, e09800, ptax_amc, refund,
@@ -4814,10 +4734,9 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
 
     Reform constructs (no Form 1040 (2025) line):
       `personal_refundable_credit` (II_credit* knobs from
-      `PersonalTaxCredit`), `ctc_new` (from `CTC_new`), `rptc` (from
-      `RefundablePayrollTaxCredit`), and the `recovery_rebate_credit`
-      (historically Form 1040 line 30 for 2020 CARES / 2021 ARPA RRC;
-      inert for 2022+).
+      `PersonalTaxCredit`), `ctc_new` (from `CTC_new`), and the
+      `recovery_rebate_credit` (historically Form 1040 line 30
+      for 2020 CARES / 2021 ARPA RRC; inert for 2022+).
 
     Calling order: invoked by `Calculator._calc_one_year` after `CTC_new`
     (so c09200, c07220, odc, c10960, c11070, c59660, CDCC_refund are all
@@ -4839,9 +4758,6 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     ctc_new: float
         Reform-only new refundable child tax credit from `CTC_new`
         (no Form 1040 line; default 0 under current law)
-    rptc: float
-        Reform-only refundable payroll tax credit for filing unit from
-        `RefundablePayrollTaxCredit` (no Form 1040 line; default 0)
     c09200: float
         Total income tax (including other taxes, after nonrefundable
         credits) from `C1040` (Form 1040 line 24)
@@ -4939,7 +4855,6 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
               CDCC_refund +                # Sch 3 line 13 → Form 1040 line 31
               personal_refundable_credit +  # reform-only (no form line)
               ctc_new +                     # reform-only (no form line)
-              rptc +                        # reform-only (no form line)
               ctc_refund +                  # reform-only (CTC_is_refundable)
               odc_refund)                   # reform-only (ODC_is_refundable)
     # (C) records-bound CTC diagnostic (not on the form)

@@ -80,13 +80,13 @@ page](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumption
 ## Specify behavioral responses
 
 For a JSON file template that can be used to specify you own values of
-each response elasticity, go to [this
+each response parameter, go to [this
 page](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behavior/README.md).
 
 A JSON behavior file used with the `--behavior` option must contain
-all three of the `sub`, `inc`, and `cg` elasticities; specify an
-elasticity as `0.0` to turn off that response channel.  The meaning
-and appropriate values of the three elasticities are described in
+all four of the `esf`, `sub`, `inc`, and `cg` parameters; specify a
+parameter as `0.0` to turn off that response channel.  The meaning
+and appropriate values of the four parameters are described in
 {doc}`behavior_params`, and the logic that uses them is documented in
 {doc}`../api/behresp`.  Note in particular that `cg` is a
 semi-elasticity rather than the tax-rate elasticity usually reported

@@ -1,8 +1,17 @@
 // Parameters used to specify behavioral responses in tax policy analysis.
 //
 // This JSON file serves as a template for specifying behavioral response
-// elasticities that specify how individuals respond to a tax reform.
-// All three keys must be present; use 0.0 to turn off a response channel.
+// parameters that specify how employers/individuals respond to a tax reform.
+// All four keys must be present; use 0.0 to turn off a response channel.
+//
+//   "esf" : earnings shift factor is the fraction of the reform-induced
+//           increase (decrease) in the employer payroll tax liability that
+//           is shifted to the employee as a decrease (increase) in earnings
+//           with the remainder shifted to the employee as a decrease (increase)
+//           in non-taxable benefits such as employer-provided health insurance;
+//           the esf valid range is [0, 1]; JCT assumes a 0.85 value.
+//           Note that any earnings shift is applied BEFORE the remaining
+//           elasticity calculations (see below) are performed.
 //
 //   "sub" : substitution elasticity of taxable income; zero or positive;
 //           empirical estimates are typically in the 0.1 to 0.4 range.
@@ -21,6 +30,7 @@
 // https://taxcalc.pslmodels.org/guide/behavior_params.html
 // https://taxcalc.pslmodels.org/api/behresp.html
 {
+    "esf": 0.0,
     "sub": 0.0,
     "inc": 0.0,
     "cg": 0.0

@@ -49,47 +49,12 @@ _IRS Form Location:_
 2013-20??: calculated variable  
 
 
-##  `was_plus_sey_p`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
-_Datatype_: float  
-_IRS Form Location:_  
-2013-20??: calculated variable  
-
-
-##  `was_plus_sey_s`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
-_Datatype_: float  
-_IRS Form Location:_  
-2013-20??: calculated variable  
-
-
 ##  `eitc`  
 _Description_: Earned Income Credit  
 _Datatype_: float  
 _IRS Form Location:_  
 2013-2013: 1040 line 64a  
 2014-2016: 1040 line 66a  
-
-
-##  `rptc`  
-_Description_: Refundable Payroll Tax Credit for filing unit  
-_Datatype_: float  
-_IRS Form Location:_  
-2013-20??: calculated variable  
-
-
-##  `rptc_p`  
-_Description_: Refundable Payroll Tax Credit for taxpayer  
-_Datatype_: float  
-_IRS Form Location:_  
-2013-20??: calculated variable  
-
-
-##  `rptc_s`  
-_Description_: Refundable Payroll Tax Credit for spouse  
-_Datatype_: float  
-_IRS Form Location:_  
-2013-20??: calculated variable  
 
 
 ##  `exact`  

@@ -383,7 +383,7 @@
     },
     "SS_Earnings_thd": {
         "title": "Additional taxable earnings threshold for OASDI payroll taxes",
-        "description": "Individual earnings above this threshold are subjected to OASDI payroll tax, in addition to earnings below the SS_Earnings_c threshold.",
+        "description": "Individual wage-and-salary earnings above this threshold are subjected to OASDI payroll tax, in addition to earnings below the SS_Earnings_c threshold.",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
         "indexable": true,
@@ -21209,108 +21209,6 @@
         "compatible_data": {
             "puf": true,
             "cps": false
-        }
-    },
-    "RPTC_c": {
-        "title": "Maximum refundable payroll tax credit",
-        "description": "This is the maximum amount of the refundable payroll tax credit for each taxpayer/spouse.  Positive values of RPTC_c and RPTC_rt can be used to emulate a payroll tax exemption, the implied value of which is RPTC_c divided by RPTC_rt.",
-        "section_1": "Refundable Credits",
-        "section_2": "Refundable Payroll Tax Credit",
-        "indexable": true,
-        "indexed": true,
-        "type": "float",
-        "value": [
-            {
-                "year": 2013,
-                "value": 0.0
-            },
-            {
-                "year": 2014,
-                "value": 0.0
-            },
-            {
-                "year": 2015,
-                "value": 0.0
-            },
-            {
-                "year": 2016,
-                "value": 0.0
-            },
-            {
-                "year": 2017,
-                "value": 0.0
-            },
-            {
-                "year": 2018,
-                "value": 0.0
-            },
-            {
-                "year": 2019,
-                "value": 0.0
-            },
-            {
-                "year": 2020,
-                "value": 0.0
-            },
-            {
-                "year": 2021,
-                "value": 0.0
-            },
-            {
-                "year": 2022,
-                "value": 0.0
-            },
-            {
-                "year": 2023,
-                "value": 0.0
-            },
-            {
-                "year": 2024,
-                "value": 0.0
-            },
-            {
-                "year": 2025,
-                "value": 0.0
-            },
-            {
-                "year": 2026,
-                "value": 0.0
-            }
-        ],
-        "validators": {
-            "range": {
-                "min": 0,
-                "max": 9e+99
-            }
-        },
-        "compatible_data": {
-            "puf": true,
-            "cps": true
-        }
-    },
-    "RPTC_rt": {
-        "title": "Refundable payroll tax credit phasein rate",
-        "description": "Pre-phaseout credit is minimum of this rate times earnings and the maximum refundable payroll tax credit, where earnings is defined as in FICA and SECA.  Positive values of RPTC_c and RPTC_rt can be used to emulate a payroll tax exemption, the implied value of which is RPTC_c divided by RPTC_rt.",
-        "section_1": "Refundable Credits",
-        "section_2": "Refundable Payroll Tax Credit",
-        "indexable": false,
-        "indexed": false,
-        "type": "float",
-        "value": [
-            {
-                "year": 2013,
-                "value": 0.0
-            }
-        ],
-        "validators": {
-            "range": {
-                "min": 0,
-                "max": 9e+99
-            }
-        },
-        "compatible_data": {
-            "puf": true,
-            "cps": true
         }
     },
     "LLC_Expense_c": {

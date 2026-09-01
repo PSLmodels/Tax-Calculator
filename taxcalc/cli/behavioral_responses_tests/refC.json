@@ -1,0 +1,9 @@
+{
+    "policy": {
+        // raise combined er/ee payroll tax rate by one percentage point
+        "FICA_ss_trt_employer": {"2028": 0.067},  // up from 0.062
+        "FICA_ss_trt_employee": {"2028": 0.067},  // up from 0.062
+        // tax wages above $500K at the new payroll tax rates and index
+        "SS_Earnings_thd": {"2028": 500e3}
+    }
+}
