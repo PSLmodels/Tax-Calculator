@@ -87,6 +87,15 @@ NEW_KNOWN_ITEMS = {
 
         {'year': 2026, 'value': 184500.0},
     ],
+    'SS_Earnings_thd': [
+        {'year': 2023, 'value': 9e99},
+
+        {'year': 2024, 'value': 9e99},
+
+        {'year': 2025, 'value': 9e99},
+
+        {'year': 2026, 'value': 9e99},
+    ],
     # INCOME TAX PARAMETER SOURCES:
     # - IRS Rev. Proc. 2022-38 containing 2023 policy parameter values is at:
     #       https://www.irs.gov/pub/irs-drop/rp-22-38.pdf

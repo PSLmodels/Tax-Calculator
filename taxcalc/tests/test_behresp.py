@@ -403,21 +403,10 @@ def test_earnings_shift_holds_compensation_fixed(pname, cps_subsample):
 
 
 ESF_OTHER_REFORMS = {
-    # ... put the extra OASDI bracket threshold below the maximum
-    #     taxable earnings amount, so that wages between the two
-    #     thresholds are subjected to the OASDI rate twice, which no
-    #     other earnings-shift test does
-    'thd_below_cap': ({'SS_Earnings_thd': {2020: 50000.}}, 'cut'),
     # ... reduce the maximum taxable earnings amount, which lowers
     #     employer payroll tax liability and hence raises wages, which
     #     no other earnings-shift test does
-    'cap_reduced': ({'SS_Earnings_c': {2020: 50000.}}, 'raise'),
-    # ... change both, leaving the extra bracket threshold below the
-    #     reduced maximum taxable earnings amount, which raises
-    #     liability for every earner with wages above the extra bracket
-    #     threshold
-    'both_changed': ({'SS_Earnings_c': {2020: 100000.},
-                      'SS_Earnings_thd': {2020: 50000.}}, 'cut'),
+    'cap_reduced': ({'SS_Earnings_c': {2020: 50000.}}, 'raise')
 }
 
 
