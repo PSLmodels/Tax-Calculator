@@ -735,17 +735,93 @@ to be an accurate representation of the Cost-of-Living Refund proposal.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>YEAR  UNITS   ITAX1   ITAX2  EITC1  EITC2  COLR1  COLR2
-2019  201.9  1275.4  1275.4   50.1   50.1    0.0    0.0
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020  204.5  773.6  469.5   52.0    0.0    0.0  356.1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2021  207.1  984.1  710.9   59.1    0.0    0.0  332.3
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2022  209.7  1661.2  1355.0   48.1    0.0    0.0  354.2
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">HTTPError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">121</span>
+<span class="g g-Whitespace">    </span><span class="mi">117</span> <span class="n">policy1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>  <span class="c1"># baseline policy is current-law policy</span>
+<span class="g g-Whitespace">    </span><span class="mi">118</span> <span class="n">policy2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>  <span class="c1"># parametric reform, reformC.json, eliminates EITC</span>
+<span class="g g-Whitespace">    </span><span class="mi">119</span> 
+<span class="g g-Whitespace">    </span><span class="mi">120</span> <span class="c1"># TODO: Move to the web so this can be done standalone.</span>
+<span class="ne">--&gt; </span><span class="mi">121</span> <span class="n">policy2</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">'github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformC.json'</span><span class="p">))</span>
+<span class="g g-Whitespace">    </span><span class="mi">122</span> 
+<span class="g g-Whitespace">    </span><span class="mi">123</span> <span class="c1"># specify customized Calculator objects for baseline and reform:</span>
+<span class="g g-Whitespace">    </span><span class="mi">124</span> <span class="c1">#   baseline calc1 uses policy1 (current-law) and colr_active=False</span>
+
+<span class="nn">File ~/work/Tax-Calculator/Tax-Calculator/taxcalc/policy.py:192,</span> in <span class="ni">Policy.read_json_reform</span><span class="nt">(obj)</span>
+<span class="g g-Whitespace">    </span><span class="mi">184</span> <span class="nd">@staticmethod</span>
+<span class="g g-Whitespace">    </span><span class="mi">185</span> <span class="k">def</span><span class="w"> </span><span class="nf">read_json_reform</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">186</span><span class="w">     </span><span class="sd">"""</span>
+<span class="g g-Whitespace">    </span><span class="mi">187</span><span class="sd">     Return a reform dictionary suitable for use with implement_reform</span>
+<span class="g g-Whitespace">    </span><span class="mi">188</span><span class="sd">     method generated from the specified JSON object, which can be None or</span>
+<span class="g g-Whitespace">    </span><span class="mi">189</span><span class="sd">     a string containing a local filename, a URL beginning with 'http'</span>
+<span class="g g-Whitespace">    </span><span class="mi">190</span><span class="sd">     pointing to a valid JSON file hosted online, or a valid JSON text.</span>
+<span class="g g-Whitespace">    </span><span class="mi">191</span><span class="sd">     """</span>
+<span class="ne">--&gt; </span><span class="mi">192</span>     <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">'policy'</span><span class="p">)</span>
+
+<span class="nn">File ~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py:760,</span> in <span class="ni">Parameters._read_json_revision</span><span class="nt">(obj, topkey)</span>
+<span class="g g-Whitespace">    </span><span class="mi">757</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">758</span>     <span class="k">return</span> <span class="p">{}</span>
+<span class="ne">--&gt; </span><span class="mi">760</span> <span class="n">full_dict</span> <span class="o">=</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">762</span> <span class="c1"># check top-level key contents of dictionary</span>
+<span class="g g-Whitespace">    </span><span class="mi">763</span> <span class="k">if</span> <span class="n">topkey</span> <span class="ow">in</span> <span class="n">full_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.12/site-packages/paramtools/utils.py:105,</span> in <span class="ni">read_json</span><span class="nt">(params_or_path, storage_options)</span>
+<span class="g g-Whitespace">     </span><span class="mi">89</span> <span class="k">def</span><span class="w"> </span><span class="nf">read_json</span><span class="p">(</span>
+<span class="g g-Whitespace">     </span><span class="mi">90</span>     <span class="n">params_or_path</span><span class="p">:</span> <span class="n">FileDictStringLike</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">91</span>     <span class="n">storage_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">92</span> <span class="p">):</span>
+<span class="g g-Whitespace">     </span><span class="mi">93</span><span class="w">     </span><span class="sd">"""</span>
+<span class="g g-Whitespace">     </span><span class="mi">94</span><span class="sd">     Read JSON data of the form:</span>
+<span class="g g-Whitespace">     </span><span class="mi">95</span><span class="sd">     - Dict.</span>
+<span class="sd">   (...)    103 </span>
+<span class="g g-Whitespace">    </span><span class="mi">104</span><span class="sd">     """</span>
+<span class="ne">--&gt; </span><span class="mi">105</span>     <span class="n">res</span> <span class="o">=</span> <span class="n">_read</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="n">storage_options</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">106</span>     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">107</span>         <span class="k">try</span><span class="p">:</span>
+
+<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.12/site-packages/paramtools/utils.py:50,</span> in <span class="ni">_read</span><span class="nt">(params_or_path, storage_options)</span>
+<span class="g g-Whitespace">     </span><span class="mi">47</span>         <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">49</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_url</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">):</span>
+<span class="ne">---&gt; </span><span class="mi">50</span>     <span class="k">with</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">storage_options</span> <span class="ow">or</span> <span class="p">{}))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="g g-Whitespace">     </span><span class="mi">51</span>         <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">53</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+
+<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.12/site-packages/fsspec/core.py:105,</span> in <span class="ni">OpenFile.__enter__</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">102</span> <span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"t"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"b"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"b"</span>
+<span class="g g-Whitespace">    </span><span class="mi">104</span> <span class="k">try</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">105</span>     <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">106</span> <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">107</span>     <span class="k">if</span> <span class="n">has_magic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
+
+<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.12/site-packages/fsspec/spec.py:1405,</span> in <span class="ni">AbstractFileSystem.open</span><span class="nt">(self, path, mode, block_size, cache_options, compression, **kwargs)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1403</span> <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1404</span>     <span class="n">ac</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"autocommit"</span><span class="p">,</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intrans</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">1405</span>     <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1406</span>         <span class="n">path</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1407</span>         <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1408</span>         <span class="n">block_size</span><span class="o">=</span><span class="n">block_size</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1409</span>         <span class="n">autocommit</span><span class="o">=</span><span class="n">ac</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1410</span>         <span class="n">cache_options</span><span class="o">=</span><span class="n">cache_options</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1411</span>         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1412</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1413</span>     <span class="k">if</span> <span class="n">compression</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1414</span>         <span class="kn">from</span><span class="w"> </span><span class="nn">fsspec.compression</span><span class="w"> </span><span class="kn">import</span> <span class="n">compr</span>
+
+<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.12/site-packages/fsspec/implementations/github.py:238,</span> in <span class="ni">GithubFileSystem._open</span><span class="nt">(self, path, mode, block_size, cache_options, sha, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">236</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">237</span>     <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">238</span> <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">239</span> <span class="n">content_json</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">241</span> <span class="c1"># if the response's content key is not empty, try to parse it as base64</span>
+
+<span class="nn">File /usr/share/miniconda/envs/taxcalc-dev/lib/python3.12/site-packages/requests/models.py:1167,</span> in <span class="ni">Response.raise_for_status</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1162</span>     <span class="n">http_error_msg</span> <span class="o">=</span> <span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1163</span>         <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> Server Error: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2"> for url: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span>
+<span class="g g-Whitespace">   </span><span class="mi">1164</span>     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1166</span> <span class="k">if</span> <span class="n">http_error_msg</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">1167</span>     <span class="k">raise</span> <span class="n">HTTPError</span><span class="p">(</span><span class="n">http_error_msg</span><span class="p">,</span> <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+<span class="ne">HTTPError</span>: 403 Client Error: rate limit exceeded for url: https://api.github.com/repos/PSLmodels/Tax-Calculator/contents/docs/recipes/_static/reformC.json?ref=master
 </pre></div>
 </div>
 </div>
