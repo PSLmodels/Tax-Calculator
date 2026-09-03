@@ -13,9 +13,9 @@ In the top-level Tax-Calculator directory, do the following:
 --> specify release X.Y.Z in setup.py, taxcalc/__init__.py, docs/index.md
 --> edit docs/about/releases.md to finalize detailed X.Y.Z features
 --> run `python update_pcl.py`  [to update policy_current_law.json]
---> run `make transfer` in T-C-LLM repo  [to install agents/tca/tca.zip]
---> run `make tests `  [executes cstest, pytest, brtest, idtest]
+--> run `make tests`  [executes cstest, pytest, brtest, idtest]
 --> run `make tctest-jit`  [to ensure JIT decorators are not hiding bugs]
+--> run `make transfer` in T-C-LLM repo  [to install agents/tca/tca.zip]
 --> commit X-Y-Z branch and push to origin
 --> open new GitHub pull request using your X-Y-Z branch
 ```
