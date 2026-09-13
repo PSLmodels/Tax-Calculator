@@ -72,23 +72,14 @@ are available only to users who have purchased their own version of the
 2015 IRS-SOI PUF.  For those users, the TMD files are available from the
 tax-microdata repository.  The three TMD files can be used with
 Tax-Calculator in two ways:
-  - with the **Python API**:
-     * instantiate a GrowFactors object that uses TMD growth factors
-      [`gf=GrowFactors("path/to/tmd_growfactors.csv")`] and by using
-      the `Records.tmd_constructor(...)` static method to instantiate
-      a Records object, and
-    * after each instantiation of a Policy object, activate the TMD
-      refundable credit claiming behavior by executing the
-      `implement_reform(TMD_CREDIT_CLAIMING)` method on the Policy
-      object (both for baseline and reform Policy objects), where the
-      `TMD_CREDIT_CLAIMING` dictionary is imported from the `taxcalcio.py`
-      module.
+  - with the **Python API**, instantiate a GrowFactors object that uses
+    TMD growth factors [`gf=GrowFactors("path/to/tmd_growfactors.csv")`]
+    and then use the `Records.tmd_constructor(...)` static method to
+    instantiate a Records object that uses the TMD input data and
+    weights.
   - or
   - with the **CLI tool**, use `tc`, when the three TMD files are all
     in the same folder and the `tmd.csv.gz` file has been unzipped.
-    The `tc` tool automatically activates the TMD refundable credit
-    claiming behavior, so there is no need to do that on the command
-    line when using the CLI tool.
 
 The [tax-microdata
 repository](https://github.com/PSLmodels/tax-microdata-benchmarking)
