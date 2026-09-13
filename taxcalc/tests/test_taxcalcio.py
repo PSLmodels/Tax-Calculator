@@ -282,6 +282,21 @@ def test_ctor_errors(input_data, baseline, reform, assump, behavior):
     assert tcio.errmsg
 
 
+@pytest.mark.parametrize('input_data', [
+    ('puf.csv'),
+    (os.path.join('no-such-directory', 'puf.csv')),
+])
+def test_ctor_puf_input_data_error(input_data):
+    """
+    Ensure TaxCalcIO.__init__ rejects INPUT file name ending in puf.csv.
+    """
+    tcio = TaxCalcIO(input_data=input_data, tax_year=2025,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert 'puf.csv is not supported' in tcio.errmsg
+    assert 'INPUT file could not be found' not in tcio.errmsg
+
+
 @pytest.mark.parametrize('year, base, ref, asm', [
     (2000, 'reformfile0', 'reformfile0', None),
     (2099, 'reformfile0', 'reformfile0', None),

@@ -50,18 +50,6 @@ def puf_data_path_fixture(tests_path):
     return os.path.join(tests_path, '..', '..', 'puf.csv')
 
 
-@pytest.fixture(scope='session', name='puf_weights_path')
-def puf_weights_path_fixture(tests_path):
-    """Fixture docstring"""
-    return os.path.join(tests_path, '..', '..', 'puf_weights.csv.gz')
-
-
-@pytest.fixture(scope='session', name='puf_ratios_path')
-def puf_ratios_path_fixture(tests_path):
-    """Fixture docstring"""
-    return os.path.join(tests_path, '..', '..', 'puf_ratios.csv')
-
-
 @pytest.fixture(scope='session', name='tmd_data_path')
 def tmd_data_path_fixture(tests_path):
     """Fixture docstring"""

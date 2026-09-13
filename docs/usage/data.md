@@ -46,6 +46,11 @@ For users who have purchased from IRS-SOI their own version of the
 files from the taxdata repository, can be used by Tax-Calculator using
 the `Records.puf_constructor(...)` static method.
 
+These PUF-derived files can be used only with the **Python API**.
+The **CLI tool**, `tc`, does not support PUF input data: it rejects an
+INPUT file name ending in `puf.csv`.  Use the 2015-based TMD files
+described below for CLI work.
+
 We refer users of the PUF to the IRS limitations on the use of those
 data and their distribution.  We also refer users of the PUF input
 data to the [taxdata](https://github.com/PSLmodels/taxdata)

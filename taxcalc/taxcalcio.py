@@ -83,7 +83,6 @@ class TaxCalcIO():
         # check name and existence of INPUT file
         inp = 'x'
         self.cps_input_data = False
-        self.puf_input_data = False
         self.tmd_input_data = False
         if isinstance(input_data, str):
             # remove any leading directory path from INPUT filename
@@ -94,24 +93,21 @@ class TaxCalcIO():
             else:
                 msg = 'INPUT file name does not end in .csv'
                 self.errmsg += f'ERROR: {msg}\n'
+            # check that fname does not end with "puf.csv"
+            puf_input_data = fname.endswith('puf.csv')
+            if puf_input_data:
+                msg = 'INPUT file name ending in puf.csv is not supported'
+                self.errmsg += f'ERROR: {msg}\n'
             # check existence of INPUT file
             self.cps_input_data = input_data.endswith('cps.csv')
-            self.puf_input_data = input_data.endswith('puf.csv')
             self.tmd_input_data = input_data.endswith('tmd.csv')
-            if not self.cps_input_data and not os.path.isfile(input_data):
+            if (
+                    not self.cps_input_data and
+                    not puf_input_data and
+                    not os.path.isfile(input_data)
+            ):
                 msg = 'INPUT file could not be found'
                 self.errmsg += f'ERROR: {msg}\n'
-            # if puf_input_data is True, construct weights and ratios paths
-            if self.puf_input_data:  # pragma: no cover
-                puf_dir = os.path.dirname(input_data)
-                self.puf_weights = os.path.join(puf_dir, 'puf_weights.csv.gz')
-                self.puf_ratios = os.path.join(puf_dir, 'puf_ratios.csv')
-                if not os.path.isfile(self.puf_weights):
-                    msg = f'weights file {self.puf_weights} could not be found'
-                    self.errmsg += f'ERROR: {msg}\n'
-                if not os.path.isfile(self.puf_ratios):
-                    msg = f'gfactor file {self.puf_ratios} could not be found'
-                    self.errmsg += f'ERROR: {msg}\n'
             # if tmd_input_data is True, construct weights and gfactor paths
             if self.tmd_input_data:  # pragma: no cover
                 tmd_dir = os.path.dirname(input_data)
@@ -239,10 +235,7 @@ class TaxCalcIO():
         if tax_year > max_tax_year:
             msg = f'TAXYEAR={tax_year} is greater than {max_tax_year}'
             self.errmsg += f'ERROR: {msg}\n'
-        if self.puf_input_data:
-            min_tax_year = max(  # pragma: no cover
-                Policy.JSON_START_YEAR, Records.PUFCSV_YEAR)
-        elif self.cps_input_data:
+        if self.cps_input_data:
             min_tax_year = max(
                 Policy.JSON_START_YEAR, Records.CPSCSV_YEAR)
         elif self.tmd_input_data:
@@ -355,7 +348,6 @@ class TaxCalcIO():
         # read input file contents into Records objects
         self.aging_input_data = (
             self.cps_input_data or
-            self.puf_input_data or
             self.tmd_input_data
         )
         if self.aging_input_data:
@@ -430,7 +422,6 @@ class TaxCalcIO():
         # report advance to new year
         aging_data = (
             self.cps_input_data or
-            self.puf_input_data or
             self.tmd_input_data
         )
         idata = 'Advance input data and' if aging_data else 'Advance'
@@ -697,14 +688,6 @@ class TaxCalcIO():
         if self.cps_input_data:
             return Records.cps_constructor(
                 gfactors=gfactors,
-                exact_calculations=exact_calculations,
-            )
-        if self.puf_input_data:  # pragma: no cover
-            return Records.puf_constructor(
-                data=input_data,
-                gfactors=gfactors,
-                weights=self.puf_weights,
-                ratios=self.puf_ratios,
                 exact_calculations=exact_calculations,
             )
         if self.tmd_input_data:  # pragma: no cover
