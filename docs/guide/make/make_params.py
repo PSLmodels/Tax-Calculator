@@ -120,13 +120,14 @@ def paramtextdf(df, ptype):
         txt = df.get('notes', '')
         return np.where(txt == '', '', '_Notes:_ ' + txt + '  \n')
 
-    def effect_puf_cps_one(row):
+    def effect_data_one(row):
         return ('_Has An Effect When Using:_' +
                 ' _PUF data:_ ' + boolstr(row.compatible_data['puf']) +
-                ' _CPS data:_ ' + boolstr(row.compatible_data['cps']) + '  \n')
+                ' _CPS data:_ ' + boolstr(row.compatible_data['cps']) +
+                ' _TMD data:_ ' + boolstr(row.compatible_data['tmd']) + '  \n')
 
-    def effect_puf_cps(df):
-        return df.apply(effect_puf_cps_one, axis=1)
+    def effect_data(df):
+        return df.apply(effect_data_one, axis=1)
 
     def inflation_indexed(df):
         return ('_Can Be Inflation Indexed:_ ' + boolstr(df.indexable) +
@@ -175,7 +176,7 @@ def paramtextdf(df, ptype):
     text += description(df)
     if ptype == 'policy':
         text += notes(df)
-        text += effect_puf_cps(df)
+        text += effect_data(df)
         text += inflation_indexed(df)
     text += value_type(df)
     if ptype == 'policy':

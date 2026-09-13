@@ -18,12 +18,13 @@ class CompatibleDataSchema(marshmallow.Schema):
     .. code-block :: json
 
         {
-            "compatible_data": {"puf": true, "cps": false}
+            "compatible_data": {"puf": true, "cps": false, "tmd": true}
         }
 
     """
     puf = marshmallow.fields.Boolean()
     cps = marshmallow.fields.Boolean()
+    tmd = marshmallow.fields.Boolean()
 
 
 paramtools.register_custom_type(

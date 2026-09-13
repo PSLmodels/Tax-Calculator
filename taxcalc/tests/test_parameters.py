@@ -633,7 +633,7 @@ def test_compatible_data_presence():
     Test that every parameter in the policy_current_law.json file
     has a compatible_data field that is a dictionary.
     """
-    compatible_data_keys_set = set(["puf", "cps"])
+    compatible_data_keys_set = set(["puf", "cps", "tmd"])
 
     # nested function used only in test_compatible_data_presence test
     def valid_compatible_data(compatible_data):
