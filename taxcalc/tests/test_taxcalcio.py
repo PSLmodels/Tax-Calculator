@@ -442,7 +442,7 @@ def test_output_options_min(reformfile1, assumpfile1):
     assert not tcio.errmsg
     dumppath = tcio.output_filepath().replace('.xxx', '.dumpdb')
     # minimal dump output
-    dumpvars = TaxCalcIO.MINIMAL_DUMPVARS
+    dumpvars = list(TaxCalcIO.MINIMAL_DUMPVARS)
     try:
         tcio.analyze(output_dump=True, dump_varlist=dumpvars)
     except Exception:  # pylint: disable=broad-except
@@ -478,7 +478,7 @@ def test_output_options_mtr(reformfile1, assumpfile1):
     assert not tcio.errmsg
     dumppath = tcio.output_filepath().replace('.xxx', '.dumpdb')
     # minimal+mtr_* dump output
-    dumpvars = TaxCalcIO.MINIMAL_DUMPVARS
+    dumpvars = list(TaxCalcIO.MINIMAL_DUMPVARS)
     for var in TaxCalcIO.MTR_DUMPVARS:
         dumpvars.append(var)
     try:
