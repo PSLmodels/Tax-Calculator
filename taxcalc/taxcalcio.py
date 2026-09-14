@@ -81,7 +81,10 @@ class TaxCalcIO():
         self.gf_reform = None
         self.errmsg = ''
         # check name and existence of INPUT file
-        inp = 'x'
+        # Note: stem is the year-independent part of the output file name;
+        # the tax year is spliced in when self.output_filename is built below
+        # and when the advance_to_year method rebuilds it for a later year.
+        stem = 'x'
         self.cps_input_data = False
         self.tmd_input_data = False
         if isinstance(input_data, str):
@@ -89,7 +92,7 @@ class TaxCalcIO():
             fname = os.path.basename(input_data)
             # check if fname ends with ".csv"
             if fname.endswith('.csv'):
-                inp = f'{fname[:-4]}-{str(tax_year)[2:]}'
+                stem = fname[:-4]
             else:
                 msg = 'INPUT file name does not end in .csv'
                 self.errmsg += f'ERROR: {msg}\n'
@@ -114,7 +117,7 @@ class TaxCalcIO():
                 if 'TMD_AREA' in os.environ:
                     area = os.environ['TMD_AREA']
                     wfile = f'{area}_tmd_weights.csv.gz'
-                    inp = f'{fname[:-4]}_{area}-{str(tax_year)[2:]}'
+                    stem = f'{fname[:-4]}_{area}'
                 else:  # using national weights
                     wfile = 'tmd_weights.csv.gz'
                 self.tmd_weights = os.path.join(tmd_dir, wfile)
@@ -126,7 +129,7 @@ class TaxCalcIO():
                     msg = f'gfactor file {self.tmd_gfactor} could not be found'
                     self.errmsg += f'ERROR: {msg}\n'
         elif isinstance(input_data, pd.DataFrame):
-            inp = f'df-{str(tax_year)[2:]}'
+            stem = 'df'
         else:
             msg = 'INPUT is neither string nor Pandas DataFrame'
             self.errmsg += f'ERROR: {msg}\n'
@@ -172,10 +175,17 @@ class TaxCalcIO():
             msg = 'TaxCalcIO.ctor: behavior is neither None nor str'
             self.errmsg += f'ERROR: {msg}\n'
         # create OUTPUT file name and delete any existing output files
-        self.output_filename = f'{inp}{bas}{ref}{asm}{beh}.xxx'
+        # Note: the name is always stem + '-' + two-digit year + tail, which
+        # is what lets advance_to_year replace the year without having to
+        # parse a name whose stem or tail may itself contain a hyphen
         self.runid = runid
-        if runid > 0:
-            self.output_filename = f'run{runid}-{str(tax_year)[2:]}.xxx'
+        if runid > 0:  # if using simpler output file names (runN-YY.xxx)
+            self.fname_stem = f'run{runid}'
+            self.fname_tail = '.xxx'
+        else:  # if using legacy output file names
+            self.fname_stem = stem
+            self.fname_tail = f'{bas}{ref}{asm}{beh}.xxx'
+        self.output_filename = self._filename_for_year(tax_year)
         self.delete_output_files()
         # initialize variables whose values are set in init method
         self.pol_ref = None
@@ -380,26 +390,28 @@ class TaxCalcIO():
         """
         return self.calc_ref.current_year
 
+    def _filename_for_year(self, year):
+        """
+        Return output file name for the specified year.
+        """
+        return f'{self.fname_stem}-{str(year)[2:]}{self.fname_tail}'
+
     def output_filepath(self):
         """
         Return full path to output file named in TaxCalcIO constructor.
+
+        Note that output files are written using the bare
+        self.output_filename, so they are located in the current working
+        directory, which is what this method returns a path into.
         """
-        dirpath = os.path.abspath(os.path.dirname(__file__))
-        return os.path.join(dirpath, self.output_filename)
+        return os.path.abspath(self.output_filename)
 
     def advance_to_year(self, year):
         """
         Update self.output_filename and create Calculator objects for year.
         """
         # update self.output_filename and delete output files
-        parts = self.output_filename.split('-')
-        if self.runid == 0:  # if using legacy output file names
-            parts[1] = str(year)[2:]
-        else:  # if using simpler output file names (runN-YY.xxx)
-            subparts = parts[1].split('.')
-            subparts[0] = str(year)[2:]
-            parts[1] = '.'.join(subparts)
-        self.output_filename = '-'.join(parts)
+        self.output_filename = self._filename_for_year(year)
         self.delete_output_files()
         # create baseline and reform Calculator objects for specified year
         # ... set policy for year
@@ -558,6 +570,14 @@ class TaxCalcIO():
         'mtr_itax',
         'mtr_ptax',
     ]
+    # Records variables that are never calculated, and hence are always zero,
+    # so they are excluded from dump output.  The marginal tax rates they are
+    # named for are supplied by the MTR_DUMPVARS variables, which are computed
+    # by the Calculator.mtr method rather than read from a Records object.
+    UNUSED_DUMPVARS = [
+        'mtr_inctax',
+        'mtr_paytax',
+    ]
 
     def dump_variables(self, dumpvars_str):
         """
@@ -569,10 +589,16 @@ class TaxCalcIO():
         self.errmsg = ''
         # get read and calc Records variables
         recs_vinfo = Records(data=None)  # contains records VARINFO only
-        valid_set = recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS
+        valid_set = (
+            (recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS) -
+            set(TaxCalcIO.UNUSED_DUMPVARS)
+        )
         # construct dumpvars list
+        # Note: valid_set is sorted because iteration order of a Python set
+        # is not stable across runs, and dumpvars order determines the column
+        # order of the baseline and reform dumpdb tables
         if dumpvars_str == 'ALL':
-            dumpvars = list(valid_set) + TaxCalcIO.MTR_DUMPVARS
+            dumpvars = sorted(valid_set) + TaxCalcIO.MTR_DUMPVARS
         else:
             # ... change some common non-space delimiter characters into spaces
             dumpvars_str = dumpvars_str.replace(',', ' ')
@@ -671,10 +697,11 @@ class TaxCalcIO():
                     print_warnings=True,
                     raise_errors=False,
                 )
-                if self.errmsg:
+                if self.errmsg and not self.errmsg.endswith('\n'):
                     self.errmsg += '\n'
                 for _, errors in pol.parameter_errors.items():
-                    self.errmsg += '\n'.join(errors)
+                    for error in errors:
+                        self.errmsg += f'{error.rstrip()}\n'
             except paramtools.ValidationError as valerr_msg:
                 self.errmsg += str(valerr_msg)
 
@@ -851,9 +878,16 @@ class TaxCalcIO():
             ('lumpsum_tax', wsum, 1e-9, '     LSTax', '      ($b)'),
             ('combined', wsum, 1e-9, '    AllTax', '      ($b)'),
         ]
-        gdfx = dfx.groupby('table_row', as_index=False, observed=True)
+        # Note: input data containing too few filing units to populate every
+        # decile leave some table_row values unobserved, so each aggregated
+        # series is reindexed over all the deciles, with an unpopulated
+        # decile getting a zero in every column.
+        deciles = range(1, 11)
+        gdfx = dfx.groupby('table_row', observed=True)
         series = [
-            gdfx.apply(agg, var, include_groups=False).values[:, 1]
+            gdfx.apply(agg, var, include_groups=False).reindex(
+                deciles, fill_value=0.
+            ).values
             for var, agg, _, _, _ in columns
         ]
         scales = [scale for _, _, scale, _, _ in columns]

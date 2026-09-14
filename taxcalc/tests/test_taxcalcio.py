@@ -383,9 +383,10 @@ def test_ctor_init_with_cps_files():
     surtax
     """, True, 6),  # these 6 variables minus MARS plus RECID
 
-    ('ALL', True, 206),
-    # 206 =
+    ('ALL', True, 204),
+    # 204 =
     # all 209 vars in records_variables.json (see test_records.py)
+    # minus 2 TaxCalcIO.UNUSED_DUMPVARS (see taxcalcio.py)
     # minus 5 TaxCalcIO.BASE_DUMPVARS omitting RECID (see taxcalcio.py)
     # plus 2 TaxCalcIO.MTR_DUMPVARS (see taxcalcio.py)
 
@@ -777,8 +778,8 @@ def test_error_message_parsed_correctly(regression_reform_file):
               exact_calculations=False)
     assert isinstance(tcio.errmsg, str) and tcio.errmsg
     exp_errmsg = (
-        'AMEDT_rt[year=2021] 1.8 > max 1 \n'
-        'AMEDT_rt[year=2021] 1.8 > max 1 '
+        'AMEDT_rt[year=2021] 1.8 > max 1\n'
+        'AMEDT_rt[year=2021] 1.8 > max 1\n'
     )
     assert tcio.errmsg == exp_errmsg
 
