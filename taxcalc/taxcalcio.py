@@ -267,12 +267,6 @@ class TaxCalcIO():
         """
         return self.calc_ref.current_year
 
-    def _filename_for_year(self, year):
-        """
-        Return output file name for the specified year.
-        """
-        return f'{self.fname_stem}-{str(year)[2:]}{self.fname_tail}'
-
     def output_filepath(self):
         """
         Return full path to output file named in TaxCalcIO constructor.
@@ -496,6 +490,12 @@ class TaxCalcIO():
         return dumpvars_list
 
     # --- Begin private methods of the TaxCalcIO class --- #
+
+    def _filename_for_year(self, year):
+        """
+        Return output file name for the specified year.
+        """
+        return f'{self.fname_stem}-{str(year)[2:]}{self.fname_tail}'
 
     def _check_input_data(self, input_data):
         """
