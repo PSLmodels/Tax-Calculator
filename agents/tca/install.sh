@@ -48,6 +48,9 @@ rm tca.zip
 pip install "mcp[cli]>=2.0.0" > pip_install.results
 pip install "psutil>=7.2.0" >> pip_install.results
 
+# specify tca_install_date in the new FOLDER
+date -u -Iseconds > ./tca_install_date
+
 # execute installation verification test in the new FOLDER
 echo "Installation verification test takes about half a minute to execute"
 ./tca-test

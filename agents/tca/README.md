@@ -41,8 +41,12 @@ already exists):
 
 Then follow the instructions written to the terminal screen.
 
-If the install test fails or you have other problems using TCA, please
-raise an issue [here](https://github.com/PSLmodels/Tax-Calculator/issues).
+If the install test fails because of a a Tax-Calculator version
+problem, you need to update your Tax-Calculator package.  If the
+install test fails because the install date is too old, make a new
+installion in a different folder.  If the install test fails for some
+other reason or you have other problems using TCA, please raise an
+issue [here](https://github.com/PSLmodels/Tax-Calculator/issues).
 
 ### Examples
 
