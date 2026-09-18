@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Install Tax-Calculator Assistant in specified empty FOLDER
+# Install Tax-Calculator Assistant in specified FOLDER
 USAGE="./install.sh FOLDER"
 
 # check existence of FOLDER argument
@@ -10,20 +10,16 @@ if [[ $# -ne 1 ]]; then
 fi
 FOLDER=$1
 
-# check non-existence of FOLDER directory
-if [[ -d $FOLDER ]]; then
-    echo "ERROR: cannot install in an existing FOLDER" >&2
-    exit 1
+# create new FOLDER if it does not exist
+if ! [[ -d $FOLDER ]]; then
+    ERRMSG=$({ mkdir $FOLDER } 2>&1)
+    if [[ -n $ERRMSG ]]; then
+        echo "The mkdir command failed with error: $ERRMSG"
+        exit 1
+    fi
 fi
 
-# create new FOLDER
-ERRMSG=$({ mkdir $FOLDER } 2>&1)
-if [[ -n $ERRMSG ]]; then
-    echo "The mkdir command failed with error: $ERRMSG"
-    exit 1
-fi
-
-# optionally copy TMD input data files to new FOLDER
+# optionally copy TMD input data files to FOLDER
 TMDV=../../tmd.csv
 TMDW=../../tmd_weights.csv.gz
 TMDF=../../tmd_growfactors.csv
@@ -35,11 +31,16 @@ else
     echo "TMD input files not found"
 fi
 
-# copy tca.zip to new FOLDER
+# copy tca.zip to FOLDER
 cp tca.zip $FOLDER
 
-# install TCA in new FOLDER
+# install TCA in FOLDER removing any existing runs.db or run*-??.* files
 cd $FOLDER
+if [[ -f runs.db ]]; then
+    cp runs.db runs.db-old
+    rm -f runs.db
+fi
+find . -name "run*-[0-9][0-9]*" -exec rm -f {} \;
 unzip -oq tca.zip
 rm tca.zip
 ./add_mcp_tca.sh > /dev/null
@@ -48,12 +49,9 @@ rm tca.zip
 pip install "mcp[cli]>=2.0.0" > pip_install.results
 pip install "psutil>=7.2.0" >> pip_install.results
 
-# specify tca_install_date in the new FOLDER
-date -u -Iseconds > ./tca_install_date
-
-# execute installation verification test in the new FOLDER
-echo "Installation verification test takes about half a minute to execute"
+# execute installation verification test in the FOLDER
+echo "-- Installation verification test takes about half a minute to execute"
 ./tca-test
-echo "Move into the new FOLDER using the 'cd $FOLDER' command, then"
-echo "start using TCA interactively by executing the './tca-exec' command"
+echo "-- Move into the new FOLDER using the 'cd $FOLDER' command, then"
+echo "   start using TCA interactively by executing the './tca-exec' command"
 exit 0
