@@ -567,6 +567,10 @@ For users who have purchased from IRS-SOI their own version of the
 2011 PUF, the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">puf_weights.csv.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">puf_ratios.csv</span></code>
 files from the taxdata repository, can be used by Tax-Calculator using
 the <code class="docutils literal notranslate"><span class="pre">Records.puf_constructor(...)</span></code> static method.</p>
+<p>These PUF-derived files can be used only with the <strong>Python API</strong>.
+The <strong>CLI tool</strong>, <code class="docutils literal notranslate"><span class="pre">tc</span></code>, does not support PUF input data: it rejects an
+INPUT file name ending in <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>.  Use the 2015-based TMD files
+described below for CLI work.</p>
 <p>We refer users of the PUF to the IRS limitations on the use of those
 data and their distribution.  We also refer users of the PUF input
 data to the <a class="reference external" href="https://github.com/PSLmodels/taxdata">taxdata</a>
@@ -589,26 +593,14 @@ are available only to users who have purchased their own version of the
 tax-microdata repository.  The three TMD files can be used with
 Tax-Calculator in two ways:</p>
 <ul class="simple">
-<li><p>with the <strong>Python API</strong>:</p>
-<ul>
-<li><p>instantiate a GrowFactors object that uses TMD growth factors
-[<code class="docutils literal notranslate"><span class="pre">gf=GrowFactors(&quot;path/to/tmd_growfactors.csv&quot;)</span></code>] and by using
-the <code class="docutils literal notranslate"><span class="pre">Records.tmd_constructor(...)</span></code> static method to instantiate
-a Records object, and</p></li>
-<li><p>after each instantiation of a Policy object, activate the TMD
-refundable credit claiming behavior by executing the
-<code class="docutils literal notranslate"><span class="pre">implement_reform(TMD_CREDIT_CLAIMING)</span></code> method on the Policy
-object (both for baseline and reform Policy objects), where the
-<code class="docutils literal notranslate"><span class="pre">TMD_CREDIT_CLAIMING</span></code> dictionary is imported from the <code class="docutils literal notranslate"><span class="pre">taxcalcio.py</span></code>
-module.</p></li>
-</ul>
-</li>
+<li><p>with the <strong>Python API</strong>, instantiate a GrowFactors object that uses
+TMD growth factors [<code class="docutils literal notranslate"><span class="pre">gf=GrowFactors(&quot;path/to/tmd_growfactors.csv&quot;)</span></code>]
+and then use the <code class="docutils literal notranslate"><span class="pre">Records.tmd_constructor(...)</span></code> static method to
+instantiate a Records object that uses the TMD input data and
+weights.</p></li>
 <li><p>or</p></li>
 <li><p>with the <strong>CLI tool</strong>, use <code class="docutils literal notranslate"><span class="pre">tc</span></code>, when the three TMD files are all
-in the same folder and the <code class="docutils literal notranslate"><span class="pre">tmd.csv.gz</span></code> file has been unzipped.
-The <code class="docutils literal notranslate"><span class="pre">tc</span></code> tool automatically activates the TMD refundable credit
-claiming behavior, so there is no need to do that on the command
-line when using the CLI tool.</p></li>
+in the same folder and the <code class="docutils literal notranslate"><span class="pre">tmd.csv.gz</span></code> file has been unzipped.</p></li>
 </ul>
 <p>The <a class="reference external" href="https://github.com/PSLmodels/tax-microdata-benchmarking">tax-microdata
 repository</a>

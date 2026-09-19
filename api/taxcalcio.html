@@ -597,6 +597,9 @@ list must include at least one variable.</p></li>
 <dt class="sig sig-object py" id="taxcalc.taxcalcio.TaxCalcIO.output_filepath">
 <span class="sig-name descname"><span class="pre">output_filepath</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.output_filepath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.output_filepath" title="Link to this definition">#</a></dt>
 <dd><p>Return full path to output file named in TaxCalcIO constructor.</p>
+<p>Note that output files are written using the bare
+self.output_filename, so they are located in the current working
+directory, which is what this method returns a path into.</p>
 </dd></dl>
 
 <dl class="py method">

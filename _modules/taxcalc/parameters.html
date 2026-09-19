@@ -460,12 +460,13 @@
 <span class="sd">    .. code-block :: json</span>
 
 <span class="sd">        {</span>
-<span class="sd">            "compatible_data": {"puf": true, "cps": false}</span>
+<span class="sd">            "compatible_data": {"puf": true, "cps": false, "tmd": true}</span>
 <span class="sd">        }</span>
 
 <span class="sd">    """</span>
     <span class="n">puf</span> <span class="o">=</span> <span class="n">marshmallow</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">()</span>
     <span class="n">cps</span> <span class="o">=</span> <span class="n">marshmallow</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">()</span>
+    <span class="n">tmd</span> <span class="o">=</span> <span class="n">marshmallow</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">()</span>
 
 
 <span class="n">paramtools</span><span class="o">.</span><span class="n">register_custom_type</span><span class="p">(</span>
