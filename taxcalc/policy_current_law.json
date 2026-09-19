@@ -101,7 +101,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "eitc_claim_prob_scale": {
@@ -126,7 +127,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "eitc_claim_prob_min": {
@@ -151,7 +153,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "actc_claim_prob_scale": {
@@ -176,7 +179,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "actc_claim_prob_min": {
@@ -201,7 +205,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "FICA_ss_trt_employer": {
@@ -226,7 +231,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "FICA_ss_trt_employee": {
@@ -251,7 +257,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SS_Earnings_c": {
@@ -328,7 +335,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "soi_iitax": {
@@ -353,7 +361,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SECA_Earnings_thd": {
@@ -378,7 +387,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SS_Earnings_thd": {
@@ -419,7 +429,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "FICA_mc_trt_employer": {
@@ -444,7 +455,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "FICA_mc_trt_employee": {
@@ -469,7 +481,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMEDT_ec": {
@@ -515,7 +528,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMEDT_rt": {
@@ -540,7 +554,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SS_all_in_agi": {
@@ -565,7 +580,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SS_thd1": {
@@ -611,7 +627,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SS_percentage1": {
@@ -636,7 +653,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SS_thd2": {
@@ -682,7 +700,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SS_percentage2": {
@@ -707,7 +726,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_StudentLoan_hc": {
@@ -732,7 +752,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_SelfEmploymentTax_hc": {
@@ -757,7 +778,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_SelfEmp_HealthIns_hc": {
@@ -782,7 +804,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_KEOGH_SEP_hc": {
@@ -807,7 +830,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_EarlyWithdraw_hc": {
@@ -832,7 +856,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "ALD_AlimonyPaid_hc": {
@@ -897,7 +922,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "AlimonyReceived_frac_in_AGI": {
@@ -962,7 +988,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_EducatorExpenses_hc": {
@@ -987,7 +1014,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "ALD_HSADeduction_hc": {
@@ -1012,7 +1040,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "ALD_IRAContributions_hc": {
@@ -1037,7 +1066,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_DomesticProduction_hc": {
@@ -1082,7 +1112,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_Tuition_hc": {
@@ -1127,7 +1158,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "ALD_InvInc_ec_rt": {
@@ -1152,7 +1184,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_Dependents_hc": {
@@ -1177,7 +1210,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_Dependents_Child_c": {
@@ -1254,7 +1288,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_Dependents_Elder_c": {
@@ -1331,7 +1366,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_Dependents_thd": {
@@ -1377,7 +1413,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ALD_BusinessLosses_c": {
@@ -1748,7 +1785,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_em": {
@@ -1825,7 +1863,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_em_ps": {
@@ -2196,7 +2235,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_em_po_step_size": {
@@ -2242,7 +2282,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_em_prt": {
@@ -2267,7 +2308,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_no_em_nu18": {
@@ -2292,7 +2334,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "STD": {
@@ -2663,7 +2706,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "STD_Dep": {
@@ -2740,7 +2784,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "STD_Dep_earned_add": {
@@ -2817,7 +2862,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "STD_Aged": {
@@ -3188,7 +3234,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "STD_charity_ded_nonitemizers_max": {
@@ -3334,7 +3381,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_credit": {
@@ -3705,7 +3753,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_credit_ps": {
@@ -4076,7 +4125,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_credit_prt": {
@@ -4101,7 +4151,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_credit_nr": {
@@ -4472,7 +4523,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_credit_nr_ps": {
@@ -4843,7 +4895,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_credit_nr_prt": {
@@ -4868,7 +4921,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "RRC_c": {
@@ -4901,7 +4955,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "RRC_ps": {
@@ -5022,7 +5077,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "RRC_pe": {
@@ -5118,7 +5174,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "RRC_prt": {
@@ -5152,7 +5209,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "RRC_c_unit": {
@@ -5249,7 +5307,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "RRC_c_kids": {
@@ -5283,7 +5342,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Medical_frt": {
@@ -5333,7 +5393,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Medical_frt_add4aged": {
@@ -5375,7 +5436,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Medical_hc": {
@@ -5400,7 +5462,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Medical_c": {
@@ -5771,7 +5834,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_StateLocalTax_hc": {
@@ -5796,7 +5860,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_StateLocalTax_crt": {
@@ -5821,7 +5886,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_StateLocalTax_c": {
@@ -6192,7 +6258,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_RealEstate_hc": {
@@ -6217,7 +6284,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_RealEstate_crt": {
@@ -6242,7 +6310,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_RealEstate_c": {
@@ -6613,7 +6682,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_AllTaxes_hc": {
@@ -6638,7 +6708,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_AllTaxes_c": {
@@ -7059,7 +7130,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_AllTaxes_c_ps": {
@@ -7155,7 +7227,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_AllTaxes_c_po_rate": {
@@ -7188,7 +7261,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_AllTaxes_c_po_floor": {
@@ -7284,7 +7358,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_InterestPaid_hc": {
@@ -7309,7 +7384,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_InterestPaid_c": {
@@ -7680,7 +7756,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Charity_crt_all": {
@@ -7722,7 +7799,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Charity_crt_noncash": {
@@ -7752,7 +7830,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Charity_frt": {
@@ -7781,7 +7860,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Charity_hc": {
@@ -7806,7 +7886,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Charity_c": {
@@ -8177,7 +8258,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Charity_f": {
@@ -8223,7 +8305,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Casualty_frt": {
@@ -8248,7 +8331,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "ID_Casualty_hc": {
@@ -8301,7 +8385,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "ID_Casualty_c": {
@@ -8672,7 +8757,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "ID_Miscellaneous_frt": {
@@ -8698,7 +8784,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Miscellaneous_hc": {
@@ -8751,7 +8838,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_Miscellaneous_c": {
@@ -9122,7 +9210,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_ps": {
@@ -9493,7 +9582,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_prt": {
@@ -9546,7 +9636,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_crt": {
@@ -9611,7 +9702,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_reduction_rate": {
@@ -9640,7 +9732,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ID_c": {
@@ -10011,7 +10104,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "Capital_loss_limitation": {
@@ -10057,7 +10151,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CG_rt1": {
@@ -10082,7 +10177,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CG_brk1": {
@@ -10453,7 +10549,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CG_rt2": {
@@ -10478,7 +10575,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CG_brk2": {
@@ -10849,7 +10947,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CG_rt3": {
@@ -10874,7 +10973,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CG_brk3": {
@@ -11220,7 +11320,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CG_rt4": {
@@ -11245,7 +11346,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_CG_rt1": {
@@ -11270,7 +11372,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_CG_brk1": {
@@ -11641,7 +11744,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_CG_rt2": {
@@ -11666,7 +11770,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_CG_brk2": {
@@ -12037,7 +12142,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_CG_rt3": {
@@ -12062,7 +12168,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_CG_brk3": {
@@ -12408,7 +12515,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_CG_rt4": {
@@ -12433,7 +12541,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "AMT_CG_rt1250": {
@@ -12458,7 +12567,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CG_nodiff": {
@@ -12483,7 +12593,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CG_ec": {
@@ -12560,7 +12671,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CG_reinvest_ec_rt": {
@@ -12585,7 +12697,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_rt1": {
@@ -12650,7 +12763,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_brk1": {
@@ -13021,7 +13135,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_rt2": {
@@ -13086,7 +13201,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_brk2": {
@@ -13457,7 +13573,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_rt3": {
@@ -13522,7 +13639,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_brk3": {
@@ -13893,7 +14011,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_rt4": {
@@ -13958,7 +14077,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_brk4": {
@@ -14329,7 +14449,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_rt5": {
@@ -14394,7 +14515,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_brk5": {
@@ -14765,7 +14887,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_rt6": {
@@ -14830,7 +14953,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_brk6": {
@@ -15201,7 +15325,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_rt7": {
@@ -15266,7 +15391,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_brk7": {
@@ -15637,7 +15763,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "II_rt8": {
@@ -15662,7 +15789,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "PT_qbid_rt": {
@@ -15715,7 +15843,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "PT_qbid_limited": {
@@ -15740,7 +15869,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "PT_qbid_taxinc_thd": {
@@ -16111,7 +16241,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "PT_qbid_taxinc_gap": {
@@ -16382,7 +16513,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "PT_qbid_w2_wages_rt": {
@@ -16435,7 +16567,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "PT_qbid_alt_w2_wages_rt": {
@@ -16488,7 +16621,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "PT_qbid_alt_property_rt": {
@@ -16541,7 +16675,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": false
+            "cps": false,
+            "tmd": false
         }
     },
     "PT_qbid_ps": {
@@ -16912,7 +17047,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "PT_qbid_prt": {
@@ -16961,7 +17097,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "PT_qbid_min_ded": {
@@ -16990,7 +17127,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "PT_qbid_min_qbi": {
@@ -17019,7 +17157,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "UI_em": {
@@ -17052,7 +17191,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "UI_thd": {
@@ -17148,7 +17288,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_em": {
@@ -17519,7 +17660,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_prt": {
@@ -17548,7 +17690,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_em_ps": {
@@ -17919,7 +18062,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_child_em": {
@@ -17996,7 +18140,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "AMT_child_em_c_age": {
@@ -18021,7 +18166,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_rt1": {
@@ -18046,7 +18192,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_brk1": {
@@ -18417,7 +18564,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_rt2_addon": {
@@ -18442,7 +18590,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AMT_em_pe": {
@@ -18519,7 +18668,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "AMT_Medical_frt": {
@@ -18548,7 +18698,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CDCC_c": {
@@ -18585,7 +18736,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CDCC_ps1": {
@@ -18622,7 +18774,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CDCC_ps2": {
@@ -18768,7 +18921,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CDCC_po1_rate_max": {
@@ -18805,7 +18959,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CDCC_po1_rate_min": {
@@ -18834,7 +18989,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CDCC_po2_rate_min": {
@@ -18863,7 +19019,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CDCC_po1_step_size": {
@@ -18892,7 +19049,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CDCC_po2_step_size": {
@@ -19038,7 +19196,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CDCC_po_rate_per_step": {
@@ -19067,7 +19226,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CDCC_refundable": {
@@ -19104,7 +19264,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_c": {
@@ -19181,7 +19342,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_c_under6_bonus": {
@@ -19206,7 +19368,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_include17": {
@@ -19239,7 +19402,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_is_refundable": {
@@ -19272,7 +19436,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ODC_is_refundable": {
@@ -19305,7 +19470,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_ps": {
@@ -19601,7 +19767,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_prt": {
@@ -19626,7 +19793,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ACTC_c": {
@@ -19703,7 +19871,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ODC_c": {
@@ -19756,7 +19925,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "NIIT_thd": {
@@ -19802,7 +19972,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "NIIT_PT_taxed": {
@@ -19827,7 +19998,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "NIIT_rt": {
@@ -19852,7 +20024,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_c": {
@@ -20153,7 +20326,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_rt": {
@@ -20254,7 +20428,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_basic_frac": {
@@ -20315,7 +20490,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_prt": {
@@ -20396,7 +20572,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_ps": {
@@ -20697,7 +20874,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_ps_addon_MarriedJ": {
@@ -20998,7 +21176,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_MinEligAge": {
@@ -21031,7 +21210,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_MaxEligAge": {
@@ -21068,7 +21248,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_InvestIncome_c": {
@@ -21145,7 +21326,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_excess_InvestIncome_rt": {
@@ -21170,7 +21352,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_indiv": {
@@ -21195,7 +21378,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "EITC_sep_filers_elig": {
@@ -21224,7 +21408,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "LLC_Expense_c": {
@@ -21249,7 +21434,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "ETC_pe_Single": {
@@ -21310,7 +21496,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "ETC_pe_Married": {
@@ -21371,7 +21558,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "ACTC_rt": {
@@ -21396,7 +21584,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ACTC_rt_bonus_under6family": {
@@ -21421,7 +21610,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ACTC_Income_thd": {
@@ -21486,7 +21676,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "ACTC_ChildNum": {
@@ -21511,7 +21702,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_new_c": {
@@ -21544,7 +21736,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_new_c_under6_bonus": {
@@ -21577,7 +21770,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_new_for_all": {
@@ -21610,7 +21804,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_new_rt": {
@@ -21635,7 +21830,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_new_ps": {
@@ -22006,7 +22202,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_new_prt": {
@@ -22039,7 +22236,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_new_refund_limited": {
@@ -22064,7 +22262,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_new_refund_limit_payroll_rt": {
@@ -22089,7 +22288,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CTC_new_refund_limited_all_payroll": {
@@ -22114,7 +22314,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "FST_AGI_trt": {
@@ -22139,7 +22340,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "FST_AGI_thd_lo": {
@@ -22185,7 +22387,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "FST_AGI_thd_hi": {
@@ -22231,7 +22434,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AGI_surtax_trt": {
@@ -22256,7 +22460,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AGI_surtax_thd": {
@@ -22627,7 +22832,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "LST": {
@@ -22652,7 +22858,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "UBI_u18": {
@@ -22729,7 +22936,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "UBI_1820": {
@@ -22806,7 +23014,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "UBI_21": {
@@ -22883,7 +23092,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "UBI_ecrt": {
@@ -22908,7 +23118,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CR_RetirementSavings_hc": {
@@ -22933,7 +23144,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "CR_ForeignTax_hc": {
@@ -22958,7 +23170,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "CR_ResidentialEnergy_hc": {
@@ -22983,7 +23196,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "CR_GeneralBusiness_hc": {
@@ -23008,7 +23222,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "CR_MinimumTax_hc": {
@@ -23033,7 +23248,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "CR_AmOppRefundable_hc": {
@@ -23058,7 +23274,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "CR_AmOppNonRefundable_hc": {
@@ -23083,7 +23300,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "CR_SchR_hc": {
@@ -23108,7 +23326,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "CR_OtherCredits_hc": {
@@ -23133,7 +23352,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "CR_Education_hc": {
@@ -23158,7 +23378,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false
+            "cps": false,
+            "tmd": true
         }
     },
     "CR_Charity_rt": {
@@ -23183,7 +23404,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CR_Charity_f": {
@@ -23229,7 +23451,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "CR_Charity_frt": {
@@ -23254,7 +23477,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SeniorDed_c": {
@@ -23287,7 +23511,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SeniorDed_ps": {
@@ -23333,7 +23558,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "SeniorDed_prt": {
@@ -23358,7 +23584,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AutoLoanInterestDed_c": {
@@ -23391,7 +23618,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AutoLoanInterestDed_ps": {
@@ -23437,7 +23665,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AutoLoanInterestDed_po_step_size": {
@@ -23462,7 +23691,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "AutoLoanInterestDed_po_rate_per_step": {
@@ -23487,7 +23717,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "OvertimeIncomeDed_c": {
@@ -23583,7 +23814,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "OvertimeIncomeDed_ps": {
@@ -23629,7 +23861,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "OvertimeIncomeDed_po_step_size": {
@@ -23654,7 +23887,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "OvertimeIncomeDed_po_rate_per_step": {
@@ -23679,7 +23913,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "TipIncomeDed_c": {
@@ -23712,7 +23947,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "TipIncomeDed_ps": {
@@ -23758,7 +23994,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "TipIncomeDed_po_step_size": {
@@ -23783,7 +24020,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "TipIncomeDed_po_rate_per_step": {
@@ -23808,7 +24046,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "BEN_ssi_repeal": {
@@ -23833,7 +24072,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "BEN_housing_repeal": {
@@ -23858,7 +24098,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "BEN_snap_repeal": {
@@ -23883,7 +24124,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "BEN_tanf_repeal": {
@@ -23908,7 +24150,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "BEN_vet_repeal": {
@@ -23933,7 +24176,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "BEN_wic_repeal": {
@@ -23958,7 +24202,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "BEN_mcare_repeal": {
@@ -23983,7 +24228,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "BEN_mcaid_repeal": {
@@ -24008,7 +24254,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     },
     "BEN_oasdi_repeal": {
@@ -24033,7 +24280,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "BEN_ui_repeal": {
@@ -24058,7 +24306,8 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true
+            "cps": true,
+            "tmd": true
         }
     },
     "BEN_other_repeal": {
@@ -24083,7 +24332,8 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": true
+            "cps": true,
+            "tmd": false
         }
     }
 }

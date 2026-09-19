@@ -3,8 +3,8 @@ jupytext:
   text_representation:
     extension: .md
     format_name: myst
-    format_version: '0.8'
-    jupytext_version: 1.5.0
+    format_version: 0.13
+    jupytext_version: 1.19.5
 kernelspec:
   display_name: Python 3
   language: python
@@ -21,18 +21,10 @@ Mastering this recipe is a prerequisite for all the other recipes in this cookbo
 ```{code-cell} ipython3
 :tags: [remove-cell]
 
-# Install conda and taxcalc if in Google Colab.
+# Install taxcalc if not already installed
 import sys
-if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
-    !wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    !bash Miniconda3-latest-Linux-x86_64.sh -bfp /usr/local
-    # Append path to be able to run packages installed with conda
-    # This must correspond to the conda Python version, which may differ from
-    # the base Colab Python installation.
-    sys.path.append('/usr/local/lib/python3.8/site-packages')
-    # Install PSL packages from Anaconda
-    !yes | conda install -c conda-forge paramtools
-    !yes | conda install -c PSLmodels taxcalc
+if 'taxcalc' not in sys.modules:
+    %pip install taxcalc &> /dev/null  # dev/null suppresses output
 ```
 
 ```{code-cell} ipython3
@@ -45,7 +37,21 @@ from bokeh.io import show, output_notebook
 
 ## Setup
 
-Use publicly-available CPS input data included in Tax-Calculator.
+Use publicly-available CPS input file.
+
+NOTE: if you have access to the restricted-use IRS-SOI PUF-based TMD
+input data files (named ‘tmd.csv’, ‘tmd_weights.csv.gz’ and
+‘tmd_growfactors.csv’) located in the directory where this script is
+located, then you can substitute the following statements for the
+prior statement:
+
+``
+from pathlib import Path
+gfactors = tc.GrowFactors('tmd_growfactors.csv')
+recs = tc.Records.tmd_constructor(Path('tmd.csv'),
+                                  Path('tmd_weights.csv.gz'),
+                                  gfactors)
+``
 
 ```{code-cell} ipython3
 :hide-output: false
@@ -87,7 +93,7 @@ Read JSON reform file and use (the default) static analysis assumptions.
 ```{code-cell} ipython3
 :hide-output: false
 
-reform_filename = '_static/reformA.json'
+reform_filename = 'github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformA.json'
 params = tc.Calculator.read_json_param_objects(reform_filename, None)
 ```
 
@@ -199,4 +205,8 @@ Extract of CYR income-tax difference table by expanded-income decile.
 :hide-output: false
 
 diff_extract
+```
+
+```{code-cell} ipython3
+
 ```

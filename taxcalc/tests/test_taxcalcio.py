@@ -282,6 +282,21 @@ def test_ctor_errors(input_data, baseline, reform, assump, behavior):
     assert tcio.errmsg
 
 
+@pytest.mark.parametrize('input_data', [
+    ('puf.csv'),
+    (os.path.join('no-such-directory', 'puf.csv')),
+])
+def test_ctor_puf_input_data_error(input_data):
+    """
+    Ensure TaxCalcIO.__init__ rejects INPUT file name ending in puf.csv.
+    """
+    tcio = TaxCalcIO(input_data=input_data, tax_year=2025,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert 'puf.csv is not supported' in tcio.errmsg
+    assert 'INPUT file could not be found' not in tcio.errmsg
+
+
 @pytest.mark.parametrize('year, base, ref, asm', [
     (2000, 'reformfile0', 'reformfile0', None),
     (2099, 'reformfile0', 'reformfile0', None),
@@ -368,9 +383,10 @@ def test_ctor_init_with_cps_files():
     surtax
     """, True, 6),  # these 6 variables minus MARS plus RECID
 
-    ('ALL', True, 206),
-    # 206 =
+    ('ALL', True, 204),
+    # 204 =
     # all 209 vars in records_variables.json (see test_records.py)
+    # minus 2 TaxCalcIO.UNUSED_DUMPVARS (see taxcalcio.py)
     # minus 5 TaxCalcIO.BASE_DUMPVARS omitting RECID (see taxcalcio.py)
     # plus 2 TaxCalcIO.MTR_DUMPVARS (see taxcalcio.py)
 
@@ -426,7 +442,7 @@ def test_output_options_min(reformfile1, assumpfile1):
     assert not tcio.errmsg
     dumppath = tcio.output_filepath().replace('.xxx', '.dumpdb')
     # minimal dump output
-    dumpvars = TaxCalcIO.MINIMAL_DUMPVARS
+    dumpvars = list(TaxCalcIO.MINIMAL_DUMPVARS)
     try:
         tcio.analyze(output_dump=True, dump_varlist=dumpvars)
     except Exception:  # pylint: disable=broad-except
@@ -462,7 +478,7 @@ def test_output_options_mtr(reformfile1, assumpfile1):
     assert not tcio.errmsg
     dumppath = tcio.output_filepath().replace('.xxx', '.dumpdb')
     # minimal+mtr_* dump output
-    dumpvars = TaxCalcIO.MINIMAL_DUMPVARS
+    dumpvars = list(TaxCalcIO.MINIMAL_DUMPVARS)
     for var in TaxCalcIO.MTR_DUMPVARS:
         dumpvars.append(var)
     try:
@@ -762,8 +778,8 @@ def test_error_message_parsed_correctly(regression_reform_file):
               exact_calculations=False)
     assert isinstance(tcio.errmsg, str) and tcio.errmsg
     exp_errmsg = (
-        'AMEDT_rt[year=2021] 1.8 > max 1 \n'
-        'AMEDT_rt[year=2021] 1.8 > max 1 '
+        'AMEDT_rt[year=2021] 1.8 > max 1\n'
+        'AMEDT_rt[year=2021] 1.8 > max 1\n'
     )
     assert tcio.errmsg == exp_errmsg
 

@@ -16,7 +16,7 @@ are placed in an Other Parameters group at the end of the section.
 
 ####  `parameter_indexing_CPI_offset`  
 _Description:_ Always zero in policy_current_law.json, but non-zero values are allowed in reforms.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -44,7 +44,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMEDT_ec`  
 _Description:_ The Additional Medicare Tax rate, AMEDT_rt, applies to all earnings in excess of this excluded amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -62,7 +62,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMEDT_rt`  
 _Description:_ This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding the Additional Medicare Tax earning exclusion.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -81,7 +81,7 @@ _Out-of-Range Action:_ error
 
 ####  `FICA_mc_trt_employer`  
 _Description:_ Employer side HI FICA rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -98,7 +98,7 @@ _Out-of-Range Action:_ error
 
 ####  `FICA_mc_trt_employee`  
 _Description:_ Employee side HI FICA rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -117,7 +117,7 @@ _Out-of-Range Action:_ error
 
 ####  `FICA_ss_trt_employer`  
 _Description:_ Employer side OASDI FICA rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -134,7 +134,7 @@ _Out-of-Range Action:_ error
 
 ####  `FICA_ss_trt_employee`  
 _Description:_ Employee side OASDI FICA rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -151,7 +151,7 @@ _Out-of-Range Action:_ error
 
 ####  `SS_Earnings_c`  
 _Description:_ Individual earnings below this amount are subjected to OASDI payroll tax.  Indexed by wage growth, not price inflation.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -168,7 +168,7 @@ _Out-of-Range Action:_ error
 
 ####  `SECA_Earnings_thd`  
 _Description:_ Individual self-employment earnings below this amount are not subject to SECA taxes.  To compute earnings for this threshold, will multiply net self-employment by (1 - SECA_Earnings_hc).  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -185,8 +185,8 @@ _Out-of-Range Action:_ error
 
 ####  `SS_Earnings_thd`  
 _Description:_ Individual wage-and-salary earnings above this threshold are subjected to OASDI payroll tax, in addition to earnings below the SS_Earnings_c threshold.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
 2013: 9e+99  
@@ -196,7 +196,7 @@ _Known Values:_
 2017: 9e+99  
 2018: 9e+99  
 2019: 9e+99  
-_Valid Range:_ min = 0 and max = 9e+99  
+_Valid Range:_ min = SS_Earnings_c and max = 9e+99  
 _Out-of-Range Action:_ error  
 
 
@@ -206,7 +206,7 @@ _Out-of-Range Action:_ error
 
 ####  `SS_all_in_agi`  
 _Description:_ All social security benefits will be included in AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -223,7 +223,7 @@ _Out-of-Range Action:_ error
 
 ####  `SS_thd1`  
 _Description:_ The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to rate 1 of their Social Security benefit will be subject to tax under current law.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -241,7 +241,7 @@ _Out-of-Range Action:_ error
 
 ####  `SS_percentage1`  
 _Description:_ Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -258,7 +258,7 @@ _Out-of-Range Action:_ error
 
 ####  `SS_thd2`  
 _Description:_ The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to rate 2 of their Social Security benefit will be subject to tax under current law.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -276,7 +276,7 @@ _Out-of-Range Action:_ error
 
 ####  `SS_percentage2`  
 _Description:_ Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -297,7 +297,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_Dependents_hc`  
 _Description:_ This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI.  The final adjustment would be (1-Haircut)*AverageChildcareCosts.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -314,7 +314,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_Dependents_Child_c`  
 _Description:_ The weighted average of childcare costs in the US. 7165 is the weighted average from the 'Child Care in America: 2016 State Fact Sheets'.  This is a weighted average of childcare costs in each state.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -331,7 +331,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_Dependents_Elder_c`  
 _Description:_ A taxpayer can take an above the line deduction up to this amount if they have an elderly dependent. The Trump 2016 campaign proposal was for $5000.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -348,7 +348,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_Dependents_thd`  
 _Description:_ A taxpayer can only claim the dependent care deduction if their total income is below this level. The Trump 2016 campaign proposal was for 250000 single, 500000 joint, 250000 separate, 500000 head of household].  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -368,7 +368,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_StudentLoan_hc`  
 _Description:_ This decimal fraction can be applied to limit the student loan interest adjustment allowed.  The final adjustment amount will be (1-Haircut)*StudentLoanInterest.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -385,7 +385,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_SelfEmploymentTax_hc`  
 _Description:_ This decimal fraction, if greater than zero, reduces the employer equivalent portion of self-employment adjustment.  The final adjustment amount would be (1-Haircut)*SelfEmploymentTaxAdjustment.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -402,7 +402,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_SelfEmp_HealthIns_hc`  
 _Description:_ This decimal fraction, if greater than zero, reduces the health insurance adjustment for self-employed taxpayers.  The final adjustment amount would be (1-Haircut)*SelfEmployedHealthInsuranceAdjustment.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -419,7 +419,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_KEOGH_SEP_hc`  
 _Description:_ Under current law, contributions to Keogh or SEP plans can be fully deducted from gross income.  This haircut can be used to limit the adjustment allowed.  The final adjustment amount is (1-Haircut)*KEOGH_SEP_Contributinos.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -436,7 +436,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_EarlyWithdraw_hc`  
 _Description:_ Under current law, early withdraw penalty can be fully deducted from gross income. This haircut can be used to limit the adjustment allowed.  The final adjustment amount is (1-Haircut)*EarlyWithdrawPenalty.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -453,7 +453,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_AlimonyPaid_hc`  
 _Description:_ Under pre-TCJA law, the full amount of alimony paid is taken as an adjustment from gross income in arriving at AGI. This haircut can be used to change the deduction allowed.  The final adjustment amount would be (1-Haircut)*AlimonyPaid.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -477,7 +477,7 @@ _Out-of-Range Action:_ error
 
 ####  `AlimonyReceived_frac_in_AGI`  
 _Description:_ Fraction of alimony received (input variable e00800) that is included in AGI as Schedule 1 Part I line 2a income. Under pre-TCJA law, recipients had to include alimony as taxable income (value 1.0). TCJA excluded alimony received from income for divorce or separation agreements executed after 2018-12-31 (value 0.0). The amount of alimony added to AGI equals AlimonyReceived_frac_in_AGI * AlimonyReceived.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -501,7 +501,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_EducatorExpenses_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of educator expenses that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*EducatorExpenses.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -518,7 +518,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_HSADeduction_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of a taxpayer's HSA deduction that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*HSA_Deduction.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -535,7 +535,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_IRAContributions_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of IRA contributions that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*IRA_Contribution.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -552,7 +552,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_DomesticProduction_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of domestic production activity that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*DomesticProductionActivity.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -576,7 +576,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_Tuition_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*TuitionFees.  Set to 1.0 starting 2021: IRC Section 222 was permanently repealed for tax years beginning after 2020-12-31 by Section 104 of the Taxpayer Certainty and Disaster Tax Relief Act of 2020.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -595,7 +595,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_InvInc_ec_rt`  
 _Description:_ Decimal fraction of investment income base that can be excluded from AGI.  The final taxable investment income will be (1-_ALD_InvInc_ec_rt)*investment_income_base. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -612,7 +612,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_BusinessLosses_c`  
 _Description:_ Business losses in excess of this amount may not be deducted from AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -641,7 +641,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_em`  
 _Description:_ Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -667,7 +667,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_em_ps`  
 _Description:_ If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -692,7 +692,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_em_po_step_size`  
 _Description:_ If taxpayers' AGI is above this level, their personal exemption will start to decrease for each step AGI exceeds II_em_ps.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -710,7 +710,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_em_prt`  
 _Description:_ Personal exemption amount will decrease by this rate for each step by which AGI exceeds exemption phaseout start.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -729,7 +729,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_no_em_nu18`  
 _Description:_ Total personal exemptions will be decreased by the number of dependents under the age of 18.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -750,7 +750,7 @@ _Out-of-Range Action:_ error
 
 ####  `STD_Aged`  
 _Description:_ To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -777,7 +777,7 @@ _Out-of-Range Action:_ error
 
 ####  `STD`  
 _Description:_ Amount filing unit can use as a standard deduction.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -806,7 +806,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_c`  
 _Description:_ The maximum amount of expenses allowed for each qualifying dependent.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -823,7 +823,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_ps1`  
 _Description:_ For taxpayers with AGI over this amount, the rate of the credit is reduced by CDCC_po_rate_per_step for each CDCC_po1_step_size of excess AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -840,7 +840,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_ps2`  
 _Description:_ For taxpayers with AGI over this amount, the rate of the credit is reduced by CDCC_po_rate_per_step for each CDCC_po2_step_size of excess AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -858,7 +858,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_po1_rate_max`  
 _Description:_ The maximum rate for the CDCC; this rate decreases as AGI rises above the CDCC_ps1 and CDCC_ps2 levels.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -875,7 +875,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_po1_rate_min`  
 _Description:_ The minimum rate for the first AGI phaseout of the CDCC.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -892,7 +892,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_po2_rate_min`  
 _Description:_ The minimum rate for the second AGI phaseout of the CDCC.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -909,7 +909,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_po1_step_size`  
 _Description:_ The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the first phase-out start threshold.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -926,7 +926,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_po2_step_size`  
 _Description:_ The CDCC credit rate is reduced by CDCC_po_rate_per_step for each step (including fractional steps) above the second phase-out start threshold.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -944,7 +944,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_po_rate_per_step`  
 _Description:_ The CDCC credit rate is reduced by this rate for for each step (including fractional steps) above the phase-out start thresholds.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -961,7 +961,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_refundable`  
 _Description:_ If true, the CDCC is fully refundable.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -980,7 +980,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_RetirementSavings_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of the retirement savings credit that can be claimed.  Credit claimed will be (1-Haircut)*RetirementSavingsCredit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -997,7 +997,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_ForeignTax_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of the foreign tax credit that can be claimed.  Credit claimed will be (1-Haircut)*ForeignTaxCredit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1014,7 +1014,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_ResidentialEnergy_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of the residential energy credit that can be claimed.  Credit claimed will be (1-Haircut)*ResidentialEnergyCredit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1031,7 +1031,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_GeneralBusiness_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of the general business credit that can be claimed.  Credit claimed will be (1-Haircut)*GeneralBusinessCredit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1048,7 +1048,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_MinimumTax_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of the previous year minimum tax credit that can be claimed.  Credit claimed will be (1-Haircut)*PreviousYearMinimumTaxCredit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1065,7 +1065,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_AmOppRefundable_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of the refundable American Opportunity credit that can be claimed.  Credit claimed will be (1-Haircut)*RefundablePortionOfAmericanOpportunityCredit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1082,7 +1082,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_AmOppNonRefundable_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of the nonrefundable American Opportunity credit that can be claimed.  Credit claimed will be (1-Haircut)*NonRefundablePortionOfAmericanOpportunityCredit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1099,7 +1099,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_SchR_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of Schedule R credit that can be claimed.  Credit claimed will be (1-Haircut)*ScheduleRCredit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1116,7 +1116,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_OtherCredits_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of other credit that can be claimed.  Credit claimed will be (1-Haircut)*OtherCredits.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1133,7 +1133,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_Education_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of education credits that can be claimed.  Credit claimed will be (1-Haircut)*EducationCredits.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1152,7 +1152,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_credit_nr`  
 _Description:_ This credit amount is not refundable and is phased out based on AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1170,7 +1170,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_credit_nr_ps`  
 _Description:_ The personal nonrefundable credit amount will be reduced for taxpayers with AGI higher than this threshold level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1188,7 +1188,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_credit_nr_prt`  
 _Description:_ The personal nonrefundable credit amount will be reduced at this rate for each dollar of AGI exceeding the II_credit_nr_ps threshold.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1209,7 +1209,7 @@ _Out-of-Range Action:_ error
 
 ####  `ACTC_c`  
 _Description:_ This refundable credit is applied to child dependents and phases out exactly like the CTC amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1233,7 +1233,7 @@ _Out-of-Range Action:_ error
 
 ####  `ACTC_rt`  
 _Description:_ This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1250,7 +1250,7 @@ _Out-of-Range Action:_ error
 
 ####  `ACTC_rt_bonus_under6family`  
 _Description:_ For families with qualifying children under 6 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1267,7 +1267,7 @@ _Out-of-Range Action:_ error
 
 ####  `ACTC_Income_thd`  
 _Description:_ The portion of earned income below this threshold does not count as base for the Additional Child Tax Credit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1291,7 +1291,7 @@ _Out-of-Range Action:_ error
 
 ####  `ACTC_ChildNum`  
 _Description:_ Families with this number of qualified children or more may qualify for a different formula to calculate the Additional Child Tax Credit, which is a partially refundable credit that supplements the Child Tax Credit for some taxpayers.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
 _Known Values:_  
@@ -1310,7 +1310,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_c`  
 _Description:_ The maximum nonrefundable credit allowed for each child.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1334,7 +1334,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_c_under6_bonus`  
 _Description:_ The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 6 years old.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1351,7 +1351,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_include17`  
 _Description:_ If true, children eligible for the child tax credit include those of age 17.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -1368,7 +1368,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_is_refundable`  
 _Description:_ If true, the child tax credit is made fully refundable and the Additional Child Tax Credit is not used.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -1385,7 +1385,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_ps`  
 _Description:_ Child tax credit begins to decrease when MAGI is above this level; read descriptions of the dependent credit amounts for how they phase out when MAGI is above this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1410,7 +1410,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_prt`  
 _Description:_ The amount of the credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1429,7 +1429,7 @@ _Out-of-Range Action:_ error
 
 ####  `ODC_is_refundable`  
 _Description:_ If true, the other dependents tax credit is made fully refundable.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -1446,7 +1446,7 @@ _Out-of-Range Action:_ error
 
 ####  `ODC_c`  
 _Description:_ This nonrefundable credit is applied to non-child dependents and phases out along with the CTC amount.  Became current-law policy with passage of TCJA.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1474,7 +1474,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Casualty_frt`  
 _Description:_ Taxpayers are eligible to deduct the portion of their gross casualty losses exceeding this fraction of AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1491,7 +1491,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Casualty_hc`  
 _Description:_ This decimal fraction can be applied to limit the amount of casualty expense deduction allowed.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1515,7 +1515,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Casualty_c`  
 _Description:_ The amount of casualty expense deduction is limited to this dollar amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1535,7 +1535,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_c`  
 _Description:_ The amount of itemized deductions is limited to this dollar amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1555,7 +1555,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Charity_crt_all`  
 _Description:_ The total deduction for charity is capped at this fraction of AGI.  When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1579,7 +1579,7 @@ _Out-of-Range Action:_ warn
 
 ####  `ID_Charity_crt_noncash`  
 _Description:_ The deduction for noncash charity contributions is capped at this fraction of AGI.  When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1596,7 +1596,7 @@ _Out-of-Range Action:_ warn
 
 ####  `ID_Charity_frt`  
 _Description:_ Taxpayers are eligible to deduct the portion of their charitable expense exceeding this fraction of AGI.  This parameter allows for implementation of Option 52 from https://www.cbo.gov/sites/default/files/cbofiles/attachments/49638-BudgetOptions.pdf.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1613,7 +1613,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Charity_hc`  
 _Description:_ This decimal fraction can be applied to limit the amount of charity expense deduction allowed.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1630,7 +1630,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Charity_c`  
 _Description:_ The amount of charity expense deduction is limited to this dollar amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1648,7 +1648,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Charity_f`  
 _Description:_ Only charitable giving in excess of this dollar amount is eligible for a deduction.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1668,7 +1668,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_InterestPaid_hc`  
 _Description:_ This decimal fraction can be applied to limit the amount of interest paid deduction allowed.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1685,7 +1685,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_InterestPaid_c`  
 _Description:_ The amount of interest paid deduction is limited to this dollar amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1705,7 +1705,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_ps`  
 _Description:_ The itemized deductions will be reduced for taxpayers with AGI higher than this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1730,7 +1730,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_prt`  
 _Description:_ Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.  This phaseout rate cannot be lower than 0.03 for each dollar, due to limited data on non-itemizers.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1754,7 +1754,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_crt`  
 _Description:_ The phaseout amount is capped at this fraction of the original total deduction.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1778,7 +1778,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_reduction_rate`  
 _Description:_ Itemized deductions are reduced if pre-deduction taxable income exceeds top tax bracket.  The 2026+ value of 0.05405405 is about equal to 2/37.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1797,7 +1797,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Medical_frt`  
 _Description:_ Taxpayers are eligible to deduct the portion of their medical expenses exceeding this fraction of AGI.  When using PUF data, lowering this parameter value may produce unexpected results because PUF e17500 variable is zero below the floor.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1821,7 +1821,7 @@ _Out-of-Range Action:_ warn
 
 ####  `ID_Medical_frt_add4aged`  
 _Description:_ Elderly taxpayers have this fraction added to the value of the regular floor rate for deductible medical expenses.  This fraction was -0.025 from 2013 to 2016, but that was temporary and it changed to zero beginning in 2017.  When using PUF data, changing this parameter value may produce unexpected results because PUF e17500 variable is zero below the floor.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1838,7 +1838,7 @@ _Out-of-Range Action:_ warn
 
 ####  `ID_Medical_hc`  
 _Description:_ This decimal fraction can be applied to limit the amount of medical expense deduction allowed.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1855,7 +1855,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Medical_c`  
 _Description:_ The amount of medical expense deduction is limited to this dollar amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1875,7 +1875,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Miscellaneous_frt`  
 _Description:_ Taxpayers are eligible to deduct the portion of their miscellaneous expense exceeding this fraction of AGI.  When using PUF data, lowering this parameter value may produce unexpected results because in PUF data the variable e20400 is zero below the floor.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1892,7 +1892,7 @@ _Out-of-Range Action:_ warn
 
 ####  `ID_Miscellaneous_hc`  
 _Description:_ This decimal fraction can be applied to limit the amount of miscellaneous expense deduction allowed.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1916,7 +1916,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Miscellaneous_c`  
 _Description:_ The amount of miscellaneous expense deduction is limited to this dollar amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1936,7 +1936,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_StateLocalTax_hc`  
 _Description:_ This decimal fraction reduces the state and local income and sales tax deduction.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1953,7 +1953,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_StateLocalTax_crt`  
 _Description:_ The total deduction for state and local taxes is capped at this fraction of AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1970,7 +1970,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_StateLocalTax_c`  
 _Description:_ The amount of state and local income and sales taxes deduction is limited to this dollar amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -1990,7 +1990,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_AllTaxes_hc`  
 _Description:_ This decimal fraction reduces all state and local taxes paid eligible to deduct in itemized deduction.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2007,7 +2007,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_AllTaxes_c`  
 _Description:_ The amount of state and local income, sales and real estate tax deductions is limited to this dollar amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2032,7 +2032,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_AllTaxes_c_ps`  
 _Description:_ The cap on state and local income, sales and real estate tax deductions is phased out when AGI exceeds this amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2050,7 +2050,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_AllTaxes_c_po_rate`  
 _Description:_ The cap on state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_c_ps.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2067,7 +2067,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_AllTaxes_c_po_floor`  
 _Description:_ The cap on state and local income, sales and real estate tax deductions cannot be reduced below this amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2087,7 +2087,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_RealEstate_hc`  
 _Description:_ This decimal fraction reduces real estate taxes paid eligible to deduct in itemized deduction.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2104,7 +2104,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_RealEstate_crt`  
 _Description:_ The total deduction for all real estate taxes is capped at this fraction of AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2121,7 +2121,7 @@ _Out-of-Range Action:_ error
 
 ####  `ID_RealEstate_c`  
 _Description:_ The amount of real estate taxes deduction is limited to this dollar amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2143,7 +2143,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_rt1`  
 _Description:_ Capital gain and qualified dividends (stacked on top of regular income) below threshold 1 are taxed at this rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2160,7 +2160,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_brk1`  
 _Description:_ The gains and dividends, stacked last, of AMT taxable income below this are taxed at AMT capital gain rate 1.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2185,7 +2185,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_rt2`  
 _Description:_ Capital gain and qualified dividend (stacked on top of regular income) below threshold 2 and above threshold 1 are taxed at this rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2202,7 +2202,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_brk2`  
 _Description:_ The gains and dividends, stacked last, of AMT taxable income below this threshold and above bracket 1 are taxed at AMT capital gain rate 2.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2227,7 +2227,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_rt3`  
 _Description:_ The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 and below threshold 3 are taxed at this rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2244,7 +2244,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_brk3`  
 _Description:_ The gains and dividends, stacked last, of AMT taxable income below this and above bracket 2 are taxed at capital gain rate 3; above thisthey are taxed at AMT capital gain rate 4.  Default value is essentially infinity.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2262,7 +2262,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_rt4`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2279,7 +2279,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_rt1250`  
 _Description:_ Unrecaptured Section 1250 gain (Form 6251 line 36) is taxed at this rate under the AMT maximum-capital-gains computation.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2298,7 +2298,7 @@ _Out-of-Range Action:_ error
 
 ####  `Capital_loss_limitation`  
 _Description:_ The amount of capital loss deductions is limited to this dollar amount.  Note that the nature of some datasets may limit the usefulness of this parameter.  For example the IRS Public Use File (PUF) does not report capital losses in excess of the current law limitation (e.g., $,3000) and therefore setting a higher limit will not affect results.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2316,7 +2316,7 @@ _Out-of-Range Action:_ error
 
 ####  `CG_rt1`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2333,7 +2333,7 @@ _Out-of-Range Action:_ error
 
 ####  `CG_brk1`  
 _Description:_ The gains and dividends (stacked on top of regular income) below this are taxed at capital gain rate 1.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2358,7 +2358,7 @@ _Out-of-Range Action:_ error
 
 ####  `CG_rt2`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are below threshold 2 and above threshold 1 are taxed at this rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2375,7 +2375,7 @@ _Out-of-Range Action:_ error
 
 ####  `CG_brk2`  
 _Description:_ The gains and dividends (stacked on top of regular income) below this and above top of bracket 1 are taxed at capital gain rate 2.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2400,7 +2400,7 @@ _Out-of-Range Action:_ error
 
 ####  `CG_rt3`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 2 and below threshold 3 are taxed at this rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2417,7 +2417,7 @@ _Out-of-Range Action:_ error
 
 ####  `CG_brk3`  
 _Description:_ The gains and dividends (stacked on top of regular income) below this and above top of bracket 2 are taxed at the capital gain rate 3; above this they are taxed at capital gain rate 4.  Default value is essentially infinity.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2435,7 +2435,7 @@ _Out-of-Range Action:_ error
 
 ####  `CG_rt4`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2454,7 +2454,7 @@ _Out-of-Range Action:_ error
 
 ####  `CG_nodiff`  
 _Description:_ Specifies whether or not long term capital gains and qualified dividends are taxed like regular taxable income.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -2471,7 +2471,7 @@ _Out-of-Range Action:_ error
 
 ####  `CG_ec`  
 _Description:_ Positive value used only if long term capital gains and qualified dividends taxed no differently than regular taxable income.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2488,7 +2488,7 @@ _Out-of-Range Action:_ error
 
 ####  `CG_reinvest_ec_rt`  
 _Description:_ Positive value used only if long term capital gains and qualified dividends taxed no differently than regular taxable income.  To limit the exclusion to capital gains and dividends invested within one year, set to statutory exclusion rate times the fraction of capital gains and qualified dividends in excess of the exclusion that are assumed to be reinvested within the year.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2509,7 +2509,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_em`  
 _Description:_ The amount of AMT taxable income exempted from AMT.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2534,7 +2534,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_prt`  
 _Description:_ AMT exemption will decrease at this rate for each dollar of AMT taxable income exceeding AMT phaseout start.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2551,7 +2551,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_em_ps`  
 _Description:_ AMT exemption starts to decrease when AMT taxable income goes beyond this threshold.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2576,7 +2576,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_rt1`  
 _Description:_ The tax rate applied to the portion of AMT taxable income below the surtax threshold, AMT bracket 1.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2593,7 +2593,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_brk1`  
 _Description:_ AMT taxable income below this is subject to AMT rate 1 and above it is subject to AMT rate 1 + the additional AMT rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2618,7 +2618,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_rt2_addon`  
 _Description:_ The additional tax rate applied to the portion of AMT income above the AMT bracket 1, which means that AMT_rt2_addon equals AMT_rt2 minus AMT_rt1.  This is the additional tax rate (on top of AMT rate 1) for AMT income above AMT bracket 1.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2635,7 +2635,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_Medical_frt`  
 _Description:_ Before 2017, the AMT required a higher medical expense floor than the regular tax, so the portion of the medical deduction between the regular-tax floor and this fraction of AGI had to be added back to AMT taxable income. TCJA, and now OBBBA, harmonized the regular and AMT Sch A medical floors at 7.5% of AGI, so this parameter is zero beginning in 2017.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2654,7 +2654,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_rt`  
 _Description:_ Fraction of pass-through business income that may be excluded from taxable income.  Applies to (e00900 + e26270).  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2678,7 +2678,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_limited`  
 _Description:_ If true, various TCJA-like limitations are active, otherwise all those limitations (all PT_qbid_* parameters other than PT_qbid_rt) are inactive.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -2695,7 +2695,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_taxinc_thd`  
 _Description:_ Pre-QBID taxable income above this lower threshold implies the QBID amount begins to be limited.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2720,7 +2720,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_taxinc_gap`  
 _Description:_ Pre-QBID taxable income above this upper threshold implies the QBID amount is even more limited.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2745,7 +2745,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_w2_wages_rt`  
 _Description:_ QBID is capped at this fraction of W-2 wages paid by the pass-through business if pre-QBID taxable income is above the QBID thresholds.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2769,7 +2769,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_alt_w2_wages_rt`  
 _Description:_ QBID is capped at this fraction of W-2 wages paid by the pass-through business plus some fraction of business property if pre-QBID taxable income is above the QBID thresholds and the alternative cap is higher than the main wage-only cap.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2793,7 +2793,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_alt_property_rt`  
 _Description:_ QBID is capped at this fraction of business property owned plus some fraction of W-2 wages paid by the pass-through business if pre-QBID taxable income is above the QBID thresholds and the alternative cap is higher than the main wage-only cap.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2817,7 +2817,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_ps`  
 _Description:_ QBID begins to decrease when pre-QBID taxable income is above this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2835,7 +2835,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_prt`  
 _Description:_ QBID will decrease at this rate for each dollar of taxable income exceeding QBID phaseout start.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2852,7 +2852,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_min_ded`  
 _Description:_ QBID will be no less than this amount if qualified business income is not less than PT_qbid_min_qbi.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2869,7 +2869,7 @@ _Out-of-Range Action:_ error
 
 ####  `PT_qbid_min_qbi`  
 _Description:_ QBID will be no less than this PT_qbid_min_ded if qualified business income is not less than this amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2888,7 +2888,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_rt1`  
 _Description:_ The lowest tax rate, applied to the portion of taxable income below tax bracket 1.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2912,7 +2912,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_brk1`  
 _Description:_ Taxable income below this threshold is taxed at tax rate 1.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2937,7 +2937,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_rt2`  
 _Description:_ The second lowest tax rate, applied to the portion of taxable income below tax bracket 2 and above tax bracket 1.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -2961,7 +2961,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_brk2`  
 _Description:_ Income below this threshold and above tax bracket 1 is taxed at tax rate 2.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -2986,7 +2986,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_rt3`  
 _Description:_ The third lowest tax rate, applied to the portion of taxable income below tax bracket 3 and above tax bracket 2.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3010,7 +3010,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_brk3`  
 _Description:_ Income below this threshold and above tax bracket 2 is taxed at tax rate 3.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3035,7 +3035,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_rt4`  
 _Description:_ The tax rate applied to the portion of taxable income below tax bracket 4 and above tax bracket 3.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3059,7 +3059,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_brk4`  
 _Description:_ Income below this threshold and above tax bracket 3 is taxed at tax rate 4.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3084,7 +3084,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_rt5`  
 _Description:_ The third highest tax rate, applied to the portion of taxable income below tax bracket 5 and above tax bracket 4.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3108,7 +3108,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_brk5`  
 _Description:_ Income below this threshold and above tax bracket 4 is taxed at tax rate 5.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3133,7 +3133,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_rt6`  
 _Description:_ The second higher tax rate, applied to the portion of taxable income below tax bracket 6 and above tax bracket 5.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3157,7 +3157,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_brk6`  
 _Description:_ Income below this threshold and above tax bracket 5 is taxed at tax rate 6.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3182,7 +3182,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_rt7`  
 _Description:_ The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3206,7 +3206,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_brk7`  
 _Description:_ Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3224,7 +3224,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_rt8`  
 _Description:_ The tax rate applied to the portion of taxable income above tax bracket 7.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3245,7 +3245,7 @@ _Out-of-Range Action:_ error
 
 ####  `NIIT_thd`  
 _Description:_ If modified AGI is more than this threshold, filing unit is subject to the Net Investment Income Tax.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3263,7 +3263,7 @@ _Out-of-Range Action:_ error
 
 ####  `NIIT_PT_taxed`  
 _Description:_ false ==> partnership and S-corp income excluded from NIIT base; true ==> partnership and S-corp income is in NIIT base.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -3280,7 +3280,7 @@ _Out-of-Range Action:_ error
 
 ####  `NIIT_rt`  
 _Description:_ If modified AGI exceeds NIIT_thd, all net investment income is taxed at this rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3301,7 +3301,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_c`  
 _Description:_ This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3326,7 +3326,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_rt`  
 _Description:_ Pre-phaseout credit is minimum of this rate times earnings and the maximum earned income credit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3344,7 +3344,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_basic_frac`  
 _Description:_ This fraction of EITC_c is always paid as a credit and one minus this fraction is applied to the phasein rate, EITC_rt.  This fraction is zero under current law.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3361,7 +3361,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_prt`  
 _Description:_ Earned income credit begins to decrease at the this rate when AGI is higher than earned income credit phaseout start AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3379,7 +3379,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_ps`  
 _Description:_ If AGI is higher than this threshold, the amount of EITC will start to decrease at the phaseout rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3404,7 +3404,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_ps_addon_MarriedJ`  
 _Description:_ This is the additional amount added on the regular phaseout start amount for taxpayers with filling status of married filing jointly, which means that EITC_ps_addon_MarriedJ equals EITC_ps_MarriedJ minus EITC_ps.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3429,7 +3429,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_MinEligAge`  
 _Description:_ For a childless filing unit, at least one individual's age needs to be no less than this age (but no greater than the EITC_MaxEligAge) in order to be eligible for an earned income tax credit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
 _Known Values:_  
@@ -3446,7 +3446,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_MaxEligAge`  
 _Description:_ For a childless filing unit, at least one individual's age needs to be no greater than this age (but no less than the EITC_MinEligAge) in order to be eligible for an earned income tax credit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
 _Known Values:_  
@@ -3470,7 +3470,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_InvestIncome_c`  
 _Description:_ The EITC amount is reduced when investment income exceeds this ceiling.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3494,7 +3494,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_excess_InvestIncome_rt`  
 _Description:_ The EITC amount is reduced at this rate per dollar of investment income exceeding the ceiling.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3511,7 +3511,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_indiv`  
 _Description:_ Current-law value is false implying EITC is filing-unit based; a value of true implies EITC is computed for each individual wage earner.  The additional phaseout start for joint filers is not affected by this parameter, nor are investment income and age eligibilty rules.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -3528,7 +3528,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_sep_filers_elig`  
 _Description:_ Current-law value is false, implying ineligibility.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -3547,7 +3547,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_new_c`  
 _Description:_ In addition to all credits currently available for dependents, this parameter gives each qualifying child a new refundable credit with this maximum amount.  Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3564,7 +3564,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_new_c_under6_bonus`  
 _Description:_ The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 6 years old.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3581,7 +3581,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_new_for_all`  
 _Description:_ The maximum amount of the new refundable child tax credit does not depend on AGI when true; otherwise, see CTC_new_rt.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -3598,7 +3598,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_new_rt`  
 _Description:_ The maximum amount of the new child tax credit is increased at this rate per dollar of positive AGI until CTC_new_c times the number of qualified children is reached if CTC_new_for_all is false; if CTC_new_for_all is true, there is no AGI limitation to the maximum amount.  Child age qualification for the new child tax credit is the same as under current-law Child Tax Credit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3615,7 +3615,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_new_ps`  
 _Description:_ The total amount of new child tax credit is reduced for taxpayers with AGI higher than this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3633,7 +3633,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_new_prt`  
 _Description:_ The total amount of the new child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI, CTC_new_ps.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3650,7 +3650,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_new_refund_limited`  
 _Description:_ Specifies whether the new child tax credit refund is limited by the new child tax credit refund limit rate (_CTC_new_refund_limit_payroll_rt).  Set this parameter to true to limit the refundability or false to allow full refundability for all taxpayers.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -3667,7 +3667,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_new_refund_limit_payroll_rt`  
 _Description:_ The fraction of payroll taxes (employee plus employer shares, but excluding all HI payroll taxes) that serves as a limit to the amount of new child tax credit that can be refunded.  Set this parameter to zero for no refundability; set it to 9e99 for unlimited refundability for taxpayers with payroll tax liabilities.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3684,7 +3684,7 @@ _Out-of-Range Action:_ error
 
 ####  `CTC_new_refund_limited_all_payroll`  
 _Description:_ Specifies whether the new child tax credit refund limit rate (CTC_new_refund_limit_payroll_rt) applies to all FICA taxes (true) or to just OASDI FICA taxes (false).  If the new CTC is limited, set this parameter to true to limit the refundability to all (OASDI+HI) FICA taxes or false to limit refundabiity to just OASDI FICA taxes.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -3703,7 +3703,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_credit`  
 _Description:_ This credit amount is fully refundable and is phased out based on AGI. It is available to tax units who would otherwise not file.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3721,7 +3721,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_credit_ps`  
 _Description:_ The personal refundable credit amount will be reduced for taxpayers with AGI higher than this threshold level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3739,7 +3739,7 @@ _Out-of-Range Action:_ error
 
 ####  `II_credit_prt`  
 _Description:_ The personal refundable credit amount will be reduced at this rate for each dollar of AGI exceeding the II_credit_ps threshold.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3756,7 +3756,7 @@ _Out-of-Range Action:_ error
 
 ####  `RRC_c`  
 _Description:_ This credit amount is fully refundable and is phased out based on AGI. It is available for each person in the filing unit, except for dependent filers.  Enacted for 2021 as part of the American Rescue Plan Act.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3773,7 +3773,7 @@ _Out-of-Range Action:_ error
 
 ####  `RRC_ps`  
 _Description:_ The Recovery Rebate Credit amount will be reduced for taxpayers with AGI higher than this threshold level.  Enacted for 2021 as part of the American Rescue Plan Act.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3791,7 +3791,7 @@ _Out-of-Range Action:_ error
 
 ####  `RRC_pe`  
 _Description:_ The Recovery Rebate Credit amount will be fully phased out for taxpayers with AGI higher than this threshold level.  Enacted for 2021 as part of the American Rescue Plan Act.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3809,7 +3809,7 @@ _Out-of-Range Action:_ error
 
 ####  `RRC_prt`  
 _Description:_ The Recovery Rebate Credit will be phased out at this rate for those with income above the phase out start and below the phase out end.  Used in 2020 as part of the CARES Act.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3826,7 +3826,7 @@ _Out-of-Range Action:_ warn
 
 ####  `RRC_c_unit`  
 _Description:_ The maximum credit awarded as part of the Recovery Rebate Credit.  Used in 2020 as part of the CARES Act.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3844,7 +3844,7 @@ _Out-of-Range Action:_ warn
 
 ####  `RRC_c_kids`  
 _Description:_ The credit awarded for each child in an eligible family as part of the Recovery Rebate Credit.  Used in 2020 as part of the CARES Act.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3865,7 +3865,7 @@ _Out-of-Range Action:_ warn
 
 ####  `LST`  
 _Description:_ The lump-sum tax is levied on every member of a tax filing unit. The lump-sum tax is included only in combined taxes; it is not included in income or payroll taxes.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3884,7 +3884,7 @@ _Out-of-Range Action:_ error
 
 ####  `AGI_surtax_trt`  
 _Description:_ The surtax rate is applied to the portion of Adjusted Gross Income above the AGI surtax threshold.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3901,7 +3901,7 @@ _Out-of-Range Action:_ error
 
 ####  `AGI_surtax_thd`  
 _Description:_ The aggregate gross income above this AGI surtax threshold is taxed at surtax rate on AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -3921,7 +3921,7 @@ _Out-of-Range Action:_ error
 
 ####  `FST_AGI_trt`  
 _Description:_ Individual income taxes and the employee share of payroll taxes are credited against this minimum tax, so the surtax is the difference between the tax rate times AGI and the credited taxes. The new minimum tax is similar to the Fair Share Tax, except that no credits are exempted from the base.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3938,7 +3938,7 @@ _Out-of-Range Action:_ error
 
 ####  `FST_AGI_thd_lo`  
 _Description:_ A taxpayer is only subject to the new minimum tax if they exceed this level of AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3963,7 +3963,7 @@ _Out-of-Range Action:_ error
 
 ####  `FST_AGI_thd_hi`  
 _Description:_ The new minimum tax will be fully phased in at this level of AGI. If there is no phase-in, this upper threshold should be set equal to the lower AGI threshold.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3992,7 +3992,7 @@ _Out-of-Range Action:_ error
 
 ####  `UBI_u18`  
 _Description:_ UBI benefit provided to people under 18.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -4009,7 +4009,7 @@ _Out-of-Range Action:_ error
 
 ####  `UBI_1820`  
 _Description:_ UBI benefit provided to people 18-20 years of age.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -4026,7 +4026,7 @@ _Out-of-Range Action:_ error
 
 ####  `UBI_21`  
 _Description:_ UBI benefit provided to people 21 and over.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -4045,7 +4045,7 @@ _Out-of-Range Action:_ error
 
 ####  `UBI_ecrt`  
 _Description:_ One minus this fraction of UBI benefits are taxable and will be added to AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4066,7 +4066,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_ssi_repeal`  
 _Description:_ SSI benefits can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4083,7 +4083,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_housing_repeal`  
 _Description:_ Housing benefits can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4100,7 +4100,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_snap_repeal`  
 _Description:_ SNAP benefits can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4117,7 +4117,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_tanf_repeal`  
 _Description:_ TANF benefits can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4134,7 +4134,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_vet_repeal`  
 _Description:_ Veterans benefits can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4151,7 +4151,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_wic_repeal`  
 _Description:_ WIC benefits can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4168,7 +4168,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_mcare_repeal`  
 _Description:_ Medicare benefits can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4185,7 +4185,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_mcaid_repeal`  
 _Description:_ Medicaid benefits can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4202,7 +4202,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_oasdi_repeal`  
 _Description:_ Social Security benefits (e02400) can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4219,7 +4219,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_ui_repeal`  
 _Description:_ Unemployment insurance benefits (e02300) can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4236,7 +4236,7 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_other_repeal`  
 _Description:_ Other benefits can be repealed by switching this parameter to true.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4255,7 +4255,7 @@ _Out-of-Range Action:_ error
 
 ####  `eitc_claim_prob_scale`  
 _Description:_ Unscaled claim probability is defined as maximum of eitc_claim_prob_min and the calculated EITC amount divided by maximum EITC amount for the tax unit.  Value of 9e99 implies everybody claims their EITC amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4272,7 +4272,7 @@ _Out-of-Range Action:_ error
 
 ####  `eitc_claim_prob_min`  
 _Description:_ Unscaled claim probability is defined as maximum of eitc_claim_prob_min and the calculated EITC amount divided by maximum EITC amount for the tax unit.  Value of 9e99 implies everybody claims their EITC amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4289,7 +4289,7 @@ _Out-of-Range Action:_ error
 
 ####  `actc_claim_prob_scale`  
 _Description:_ Unscaled claim probability is defined as maximum of actc_claim_prob_min and the calculated ACTC amount divided by line17 on Schedule 8812 for the tax unit.  Value of 9e99 implies everybody claims their ACTC amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4306,7 +4306,7 @@ _Out-of-Range Action:_ error
 
 ####  `actc_claim_prob_min`  
 _Description:_ Unscaled claim probability is defined as maximum of actc_claim_prob_min and the calculated ACTC amount divided by line17 on Schedule 8812 for the tax unit.  Value of 9e99 implies everybody claims their ACTC amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4323,7 +4323,7 @@ _Out-of-Range Action:_ error
 
 ####  `soi_iitax`  
 _Description:_ True implies setax, e09800, and ptax_amc are included in income tax as on the IRS forms and as in SOI statistics; False implies they are included in payroll tax as in conventional tax analysis.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -4340,7 +4340,7 @@ _Out-of-Range Action:_ error
 
 ####  `STD_Dep`  
 _Description:_ This is the maximum standard deduction for dependents.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -4364,7 +4364,7 @@ _Out-of-Range Action:_ error
 
 ####  `STD_Dep_earned_add`  
 _Description:_ In the IRS Standard Deduction Worksheet for Dependents (Form 1040 instructions), this is the amount added to earned income (worksheet line 2) before comparing against the minimum dependent standard deduction (STD_Dep). Indexed for inflation per IRC Section 63(c)(5)(B).  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -4381,7 +4381,7 @@ _Out-of-Range Action:_ error
 
 ####  `STD_charity_ded_nonitemizers_max`  
 _Description:_ Puts a ceiling on the dollar of amount of cash charitable contributions deductions for taxpayers who take the standard deduction.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4399,7 +4399,7 @@ _Out-of-Range Action:_ error
 
 ####  `UI_em`  
 _Description:_ The amount of Unemployment Insurance benefits excluded from taxable income.  Enacted retroactively for 2020 by the American Rescue Plan Act of 2021.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4416,7 +4416,7 @@ _Out-of-Range Action:_ error
 
 ####  `UI_thd`  
 _Description:_ Unemployment Insurance exemption is eliminated when AGI minus Unemployment Insurance goes beyond this threshold.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4434,7 +4434,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_child_em`  
 _Description:_ The child's AMT exemption is capped by this amount plus the child's earned income.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -4458,7 +4458,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_child_em_c_age`  
 _Description:_ Individuals under this age must use the child AMT exemption rules.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
 _Known Values:_  
@@ -4475,7 +4475,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_em_pe`  
 _Description:_ The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -4499,7 +4499,7 @@ _Out-of-Range Action:_ error
 
 ####  `LLC_Expense_c`  
 _Description:_ The maximum expense eligible for lifetime learning credit, per child.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4516,7 +4516,7 @@ _Out-of-Range Action:_ error
 
 ####  `ETC_pe_Single`  
 _Description:_ The education tax credit will be zero for those taxpayers of non-joint filing status with modified AGI (in thousands) higher than this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4540,7 +4540,7 @@ _Out-of-Range Action:_ error
 
 ####  `ETC_pe_Married`  
 _Description:_ The education tax credit will be zero for those taxpayers of married filing joint status with modified AGI level (in thousands) higher than this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4564,7 +4564,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_Charity_rt`  
 _Description:_ If greater than zero, this decimal fraction represents the portion of total charitable contributions provided as a nonrefundable tax credit.  Credit claimed will be rt*(e19800+e20100).  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4581,7 +4581,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_Charity_f`  
 _Description:_ Only charitable giving in excess of this dollar amount is eligible for the charity credit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4599,7 +4599,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_Charity_frt`  
 _Description:_ Only charitable giving in excess of this decimal fraction of AGI is eligible for the charity credit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4616,7 +4616,7 @@ _Out-of-Range Action:_ error
 
 ####  `SeniorDed_c`  
 _Description:_ Senior deduction is capped at this level per elderly head/spouse.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4633,7 +4633,7 @@ _Out-of-Range Action:_ error
 
 ####  `SeniorDed_ps`  
 _Description:_ Senior deduction is phased-out if AGI exceeds this amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4651,7 +4651,7 @@ _Out-of-Range Action:_ error
 
 ####  `SeniorDed_prt`  
 _Description:_ Senior deduction is phased-out at this rate on AGI exceeding SeniorDed_ps.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4668,7 +4668,7 @@ _Out-of-Range Action:_ error
 
 ####  `AutoLoanInterestDed_c`  
 _Description:_ Auto loan interest in excess of this amount may not be deducted from AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4685,7 +4685,7 @@ _Out-of-Range Action:_ error
 
 ####  `AutoLoanInterestDed_ps`  
 _Description:_ Auto loan interest deduction is phased-out if AGI exceeds this amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4703,7 +4703,7 @@ _Out-of-Range Action:_ error
 
 ####  `AutoLoanInterestDed_po_step_size`  
 _Description:_ Auto loan interest deduction is phased-out in AGI steps of this size.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4720,7 +4720,7 @@ _Out-of-Range Action:_ error
 
 ####  `AutoLoanInterestDed_po_rate_per_step`  
 _Description:_ Auto loan interest deduction is phased-out at this rate for each AGI step.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4737,7 +4737,7 @@ _Out-of-Range Action:_ error
 
 ####  `OvertimeIncomeDed_c`  
 _Description:_ Overtime deduction is capped at this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4755,7 +4755,7 @@ _Out-of-Range Action:_ error
 
 ####  `OvertimeIncomeDed_ps`  
 _Description:_ Overtime deduction is phased-out if modified AGI exceeds this amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4773,7 +4773,7 @@ _Out-of-Range Action:_ error
 
 ####  `OvertimeIncomeDed_po_step_size`  
 _Description:_ Overtime income deduction is phased-out in AGI steps of this size.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4790,7 +4790,7 @@ _Out-of-Range Action:_ error
 
 ####  `OvertimeIncomeDed_po_rate_per_step`  
 _Description:_ Overtime income deduction is phased-out at this rate for each AGI step.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4807,7 +4807,7 @@ _Out-of-Range Action:_ error
 
 ####  `TipIncomeDed_c`  
 _Description:_ Tip deduction is capped at this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4824,7 +4824,7 @@ _Out-of-Range Action:_ error
 
 ####  `TipIncomeDed_ps`  
 _Description:_ Tip deduction is phased-out if modified AGI exceeds this amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4842,7 +4842,7 @@ _Out-of-Range Action:_ error
 
 ####  `TipIncomeDed_po_step_size`  
 _Description:_ Tip income deduction is phased-out in AGI steps of this size.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4859,7 +4859,7 @@ _Out-of-Range Action:_ error
 
 ####  `TipIncomeDed_po_rate_per_step`  
 _Description:_ Tip income deduction is phased-out at this rate for each AGI step.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
