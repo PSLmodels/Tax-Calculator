@@ -5,6 +5,26 @@ Go
 for a complete commit history.
 
 
+2026-09-21 Release 6.8.3
+------------------------
+(last merged pull request is
+[#3146](https://github.com/PSLmodels/Tax-Calculator/pull/3146))
+
+**This is a minor enhancement release.**
+
+**API Changes**
+
+**New Features**
+- Remove CLI support for the old 2011 PUF input files
+  [[#3146](https://github.com/PSLmodels/Tax-Calculator/pull/3146)
+   by Martin Holmer]
+- Update expected CLI test results for new TMD 2.2.0 input data weights
+  [[#3144](https://github.com/PSLmodels/Tax-Calculator/pull/3144)
+   by Martin Holmer]
+
+**Bug Fixes**
+
+
 2026-09-03 Release 6.8.2
 ------------------------
 (last merged pull request is
