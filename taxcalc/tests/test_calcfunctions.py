@@ -1125,3 +1125,179 @@ def test_SchXYZ():
         brks[4], brks[5], brks[6])
     print(f'Actual value returned from SchXYZ function = {actual:.2f}')
     assert np.allclose(actual, expect), f'{actual:.2f} != {expect:.2f}'
+
+
+# Schedule D line 21 net-capital-loss limits by MARS under current law:
+# $3,000 except $1,500 for married-filing-separately (MARS==3).
+CAP_LOSS_LIM = [3000., 3000., 1500., 3000., 3000.]
+# CapGainsLoss argument tuples:
+# (p22250, p23250, Capital_loss_limitation, MARS, c23650, c01000)
+CGL_GAIN = (1000., 4000., CAP_LOSS_LIM, 1, 0., 0.)
+CGL_SMALL_LOSS = (-1000., 0., CAP_LOSS_LIM, 1, 0., 0.)
+CGL_BIG_LOSS = (-5000., -3000., CAP_LOSS_LIM, 1, 0., 0.)
+CGL_BIG_LOSS_MFS = (-5000., -3000., CAP_LOSS_LIM, 3, 0., 0.)
+CGL_NETTING = (-10000., 4000., CAP_LOSS_LIM, 1, 0., 0.)
+
+
+@pytest.mark.parametrize(
+    'test_tuple, expected_value', [
+        # net gain: nothing is capped
+        (CGL_GAIN, (5000., 5000.)),
+        # net loss smaller than the cap: deducted in full
+        (CGL_SMALL_LOSS, (-1000., -1000.)),
+        # net loss larger than the cap: limited to $3,000 when single
+        (CGL_BIG_LOSS, (-8000., -3000.)),
+        # the same loss when married filing separately: limited to $1,500
+        (CGL_BIG_LOSS_MFS, (-8000., -1500.)),
+        # short-term loss netted against long-term gain before the cap
+        (CGL_NETTING, (-6000., -3000.))], ids=[
+            'net gain', 'loss under cap', 'loss over cap',
+            'loss over cap MFS', 'netting then cap'])
+def test_CapGainsLoss(test_tuple, expected_value, skip_jit):
+    """
+    Tests the CapGainsLoss function, which performs the Schedule D
+    Part III netting of short-term and long-term capital gains and
+    losses and then caps any net loss at the MARS-indexed Schedule D
+    line 21 limit.  The returned pair is (c23650, c01000): the net
+    gain/loss before and after that cap.
+    """
+    actual_value = calcfunctions.CapGainsLoss(*test_tuple)
+    assert np.allclose(actual_value, expected_value), \
+        f'{actual_value} != {expected_value}'
+
+
+# Form 8959 line 5/9 thresholds by MARS and the line 7/13 rate under
+# current law: $200k single/HoH/QSS, $250k MFJ, $125k MFS, 0.9%.
+AMEDT_EC = [200000., 250000., 125000., 200000., 200000.]
+AMEDT_RT = 0.009
+# Current-law FICA rates; Schedule SE line 4c keeps
+# 1 - 0.5 * (sum of these) of self-employment earnings, i.e. 0.9235.
+FICA_SS_ER = 0.062
+FICA_SS_EE = 0.062
+FICA_MC_ER = 0.0145
+FICA_MC_EE = 0.0145
+SECA_FRAC = 1. - 0.5 * (FICA_SS_ER + FICA_SS_EE + FICA_MC_ER + FICA_MC_EE)
+
+
+def amedt_tuple(mars, wages, sch_c_p=0., sch_c_s=0.):
+    """
+    Returns an AdditionalMedicareTax argument tuple for a filing unit
+    whose only self-employment income is Schedule C profit or loss.
+    """
+    return (mars, wages, sch_c_p, sch_c_s, 0., 0., 0., 0.,
+            FICA_SS_ER, FICA_SS_EE, FICA_MC_ER, FICA_MC_EE,
+            AMEDT_EC, AMEDT_RT, 0.)
+
+
+def test_AdditionalMedicareTax_wages_only(skip_jit):
+    """
+    Tests Form 8959 Part I: a single filer with wages above the
+    $200,000 threshold owes 0.9% of the excess and nothing else.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(1, 300000.))
+    # line 6 = 300000 - 200000; line 7 = 0.009 * line 6
+    expected_value = AMEDT_RT * (300000. - AMEDT_EC[0])
+    assert np.allclose(expected_value, 900.)
+    assert np.allclose(actual_value, expected_value), \
+        f'{actual_value} != {expected_value}'
+
+
+def test_AdditionalMedicareTax_wages_below_threshold(skip_jit):
+    """
+    Tests that wages at the threshold produce no Additional Medicare
+    Tax.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(1, 200000.))
+    assert np.allclose(actual_value, 0.), f'{actual_value} != 0'
+
+
+def test_AdditionalMedicareTax_se_uses_remaining_threshold(skip_jit):
+    """
+    Tests Form 8959 Part II: wages use part of the threshold, so
+    line 11 leaves only the remainder, and just the self-employment
+    earnings above that remainder are taxed.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(1, 150000., sch_c_p=100000.))
+    # line 8 = 100000 * 0.9235; line 11 = 200000 - 150000;
+    # line 12 = line 8 - line 11; line 13 = 0.009 * line 12
+    line8 = 100000. * SECA_FRAC
+    expected_value = AMEDT_RT * max(0., line8 - (AMEDT_EC[0] - 150000.))
+    assert np.allclose(expected_value, 381.15)
+    assert np.allclose(actual_value, expected_value), \
+        f'{actual_value} != {expected_value}'
+
+
+def test_AdditionalMedicareTax_floors_each_spouse(skip_jit):
+    """
+    Tests that each spouse's Schedule SE earnings are floored at zero
+    before the joint Form 8959 line 8 total is formed.
+
+    Schedule SE is filed separately by each spouse, so one spouse's
+    loss does not offset the other's profit.  Here the taxpayer has
+    $300,000 of Schedule C profit and the spouse a $100,000 loss, with
+    wages equal to the $250,000 joint threshold so that line 11 is
+    zero.  Flooring per spouse taxes 300000 * 0.9235; summing the
+    spouses first and flooring afterwards would tax only
+    200000 * 0.9235, which is $831.15 less.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(2, 250000., sch_c_p=300000., sch_c_s=-100000.))
+    expected_value = AMEDT_RT * (300000. * SECA_FRAC)
+    assert np.allclose(expected_value, 2493.45)
+    assert np.allclose(actual_value, expected_value), \
+        f'{actual_value} != {expected_value}'
+    # the amount that summing the spouses before flooring would give
+    unfloored = AMEDT_RT * ((300000. - 100000.) * SECA_FRAC)
+    assert not np.allclose(actual_value, unfloored), \
+        'a spouse loss must not offset the other spouse SE earnings'
+
+
+# Form 8960 line 14 thresholds by MARS and the line 17 rate under
+# current law: $200k single/HoH, $250k MFJ/QSS, $125k MFS, 3.8%.
+NIIT_THD = [200000., 250000., 125000., 200000., 250000.]
+NIIT_RT = 0.038
+# NetInvIncTax argument tuples: (e00300, e00600, e02000, e26270,
+# c01000, c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, niit)
+NIIT_BELOW_EXCESS = (10000., 5000., 20000., 20000., 15000., 300000.,
+                     NIIT_THD, 1, False, NIIT_RT, 0.)
+NIIT_PT_IN_BASE = (10000., 5000., 20000., 20000., 15000., 300000.,
+                   NIIT_THD, 1, True, NIIT_RT, 0.)
+NIIT_AT_THRESHOLD = (10000., 5000., 0., 0., 15000., 200000.,
+                     NIIT_THD, 1, False, NIIT_RT, 0.)
+NIIT_EXCESS_BINDS = (10000., 5000., 0., 0., 15000., 210000.,
+                     NIIT_THD, 1, False, NIIT_RT, 0.)
+NIIT_NEGATIVE = (0., 0., -50000., 0., -3000., 300000.,
+                 NIIT_THD, 1, False, NIIT_RT, 0.)
+NIIT_JOINT = (10000., 5000., 0., 0., 15000., 300000.,
+              NIIT_THD, 2, False, NIIT_RT, 0.)
+
+
+@pytest.mark.parametrize(
+    'test_tuple, expected_value', [
+        # investment income below the MAGI excess, so line 16 is it
+        (NIIT_BELOW_EXCESS, 1140.),
+        # NIIT_PT_taxed keeps active partnership income in the base
+        (NIIT_PT_IN_BASE, 1900.),
+        # MAGI at the threshold: no tax however large the income
+        (NIIT_AT_THRESHOLD, 0.),
+        # MAGI excess below the investment income, so it is the cap
+        (NIIT_EXCESS_BINDS, 380.),
+        # negative investment income is floored at zero by line 12
+        (NIIT_NEGATIVE, 0.),
+        # joint filers use the $250,000 threshold
+        (NIIT_JOINT, 1140.)], ids=[
+            'nii below excess', 'pt taxed', 'magi at threshold',
+            'excess below nii', 'negative nii', 'joint threshold'])
+def test_NetInvIncTax(test_tuple, expected_value, skip_jit):
+    """
+    Tests the NetInvIncTax function, which computes the Form 8960 Net
+    Investment Income Tax as the rate applied to the lesser of net
+    investment income (line 12) and the excess of modified AGI over
+    the MARS-indexed threshold (line 15).
+    """
+    actual_value = calcfunctions.NetInvIncTax(*test_tuple)
+    assert np.allclose(actual_value, expected_value), \
+        f'{actual_value} != {expected_value}'
