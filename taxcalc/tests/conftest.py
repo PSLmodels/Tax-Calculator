@@ -15,13 +15,6 @@ from taxcalc import Policy, calcfunctions
 numpy.seterr(all='raise')
 
 
-@pytest.fixture
-def skip_jit(monkeypatch):
-    """Fixture docstring"""
-    monkeypatch.setenv('TESTING', 'True')
-    yield
-
-
 @pytest.fixture(scope='session', name='tests_path')
 def tests_path_fixture():
     """Fixture docstring"""
