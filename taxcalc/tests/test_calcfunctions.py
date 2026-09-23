@@ -1125,3 +1125,251 @@ def test_SchXYZ():
         brks[4], brks[5], brks[6])
     print(f'Actual value returned from SchXYZ function = {actual:.2f}')
     assert np.allclose(actual, expect), f'{actual:.2f} != {expect:.2f}'
+
+
+# Sch D (2025) line 21 net-capital-loss limits by MARS.  Values are
+# Capital_loss_limitation under 2025 current law; the parameter is not
+# inflation-indexed and is unchanged since its single 2013 entry.
+CAPITAL_LOSS_LIMITATION = [3000., 3000., 1500., 3000., 3000.]
+# CapGainsLoss argument tuples:
+# (p22250, p23250, Capital_loss_limitation, MARS, c23650, c01000)
+CGL_GAIN = (1000., 4000., CAPITAL_LOSS_LIMITATION, 1, 0., 0.)
+CGL_UNDER_CAP = (-1000., -500., CAPITAL_LOSS_LIMITATION, 1, 0., 0.)
+CGL_AT_CAP = (-2000., -1000., CAPITAL_LOSS_LIMITATION, 1, 0., 0.)
+CGL_OVER_CAP = (-5000., -3000., CAPITAL_LOSS_LIMITATION, 1, 0., 0.)
+CGL_OVER_CAP_MFS = (-5000., -3000., CAPITAL_LOSS_LIMITATION, 3, 0., 0.)
+CGL_AT_CAP_MFS = (-1000., -500., CAPITAL_LOSS_LIMITATION, 3, 0., 0.)
+CGL_ST_LOSS_LT_GAIN = (-10000., 4000., CAPITAL_LOSS_LIMITATION, 1, 0., 0.)
+CGL_LT_LOSS_ST_GAIN = (4000., -10000., CAPITAL_LOSS_LIMITATION, 1, 0., 0.)
+
+
+@pytest.mark.parametrize(
+    'test_tuple, expected_value', [
+        # net gain: Sch D (2025) line 21 leaves it unchanged
+        (CGL_GAIN, (5000., 5000.)),
+        # net loss below the cap: deducted in full
+        (CGL_UNDER_CAP, (-1500., -1500.)),
+        # net loss exactly at the $3,000 cap: still deducted in full
+        (CGL_AT_CAP, (-3000., -3000.)),
+        # net loss above the cap: limited to $3,000 when not filing
+        # separately
+        (CGL_OVER_CAP, (-8000., -3000.)),
+        # the same loss when married filing separately: $1,500
+        (CGL_OVER_CAP_MFS, (-8000., -1500.)),
+        # net loss exactly at the $1,500 married-filing-separately cap
+        (CGL_AT_CAP_MFS, (-1500., -1500.)),
+        # short-term loss netted against long-term gain before the cap
+        (CGL_ST_LOSS_LT_GAIN, (-6000., -3000.)),
+        # long-term loss netted against short-term gain before the cap
+        (CGL_LT_LOSS_ST_GAIN, (-6000., -3000.))], ids=[
+            'net gain', 'loss under cap', 'loss at cap', 'loss over cap',
+            'loss over cap MFS', 'loss at cap MFS',
+            'ST loss vs LT gain', 'LT loss vs ST gain'])
+def test_CapGainsLoss(test_tuple, expected_value, skip_jit):
+    """
+    Tests the CapGainsLoss function against Sch D (2025) of Form 1040:
+    the Part III netting of short-term and long-term gains and losses
+    (line 16) and the MARS-indexed cap on a net loss (line 21).  The
+    returned pair is (c23650, c01000), the net gain/loss before and
+    after that cap.
+    """
+    actual_value = calcfunctions.CapGainsLoss(*test_tuple)
+    assert np.allclose(actual_value, expected_value), \
+        f'{actual_value} != {expected_value}'
+
+
+# Form 8959 (2025) line 5 (= line 9) thresholds by MARS and the
+# line 7 (= line 13) rate.  Values are AMEDT_ec and AMEDT_rt under 2025
+# current law; neither is inflation-indexed and both are unchanged
+# since their single 2013 entries.  Note AMEDT_ec treats a qualifying
+# surviving spouse (MARS 5) like a single filer at $200,000, whereas
+# NIIT_thd below treats MARS 5 like a joint filer at $250,000; the two
+# lists agree everywhere else.
+AMEDT_EC = [200000., 250000., 125000., 200000., 200000.]
+AMEDT_RT = 0.009
+# FICA_ss_trt_* and FICA_mc_trt_* under 2025 current law.  Sch SE
+# (2025) line 4c keeps 1 - 0.5 * (sum of the four rates) of
+# self-employment earnings.
+FICA_SS_TRT_EMPLOYER = 0.062
+FICA_SS_TRT_EMPLOYEE = 0.062
+FICA_MC_TRT_EMPLOYER = 0.0145
+FICA_MC_TRT_EMPLOYEE = 0.0145
+SECA_FRAC = 1. - 0.5 * (FICA_SS_TRT_EMPLOYER + FICA_SS_TRT_EMPLOYEE +
+                        FICA_MC_TRT_EMPLOYER + FICA_MC_TRT_EMPLOYEE)
+assert np.allclose(SECA_FRAC, 0.9235)
+
+
+def amedt_tuple(mars, wages, sch_c=(0., 0.), sch_f=(0., 0.),
+                k1bx14=(0., 0.)):
+    """
+    Returns an AdditionalMedicareTax argument tuple.  Each of sch_c,
+    sch_f and k1bx14 is a (taxpayer, spouse) pair feeding the
+    per-spouse Sch SE (2025) line 6 amounts.
+    """
+    return (mars, wages, sch_c[0], sch_c[1], sch_f[0], sch_f[1],
+            k1bx14[0], k1bx14[1],
+            FICA_SS_TRT_EMPLOYER, FICA_SS_TRT_EMPLOYEE,
+            FICA_MC_TRT_EMPLOYER, FICA_MC_TRT_EMPLOYEE,
+            AMEDT_EC, AMEDT_RT, 0.)
+
+
+@pytest.mark.parametrize(
+    'test_tuple, expected_value', [
+        # 0.009 * (300000 - 200000)
+        (amedt_tuple(1, 300000.), 900.),
+        # 0.009 * (300000 - 250000)
+        (amedt_tuple(2, 300000.), 450.),
+        # 0.009 * (300000 - 125000)
+        (amedt_tuple(3, 300000.), 1575.),
+        # 0.009 * (300000 - 200000)
+        (amedt_tuple(4, 300000.), 900.),
+        # MARS 5 uses the $200,000 single amount, not the $250,000
+        # joint amount that Form 8960 (2025) gives a surviving spouse
+        (amedt_tuple(5, 300000.), 900.),
+        # wages at the threshold produce no tax
+        (amedt_tuple(1, 200000.), 0.)], ids=[
+            'single', 'joint', 'separate', 'head of household',
+            'surviving spouse', 'wages at threshold'])
+def test_AdditionalMedicareTax_wages(test_tuple, expected_value, skip_jit):
+    """
+    Tests Form 8959 (2025) Part I, lines 1-7: the tax is 0.9% of the
+    wages above the MARS-indexed line 5 threshold, and zero at it.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(*test_tuple)
+    assert np.allclose(actual_value, expected_value), \
+        f'{actual_value} != {expected_value}'
+
+
+def test_AdditionalMedicareTax_se_uses_remaining_threshold(skip_jit):
+    """
+    Tests Form 8959 (2025) Part II, lines 8-13: wages use part of the
+    line 9 threshold, so line 11 leaves only the remainder and just the
+    self-employment earnings above that remainder are taxed.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(1, 150000., sch_c=(100000., 0.)))
+    # line 8 = 100000 * 0.9235 = 92350; line 11 = 200000 - 150000;
+    # line 13 = 0.009 * (92350 - 50000)
+    assert np.allclose(actual_value, 381.15), f'{actual_value} != 381.15'
+
+
+def test_AdditionalMedicareTax_both_parts(skip_jit):
+    """
+    Tests that Form 8959 (2025) line 18 adds Part I and Part II rather
+    than taking either alone: wages above the line 5 threshold leave
+    line 11 at zero, so all of the self-employment earnings are taxed
+    as well.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(1, 300000., sch_c=(100000., 0.)))
+    # line 7 = 0.009 * (300000 - 200000) = 900;
+    # line 13 = 0.009 * (100000 * 0.9235) = 831.15
+    assert np.allclose(actual_value, 1731.15), f'{actual_value} != 1731.15'
+
+
+def test_AdditionalMedicareTax_sey_components(skip_jit):
+    """
+    Tests that every per-spouse component of Sch SE (2025) line 6
+    reaches Form 8959 (2025) line 8: Sch C profit, Sch F profit and
+    Sch K-1 box 14 earnings, for taxpayer and spouse alike.
+
+    Wages equal the joint line 9 threshold so that line 11 is zero and
+    the whole of line 8 is taxed.  The six inputs are distinct, so
+    dropping or duplicating any one of them changes the result.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(2, 250000., sch_c=(10000., 1000.),
+                     sch_f=(20000., 2000.), k1bx14=(30000., 3000.)))
+    # line 8 = (60000 + 6000) * 0.9235 = 60951;
+    # line 13 = 0.009 * 60951
+    assert np.allclose(actual_value, 548.559), f'{actual_value} != 548.559'
+
+
+def test_AdditionalMedicareTax_floors_each_spouse(skip_jit):
+    """
+    Tests that each spouse's Sch SE (2025) line 6 amount is floored at
+    zero before the joint Form 8959 (2025) line 8 total is formed.
+
+    Sch SE is filed separately by each spouse, so one spouse's loss
+    does not offset the other's profit.  The taxpayer here has
+    $300,000 of Sch C profit and the spouse a $100,000 loss, with wages
+    at the $250,000 joint threshold so that line 11 is zero.  The
+    result must therefore equal the result for the same taxpayer
+    profit and no spouse self-employment income at all; summing the
+    spouses before flooring would tax only 200000 * 0.9235 and give
+    $1,662.30 instead.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(2, 250000., sch_c=(300000., -100000.)))
+    # line 8 = 300000 * 0.9235 = 277050; line 13 = 0.009 * 277050
+    assert np.allclose(actual_value, 2493.45), f'{actual_value} != 2493.45'
+    without_spouse_loss = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(2, 250000., sch_c=(300000., 0.)))
+    assert np.allclose(actual_value, without_spouse_loss), \
+        'a spouse loss must not offset the other spouse SE earnings'
+
+
+# Form 8960 (2025) line 14 thresholds by MARS and the line 17 rate.
+# Values are NIIT_thd and NIIT_rt under 2025 current law; neither is
+# inflation-indexed and both are unchanged since their single 2013
+# entries.  Note NIIT_thd treats a qualifying surviving spouse
+# (MARS 5) like a joint filer at $250,000, whereas AMEDT_ec above
+# treats MARS 5 like a single filer at $200,000; the two lists agree
+# everywhere else.
+NIIT_THD = [200000., 250000., 125000., 200000., 250000.]
+NIIT_RT = 0.038
+# NetInvIncTax argument tuples: (e00300, e00600, e02000, e26270,
+# c01000, c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, niit).
+# e02000 and e26270 differ so that the line 4b adjustment is nonzero.
+NIIT_BELOW_EXCESS = (10000., 5000., 20000., 5000., 15000., 300000.,
+                     NIIT_THD, 1, False, NIIT_RT, 0.)
+NIIT_PT_IN_BASE = (10000., 5000., 20000., 5000., 15000., 300000.,
+                   NIIT_THD, 1, True, NIIT_RT, 0.)
+NIIT_AT_THRESHOLD = (10000., 5000., 20000., 5000., 15000., 200000.,
+                     NIIT_THD, 1, False, NIIT_RT, 0.)
+NIIT_EXCESS_BINDS = (10000., 5000., 20000., 5000., 15000., 210000.,
+                     NIIT_THD, 1, False, NIIT_RT, 0.)
+NIIT_NEGATIVE = (0., 0., -50000., 0., -3000., 300000.,
+                 NIIT_THD, 1, False, NIIT_RT, 0.)
+NIIT_JOINT = (10000., 5000., 20000., 5000., 15000., 270000.,
+              NIIT_THD, 2, False, NIIT_RT, 0.)
+NIIT_SURVIVING_SPOUSE = (10000., 5000., 20000., 5000., 15000., 270000.,
+                         NIIT_THD, 5, False, NIIT_RT, 0.)
+NIIT_SEPARATE = (10000., 5000., 20000., 5000., 15000., 150000.,
+                 NIIT_THD, 3, False, NIIT_RT, 0.)
+
+
+@pytest.mark.parametrize(
+    'test_tuple, expected_value', [
+        # line 12 = 45000 below line 15 = 100000, so line 16 = line 12
+        (NIIT_BELOW_EXCESS, 1710.),
+        # NIIT_PT_taxed drops the line 4b adjustment, so line 12 rises
+        # by e26270 and the tax by 0.038 * 5000
+        (NIIT_PT_IN_BASE, 1900.),
+        # modified AGI at the line 14 threshold: line 15 is zero, so
+        # no tax however large the investment income
+        (NIIT_AT_THRESHOLD, 0.),
+        # line 15 = 10000 below line 12 = 45000, so line 16 = line 15
+        (NIIT_EXCESS_BINDS, 380.),
+        # negative investment income is floored at zero by line 12
+        (NIIT_NEGATIVE, 0.),
+        # joint filers use the $250,000 threshold: line 15 = 20000
+        (NIIT_JOINT, 760.),
+        # MARS 5 uses the $250,000 joint amount, not the $200,000
+        # single amount that Form 8959 (2025) gives a surviving spouse
+        (NIIT_SURVIVING_SPOUSE, 760.),
+        # married filing separately uses $125,000: line 15 = 25000
+        (NIIT_SEPARATE, 950.)], ids=[
+            'nii below excess', 'pt taxed', 'magi at threshold',
+            'excess below nii', 'negative nii', 'joint threshold',
+            'surviving spouse threshold', 'separate threshold'])
+def test_NetInvIncTax(test_tuple, expected_value, skip_jit):
+    """
+    Tests the NetInvIncTax function against Form 8960 (2025)
+    lines 12-17: the tax is the line 17 rate applied to the lesser of
+    net investment income (line 12) and the excess of modified AGI
+    over the MARS-indexed line 14 threshold (line 15).
+    """
+    actual_value = calcfunctions.NetInvIncTax(*test_tuple)
+    assert np.allclose(actual_value, expected_value), \
+        f'{actual_value} != {expected_value}'
