@@ -183,50 +183,78 @@ def test_DependentCare(skip_jit):
     assert np.allclose(test_value, expected_value)
 
 
-STD_in = [6000, 12000, 6000, 12000, 12000]
-STD_Aged_in = [1500, 1200, 1500, 1500, 1500]
-Charity_max_zero = [0, 0, 0, 0, 0]
-Charity_max_in = [300, 600, 300, 300, 300]
-tuple1 = (0, 1000, STD_in, 45, 44, STD_Aged_in, 1000, 350, 2, 0, 0, 0, 2,
-          0, Charity_max_zero)
-tuple2 = (0, 1000, STD_in, 66, 44, STD_Aged_in, 1000, 350, 2, 0, 1, 1, 2,
-          200, Charity_max_in)
-tuple3 = (0, 1000, STD_in, 44, 66, STD_Aged_in, 1000, 350, 2, 0, 0, 0, 2,
-          700, Charity_max_in)
-tuple4 = (0, 1200, STD_in, 66, 67, STD_Aged_in, 1000, 350, 2, 0, 0, 0, 2,
-          0, Charity_max_in)
-tuple5 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 350, 1, 0, 0, 0, 2,
-          0, Charity_max_in)
-tuple6 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 350, 1, 0, 0, 0, 2,
-          0, Charity_max_in)
-tuple7 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 350, 3, 1, 0, 0, 2,
-          0, Charity_max_in)
-tuple8 = (1, 200, STD_in, 44, 0, STD_Aged_in, 1000, 350, 3, 0, 0, 0, 2,
-          0, Charity_max_in)
-tuple9 = (1, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 350, 3, 0, 0, 0, 2,
-          0, Charity_max_in)
-expected = [12000, 15800, 13800, 14400, 6000, 6000, 0, 1000, 1350]
+# StdDed test cases use 2025 current-law policy values, which match the
+# 2025 Form 1040 line 12 standard deduction chart:
+#   STD = [15750, 31500, 15750, 23625, 31500] by MARS, and
+#   STD_Aged = [2000, 1600, 1600, 2000, 1600] by MARS per 65+/blind box,
+# and the 2025 Standard Deduction Worksheet for Dependents:
+#   STD_Dep_earned_add = 450 (line 2) and STD_Dep = 1350 (line 4).
+# The 2025 nonitemizer charitable deduction ceiling is zero.
 
 
 @pytest.mark.stded
-@pytest.mark.parametrize(
-    'test_tuple,expected_value', [
-        (tuple1, expected[0]), (tuple2, expected[1]),
-        (tuple3, expected[2]), (tuple4, expected[3]),
-        (tuple5, expected[4]), (tuple6, expected[5]),
-        (tuple7, expected[6]), (tuple8, expected[7]),
-        (tuple9, expected[8])], ids=[
-            'Married, young', 'Married, allow charity',
-            'Married, allow charity, over limit',
-            'Married, two old', 'Single 1', 'Single 2', 'Married, Single',
-            'Marrid, Single, dep, under earn',
-            'Married, Single, dep, over earn'])
-def test_StdDed(test_tuple, expected_value, skip_jit):
+@pytest.mark.parametrize('rvars, expected', [
+    # line 12 chart: single, under 65 and not blind
+    pytest.param({'MARS': 1, 'age_head': 45}, 15750., id='single'),
+    # line 12 chart: single, 65 or older: 15750 + 2000
+    pytest.param({'MARS': 1, 'age_head': 66}, 17750., id='single aged'),
+    # line 12 chart: single, 65 or older and blind: 15750 + 2 * 2000
+    pytest.param({'MARS': 1, 'age_head': 66, 'blind_head': 1}, 19750.,
+                 id='single aged blind'),
+    # line 12 chart: married filing jointly, both under 65
+    pytest.param({'MARS': 2, 'age_head': 45, 'age_spouse': 44}, 31500.,
+                 id='joint'),
+    # line 12 chart: married filing jointly, spouse 65 or older:
+    # 31500 + 1600
+    pytest.param({'MARS': 2, 'age_head': 44, 'age_spouse': 66}, 33100.,
+                 id='joint spouse aged'),
+    # line 12 chart: married filing jointly, both 65 or older and
+    # spouse blind: 31500 + 3 * 1600
+    pytest.param({'MARS': 2, 'age_head': 66, 'age_spouse': 67,
+                  'blind_spouse': 1},
+                 36300., id='joint both aged spouse blind'),
+    # line 12 chart: married filing separately, 65 or older:
+    # 15750 + 1600; spouse boxes count only on a joint return, so the
+    # spouse age and blindness are ignored
+    pytest.param({'MARS': 3, 'age_head': 66, 'age_spouse': 70,
+                  'blind_spouse': 1},
+                 17350., id='separate aged'),
+    # line 12 instructions: married filing separately and spouse
+    # itemizes, so the standard deduction is zero
+    pytest.param({'MARS': 3, 'age_head': 66, 'MIDR': 1}, 0.,
+                 id='separate spouse itemizes'),
+    # line 12 chart: head of household, 65 or older: 23625 + 2000
+    pytest.param({'MARS': 4, 'age_head': 66}, 25625., id='head aged'),
+    # line 12 chart: qualifying surviving spouse, blind: 31500 + 1600
+    pytest.param({'MARS': 5, 'age_head': 50, 'blind_head': 1}, 33100.,
+                 id='surviving spouse blind'),
+    # dependent worksheet: line 3 = 500 + 450 = 950;
+    # line 5 = max(950, 1350) = 1350; result = min(1350, 15750)
+    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 16, 'earned': 500.}, 1350.,
+                 id='dependent low earnings'),
+    # dependent worksheet: line 3 = 5000 + 450 = 5450;
+    # line 5 = max(5450, 1350) = 5450; result = min(5450, 15750)
+    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 20, 'earned': 5000.}, 5450.,
+                 id='dependent middle earnings'),
+    # dependent worksheet: line 3 = 20000 + 450 = 20450;
+    # line 5 = max(20450, 1350) = 20450; result = min(20450, 15750)
+    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 20, 'earned': 20000.},
+                 15750., id='dependent high earnings'),
+    # dependent worksheet: min(5450, 15750) as above plus one 65+/blind
+    # box amount for a blind single dependent: 5450 + 2000
+    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 20, 'earned': 5000.,
+                  'blind_head': 1}, 7450., id='dependent blind'),
+    # cash charitable contributions do not raise the standard deduction
+    # because the 2025 nonitemizer charitable deduction ceiling is zero
+    pytest.param({'MARS': 1, 'age_head': 45, 'e19800': 1000.}, 15750.,
+                 id='single with charity'),
+])
+def test_StdDed(call_calcfunc, rvars, expected):
     """
-    Tests the StdDed function
+    Tests the StdDed function against 2025 Form 1040 line 12 logic
     """
-    avalue = calcfunctions.StdDed(*test_tuple)
-    assert np.allclose(avalue, expected_value), f"{avalue} != {expected_value}"
+    actual = call_calcfunc('StdDed', **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
 tuple1 = (120000, 10000, 15000, 100, 2000,
