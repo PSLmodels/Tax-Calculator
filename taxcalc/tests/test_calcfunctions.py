@@ -2664,6 +2664,101 @@ def test_NonrefundableCredits(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# AdditionalCTC
+# ----------------------------------------------------------------------
+
+
+# AdditionalCTC test cases use the 2025 current-law values, which match
+# the 2025 Schedule 8812 Part II: a refundable amount of up to 1700 per
+# qualifying child (line 16b), a rate of 0.15 applied to earned income
+# above 2500 (lines 18a-20), and the Part II-B payroll-tax alternative
+# for filing units with three or more qualifying children (lines 21-26).
+# The codtc_limited argument is the Part I credit not absorbed by tax
+# (line 16a).  The credit_claim_urn is zero unless specified, which
+# implies the credit is always claimed.  The ACTC_rt_bonus_under6family
+# rate is zero and the CTC_is_refundable and CTC_include17 switches are
+# false under 2025 current law.
+ACTC_TWO_KIDS = {'MARS': 2, 'n24': 2, 'codtc_limited': 4400.}
+ACTC_THREE_KIDS = {'MARS': 2, 'n24': 3, 'codtc_limited': 6600.,
+                   'earned': 10000.}
+ACTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
+ACTC_INCLUDE17_REFORM = {'CTC_include17': {2025: True}}
+ACTC_UNDER6_BONUS_REFORM = {'ACTC_rt_bonus_under6family': {2025: 0.1}}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # no line 16a amount left over from Part I
+    pytest.param(None, {**ACTC_TWO_KIDS, 'codtc_limited': 0.,
+                        'earned': 50000.}, 0.,
+                 id='no leftover credit'),
+    # line 16b = 2 * 1700 = 3400; line 20 = 0.15 * (50000 - 2500)
+    # = 7125; line 27 = min(line 17 = 3400, 7125)
+    pytest.param(None, {**ACTC_TWO_KIDS, 'earned': 50000.}, 3400.,
+                 id='limited by line 16b'),
+    # line 17 = min(1000, 3400) = 1000
+    pytest.param(None, {**ACTC_TWO_KIDS, 'codtc_limited': 1000.,
+                        'earned': 50000.}, 1000.,
+                 id='limited by line 16a'),
+    # line 20 = 0.15 * (10000 - 2500) = 1125
+    pytest.param(None, {**ACTC_TWO_KIDS, 'earned': 10000.}, 1125.,
+                 id='limited by earned income'),
+    # earned income below the 2500 threshold: line 20 = 0
+    pytest.param(None, {**ACTC_TWO_KIDS, 'earned': 2000.}, 0.,
+                 id='earned income below threshold'),
+    # three children: line 20 = 0.15 * (50000 - 2500) = 7125 exceeds
+    # line 17 = min(6600, 3 * 1700) = 5100
+    pytest.param(None, {**ACTC_THREE_KIDS, 'earned': 50000.}, 5100.,
+                 id='three children limited by line 17'),
+    # three children with no payroll tax: line 27 = max(line 20, 0)
+    pytest.param(None, ACTC_THREE_KIDS, 1125.,
+                 id='three children no payroll tax'),
+    # three children: line 24 = 0.5 * 3000 + 500 + 100 = 2100;
+    # line 26 = 2100 - (200 + 100) = 1800 exceeds line 20 = 1125
+    pytest.param(None, {**ACTC_THREE_KIDS, 'ptax_was': 3000.,
+                        'c03260': 500., 'e09800': 100., 'c59660': 200.,
+                        'e11200': 100.}, 1800.,
+                 id='three children payroll tax'),
+    # three children: EITC of 3000 exceeds line 24 = 2100, so line 26
+    # = 0 and line 27 = line 20 = 1125
+    pytest.param(None, {**ACTC_THREE_KIDS, 'ptax_was': 3000.,
+                        'c03260': 500., 'e09800': 100., 'c59660': 3000.},
+                 1125., id='three children EITC exceeds payroll tax'),
+    # claim probability = 1.1 * 1125 / 3400 = 0.364 exceeds urn
+    pytest.param(None, {**ACTC_TWO_KIDS, 'earned': 10000.,
+                        'credit_claim_urn': 0.3}, 1125.,
+                 id='credit claimed'),
+    # claim probability = 1.1 * 1125 / 3400 = 0.364 below urn
+    pytest.param(None, {**ACTC_TWO_KIDS, 'earned': 10000.,
+                        'credit_claim_urn': 0.5}, 0.,
+                 id='credit not claimed'),
+    # reform refundable CTC is handled in Part I: line 16b = 0
+    pytest.param(ACTC_REFUNDABLE_REFORM,
+                 {**ACTC_TWO_KIDS, 'earned': 50000.}, 0.,
+                 id='reform refundable CTC'),
+    # a 17-year-old is not a qualifying child: line 16b = 1 * 1700
+    pytest.param(None, {'MARS': 1, 'n24': 1, 'nu18': 2, 'age_head': 40,
+                        'codtc_limited': 4400., 'earned': 50000.},
+                 1700., id='child age 17'),
+    # reform counts a 17-year-old as a qualifying child: 2 * 1700
+    pytest.param(ACTC_INCLUDE17_REFORM,
+                 {'MARS': 1, 'n24': 1, 'nu18': 2, 'age_head': 40,
+                  'codtc_limited': 4400., 'earned': 50000.},
+                 3400., id='reform include age 17'),
+    # reform under-6 bonus: (0.15 + 0.1) * (10000 - 2500)
+    pytest.param(ACTC_UNDER6_BONUS_REFORM,
+                 {**ACTC_TWO_KIDS, 'nu06': 1, 'earned': 10000.}, 1875.,
+                 id='reform under-6 bonus rate'),
+])
+def test_AdditionalCTC(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the AdditionalCTC function against 2025 Schedule 8812 Part II
+    logic
+    """
+    actual = call_calcfunc('AdditionalCTC', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # CTC_new
 # ----------------------------------------------------------------------
 
