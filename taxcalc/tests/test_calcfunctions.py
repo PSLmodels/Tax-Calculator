@@ -2553,6 +2553,117 @@ def test_CharityCredit(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# NonrefundableCredits
+# ----------------------------------------------------------------------
+
+
+# NonrefundableCredits test cases follow the 2025 Schedule 3 Part I line
+# order plus Form 1040 line 19, limiting each credit in turn against the
+# Form 1040 line 18 tax (c05800) that remains after the credits ahead of
+# it: Sch 3 lines 1-4 (foreign tax, child and dependent care, education,
+# retirement savings), then Form 1040 line 19 (CTC, then ODC), then Sch 3
+# lines 5a, 6a, 6b, 6d, and 6z (residential energy, general business,
+# prior-year minimum tax, Sch R, other).  The reform-only charity and
+# personal nonrefundable credits, which are computed upstream and are
+# zero under current law, come last.  The reform-only CR_*_hc haircuts
+# are zero and the CTC_is_refundable and ODC_is_refundable switches are
+# false under 2025 current law.  The returned tuple is (c07180, c07200,
+# c07220, c07230, c07240, odc, c07260, c07300, c07400, c07600, c08000,
+# charity_credit, personal_nonrefundable_credit).
+NRC_CREDITS = {
+    'e07300': 600., 'c07180': 1000., 'c07230': 500., 'e07240': 300.,
+    'c07220': 2200., 'odc': 500., 'e07260': 400., 'e07400': 700.,
+    'e07600': 200., 'c07200': 800., 'p08000': 100.,
+}
+NRC_HAIRCUT_REFORM = {
+    'CR_ForeignTax_hc': {2025: 0.5},
+    'CR_RetirementSavings_hc': {2025: 0.5},
+    'CR_ResidentialEnergy_hc': {2025: 0.5},
+    'CR_GeneralBusiness_hc': {2025: 0.5},
+    'CR_MinimumTax_hc': {2025: 0.5},
+    'CR_OtherCredits_hc': {2025: 0.5},
+}
+NRC_CTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
+NRC_ODC_REFUNDABLE_REFORM = {'ODC_is_refundable': {2025: True}}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # line 18 tax of 20000 exceeds the 7300 sum of all credits
+    pytest.param(None, {**NRC_CREDITS, 'c05800': 20000.},
+                 (1000., 800., 2200., 500., 300., 500.,
+                  400., 600., 700., 200., 100., 0., 0.),
+                 id='no tax limit'),
+    # no tax liability: every credit is limited to zero
+    pytest.param(None, {**NRC_CREDITS, 'c05800': 0.},
+                 (0., 0., 0., 0., 0., 0.,
+                  0., 0., 0., 0., 0., 0., 0.),
+                 id='no tax'),
+    # negative tax is treated as zero tax
+    pytest.param(None, {**NRC_CREDITS, 'c05800': -1000.},
+                 (0., 0., 0., 0., 0., 0.,
+                  0., 0., 0., 0., 0., 0., 0.),
+                 id='negative tax'),
+    # 2000 - 600 (line 1) - 1000 (line 2) = 400 left for line 3
+    pytest.param(None, {**NRC_CREDITS, 'c05800': 2000.},
+                 (1000., 0., 0., 400., 0., 0.,
+                  0., 600., 0., 0., 0., 0., 0.),
+                 id='limited in Sch 3 line 3'),
+    # 4000 - (600 + 1000 + 500 + 300) = 1600 left for CTC
+    pytest.param(None, {**NRC_CREDITS, 'c05800': 4000.},
+                 (1000., 0., 1600., 500., 300., 0.,
+                  0., 600., 0., 0., 0., 0., 0.),
+                 id='limited in CTC'),
+    # 6500 - 2400 (lines 1-4) - 2700 (line 19) - (400 + 700 + 200)
+    # = 100 left for Sch 3 line 6d; nothing left for line 6z
+    pytest.param(None, {**NRC_CREDITS, 'c05800': 6500.},
+                 (1000., 100., 2200., 500., 300., 500.,
+                  400., 600., 700., 200., 0., 0., 0.),
+                 id='limited in Sch 3 line 6d'),
+    # a negative credit is treated as zero and does not raise the
+    # tax available to later credits
+    pytest.param(None,
+                 {'c05800': 1000., 'e07300': -500., 'c07180': 1200.},
+                 (1000., 0., 0., 0., 0., 0.,
+                  0., 0., 0., 0., 0., 0., 0.),
+                 id='negative credit'),
+    # upstream reform-only credits: 1500 - 1000 (line 2) - 300 (charity)
+    # = 200 left for the personal nonrefundable credit
+    pytest.param(None,
+                 {'c05800': 1500., 'c07180': 1000., 'charity_credit': 300.,
+                  'personal_nonrefundable_credit': 400.},
+                 (1000., 0., 0., 0., 0., 0.,
+                  0., 0., 0., 0., 0., 300., 200.),
+                 id='reform-only credits limited'),
+    # reform haircuts: half of each raw-input credit is allowed
+    pytest.param(NRC_HAIRCUT_REFORM, {**NRC_CREDITS, 'c05800': 20000.},
+                 (1000., 800., 2200., 500., 150., 500.,
+                  200., 300., 350., 100., 50., 0., 0.),
+                 id='reform haircuts'),
+    # reform refundable CTC is not limited: 4000 - 2400 (lines 1-4)
+    # - 500 (ODC) - 400 (line 5a) = 700 left for line 6a
+    pytest.param(NRC_CTC_REFUNDABLE_REFORM,
+                 {**NRC_CREDITS, 'c05800': 4000.},
+                 (1000., 0., 2200., 500., 300., 500.,
+                  400., 600., 700., 0., 0., 0., 0.),
+                 id='reform refundable CTC'),
+    # reform refundable ODC is not limited: 4000 - 2400 (lines 1-4)
+    # = 1600 left for CTC; nothing left for later credits
+    pytest.param(NRC_ODC_REFUNDABLE_REFORM,
+                 {**NRC_CREDITS, 'c05800': 4000.},
+                 (1000., 0., 1600., 500., 300., 500.,
+                  0., 600., 0., 0., 0., 0., 0.),
+                 id='reform refundable ODC'),
+])
+def test_NonrefundableCredits(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the NonrefundableCredits function against the 2025 Schedule 3
+    Part I and Form 1040 line 19 credit ordering
+    """
+    actual = call_calcfunc('NonrefundableCredits', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # CTC_new
 # ----------------------------------------------------------------------
 
