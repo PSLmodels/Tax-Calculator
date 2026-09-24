@@ -264,8 +264,7 @@ expected3 = (15000, 21453, 9451.5, 1275, 21453, 749.25, 374.625, 16773,
              179625.375, 161833.5, 17791.875)
 expected4 = (15000, 43965.0, 20707.5, 1275.0, 31953.0, 749.25, 374.625,
              28785.0, 529625.375, 511833.5, 17791.875)
-expected5 = (300, 4065, 757.5, 1275, 4065, 0, 0, 3285.3, 25300, 10279.1875,
-             15000)
+expected5 = (300, 4065, 757.5, 1275, 4065, 0, 0, 3252, 25300, 10300, 15000)
 expected6 = (-40000, 4065, 757.5, 1275, 4065, 0, 0, 3252, 0, 0, 15000)
 
 
@@ -288,6 +287,68 @@ def test_EI_PayrollTax(test_input, expected_output, skip_jit):
         print('ACTUAL:', actual_output)
         print('EXPECT:', expected_output)
         assert False, 'ERROR: ACTUAL != EXPECT'
+
+
+def ei_ptax_tuple(sch_c):
+    """
+    Returns an EI_PayrollTax argument tuple with no wages or pension
+    contributions, 2025 current-law FICA rates, SS_Earnings_c and
+    SECA_Earnings_thd, and with sch_c, a (taxpayer, spouse) pair of
+    Sch C net profit/loss, as the only self-employment income.
+    Sch SE (2025) line 4c keeps 0.9235 of that income.
+    """
+    return (176100., 0., 0., 0., 0.,
+            0.062, 0.062, 0.0145, 0.0145, 0., 99999999999, 400.,
+            sch_c[0], sch_c[1], 0., 0., 0., 0.,
+            None, None, None, None, None, None, None, None, None, None, None)
+
+
+# indexes of setax, ptax_oasdi, earned_p and earned_s in the tuple
+# returned by EI_PayrollTax
+SETAX, PTAX_OASDI, EARNED_P, EARNED_S = 5, 7, 9, 10
+
+
+@pytest.mark.parametrize(
+    'sch_c, expected_setax', [
+        # each spouse's line 4c is 277.05, below $400, so neither owes
+        # SE tax even though their combined line 4c amounts exceed $400
+        ((300., 300.), 0.),
+        # only the taxpayer owes: 0.153 * (10000 * 0.9235)
+        ((10000., 300.), 1412.955),
+        # the spouse loss does not offset the taxpayer profit:
+        # 0.153 * (1000 * 0.9235)
+        ((1000., -900.), 141.2955),
+        # a line 4c amount of exactly $400 is not less than $400
+        ((400. / 0.9235, 0.), 61.2)], ids=[
+            'both spouses below floor', 'one spouse below floor',
+            'spouse loss', 'line 4c at floor'])
+def test_EI_PayrollTax_floor_per_spouse(sch_c, expected_setax, skip_jit):
+    """
+    Tests that the Sch SE (2025) line 4c $400 floor is applied to each
+    spouse separately, because each spouse files a separate Sch SE,
+    rather than to the filing unit's combined self-employment income.
+    """
+    actual = calcfunctions.EI_PayrollTax(*ei_ptax_tuple(sch_c))
+    assert np.allclose(actual[SETAX], expected_setax), \
+        f'{actual[SETAX]} != {expected_setax}'
+
+
+def test_EI_PayrollTax_below_floor_outputs_agree(skip_jit):
+    """
+    Tests that a spouse below the Sch SE (2025) line 4c $400 floor has
+    no SE tax in any output: setax, the OASDI part of it in ptax_oasdi,
+    and the deductible half of it subtracted from earned_p and
+    earned_s must all be zero, so that earned income equals Sch C
+    profit.
+    """
+    actual = calcfunctions.EI_PayrollTax(*ei_ptax_tuple((400., 300.)))
+    assert np.allclose(actual[SETAX], 0.), f'{actual[SETAX]} != 0'
+    assert np.allclose(actual[PTAX_OASDI], 0.), \
+        f'{actual[PTAX_OASDI]} != 0'
+    assert np.allclose(actual[EARNED_P], 400.), \
+        f'{actual[EARNED_P]} != 400'
+    assert np.allclose(actual[EARNED_S], 300.), \
+        f'{actual[EARNED_S]} != 300'
 
 
 def test_AfterTaxIncome(skip_jit):
@@ -1197,20 +1258,26 @@ FICA_MC_TRT_EMPLOYEE = 0.0145
 SECA_FRAC = 1. - 0.5 * (FICA_SS_TRT_EMPLOYER + FICA_SS_TRT_EMPLOYEE +
                         FICA_MC_TRT_EMPLOYER + FICA_MC_TRT_EMPLOYEE)
 assert np.allclose(SECA_FRAC, 0.9235)
+# SECA_Earnings_thd under 2025 current law (Sch SE (2025) line 4c floor)
+SECA_EARNINGS_THD = 400.
 
 
 def amedt_tuple(mars, wages, sch_c=(0., 0.), sch_f=(0., 0.),
-                k1bx14=(0., 0.)):
+                k1bx14=(0., 0.), pencon=(0., 0.)):
     """
     Returns an AdditionalMedicareTax argument tuple.  Each of sch_c,
     sch_f and k1bx14 is a (taxpayer, spouse) pair feeding the
-    per-spouse Sch SE (2025) line 6 amounts.
+    per-spouse Sch SE (2025) line 6 amounts; pencon is a (taxpayer,
+    spouse) pair of pension contributions that, with wages, make up the
+    Form 8959 (2025) line 1 Medicare wages.
     """
-    return (mars, wages, sch_c[0], sch_c[1], sch_f[0], sch_f[1],
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    return (mars, wages, pencon[0], pencon[1],
+            sch_c[0], sch_c[1], sch_f[0], sch_f[1],
             k1bx14[0], k1bx14[1],
             FICA_SS_TRT_EMPLOYER, FICA_SS_TRT_EMPLOYEE,
             FICA_MC_TRT_EMPLOYER, FICA_MC_TRT_EMPLOYEE,
-            AMEDT_EC, AMEDT_RT, 0.)
+            SECA_EARNINGS_THD, AMEDT_EC, AMEDT_RT, 0.)
 
 
 @pytest.mark.parametrize(
@@ -1307,6 +1374,33 @@ def test_AdditionalMedicareTax_floors_each_spouse(skip_jit):
         *amedt_tuple(2, 250000., sch_c=(300000., 0.)))
     assert np.allclose(actual_value, without_spouse_loss), \
         'a spouse loss must not offset the other spouse SE earnings'
+
+
+def test_AdditionalMedicareTax_pension_contributions(skip_jit):
+    """
+    Tests that Form 8959 (2025) line 1 Medicare wages (W-2 box 5)
+    include the pension contributions (elective deferrals) of both
+    spouses, which the e00200 wages (W-2 box 1) exclude.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(2, 230000., pencon=(15000., 10000.)))
+    # line 1 = 230000 + 15000 + 10000 = 255000;
+    # line 7 = 0.009 * (255000 - 250000)
+    assert np.allclose(actual_value, 45.), f'{actual_value} != 45'
+
+
+def test_AdditionalMedicareTax_se_floor_per_spouse(skip_jit):
+    """
+    Tests that a spouse whose Sch SE (2025) line 4c amount is less than
+    $400 has no self-employment income on Form 8959 (2025) line 8,
+    while the other spouse's self-employment income is unaffected.
+    Wages equal the joint line 9 threshold so that line 11 is zero.
+    """
+    actual_value = calcfunctions.AdditionalMedicareTax(
+        *amedt_tuple(2, 250000., sch_c=(10000., 300.)))
+    # line 8 = 10000 * 0.9235 = 9235 (spouse's 277.05 is below $400);
+    # line 13 = 0.009 * 9235
+    assert np.allclose(actual_value, 83.115), f'{actual_value} != 83.115'
 
 
 # Form 8960 (2025) line 14 thresholds by MARS and the line 17 rate.
