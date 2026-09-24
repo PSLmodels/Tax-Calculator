@@ -12,7 +12,8 @@ import re
 import ast
 import numpy as np
 import pytest
-from taxcalc import Records, calcfunctions
+import pandas as pd
+from taxcalc import Policy, Consumption, Records, Calculator, calcfunctions
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -170,7 +171,9 @@ def test_function_args_usage(tests_path):
 # pylint: disable=invalid-name
 
 
-# All the tests below call calcfunctions using the call_calcfunc fixture
+# All the tests below (except the BenefitPrograms test, whose function
+# takes a Calculator object as its only argument) call calcfunctions
+# using the call_calcfunc fixture
 # (defined in conftest.py), which supplies 2025 current-law values for
 # every policy parameter argument and zero for every other argument not
 # specified in the test.  Each expected value is derived, in a comment,
@@ -178,6 +181,81 @@ def test_function_args_usage(tests_path):
 # they implement reform-only or model-only constructs) are tested under
 # 2025 current law (where they are inert) and under a hypothetical reform
 # that changes only the reform-only parameters in 2025.
+
+
+# ----------------------------------------------------------------------
+# BenefitPrograms
+# ----------------------------------------------------------------------
+
+
+# BenefitPrograms is a model-only aggregator with no IRS form.  It takes
+# a Calculator object as its only argument, so the test constructs a
+# one-filing-unit 2025 Calculator object (without extrapolating the
+# input data) and calls the function directly.  Under 2025 current law
+# no program is repealed and every BEN_*_value consumption parameter is
+# 1.0, so the consumption value equals the government cost.  The
+# returned tuple is (benefit_cost_total, benefit_value_total).
+BEN_AMOUNTS = {
+    'housing_ben': 1000., 'ssi_ben': 2000., 'snap_ben': 3000.,
+    'tanf_ben': 300., 'vet_ben': 500., 'wic_ben': 600.,
+    'mcare_ben': 7000., 'mcaid_ben': 8000., 'e02400': 9000.,
+    'e02300': 1100., 'ubi': 1200., 'other_ben': 1300.,
+}  # these amounts sum to 35000
+BEN_REPEAL_REFORM = {
+    'BEN_snap_repeal': {2025: True},
+    'BEN_mcaid_repeal': {2025: True},
+    'BEN_oasdi_repeal': {2025: True},
+}
+BEN_VALUE_REVISION = {
+    'BEN_housing_value': {2025: 0.5},
+    'BEN_mcare_value': {2025: 0.25},
+    'BEN_mcaid_value': {2025: 0.75},
+}
+
+
+@pytest.mark.parametrize('reform, revision, expected', [
+    # 2025 current law: cost and value both equal the sum of all benefits
+    pytest.param(None, None, (35000., 35000.), id='current law'),
+    # repealed SNAP, Medicaid, and OASDI benefits are excluded from both
+    # totals: 35000 - (3000 + 8000 + 9000)
+    pytest.param(BEN_REPEAL_REFORM, None, (15000., 15000.),
+                 id='repeal programs'),
+    # in-kind benefits are weighted by their consumption value, so value
+    # is 35000 - (1 - 0.5) * 1000 - (1 - 0.25) * 7000 - (1 - 0.75) * 8000
+    pytest.param(None, BEN_VALUE_REVISION, (35000., 27250.),
+                 id='consumption value'),
+    # both: cost = 15000 and value is
+    # 15000 - (1 - 0.5) * 1000 - (1 - 0.25) * 7000
+    pytest.param(BEN_REPEAL_REFORM, BEN_VALUE_REVISION, (15000., 9250.),
+                 id='repeal programs and consumption value'),
+])
+def test_BenefitPrograms(reform, revision, expected):
+    """
+    Tests the BenefitPrograms function
+    """
+    pol = Policy()
+    if reform:
+        pol.implement_reform(reform)
+    pol.set_year(2025)
+    con = Consumption()
+    if revision:
+        con.update_consumption(revision)
+    idata = {'RECID': [1], 'MARS': [1]}
+    idata.update({name: [amt] for name, amt in BEN_AMOUNTS.items()
+                  if name != 'ubi'})
+    recs = Records(data=pd.DataFrame(idata), start_year=2025,
+                   gfactors=None, weights=None)
+    calc = Calculator(policy=pol, records=recs, consumption=con,
+                      sync_years=False)
+    calc.array('ubi', np.array([BEN_AMOUNTS['ubi']]))
+    calcfunctions.BenefitPrograms(calc)
+    actual = (calc.array('benefit_cost_total')[0],
+              calc.array('benefit_value_total')[0])
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+    # each repealed program's benefit array is zeroed
+    for name in ('snap_ben', 'mcaid_ben', 'e02400'):
+        amount = 0. if reform else BEN_AMOUNTS[name]
+        assert np.allclose(calc.array(name), amount)
 
 
 # ----------------------------------------------------------------------
