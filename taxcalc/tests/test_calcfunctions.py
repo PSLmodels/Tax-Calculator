@@ -1498,6 +1498,113 @@ def test_SchXYZTax(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# GainsTax
+# ----------------------------------------------------------------------
+
+
+# GainsTax test cases use the 2025 current-law values, which match the
+# 2025 Qualified Dividends and Capital Gain Tax Worksheet (QDCGTW) and
+# the 2025 Schedule D Tax Worksheet (Sch D TW): a 0% rate up to line 15
+# amounts of 48350 (96700 when married filing jointly), a 15% rate up to
+# line 25 amounts of 533400 (600050 when married filing jointly), and a
+# 20% rate above that.  Each c05200 value is the Tax Rate Schedule tax
+# on c04800 (see test_SchXYZTax).  The CG_rt4 and CG_brk3 parameters
+# define a reform-only fourth rate bracket that is inert under 2025
+# current law.  The returned tuple is
+# (dwks10, dwks13, dwks14, dwks18, dwks43, c05700, taxbc).
+CG_NODIFF_REFORM = {'CG_nodiff': {2025: True}}
+CG_BRK3_REFORM = {
+    'CG_brk3': {2025: [1e6, 1e6, 1e6, 1e6, 1e6]},
+    'CG_rt4': {2025: 0.25},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # no qualified dividends or capital gains: taxbc = c05200
+    pytest.param(None, {'MARS': 1, 'c04800': 50000., 'c05200': 5914.},
+                 (0., 0., 0., 0., 0., 0., 5914.), id='no gains'),
+    # QDCGTW: line 4 = 10000; line 5 = 50000 - 10000 = 40000;
+    # line 9 = 48350 - 40000 = 8350 @ 0%; line 17 = 10000 - 8350
+    # = 1650 @ 15%; line 22 = 1192.50 + 0.12 * (40000 - 11925);
+    # line 23 = 0.15 * 1650 + 4561.50
+    pytest.param(None,
+                 {'MARS': 1, 'c04800': 50000., 'c05200': 5914.,
+                  'e00650': 10000.},
+                 (10000., 10000., 40000., 40000., 4809., 0., 4809.),
+                 id='qualified dividends'),
+    # Form 4952 line 4g election of 4000 reduces qualified dividends to
+    # 6000: line 9 = 48350 - 44000 = 4350 @ 0%; 1650 @ 15%;
+    # 1192.50 + 0.12 * (44000 - 11925) + 0.15 * 1650
+    pytest.param(None,
+                 {'MARS': 1, 'c04800': 50000., 'c05200': 5914.,
+                  'e00650': 10000., 'e58990': 4000.},
+                 (6000., 6000., 44000., 44000., 5289., 0., 5289.),
+                 id='investment interest election'),
+    # QDCGTW with capital gain distributions (no Sch D) for joint filers:
+    # line 9 = 96700 - 80000 = 16700 @ 0%; 3300 @ 15%;
+    # 2385 + 0.12 * (80000 - 23850) + 0.15 * 3300
+    pytest.param(None,
+                 {'MARS': 2, 'c04800': 100000., 'c05200': 11828.,
+                  'e01100': 20000.},
+                 (20000., 20000., 80000., 80000., 9618., 0., 9618.),
+                 id='joint cap gain distributions'),
+    # short-term gain only: no preferential-rate income, so the
+    # worksheet tax equals the Tax Rate Schedule tax
+    pytest.param(None,
+                 {'MARS': 1, 'c04800': 50000., 'c05200': 5914.,
+                  'c23650': 10000.},
+                 (0., 0., 50000., 50000., 5914., 0., 5914.),
+                 id='short-term gain only'),
+    # long-term gain of 200000 all taxed @ 20%:
+    # 188769.75 + 0.37 * (800000 - 626350) + 0.20 * 200000
+    pytest.param(None,
+                 {'MARS': 1, 'c04800': 1e6, 'c05200': 327020.25,
+                  'p23250': 200000., 'c23650': 200000.},
+                 (200000., 200000., 800000., 800000., 293020.25, 0.,
+                  293020.25),
+                 id='long-term gain top rate'),
+    # Sch D TW with 30000 of un-recaptured section 1250 gain:
+    # line 13 = 100000 - 30000; line 18 = 300000 - 100000;
+    # 70000 @ 15% + 30000 @ 25% + Schedule X tax on 200000 of 41063
+    pytest.param(None,
+                 {'MARS': 1, 'c04800': 300000., 'c05200': 74547.25,
+                  'p23250': 100000., 'c23650': 100000.,
+                  'e24515': 30000.},
+                 (100000., 70000., 230000., 200000., 59063., 0., 59063.),
+                 id='section 1250 gain'),
+    # Sch D TW with 30000 of 28% rate gain:
+    # 70000 @ 15% + 30000 @ 28% + Schedule X tax on 200000 of 41063
+    pytest.param(None,
+                 {'MARS': 1, 'c04800': 300000., 'c05200': 74547.25,
+                  'p23250': 100000., 'c23650': 100000.,
+                  'e24518': 30000.},
+                 (100000., 70000., 230000., 200000., 59963., 0., 59963.),
+                 id='28 percent rate gain'),
+    # reform-only CG_nodiff taxes qualified dividends at ordinary rates
+    pytest.param(CG_NODIFF_REFORM,
+                 {'MARS': 1, 'c04800': 50000., 'c05200': 5914.,
+                  'e00650': 10000.},
+                 (0., 0., 0., 0., 0., 0., 5914.), id='reform nodiff'),
+    # reform-only fourth bracket taxes long-term gain above 1000000 at
+    # 25%: 188769.75 + 0.37 * (800000 - 626350) + 0.20 * 1200000
+    #      + (0.25 - 0.20) * (1200000 - 1000000)
+    pytest.param(CG_BRK3_REFORM,
+                 {'MARS': 1, 'c04800': 2e6, 'c05200': 697020.25,
+                  'p23250': 1.2e6, 'c23650': 1.2e6},
+                 (1.2e6, 1.2e6, 800000., 800000., 503020.25, 0.,
+                  503020.25),
+                 id='reform fourth bracket'),
+])
+def test_GainsTax(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the GainsTax function against the 2025 Qualified Dividends and
+    Capital Gain Tax Worksheet and the 2025 Schedule D Tax Worksheet
+    """
+    actual = call_calcfunc('GainsTax', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # NetInvIncTax
 # ----------------------------------------------------------------------
 
