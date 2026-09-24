@@ -2403,6 +2403,98 @@ def test_SchR(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# EducationTaxCredit
+# ----------------------------------------------------------------------
+
+
+# EducationTaxCredit test cases follow 2025 Form 8863 Part II lines 10-19
+# and the Credit Limit Worksheet (CLW) in the Form 8863 instructions.
+# Under 2025 current law the line 11 expense cap (LLC_Expense_c) is
+# 10000 and the line 13 amount (ETC_pe_Single and ETC_pe_Married, in
+# thousands) is 90000 (180000 when married filing jointly); the line 16
+# phaseout spread is hardcoded as 10000 (20000 when married filing
+# jointly).  CLW line 6 is c05800 minus e07300, c07180, and c07200.
+# The reform-only CR_Education_hc haircut is zero under 2025 current law.
+ETC_HAIRCUT_REFORM = {'CR_Education_hc': {2025: 0.2}}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # no lifetime learning expenses and no nonrefundable AOTC
+    pytest.param(None, {'MARS': 1, 'c00100': 50000., 'c05800': 5000.},
+                 0., id='no credit'),
+    # line 12 = 0.2 * 5000; line 17 = 1.000
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 50000., 'e87530': 5000.,
+                  'c05800': 5000.},
+                 1000., id='below phase-out'),
+    # line 11 = min(15000, 10000); line 12 = 0.2 * 10000
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 50000., 'e87530': 15000.,
+                  'c05800': 5000.},
+                 2000., id='expense cap'),
+    # line 17 = (90000 - 85000) / 10000 = 0.500; line 18 = 0.5 * 1000
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 85000., 'e87530': 5000.,
+                  'c05800': 5000., 'exact': 1},
+                 500., id='phasing out'),
+    # line 17 = 3333 / 10000 rounded to 0.333; line 18 = 0.333 * 1000
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 86667., 'e87530': 5000.,
+                  'c05800': 5000., 'exact': 1},
+                 333., id='exact rounding'),
+    # without exact rounding: line 18 = 0.3333 * 1000
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 86667., 'e87530': 5000.,
+                  'c05800': 5000., 'exact': 0},
+                 333.3, id='no exact rounding'),
+    # AGI above the 90000 line 13 amount: line 15 = 0
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 95000., 'e87530': 5000.,
+                  'c05800': 5000.},
+                 0., id='phased out'),
+    # joint filers: line 17 = (180000 - 175000) / 20000 = 0.250;
+    # line 18 = 0.25 * 1000
+    pytest.param(None,
+                 {'MARS': 2, 'c00100': 175000., 'e87530': 5000.,
+                  'c05800': 5000., 'exact': 1},
+                 250., id='joint phasing out'),
+    # line 9 nonrefundable AOTC is not subject to the line 13-17 phaseout
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 95000., 'c87668': 1500.,
+                  'c05800': 5000.},
+                 1500., id='nonrefundable AOTC only'),
+    # CLW line 3 = 1000 + 1500
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 50000., 'e87530': 5000.,
+                  'c87668': 1500., 'c05800': 5000.},
+                 2500., id='LLC and nonrefundable AOTC'),
+    # CLW line 6 = 3000 - (500 + 700 + 300) is less than CLW line 3
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 50000., 'e87530': 5000.,
+                  'c87668': 1500., 'c05800': 3000., 'e07300': 500.,
+                  'c07180': 700., 'c07200': 300.},
+                 1500., id='tax liability limit'),
+    # CLW line 5 exceeds CLW line 4, so CLW line 6 = 0
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 50000., 'e87530': 5000.,
+                  'c87668': 1500., 'c05800': 1000., 'e07300': 1500.},
+                 0., id='no tax liability'),
+    # reform haircut: 0.8 * 2500
+    pytest.param(ETC_HAIRCUT_REFORM,
+                 {'MARS': 1, 'c00100': 50000., 'e87530': 5000.,
+                  'c87668': 1500., 'c05800': 5000.},
+                 2000., id='reform haircut'),
+])
+def test_EducationTaxCredit(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the EducationTaxCredit function against 2025 Form 8863 Part II
+    lines 10-19 and the Form 8863 instructions Credit Limit Worksheet
+    """
+    actual = call_calcfunc('EducationTaxCredit', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # CTC_new
 # ----------------------------------------------------------------------
 
