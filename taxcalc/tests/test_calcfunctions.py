@@ -2906,6 +2906,98 @@ def test_CTC_new(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# IITAX
+# ----------------------------------------------------------------------
+
+
+# IITAX test cases follow 2025 Form 1040 lines 24-32: refund is the
+# line 32 sum of refundable credits (line 27a EIC c59660, line 28 ACTC
+# c11070, line 29 AOC c10960, line 30 RRC, and line 31 refundable CDCC
+# plus reform-only credits), and iitax is line 24 (c09200) minus line
+# 32.  Under 2025 current law, the CTC_is_refundable, ODC_is_refundable,
+# and soi_iitax switches are all false, so setax, e09800, and ptax_amc
+# are shifted from iitax to payrolltax.  The returned tuple is (eitc,
+# refund, ctc_total, ctc_refundable, ctc_nonrefundable, iitax,
+# payrolltax, combined).
+IITAX_CREDITS = {
+    'c59660': 3000., 'c11070': 1200., 'c10960': 800., 'CDCC_refund': 500.,
+    'c07220': 2000., 'odc': 500.,
+}
+IITAX_REFORM_CREDITS = {
+    'personal_refundable_credit': 400., 'ctc_new': 1000.,
+    'recovery_rebate_credit': 300.,
+}
+IITAX_SHIFTED_TAXES = {'setax': 1500., 'e09800': 100., 'ptax_amc': 300.}
+IITAX_SOI_REFORM = {'soi_iitax': {2025: True}}
+IITAX_CTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
+IITAX_ODC_REFUNDABLE_REFORM = {'ODC_is_refundable': {2025: True}}
+IITAX_BOTH_REFUNDABLE_REFORM = {
+    **IITAX_CTC_REFUNDABLE_REFORM, **IITAX_ODC_REFUNDABLE_REFORM,
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # no credits: iitax = line 24
+    pytest.param(None, {'c09200': 10000., 'payrolltax': 5000.},
+                 (0., 0., 0., 0., 0., 10000., 5000., 15000.),
+                 id='no credits'),
+    # refund = 3000 + 1200 + 800 + 500 = 5500; ctc_total = 2000 + 1200
+    # + 500 = 3700 with only the 1200 ACTC refundable; iitax = 10000 -
+    # 5500
+    pytest.param(None,
+                 {**IITAX_CREDITS, 'c09200': 10000., 'payrolltax': 5000.},
+                 (3000., 5500., 3700., 1200., 2500., 4500., 5000., 9500.),
+                 id='refundable credits'),
+    # refund exceeds line 24, so iitax is negative
+    pytest.param(None,
+                 {**IITAX_CREDITS, 'c09200': 2000., 'payrolltax': 5000.},
+                 (3000., 5500., 3700., 1200., 2500., -3500., 5000., 1500.),
+                 id='refund exceeds tax'),
+    # reform-only credits: refund = 400 + 1000 + 300 = 1700; the new
+    # CTC is refundable
+    pytest.param(None, {**IITAX_REFORM_CREDITS, 'c09200': 10000.},
+                 (0., 1700., 1000., 1000., 0., 8300., 0., 8300.),
+                 id='reform-only credits'),
+    # current-law soi_iitax=false: 1500 + 100 + 300 = 1900 shifted from
+    # iitax to payrolltax; combined is unchanged
+    pytest.param(None,
+                 {**IITAX_SHIFTED_TAXES, 'c09200': 10000.,
+                  'payrolltax': 5000.},
+                 (0., 0., 0., 0., 0., 8100., 6900., 15000.),
+                 id='tax-analysis concept'),
+    # reform soi_iitax=true: nothing shifted
+    pytest.param(IITAX_SOI_REFORM,
+                 {**IITAX_SHIFTED_TAXES, 'c09200': 10000.,
+                  'payrolltax': 5000.},
+                 (0., 0., 0., 0., 0., 10000., 5000., 15000.),
+                 id='reform SOI concept'),
+    # reform refundable CTC: refund = 5500 + 2000; ctc_refundable =
+    # 2000 + 1200
+    pytest.param(IITAX_CTC_REFUNDABLE_REFORM,
+                 {**IITAX_CREDITS, 'c09200': 10000., 'payrolltax': 5000.},
+                 (3000., 7500., 3700., 3200., 500., 2500., 5000., 7500.),
+                 id='reform refundable CTC'),
+    # reform refundable ODC: refund = 5500 + 500; ctc_refundable =
+    # 1200 + 500
+    pytest.param(IITAX_ODC_REFUNDABLE_REFORM,
+                 {**IITAX_CREDITS, 'c09200': 10000., 'payrolltax': 5000.},
+                 (3000., 6000., 3700., 1700., 2000., 4000., 5000., 9000.),
+                 id='reform refundable ODC'),
+    # reform refundable CTC and ODC: all of ctc_total is refundable
+    pytest.param(IITAX_BOTH_REFUNDABLE_REFORM,
+                 {**IITAX_CREDITS, 'c09200': 10000., 'payrolltax': 5000.},
+                 (3000., 8000., 3700., 3700., 0., 2000., 5000., 7000.),
+                 id='reform refundable CTC and ODC'),
+])
+def test_IITAX(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the IITAX function against 2025 Form 1040 lines 24-32 logic
+    """
+    actual = call_calcfunc('IITAX', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # FairShareTax
 # ----------------------------------------------------------------------
 
