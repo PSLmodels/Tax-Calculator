@@ -531,7 +531,8 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">EI_PayrollTax</span><span class="p">(</span><span class="n">SS_Earnings_c</span><span class="p">,</span> <span class="n">e00200p</span><span class="p">,</span> <span class="n">e00200s</span><span class="p">,</span> <span class="n">pencon_p</span><span class="p">,</span> <span class="n">pencon_s</span><span class="p">,</span>
                   <span class="n">FICA_ss_trt_employer</span><span class="p">,</span> <span class="n">FICA_ss_trt_employee</span><span class="p">,</span>
                   <span class="n">FICA_mc_trt_employer</span><span class="p">,</span> <span class="n">FICA_mc_trt_employee</span><span class="p">,</span>
-                  <span class="n">ALD_SelfEmploymentTax_hc</span><span class="p">,</span> <span class="n">SS_Earnings_thd</span><span class="p">,</span> <span class="n">SECA_Earnings_thd</span><span class="p">,</span>
+                  <span class="n">ALD_SelfEmploymentTax_hc</span><span class="p">,</span> <span class="n">SS_Earnings_thd</span><span class="p">,</span>
+                  <span class="n">SECA_Earnings_deminimus</span><span class="p">,</span>
                   <span class="n">e00900p</span><span class="p">,</span> <span class="n">e00900s</span><span class="p">,</span> <span class="n">e02100p</span><span class="p">,</span> <span class="n">e02100s</span><span class="p">,</span> <span class="n">k1bx14p</span><span class="p">,</span>
                   <span class="n">k1bx14s</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">ptax_er_p</span><span class="p">,</span> <span class="n">ptax_er_s</span><span class="p">,</span> <span class="n">ptax_was</span><span class="p">,</span> <span class="n">setax</span><span class="p">,</span>
                   <span class="n">c03260</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span>
@@ -573,7 +574,7 @@
 <span class="sd">        Individual wage-and-salary earnings above this threshold are subjected</span>
 <span class="sd">        to OASDI payroll tax, in addition to earnings below the</span>
 <span class="sd">        maximum taxable earnings threshold.</span>
-<span class="sd">    SECA_Earnings_thd: float</span>
+<span class="sd">    SECA_Earnings_deminimus: float</span>
 <span class="sd">        Threshold value for an individual's net self-employment earnings</span>
 <span class="sd">        (Sch SE line 4c) below which that individual has no SECA tax</span>
 <span class="sd">        liability; applied to taxpayer and spouse separately</span>
@@ -679,9 +680,9 @@
     <span class="c1"># Sch SE line 4c floor: each spouse files a separate Sch SE, and a</span>
     <span class="c1"># spouse whose line 4c amount is less than $400 does not owe SE tax</span>
     <span class="c1"># ("If less than $400, stop; you don't owe self-employment tax")</span>
-    <span class="k">if</span> <span class="n">net_sey_p</span> <span class="o">&lt;</span> <span class="n">SECA_Earnings_thd</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">net_sey_p</span> <span class="o">&lt;</span> <span class="n">SECA_Earnings_deminimus</span><span class="p">:</span>
         <span class="n">net_sey_p</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">net_sey_s</span> <span class="o">&lt;</span> <span class="n">SECA_Earnings_thd</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">net_sey_s</span> <span class="o">&lt;</span> <span class="n">SECA_Earnings_deminimus</span><span class="p">:</span>
         <span class="n">net_sey_s</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="c1"># Sch SE line 9: remaining OASDI base = SS_Earnings_c - W-2 SS wages</span>
     <span class="n">txearn_sey_p</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">net_sey_p</span><span class="p">,</span> <span class="n">SS_Earnings_c</span> <span class="o">-</span> <span class="n">txearn_was_p</span><span class="p">)</span>
@@ -1929,7 +1930,7 @@
                           <span class="n">e00900p</span><span class="p">,</span> <span class="n">e00900s</span><span class="p">,</span> <span class="n">e02100p</span><span class="p">,</span> <span class="n">e02100s</span><span class="p">,</span> <span class="n">k1bx14p</span><span class="p">,</span> <span class="n">k1bx14s</span><span class="p">,</span>
                           <span class="n">FICA_ss_trt_employer</span><span class="p">,</span> <span class="n">FICA_ss_trt_employee</span><span class="p">,</span>
                           <span class="n">FICA_mc_trt_employer</span><span class="p">,</span> <span class="n">FICA_mc_trt_employee</span><span class="p">,</span>
-                          <span class="n">SECA_Earnings_thd</span><span class="p">,</span> <span class="n">AMEDT_ec</span><span class="p">,</span> <span class="n">AMEDT_rt</span><span class="p">,</span>
+                          <span class="n">SECA_Earnings_deminimus</span><span class="p">,</span> <span class="n">AMEDT_ec</span><span class="p">,</span> <span class="n">AMEDT_rt</span><span class="p">,</span>
                           <span class="n">ptax_amc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Form 8959 Additional Medicare Tax. Liability flows into Schedule 2</span>
@@ -1956,7 +1957,7 @@
 <span class="sd">    Sch SE is filed separately by each spouse, so each spouse's net SE</span>
 <span class="sd">    earnings are floored at zero independently before the joint total is</span>
 <span class="sd">    formed, and a spouse whose net SE earnings are less than the</span>
-<span class="sd">    `SECA_Earnings_thd` ($400) floor has no SE income. The records-bound</span>
+<span class="sd">    `SECA_Earnings_deminimus` ($400) floor has no SE income. The records-bound</span>
 <span class="sd">    `sey` is the unfloored sum, which would over-net a positive-sey</span>
 <span class="sd">    spouse against a negative-sey spouse; this function therefore</span>
 <span class="sd">    re-derives `sey_p`/`sey_s` from the underlying per-spouse input</span>
@@ -2004,7 +2005,7 @@
 <span class="sd">        Employer-side FICA HI tax rate (Sch SE line 4c reduction)</span>
 <span class="sd">    FICA_mc_trt_employee: float</span>
 <span class="sd">        Employee-side FICA HI tax rate (Sch SE line 4c reduction)</span>
-<span class="sd">    SECA_Earnings_thd: float</span>
+<span class="sd">    SECA_Earnings_deminimus: float</span>
 <span class="sd">        Per-spouse Sch SE line 4c floor below which that spouse has no</span>
 <span class="sd">        SE income (Sch SE line 4c: "If less than $400, stop")</span>
 <span class="sd">    -- Common to Parts I and II --</span>
@@ -2031,9 +2032,9 @@
     <span class="n">sey_s</span> <span class="o">=</span> <span class="n">e00900s</span> <span class="o">+</span> <span class="n">e02100s</span> <span class="o">+</span> <span class="n">k1bx14s</span>
     <span class="n">net_sey_p</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_p</span> <span class="o">*</span> <span class="n">seca_frac</span><span class="p">)</span>
     <span class="n">net_sey_s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey_s</span> <span class="o">*</span> <span class="n">seca_frac</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">net_sey_p</span> <span class="o">&lt;</span> <span class="n">SECA_Earnings_thd</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">net_sey_p</span> <span class="o">&lt;</span> <span class="n">SECA_Earnings_deminimus</span><span class="p">:</span>
         <span class="n">net_sey_p</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">net_sey_s</span> <span class="o">&lt;</span> <span class="n">SECA_Earnings_thd</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">net_sey_s</span> <span class="o">&lt;</span> <span class="n">SECA_Earnings_deminimus</span><span class="p">:</span>
         <span class="n">net_sey_s</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="c1"># -- Part I: Medicare wages (lines 1-7) --</span>
     <span class="n">line4</span> <span class="o">=</span> <span class="n">e00200</span> <span class="o">+</span> <span class="n">pencon_p</span> <span class="o">+</span> <span class="n">pencon_s</span>
