@@ -2319,6 +2319,90 @@ def test_AmOppCreditParts(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# SchR
+# ----------------------------------------------------------------------
+
+
+# SchR test cases follow 2025 Schedule R Part III, whose amounts are
+# hardcoded in the function: a line 10 base amount of 5000 (7500 when
+# married filing jointly with both spouses 65+ and 3750 when married
+# filing separately) and a line 15 AGI threshold of 7500 (10000 when
+# married filing jointly and 5000 when married filing separately).
+# Line 13c is nontaxable social security benefits plus nontaxable
+# pensions, line 17 is half the AGI excess over line 15, line 20 is
+# 0.15 of line 19, and line 21 is c05800 minus e07300 and c07180.
+# The reform-only CR_SchR_hc haircut is zero under 2025 current law.
+SCHR_HAIRCUT_REFORM = {'CR_SchR_hc': {2025: 0.2}}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # head under 65: not eligible
+    pytest.param(None,
+                 {'MARS': 1, 'age_head': 64, 'c00100': 5000.,
+                  'c05800': 1000.},
+                 0., id='under 65'),
+    # Box 1: line 19 = 5000; line 20 = 0.15 * 5000
+    pytest.param(None,
+                 {'MARS': 1, 'age_head': 65, 'c00100': 5000.,
+                  'c05800': 1000.},
+                 750., id='single 65 below threshold'),
+    # line 13a = 3000; line 17 = 0.5 * (9500 - 7500);
+    # line 19 = 5000 - 4000; line 20 = 0.15 * 1000
+    pytest.param(None,
+                 {'MARS': 1, 'age_head': 65, 'c00100': 9500.,
+                  'e02400': 3000., 'c05800': 1000.},
+                 150., id='single 65 nontaxable OASDI and AGI excess'),
+    # line 13b = 2000 - 1500; line 19 = 4500; line 20 = 0.15 * 4500
+    pytest.param(None,
+                 {'MARS': 1, 'age_head': 65, 'c00100': 5000.,
+                  'e01500': 2000., 'e01700': 1500., 'c05800': 1000.},
+                 675., id='single 65 nontaxable pensions'),
+    # Box 1: line 17 = 0.5 * (20000 - 7500) exceeds line 10
+    pytest.param(None,
+                 {'MARS': 4, 'age_head': 70, 'c00100': 20000.,
+                  'c05800': 1000.},
+                 0., id='head of household 70 phased out'),
+    # Box 3: line 17 = 0.5 * (12000 - 10000);
+    # line 19 = 7500 - 1000; line 20 = 0.15 * 6500
+    pytest.param(None,
+                 {'MARS': 2, 'age_head': 66, 'age_spouse': 67,
+                  'c00100': 12000., 'c05800': 2000.},
+                 975., id='joint both 65+'),
+    # Box 7: only spouse 65+; line 19 = 5000; line 20 = 0.15 * 5000
+    pytest.param(None,
+                 {'MARS': 2, 'age_head': 60, 'age_spouse': 66,
+                  'c00100': 10000., 'c05800': 2000.},
+                 750., id='joint spouse only 65+'),
+    # Box 8: line 19 = 3750; line 20 = 0.15 * 3750
+    pytest.param(None,
+                 {'MARS': 3, 'age_head': 65, 'c00100': 5000.,
+                  'c05800': 1000.},
+                 562.5, id='separate 65'),
+    # separate filer with only spouse 65+: not eligible
+    pytest.param(None,
+                 {'MARS': 3, 'age_head': 60, 'age_spouse': 66,
+                  'c00100': 5000., 'c05800': 1000.},
+                 0., id='separate spouse only 65+'),
+    # line 21 = 900 - 100 - 200 is less than line 20 = 750
+    pytest.param(None,
+                 {'MARS': 1, 'age_head': 65, 'c00100': 5000.,
+                  'c05800': 900., 'e07300': 100., 'c07180': 200.},
+                 600., id='tax liability limit'),
+    # reform haircut: 0.8 * 750
+    pytest.param(SCHR_HAIRCUT_REFORM,
+                 {'MARS': 1, 'age_head': 65, 'c00100': 5000.,
+                  'c05800': 1000.},
+                 600., id='reform haircut'),
+])
+def test_SchR(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the SchR function against 2025 Schedule R Part III lines 10-22
+    """
+    actual = call_calcfunc('SchR', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # CTC_new
 # ----------------------------------------------------------------------
 
