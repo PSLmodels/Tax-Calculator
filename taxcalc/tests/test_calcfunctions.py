@@ -462,6 +462,61 @@ def test_Adj(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# ALD_InvInc_ec_base
+# ----------------------------------------------------------------------
+
+
+# ALD_InvInc_ec_base is reform plumbing with no IRS form: it computes the
+# investment income base that the reform-only ALD_InvInc_ec_rt parameter
+# multiplies in AGIIncome.  The function itself uses no reform-only
+# parameters, so it is tested only under 2025 current law, whose capital
+# loss limitation matches 2025 Sch D line 21: 3000 (1500 when married
+# filing separately).  The base is the sum of taxable interest (Form 1040
+# line 2b), ordinary dividends (Form 1040 line 3b), the Sch D line 21
+# capped net capital gain or loss, capital gain distributions not
+# reported on Sch D, and Form 4797 other gain or loss (Sch 1 line 4).
+# The returned value is invinc_ec_base.
+INVINC_ITEMS = {
+    'e00300': 1000.,   # Form 1040 line 2b
+    'e00600': 2000.,   # Form 1040 line 3b
+    'e01100': 500.,    # Form 1040 line 7 (no Sch D required)
+    'e01200': 300.,    # Sch 1 line 4
+}  # these amounts sum to 3800
+
+
+@pytest.mark.parametrize('rvars, expected', [
+    # no investment income
+    pytest.param({'MARS': 1}, 0., id='no income'),
+    # non-Sch-D items only: 1000 + 2000 + 500 + 300
+    pytest.param({'MARS': 1, **INVINC_ITEMS}, 3800., id='non-sch-d items'),
+    # net Sch D gain is included in full: 3800 + 1000 + 4000
+    pytest.param({'MARS': 1, 'p22250': 1000., 'p23250': 4000.,
+                  **INVINC_ITEMS}, 8800., id='net gain'),
+    # net Sch D loss under the limit is included in full: 3800 - 1500
+    pytest.param({'MARS': 1, 'p22250': -1000., 'p23250': -500.,
+                  **INVINC_ITEMS}, 2300., id='loss under cap'),
+    # net Sch D loss above the limit is capped at 3000: 3800 - 3000
+    pytest.param({'MARS': 1, 'p22250': -5000., 'p23250': -3000.,
+                  **INVINC_ITEMS}, 800., id='loss over cap'),
+    # the same loss when married filing separately is capped at 1500:
+    # 3800 - 1500
+    pytest.param({'MARS': 3, 'p22250': -5000., 'p23250': -3000.,
+                  **INVINC_ITEMS}, 2300., id='loss over cap MFS'),
+    # a Form 4797 loss is not subject to the Sch D line 21 limit:
+    # 1000 - 10000
+    pytest.param({'MARS': 1, 'e00300': 1000., 'e01200': -10000.},
+                 -9000., id='form 4797 loss'),
+])
+def test_ALD_InvInc_ec_base(call_calcfunc, rvars, expected):
+    """
+    Tests the ALD_InvInc_ec_base function, including its re-derivation
+    of the Sch D line 21 capped net capital gain or loss
+    """
+    actual = call_calcfunc('ALD_InvInc_ec_base', **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # CapGainsLoss
 # ----------------------------------------------------------------------
 
