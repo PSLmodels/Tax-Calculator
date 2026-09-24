@@ -152,6 +152,10 @@ class Policy(Parameters):
         # following parameters were removed in PR 3140
         'RPTC_c': 'was removed in Tax-Calculator 6.8.2',
         'RPTC_rt': 'was removed in Tax-Calculator 6.8.2',
+        # following parameter was renamed in PR 3150
+        'SECA_Earnings_thd': (
+            'was renamed SECA_Earnings_deminimus in Tax-Calculator 6.8.4'
+        ),
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}
