@@ -1299,8 +1299,7 @@ def ItemDed(e17500, e18400, e18500, e19200,
     g20500: float
         Casualty / theft loss after Form 4684 10% AGI floor
     ID_Casualty_frt: float
-        Reform additional AGI-fraction floor (zero under current law
-        because g20500 is already post-Form-4684)
+        Reform additional AGI-fraction floor
     ID_Casualty_hc: float
         Reform haircut on casualty deduction
     ID_Casualty_c: list
@@ -1428,8 +1427,6 @@ def ItemDed(e17500, e18400, e18500, e19200,
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # ----------------------------------------------------------------
     # Sch A Casualty and Theft Losses (line 15)
-    # g20500 is post-Form-4684 (10% AGI floor already applied), so
-    # ID_Casualty_frt defaults to 0 under current law.
     # ----------------------------------------------------------------
     c20500 = (max(0., g20500 - ID_Casualty_frt * posagi) *
               (1. - ID_Casualty_hc))  # line 15

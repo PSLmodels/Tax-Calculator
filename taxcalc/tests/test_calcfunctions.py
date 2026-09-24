@@ -969,6 +969,154 @@ def test_MiscDed(call_calcfunc, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# ItemDed
+# ----------------------------------------------------------------------
+
+
+# ItemDed test cases use the 2025 current-law values, which match the
+# 2025 Schedule A:
+#   line 3 medical floor is 7.5 percent of AGI;
+#   line 5e SALT cap is 40000 (20000 when married filing separately),
+#     reduced by 30 percent of AGI above 500000 (250000 when married
+#     filing separately), but not below 10000 (5000 when married filing
+#     separately);
+#   line 14 charity is limited to 60 percent of AGI, with noncash gifts
+#     limited to 30 percent of AGI;
+#   line 15 casualty losses and line 16 other deductions are zero under
+#     Tax-Calculator current law (ID_Casualty_hc and ID_Miscellaneous_hc
+#     are both one).
+# The Pease limitation (ID_ps, ID_prt, ID_crt), the top-bracket reduction
+# (ID_reduction_rate), and the total cap (ID_c) have no 2025 Schedule A
+# counterpart and are inert under 2025 current law.  The returned tuple
+# is (c17000, c18300, c19200, c19700, c20500, c20800, c21040, c21060,
+# c04470), which are Schedule A lines 4, 7, 10, 14, 15, and 16, the
+# Pease reduction, line 17, and the itemized deduction.
+ID_PEASE_REFORM = {
+    'ID_ps': {2025: [300000., 300000., 300000., 300000., 300000.]},
+    'ID_prt': {2025: 0.03},
+    'ID_crt': {2025: 0.8},
+}
+ID_REDUCTION_REFORM = {'ID_reduction_rate': {2025: 0.05}}
+ID_CAP_REFORM = {'ID_c': {2025: [25000., 25000., 25000., 25000., 25000.]}}
+ID_ALL_ITEMS = {
+    'MARS': 1, 'c00100': 100000., 'e17500': 10000., 'e18400': 8000.,
+    'e18500': 7000., 'e19200': 12000., 'e19800': 10000., 'e20100': 5000.,
+    'g20500': 5000., 'e20400': 5000.,
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # line 4: 10000 - 0.075 * 100000
+    pytest.param(None, {'MARS': 1, 'c00100': 100000., 'e17500': 10000.},
+                 (2500., 0., 0., 0., 0., 0., 0., 2500., 2500.),
+                 id='medical'),
+    # line 4: expenses below the 7.5 percent floor
+    pytest.param(None, {'MARS': 1, 'c00100': 100000., 'e17500': 5000.},
+                 (0., 0., 0., 0., 0., 0., 0., 0., 0.),
+                 id='medical below floor'),
+    # line 4: negative AGI means a zero floor
+    pytest.param(None, {'MARS': 1, 'c00100': -5000., 'e17500': 1000.},
+                 (1000., 0., 0., 0., 0., 0., 0., 1000., 1000.),
+                 id='medical negative AGI'),
+    # line 7: 8000 + 7000 is below the 40000 cap
+    pytest.param(None, {'MARS': 1, 'c00100': 100000., 'e18400': 8000.,
+                        'e18500': 7000.},
+                 (0., 15000., 0., 0., 0., 0., 0., 15000., 15000.),
+                 id='SALT below cap'),
+    # line 7: min(30000 + 20000, 40000)
+    pytest.param(None, {'MARS': 2, 'c00100': 200000., 'e18400': 30000.,
+                        'e18500': 20000.},
+                 (0., 40000., 0., 0., 0., 0., 0., 40000., 40000.),
+                 id='SALT cap'),
+    # line 7: min(30000, 20000) when married filing separately
+    pytest.param(None, {'MARS': 3, 'c00100': 100000., 'e18400': 30000.},
+                 (0., 20000., 0., 0., 0., 0., 0., 20000., 20000.),
+                 id='SALT cap separate'),
+    # line 7: min(50000, 40000 - 0.3 * (550000 - 500000))
+    pytest.param(None, {'MARS': 1, 'c00100': 550000., 'e18400': 50000.},
+                 (0., 25000., 0., 0., 0., 0., 0., 25000., 25000.),
+                 id='SALT cap phase-out'),
+    # line 7: min(50000, max(40000 - 0.3 * (700000 - 500000), 10000))
+    pytest.param(None, {'MARS': 1, 'c00100': 700000., 'e18400': 50000.},
+                 (0., 10000., 0., 0., 0., 0., 0., 10000., 10000.),
+                 id='SALT cap floor'),
+    # line 7: min(50000, 20000 - 0.3 * (275000 - 250000))
+    pytest.param(None, {'MARS': 3, 'c00100': 275000., 'e18400': 50000.},
+                 (0., 12500., 0., 0., 0., 0., 0., 12500., 12500.),
+                 id='SALT cap phase-out separate'),
+    # line 7: min(50000, max(20000 - 0.3 * (350000 - 250000), 5000))
+    pytest.param(None, {'MARS': 3, 'c00100': 350000., 'e18400': 50000.},
+                 (0., 5000., 0., 0., 0., 0., 0., 5000., 5000.),
+                 id='SALT cap floor separate'),
+    # line 10: interest is not limited
+    pytest.param(None, {'MARS': 1, 'c00100': 100000., 'e19200': 12000.},
+                 (0., 0., 12000., 0., 0., 0., 0., 12000., 12000.),
+                 id='interest'),
+    # line 14: 10000 + 5000 is below the AGI limits
+    pytest.param(None, {'MARS': 1, 'c00100': 100000., 'e19800': 10000.,
+                        'e20100': 5000.},
+                 (0., 0., 0., 15000., 0., 0., 0., 15000., 15000.),
+                 id='charity'),
+    # line 14: noncash gifts limited to 0.3 * 100000
+    pytest.param(None, {'MARS': 1, 'c00100': 100000., 'e20100': 40000.},
+                 (0., 0., 0., 30000., 0., 0., 0., 30000., 30000.),
+                 id='charity noncash limit'),
+    # line 14: total gifts limited to 0.6 * 100000
+    pytest.param(None, {'MARS': 1, 'c00100': 100000., 'e19800': 80000.},
+                 (0., 0., 0., 60000., 0., 0., 0., 60000., 60000.),
+                 id='charity total limit'),
+    # line 14: 20000 + min(0.3 * 100000, 40000) = 50000 is below
+    # 0.6 * 100000
+    pytest.param(None, {'MARS': 1, 'c00100': 100000., 'e19800': 20000.,
+                        'e20100': 40000.},
+                 (0., 0., 0., 50000., 0., 0., 0., 50000., 50000.),
+                 id='charity cash and noncash limit'),
+    # line 17: 2500 + 15000 + 12000 + 15000 + 0 + 0
+    pytest.param(None, ID_ALL_ITEMS,
+                 (2500., 15000., 12000., 15000., 0., 0., 0., 44500.,
+                  44500.),
+                 id='all items'),
+    # Pease reform: line 17 = 2500 + 15000 + 12000 + 15000 = 44500;
+    # AGI below the 300000 Pease threshold, so no reduction
+    pytest.param(ID_PEASE_REFORM, ID_ALL_ITEMS,
+                 (2500., 15000., 12000., 15000., 0., 0., 0., 44500.,
+                  44500.),
+                 id='Pease reform below threshold'),
+    # Pease reform: line 4 = 40000 - 0.075 * 400000 = 10000;
+    # line 17 = 10000 + 20000 + 10000 = 40000;
+    # reduction = min(0.8 * (40000 - 10000), 0.03 * (400000 - 300000))
+    pytest.param(ID_PEASE_REFORM, {'MARS': 1, 'c00100': 400000.,
+                                   'e17500': 40000., 'e18400': 20000.,
+                                   'e19200': 10000.},
+                 (10000., 20000., 10000., 0., 0., 0., 3000., 40000.,
+                  37000.),
+                 id='Pease reform'),
+    # reduction reform: taxable income 700000 exceeds the 626350 top
+    # bracket threshold by 73650; 20000 - 0.05 * 73650
+    pytest.param(ID_REDUCTION_REFORM, {'MARS': 1, 'c00100': 700000.,
+                                       'e19200': 20000.},
+                 (0., 0., 20000., 0., 0., 0., 0., 20000., 16317.5),
+                 id='reduction reform'),
+    # reduction reform: taxable income below the top bracket threshold
+    pytest.param(ID_REDUCTION_REFORM, {'MARS': 1, 'c00100': 600000.,
+                                       'e19200': 20000.},
+                 (0., 0., 20000., 0., 0., 0., 0., 20000., 20000.),
+                 id='reduction reform below threshold'),
+    # cap reform: min(44500, 25000)
+    pytest.param(ID_CAP_REFORM, ID_ALL_ITEMS,
+                 (2500., 15000., 12000., 15000., 0., 0., 0., 44500.,
+                  25000.),
+                 id='cap reform'),
+])
+def test_ItemDed(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the ItemDed function against 2025 Schedule A logic
+    """
+    actual = call_calcfunc('ItemDed', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # AdditionalMedicareTax
 # ----------------------------------------------------------------------
 
