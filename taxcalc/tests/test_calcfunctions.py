@@ -2759,6 +2759,84 @@ def test_AdditionalCTC(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# C1040
+# ----------------------------------------------------------------------
+
+
+# C1040 test cases follow 2025 Form 1040 lines 21-24: line 21 (c07100)
+# is the sum of the limited nonrefundable credits (Sch 3 line 8 plus the
+# Form 1040 line 19 CTC and ODC), line 22 is max(0, line 18 (c05800) -
+# line 21), line 23 (othertaxes) is the sum of the modeled Schedule 2
+# Part II other taxes (lines 4, 7, 8, 11, 12, and 18), and line 24
+# (c09200) is line 22 + line 23.  The reform-only charity and personal
+# nonrefundable credits are zero, and the CTC_is_refundable and
+# ODC_is_refundable switches are false, under 2025 current law.  The
+# returned tuple is (c07100, othertaxes, c09200).
+C1040_CREDITS = {
+    'c07300': 600., 'c07180': 1000., 'c07230': 500., 'c07240': 300.,
+    'c07220': 2200., 'odc': 500., 'c07260': 400., 'c07400': 700.,
+    'c07600': 200., 'c07200': 800., 'c08000': 100.,
+}
+C1040_OTHER_TAXES = {
+    'setax': 1500., 'e09800': 100., 'e09900': 200., 'ptax_amc': 300.,
+    'niit': 400., 'e09700': 50.,
+}
+C1040_CTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
+C1040_ODC_REFUNDABLE_REFORM = {'ODC_is_refundable': {2025: True}}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # no credits and no other taxes: line 24 = line 18
+    pytest.param(None, {'c05800': 10000.}, (0., 0., 10000.),
+                 id='no credits or other taxes'),
+    # line 21 = 7300; line 24 = 20000 - 7300
+    pytest.param(None, {**C1040_CREDITS, 'c05800': 20000.},
+                 (7300., 0., 12700.),
+                 id='credits only'),
+    # line 21 = 7300 exceeds line 18 = 5000, so line 22 = 0
+    pytest.param(None, {**C1040_CREDITS, 'c05800': 5000.},
+                 (7300., 0., 0.),
+                 id='credits exceed tax'),
+    # line 23 = 50 + 100 + 200 + 400 + 1500 + 300 = 2550
+    pytest.param(None, C1040_OTHER_TAXES, (0., 2550., 2550.),
+                 id='other taxes only'),
+    # line 24 = (20000 - 7300) + 2550
+    pytest.param(None,
+                 {**C1040_CREDITS, **C1040_OTHER_TAXES, 'c05800': 20000.},
+                 (7300., 2550., 15250.),
+                 id='credits and other taxes'),
+    # line 22 = 0 when credits exceed tax, but line 23 is still owed
+    pytest.param(None,
+                 {**C1040_CREDITS, **C1040_OTHER_TAXES, 'c05800': 5000.},
+                 (7300., 2550., 2550.),
+                 id='credits exceed tax with other taxes'),
+    # upstream reform-only credits: line 21 = 300 + 200 = 500
+    pytest.param(None,
+                 {'c05800': 1000., 'charity_credit': 300.,
+                  'personal_nonrefundable_credit': 200.},
+                 (500., 0., 500.),
+                 id='reform-only credits'),
+    # reform refundable CTC is excluded: line 21 = 7300 - 2200 = 5100
+    pytest.param(C1040_CTC_REFUNDABLE_REFORM,
+                 {**C1040_CREDITS, 'c05800': 20000.},
+                 (5100., 0., 14900.),
+                 id='reform refundable CTC'),
+    # reform refundable ODC is excluded: line 21 = 7300 - 500 = 6800
+    pytest.param(C1040_ODC_REFUNDABLE_REFORM,
+                 {**C1040_CREDITS, 'c05800': 20000.},
+                 (6800., 0., 13200.),
+                 id='reform refundable ODC'),
+])
+def test_C1040(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the C1040 function against 2025 Form 1040 lines 21-24 and
+    Schedule 2 Part II logic
+    """
+    actual = call_calcfunc('C1040', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # CTC_new
 # ----------------------------------------------------------------------
 
