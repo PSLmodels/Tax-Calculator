@@ -756,6 +756,48 @@ def test_SSBenefits(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# UBI
+# ----------------------------------------------------------------------
+
+
+# UBI is a reform-only construct with no IRS form; its per-person benefit
+# parameters (UBI_u18, UBI_1820, UBI_21) and its AGI exclusion rate
+# (UBI_ecrt) are all zero under 2025 current law.  The returned tuple is
+# (ubi, taxable_ubi, nontaxable_ubi).
+UBI_REFORM = {
+    'UBI_u18': {2025: 1000},
+    'UBI_1820': {2025: 2000},
+    'UBI_21': {2025: 3000},
+}
+UBI_EXCLUSION_REFORM = {**UBI_REFORM, 'UBI_ecrt': {2025: 0.25}}
+UBI_PEOPLE = {'nu18': 2, 'n1820': 1, 'n21': 2}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # 2025 current law: no UBI regardless of family composition
+    pytest.param(None, UBI_PEOPLE, (0., 0., 0.), id='current law'),
+    # reform with no people: no UBI
+    pytest.param(UBI_REFORM, {}, (0., 0., 0.), id='reform no people'),
+    # reform: 2 * 1000 + 1 * 2000 + 2 * 3000, all of which is taxable
+    pytest.param(UBI_REFORM, UBI_PEOPLE, (10000., 10000., 0.),
+                 id='reform fully taxable'),
+    # reform: 10000 with 0.25 excluded from AGI:
+    # taxable = 0.75 * 10000; nontaxable = 10000 - 7500
+    pytest.param(UBI_EXCLUSION_REFORM, UBI_PEOPLE, (10000., 7500., 2500.),
+                 id='reform partial exclusion'),
+    # reform: 10000 fully excluded from AGI
+    pytest.param({**UBI_REFORM, 'UBI_ecrt': {2025: 1.0}}, UBI_PEOPLE,
+                 (10000., 0., 10000.), id='reform full exclusion'),
+])
+def test_UBI(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the UBI function
+    """
+    actual = call_calcfunc('UBI', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # AGI
 # ----------------------------------------------------------------------
 
