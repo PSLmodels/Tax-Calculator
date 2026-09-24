@@ -180,114 +180,9 @@ def test_function_args_usage(tests_path):
 # that changes only the reform-only parameters in 2025.
 
 
-# DependentCare is a reform-only above-the-line deduction with no IRS
-# form; its parameters are all zero under 2025 current law.
-DEPCARE_REFORM = {
-    'ALD_Dependents_thd': {2025: [250000, 500000, 250000, 500000, 250000]},
-    'ALD_Dependents_hc': {2025: 0.2},
-    'ALD_Dependents_Child_c': {2025: 7165},
-    'ALD_Dependents_Elder_c': {2025: 5000},
-}
-
-
-@pytest.mark.parametrize('reform, rvars, expected', [
-    # 2025 current law: earned income exceeds the zero threshold
-    pytest.param(None, {'MARS': 4, 'nu13': 2, 'earned': 100000.}, 0.,
-                 id='current law'),
-    # reform: 0.8 * (2 * 7165 + 1 * 5000)
-    pytest.param(DEPCARE_REFORM,
-                 {'MARS': 4, 'nu13': 2, 'elderly_dependents': 1,
-                  'earned': 100000.}, 15464., id='reform below threshold'),
-    # reform: earned income at the threshold still qualifies:
-    # 0.8 * 7165
-    pytest.param(DEPCARE_REFORM,
-                 {'MARS': 1, 'nu13': 1, 'earned': 250000.}, 5732.,
-                 id='reform at threshold'),
-    # reform: the income test is a cliff, not a phaseout
-    pytest.param(DEPCARE_REFORM,
-                 {'MARS': 1, 'nu13': 1, 'earned': 250001.}, 0.,
-                 id='reform above threshold'),
-])
-def test_DependentCare(call_calcfunc, reform, rvars, expected):
-    """
-    Tests the DependentCare function
-    """
-    actual = call_calcfunc('DependentCare', reform=reform, **rvars)
-    assert np.allclose(actual, expected), f'{actual} != {expected}'
-
-
-# StdDed test cases use 2025 current-law policy values, which match the
-# 2025 Form 1040 line 12 standard deduction chart:
-#   STD = [15750, 31500, 15750, 23625, 31500] by MARS, and
-#   STD_Aged = [2000, 1600, 1600, 2000, 1600] by MARS per 65+/blind box,
-# and the 2025 Standard Deduction Worksheet for Dependents:
-#   STD_Dep_earned_add = 450 (line 2) and STD_Dep = 1350 (line 4).
-# The 2025 nonitemizer charitable deduction ceiling is zero.
-
-
-@pytest.mark.stded
-@pytest.mark.parametrize('rvars, expected', [
-    # line 12 chart: single, under 65 and not blind
-    pytest.param({'MARS': 1, 'age_head': 45}, 15750., id='single'),
-    # line 12 chart: single, 65 or older: 15750 + 2000
-    pytest.param({'MARS': 1, 'age_head': 66}, 17750., id='single aged'),
-    # line 12 chart: single, 65 or older and blind: 15750 + 2 * 2000
-    pytest.param({'MARS': 1, 'age_head': 66, 'blind_head': 1}, 19750.,
-                 id='single aged blind'),
-    # line 12 chart: married filing jointly, both under 65
-    pytest.param({'MARS': 2, 'age_head': 45, 'age_spouse': 44}, 31500.,
-                 id='joint'),
-    # line 12 chart: married filing jointly, spouse 65 or older:
-    # 31500 + 1600
-    pytest.param({'MARS': 2, 'age_head': 44, 'age_spouse': 66}, 33100.,
-                 id='joint spouse aged'),
-    # line 12 chart: married filing jointly, both 65 or older and
-    # spouse blind: 31500 + 3 * 1600
-    pytest.param({'MARS': 2, 'age_head': 66, 'age_spouse': 67,
-                  'blind_spouse': 1},
-                 36300., id='joint both aged spouse blind'),
-    # line 12 chart: married filing separately, 65 or older:
-    # 15750 + 1600; spouse boxes count only on a joint return, so the
-    # spouse age and blindness are ignored
-    pytest.param({'MARS': 3, 'age_head': 66, 'age_spouse': 70,
-                  'blind_spouse': 1},
-                 17350., id='separate aged'),
-    # line 12 instructions: married filing separately and spouse
-    # itemizes, so the standard deduction is zero
-    pytest.param({'MARS': 3, 'age_head': 66, 'MIDR': 1}, 0.,
-                 id='separate spouse itemizes'),
-    # line 12 chart: head of household, 65 or older: 23625 + 2000
-    pytest.param({'MARS': 4, 'age_head': 66}, 25625., id='head aged'),
-    # line 12 chart: qualifying surviving spouse, blind: 31500 + 1600
-    pytest.param({'MARS': 5, 'age_head': 50, 'blind_head': 1}, 33100.,
-                 id='surviving spouse blind'),
-    # dependent worksheet: line 3 = 500 + 450 = 950;
-    # line 5 = max(950, 1350) = 1350; result = min(1350, 15750)
-    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 16, 'earned': 500.}, 1350.,
-                 id='dependent low earnings'),
-    # dependent worksheet: line 3 = 5000 + 450 = 5450;
-    # line 5 = max(5450, 1350) = 5450; result = min(5450, 15750)
-    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 20, 'earned': 5000.}, 5450.,
-                 id='dependent middle earnings'),
-    # dependent worksheet: line 3 = 20000 + 450 = 20450;
-    # line 5 = max(20450, 1350) = 20450; result = min(20450, 15750)
-    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 20, 'earned': 20000.},
-                 15750., id='dependent high earnings'),
-    # dependent worksheet: min(5450, 15750) as above plus one 65+/blind
-    # box amount for a blind single dependent: 5450 + 2000
-    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 20, 'earned': 5000.,
-                  'blind_head': 1}, 7450., id='dependent blind'),
-    # cash charitable contributions do not raise the standard deduction
-    # because the 2025 nonitemizer charitable deduction ceiling is zero
-    pytest.param({'MARS': 1, 'age_head': 45, 'e19800': 1000.}, 15750.,
-                 id='single with charity'),
-])
-def test_StdDed(call_calcfunc, rvars, expected):
-    """
-    Tests the StdDed function against 2025 Form 1040 line 12 logic
-    """
-    actual = call_calcfunc('StdDed', **rvars)
-    assert np.allclose(actual, expected), f'{actual} != {expected}'
+# ----------------------------------------------------------------------
+# EI_PayrollTax
+# ----------------------------------------------------------------------
 
 
 # EI_PayrollTax test cases use 2025 current-law values: OASDI maximum
@@ -385,309 +280,425 @@ def test_EI_PayrollTax(call_calcfunc, rvars, expected):
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
-# AfterTaxIncome and ExpandIncome are model-only accounting constructs
-# with no IRS form.
+# ----------------------------------------------------------------------
+# DependentCare
+# ----------------------------------------------------------------------
+
+
+# DependentCare is a reform-only above-the-line deduction with no IRS
+# form; its parameters are all zero under 2025 current law.
+DEPCARE_REFORM = {
+    'ALD_Dependents_thd': {2025: [250000, 500000, 250000, 500000, 250000]},
+    'ALD_Dependents_hc': {2025: 0.2},
+    'ALD_Dependents_Child_c': {2025: 7165},
+    'ALD_Dependents_Elder_c': {2025: 5000},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # 2025 current law: earned income exceeds the zero threshold
+    pytest.param(None, {'MARS': 4, 'nu13': 2, 'earned': 100000.}, 0.,
+                 id='current law'),
+    # reform: 0.8 * (2 * 7165 + 1 * 5000)
+    pytest.param(DEPCARE_REFORM,
+                 {'MARS': 4, 'nu13': 2, 'elderly_dependents': 1,
+                  'earned': 100000.}, 15464., id='reform below threshold'),
+    # reform: earned income at the threshold still qualifies:
+    # 0.8 * 7165
+    pytest.param(DEPCARE_REFORM,
+                 {'MARS': 1, 'nu13': 1, 'earned': 250000.}, 5732.,
+                 id='reform at threshold'),
+    # reform: the income test is a cliff, not a phaseout
+    pytest.param(DEPCARE_REFORM,
+                 {'MARS': 1, 'nu13': 1, 'earned': 250001.}, 0.,
+                 id='reform above threshold'),
+])
+def test_DependentCare(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the DependentCare function
+    """
+    actual = call_calcfunc('DependentCare', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# CapGainsLoss
+# ----------------------------------------------------------------------
+
+
+# CapGainsLoss test cases use the 2025 current-law capital loss
+# limitation, which matches 2025 Sch D line 21: 3000 (1500 when married
+# filing separately).  The returned tuple is (c23650, c01000), the net
+# gain or loss before and after that limit.
 
 
 @pytest.mark.parametrize('rvars, expected', [
-    # 100000 - 25000
-    pytest.param({'expanded_income': 100000., 'combined': 25000.}, 75000.,
-                 id='positive tax'),
-    # a net refund (negative combined tax) raises after-tax income
-    pytest.param({'expanded_income': 100000., 'combined': -3000.},
-                 103000., id='negative tax'),
+    # net gain: Sch D line 21 leaves it unchanged
+    pytest.param({'MARS': 1, 'p22250': 1000., 'p23250': 4000.},
+                 (5000., 5000.), id='net gain'),
+    # net loss below the limit: deducted in full
+    pytest.param({'MARS': 1, 'p22250': -1000., 'p23250': -500.},
+                 (-1500., -1500.), id='loss under cap'),
+    # net loss exactly at the 3000 limit: still deducted in full
+    pytest.param({'MARS': 1, 'p22250': -2000., 'p23250': -1000.},
+                 (-3000., -3000.), id='loss at cap'),
+    # net loss above the limit: limited to 3000
+    pytest.param({'MARS': 1, 'p22250': -5000., 'p23250': -3000.},
+                 (-8000., -3000.), id='loss over cap'),
+    # the same loss when married filing separately: limited to 1500
+    pytest.param({'MARS': 3, 'p22250': -5000., 'p23250': -3000.},
+                 (-8000., -1500.), id='loss over cap MFS'),
+    # net loss exactly at the 1500 married-filing-separately limit
+    pytest.param({'MARS': 3, 'p22250': -1000., 'p23250': -500.},
+                 (-1500., -1500.), id='loss at cap MFS'),
+    # Sch D line 16: short-term loss netted against long-term gain
+    pytest.param({'MARS': 1, 'p22250': -10000., 'p23250': 4000.},
+                 (-6000., -3000.), id='ST loss vs LT gain'),
+    # Sch D line 16: long-term loss netted against short-term gain
+    pytest.param({'MARS': 1, 'p22250': 4000., 'p23250': -10000.},
+                 (-6000., -3000.), id='LT loss vs ST gain'),
 ])
-def test_AfterTaxIncome(call_calcfunc, rvars, expected):
+def test_CapGainsLoss(call_calcfunc, rvars, expected):
     """
-    Tests the AfterTaxIncome function
+    Tests the CapGainsLoss function against 2025 Sch D logic: the
+    Part III netting of short-term and long-term gains and losses
+    (line 16) and the MARS-indexed limit on a net loss (line 21)
     """
-    actual = call_calcfunc('AfterTaxIncome', **rvars)
+    actual = call_calcfunc('CapGainsLoss', **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
-def test_ExpandIncome(call_calcfunc):
-    """
-    Tests the ExpandIncome function, which sums its income arguments
-    """
-    rvars = {
-        'e00200': 50000., 'pencon_p': 3000., 'pencon_s': 2000.,
-        'e00300': 1000., 'e00400': 500., 'e00600': 2000.,
-        'e00700': 100., 'e00800': 0., 'e00900': 10000., 'e01100': 50.,
-        'e01200': -200., 'e01400': 4000., 'e01500': 6000.,
-        'e02000': 7000., 'e02100': -1000.,
-        'p22250': -2000., 'p23250': 5000., 'cmbtp': 300.,
-        'ptax_er_p': 3825., 'ptax_er_s': 0., 'benefit_value_total': 1200.,
-    }
-    # wages: 50000 + 3000 + 2000 = 55000
-    # investment income: 1000 + 500 + 2000 = 3500
-    # other income: 100 + 0 + 10000 + 50 - 200 + 4000 + 6000
-    #               + 7000 - 1000 = 25950
-    # capital gains: -2000 + 5000 = 3000
-    # other: 300 + 3825 + 0 + 1200 = 5325
-    expected = 55000. + 3500. + 25950. + 3000. + 5325.
-    assert np.allclose(expected, 92775.)
-    actual = call_calcfunc('ExpandIncome', **rvars)
-    assert np.allclose(actual, expected), f'{actual} != {expected}'
+# ----------------------------------------------------------------------
+# AGI
+# ----------------------------------------------------------------------
 
 
-# LumpSumTax is a reform-only construct with no IRS form; LST is zero
-# under 2025 current law.  The returned tuple is (lumpsum_tax, combined).
-LST_REFORM = {'LST': {2025: 200}}
-
-
-@pytest.mark.parametrize('reform, rvars, expected', [
-    # 2025 current law: no lump-sum tax and combined is unchanged
-    pytest.param(None, {'num': 2, 'XTOT': 4, 'combined': 1000.},
-                 (0., 1000.), id='current law'),
-    # reform: 200 * max(2, 4) = 800 added to combined
-    pytest.param(LST_REFORM, {'num': 2, 'XTOT': 4, 'combined': 1000.},
-                 (800., 1800.), id='reform family'),
-    # reform: 200 * max(1, 0) = 200
-    pytest.param(LST_REFORM, {'num': 1, 'XTOT': 0, 'combined': 1000.},
-                 (200., 1200.), id='reform no exemptions'),
-    # reform: dependent filers are exempt
-    pytest.param(LST_REFORM,
-                 {'DSI': 1, 'num': 1, 'XTOT': 1, 'combined': 1000.},
-                 (0., 1000.), id='reform dependent'),
-])
-def test_LumpSumTax(call_calcfunc, reform, rvars, expected):
-    """
-    Tests the LumpSumTax function
-    """
-    actual = call_calcfunc('LumpSumTax', reform=reform, **rvars)
-    assert np.allclose(actual, expected), f'{actual} != {expected}'
-
-
-# FairShareTax is a reform-only construct with no IRS form; FST_AGI_trt
-# is zero under 2025 current law, whose FST_AGI_thd_lo and FST_AGI_thd_hi
-# values are 1000000 and 2000000 (500000 and 1000000 when MARS is 3).
-# The returned tuple is (fstax, iitax, combined, surtax).
-FST_REFORM = {'FST_AGI_trt': {2025: 0.3}}
-
-
-@pytest.mark.parametrize('reform, rvars, expected', [
-    # 2025 current law: no fair-share tax; other outputs unchanged
-    pytest.param(None,
-                 {'MARS': 1, 'c00100': 3e6, 'iitax': 600000.,
-                  'combined': 630000.},
-                 (0., 600000., 630000., 0.), id='current law'),
-    # reform, AGI above upper threshold: employee payroll share =
-    # (30000 - 15000) + 0.5 * 0 + 25000 = 40000;
-    # fstax = 0.3 * 3000000 - 600000 - 40000 = 260000
-    pytest.param(FST_REFORM,
-                 {'MARS': 1, 'c00100': 3e6, 'ptax_was': 30000.,
-                  'ptax_er_p': 15000., 'ptax_amc': 25000.,
-                  'iitax': 600000., 'combined': 630000.},
-                 (260000., 860000., 890000., 260000.),
-                 id='reform above upper threshold'),
-    # reform, AGI in phase-in range: employee payroll share =
-    # (30000 - 15000) + 0.5 * 20000 + 11700 = 36700;
-    # full fstax = 0.3 * 1500000 - 300000 - 36700 = 113300;
-    # phase-in fraction = (1500000 - 1000000) / 1000000 = 0.5
-    pytest.param(FST_REFORM,
-                 {'MARS': 1, 'c00100': 1.5e6, 'ptax_was': 30000.,
-                  'ptax_er_p': 15000., 'setax': 20000.,
-                  'ptax_amc': 11700., 'iitax': 300000.,
-                  'combined': 336700.},
-                 (56650., 356650., 393350., 56650.),
-                 id='reform in phase-in range'),
-    # reform, married filing separately in phase-in range:
-    # full fstax = 0.3 * 750000 - 150000 = 75000;
-    # phase-in fraction = (750000 - 500000) / 500000 = 0.5
-    pytest.param(FST_REFORM,
-                 {'MARS': 3, 'c00100': 750000., 'iitax': 150000.,
-                  'combined': 150000.},
-                 (37500., 187500., 187500., 37500.),
-                 id='reform separate'),
-    # reform, AGI below lower threshold
-    pytest.param(FST_REFORM,
-                 {'MARS': 1, 'c00100': 900000., 'iitax': 200000.,
-                  'combined': 200000.},
-                 (0., 200000., 200000., 0.), id='reform below threshold'),
-    # reform, income tax already exceeds 0.3 * AGI
-    pytest.param(FST_REFORM,
-                 {'MARS': 1, 'c00100': 3e6, 'iitax': 1e6,
-                  'combined': 1e6},
-                 (0., 1e6, 1e6, 0.), id='reform tax exceeds minimum'),
-])
-def test_FairShareTax(call_calcfunc, reform, rvars, expected):
-    """
-    Tests the FairShareTax function
-    """
-    actual = call_calcfunc('FairShareTax', reform=reform, **rvars)
-    assert np.allclose(actual, expected), f'{actual} != {expected}'
-
-
-# PersonalTaxCredit computes reform-only personal credits and the
-# recovery rebate credit, which was on the 2020 and 2021 Form 1040 but
-# not on the 2025 Form 1040; all their parameters are zero under 2025
-# current law.  The returned tuple is (personal_refundable_credit,
-# personal_nonrefundable_credit, recovery_rebate_credit).
-PERSONAL_CREDIT_REFORM = {
-    'II_credit': {2025: [1000, 2000, 1000, 1500, 2000]},
-    'II_credit_ps': {2025: [50000, 100000, 50000, 75000, 100000]},
-    'II_credit_prt': {2025: 0.05},
-    'II_credit_nr': {2025: [300, 600, 300, 450, 600]},
-    'II_credit_nr_ps': {2025: [40000, 80000, 40000, 60000, 80000]},
-    'II_credit_nr_prt': {2025: 0.01},
+# AGI test cases use 2025 current law, under which unemployment
+# compensation is fully taxable and there are no personal exemptions
+# (II_em is zero).  The returned tuple is (c00100, pre_c04600, c04600).
+UI_EXCLUSION_REFORM = {
+    'UI_em': {2025: 10200},
+    'UI_thd': {2025: [150000, 150000, 150000, 150000, 150000]},
 }
-# ARPA-style recovery rebate credit applied in 2025
-RRC_PERSON_REFORM = {
-    'RRC_c': {2025: 1400},
-    'RRC_ps': {2025: [75000, 150000, 75000, 112500, 150000]},
-    'RRC_pe': {2025: [80000, 160000, 80000, 120000, 160000]},
-}
-# CARES-style recovery rebate credit applied in 2025
-RRC_UNIT_REFORM = {
-    'RRC_c_unit': {2025: [1200, 2400, 1200, 1200, 2400]},
-    'RRC_c_kids': {2025: 500},
-    'RRC_prt': {2025: 0.05},
-    'RRC_ps': {2025: [75000, 150000, 75000, 112500, 150000]},
+EXEMPTION_REFORM = {
+    'II_em': {2025: 5000},
+    'II_em_ps': {2025: [250000, 300000, 150000, 275000, 300000]},
 }
 
 
 @pytest.mark.parametrize('reform, rvars, expected', [
-    # 2025 current law: all three credits are zero
+    # Form 1040 line 11 = line 9 - line 10
     pytest.param(None,
-                 {'MARS': 2, 'c00100': 80000., 'XTOT': 4, 'nu18': 2},
-                 (0., 0., 0.), id='current law'),
-    # 2025 current law with negative AGI
+                 {'MARS': 1, 'ymod1': 60000., 'c02900': 5000.},
+                 (55000., 0., 0.), id='adjustments'),
+    # taxable social security (line 6b) is part of line 9:
+    # 60000 + 10000 - 5000
     pytest.param(None,
-                 {'MARS': 1, 'c00100': -5000., 'XTOT': 1},
-                 (0., 0., 0.), id='current law negative AGI'),
-    # reform: joint AGI below both phase-out starts
-    pytest.param(PERSONAL_CREDIT_REFORM, {'MARS': 2, 'c00100': 75000.},
-                 (2000., 600., 0.), id='personal credits below ps'),
-    # reform: refundable 2000 - 0.05 * 20000 = 1000;
-    # nonrefundable 600 - 0.01 * 40000 = 200
-    pytest.param(PERSONAL_CREDIT_REFORM, {'MARS': 2, 'c00100': 120000.},
-                 (1000., 200., 0.), id='personal credits phasing out'),
-    # reform: refundable 2000 - 0.05 * 50000 < 0;
-    # nonrefundable 600 - 0.01 * 70000 < 0
-    pytest.param(PERSONAL_CREDIT_REFORM, {'MARS': 2, 'c00100': 150000.},
-                 (0., 0., 0.), id='personal credits phased out'),
-    # ARPA-style reform: 1400 * 1 below phase-out start
-    pytest.param(RRC_PERSON_REFORM,
-                 {'MARS': 1, 'c00100': 50000., 'XTOT': 1},
-                 (0., 0., 1400.), id='ARPA-style below ps'),
-    # ARPA-style reform: 1400 * (1 - (76000 - 75000) / 5000)
-    pytest.param(RRC_PERSON_REFORM,
-                 {'MARS': 1, 'c00100': 76000., 'XTOT': 1},
-                 (0., 0., 1120.), id='ARPA-style phasing out'),
-    # ARPA-style reform: AGI above phase-out end
-    pytest.param(RRC_PERSON_REFORM,
-                 {'MARS': 1, 'c00100': 90000., 'XTOT': 1},
-                 (0., 0., 0.), id='ARPA-style phased out'),
-    # CARES-style reform: 2400 + 2 * 500 below phase-out start
-    pytest.param(RRC_UNIT_REFORM,
-                 {'MARS': 2, 'c00100': 100000., 'XTOT': 4, 'nu18': 2},
-                 (0., 0., 3400.), id='CARES-style below ps'),
-    # CARES-style reform: 3400 - 0.05 * (160000 - 150000)
-    pytest.param(RRC_UNIT_REFORM,
-                 {'MARS': 2, 'c00100': 160000., 'XTOT': 4, 'nu18': 2},
-                 (0., 0., 2900.), id='CARES-style phasing out'),
+                 {'MARS': 1, 'ymod1': 60000., 'c02500': 10000.,
+                  'c02900': 5000.},
+                 (65000., 0., 0.), id='taxable social security'),
+    # unemployment compensation (Sch 1 line 7) is fully taxable
+    pytest.param(None,
+                 {'MARS': 1, 'ymod1': 30000., 'e02300': 10000.},
+                 (30000., 0., 0.), id='unemployment compensation'),
+    # no personal exemptions under 2025 current law
+    pytest.param(None,
+                 {'MARS': 2, 'XTOT': 4, 'ymod1': 100000.},
+                 (100000., 0., 0.), id='no exemptions'),
+    # 2020-style UI exclusion reform: 40000 - min(15000, 10200)
+    pytest.param(UI_EXCLUSION_REFORM,
+                 {'MARS': 1, 'ymod1': 40000., 'e02300': 15000.},
+                 (29800., 0., 0.), id='reform UI exclusion'),
+    # UI exclusion reform: 170000 - 15000 is above 150000
+    pytest.param(UI_EXCLUSION_REFORM,
+                 {'MARS': 1, 'ymod1': 170000., 'e02300': 15000.},
+                 (170000., 0., 0.), id='reform UI exclusion above thd'),
+    # pre-TCJA exemption reform: 4 * 5000 below the phase-out start
+    pytest.param(EXEMPTION_REFORM,
+                 {'MARS': 2, 'XTOT': 4, 'ymod1': 100000.},
+                 (100000., 20000., 20000.), id='reform exemptions'),
+    # exemption reform, pre-TCJA exemptions worksheet: line 5 = 21000;
+    # line 6 = ceil(21000 / 2500) = 9; line 7 = 0.02 * 9 = 0.18;
+    # 20000 * (1 - 0.18)
+    pytest.param(EXEMPTION_REFORM,
+                 {'MARS': 2, 'XTOT': 4, 'ymod1': 321000., 'exact': 1},
+                 (321000., 20000., 16400.), id='reform exemptions exact'),
+    # exemption reform, smoothed: 20000 * (1 - 0.02 * 21000 / 2500)
+    pytest.param(EXEMPTION_REFORM,
+                 {'MARS': 2, 'XTOT': 4, 'ymod1': 321000.},
+                 (321000., 20000., 16640.),
+                 id='reform exemptions smoothed'),
+    # exemption reform: dependent filers get no exemptions
+    pytest.param(EXEMPTION_REFORM,
+                 {'MARS': 1, 'XTOT': 1, 'DSI': 1, 'ymod1': 10000.},
+                 (10000., 0., 0.), id='reform dependent'),
 ])
-def test_PersonalTaxCredit(call_calcfunc, reform, rvars, expected):
+def test_AGI(call_calcfunc, reform, rvars, expected):
     """
-    Tests the PersonalTaxCredit function
+    Tests the AGI function against 2025 Form 1040 line 11 logic
     """
-    actual = call_calcfunc('PersonalTaxCredit', reform=reform, **rvars)
+    actual = call_calcfunc('AGI', reform=reform, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
-# EITC test cases use the 2025 current-law EITC parameters, which match
-# the 2025 Form 1040 instructions (EIC Worksheet A and the EIC Table) and
-# Pub 596, indexed by the number of qualifying children (0, 1, 2, 3+):
-#   phase-in rate  = [0.0765, 0.34, 0.40, 0.45]
-#   maximum credit = [649, 4328, 7152, 8046]
-#   phase-out start = [10620, 23350, 23350, 23350]
-#     (plus [7110, 7120, 7120, 7120] when married filing jointly)
-#   phase-out rate = [0.0765, 0.1598, 0.2106, 0.2106]
-#   investment income limit = 11950
-# The expected values use the formula behind the EIC Table rather than
-# the table's $50 income bands.
+# ----------------------------------------------------------------------
+# MiscDed
+# ----------------------------------------------------------------------
 
 
-@pytest.mark.parametrize('earnings, agi, expected', [
-    # phase-in: 0.45 * 10000
-    pytest.param(10000., 10000., 4500., id='phase-in'),
-    # plateau: min(0.45 * 20000, 8046)
-    pytest.param(20000., 20000., 8046., id='plateau'),
-    # phase-out: 8046 - 0.2106 * (30000 - 23350)
-    pytest.param(30000., 30000., 6645.51, id='phase-out'),
-    # EIC Worksheet A line 6: AGI above the phase-out start, so the
-    # smaller of the earned-income credit (4500) and the AGI credit
-    # (6645.51) is allowed
-    pytest.param(10000., 30000., 4500., id='AGI above earnings'),
-    # earnings credit (6645.51) is smaller than the AGI credit (8046)
-    pytest.param(30000., 20000., 6645.51, id='earnings above AGI'),
-    # 8046 - 0.2106 * (70000 - 23350) < 0
-    pytest.param(70000., 70000., 0., id='phased out'),
-])
-def test_EITCamount(earnings, agi, expected):
-    """
-    Tests the EITCamount function using the 2025 EITC parameters for a
-    filer with three or more qualifying children who is not married
-    filing jointly
-    """
-    actual = calcfunctions.EITCamount(0., 0.45, earnings, 8046., 23350.,
-                                      agi, 0.2106)
-    assert np.allclose(actual, expected), f'{actual} != {expected}'
+# MiscDed test cases use the 2025 current-law values, which match the
+# 2025 Schedule 1-A:
+#   Part II tips: 25000 cap, reduced by 100 per 1000 of MAGI above
+#     150000 (300000 when married filing jointly);
+#   Part III overtime: 12500 cap (25000 when married filing jointly),
+#     reduced by 100 per 1000 of MAGI above 150000 (300000 MFJ);
+#   Part IV car loan interest: 10000 cap, reduced by 200 per 1000 of
+#     MAGI above 100000 (200000 when married filing jointly);
+#   Part V seniors: 6000 per person aged 65 or older, reduced by
+#     6 percent of MAGI above 75000 (150000 when married filing jointly).
+# Married filers must file jointly to claim the Part II, III, and V
+# deductions.  The exact flag selects the form's whole-step phase-out
+# rounding.  The returned tuple is (senior_deduction,
+# overtime_income_deduction, tip_income_deduction,
+# auto_loan_interest_deduction).
 
 
 @pytest.mark.parametrize('rvars, expected', [
-    # three children: min(0.45 * 20000, 8046)
-    pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
-                  'c00100': 20000.}, 8046., id='three children plateau'),
-    # one child: 4328 - 0.1598 * (30000 - 23350)
-    pytest.param({'MARS': 1, 'EIC': 1, 'earned': 30000.,
-                  'c00100': 30000.}, 3265.33, id='one child phase-out'),
-    # two children, joint: phase-out start = 23350 + 7120 = 30470;
-    # 7152 - 0.2106 * (40000 - 30470)
-    pytest.param({'MARS': 2, 'EIC': 2, 'earned': 40000.,
-                  'c00100': 40000.}, 5144.982, id='two children joint'),
-    # no children, age 30: 0.0765 * 8000
-    pytest.param({'MARS': 1, 'EIC': 0, 'age_head': 30, 'earned': 8000.,
-                  'c00100': 8000.}, 612., id='no children'),
-    # Pub 596 rule 11: no children and under age 25
-    pytest.param({'MARS': 1, 'EIC': 0, 'age_head': 22, 'earned': 8000.,
-                  'c00100': 8000.}, 0., id='no children under 25'),
-    # Pub 596 rule 11: no children and over age 64
-    pytest.param({'MARS': 1, 'EIC': 0, 'age_head': 70, 'earned': 8000.,
-                  'c00100': 8000.}, 0., id='no children over 64'),
-    # Pub 596 rule 11: joint filers need only one spouse aged 25-64:
-    # 0.0765 * 8000
-    pytest.param({'MARS': 2, 'EIC': 0, 'age_head': 22, 'age_spouse': 30,
-                  'earned': 8000., 'c00100': 8000.}, 612.,
-                 id='no children joint one spouse eligible'),
-    # Pub 596 rule 3: a separated spouse filing separately may claim
-    # the credit, using the non-joint phase-out start: min(0.34 * 15000,
-    # 4328)
-    pytest.param({'MARS': 3, 'EIC': 1, 'earned': 15000.,
-                  'c00100': 15000.}, 4328., id='separate'),
-    # Pub 596 rule 10: a filer claimed as a dependent cannot claim
-    pytest.param({'MARS': 1, 'EIC': 1, 'DSI': 1, 'earned': 15000.,
-                  'c00100': 15000.}, 0., id='dependent'),
-    # Pub 596 rule 6: investment income 11950 is not above the limit:
-    # 8046 - 0.2106 * (31950 - 23350)
-    pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
-                  'c00100': 31950., 'e00300': 11950.}, 6234.84,
-                 id='investment income at limit'),
-    # Pub 596 rule 6: taxable interest above the limit
-    pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
-                  'c00100': 32000., 'e00300': 12000.}, 0.,
-                 id='interest above limit'),
-    # Pub 596 rule 6: capital gain net income above the limit
-    pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
-                  'c00100': 33000., 'c01000': 13000.}, 0.,
-                 id='capital gain above limit'),
+    # Part V: MAGI below 75000
+    pytest.param({'MARS': 1, 'age_head': 66, 'c00100': 60000.},
+                 (6000., 0., 0., 0.), id='senior'),
+    # Part V: 6000 - 0.06 * (100000 - 75000)
+    pytest.param({'MARS': 1, 'age_head': 66, 'c00100': 100000.},
+                 (4500., 0., 0., 0.), id='senior phase-out'),
+    # Part V: 2 * (6000 - 0.06 * (180000 - 150000))
+    pytest.param({'MARS': 2, 'age_head': 66, 'age_spouse': 65,
+                  'c00100': 180000.},
+                 (8400., 0., 0., 0.), id='two seniors phase-out'),
+    # Part V: only the spouse aged 65 or older qualifies
+    pytest.param({'MARS': 2, 'age_head': 60, 'age_spouse': 66,
+                  'c00100': 100000.},
+                 (6000., 0., 0., 0.), id='one senior joint'),
+    # Part V: 6000 - 0.06 * (200000 - 75000) < 0
+    pytest.param({'MARS': 4, 'age_head': 70, 'c00100': 200000.},
+                 (0., 0., 0., 0.), id='senior phased out'),
+    # Part V: married filing separately cannot claim
+    pytest.param({'MARS': 3, 'age_head': 66, 'c00100': 50000.},
+                 (0., 0., 0., 0.), id='senior separate'),
+    # Part II: min(30000, 25000)
+    pytest.param({'MARS': 1, 'c00100': 100000., 'tip_income': 30000.},
+                 (0., 0., 25000., 0.), id='tips'),
+    # Part II: floor(10500 / 1000) = 10 steps; 25000 - 10 * 100
+    pytest.param({'MARS': 1, 'c00100': 160500., 'tip_income': 30000.,
+                  'exact': 1},
+                 (0., 0., 24000., 0.), id='tips phase-out exact'),
+    # Part II smoothed: 25000 - 0.1 * 10500
+    pytest.param({'MARS': 1, 'c00100': 160500., 'tip_income': 30000.},
+                 (0., 0., 23950., 0.), id='tips phase-out smoothed'),
+    # Part II: married filing separately cannot claim
+    pytest.param({'MARS': 3, 'c00100': 50000., 'tip_income': 10000.},
+                 (0., 0., 0., 0.), id='tips separate'),
+    # Part III: min(20000, 12500)
+    pytest.param({'MARS': 1, 'c00100': 100000.,
+                  'overtime_income': 20000.},
+                 (0., 12500., 0., 0.), id='overtime'),
+    # Part III and Part II joint: overtime min(30000, 25000) and tips
+    # min(30000, 25000), each reduced by 0.1 * (320000 - 300000)
+    pytest.param({'MARS': 2, 'c00100': 320000.,
+                  'overtime_income': 30000., 'tip_income': 30000.},
+                 (0., 23000., 23000., 0.), id='overtime and tips joint'),
+    # Part III: married filing separately cannot claim
+    pytest.param({'MARS': 3, 'c00100': 50000.,
+                  'overtime_income': 10000.},
+                 (0., 0., 0., 0.), id='overtime separate'),
+    # Part IV: min(12000, 10000)
+    pytest.param({'MARS': 1, 'c00100': 50000.,
+                  'auto_loan_interest': 12000.},
+                 (0., 0., 0., 10000.), id='car loan interest'),
+    # Part IV: ceil(20500 / 1000) = 21 steps; 10000 - 21 * 200
+    pytest.param({'MARS': 1, 'c00100': 120500.,
+                  'auto_loan_interest': 12000., 'exact': 1},
+                 (0., 0., 0., 5800.), id='car loan phase-out exact'),
+    # Part IV smoothed: 10000 - 0.2 * 20500
+    pytest.param({'MARS': 1, 'c00100': 120500.,
+                  'auto_loan_interest': 12000.},
+                 (0., 0., 0., 5900.), id='car loan phase-out smoothed'),
+    # Part IV: married filing separately can claim
+    pytest.param({'MARS': 3, 'c00100': 60000.,
+                  'auto_loan_interest': 3000.},
+                 (0., 0., 0., 3000.), id='car loan separate'),
+    # Part IV: 10000 - 0.2 * (320000 - 200000) < 0
+    pytest.param({'MARS': 2, 'c00100': 320000.,
+                  'auto_loan_interest': 12000.},
+                 (0., 0., 0., 0.), id='car loan phased out'),
 ])
-def test_EITC(call_calcfunc, rvars, expected):
+def test_MiscDed(call_calcfunc, rvars, expected):
     """
-    Tests the EITC function against 2025 EIC logic
+    Tests the MiscDed function against 2025 Schedule 1-A logic
     """
-    actual = call_calcfunc('EITC', **rvars)
+    actual = call_calcfunc('MiscDed', **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# AdditionalMedicareTax
+# ----------------------------------------------------------------------
+
+
+# AdditionalMedicareTax test cases use the 2025 current-law values,
+# which match 2025 Form 8959: a 0.009 rate (line 7 and line 13) and a
+# threshold (line 5 and line 9) of 200000 (250000 when married filing
+# jointly and 125000 when married filing separately).  A qualifying
+# surviving spouse (MARS 5) uses the 200000 threshold on Form 8959 but
+# the 250000 threshold on Form 8960.  Sch SE line 4a keeps 0.9235 of
+# self-employment earnings.
+
+
+@pytest.mark.parametrize('rvars, expected', [
+    # Part I: 0.009 * (300000 - 200000)
+    pytest.param({'MARS': 1, 'e00200': 300000.}, 900., id='single'),
+    # Part I: 0.009 * (300000 - 250000)
+    pytest.param({'MARS': 2, 'e00200': 300000.}, 450., id='joint'),
+    # Part I: 0.009 * (300000 - 125000)
+    pytest.param({'MARS': 3, 'e00200': 300000.}, 1575., id='separate'),
+    # Part I: 0.009 * (300000 - 200000)
+    pytest.param({'MARS': 4, 'e00200': 300000.}, 900.,
+                 id='head of household'),
+    # Part I: 0.009 * (300000 - 200000)
+    pytest.param({'MARS': 5, 'e00200': 300000.}, 900.,
+                 id='surviving spouse'),
+    # Part I: wages at the threshold produce no tax
+    pytest.param({'MARS': 1, 'e00200': 200000.}, 0.,
+                 id='wages at threshold'),
+    # Part II: line 8 = 0.9235 * 100000 = 92350;
+    # line 11 = 200000 - 150000 = 50000; line 13 = 0.009 * 42350
+    pytest.param({'MARS': 1, 'e00200': 150000., 'e00900p': 100000.},
+                 381.15, id='SE uses remaining threshold'),
+    # line 18 adds Part I and Part II: line 7 = 0.009 * 100000 = 900;
+    # line 11 = 0, so line 13 = 0.009 * 92350 = 831.15
+    pytest.param({'MARS': 1, 'e00200': 300000., 'e00900p': 100000.},
+                 1731.15, id='both parts'),
+    # every per-spouse component of Sch SE line 6 reaches line 8:
+    # line 8 = 0.9235 * (60000 + 6000) = 60951; wages equal the joint
+    # threshold, so line 11 = 0 and line 13 = 0.009 * 60951
+    pytest.param({'MARS': 2, 'e00200': 250000.,
+                  'e00900p': 10000., 'e00900s': 1000.,
+                  'e02100p': 20000., 'e02100s': 2000.,
+                  'k1bx14p': 30000., 'k1bx14s': 3000.},
+                 548.559, id='SE components'),
+    # each spouse files a separate Sch SE, so the spouse loss does not
+    # offset the taxpayer profit: line 8 = 0.9235 * 300000 = 277050;
+    # line 13 = 0.009 * 277050 (flooring only the sum of the spouses
+    # would give 0.009 * 0.9235 * 200000 = 1662.30)
+    pytest.param({'MARS': 2, 'e00200': 250000.,
+                  'e00900p': 300000., 'e00900s': -100000.},
+                 2493.45, id='SE floors each spouse'),
+    # line 1 Medicare wages (W-2 box 5) include the pension
+    # contributions that e00200 (W-2 box 1) excludes:
+    # line 1 = 230000 + 15000 + 10000 = 255000;
+    # line 7 = 0.009 * (255000 - 250000)
+    pytest.param({'MARS': 2, 'e00200': 230000.,
+                  'pencon_p': 15000., 'pencon_s': 10000.},
+                 45., id='pension contributions'),
+    # a spouse whose Sch SE line 4c amount is below $400 has no SE
+    # income on line 8: line 8 = 0.9235 * 10000 = 9235 (the spouse's
+    # 277.05 is excluded); line 11 = 0, so line 13 = 0.009 * 9235
+    pytest.param({'MARS': 2, 'e00200': 250000.,
+                  'e00900p': 10000., 'e00900s': 300.},
+                 83.115, id='SE floor per spouse'),
+])
+def test_AdditionalMedicareTax(call_calcfunc, rvars, expected):
+    """
+    Tests the AdditionalMedicareTax function against 2025 Form 8959
+    logic: Part I (lines 1-7) taxes Medicare wages above the threshold,
+    Part II (lines 8-13) taxes self-employment income above what remains
+    of the threshold, and line 18 adds the two parts
+    """
+    actual = call_calcfunc('AdditionalMedicareTax', **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# StdDed
+# ----------------------------------------------------------------------
+
+
+# StdDed test cases use 2025 current-law policy values, which match the
+# 2025 Form 1040 line 12 standard deduction chart:
+#   STD = [15750, 31500, 15750, 23625, 31500] by MARS, and
+#   STD_Aged = [2000, 1600, 1600, 2000, 1600] by MARS per 65+/blind box,
+# and the 2025 Standard Deduction Worksheet for Dependents:
+#   STD_Dep_earned_add = 450 (line 2) and STD_Dep = 1350 (line 4).
+# The 2025 nonitemizer charitable deduction ceiling is zero.
+
+
+@pytest.mark.stded
+@pytest.mark.parametrize('rvars, expected', [
+    # line 12 chart: single, under 65 and not blind
+    pytest.param({'MARS': 1, 'age_head': 45}, 15750., id='single'),
+    # line 12 chart: single, 65 or older: 15750 + 2000
+    pytest.param({'MARS': 1, 'age_head': 66}, 17750., id='single aged'),
+    # line 12 chart: single, 65 or older and blind: 15750 + 2 * 2000
+    pytest.param({'MARS': 1, 'age_head': 66, 'blind_head': 1}, 19750.,
+                 id='single aged blind'),
+    # line 12 chart: married filing jointly, both under 65
+    pytest.param({'MARS': 2, 'age_head': 45, 'age_spouse': 44}, 31500.,
+                 id='joint'),
+    # line 12 chart: married filing jointly, spouse 65 or older:
+    # 31500 + 1600
+    pytest.param({'MARS': 2, 'age_head': 44, 'age_spouse': 66}, 33100.,
+                 id='joint spouse aged'),
+    # line 12 chart: married filing jointly, both 65 or older and
+    # spouse blind: 31500 + 3 * 1600
+    pytest.param({'MARS': 2, 'age_head': 66, 'age_spouse': 67,
+                  'blind_spouse': 1},
+                 36300., id='joint both aged spouse blind'),
+    # line 12 chart: married filing separately, 65 or older:
+    # 15750 + 1600; spouse boxes count only on a joint return, so the
+    # spouse age and blindness are ignored
+    pytest.param({'MARS': 3, 'age_head': 66, 'age_spouse': 70,
+                  'blind_spouse': 1},
+                 17350., id='separate aged'),
+    # line 12 instructions: married filing separately and spouse
+    # itemizes, so the standard deduction is zero
+    pytest.param({'MARS': 3, 'age_head': 66, 'MIDR': 1}, 0.,
+                 id='separate spouse itemizes'),
+    # line 12 chart: head of household, 65 or older: 23625 + 2000
+    pytest.param({'MARS': 4, 'age_head': 66}, 25625., id='head aged'),
+    # line 12 chart: qualifying surviving spouse, blind: 31500 + 1600
+    pytest.param({'MARS': 5, 'age_head': 50, 'blind_head': 1}, 33100.,
+                 id='surviving spouse blind'),
+    # dependent worksheet: line 3 = 500 + 450 = 950;
+    # line 5 = max(950, 1350) = 1350; result = min(1350, 15750)
+    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 16, 'earned': 500.}, 1350.,
+                 id='dependent low earnings'),
+    # dependent worksheet: line 3 = 5000 + 450 = 5450;
+    # line 5 = max(5450, 1350) = 5450; result = min(5450, 15750)
+    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 20, 'earned': 5000.}, 5450.,
+                 id='dependent middle earnings'),
+    # dependent worksheet: line 3 = 20000 + 450 = 20450;
+    # line 5 = max(20450, 1350) = 20450; result = min(20450, 15750)
+    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 20, 'earned': 20000.},
+                 15750., id='dependent high earnings'),
+    # dependent worksheet: min(5450, 15750) as above plus one 65+/blind
+    # box amount for a blind single dependent: 5450 + 2000
+    pytest.param({'MARS': 1, 'DSI': 1, 'age_head': 20, 'earned': 5000.,
+                  'blind_head': 1}, 7450., id='dependent blind'),
+    # cash charitable contributions do not raise the standard deduction
+    # because the 2025 nonitemizer charitable deduction ceiling is zero
+    pytest.param({'MARS': 1, 'age_head': 45, 'e19800': 1000.}, 15750.,
+                 id='single with charity'),
+])
+def test_StdDed(call_calcfunc, rvars, expected):
+    """
+    Tests the StdDed function against 2025 Form 1040 line 12 logic
+    """
+    actual = call_calcfunc('StdDed', **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# TaxInc
+# ----------------------------------------------------------------------
 
 
 # TaxInc test cases use the 2025 current-law QBI deduction parameters,
@@ -807,6 +818,228 @@ def test_TaxInc(call_calcfunc, reform, rvars, expected):
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
+# ----------------------------------------------------------------------
+# SchXYZ
+# ----------------------------------------------------------------------
+
+
+# SchXYZ test cases use the 2025 current-law rates and brackets, which
+# match the 2025 Tax Rate Schedules X, Y-1, Y-2, and Z.
+TOP_BRACKET_REFORM = {
+    'II_brk7': {2025: [20e6, 20e6, 20e6, 20e6, 20e6]},
+    'II_rt8': {2025: 0.44},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # Schedule X: 1192.50 + 0.12 * (48475 - 11925)
+    #             + 0.22 * (50000 - 48475)
+    pytest.param(None, {'MARS': 1, 'taxable_income': 50000.}, 5914.,
+                 id='single'),
+    # Schedule X: 188769.75 + 0.37 * (1000000 - 626350)
+    pytest.param(None, {'MARS': 1, 'taxable_income': 1e6}, 327020.25,
+                 id='single top bracket'),
+    # Schedule Y-1: 2385 + 0.12 * (96950 - 23850)
+    #               + 0.22 * (100000 - 96950)
+    pytest.param(None, {'MARS': 2, 'taxable_income': 100000.}, 11828.,
+                 id='joint'),
+    # Schedule Y-2: 101077.25 + 0.37 * (400000 - 375800)
+    pytest.param(None, {'MARS': 3, 'taxable_income': 400000.},
+                 110031.25, id='separate top bracket'),
+    # Schedule Z: 1700 + 0.12 * (60000 - 17000)
+    pytest.param(None, {'MARS': 4, 'taxable_income': 60000.}, 6860.,
+                 id='head of household'),
+    # Schedule Y-1 is used by a qualifying surviving spouse:
+    # 2385 + 0.12 * (50000 - 23850)
+    pytest.param(None, {'MARS': 5, 'taxable_income': 50000.}, 5523.,
+                 id='surviving spouse'),
+    # no tax on zero or negative taxable income
+    pytest.param(None, {'MARS': 1, 'taxable_income': -1000.}, 0.,
+                 id='negative taxable income'),
+    # reform with a 44 percent rate above 20 million:
+    # 188769.75 + 0.37 * (20000000 - 626350)
+    #           + 0.44 * (100000000 - 20000000)
+    pytest.param(TOP_BRACKET_REFORM,
+                 {'MARS': 1, 'taxable_income': 100e6}, 42557020.25,
+                 id='reform new top bracket'),
+])
+def test_SchXYZ(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the SchXYZ function against the 2025 Tax Rate Schedules
+    """
+    actual = call_calcfunc('SchXYZ', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# NetInvIncTax
+# ----------------------------------------------------------------------
+
+
+# NetInvIncTax test cases use the 2025 current-law values, which match
+# 2025 Form 8960: a 0.038 rate (line 17) and a threshold (line 14) of
+# 200000 (250000 when married filing jointly or a qualifying surviving
+# spouse and 125000 when married filing separately).  The e02000 and
+# e26270 values differ so that the line 4b adjustment is nonzero.
+NIIT_INCOME = {'e00300': 10000., 'e00600': 5000., 'e02000': 20000.,
+               'e26270': 5000., 'c01000': 15000.}
+NIIT_PT_TAXED_REFORM = {'NIIT_PT_taxed': {2025: True}}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # line 8 = 10000 + 5000 + (20000 - 5000) + 15000 = 45000;
+    # line 15 = 100000; line 16 = min(45000, 100000);
+    # line 17 = 0.038 * 45000
+    pytest.param(None, {**NIIT_INCOME, 'MARS': 1, 'c00100': 300000.},
+                 1710., id='nii below excess'),
+    # reform-only NIIT_PT_taxed drops the line 4b adjustment, so line 12
+    # rises by e26270 and the tax by 0.038 * 5000
+    pytest.param(NIIT_PT_TAXED_REFORM,
+                 {**NIIT_INCOME, 'MARS': 1, 'c00100': 300000.},
+                 1900., id='reform pt taxed'),
+    # modified AGI at the line 14 threshold: line 15 is zero
+    pytest.param(None, {**NIIT_INCOME, 'MARS': 1, 'c00100': 200000.},
+                 0., id='magi at threshold'),
+    # line 15 = 10000 below line 12 = 45000: 0.038 * 10000
+    pytest.param(None, {**NIIT_INCOME, 'MARS': 1, 'c00100': 210000.},
+                 380., id='excess below nii'),
+    # negative investment income is floored at zero by line 12
+    pytest.param(None,
+                 {'MARS': 1, 'e02000': -50000., 'c01000': -3000.,
+                  'c00100': 300000.},
+                 0., id='negative nii'),
+    # joint filers: line 15 = 270000 - 250000; 0.038 * 20000
+    pytest.param(None, {**NIIT_INCOME, 'MARS': 2, 'c00100': 270000.},
+                 760., id='joint threshold'),
+    # qualifying surviving spouse uses the joint threshold
+    pytest.param(None, {**NIIT_INCOME, 'MARS': 5, 'c00100': 270000.},
+                 760., id='surviving spouse threshold'),
+    # married filing separately: line 15 = 150000 - 125000;
+    # 0.038 * 25000
+    pytest.param(None, {**NIIT_INCOME, 'MARS': 3, 'c00100': 150000.},
+                 950., id='separate threshold'),
+])
+def test_NetInvIncTax(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the NetInvIncTax function against 2025 Form 8960 lines 12-17:
+    the tax is the line 17 rate applied to the lesser of net investment
+    income (line 12) and the excess of modified AGI over the
+    MARS-indexed line 14 threshold (line 15)
+    """
+    actual = call_calcfunc('NetInvIncTax', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# EITCamount
+# ----------------------------------------------------------------------
+
+
+# EITC test cases use the 2025 current-law EITC parameters, which match
+# the 2025 Form 1040 instructions (EIC Worksheet A and the EIC Table) and
+# Pub 596, indexed by the number of qualifying children (0, 1, 2, 3+):
+#   phase-in rate  = [0.0765, 0.34, 0.40, 0.45]
+#   maximum credit = [649, 4328, 7152, 8046]
+#   phase-out start = [10620, 23350, 23350, 23350]
+#     (plus [7110, 7120, 7120, 7120] when married filing jointly)
+#   phase-out rate = [0.0765, 0.1598, 0.2106, 0.2106]
+#   investment income limit = 11950
+# The expected values use the formula behind the EIC Table rather than
+# the table's $50 income bands.
+
+
+@pytest.mark.parametrize('earnings, agi, expected', [
+    # phase-in: 0.45 * 10000
+    pytest.param(10000., 10000., 4500., id='phase-in'),
+    # plateau: min(0.45 * 20000, 8046)
+    pytest.param(20000., 20000., 8046., id='plateau'),
+    # phase-out: 8046 - 0.2106 * (30000 - 23350)
+    pytest.param(30000., 30000., 6645.51, id='phase-out'),
+    # EIC Worksheet A line 6: AGI above the phase-out start, so the
+    # smaller of the earned-income credit (4500) and the AGI credit
+    # (6645.51) is allowed
+    pytest.param(10000., 30000., 4500., id='AGI above earnings'),
+    # earnings credit (6645.51) is smaller than the AGI credit (8046)
+    pytest.param(30000., 20000., 6645.51, id='earnings above AGI'),
+    # 8046 - 0.2106 * (70000 - 23350) < 0
+    pytest.param(70000., 70000., 0., id='phased out'),
+])
+def test_EITCamount(earnings, agi, expected):
+    """
+    Tests the EITCamount function using the 2025 EITC parameters for a
+    filer with three or more qualifying children who is not married
+    filing jointly
+    """
+    actual = calcfunctions.EITCamount(0., 0.45, earnings, 8046., 23350.,
+                                      agi, 0.2106)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# EITC
+# ----------------------------------------------------------------------
+
+
+@pytest.mark.parametrize('rvars, expected', [
+    # three children: min(0.45 * 20000, 8046)
+    pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
+                  'c00100': 20000.}, 8046., id='three children plateau'),
+    # one child: 4328 - 0.1598 * (30000 - 23350)
+    pytest.param({'MARS': 1, 'EIC': 1, 'earned': 30000.,
+                  'c00100': 30000.}, 3265.33, id='one child phase-out'),
+    # two children, joint: phase-out start = 23350 + 7120 = 30470;
+    # 7152 - 0.2106 * (40000 - 30470)
+    pytest.param({'MARS': 2, 'EIC': 2, 'earned': 40000.,
+                  'c00100': 40000.}, 5144.982, id='two children joint'),
+    # no children, age 30: 0.0765 * 8000
+    pytest.param({'MARS': 1, 'EIC': 0, 'age_head': 30, 'earned': 8000.,
+                  'c00100': 8000.}, 612., id='no children'),
+    # Pub 596 rule 11: no children and under age 25
+    pytest.param({'MARS': 1, 'EIC': 0, 'age_head': 22, 'earned': 8000.,
+                  'c00100': 8000.}, 0., id='no children under 25'),
+    # Pub 596 rule 11: no children and over age 64
+    pytest.param({'MARS': 1, 'EIC': 0, 'age_head': 70, 'earned': 8000.,
+                  'c00100': 8000.}, 0., id='no children over 64'),
+    # Pub 596 rule 11: joint filers need only one spouse aged 25-64:
+    # 0.0765 * 8000
+    pytest.param({'MARS': 2, 'EIC': 0, 'age_head': 22, 'age_spouse': 30,
+                  'earned': 8000., 'c00100': 8000.}, 612.,
+                 id='no children joint one spouse eligible'),
+    # Pub 596 rule 3: a separated spouse filing separately may claim
+    # the credit, using the non-joint phase-out start: min(0.34 * 15000,
+    # 4328)
+    pytest.param({'MARS': 3, 'EIC': 1, 'earned': 15000.,
+                  'c00100': 15000.}, 4328., id='separate'),
+    # Pub 596 rule 10: a filer claimed as a dependent cannot claim
+    pytest.param({'MARS': 1, 'EIC': 1, 'DSI': 1, 'earned': 15000.,
+                  'c00100': 15000.}, 0., id='dependent'),
+    # Pub 596 rule 6: investment income 11950 is not above the limit:
+    # 8046 - 0.2106 * (31950 - 23350)
+    pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
+                  'c00100': 31950., 'e00300': 11950.}, 6234.84,
+                 id='investment income at limit'),
+    # Pub 596 rule 6: taxable interest above the limit
+    pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
+                  'c00100': 32000., 'e00300': 12000.}, 0.,
+                 id='interest above limit'),
+    # Pub 596 rule 6: capital gain net income above the limit
+    pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
+                  'c00100': 33000., 'c01000': 13000.}, 0.,
+                 id='capital gain above limit'),
+])
+def test_EITC(call_calcfunc, rvars, expected):
+    """
+    Tests the EITC function against 2025 EIC logic
+    """
+    actual = call_calcfunc('EITC', **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# ChildDepTaxCredit
+# ----------------------------------------------------------------------
+
+
 # ChildDepTaxCredit test cases use the 2025 current-law values, which
 # match the 2025 Schedule 8812: a 2200 child tax credit per qualifying
 # child (line 5), a 500 credit for other dependents (line 7), and a
@@ -868,6 +1101,93 @@ def test_ChildDepTaxCredit(call_calcfunc, rvars, expected):
     """
     actual = call_calcfunc('ChildDepTaxCredit', **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# PersonalTaxCredit
+# ----------------------------------------------------------------------
+
+
+# PersonalTaxCredit computes reform-only personal credits and the
+# recovery rebate credit, which was on the 2020 and 2021 Form 1040 but
+# not on the 2025 Form 1040; all their parameters are zero under 2025
+# current law.  The returned tuple is (personal_refundable_credit,
+# personal_nonrefundable_credit, recovery_rebate_credit).
+PERSONAL_CREDIT_REFORM = {
+    'II_credit': {2025: [1000, 2000, 1000, 1500, 2000]},
+    'II_credit_ps': {2025: [50000, 100000, 50000, 75000, 100000]},
+    'II_credit_prt': {2025: 0.05},
+    'II_credit_nr': {2025: [300, 600, 300, 450, 600]},
+    'II_credit_nr_ps': {2025: [40000, 80000, 40000, 60000, 80000]},
+    'II_credit_nr_prt': {2025: 0.01},
+}
+# ARPA-style recovery rebate credit applied in 2025
+RRC_PERSON_REFORM = {
+    'RRC_c': {2025: 1400},
+    'RRC_ps': {2025: [75000, 150000, 75000, 112500, 150000]},
+    'RRC_pe': {2025: [80000, 160000, 80000, 120000, 160000]},
+}
+# CARES-style recovery rebate credit applied in 2025
+RRC_UNIT_REFORM = {
+    'RRC_c_unit': {2025: [1200, 2400, 1200, 1200, 2400]},
+    'RRC_c_kids': {2025: 500},
+    'RRC_prt': {2025: 0.05},
+    'RRC_ps': {2025: [75000, 150000, 75000, 112500, 150000]},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # 2025 current law: all three credits are zero
+    pytest.param(None,
+                 {'MARS': 2, 'c00100': 80000., 'XTOT': 4, 'nu18': 2},
+                 (0., 0., 0.), id='current law'),
+    # 2025 current law with negative AGI
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': -5000., 'XTOT': 1},
+                 (0., 0., 0.), id='current law negative AGI'),
+    # reform: joint AGI below both phase-out starts
+    pytest.param(PERSONAL_CREDIT_REFORM, {'MARS': 2, 'c00100': 75000.},
+                 (2000., 600., 0.), id='personal credits below ps'),
+    # reform: refundable 2000 - 0.05 * 20000 = 1000;
+    # nonrefundable 600 - 0.01 * 40000 = 200
+    pytest.param(PERSONAL_CREDIT_REFORM, {'MARS': 2, 'c00100': 120000.},
+                 (1000., 200., 0.), id='personal credits phasing out'),
+    # reform: refundable 2000 - 0.05 * 50000 < 0;
+    # nonrefundable 600 - 0.01 * 70000 < 0
+    pytest.param(PERSONAL_CREDIT_REFORM, {'MARS': 2, 'c00100': 150000.},
+                 (0., 0., 0.), id='personal credits phased out'),
+    # ARPA-style reform: 1400 * 1 below phase-out start
+    pytest.param(RRC_PERSON_REFORM,
+                 {'MARS': 1, 'c00100': 50000., 'XTOT': 1},
+                 (0., 0., 1400.), id='ARPA-style below ps'),
+    # ARPA-style reform: 1400 * (1 - (76000 - 75000) / 5000)
+    pytest.param(RRC_PERSON_REFORM,
+                 {'MARS': 1, 'c00100': 76000., 'XTOT': 1},
+                 (0., 0., 1120.), id='ARPA-style phasing out'),
+    # ARPA-style reform: AGI above phase-out end
+    pytest.param(RRC_PERSON_REFORM,
+                 {'MARS': 1, 'c00100': 90000., 'XTOT': 1},
+                 (0., 0., 0.), id='ARPA-style phased out'),
+    # CARES-style reform: 2400 + 2 * 500 below phase-out start
+    pytest.param(RRC_UNIT_REFORM,
+                 {'MARS': 2, 'c00100': 100000., 'XTOT': 4, 'nu18': 2},
+                 (0., 0., 3400.), id='CARES-style below ps'),
+    # CARES-style reform: 3400 - 0.05 * (160000 - 150000)
+    pytest.param(RRC_UNIT_REFORM,
+                 {'MARS': 2, 'c00100': 160000., 'XTOT': 4, 'nu18': 2},
+                 (0., 0., 2900.), id='CARES-style phasing out'),
+])
+def test_PersonalTaxCredit(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the PersonalTaxCredit function
+    """
+    actual = call_calcfunc('PersonalTaxCredit', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# CTC_new
+# ----------------------------------------------------------------------
 
 
 # CTC_new is a reform-only refundable child credit (like the 2021 ARPA
@@ -934,379 +1254,154 @@ def test_CTC_new(call_calcfunc, reform, rvars, expected):
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
-# AGI test cases use 2025 current law, under which unemployment
-# compensation is fully taxable and there are no personal exemptions
-# (II_em is zero).  The returned tuple is (c00100, pre_c04600, c04600).
-UI_EXCLUSION_REFORM = {
-    'UI_em': {2025: 10200},
-    'UI_thd': {2025: [150000, 150000, 150000, 150000, 150000]},
-}
-EXEMPTION_REFORM = {
-    'II_em': {2025: 5000},
-    'II_em_ps': {2025: [250000, 300000, 150000, 275000, 300000]},
-}
+# ----------------------------------------------------------------------
+# FairShareTax
+# ----------------------------------------------------------------------
+
+
+# FairShareTax is a reform-only construct with no IRS form; FST_AGI_trt
+# is zero under 2025 current law, whose FST_AGI_thd_lo and FST_AGI_thd_hi
+# values are 1000000 and 2000000 (500000 and 1000000 when MARS is 3).
+# The returned tuple is (fstax, iitax, combined, surtax).
+FST_REFORM = {'FST_AGI_trt': {2025: 0.3}}
 
 
 @pytest.mark.parametrize('reform, rvars, expected', [
-    # Form 1040 line 11 = line 9 - line 10
+    # 2025 current law: no fair-share tax; other outputs unchanged
     pytest.param(None,
-                 {'MARS': 1, 'ymod1': 60000., 'c02900': 5000.},
-                 (55000., 0., 0.), id='adjustments'),
-    # taxable social security (line 6b) is part of line 9:
-    # 60000 + 10000 - 5000
-    pytest.param(None,
-                 {'MARS': 1, 'ymod1': 60000., 'c02500': 10000.,
-                  'c02900': 5000.},
-                 (65000., 0., 0.), id='taxable social security'),
-    # unemployment compensation (Sch 1 line 7) is fully taxable
-    pytest.param(None,
-                 {'MARS': 1, 'ymod1': 30000., 'e02300': 10000.},
-                 (30000., 0., 0.), id='unemployment compensation'),
-    # no personal exemptions under 2025 current law
-    pytest.param(None,
-                 {'MARS': 2, 'XTOT': 4, 'ymod1': 100000.},
-                 (100000., 0., 0.), id='no exemptions'),
-    # 2020-style UI exclusion reform: 40000 - min(15000, 10200)
-    pytest.param(UI_EXCLUSION_REFORM,
-                 {'MARS': 1, 'ymod1': 40000., 'e02300': 15000.},
-                 (29800., 0., 0.), id='reform UI exclusion'),
-    # UI exclusion reform: 170000 - 15000 is above 150000
-    pytest.param(UI_EXCLUSION_REFORM,
-                 {'MARS': 1, 'ymod1': 170000., 'e02300': 15000.},
-                 (170000., 0., 0.), id='reform UI exclusion above thd'),
-    # pre-TCJA exemption reform: 4 * 5000 below the phase-out start
-    pytest.param(EXEMPTION_REFORM,
-                 {'MARS': 2, 'XTOT': 4, 'ymod1': 100000.},
-                 (100000., 20000., 20000.), id='reform exemptions'),
-    # exemption reform, pre-TCJA exemptions worksheet: line 5 = 21000;
-    # line 6 = ceil(21000 / 2500) = 9; line 7 = 0.02 * 9 = 0.18;
-    # 20000 * (1 - 0.18)
-    pytest.param(EXEMPTION_REFORM,
-                 {'MARS': 2, 'XTOT': 4, 'ymod1': 321000., 'exact': 1},
-                 (321000., 20000., 16400.), id='reform exemptions exact'),
-    # exemption reform, smoothed: 20000 * (1 - 0.02 * 21000 / 2500)
-    pytest.param(EXEMPTION_REFORM,
-                 {'MARS': 2, 'XTOT': 4, 'ymod1': 321000.},
-                 (321000., 20000., 16640.),
-                 id='reform exemptions smoothed'),
-    # exemption reform: dependent filers get no exemptions
-    pytest.param(EXEMPTION_REFORM,
-                 {'MARS': 1, 'XTOT': 1, 'DSI': 1, 'ymod1': 10000.},
-                 (10000., 0., 0.), id='reform dependent'),
+                 {'MARS': 1, 'c00100': 3e6, 'iitax': 600000.,
+                  'combined': 630000.},
+                 (0., 600000., 630000., 0.), id='current law'),
+    # reform, AGI above upper threshold: employee payroll share =
+    # (30000 - 15000) + 0.5 * 0 + 25000 = 40000;
+    # fstax = 0.3 * 3000000 - 600000 - 40000 = 260000
+    pytest.param(FST_REFORM,
+                 {'MARS': 1, 'c00100': 3e6, 'ptax_was': 30000.,
+                  'ptax_er_p': 15000., 'ptax_amc': 25000.,
+                  'iitax': 600000., 'combined': 630000.},
+                 (260000., 860000., 890000., 260000.),
+                 id='reform above upper threshold'),
+    # reform, AGI in phase-in range: employee payroll share =
+    # (30000 - 15000) + 0.5 * 20000 + 11700 = 36700;
+    # full fstax = 0.3 * 1500000 - 300000 - 36700 = 113300;
+    # phase-in fraction = (1500000 - 1000000) / 1000000 = 0.5
+    pytest.param(FST_REFORM,
+                 {'MARS': 1, 'c00100': 1.5e6, 'ptax_was': 30000.,
+                  'ptax_er_p': 15000., 'setax': 20000.,
+                  'ptax_amc': 11700., 'iitax': 300000.,
+                  'combined': 336700.},
+                 (56650., 356650., 393350., 56650.),
+                 id='reform in phase-in range'),
+    # reform, married filing separately in phase-in range:
+    # full fstax = 0.3 * 750000 - 150000 = 75000;
+    # phase-in fraction = (750000 - 500000) / 500000 = 0.5
+    pytest.param(FST_REFORM,
+                 {'MARS': 3, 'c00100': 750000., 'iitax': 150000.,
+                  'combined': 150000.},
+                 (37500., 187500., 187500., 37500.),
+                 id='reform separate'),
+    # reform, AGI below lower threshold
+    pytest.param(FST_REFORM,
+                 {'MARS': 1, 'c00100': 900000., 'iitax': 200000.,
+                  'combined': 200000.},
+                 (0., 200000., 200000., 0.), id='reform below threshold'),
+    # reform, income tax already exceeds 0.3 * AGI
+    pytest.param(FST_REFORM,
+                 {'MARS': 1, 'c00100': 3e6, 'iitax': 1e6,
+                  'combined': 1e6},
+                 (0., 1e6, 1e6, 0.), id='reform tax exceeds minimum'),
 ])
-def test_AGI(call_calcfunc, reform, rvars, expected):
+def test_FairShareTax(call_calcfunc, reform, rvars, expected):
     """
-    Tests the AGI function against 2025 Form 1040 line 11 logic
+    Tests the FairShareTax function
     """
-    actual = call_calcfunc('AGI', reform=reform, **rvars)
+    actual = call_calcfunc('FairShareTax', reform=reform, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
-# MiscDed test cases use the 2025 current-law values, which match the
-# 2025 Schedule 1-A:
-#   Part II tips: 25000 cap, reduced by 100 per 1000 of MAGI above
-#     150000 (300000 when married filing jointly);
-#   Part III overtime: 12500 cap (25000 when married filing jointly),
-#     reduced by 100 per 1000 of MAGI above 150000 (300000 MFJ);
-#   Part IV car loan interest: 10000 cap, reduced by 200 per 1000 of
-#     MAGI above 100000 (200000 when married filing jointly);
-#   Part V seniors: 6000 per person aged 65 or older, reduced by
-#     6 percent of MAGI above 75000 (150000 when married filing jointly).
-# Married filers must file jointly to claim the Part II, III, and V
-# deductions.  The exact flag selects the form's whole-step phase-out
-# rounding.  The returned tuple is (senior_deduction,
-# overtime_income_deduction, tip_income_deduction,
-# auto_loan_interest_deduction).
+# ----------------------------------------------------------------------
+# LumpSumTax
+# ----------------------------------------------------------------------
 
 
-@pytest.mark.parametrize('rvars, expected', [
-    # Part V: MAGI below 75000
-    pytest.param({'MARS': 1, 'age_head': 66, 'c00100': 60000.},
-                 (6000., 0., 0., 0.), id='senior'),
-    # Part V: 6000 - 0.06 * (100000 - 75000)
-    pytest.param({'MARS': 1, 'age_head': 66, 'c00100': 100000.},
-                 (4500., 0., 0., 0.), id='senior phase-out'),
-    # Part V: 2 * (6000 - 0.06 * (180000 - 150000))
-    pytest.param({'MARS': 2, 'age_head': 66, 'age_spouse': 65,
-                  'c00100': 180000.},
-                 (8400., 0., 0., 0.), id='two seniors phase-out'),
-    # Part V: only the spouse aged 65 or older qualifies
-    pytest.param({'MARS': 2, 'age_head': 60, 'age_spouse': 66,
-                  'c00100': 100000.},
-                 (6000., 0., 0., 0.), id='one senior joint'),
-    # Part V: 6000 - 0.06 * (200000 - 75000) < 0
-    pytest.param({'MARS': 4, 'age_head': 70, 'c00100': 200000.},
-                 (0., 0., 0., 0.), id='senior phased out'),
-    # Part V: married filing separately cannot claim
-    pytest.param({'MARS': 3, 'age_head': 66, 'c00100': 50000.},
-                 (0., 0., 0., 0.), id='senior separate'),
-    # Part II: min(30000, 25000)
-    pytest.param({'MARS': 1, 'c00100': 100000., 'tip_income': 30000.},
-                 (0., 0., 25000., 0.), id='tips'),
-    # Part II: floor(10500 / 1000) = 10 steps; 25000 - 10 * 100
-    pytest.param({'MARS': 1, 'c00100': 160500., 'tip_income': 30000.,
-                  'exact': 1},
-                 (0., 0., 24000., 0.), id='tips phase-out exact'),
-    # Part II smoothed: 25000 - 0.1 * 10500
-    pytest.param({'MARS': 1, 'c00100': 160500., 'tip_income': 30000.},
-                 (0., 0., 23950., 0.), id='tips phase-out smoothed'),
-    # Part II: married filing separately cannot claim
-    pytest.param({'MARS': 3, 'c00100': 50000., 'tip_income': 10000.},
-                 (0., 0., 0., 0.), id='tips separate'),
-    # Part III: min(20000, 12500)
-    pytest.param({'MARS': 1, 'c00100': 100000.,
-                  'overtime_income': 20000.},
-                 (0., 12500., 0., 0.), id='overtime'),
-    # Part III and Part II joint: overtime min(30000, 25000) and tips
-    # min(30000, 25000), each reduced by 0.1 * (320000 - 300000)
-    pytest.param({'MARS': 2, 'c00100': 320000.,
-                  'overtime_income': 30000., 'tip_income': 30000.},
-                 (0., 23000., 23000., 0.), id='overtime and tips joint'),
-    # Part III: married filing separately cannot claim
-    pytest.param({'MARS': 3, 'c00100': 50000.,
-                  'overtime_income': 10000.},
-                 (0., 0., 0., 0.), id='overtime separate'),
-    # Part IV: min(12000, 10000)
-    pytest.param({'MARS': 1, 'c00100': 50000.,
-                  'auto_loan_interest': 12000.},
-                 (0., 0., 0., 10000.), id='car loan interest'),
-    # Part IV: ceil(20500 / 1000) = 21 steps; 10000 - 21 * 200
-    pytest.param({'MARS': 1, 'c00100': 120500.,
-                  'auto_loan_interest': 12000., 'exact': 1},
-                 (0., 0., 0., 5800.), id='car loan phase-out exact'),
-    # Part IV smoothed: 10000 - 0.2 * 20500
-    pytest.param({'MARS': 1, 'c00100': 120500.,
-                  'auto_loan_interest': 12000.},
-                 (0., 0., 0., 5900.), id='car loan phase-out smoothed'),
-    # Part IV: married filing separately can claim
-    pytest.param({'MARS': 3, 'c00100': 60000.,
-                  'auto_loan_interest': 3000.},
-                 (0., 0., 0., 3000.), id='car loan separate'),
-    # Part IV: 10000 - 0.2 * (320000 - 200000) < 0
-    pytest.param({'MARS': 2, 'c00100': 320000.,
-                  'auto_loan_interest': 12000.},
-                 (0., 0., 0., 0.), id='car loan phased out'),
-])
-def test_MiscDed(call_calcfunc, rvars, expected):
-    """
-    Tests the MiscDed function against 2025 Schedule 1-A logic
-    """
-    actual = call_calcfunc('MiscDed', **rvars)
-    assert np.allclose(actual, expected), f'{actual} != {expected}'
-
-
-# SchXYZ test cases use the 2025 current-law rates and brackets, which
-# match the 2025 Tax Rate Schedules X, Y-1, Y-2, and Z.
-TOP_BRACKET_REFORM = {
-    'II_brk7': {2025: [20e6, 20e6, 20e6, 20e6, 20e6]},
-    'II_rt8': {2025: 0.44},
-}
+# LumpSumTax is a reform-only construct with no IRS form; LST is zero
+# under 2025 current law.  The returned tuple is (lumpsum_tax, combined).
+LST_REFORM = {'LST': {2025: 200}}
 
 
 @pytest.mark.parametrize('reform, rvars, expected', [
-    # Schedule X: 1192.50 + 0.12 * (48475 - 11925)
-    #             + 0.22 * (50000 - 48475)
-    pytest.param(None, {'MARS': 1, 'taxable_income': 50000.}, 5914.,
-                 id='single'),
-    # Schedule X: 188769.75 + 0.37 * (1000000 - 626350)
-    pytest.param(None, {'MARS': 1, 'taxable_income': 1e6}, 327020.25,
-                 id='single top bracket'),
-    # Schedule Y-1: 2385 + 0.12 * (96950 - 23850)
-    #               + 0.22 * (100000 - 96950)
-    pytest.param(None, {'MARS': 2, 'taxable_income': 100000.}, 11828.,
-                 id='joint'),
-    # Schedule Y-2: 101077.25 + 0.37 * (400000 - 375800)
-    pytest.param(None, {'MARS': 3, 'taxable_income': 400000.},
-                 110031.25, id='separate top bracket'),
-    # Schedule Z: 1700 + 0.12 * (60000 - 17000)
-    pytest.param(None, {'MARS': 4, 'taxable_income': 60000.}, 6860.,
-                 id='head of household'),
-    # Schedule Y-1 is used by a qualifying surviving spouse:
-    # 2385 + 0.12 * (50000 - 23850)
-    pytest.param(None, {'MARS': 5, 'taxable_income': 50000.}, 5523.,
-                 id='surviving spouse'),
-    # no tax on zero or negative taxable income
-    pytest.param(None, {'MARS': 1, 'taxable_income': -1000.}, 0.,
-                 id='negative taxable income'),
-    # reform with a 44 percent rate above 20 million:
-    # 188769.75 + 0.37 * (20000000 - 626350)
-    #           + 0.44 * (100000000 - 20000000)
-    pytest.param(TOP_BRACKET_REFORM,
-                 {'MARS': 1, 'taxable_income': 100e6}, 42557020.25,
-                 id='reform new top bracket'),
+    # 2025 current law: no lump-sum tax and combined is unchanged
+    pytest.param(None, {'num': 2, 'XTOT': 4, 'combined': 1000.},
+                 (0., 1000.), id='current law'),
+    # reform: 200 * max(2, 4) = 800 added to combined
+    pytest.param(LST_REFORM, {'num': 2, 'XTOT': 4, 'combined': 1000.},
+                 (800., 1800.), id='reform family'),
+    # reform: 200 * max(1, 0) = 200
+    pytest.param(LST_REFORM, {'num': 1, 'XTOT': 0, 'combined': 1000.},
+                 (200., 1200.), id='reform no exemptions'),
+    # reform: dependent filers are exempt
+    pytest.param(LST_REFORM,
+                 {'DSI': 1, 'num': 1, 'XTOT': 1, 'combined': 1000.},
+                 (0., 1000.), id='reform dependent'),
 ])
-def test_SchXYZ(call_calcfunc, reform, rvars, expected):
+def test_LumpSumTax(call_calcfunc, reform, rvars, expected):
     """
-    Tests the SchXYZ function against the 2025 Tax Rate Schedules
+    Tests the LumpSumTax function
     """
-    actual = call_calcfunc('SchXYZ', reform=reform, **rvars)
+    actual = call_calcfunc('LumpSumTax', reform=reform, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
-# CapGainsLoss test cases use the 2025 current-law capital loss
-# limitation, which matches 2025 Sch D line 21: 3000 (1500 when married
-# filing separately).  The returned tuple is (c23650, c01000), the net
-# gain or loss before and after that limit.
+# ----------------------------------------------------------------------
+# ExpandIncome
+# ----------------------------------------------------------------------
+
+
+# ExpandIncome and AfterTaxIncome are model-only accounting constructs
+# with no IRS form.
+
+
+def test_ExpandIncome(call_calcfunc):
+    """
+    Tests the ExpandIncome function, which sums its income arguments
+    """
+    rvars = {
+        'e00200': 50000., 'pencon_p': 3000., 'pencon_s': 2000.,
+        'e00300': 1000., 'e00400': 500., 'e00600': 2000.,
+        'e00700': 100., 'e00800': 0., 'e00900': 10000., 'e01100': 50.,
+        'e01200': -200., 'e01400': 4000., 'e01500': 6000.,
+        'e02000': 7000., 'e02100': -1000.,
+        'p22250': -2000., 'p23250': 5000., 'cmbtp': 300.,
+        'ptax_er_p': 3825., 'ptax_er_s': 0., 'benefit_value_total': 1200.,
+    }
+    # wages: 50000 + 3000 + 2000 = 55000
+    # investment income: 1000 + 500 + 2000 = 3500
+    # other income: 100 + 0 + 10000 + 50 - 200 + 4000 + 6000
+    #               + 7000 - 1000 = 25950
+    # capital gains: -2000 + 5000 = 3000
+    # other: 300 + 3825 + 0 + 1200 = 5325
+    expected = 55000. + 3500. + 25950. + 3000. + 5325.
+    assert np.allclose(expected, 92775.)
+    actual = call_calcfunc('ExpandIncome', **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# AfterTaxIncome
+# ----------------------------------------------------------------------
 
 
 @pytest.mark.parametrize('rvars, expected', [
-    # net gain: Sch D line 21 leaves it unchanged
-    pytest.param({'MARS': 1, 'p22250': 1000., 'p23250': 4000.},
-                 (5000., 5000.), id='net gain'),
-    # net loss below the limit: deducted in full
-    pytest.param({'MARS': 1, 'p22250': -1000., 'p23250': -500.},
-                 (-1500., -1500.), id='loss under cap'),
-    # net loss exactly at the 3000 limit: still deducted in full
-    pytest.param({'MARS': 1, 'p22250': -2000., 'p23250': -1000.},
-                 (-3000., -3000.), id='loss at cap'),
-    # net loss above the limit: limited to 3000
-    pytest.param({'MARS': 1, 'p22250': -5000., 'p23250': -3000.},
-                 (-8000., -3000.), id='loss over cap'),
-    # the same loss when married filing separately: limited to 1500
-    pytest.param({'MARS': 3, 'p22250': -5000., 'p23250': -3000.},
-                 (-8000., -1500.), id='loss over cap MFS'),
-    # net loss exactly at the 1500 married-filing-separately limit
-    pytest.param({'MARS': 3, 'p22250': -1000., 'p23250': -500.},
-                 (-1500., -1500.), id='loss at cap MFS'),
-    # Sch D line 16: short-term loss netted against long-term gain
-    pytest.param({'MARS': 1, 'p22250': -10000., 'p23250': 4000.},
-                 (-6000., -3000.), id='ST loss vs LT gain'),
-    # Sch D line 16: long-term loss netted against short-term gain
-    pytest.param({'MARS': 1, 'p22250': 4000., 'p23250': -10000.},
-                 (-6000., -3000.), id='LT loss vs ST gain'),
+    # 100000 - 25000
+    pytest.param({'expanded_income': 100000., 'combined': 25000.}, 75000.,
+                 id='positive tax'),
+    # a net refund (negative combined tax) raises after-tax income
+    pytest.param({'expanded_income': 100000., 'combined': -3000.},
+                 103000., id='negative tax'),
 ])
-def test_CapGainsLoss(call_calcfunc, rvars, expected):
+def test_AfterTaxIncome(call_calcfunc, rvars, expected):
     """
-    Tests the CapGainsLoss function against 2025 Sch D logic: the
-    Part III netting of short-term and long-term gains and losses
-    (line 16) and the MARS-indexed limit on a net loss (line 21)
+    Tests the AfterTaxIncome function
     """
-    actual = call_calcfunc('CapGainsLoss', **rvars)
-    assert np.allclose(actual, expected), f'{actual} != {expected}'
-
-
-# AdditionalMedicareTax test cases use the 2025 current-law values,
-# which match 2025 Form 8959: a 0.009 rate (line 7 and line 13) and a
-# threshold (line 5 and line 9) of 200000 (250000 when married filing
-# jointly and 125000 when married filing separately).  A qualifying
-# surviving spouse (MARS 5) uses the 200000 threshold on Form 8959 but
-# the 250000 threshold on Form 8960.  Sch SE line 4a keeps 0.9235 of
-# self-employment earnings.
-
-
-@pytest.mark.parametrize('rvars, expected', [
-    # Part I: 0.009 * (300000 - 200000)
-    pytest.param({'MARS': 1, 'e00200': 300000.}, 900., id='single'),
-    # Part I: 0.009 * (300000 - 250000)
-    pytest.param({'MARS': 2, 'e00200': 300000.}, 450., id='joint'),
-    # Part I: 0.009 * (300000 - 125000)
-    pytest.param({'MARS': 3, 'e00200': 300000.}, 1575., id='separate'),
-    # Part I: 0.009 * (300000 - 200000)
-    pytest.param({'MARS': 4, 'e00200': 300000.}, 900.,
-                 id='head of household'),
-    # Part I: 0.009 * (300000 - 200000)
-    pytest.param({'MARS': 5, 'e00200': 300000.}, 900.,
-                 id='surviving spouse'),
-    # Part I: wages at the threshold produce no tax
-    pytest.param({'MARS': 1, 'e00200': 200000.}, 0.,
-                 id='wages at threshold'),
-    # Part II: line 8 = 0.9235 * 100000 = 92350;
-    # line 11 = 200000 - 150000 = 50000; line 13 = 0.009 * 42350
-    pytest.param({'MARS': 1, 'e00200': 150000., 'e00900p': 100000.},
-                 381.15, id='SE uses remaining threshold'),
-    # line 18 adds Part I and Part II: line 7 = 0.009 * 100000 = 900;
-    # line 11 = 0, so line 13 = 0.009 * 92350 = 831.15
-    pytest.param({'MARS': 1, 'e00200': 300000., 'e00900p': 100000.},
-                 1731.15, id='both parts'),
-    # every per-spouse component of Sch SE line 6 reaches line 8:
-    # line 8 = 0.9235 * (60000 + 6000) = 60951; wages equal the joint
-    # threshold, so line 11 = 0 and line 13 = 0.009 * 60951
-    pytest.param({'MARS': 2, 'e00200': 250000.,
-                  'e00900p': 10000., 'e00900s': 1000.,
-                  'e02100p': 20000., 'e02100s': 2000.,
-                  'k1bx14p': 30000., 'k1bx14s': 3000.},
-                 548.559, id='SE components'),
-    # each spouse files a separate Sch SE, so the spouse loss does not
-    # offset the taxpayer profit: line 8 = 0.9235 * 300000 = 277050;
-    # line 13 = 0.009 * 277050 (flooring only the sum of the spouses
-    # would give 0.009 * 0.9235 * 200000 = 1662.30)
-    pytest.param({'MARS': 2, 'e00200': 250000.,
-                  'e00900p': 300000., 'e00900s': -100000.},
-                 2493.45, id='SE floors each spouse'),
-    # line 1 Medicare wages (W-2 box 5) include the pension
-    # contributions that e00200 (W-2 box 1) excludes:
-    # line 1 = 230000 + 15000 + 10000 = 255000;
-    # line 7 = 0.009 * (255000 - 250000)
-    pytest.param({'MARS': 2, 'e00200': 230000.,
-                  'pencon_p': 15000., 'pencon_s': 10000.},
-                 45., id='pension contributions'),
-    # a spouse whose Sch SE line 4c amount is below $400 has no SE
-    # income on line 8: line 8 = 0.9235 * 10000 = 9235 (the spouse's
-    # 277.05 is excluded); line 11 = 0, so line 13 = 0.009 * 9235
-    pytest.param({'MARS': 2, 'e00200': 250000.,
-                  'e00900p': 10000., 'e00900s': 300.},
-                 83.115, id='SE floor per spouse'),
-])
-def test_AdditionalMedicareTax(call_calcfunc, rvars, expected):
-    """
-    Tests the AdditionalMedicareTax function against 2025 Form 8959
-    logic: Part I (lines 1-7) taxes Medicare wages above the threshold,
-    Part II (lines 8-13) taxes self-employment income above what remains
-    of the threshold, and line 18 adds the two parts
-    """
-    actual = call_calcfunc('AdditionalMedicareTax', **rvars)
-    assert np.allclose(actual, expected), f'{actual} != {expected}'
-
-
-# NetInvIncTax test cases use the 2025 current-law values, which match
-# 2025 Form 8960: a 0.038 rate (line 17) and a threshold (line 14) of
-# 200000 (250000 when married filing jointly or a qualifying surviving
-# spouse and 125000 when married filing separately).  The e02000 and
-# e26270 values differ so that the line 4b adjustment is nonzero.
-NIIT_INCOME = {'e00300': 10000., 'e00600': 5000., 'e02000': 20000.,
-               'e26270': 5000., 'c01000': 15000.}
-NIIT_PT_TAXED_REFORM = {'NIIT_PT_taxed': {2025: True}}
-
-
-@pytest.mark.parametrize('reform, rvars, expected', [
-    # line 8 = 10000 + 5000 + (20000 - 5000) + 15000 = 45000;
-    # line 15 = 100000; line 16 = min(45000, 100000);
-    # line 17 = 0.038 * 45000
-    pytest.param(None, {**NIIT_INCOME, 'MARS': 1, 'c00100': 300000.},
-                 1710., id='nii below excess'),
-    # reform-only NIIT_PT_taxed drops the line 4b adjustment, so line 12
-    # rises by e26270 and the tax by 0.038 * 5000
-    pytest.param(NIIT_PT_TAXED_REFORM,
-                 {**NIIT_INCOME, 'MARS': 1, 'c00100': 300000.},
-                 1900., id='reform pt taxed'),
-    # modified AGI at the line 14 threshold: line 15 is zero
-    pytest.param(None, {**NIIT_INCOME, 'MARS': 1, 'c00100': 200000.},
-                 0., id='magi at threshold'),
-    # line 15 = 10000 below line 12 = 45000: 0.038 * 10000
-    pytest.param(None, {**NIIT_INCOME, 'MARS': 1, 'c00100': 210000.},
-                 380., id='excess below nii'),
-    # negative investment income is floored at zero by line 12
-    pytest.param(None,
-                 {'MARS': 1, 'e02000': -50000., 'c01000': -3000.,
-                  'c00100': 300000.},
-                 0., id='negative nii'),
-    # joint filers: line 15 = 270000 - 250000; 0.038 * 20000
-    pytest.param(None, {**NIIT_INCOME, 'MARS': 2, 'c00100': 270000.},
-                 760., id='joint threshold'),
-    # qualifying surviving spouse uses the joint threshold
-    pytest.param(None, {**NIIT_INCOME, 'MARS': 5, 'c00100': 270000.},
-                 760., id='surviving spouse threshold'),
-    # married filing separately: line 15 = 150000 - 125000;
-    # 0.038 * 25000
-    pytest.param(None, {**NIIT_INCOME, 'MARS': 3, 'c00100': 150000.},
-                 950., id='separate threshold'),
-])
-def test_NetInvIncTax(call_calcfunc, reform, rvars, expected):
-    """
-    Tests the NetInvIncTax function against 2025 Form 8960 lines 12-17:
-    the tax is the line 17 rate applied to the lesser of net investment
-    income (line 12) and the excess of modified AGI over the
-    MARS-indexed line 14 threshold (line 15)
-    """
-    actual = call_calcfunc('NetInvIncTax', reform=reform, **rvars)
+    actual = call_calcfunc('AfterTaxIncome', **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
