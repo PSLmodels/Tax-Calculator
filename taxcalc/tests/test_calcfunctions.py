@@ -400,6 +400,68 @@ def test_DependentCare(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# Adj
+# ----------------------------------------------------------------------
+
+
+# Adj test cases use 2025 current law, under which every modeled
+# 2025 Sch 1 Part II adjustment is fully deductible (its haircut is
+# zero), except that alimony paid (line 19a) is not deductible for
+# post-2018 divorce instruments, which the model treats as applying to
+# all filers (ALD_AlimonyPaid_hc is one).  The legacy tuition-and-fees
+# and domestic-production deductions are also not deductible (their
+# haircuts are one).  The returned value is c02900 (Sch 1 line 26).
+ADJ_SCH1_ITEMS = {
+    'e03220': 300.,    # Sch 1 line 11
+    'e03290': 4000.,   # Sch 1 line 13
+    'c03260': 2000.,   # Sch 1 line 15
+    'e03300': 6000.,   # Sch 1 line 16
+    'e03270': 5000.,   # Sch 1 line 17
+    'e03400': 100.,    # Sch 1 line 18
+    'e03150': 7000.,   # Sch 1 line 20
+    'e03210': 2500.,   # Sch 1 line 21
+}  # these amounts sum to 26900
+ADJ_LEGACY_ITEMS = {'e03500': 10000., 'e03230': 4000., 'e03240': 5000.}
+ADJ_HAIRCUT_REFORM = {
+    'ALD_IRAContributions_hc': {2025: 0.5},
+    'ALD_StudentLoan_hc': {2025: 1.0},
+}
+ADJ_RESTORE_REFORM = {
+    'ALD_AlimonyPaid_hc': {2025: 0.0},
+    'ALD_Tuition_hc': {2025: 0.0},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # Sch 1 line 26 = sum of lines 11 through 21 (excluding line 19a)
+    pytest.param(None, ADJ_SCH1_ITEMS, 26900., id='sch 1 items'),
+    # alimony paid, tuition and fees, and domestic production are not
+    # deductible under 2025 current law
+    pytest.param(None, ADJ_LEGACY_ITEMS, 0., id='legacy items'),
+    # all items together: legacy items add nothing to 26900
+    pytest.param(None, {**ADJ_SCH1_ITEMS, **ADJ_LEGACY_ITEMS}, 26900.,
+                 id='all items'),
+    # the reform-only dependent care deduction passes through unchanged
+    pytest.param(None, {'care_deduction': 5000.}, 5000.,
+                 id='care deduction'),
+    # reform: 26900 - 0.5 * 7000 - 1.0 * 2500; the deductible part of
+    # self-employment tax (c03260) is not subject to a haircut
+    pytest.param(ADJ_HAIRCUT_REFORM, ADJ_SCH1_ITEMS, 20900.,
+                 id='reform haircuts'),
+    # reform restoring the alimony and tuition deductions: 10000 + 4000,
+    # while the domestic production deduction remains not deductible
+    pytest.param(ADJ_RESTORE_REFORM, ADJ_LEGACY_ITEMS, 14000.,
+                 id='reform restore legacy items'),
+])
+def test_Adj(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the Adj function against 2025 Sch 1 Part II logic
+    """
+    actual = call_calcfunc('Adj', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # CapGainsLoss
 # ----------------------------------------------------------------------
 
