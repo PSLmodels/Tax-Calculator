@@ -365,7 +365,7 @@
             "tmd": true
         }
     },
-    "SECA_Earnings_thd": {
+    "SECA_Earnings_deminimus": {
         "title": "Minimum self-employment earnings before trigger SECA liability",
         "description": "Individual self-employment earnings below this amount are not subject to SECA taxes.  To compute earnings for this threshold, will multiply net self-employment by (1 - SECA_Earnings_hc).",
         "section_1": "Payroll Taxes",

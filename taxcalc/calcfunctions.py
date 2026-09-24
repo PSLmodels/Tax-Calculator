@@ -86,7 +86,8 @@ def BenefitPrograms(calc):
 def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   FICA_ss_trt_employer, FICA_ss_trt_employee,
                   FICA_mc_trt_employer, FICA_mc_trt_employee,
-                  ALD_SelfEmploymentTax_hc, SS_Earnings_thd, SECA_Earnings_thd,
+                  ALD_SelfEmploymentTax_hc, SS_Earnings_thd,
+                  SECA_Earnings_deminimus,
                   e00900p, e00900s, e02100p, e02100s, k1bx14p,
                   k1bx14s, payrolltax, ptax_er_p, ptax_er_s, ptax_was, setax,
                   c03260, ptax_oasdi,
@@ -128,7 +129,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Individual wage-and-salary earnings above this threshold are subjected
         to OASDI payroll tax, in addition to earnings below the
         maximum taxable earnings threshold.
-    SECA_Earnings_thd: float
+    SECA_Earnings_deminimus: float
         Threshold value for an individual's net self-employment earnings
         (Sch SE line 4c) below which that individual has no SECA tax
         liability; applied to taxpayer and spouse separately
@@ -234,9 +235,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     # Sch SE line 4c floor: each spouse files a separate Sch SE, and a
     # spouse whose line 4c amount is less than $400 does not owe SE tax
     # ("If less than $400, stop; you don't owe self-employment tax")
-    if net_sey_p < SECA_Earnings_thd:
+    if net_sey_p < SECA_Earnings_deminimus:
         net_sey_p = 0.
-    if net_sey_s < SECA_Earnings_thd:
+    if net_sey_s < SECA_Earnings_deminimus:
         net_sey_s = 0.
     # Sch SE line 9: remaining OASDI base = SS_Earnings_c - W-2 SS wages
     txearn_sey_p = min(net_sey_p, SS_Earnings_c - txearn_was_p)
@@ -1484,7 +1485,7 @@ def AdditionalMedicareTax(MARS, e00200, pencon_p, pencon_s,
                           e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s,
                           FICA_ss_trt_employer, FICA_ss_trt_employee,
                           FICA_mc_trt_employer, FICA_mc_trt_employee,
-                          SECA_Earnings_thd, AMEDT_ec, AMEDT_rt,
+                          SECA_Earnings_deminimus, AMEDT_ec, AMEDT_rt,
                           ptax_amc):
     """
     Form 8959 Additional Medicare Tax. Liability flows into Schedule 2
@@ -1511,7 +1512,7 @@ def AdditionalMedicareTax(MARS, e00200, pencon_p, pencon_s,
     Sch SE is filed separately by each spouse, so each spouse's net SE
     earnings are floored at zero independently before the joint total is
     formed, and a spouse whose net SE earnings are less than the
-    `SECA_Earnings_thd` ($400) floor has no SE income. The records-bound
+    `SECA_Earnings_deminimus` ($400) floor has no SE income. The records-bound
     `sey` is the unfloored sum, which would over-net a positive-sey
     spouse against a negative-sey spouse; this function therefore
     re-derives `sey_p`/`sey_s` from the underlying per-spouse input
@@ -1559,7 +1560,7 @@ def AdditionalMedicareTax(MARS, e00200, pencon_p, pencon_s,
         Employer-side FICA HI tax rate (Sch SE line 4c reduction)
     FICA_mc_trt_employee: float
         Employee-side FICA HI tax rate (Sch SE line 4c reduction)
-    SECA_Earnings_thd: float
+    SECA_Earnings_deminimus: float
         Per-spouse Sch SE line 4c floor below which that spouse has no
         SE income (Sch SE line 4c: "If less than $400, stop")
     -- Common to Parts I and II --
@@ -1586,9 +1587,9 @@ def AdditionalMedicareTax(MARS, e00200, pencon_p, pencon_s,
     sey_s = e00900s + e02100s + k1bx14s
     net_sey_p = max(0., sey_p * seca_frac)
     net_sey_s = max(0., sey_s * seca_frac)
-    if net_sey_p < SECA_Earnings_thd:
+    if net_sey_p < SECA_Earnings_deminimus:
         net_sey_p = 0.
-    if net_sey_s < SECA_Earnings_thd:
+    if net_sey_s < SECA_Earnings_deminimus:
         net_sey_s = 0.
     # -- Part I: Medicare wages (lines 1-7) --
     line4 = e00200 + pencon_p + pencon_s
