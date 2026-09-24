@@ -1893,6 +1893,114 @@ def test_NetInvIncTax(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# F2441
+# ----------------------------------------------------------------------
+
+
+# F2441 test cases use the 2025 current-law values, which match 2025
+# Form 2441 Part II: a line 3 expense limit of 3000 per qualifying
+# person for at most two persons, and a line 8 decimal amount of 0.35
+# that is reduced by 0.01 for each 2000 (or fraction thereof) of AGI
+# above 15000, but not below 0.20.  The exact flag selects the form's
+# whole-step rounding.  The line 10 Credit Limit Worksheet amount is
+# the Form 1040 line 18 tax less the Sch 3 line 1 foreign tax credit.
+# The second phase-down (CDCC_ps2, CDCC_po2_step_size, and
+# CDCC_po2_rate_min), which begins in 2026, is inert in 2025, as is the
+# reform-only CDCC_refundable switch.  The returned tuple is
+# (c32800, c07180, CDCC_refund), which are Form 2441 line 3, Form 2441
+# line 11, and the refundable credit amount.
+CDCC_PS2_REFORM = {
+    'CDCC_ps2': {2025: [75000, 150000, 75000, 75000, 75000]},
+    'CDCC_po2_step_size': {2025: [2000, 4000, 2000, 2000, 2000]},
+    'CDCC_po2_rate_min': {2025: 0.},
+}
+CDCC_REFUNDABLE_REFORM = {'CDCC_refundable': {2025: True}}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # line 3 = min(5000, 3000); line 6 = 3000; line 8 = 0.35 - 0.01 *
+    # ceil((40000 - 15000) / 2000) = 0.22; line 9a = 0.22 * 3000 = 660
+    pytest.param(None,
+                 {'MARS': 1, 'f2441': 1, 'e32800': 5000., 'exact': 1,
+                  'earned_p': 40000., 'c00100': 40000., 'c05800': 5000.},
+                 (3000., 660., 0.), id='one person'),
+    # line 3 = min(10000, 2 * 3000); line 8 = 0.35 at AGI of 15000;
+    # line 9a = 0.35 * 6000 = 2100
+    pytest.param(None,
+                 {'MARS': 4, 'f2441': 3, 'e32800': 10000., 'exact': 1,
+                  'earned_p': 15000., 'c00100': 15000., 'c05800': 5000.},
+                 (6000., 2100., 0.), id='three persons capped at two'),
+    # as above, but line 11 is limited to the line 10 tax of 1000
+    pytest.param(None,
+                 {'MARS': 4, 'f2441': 2, 'e32800': 10000., 'exact': 1,
+                  'earned_p': 15000., 'c00100': 15000., 'c05800': 1000.},
+                 (6000., 1000., 0.), id='tax limit'),
+    # line 10 = 1000 - 400 foreign tax credit
+    pytest.param(None,
+                 {'MARS': 4, 'f2441': 2, 'e32800': 10000., 'exact': 1,
+                  'earned_p': 15000., 'c00100': 15000., 'c05800': 1000.,
+                  'e07300': 400.},
+                 (6000., 600., 0.), id='foreign tax credit'),
+    # AGI of 16000 is in the first 2000 step above 15000:
+    # line 8 = 0.35 - 0.01 = 0.34; line 9a = 0.34 * 3000 = 1020
+    pytest.param(None,
+                 {'MARS': 1, 'f2441': 1, 'e32800': 3000., 'exact': 1,
+                  'earned_p': 16000., 'c00100': 16000., 'c05800': 5000.},
+                 (3000., 1020., 0.), id='exact rounding'),
+    # without exact rounding: line 8 = 0.35 - 0.01 * 0.5 = 0.345;
+    # line 9a = 0.345 * 3000 = 1035
+    pytest.param(None,
+                 {'MARS': 1, 'f2441': 1, 'e32800': 3000., 'exact': 0,
+                  'earned_p': 16000., 'c00100': 16000., 'c05800': 5000.},
+                 (3000., 1035., 0.), id='no exact rounding'),
+    # joint filers: line 6 is limited by the spouse's line 5 earned
+    # income of 4000; line 8 = 0.20 at AGI of 100000; 0.20 * 4000
+    pytest.param(None,
+                 {'MARS': 2, 'f2441': 2, 'e32800': 8000., 'exact': 1,
+                  'earned_p': 96000., 'earned_s': 4000., 'c00100': 100000.,
+                  'c05800': 10000.},
+                 (6000., 800., 0.), id='joint spouse earnings limit'),
+    # joint filers: a spouse with no earned income makes line 6 zero
+    pytest.param(None,
+                 {'MARS': 2, 'f2441': 1, 'e32800': 3000., 'exact': 1,
+                  'earned_p': 50000., 'c00100': 50000., 'c05800': 5000.},
+                 (3000., 0., 0.), id='joint spouse no earnings'),
+    # unmarried filers: line 5 is the line 4 amount, so line 6 =
+    # min(3000, 2000); line 8 = 0.35; 0.35 * 2000
+    pytest.param(None,
+                 {'MARS': 4, 'f2441': 1, 'e32800': 3000., 'exact': 1,
+                  'earned_p': 2000., 'c00100': 12000., 'c05800': 5000.},
+                 (3000., 700., 0.), id='taxpayer earnings limit'),
+    # reform second phase-down for joint filers: line 8 = 0.20 - 0.01 *
+    # ceil((170000 - 150000) / 4000) = 0.15; 0.15 * 6000
+    pytest.param(CDCC_PS2_REFORM,
+                 {'MARS': 2, 'f2441': 2, 'e32800': 6000., 'exact': 1,
+                  'earned_p': 85000., 'earned_s': 85000.,
+                  'c00100': 170000., 'c05800': 20000.},
+                 (6000., 900., 0.), id='reform second phase-down'),
+    # reform second phase-down for a single filer: line 8 = max(0,
+    # 0.20 - 0.01 * ceil((150000 - 75000) / 2000))
+    pytest.param(CDCC_PS2_REFORM,
+                 {'MARS': 1, 'f2441': 1, 'e32800': 3000., 'exact': 1,
+                  'earned_p': 150000., 'c00100': 150000.,
+                  'c05800': 30000.},
+                 (3000., 0., 0.), id='reform second phase-down to zero'),
+    # reform refundable credit: the full line 9a amount of
+    # 0.35 * 3000 = 1050 is refundable despite zero tax
+    pytest.param(CDCC_REFUNDABLE_REFORM,
+                 {'MARS': 4, 'f2441': 1, 'e32800': 3000., 'exact': 1,
+                  'earned_p': 12000., 'c00100': 12000.},
+                 (3000., 0., 1050.), id='reform refundable'),
+])
+def test_F2441(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the F2441 function against 2025 Form 2441 Part II logic
+    """
+    actual = call_calcfunc('F2441', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # EITCamount
 # ----------------------------------------------------------------------
 
