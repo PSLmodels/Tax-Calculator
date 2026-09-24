@@ -2495,6 +2495,64 @@ def test_EducationTaxCredit(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# CharityCredit
+# ----------------------------------------------------------------------
+
+
+# CharityCredit is a reform-only nonrefundable credit for charitable
+# giving with no 2025 IRS form; its parameters are zero under 2025
+# current law.  The credit is CR_Charity_rt times the giving in excess
+# of the larger of the MARS-indexed CR_Charity_f dollar floor and the
+# CR_Charity_frt share of AGI.
+CHARITY_RATE_REFORM = {'CR_Charity_rt': {2025: 0.25}}
+CHARITY_FLOOR_REFORM = {
+    'CR_Charity_rt': {2025: 0.25},
+    'CR_Charity_f': {2025: [500, 1000, 500, 500, 1000]},
+    'CR_Charity_frt': {2025: 0.02},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # 2025 current law: no charity credit
+    pytest.param(None,
+                 {'MARS': 1, 'e19800': 3000., 'c00100': 50000.},
+                 0., id='current law'),
+    # rate-only reform: 0.25 * (1500 + 500) with no floor
+    pytest.param(CHARITY_RATE_REFORM,
+                 {'MARS': 1, 'e19800': 1500., 'e20100': 500.,
+                  'c00100': 50000.},
+                 500., id='reform no floor'),
+    # floor reform: no giving
+    pytest.param(CHARITY_FLOOR_REFORM,
+                 {'MARS': 1, 'c00100': 50000.},
+                 0., id='reform no giving'),
+    # floor = max(0.02 * 20000, 500) = 500; 0.25 * (3000 - 500)
+    pytest.param(CHARITY_FLOOR_REFORM,
+                 {'MARS': 1, 'e19800': 3000., 'c00100': 20000.},
+                 625., id='reform dollar floor binds'),
+    # floor = max(0.02 * 20000, 1000) = 1000; 0.25 * (3000 - 1000)
+    pytest.param(CHARITY_FLOOR_REFORM,
+                 {'MARS': 2, 'e19800': 3000., 'c00100': 20000.},
+                 500., id='reform joint dollar floor binds'),
+    # floor = max(0.02 * 100000, 500) = 2000; 0.25 * (3000 + 1000 - 2000)
+    pytest.param(CHARITY_FLOOR_REFORM,
+                 {'MARS': 1, 'e19800': 3000., 'e20100': 1000.,
+                  'c00100': 100000.},
+                 500., id='reform AGI floor binds'),
+    # floor = 2000 exceeds giving of 1500
+    pytest.param(CHARITY_FLOOR_REFORM,
+                 {'MARS': 1, 'e19800': 1500., 'c00100': 100000.},
+                 0., id='reform giving below floor'),
+])
+def test_CharityCredit(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the reform-only CharityCredit function
+    """
+    actual = call_calcfunc('CharityCredit', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # CTC_new
 # ----------------------------------------------------------------------
 
