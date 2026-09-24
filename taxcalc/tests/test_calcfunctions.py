@@ -1605,6 +1605,57 @@ def test_GainsTax(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# AGIsurtax
+# ----------------------------------------------------------------------
+
+
+# AGIsurtax is a reform-only construct with no IRS form; AGI_surtax_trt
+# is zero under 2025 current law, whose AGI_surtax_thd values are all
+# 9e+99.  The returned tuple is (taxbc, surtax).
+AGI_SURTAX_REFORM = {
+    'AGI_surtax_trt': {2025: 0.02},
+    'AGI_surtax_thd': {2025: [1e6, 2e6, 1e6, 1.5e6, 2e6]},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # 2025 current law: no AGI surtax; taxbc unchanged
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 3e6, 'taxbc': 900000.},
+                 (900000., 0.), id='current law'),
+    # reform, single above threshold: 0.02 * (3000000 - 1000000)
+    pytest.param(AGI_SURTAX_REFORM,
+                 {'MARS': 1, 'c00100': 3e6, 'taxbc': 900000.},
+                 (940000., 40000.), id='reform single'),
+    # reform, joint above threshold: 0.02 * (3000000 - 2000000)
+    pytest.param(AGI_SURTAX_REFORM,
+                 {'MARS': 2, 'c00100': 3e6, 'taxbc': 850000.},
+                 (870000., 20000.), id='reform joint'),
+    # reform, head of household above threshold:
+    # 0.02 * (2000000 - 1500000)
+    pytest.param(AGI_SURTAX_REFORM,
+                 {'MARS': 4, 'c00100': 2e6, 'taxbc': 600000.},
+                 (610000., 10000.), id='reform head of household'),
+    # reform, AGI below threshold
+    pytest.param(AGI_SURTAX_REFORM,
+                 {'MARS': 1, 'c00100': 800000., 'taxbc': 200000.},
+                 (200000., 0.), id='reform below threshold'),
+    # reform, surtax adds to existing surtax accumulator:
+    # 0.02 * (1500000 - 1000000) = 10000
+    pytest.param(AGI_SURTAX_REFORM,
+                 {'MARS': 1, 'c00100': 1.5e6, 'taxbc': 400000.,
+                  'surtax': 5000.},
+                 (410000., 15000.), id='reform surtax accumulation'),
+])
+def test_AGIsurtax(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the AGIsurtax function
+    """
+    actual = call_calcfunc('AGIsurtax', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # NetInvIncTax
 # ----------------------------------------------------------------------
 
