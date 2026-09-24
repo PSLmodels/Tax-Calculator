@@ -1449,6 +1449,55 @@ def test_SchXYZ(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# SchXYZTax
+# ----------------------------------------------------------------------
+
+
+# SchXYZTax routes regular taxable income (c04800, Form 1040 line 15)
+# through the SchXYZ function, so its test cases use the 2025
+# current-law rates and brackets, which match the 2025 Tax Rate
+# Schedules X, Y-1, Y-2, and Z.  The returned value is c05200, the tax
+# on all taxable income computed without the capital-gains preference.
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # Schedule X: 1192.50 + 0.12 * (48475 - 11925)
+    #             + 0.22 * (50000 - 48475)
+    pytest.param(None, {'MARS': 1, 'c04800': 50000.}, 5914.,
+                 id='single'),
+    # Schedule Y-1: 2385 + 0.12 * (96950 - 23850)
+    #               + 0.22 * (100000 - 96950)
+    pytest.param(None, {'MARS': 2, 'c04800': 100000.}, 11828.,
+                 id='joint'),
+    # Schedule Y-2: 101077.25 + 0.37 * (400000 - 375800)
+    pytest.param(None, {'MARS': 3, 'c04800': 400000.}, 110031.25,
+                 id='separate top bracket'),
+    # Schedule Z: 1700 + 0.12 * (60000 - 17000)
+    pytest.param(None, {'MARS': 4, 'c04800': 60000.}, 6860.,
+                 id='head of household'),
+    # Schedule Y-1 is used by a qualifying surviving spouse:
+    # 2385 + 0.12 * (50000 - 23850)
+    pytest.param(None, {'MARS': 5, 'c04800': 50000.}, 5523.,
+                 id='surviving spouse'),
+    # no tax on zero taxable income, and any prior c05200 value is
+    # overwritten
+    pytest.param(None, {'MARS': 1, 'c04800': 0., 'c05200': 999.}, 0.,
+                 id='zero taxable income'),
+    # reform with a 44 percent rate above 20 million:
+    # 188769.75 + 0.37 * (20000000 - 626350)
+    #           + 0.44 * (100000000 - 20000000)
+    pytest.param(TOP_BRACKET_REFORM, {'MARS': 1, 'c04800': 100e6},
+                 42557020.25, id='reform new top bracket'),
+])
+def test_SchXYZTax(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the SchXYZTax function against the 2025 Tax Rate Schedules
+    """
+    actual = call_calcfunc('SchXYZTax', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # NetInvIncTax
 # ----------------------------------------------------------------------
 
