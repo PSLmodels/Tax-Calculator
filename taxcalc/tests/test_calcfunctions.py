@@ -353,6 +353,29 @@ def test_StdDed(call_calcfunc, rvars, expected):
                  (40000., 0., 0., 0., 0., 7064.775, 3532.3875, 5725.7,
                   36467.6125, 46467.6125, 0.),
                  id='spouse self-employment loss'),
+    # each spouse files a separate Sch SE, so the line 4c $400 floor
+    # applies per spouse: taxpayer line 4c = 0.9235 * 400 = 369.4 and
+    # spouse line 4c = 0.9235 * 300 = 277.05 are each below $400, so
+    # neither owes SE tax even though their sum exceeds $400
+    pytest.param({'e00900p': 400., 'e00900s': 300.},
+                 (700., 0., 0., 0., 0., 0., 0., 0.,
+                  700., 400., 300.),
+                 id='both spouses below floor'),
+    # only the taxpayer owes: taxpayer line 4c = 9235;
+    # line 10 = 0.124 * 9235 = 1145.14; line 11 = 0.029 * 9235 =
+    # 267.815; line 12 = 1412.955; line 13 = 706.4775;
+    # spouse line 4c = 277.05 is below $400
+    pytest.param({'e00900p': 10000., 'e00900s': 300.},
+                 (10300., 0., 0., 0., 0., 1412.955, 706.4775, 1145.14,
+                  9593.5225, 9293.5225, 300.),
+                 id='one spouse below floor'),
+    # a line 4c amount of exactly $400 is not less than $400:
+    # line 10 = 0.124 * 400 = 49.6; line 11 = 0.029 * 400 = 11.6;
+    # line 12 = 61.2; line 13 = 30.6
+    pytest.param({'e00900p': 400. / 0.9235},
+                 (400. / 0.9235, 0., 0., 0., 0., 61.2, 30.6, 49.6,
+                  400. / 0.9235 - 30.6, 400. / 0.9235 - 30.6, 0.),
+                 id='line 4c at floor'),
 ])
 def test_EI_PayrollTax(call_calcfunc, rvars, expected):
     """
@@ -1210,6 +1233,19 @@ def test_CapGainsLoss(call_calcfunc, rvars, expected):
     pytest.param({'MARS': 2, 'e00200': 250000.,
                   'e00900p': 300000., 'e00900s': -100000.},
                  2493.45, id='SE floors each spouse'),
+    # line 1 Medicare wages (W-2 box 5) include the pension
+    # contributions that e00200 (W-2 box 1) excludes:
+    # line 1 = 230000 + 15000 + 10000 = 255000;
+    # line 7 = 0.009 * (255000 - 250000)
+    pytest.param({'MARS': 2, 'e00200': 230000.,
+                  'pencon_p': 15000., 'pencon_s': 10000.},
+                 45., id='pension contributions'),
+    # a spouse whose Sch SE line 4c amount is below $400 has no SE
+    # income on line 8: line 8 = 0.9235 * 10000 = 9235 (the spouse's
+    # 277.05 is excluded); line 11 = 0, so line 13 = 0.009 * 9235
+    pytest.param({'MARS': 2, 'e00200': 250000.,
+                  'e00900p': 10000., 'e00900s': 300.},
+                 83.115, id='SE floor per spouse'),
 ])
 def test_AdditionalMedicareTax(call_calcfunc, rvars, expected):
     """

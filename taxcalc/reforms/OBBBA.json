@@ -31,7 +31,7 @@
 
     // Group C: Child & Dependent-Related Credits
     "CTC_c": {"2026": 2200},
-    "CTC_ps": {"2025": [200000, 400000, 200000, 200000, 400000]},
+    "CTC_ps": {"2025": [200000, 400000, 200000, 200000, 200000]},
     "ACTC_c": {"2026": 1700},
     "ACTC_Income_thd": {"2025": 2500},
     "ODC_c": {"2025": 500},
@@ -61,7 +61,7 @@
 
     // Group I: Qualified Business Income Deduction (QBID)
     "PT_qbid_taxinc_thd": {"2026": [201750, 403500, 201775, 201750, 201750]},
-    "PT_qbid_taxinc_gap": {"2026": [75000, 150000, 75000, 75000, 150000]},
+    "PT_qbid_taxinc_gap": {"2026": [75000, 150000, 75000, 75000, 75000]},
     "PT_qbid_min_ded": {"2026": 400},
     "PT_qbid_min_qbi": {"2026": 1000},
 
