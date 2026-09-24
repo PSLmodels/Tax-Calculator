@@ -2256,6 +2256,69 @@ def test_PersonalTaxCredit(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# AmOppCreditParts
+# ----------------------------------------------------------------------
+
+
+# AmOppCreditParts test cases follow 2025 Form 8863 Part I, whose
+# amounts are hardcoded in the function: a line 2 phase-out base of
+# 90000 (180000 when married filing jointly) and a line 5 phase-out
+# range of 10000 (20000 when married filing jointly), which is why num
+# is specified in every case.  The exact flag rounds the line 6
+# fraction to three decimals.  Line 8 is 0.4 of line 7 and the Part II
+# line 9 nonrefundable amount is the rest of line 7.  The reform-only
+# CR_AmOppRefundable_hc and CR_AmOppNonRefundable_hc haircuts are zero
+# under 2025 current law.  The returned tuple is (c10960, c87668),
+# which are Form 8863 line 8 and Part II line 9.
+AOTC_HAIRCUT_REFORM = {
+    'CR_AmOppRefundable_hc': {2025: 0.5},
+    'CR_AmOppNonRefundable_hc': {2025: 0.2},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # no tentative credit on line 1
+    pytest.param(None, {'num': 1, 'c00100': 50000.},
+                 (0., 0.), id='no credit'),
+    # line 4 = 90000 - 50000 exceeds line 5, so line 6 = 1.000;
+    # line 7 = 2500; line 8 = 0.4 * 2500; line 9 = 2500 - 1000
+    pytest.param(None, {'num': 1, 'c00100': 50000., 'e87521': 2500.},
+                 (1000., 1500.), id='below phase-out'),
+    # line 6 = (90000 - 85000) / 10000 = 0.500; line 7 = 1250
+    pytest.param(None,
+                 {'num': 1, 'c00100': 85000., 'e87521': 2500., 'exact': 1},
+                 (500., 750.), id='phasing out'),
+    # line 6 = 3333 / 10000 rounded to 0.333; line 7 = 832.5
+    pytest.param(None,
+                 {'num': 1, 'c00100': 86667., 'e87521': 2500., 'exact': 1},
+                 (333., 499.5), id='exact rounding'),
+    # without exact rounding: line 7 = 0.3333 * 2500 = 833.25
+    pytest.param(None,
+                 {'num': 1, 'c00100': 86667., 'e87521': 2500., 'exact': 0},
+                 (333.3, 499.95), id='no exact rounding'),
+    # MAGI above the 90000 line 2 amount: line 4 = 0
+    pytest.param(None, {'num': 1, 'c00100': 95000., 'e87521': 2500.},
+                 (0., 0.), id='phased out'),
+    # joint filers: line 6 = (180000 - 175000) / 20000 = 0.250;
+    # line 7 = 0.25 * 5000 = 1250
+    pytest.param(None,
+                 {'num': 2, 'c00100': 175000., 'e87521': 5000., 'exact': 1},
+                 (500., 750.), id='joint phasing out'),
+    # reform haircuts: line 8 = 0.5 * 1000; line 9 = 0.8 * 1500
+    pytest.param(AOTC_HAIRCUT_REFORM,
+                 {'num': 1, 'c00100': 50000., 'e87521': 2500.},
+                 (500., 1200.), id='reform haircuts'),
+])
+def test_AmOppCreditParts(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the AmOppCreditParts function against 2025 Form 8863 Part I
+    lines 1-8 and the Part II line 9 nonrefundable amount
+    """
+    actual = call_calcfunc('AmOppCreditParts', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # CTC_new
 # ----------------------------------------------------------------------
 
