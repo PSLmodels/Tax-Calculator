@@ -678,6 +678,84 @@ def test_AGIIncome(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# SSBenefits
+# ----------------------------------------------------------------------
+
+
+# SSBenefits test cases use 2025 current-law values, which match the
+# 2025 Social Security Benefits Worksheet in the Form 1040 instructions
+# (also in Pub. 915): a line 8 base amount of 25000 (32000 when married
+# filing jointly), a line 10 amount of 9000 (12000 when married filing
+# jointly), a first-tier rate of 0.50 (lines 13 and 14), and a
+# second-tier rate of 0.85 (lines 15 and 17).  The model treats every
+# married-filing-separately filer as having lived apart from their
+# spouse all year, so MARS 3 uses the single base amounts.  The ymod
+# argument is worksheet line 7 and e02400 is worksheet line 1.  The
+# returned value is c02500 (Form 1040 line 6b, worksheet line 18).
+SS_ALL_IN_AGI_REFORM = {'SS_all_in_agi': {2025: True}}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # line 9 is negative: 20000 - 25000, so no benefits are taxable
+    pytest.param(None, {'MARS': 1, 'ymod': 20000., 'e02400': 15000.},
+                 0., id='below base'),
+    # line 9 is zero: 25000 - 25000, so no benefits are taxable
+    pytest.param(None, {'MARS': 1, 'ymod': 25000., 'e02400': 15000.},
+                 0., id='at base'),
+    # line 11 is zero: line 12 = 5000; line 13 = 0.5 * 5000;
+    # line 14 = min(0.5 * 20000, 2500)
+    pytest.param(None, {'MARS': 1, 'ymod': 30000., 'e02400': 20000.},
+                 2500., id='first tier'),
+    # line 11 is zero: line 12 = 8000; line 13 = 0.5 * 8000;
+    # line 14 = min(0.5 * 4000, 4000)
+    pytest.param(None, {'MARS': 1, 'ymod': 33000., 'e02400': 4000.},
+                 2000., id='first tier benefit limit'),
+    # line 11 = 25000 - 9000 = 16000; line 12 = 9000;
+    # line 14 = min(0.5 * 30000, 0.5 * 9000) = 4500;
+    # line 16 = 0.85 * 16000 + 4500 = 18100; line 17 = 0.85 * 30000;
+    # line 18 = min(18100, 25500)
+    pytest.param(None, {'MARS': 1, 'ymod': 50000., 'e02400': 30000.},
+                 18100., id='second tier'),
+    # line 11 = 75000 - 9000 = 66000; line 12 = 9000;
+    # line 14 = min(0.5 * 20000, 0.5 * 9000) = 4500;
+    # line 16 = 0.85 * 66000 + 4500 = 60600; line 17 = 0.85 * 20000;
+    # line 18 = min(60600, 17000)
+    pytest.param(None, {'MARS': 1, 'ymod': 100000., 'e02400': 20000.},
+                 17000., id='second tier 85 percent limit'),
+    # line 11 is zero: line 12 = 40000 - 32000 = 8000;
+    # line 14 = min(0.5 * 30000, 0.5 * 8000)
+    pytest.param(None, {'MARS': 2, 'ymod': 40000., 'e02400': 30000.},
+                 4000., id='first tier MFJ'),
+    # line 11 = 28000 - 12000 = 16000; line 12 = 12000;
+    # line 14 = min(0.5 * 40000, 0.5 * 12000) = 6000;
+    # line 16 = 0.85 * 16000 + 6000 = 19600; line 17 = 0.85 * 40000;
+    # line 18 = min(19600, 34000)
+    pytest.param(None, {'MARS': 2, 'ymod': 60000., 'e02400': 40000.},
+                 19600., id='second tier MFJ'),
+    # married filing separately and lived apart all year uses the single
+    # amounts: line 12 = 30000 - 25000; line 14 = min(0.5 * 10000, 2500)
+    pytest.param(None, {'MARS': 3, 'ymod': 30000., 'e02400': 10000.},
+                 2500., id='first tier MFS'),
+    # head of household uses the single amounts: line 11 = 16000;
+    # line 16 = 0.85 * 16000 + 0.5 * 9000 = 18100;
+    # line 18 = min(18100, 0.85 * 30000)
+    pytest.param(None, {'MARS': 4, 'ymod': 50000., 'e02400': 30000.},
+                 18100., id='second tier HOH'),
+    # reform including all benefits in AGI, regardless of ymod
+    pytest.param(SS_ALL_IN_AGI_REFORM,
+                 {'MARS': 1, 'ymod': 10000., 'e02400': 20000.},
+                 20000., id='reform all in AGI'),
+])
+def test_SSBenefits(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the SSBenefits function against 2025 Social Security Benefits
+    Worksheet logic
+    """
+    actual = call_calcfunc('SSBenefits', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # AGI
 # ----------------------------------------------------------------------
 
