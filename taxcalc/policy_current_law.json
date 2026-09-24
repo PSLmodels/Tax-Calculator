@@ -11326,7 +11326,7 @@
     },
     "CG_rt4": {
         "title": "Long term capital gain and qualified dividends (regular/non-AMT) rate 4",
-        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 1.0 is a placeholder that has no effect while CG_brk3 is at its essentially-infinite default value, so any reform that lowers CG_brk3 must also specify this rate.",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 0.2 is a placeholder that has no effect while CG_brk3 is at its essentially-infinite default value, so any reform that lowers CG_brk3 must also specify a higher rate.",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "indexable": false,
@@ -11335,7 +11335,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": 1.0
+                "value": 0.2
             }
         ],
         "validators": {
@@ -12521,7 +12521,7 @@
     },
     "AMT_CG_rt4": {
         "title": "Long term capital gain and qualified dividends (AMT) rate 4",
-        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 1.0 is a placeholder that has no effect while AMT_CG_brk3 is at its essentially-infinite default value, so any reform that lowers AMT_CG_brk3 must also specify this rate.",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 0.2 is a placeholder that has no effect while AMT_CG_brk3 is at its essentially-infinite default value, so any reform that lowers AMT_CG_brk3 must also specify a higher rate.",
         "section_1": "Capital Gains And Dividends",
         "section_2": "AMT - Long Term Capital Gains And Qualified Dividends",
         "indexable": false,
@@ -12530,7 +12530,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": 1.0
+                "value": 0.2
             }
         ],
         "validators": {
