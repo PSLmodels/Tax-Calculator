@@ -12,7 +12,8 @@ import re
 import ast
 import numpy as np
 import pytest
-from taxcalc import Records, calcfunctions
+import pandas as pd
+from taxcalc import Policy, Consumption, Records, Calculator, calcfunctions
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -170,7 +171,9 @@ def test_function_args_usage(tests_path):
 # pylint: disable=invalid-name
 
 
-# All the tests below call calcfunctions using the call_calcfunc fixture
+# All the tests below (except the BenefitPrograms test, whose function
+# takes a Calculator object as its only argument) call calcfunctions
+# using the call_calcfunc fixture
 # (defined in conftest.py), which supplies 2025 current-law values for
 # every policy parameter argument and zero for every other argument not
 # specified in the test.  Each expected value is derived, in a comment,
@@ -178,6 +181,81 @@ def test_function_args_usage(tests_path):
 # they implement reform-only or model-only constructs) are tested under
 # 2025 current law (where they are inert) and under a hypothetical reform
 # that changes only the reform-only parameters in 2025.
+
+
+# ----------------------------------------------------------------------
+# BenefitPrograms
+# ----------------------------------------------------------------------
+
+
+# BenefitPrograms is a model-only aggregator with no IRS form.  It takes
+# a Calculator object as its only argument, so the test constructs a
+# one-filing-unit 2025 Calculator object (without extrapolating the
+# input data) and calls the function directly.  Under 2025 current law
+# no program is repealed and every BEN_*_value consumption parameter is
+# 1.0, so the consumption value equals the government cost.  The
+# returned tuple is (benefit_cost_total, benefit_value_total).
+BEN_AMOUNTS = {
+    'housing_ben': 1000., 'ssi_ben': 2000., 'snap_ben': 3000.,
+    'tanf_ben': 300., 'vet_ben': 500., 'wic_ben': 600.,
+    'mcare_ben': 7000., 'mcaid_ben': 8000., 'e02400': 9000.,
+    'e02300': 1100., 'ubi': 1200., 'other_ben': 1300.,
+}  # these amounts sum to 35000
+BEN_REPEAL_REFORM = {
+    'BEN_snap_repeal': {2025: True},
+    'BEN_mcaid_repeal': {2025: True},
+    'BEN_oasdi_repeal': {2025: True},
+}
+BEN_VALUE_REVISION = {
+    'BEN_housing_value': {2025: 0.5},
+    'BEN_mcare_value': {2025: 0.25},
+    'BEN_mcaid_value': {2025: 0.75},
+}
+
+
+@pytest.mark.parametrize('reform, revision, expected', [
+    # 2025 current law: cost and value both equal the sum of all benefits
+    pytest.param(None, None, (35000., 35000.), id='current law'),
+    # repealed SNAP, Medicaid, and OASDI benefits are excluded from both
+    # totals: 35000 - (3000 + 8000 + 9000)
+    pytest.param(BEN_REPEAL_REFORM, None, (15000., 15000.),
+                 id='repeal programs'),
+    # in-kind benefits are weighted by their consumption value, so value
+    # is 35000 - (1 - 0.5) * 1000 - (1 - 0.25) * 7000 - (1 - 0.75) * 8000
+    pytest.param(None, BEN_VALUE_REVISION, (35000., 27250.),
+                 id='consumption value'),
+    # both: cost = 15000 and value is
+    # 15000 - (1 - 0.5) * 1000 - (1 - 0.25) * 7000
+    pytest.param(BEN_REPEAL_REFORM, BEN_VALUE_REVISION, (15000., 9250.),
+                 id='repeal programs and consumption value'),
+])
+def test_BenefitPrograms(reform, revision, expected):
+    """
+    Tests the BenefitPrograms function
+    """
+    pol = Policy()
+    if reform:
+        pol.implement_reform(reform)
+    pol.set_year(2025)
+    con = Consumption()
+    if revision:
+        con.update_consumption(revision)
+    idata = {'RECID': [1], 'MARS': [1]}
+    idata.update({name: [amt] for name, amt in BEN_AMOUNTS.items()
+                  if name != 'ubi'})
+    recs = Records(data=pd.DataFrame(idata), start_year=2025,
+                   gfactors=None, weights=None)
+    calc = Calculator(policy=pol, records=recs, consumption=con,
+                      sync_years=False)
+    calc.array('ubi', np.array([BEN_AMOUNTS['ubi']]))
+    calcfunctions.BenefitPrograms(calc)
+    actual = (calc.array('benefit_cost_total')[0],
+              calc.array('benefit_value_total')[0])
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+    # each repealed program's benefit array is zeroed
+    for name in ('snap_ben', 'mcaid_ben', 'e02400'):
+        amount = 0. if reform else BEN_AMOUNTS[name]
+        assert np.allclose(calc.array(name), amount)
 
 
 # ----------------------------------------------------------------------
@@ -322,6 +400,123 @@ def test_DependentCare(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# Adj
+# ----------------------------------------------------------------------
+
+
+# Adj test cases use 2025 current law, under which every modeled
+# 2025 Sch 1 Part II adjustment is fully deductible (its haircut is
+# zero), except that alimony paid (line 19a) is not deductible for
+# post-2018 divorce instruments, which the model treats as applying to
+# all filers (ALD_AlimonyPaid_hc is one).  The legacy tuition-and-fees
+# and domestic-production deductions are also not deductible (their
+# haircuts are one).  The returned value is c02900 (Sch 1 line 26).
+ADJ_SCH1_ITEMS = {
+    'e03220': 300.,    # Sch 1 line 11
+    'e03290': 4000.,   # Sch 1 line 13
+    'c03260': 2000.,   # Sch 1 line 15
+    'e03300': 6000.,   # Sch 1 line 16
+    'e03270': 5000.,   # Sch 1 line 17
+    'e03400': 100.,    # Sch 1 line 18
+    'e03150': 7000.,   # Sch 1 line 20
+    'e03210': 2500.,   # Sch 1 line 21
+}  # these amounts sum to 26900
+ADJ_LEGACY_ITEMS = {'e03500': 10000., 'e03230': 4000., 'e03240': 5000.}
+ADJ_HAIRCUT_REFORM = {
+    'ALD_IRAContributions_hc': {2025: 0.5},
+    'ALD_StudentLoan_hc': {2025: 1.0},
+}
+ADJ_RESTORE_REFORM = {
+    'ALD_AlimonyPaid_hc': {2025: 0.0},
+    'ALD_Tuition_hc': {2025: 0.0},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # Sch 1 line 26 = sum of lines 11 through 21 (excluding line 19a)
+    pytest.param(None, ADJ_SCH1_ITEMS, 26900., id='sch 1 items'),
+    # alimony paid, tuition and fees, and domestic production are not
+    # deductible under 2025 current law
+    pytest.param(None, ADJ_LEGACY_ITEMS, 0., id='legacy items'),
+    # all items together: legacy items add nothing to 26900
+    pytest.param(None, {**ADJ_SCH1_ITEMS, **ADJ_LEGACY_ITEMS}, 26900.,
+                 id='all items'),
+    # the reform-only dependent care deduction passes through unchanged
+    pytest.param(None, {'care_deduction': 5000.}, 5000.,
+                 id='care deduction'),
+    # reform: 26900 - 0.5 * 7000 - 1.0 * 2500; the deductible part of
+    # self-employment tax (c03260) is not subject to a haircut
+    pytest.param(ADJ_HAIRCUT_REFORM, ADJ_SCH1_ITEMS, 20900.,
+                 id='reform haircuts'),
+    # reform restoring the alimony and tuition deductions: 10000 + 4000,
+    # while the domestic production deduction remains not deductible
+    pytest.param(ADJ_RESTORE_REFORM, ADJ_LEGACY_ITEMS, 14000.,
+                 id='reform restore legacy items'),
+])
+def test_Adj(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the Adj function against 2025 Sch 1 Part II logic
+    """
+    actual = call_calcfunc('Adj', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# ALD_InvInc_ec_base
+# ----------------------------------------------------------------------
+
+
+# ALD_InvInc_ec_base is reform plumbing with no IRS form: it computes the
+# investment income base that the reform-only ALD_InvInc_ec_rt parameter
+# multiplies in AGIIncome.  The function itself uses no reform-only
+# parameters, so it is tested only under 2025 current law, whose capital
+# loss limitation matches 2025 Sch D line 21: 3000 (1500 when married
+# filing separately).  The base is the sum of taxable interest (Form 1040
+# line 2b), ordinary dividends (Form 1040 line 3b), the Sch D line 21
+# capped net capital gain or loss, capital gain distributions not
+# reported on Sch D, and Form 4797 other gain or loss (Sch 1 line 4).
+# The returned value is invinc_ec_base.
+INVINC_ITEMS = {
+    'e00300': 1000.,   # Form 1040 line 2b
+    'e00600': 2000.,   # Form 1040 line 3b
+    'e01100': 500.,    # Form 1040 line 7 (no Sch D required)
+    'e01200': 300.,    # Sch 1 line 4
+}  # these amounts sum to 3800
+
+
+@pytest.mark.parametrize('rvars, expected', [
+    # no investment income
+    pytest.param({'MARS': 1}, 0., id='no income'),
+    # non-Sch-D items only: 1000 + 2000 + 500 + 300
+    pytest.param({'MARS': 1, **INVINC_ITEMS}, 3800., id='non-sch-d items'),
+    # net Sch D gain is included in full: 3800 + 1000 + 4000
+    pytest.param({'MARS': 1, 'p22250': 1000., 'p23250': 4000.,
+                  **INVINC_ITEMS}, 8800., id='net gain'),
+    # net Sch D loss under the limit is included in full: 3800 - 1500
+    pytest.param({'MARS': 1, 'p22250': -1000., 'p23250': -500.,
+                  **INVINC_ITEMS}, 2300., id='loss under cap'),
+    # net Sch D loss above the limit is capped at 3000: 3800 - 3000
+    pytest.param({'MARS': 1, 'p22250': -5000., 'p23250': -3000.,
+                  **INVINC_ITEMS}, 800., id='loss over cap'),
+    # the same loss when married filing separately is capped at 1500:
+    # 3800 - 1500
+    pytest.param({'MARS': 3, 'p22250': -5000., 'p23250': -3000.,
+                  **INVINC_ITEMS}, 2300., id='loss over cap MFS'),
+    # a Form 4797 loss is not subject to the Sch D line 21 limit:
+    # 1000 - 10000
+    pytest.param({'MARS': 1, 'e00300': 1000., 'e01200': -10000.},
+                 -9000., id='form 4797 loss'),
+])
+def test_ALD_InvInc_ec_base(call_calcfunc, rvars, expected):
+    """
+    Tests the ALD_InvInc_ec_base function, including its re-derivation
+    of the Sch D line 21 capped net capital gain or loss
+    """
+    actual = call_calcfunc('ALD_InvInc_ec_base', **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # CapGainsLoss
 # ----------------------------------------------------------------------
 
@@ -365,6 +560,198 @@ def test_CapGainsLoss(call_calcfunc, rvars, expected):
     (line 16) and the MARS-indexed limit on a net loss (line 21)
     """
     actual = call_calcfunc('CapGainsLoss', **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# AGIIncome
+# ----------------------------------------------------------------------
+
+
+# AGIIncome test cases use 2025 current law, under which alimony
+# received is not income (AlimonyReceived_frac_in_AGI is zero) and the
+# combined Sch C and Sch E loss is limited by the excess business loss
+# limitation (Form 461 line 15): 313000 (626000 when married filing
+# jointly or as a surviving spouse).  The reform-only investment income
+# and QDCG exclusions are inert under current law.  The returned tuple
+# is (ymod, ymod1, invinc_agi_ec), where ymod1 is the sum of the Form
+# 1040 income lines (other than taxable social security) and Sch 1
+# Part I, and ymod is the Pub. 915 worksheet line 7 modified AGI used
+# to compute taxable social security benefits.
+AGIINC_ITEMS = {
+    'e00200': 50000.,  # Form 1040 line 1
+    'e00300': 1000.,   # Form 1040 line 2b
+    'e00600': 2000.,   # Form 1040 line 3b
+    'e01400': 4000.,   # Form 1040 line 4b
+    'e01700': 6000.,   # Form 1040 line 5b
+    'c01000': 3000.,   # Form 1040 line 7 (from Sch D)
+    'e01100': 500.,    # Form 1040 line 7 (no Sch D required)
+    'e00700': 700.,    # Sch 1 line 1
+    'e00900': 10000.,  # Sch 1 line 3
+    'e01200': 300.,    # Sch 1 line 4
+    'e02000': 5000.,   # Sch 1 line 5
+    'e02100': 1500.,   # Sch 1 line 6
+    'e02300': 2000.,   # Sch 1 line 7
+}  # these amounts sum to 86000
+INVINC_EXCLUSION_REFORM = {'ALD_InvInc_ec_rt': {2025: 0.5}}
+ALIMONY_REFORM = {'AlimonyReceived_frac_in_AGI': {2025: 1.0}}
+QDCG_EXCLUSION_REFORM = {
+    'CG_nodiff': {2025: True},
+    'CG_ec': {2025: 5000},
+    'CG_reinvest_ec_rt': {2025: 0.5},
+}
+QDCG_ITEMS = {
+    'e00600': 4000.,   # Form 1040 line 3b
+    'e00650': 4000.,   # Form 1040 line 3a
+    'c01000': 6000.,   # Form 1040 line 7
+}  # QDCG is 4000 + 6000 = 10000
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # sum of Form 1040 and Sch 1 Part I income items
+    pytest.param(None, {'MARS': 1, **AGIINC_ITEMS},
+                 (86000., 86000., 0.), id='income items'),
+    # alimony received (Sch 1 line 2a) is not income under current law
+    pytest.param(None, {'MARS': 1, 'e00800': 12000.},
+                 (0., 0., 0.), id='alimony received'),
+    # a Sch D loss after the line 21 limit reduces income: 40000 - 3000
+    pytest.param(None, {'MARS': 1, 'e00200': 40000., 'c01000': -3000.},
+                 (37000., 37000., 0.), id='capital loss'),
+    # combined Sch C and Sch E loss is limited to 313000:
+    # 600000 - 313000
+    pytest.param(None, {'MARS': 1, 'e00200': 600000., 'e00900': -400000.,
+                        'e02000': -100000.},
+                 (287000., 287000., 0.), id='business loss over cap'),
+    # the same loss when married filing jointly is under the 626000
+    # limit: 600000 - 500000
+    pytest.param(None, {'MARS': 2, 'e00200': 600000., 'e00900': -400000.,
+                        'e02000': -100000.},
+                 (100000., 100000., 0.), id='business loss under cap MFJ'),
+    # Pub. 915 worksheet line 7: 30000 + 2000 + 0.5 * 20000 - 3000
+    pytest.param(None, {'MARS': 1, 'e00200': 30000., 'e00400': 2000.,
+                        'e02400': 20000., 'c02900': 3000.},
+                 (39000., 30000., 0.), id='social security modagi'),
+    # Pub. 915 worksheet line 6 excludes the student loan interest
+    # deduction (Sch 1 line 21), so the 2500 that Adj included in
+    # c02900 is added back; the tuition-and-fees deduction was not
+    # deductible and so is not added back: 30000 - 2500 + 2500
+    pytest.param(None, {'MARS': 1, 'e00200': 30000., 'e03210': 2500.,
+                        'e03230': 4000., 'c02900': 2500.},
+                 (30000., 30000., 0.), id='student loan add-back'),
+    # reform restoring alimony received as income: 12000
+    pytest.param(ALIMONY_REFORM, {'MARS': 1, 'e00800': 12000.},
+                 (12000., 12000., 0.), id='reform alimony received'),
+    # reform excluding half of investment income: the investment income
+    # base is 1000 + 2000 + 500 + 300 = 3800, so the exclusion is
+    # 0.5 * 3800 = 1900 and ymod1 is 40000 + 3800 - 1900
+    pytest.param(INVINC_EXCLUSION_REFORM,
+                 {'MARS': 1, 'e00200': 40000., 'e00300': 1000.,
+                  'e00600': 2000., 'e01100': 500., 'e01200': 300.,
+                  'invinc_ec_base': 3800.},
+                 (41900., 41900., 1900.), id='reform invinc exclusion'),
+    # investment income exclusion reform: a negative investment income
+    # base yields no exclusion: 40000 - 10000
+    pytest.param(INVINC_EXCLUSION_REFORM,
+                 {'MARS': 1, 'e00200': 40000., 'e01200': -10000.,
+                  'invinc_ec_base': -10000.},
+                 (30000., 30000., 0.), id='reform invinc exclusion neg'),
+    # reform excluding QDCG when it is taxed at ordinary rates: the
+    # exclusion is 5000 + 0.5 * (10000 - 5000) = 7500, so ymod1 is
+    # 50000 + 4000 + 6000 - 7500
+    pytest.param(QDCG_EXCLUSION_REFORM,
+                 {'MARS': 1, 'e00200': 50000., **QDCG_ITEMS},
+                 (52500., 52500., 7500.), id='reform qdcg exclusion'),
+    # QDCG exclusion reform: ymod1 cannot be negative after the
+    # exclusion: max(0, 5000 - 10000 + 4000 + 6000 - 7500)
+    pytest.param(QDCG_EXCLUSION_REFORM,
+                 {'MARS': 1, 'e00200': 5000., 'e00900': -10000.,
+                  **QDCG_ITEMS},
+                 (0., 0., 7500.), id='reform qdcg exclusion floor'),
+])
+def test_AGIIncome(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the AGIIncome function against 2025 Form 1040, Sch 1 Part I,
+    and Pub. 915 worksheet logic
+    """
+    actual = call_calcfunc('AGIIncome', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# SSBenefits
+# ----------------------------------------------------------------------
+
+
+# SSBenefits test cases use 2025 current-law values, which match the
+# 2025 Social Security Benefits Worksheet in the Form 1040 instructions
+# (also in Pub. 915): a line 8 base amount of 25000 (32000 when married
+# filing jointly), a line 10 amount of 9000 (12000 when married filing
+# jointly), a first-tier rate of 0.50 (lines 13 and 14), and a
+# second-tier rate of 0.85 (lines 15 and 17).  The model treats every
+# married-filing-separately filer as having lived apart from their
+# spouse all year, so MARS 3 uses the single base amounts.  The ymod
+# argument is worksheet line 7 and e02400 is worksheet line 1.  The
+# returned value is c02500 (Form 1040 line 6b, worksheet line 18).
+SS_ALL_IN_AGI_REFORM = {'SS_all_in_agi': {2025: True}}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # line 9 is negative: 20000 - 25000, so no benefits are taxable
+    pytest.param(None, {'MARS': 1, 'ymod': 20000., 'e02400': 15000.},
+                 0., id='below base'),
+    # line 9 is zero: 25000 - 25000, so no benefits are taxable
+    pytest.param(None, {'MARS': 1, 'ymod': 25000., 'e02400': 15000.},
+                 0., id='at base'),
+    # line 11 is zero: line 12 = 5000; line 13 = 0.5 * 5000;
+    # line 14 = min(0.5 * 20000, 2500)
+    pytest.param(None, {'MARS': 1, 'ymod': 30000., 'e02400': 20000.},
+                 2500., id='first tier'),
+    # line 11 is zero: line 12 = 8000; line 13 = 0.5 * 8000;
+    # line 14 = min(0.5 * 4000, 4000)
+    pytest.param(None, {'MARS': 1, 'ymod': 33000., 'e02400': 4000.},
+                 2000., id='first tier benefit limit'),
+    # line 11 = 25000 - 9000 = 16000; line 12 = 9000;
+    # line 14 = min(0.5 * 30000, 0.5 * 9000) = 4500;
+    # line 16 = 0.85 * 16000 + 4500 = 18100; line 17 = 0.85 * 30000;
+    # line 18 = min(18100, 25500)
+    pytest.param(None, {'MARS': 1, 'ymod': 50000., 'e02400': 30000.},
+                 18100., id='second tier'),
+    # line 11 = 75000 - 9000 = 66000; line 12 = 9000;
+    # line 14 = min(0.5 * 20000, 0.5 * 9000) = 4500;
+    # line 16 = 0.85 * 66000 + 4500 = 60600; line 17 = 0.85 * 20000;
+    # line 18 = min(60600, 17000)
+    pytest.param(None, {'MARS': 1, 'ymod': 100000., 'e02400': 20000.},
+                 17000., id='second tier 85 percent limit'),
+    # line 11 is zero: line 12 = 40000 - 32000 = 8000;
+    # line 14 = min(0.5 * 30000, 0.5 * 8000)
+    pytest.param(None, {'MARS': 2, 'ymod': 40000., 'e02400': 30000.},
+                 4000., id='first tier MFJ'),
+    # line 11 = 28000 - 12000 = 16000; line 12 = 12000;
+    # line 14 = min(0.5 * 40000, 0.5 * 12000) = 6000;
+    # line 16 = 0.85 * 16000 + 6000 = 19600; line 17 = 0.85 * 40000;
+    # line 18 = min(19600, 34000)
+    pytest.param(None, {'MARS': 2, 'ymod': 60000., 'e02400': 40000.},
+                 19600., id='second tier MFJ'),
+    # married filing separately and lived apart all year uses the single
+    # amounts: line 12 = 30000 - 25000; line 14 = min(0.5 * 10000, 2500)
+    pytest.param(None, {'MARS': 3, 'ymod': 30000., 'e02400': 10000.},
+                 2500., id='first tier MFS'),
+    # head of household uses the single amounts: line 11 = 16000;
+    # line 16 = 0.85 * 16000 + 0.5 * 9000 = 18100;
+    # line 18 = min(18100, 0.85 * 30000)
+    pytest.param(None, {'MARS': 4, 'ymod': 50000., 'e02400': 30000.},
+                 18100., id='second tier HOH'),
+    # reform including all benefits in AGI, regardless of ymod
+    pytest.param(SS_ALL_IN_AGI_REFORM,
+                 {'MARS': 1, 'ymod': 10000., 'e02400': 20000.},
+                 20000., id='reform all in AGI'),
+])
+def test_SSBenefits(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the SSBenefits function against 2025 Social Security Benefits
+    Worksheet logic
+    """
+    actual = call_calcfunc('SSBenefits', reform=reform, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
