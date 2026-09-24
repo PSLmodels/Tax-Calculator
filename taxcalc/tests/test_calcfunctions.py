@@ -1510,7 +1510,9 @@ def test_SchXYZTax(call_calcfunc, reform, rvars, expected):
 # 20% rate above that.  Each c05200 value is the Tax Rate Schedule tax
 # on c04800 (see test_SchXYZTax).  The CG_rt4 and CG_brk3 parameters
 # define a reform-only fourth rate bracket that is inert under 2025
-# current law.  The returned tuple is
+# current law; like the line 15 and line 25 amounts, CG_brk3 is a
+# taxable-income threshold with gains stacked on top of ordinary
+# income.  The returned tuple is
 # (dwks10, dwks13, dwks14, dwks18, dwks43, c05700, taxbc).
 CG_NODIFF_REFORM = {'CG_nodiff': {2025: True}}
 CG_BRK3_REFORM = {
@@ -1585,15 +1587,26 @@ CG_BRK3_REFORM = {
                  {'MARS': 1, 'c04800': 50000., 'c05200': 5914.,
                   'e00650': 10000.},
                  (0., 0., 0., 0., 0., 0., 5914.), id='reform nodiff'),
-    # reform-only fourth bracket taxes long-term gain above 1000000 at
-    # 25%: 188769.75 + 0.37 * (800000 - 626350) + 0.20 * 1200000
-    #      + (0.25 - 0.20) * (1200000 - 1000000)
+    # reform-only fourth bracket taxes long-term gain stacked above
+    # 1000000 of taxable income at 25%: the 1200000 gain occupies
+    # taxable income from 800000 to 2000000, so 1000000 is above the
+    # threshold: 188769.75 + 0.37 * (800000 - 626350) + 0.20 * 1200000
+    #            + (0.25 - 0.20) * (2000000 - 1000000)
     pytest.param(CG_BRK3_REFORM,
                  {'MARS': 1, 'c04800': 2e6, 'c05200': 697020.25,
                   'p23250': 1.2e6, 'c23650': 1.2e6},
-                 (1.2e6, 1.2e6, 800000., 800000., 503020.25, 0.,
-                  503020.25),
+                 (1.2e6, 1.2e6, 800000., 800000., 543020.25, 0.,
+                  543020.25),
                  id='reform fourth bracket'),
+    # reform-only fourth bracket with ordinary income of 1500000 above
+    # the 1000000 threshold, so all 200000 of long-term gain is taxed at
+    # 25%: 188769.75 + 0.37 * (1500000 - 626350) + 0.25 * 200000
+    pytest.param(CG_BRK3_REFORM,
+                 {'MARS': 1, 'c04800': 1.7e6, 'c05200': 586020.25,
+                  'p23250': 200000., 'c23650': 200000.},
+                 (200000., 200000., 1.5e6, 1.5e6, 562020.25, 0.,
+                  562020.25),
+                 id='reform fourth bracket all gain'),
 ])
 def test_GainsTax(call_calcfunc, reform, rvars, expected):
     """
@@ -1652,6 +1665,171 @@ def test_AGIsurtax(call_calcfunc, reform, rvars, expected):
     Tests the AGIsurtax function
     """
     actual = call_calcfunc('AGIsurtax', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# AMT
+# ----------------------------------------------------------------------
+
+
+# AMT test cases use the 2025 current-law values, which match 2025 Form
+# 6251: a line 5 exemption of 88100 (137000 when married filing jointly
+# or a qualifying surviving spouse) that is reduced by 25% of AMTI above
+# 626350 (1252700 when married filing jointly or a qualifying surviving
+# spouse), a 26% rate up to a line 7 amount of 239100 and 28% above
+# that, and Part III capital gains rates that match the 2025 QDCGTW and
+# Sch D TW (see test_GainsTax).  The IRC 59(j) exemption for a filer
+# under age 18 is limited to earned income plus 9550.  Each taxbc value
+# is the regular tax on the implied taxable income (see test_SchXYZTax
+# and test_GainsTax).  The pre-2017 AMT medical deduction add-back
+# (AMT_Medical_frt) is inert under 2025 current law, as is the
+# reform-only fourth Part III rate bracket defined by the AMT_CG_rt4 and
+# AMT_CG_brk3 parameters, where, like the line 19 and line 25 amounts,
+# AMT_CG_brk3 is a taxable-income threshold with gains stacked on top of
+# ordinary income.  The returned tuple is (c62100, c09600, c05800),
+# which are Form 6251 line 4, Form 6251 line 11, and Form 1040 line 16
+# plus Sch 2 line 1.
+AMT_MEDICAL_REFORM = {'AMT_Medical_frt': {2025: 0.025}}
+AMT_CG_BRK3_REFORM = {
+    'AMT_CG_brk3': {2025: [1e6, 1e6, 1e6, 1e6, 1e6]},
+    'AMT_CG_rt4': {2025: 0.25},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # nonitemizer: line 4 = AGI; line 6 = 100000 - 88100 = 11900;
+    # line 9 = 0.26 * 11900 = 3094 is less than regular tax of 13449
+    pytest.param(None,
+                 {'MARS': 1, 'standard': 15750., 'c00100': 100000.,
+                  'taxbc': 13449.},
+                 (100000., 0., 13449.), id='nonitemizer no amt'),
+    # nonitemizer: line 1a subtracts QBID and the Sch 1-A tip, overtime,
+    # and auto loan interest deductions: 100000 - 5000 - 10000 - 3000
+    # - 2000 = 80000, which is less than the exemption
+    pytest.param(None,
+                 {'MARS': 1, 'standard': 15750., 'c00100': 100000.,
+                  'qbided': 5000., 'tip_income_deduction': 10000.,
+                  'overtime_income_deduction': 3000.,
+                  'auto_loan_interest_deduction': 2000., 'taxbc': 8000.},
+                 (80000., 0., 8000.), id='sch 1-A deductions'),
+    # joint itemizer: line 4 = 400000 - 60000 + 40000 (line 2a SALT)
+    # - 5000 (line 2b refund) = 375000; line 6 = 375000 - 137000
+    # = 238000; line 9 = 0.26 * 238000 = 61880 is less than regular
+    # tax on 340000 of 67294
+    pytest.param(None,
+                 {'MARS': 2, 'c00100': 400000., 'c04470': 60000.,
+                  'c18300': 40000., 'e00700': 5000., 'taxbc': 67294.},
+                 (375000., 0., 67294.), id='itemizer no amt'),
+    # joint itemizer with 100000 of line 2i ISO preference: line 4
+    # = 400000 - 60000 + 40000 + 100000 = 480000; line 6 = 343000;
+    # line 7 = 0.26 * 343000 + 0.02 * (343000 - 239100) = 91258;
+    # line 11 = 91258 - 67294
+    pytest.param(None,
+                 {'MARS': 2, 'c00100': 400000., 'c04470': 60000.,
+                  'c18300': 40000., 'cmbtp': 100000., 'taxbc': 67294.},
+                 (480000., 23964., 91258.), id='itemizer iso preference'),
+    # as above with a regular FTC of 2000 and no Form 6251 filed:
+    # line 8 = 2000; line 10 = 67294 - 2000; line 11 unchanged
+    pytest.param(None,
+                 {'MARS': 2, 'c00100': 400000., 'c04470': 60000.,
+                  'c18300': 40000., 'cmbtp': 100000., 'taxbc': 67294.,
+                  'e07300': 2000.},
+                 (480000., 23964., 91258.), id='regular ftc'),
+    # as above with Form 6251 filed and an AMT FTC of 1000:
+    # line 9 = 91258 - 1000; line 11 = 90258 - (67294 - 2000) = 24964
+    pytest.param(None,
+                 {'MARS': 2, 'c00100': 400000., 'c04470': 60000.,
+                  'c18300': 40000., 'cmbtp': 100000., 'taxbc': 67294.,
+                  'e07300': 2000., 'f6251': 1, 'e62900': 1000.},
+                 (480000., 24964., 92258.), id='amt ftc'),
+    # reform-only (pre-2017 law) medical add-back:
+    # min(20000, 0.025 * 400000) = 10000 increases line 4 to 385000
+    pytest.param(AMT_MEDICAL_REFORM,
+                 {'MARS': 2, 'c00100': 400000., 'c04470': 60000.,
+                  'c18300': 40000., 'c17000': 20000., 'e00700': 5000.,
+                  'taxbc': 67294.},
+                 (385000., 0., 67294.), id='reform medical add-back'),
+    # nonitemizer with 300000 of line 2i ISO preference: line 4
+    # = 1000000; line 5 = 88100 - 0.25 * (1000000 - 626350) < 0;
+    # line 7 = 0.26 * 1000000 + 0.02 * (1000000 - 239100) = 275218;
+    # line 11 = 275218 - 210192.75 (regular tax on 684250)
+    pytest.param(None,
+                 {'MARS': 1, 'standard': 15750., 'c00100': 700000.,
+                  'cmbtp': 300000., 'taxbc': 210192.75},
+                 (1e6, 65025.25, 275218.), id='exemption phased out'),
+    # IRC 59(j) filer under age 18 with no earned income:
+    # line 5 = min(88100, 0 + 9550); line 6 = 60000 - 9550 = 50450;
+    # line 7 = 0.26 * 50450 = 13117; line 11 = 13117 - 5000
+    pytest.param(None,
+                 {'MARS': 1, 'standard': 15750., 'c00100': 60000.,
+                  'age_head': 15, 'taxbc': 5000.},
+                 (60000., 8117., 13117.), id='kiddie exemption'),
+    # Part III with 100000 of long-term gain and 150000 of ISO
+    # preference: line 6 = 450000 - 88100 = 361900;
+    # line 17 = 361900 - 100000 = 261900;
+    # line 18 = 0.26 * 261900 + 0.02 * (261900 - 239100) = 68550;
+    # line 21 = 0; line 30 = 100000 @ 15% = 15000;
+    # line 38 = 83550 < line 39 = 0.26 * 361900 + 0.02 * 122800;
+    # line 11 = 83550 - 52067 (regular tax on 284250)
+    pytest.param(None,
+                 {'MARS': 1, 'standard': 15750., 'c00100': 300000.,
+                  'cmbtp': 150000., 'dwks10': 100000., 'dwks13': 100000.,
+                  'dwks14': 184250., 'dwks18': 184250., 'taxbc': 52067.},
+                 (450000., 31483., 83550.), id='part III 15 percent'),
+    # Part III for joint filers with 60000 of long-term gain and 300000
+    # of ISO preference: line 6 = 441500 - 137000 = 304500;
+    # line 17 = 244500; line 18 = 0.26 * 244500 + 0.02 * 5400 = 63678;
+    # line 21 = 96700 - 50000 = 46700 @ 0%; line 30 = 13300 @ 15%;
+    # line 38 = 63678 + 1995 = 65673;
+    # line 11 = 65673 - 7518 (regular tax on 110000)
+    pytest.param(None,
+                 {'MARS': 2, 'standard': 31500., 'c00100': 141500.,
+                  'cmbtp': 300000., 'dwks10': 60000., 'dwks13': 60000.,
+                  'dwks14': 50000., 'dwks18': 50000., 'taxbc': 7518.},
+                 (441500., 58155., 65673.), id='part III zero percent'),
+    # Part III with 600000 of long-term gain and 500000 of ISO
+    # preference: line 5 = 0; line 6 = 1215750; line 17 = 615750;
+    # line 18 = 0.26 * 615750 + 0.02 * 376650 = 167628;
+    # line 29 = 533400 - 100000 = 433400 @ 15% = 65010;
+    # line 33 = 166600 @ 20% = 33320; line 38 = 265958;
+    # line 11 = 265958 - 115244 (regular tax on 700000)
+    pytest.param(None,
+                 {'MARS': 1, 'standard': 15750., 'c00100': 715750.,
+                  'cmbtp': 500000., 'dwks10': 600000., 'dwks13': 600000.,
+                  'dwks14': 100000., 'dwks18': 100000., 'taxbc': 115244.},
+                 (1215750., 150714., 265958.), id='part III 20 percent'),
+    # reform-only fourth bracket taxes long-term gain stacked above
+    # 1000000 of taxable income at 25%: with 1200000 of long-term gain
+    # and 500000 of ISO preference, line 6 = 1815750; line 17 = 615750;
+    # line 18 = 167628; line 28 = 100000; line 30 = 433400 @ 15%
+    # = 65010; line 33 = 766600 @ 20% = 153320; line 33 occupies
+    # taxable income from 533400 to 1300000, so
+    # (0.25 - 0.20) * (1300000 - 1000000) = 15000; line 38 = 400958;
+    # line 11 = 400958 - 235244 (regular tax on 1300000)
+    pytest.param(AMT_CG_BRK3_REFORM,
+                 {'MARS': 1, 'standard': 15750., 'c00100': 1315750.,
+                  'cmbtp': 500000., 'dwks10': 1.2e6, 'dwks13': 1.2e6,
+                  'dwks14': 100000., 'dwks18': 100000., 'taxbc': 235244.},
+                 (1815750., 165714., 400958.), id='reform fourth bracket'),
+    # Part III with 30000 of unrecaptured section 1250 gain (see the
+    # test_GainsTax section 1250 case) and 200000 of ISO preference:
+    # line 6 = 515750 - 88100 = 427650; line 15 = 100000;
+    # line 17 = 327650; line 18 = 0.26 * 327650 + 0.02 * 88550 = 86960;
+    # line 30 = 70000 @ 15% = 10500; line 36 = 30000 @ 25% = 7500;
+    # line 38 = 104960; line 11 = 104960 - 59063
+    pytest.param(None,
+                 {'MARS': 1, 'standard': 15750., 'c00100': 315750.,
+                  'cmbtp': 200000., 'dwks10': 100000., 'dwks13': 70000.,
+                  'dwks14': 230000., 'dwks18': 200000., 'e24515': 30000.,
+                  'taxbc': 59063.},
+                 (515750., 45897., 104960.), id='part III section 1250'),
+])
+def test_AMT(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the AMT function against 2025 Form 6251
+    """
+    actual = call_calcfunc('AMT', reform=reform, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
