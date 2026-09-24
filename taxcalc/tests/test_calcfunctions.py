@@ -564,6 +564,120 @@ def test_CapGainsLoss(call_calcfunc, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# AGIIncome
+# ----------------------------------------------------------------------
+
+
+# AGIIncome test cases use 2025 current law, under which alimony
+# received is not income (AlimonyReceived_frac_in_AGI is zero) and the
+# combined Sch C and Sch E loss is limited by the excess business loss
+# limitation (Form 461 line 15): 313000 (626000 when married filing
+# jointly or as a surviving spouse).  The reform-only investment income
+# and QDCG exclusions are inert under current law.  The returned tuple
+# is (ymod, ymod1, invinc_agi_ec), where ymod1 is the sum of the Form
+# 1040 income lines (other than taxable social security) and Sch 1
+# Part I, and ymod is the Pub. 915 worksheet line 7 modified AGI used
+# to compute taxable social security benefits.
+AGIINC_ITEMS = {
+    'e00200': 50000.,  # Form 1040 line 1
+    'e00300': 1000.,   # Form 1040 line 2b
+    'e00600': 2000.,   # Form 1040 line 3b
+    'e01400': 4000.,   # Form 1040 line 4b
+    'e01700': 6000.,   # Form 1040 line 5b
+    'c01000': 3000.,   # Form 1040 line 7 (from Sch D)
+    'e01100': 500.,    # Form 1040 line 7 (no Sch D required)
+    'e00700': 700.,    # Sch 1 line 1
+    'e00900': 10000.,  # Sch 1 line 3
+    'e01200': 300.,    # Sch 1 line 4
+    'e02000': 5000.,   # Sch 1 line 5
+    'e02100': 1500.,   # Sch 1 line 6
+    'e02300': 2000.,   # Sch 1 line 7
+}  # these amounts sum to 86000
+INVINC_EXCLUSION_REFORM = {'ALD_InvInc_ec_rt': {2025: 0.5}}
+ALIMONY_REFORM = {'AlimonyReceived_frac_in_AGI': {2025: 1.0}}
+QDCG_EXCLUSION_REFORM = {
+    'CG_nodiff': {2025: True},
+    'CG_ec': {2025: 5000},
+    'CG_reinvest_ec_rt': {2025: 0.5},
+}
+QDCG_ITEMS = {
+    'e00600': 4000.,   # Form 1040 line 3b
+    'e00650': 4000.,   # Form 1040 line 3a
+    'c01000': 6000.,   # Form 1040 line 7
+}  # QDCG is 4000 + 6000 = 10000
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # sum of Form 1040 and Sch 1 Part I income items
+    pytest.param(None, {'MARS': 1, **AGIINC_ITEMS},
+                 (86000., 86000., 0.), id='income items'),
+    # alimony received (Sch 1 line 2a) is not income under current law
+    pytest.param(None, {'MARS': 1, 'e00800': 12000.},
+                 (0., 0., 0.), id='alimony received'),
+    # a Sch D loss after the line 21 limit reduces income: 40000 - 3000
+    pytest.param(None, {'MARS': 1, 'e00200': 40000., 'c01000': -3000.},
+                 (37000., 37000., 0.), id='capital loss'),
+    # combined Sch C and Sch E loss is limited to 313000:
+    # 600000 - 313000
+    pytest.param(None, {'MARS': 1, 'e00200': 600000., 'e00900': -400000.,
+                        'e02000': -100000.},
+                 (287000., 287000., 0.), id='business loss over cap'),
+    # the same loss when married filing jointly is under the 626000
+    # limit: 600000 - 500000
+    pytest.param(None, {'MARS': 2, 'e00200': 600000., 'e00900': -400000.,
+                        'e02000': -100000.},
+                 (100000., 100000., 0.), id='business loss under cap MFJ'),
+    # Pub. 915 worksheet line 7: 30000 + 2000 + 0.5 * 20000 - 3000
+    pytest.param(None, {'MARS': 1, 'e00200': 30000., 'e00400': 2000.,
+                        'e02400': 20000., 'c02900': 3000.},
+                 (39000., 30000., 0.), id='social security modagi'),
+    # Pub. 915 worksheet line 6 excludes the student loan interest
+    # deduction (Sch 1 line 21), so the 2500 that Adj included in
+    # c02900 is added back; the tuition-and-fees deduction was not
+    # deductible and so is not added back: 30000 - 2500 + 2500
+    pytest.param(None, {'MARS': 1, 'e00200': 30000., 'e03210': 2500.,
+                        'e03230': 4000., 'c02900': 2500.},
+                 (30000., 30000., 0.), id='student loan add-back'),
+    # reform restoring alimony received as income: 12000
+    pytest.param(ALIMONY_REFORM, {'MARS': 1, 'e00800': 12000.},
+                 (12000., 12000., 0.), id='reform alimony received'),
+    # reform excluding half of investment income: the investment income
+    # base is 1000 + 2000 + 500 + 300 = 3800, so the exclusion is
+    # 0.5 * 3800 = 1900 and ymod1 is 40000 + 3800 - 1900
+    pytest.param(INVINC_EXCLUSION_REFORM,
+                 {'MARS': 1, 'e00200': 40000., 'e00300': 1000.,
+                  'e00600': 2000., 'e01100': 500., 'e01200': 300.,
+                  'invinc_ec_base': 3800.},
+                 (41900., 41900., 1900.), id='reform invinc exclusion'),
+    # investment income exclusion reform: a negative investment income
+    # base yields no exclusion: 40000 - 10000
+    pytest.param(INVINC_EXCLUSION_REFORM,
+                 {'MARS': 1, 'e00200': 40000., 'e01200': -10000.,
+                  'invinc_ec_base': -10000.},
+                 (30000., 30000., 0.), id='reform invinc exclusion neg'),
+    # reform excluding QDCG when it is taxed at ordinary rates: the
+    # exclusion is 5000 + 0.5 * (10000 - 5000) = 7500, so ymod1 is
+    # 50000 + 4000 + 6000 - 7500
+    pytest.param(QDCG_EXCLUSION_REFORM,
+                 {'MARS': 1, 'e00200': 50000., **QDCG_ITEMS},
+                 (52500., 52500., 7500.), id='reform qdcg exclusion'),
+    # QDCG exclusion reform: ymod1 cannot be negative after the
+    # exclusion: max(0, 5000 - 10000 + 4000 + 6000 - 7500)
+    pytest.param(QDCG_EXCLUSION_REFORM,
+                 {'MARS': 1, 'e00200': 5000., 'e00900': -10000.,
+                  **QDCG_ITEMS},
+                 (0., 0., 7500.), id='reform qdcg exclusion floor'),
+])
+def test_AGIIncome(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the AGIIncome function against 2025 Form 1040, Sch 1 Part I,
+    and Pub. 915 worksheet logic
+    """
+    actual = call_calcfunc('AGIIncome', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # AGI
 # ----------------------------------------------------------------------
 
