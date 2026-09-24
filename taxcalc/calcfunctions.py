@@ -129,8 +129,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         to OASDI payroll tax, in addition to earnings below the
         maximum taxable earnings threshold.
     SECA_Earnings_thd: float
-        Threshold value for self-employment income below which there is
-        no SECA tax liability
+        Threshold value for an individual's net self-employment earnings
+        (Sch SE line 4c) below which that individual has no SECA tax
+        liability; applied to taxpayer and spouse separately
     e00900p: float
         Schedule C business net profit/loss for taxpayer
     e00900s: float
@@ -230,6 +231,13 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     # Sch SE line 4c (taxable net SE earnings, per spouse)
     net_sey_p = max(0., sey_p * seca_frac)
     net_sey_s = max(0., sey_s * seca_frac)
+    # Sch SE line 4c floor: each spouse files a separate Sch SE, and a
+    # spouse whose line 4c amount is less than $400 does not owe SE tax
+    # ("If less than $400, stop; you don't owe self-employment tax")
+    if net_sey_p < SECA_Earnings_thd:
+        net_sey_p = 0.
+    if net_sey_s < SECA_Earnings_thd:
+        net_sey_s = 0.
     # Sch SE line 9: remaining OASDI base = SS_Earnings_c - W-2 SS wages
     txearn_sey_p = min(net_sey_p, SS_Earnings_c - txearn_was_p)
     txearn_sey_s = min(net_sey_s, SS_Earnings_c - txearn_was_s)
@@ -240,12 +248,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     setax_mc_s = mc_rate * net_sey_s
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
-    # Sch SE line 12: zero out if filing-unit SE earnings are below the
-    # $400 floor (Sch SE line 4: "stop; you do not owe SE tax")
-    if sey * seca_frac > SECA_Earnings_thd:
-        setax = setax_p + setax_s
-    else:
-        setax = 0.0
+    # Sch SE line 12, summed over spouses
+    setax = setax_p + setax_s
 
     # ---------- Reform-only extra OASDI bracket ----------
     # extra OASDI on the portion of wages and salary above SS_Earnings_thd
@@ -1476,11 +1480,11 @@ def ItemDed(e17500, e18400, e18500, e19200,
 
 
 @iterate_jit(nopython=True)
-def AdditionalMedicareTax(MARS, e00200,
+def AdditionalMedicareTax(MARS, e00200, pencon_p, pencon_s,
                           e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s,
                           FICA_ss_trt_employer, FICA_ss_trt_employee,
                           FICA_mc_trt_employer, FICA_mc_trt_employee,
-                          AMEDT_ec, AMEDT_rt,
+                          SECA_Earnings_thd, AMEDT_ec, AMEDT_rt,
                           ptax_amc):
     """
     Form 8959 Additional Medicare Tax. Liability flows into Schedule 2
@@ -1495,18 +1499,24 @@ def AdditionalMedicareTax(MARS, e00200,
       Part V  (lines 19-24)Withholding reconciliation — refundable side,
                            not part of liability.
 
-    Tax-Calculator does not separately track Medicare wages (W-2 box 5)
-    from Form 4137 unreported tips and Form 8919 wages, so `e00200`
-    substitutes for Form 8959 line 4 (the sum of lines 1+2+3).
+    Medicare wages (W-2 box 5) include elective deferrals to
+    defined-contribution pension plans, which W-2 box 1 wages exclude,
+    so Form 8959 line 1 is `e00200` plus `pencon_p` and `pencon_s`
+    (the same gross wages on which `EI_PayrollTax` levies HI FICA tax).
+    Tax-Calculator does not separately track Form 4137 unreported tips
+    and Form 8919 wages, so line 1 also serves as Form 8959 line 4 (the
+    sum of lines 1+2+3).
 
     Form 8959 line 8 (Sch SE Part I line 6) is reconstructed per-spouse:
     Sch SE is filed separately by each spouse, so each spouse's net SE
     earnings are floored at zero independently before the joint total is
-    formed. The records-bound `sey` is the unfloored sum, which would
-    over-net a positive-sey spouse against a negative-sey spouse; this
-    function therefore re-derives `sey_p`/`sey_s` from the underlying
-    per-spouse input components (matching `EI_PayrollTax`) and applies
-    the per-spouse 0-floor before summing.
+    formed, and a spouse whose net SE earnings are less than the
+    `SECA_Earnings_thd` ($400) floor has no SE income. The records-bound
+    `sey` is the unfloored sum, which would over-net a positive-sey
+    spouse against a negative-sey spouse; this function therefore
+    re-derives `sey_p`/`sey_s` from the underlying per-spouse input
+    components and applies the per-spouse floors before summing
+    (matching `EI_PayrollTax`).
 
     The line-5 / line-9 / line-15 thresholds are identical on the form
     ($250k MFJ / $125k MFS / $200k Single/HoH/QSS for 2025) and are
@@ -1520,8 +1530,14 @@ def AdditionalMedicareTax(MARS, e00200,
                        4=household-head, 5=widow(er))
     -- Part I: Medicare wages (lines 1-7) --
     e00200: float
-        Wages and salaries; substitutes for Form 8959 line 4 (Medicare
-        wages from W-2 box 5 + Form 4137 line 6 + Form 8919 line 6)
+        Wages and salaries net of pension contributions (W-2 box 1);
+        component of Form 8959 line 1 (Medicare wages, W-2 box 5)
+    pencon_p: float
+        Contributions to defined-contribution pension plans for
+        taxpayer; component of Form 8959 line 1
+    pencon_s: float
+        Contributions to defined-contribution pension plans for
+        spouse; component of Form 8959 line 1
     -- Part II: Self-employment income (lines 8-13) --
     e00900p: float
         Sch C (taxpayer) net profit/loss; component of `sey_p`
@@ -1543,6 +1559,9 @@ def AdditionalMedicareTax(MARS, e00200,
         Employer-side FICA HI tax rate (Sch SE line 4c reduction)
     FICA_mc_trt_employee: float
         Employee-side FICA HI tax rate (Sch SE line 4c reduction)
+    SECA_Earnings_thd: float
+        Per-spouse Sch SE line 4c floor below which that spouse has no
+        SE income (Sch SE line 4c: "If less than $400, stop")
     -- Common to Parts I and II --
     AMEDT_ec: list
         Form 8959 line 5 / line 9 threshold by MARS
@@ -1560,15 +1579,19 @@ def AdditionalMedicareTax(MARS, e00200,
     threshold = AMEDT_ec[MARS - 1]  # line 5 (also line 9; same value)
     seca_frac = 1. - 0.5 * (FICA_ss_trt_employer + FICA_ss_trt_employee +
                             FICA_mc_trt_employer + FICA_mc_trt_employee)
-    # Per-spouse Sch SE Part I line 6 (each floored at 0; matches the
-    # `sey_p`/`sey_s` and `net_sey_p`/`net_sey_s` construction in
-    # `EI_PayrollTax`).
+    # Per-spouse Sch SE Part I line 6 (each floored at 0 and zeroed
+    # below the $400 floor; matches the `sey_p`/`sey_s` and
+    # `net_sey_p`/`net_sey_s` construction in `EI_PayrollTax`).
     sey_p = e00900p + e02100p + k1bx14p
     sey_s = e00900s + e02100s + k1bx14s
     net_sey_p = max(0., sey_p * seca_frac)
     net_sey_s = max(0., sey_s * seca_frac)
+    if net_sey_p < SECA_Earnings_thd:
+        net_sey_p = 0.
+    if net_sey_s < SECA_Earnings_thd:
+        net_sey_s = 0.
     # -- Part I: Medicare wages (lines 1-7) --
-    line4 = e00200
+    line4 = e00200 + pencon_p + pencon_s
     line6 = max(0., line4 - threshold)
     line7 = AMEDT_rt * line6
     # -- Part II: Self-employment income (lines 8-13) --
