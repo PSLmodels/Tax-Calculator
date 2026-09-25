@@ -2103,30 +2103,45 @@ def test_F2441(call_calcfunc, reform, rvars, expected):
 # the table's $50 income bands.
 
 
-@pytest.mark.parametrize('earnings, agi, expected', [
+@pytest.mark.parametrize('basic_frac, earnings, agi, expected', [
     # phase-in: 0.45 * 10000
-    pytest.param(10000., 10000., 4500., id='phase-in'),
+    pytest.param(0., 10000., 10000., 4500., id='phase-in'),
     # plateau: min(0.45 * 20000, 8046)
-    pytest.param(20000., 20000., 8046., id='plateau'),
+    pytest.param(0., 20000., 20000., 8046., id='plateau'),
     # phase-out: 8046 - 0.2106 * (30000 - 23350)
-    pytest.param(30000., 30000., 6645.51, id='phase-out'),
+    pytest.param(0., 30000., 30000., 6645.51, id='phase-out'),
     # EIC Worksheet A line 6: AGI above the phase-out start, so the
     # smaller of the earned-income credit (4500) and the AGI credit
     # (6645.51) is allowed
-    pytest.param(10000., 30000., 4500., id='AGI above earnings'),
+    pytest.param(0., 10000., 30000., 4500., id='AGI above earnings'),
     # earnings credit (6645.51) is smaller than the AGI credit (8046)
-    pytest.param(30000., 20000., 6645.51, id='earnings above AGI'),
+    pytest.param(0., 30000., 20000., 6645.51, id='earnings above AGI'),
     # 8046 - 0.2106 * (70000 - 23350) < 0
-    pytest.param(70000., 70000., 0., id='phased out'),
+    pytest.param(0., 70000., 70000., 0., id='phased out'),
+    # zero earnings under current law
+    pytest.param(0., 0., 0., 0., id='zero earnings'),
+    # reform: 0.5 * 8046 paid at zero earnings
+    pytest.param(0.5, 0., 0., 4023., id='basic_frac zero earnings'),
+    # reform phase-in: 0.5 * 8046 + (1 - 0.5) * 0.45 * 10000
+    pytest.param(0.5, 10000., 10000., 6273., id='basic_frac phase-in'),
+    # reform phase-in capped at the maximum credit:
+    # min(4023 + 0.5 * 0.45 * 20000, 8046)
+    pytest.param(0.5, 20000., 20000., 8046., id='basic_frac plateau'),
+    # reform phase-out is unaffected by basic_frac
+    pytest.param(0.5, 30000., 30000., 6645.51, id='basic_frac phase-out'),
 ])
-def test_EITCamount(earnings, agi, expected):
+def test_EITCamount(basic_frac, earnings, agi, expected):
     """
     Tests the EITCamount function using the 2025 EITC parameters for a
     filer with three or more qualifying children who is not married
-    filing jointly
+    filing jointly, including reforms that pay a fraction (basic_frac)
+    of the maximum credit at zero earnings
     """
-    actual = calcfunctions.EITCamount(0., 0.45, earnings, 8046., 23350.,
-                                      agi, 0.2106)
+    # call the pure Python function wrapped by the JIT decorator so that
+    # its code is measured by the coverage report
+    eitc_amount = calcfunctions.EITCamount.py_func
+    actual = eitc_amount(basic_frac, 0.45, earnings, 8046.,
+                         23350., agi, 0.2106)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
