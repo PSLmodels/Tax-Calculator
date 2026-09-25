@@ -813,6 +813,7 @@ EXEMPTION_REFORM = {
     'II_em': {2025: 5000},
     'II_em_ps': {2025: [250000, 300000, 150000, 275000, 300000]},
 }
+EXEMPTION_NU18_REFORM = {**EXEMPTION_REFORM, 'II_no_em_nu18': {2025: True}}
 
 
 @pytest.mark.parametrize('reform, rvars, expected', [
@@ -846,6 +847,12 @@ EXEMPTION_REFORM = {
     pytest.param(EXEMPTION_REFORM,
                  {'MARS': 2, 'XTOT': 4, 'ymod1': 100000.},
                  (100000., 20000., 20000.), id='reform exemptions'),
+    # exemption reform without exemptions for the 2 dependents under
+    # age 18: (4 - 2) * 5000
+    pytest.param(EXEMPTION_NU18_REFORM,
+                 {'MARS': 2, 'XTOT': 4, 'nu18': 2, 'ymod1': 100000.},
+                 (100000., 10000., 10000.),
+                 id='reform no exemptions under 18'),
     # exemption reform, pre-TCJA exemptions worksheet: line 5 = 21000;
     # line 6 = ceil(21000 / 2500) = 9; line 7 = 0.02 * 9 = 0.18;
     # 20000 * (1 - 0.18)
@@ -930,6 +937,10 @@ def test_AGI(call_calcfunc, reform, rvars, expected):
     pytest.param({'MARS': 1, 'c00100': 100000.,
                   'overtime_income': 20000.},
                  (0., 12500., 0., 0.), id='overtime'),
+    # Part III: floor(10500 / 1000) = 10 steps; 12500 - 10 * 100
+    pytest.param({'MARS': 1, 'c00100': 160500.,
+                  'overtime_income': 20000., 'exact': 1},
+                 (0., 11500., 0., 0.), id='overtime phase-out exact'),
     # Part III and Part II joint: overtime min(30000, 25000) and tips
     # min(30000, 25000), each reduced by 0.1 * (320000 - 300000)
     pytest.param({'MARS': 2, 'c00100': 320000.,
@@ -998,6 +1009,10 @@ ID_PEASE_REFORM = {
 }
 ID_REDUCTION_REFORM = {'ID_reduction_rate': {2025: 0.05}}
 ID_CAP_REFORM = {'ID_c': {2025: [25000., 25000., 25000., 25000., 25000.]}}
+ID_MEDICAL_AGED_REFORM = {
+    'ID_Medical_frt': {2025: 0.10},
+    'ID_Medical_frt_add4aged': {2025: -0.025},
+}
 ID_ALL_ITEMS = {
     'MARS': 1, 'c00100': 100000., 'e17500': 10000., 'e18400': 8000.,
     'e18500': 7000., 'e19200': 12000., 'e19800': 10000., 'e20100': 5000.,
@@ -1018,6 +1033,23 @@ ID_ALL_ITEMS = {
     pytest.param(None, {'MARS': 1, 'c00100': -5000., 'e17500': 1000.},
                  (1000., 0., 0., 0., 0., 0., 0., 1000., 1000.),
                  id='medical negative AGI'),
+    # pre-2017-style aged floor reform: line 4 = 10000 - 0.10 * 100000
+    pytest.param(ID_MEDICAL_AGED_REFORM,
+                 {'MARS': 1, 'c00100': 100000., 'e17500': 10000.},
+                 (0., 0., 0., 0., 0., 0., 0., 0., 0.),
+                 id='reform medical not aged'),
+    # aged floor reform: line 4 = 10000 - (0.10 - 0.025) * 100000
+    pytest.param(ID_MEDICAL_AGED_REFORM,
+                 {'MARS': 1, 'age_head': 66, 'c00100': 100000.,
+                  'e17500': 10000.},
+                 (2500., 0., 0., 0., 0., 0., 0., 2500., 2500.),
+                 id='reform medical aged head'),
+    # aged floor reform: only the spouse is aged 65 or older
+    pytest.param(ID_MEDICAL_AGED_REFORM,
+                 {'MARS': 2, 'age_head': 60, 'age_spouse': 65,
+                  'c00100': 100000., 'e17500': 10000.},
+                 (2500., 0., 0., 0., 0., 0., 0., 2500., 2500.),
+                 id='reform medical aged spouse'),
     # line 7: 8000 + 7000 is below the 40000 cap
     pytest.param(None, {'MARS': 1, 'c00100': 100000., 'e18400': 8000.,
                         'e18500': 7000.},
@@ -1288,6 +1320,11 @@ QBID_MIN_REFORM = {
     'PT_qbid_min_ded': {2025: 400},
     'PT_qbid_min_qbi': {2025: 1000},
 }
+QBID_PHASEOUT_REFORM = {
+    'PT_qbid_ps': {2025: [40000, 80000, 40000, 40000, 80000]},
+    'PT_qbid_prt': {2025: 0.1},
+}
+QBID_UNLIMITED_REFORM = {'PT_qbid_limited': {2025: False}}
 
 
 @pytest.mark.parametrize('reform, rvars, expected', [
@@ -1385,6 +1422,19 @@ QBID_MIN_REFORM = {
                  {'MARS': 1, 'c00100': 50000., 'standard': 15750.,
                   'e00900': 900.},
                  (34070., 180.), id='reform QBI below minimum'),
+    # reform-only phase-out: line 15 = min(10000, 0.2 * 44250) = 8850
+    # (see the Form 8995 income limit case without dividends);
+    # 8850 - 0.1 * (44250 - 40000) = 8425; 44250 - 8425
+    pytest.param(QBID_PHASEOUT_REFORM,
+                 {'MARS': 1, 'c00100': 60000., 'standard': 15750.,
+                  'e26270': 50000.},
+                 (35825., 8425.), id='reform QBID phase-out'),
+    # reform with no TCJA limits: the deduction is 0.2 * 300000 despite
+    # zero W-2 wages (see the Form 8995-A wage limit case)
+    pytest.param(QBID_UNLIMITED_REFORM,
+                 {'MARS': 1, 'c00100': 400000., 'standard': 15750.,
+                  'e26270': 300000.},
+                 (324250., 60000.), id='reform QBID unlimited'),
 ])
 def test_TaxInc(call_calcfunc, reform, rvars, expected):
     """
@@ -1409,10 +1459,25 @@ TOP_BRACKET_REFORM = {
 
 
 @pytest.mark.parametrize('reform, rvars, expected', [
+    # Schedule X: 0.10 * 10000
+    pytest.param(None, {'MARS': 1, 'taxable_income': 10000.}, 1000.,
+                 id='single 10 percent bracket'),
+    # Schedule X: 1192.50 + 0.12 * (30000 - 11925)
+    pytest.param(None, {'MARS': 1, 'taxable_income': 30000.}, 3361.5,
+                 id='single 12 percent bracket'),
     # Schedule X: 1192.50 + 0.12 * (48475 - 11925)
     #             + 0.22 * (50000 - 48475)
     pytest.param(None, {'MARS': 1, 'taxable_income': 50000.}, 5914.,
                  id='single'),
+    # Schedule X: 17651 + 0.24 * (150000 - 103350)
+    pytest.param(None, {'MARS': 1, 'taxable_income': 150000.}, 28847.,
+                 id='single 24 percent bracket'),
+    # Schedule X: 40199 + 0.32 * (225000 - 197300)
+    pytest.param(None, {'MARS': 1, 'taxable_income': 225000.}, 49063.,
+                 id='single 32 percent bracket'),
+    # Schedule X: 57231 + 0.35 * (400000 - 250525)
+    pytest.param(None, {'MARS': 1, 'taxable_income': 400000.},
+                 109547.25, id='single 35 percent bracket'),
     # Schedule X: 188769.75 + 0.37 * (1000000 - 626350)
     pytest.param(None, {'MARS': 1, 'taxable_income': 1e6}, 327020.25,
                  id='single top bracket'),
@@ -1691,6 +1756,7 @@ def test_AGIsurtax(call_calcfunc, reform, rvars, expected):
 # which are Form 6251 line 4, Form 6251 line 11, and Form 1040 line 16
 # plus Sch 2 line 1.
 AMT_MEDICAL_REFORM = {'AMT_Medical_frt': {2025: 0.025}}
+AMT_EM_PE_REFORM = {'AMT_em_pe': {2025: 700000}}
 AMT_CG_BRK3_REFORM = {
     'AMT_CG_brk3': {2025: [1e6, 1e6, 1e6, 1e6, 1e6]},
     'AMT_CG_rt4': {2025: 0.25},
@@ -1758,6 +1824,18 @@ AMT_CG_BRK3_REFORM = {
                  {'MARS': 1, 'standard': 15750., 'c00100': 700000.,
                   'cmbtp': 300000., 'taxbc': 210192.75},
                  (1e6, 65025.25, 275218.), id='exemption phased out'),
+    # married filing separately with line 4 above AMT_em_pe: under 2025
+    # current law, line 4 above 900350 already phases out all of the
+    # 68500 exemption, but lowering AMT_em_pe to 700000 eliminates the
+    # 68500 - 0.25 * (800000 - 626350) = 25087.5 exemption;
+    # line 4 = 400000 + 400000 of line 2i ISO preference;
+    # line 7 = 0.26 * 800000 + 0.02 * (800000 - 119550) = 221609;
+    # line 11 = 221609 - 104203.75 (regular tax on 384250)
+    pytest.param(AMT_EM_PE_REFORM,
+                 {'MARS': 3, 'standard': 15750., 'c00100': 400000.,
+                  'cmbtp': 400000., 'taxbc': 104203.75},
+                 (800000., 117405.25, 221609.),
+                 id='reform separate exemption eliminated'),
     # IRC 59(j) filer under age 18 with no earned income:
     # line 5 = min(88100, 0 + 9550); line 6 = 60000 - 9550 = 50450;
     # line 7 = 0.26 * 50450 = 13117; line 11 = 13117 - 5000
@@ -1978,6 +2056,13 @@ CDCC_REFUNDABLE_REFORM = {'CDCC_refundable': {2025: True}}
                   'earned_p': 85000., 'earned_s': 85000.,
                   'c00100': 170000., 'c05800': 20000.},
                  (6000., 900., 0.), id='reform second phase-down'),
+    # reform second phase-down without exact rounding: line 8 = 0.20 -
+    # 0.01 * (171000 - 150000) / 4000 = 0.1475; 0.1475 * 6000
+    pytest.param(CDCC_PS2_REFORM,
+                 {'MARS': 2, 'f2441': 2, 'e32800': 6000., 'exact': 0,
+                  'earned_p': 85500., 'earned_s': 85500.,
+                  'c00100': 171000., 'c05800': 20000.},
+                 (6000., 885., 0.), id='reform second phase-down smoothed'),
     # reform second phase-down for a single filer: line 8 = max(0,
     # 0.20 - 0.01 * ceil((150000 - 75000) / 2000))
     pytest.param(CDCC_PS2_REFORM,
@@ -2119,57 +2204,75 @@ def test_EITC(call_calcfunc, rvars, expected):
 # rounding.  Schedule 8812 line 14 reports only the total nonrefundable
 # credit; Tax-Calculator splits it between CTC and ODC in proportion to
 # lines 5 and 7.  The returned tuple is (c07220, odc, codtc_limited).
+# The reform-only CTC_include17 and CTC_is_refundable switches are both
+# false under 2025 current law.
+CTC_INCLUDE17_REFORM = {'CTC_include17': {2025: True}}
+CTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
 
 
-@pytest.mark.parametrize('rvars, expected', [
+@pytest.mark.parametrize('reform, rvars, expected', [
     # line 5 = 2 * 2200 = 4400; line 14 = min(4400, 10000)
-    pytest.param({'MARS': 2, 'num': 2, 'XTOT': 4, 'n24': 2,
-                  'c00100': 100000., 'c05800': 10000.},
+    pytest.param(None, {'MARS': 2, 'num': 2, 'XTOT': 4, 'n24': 2,
+                        'c00100': 100000., 'c05800': 10000.},
                  (4400., 0., 0.), id='two children'),
     # line 14 = min(4400, 3000) = 3000; 1400 left for Part II
-    pytest.param({'MARS': 2, 'num': 2, 'XTOT': 4, 'n24': 2,
-                  'c00100': 100000., 'c05800': 3000.},
+    pytest.param(None, {'MARS': 2, 'num': 2, 'XTOT': 4, 'n24': 2,
+                        'c00100': 100000., 'c05800': 3000.},
                  (3000., 0., 1400.), id='tax limited'),
     # line 5 = 2200; line 7 = 500 * (3 - 1 - 1) = 500; line 14 = 2700
-    pytest.param({'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
-                  'c00100': 60000., 'c05800': 5000.},
+    pytest.param(None, {'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
+                        'c00100': 60000., 'c05800': 5000.},
                  (2200., 500., 0.), id='child and other dependent'),
     # line 14 = min(2700, 1000) = 1000, split 2200:500 between CTC and
     # ODC as 814.8148 and 185.1852; 1700 left for Part II
-    pytest.param({'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
-                  'c00100': 30000., 'c05800': 1000.},
+    pytest.param(None, {'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
+                        'c00100': 30000., 'c05800': 1000.},
                  (1000. * 2200. / 2700., 1000. * 500. / 2700., 1700.),
                  id='child and other dependent tax limited'),
     # a 17-year-old is not a qualifying child, but is an other
     # dependent: line 7 = 500 * (3 - 0 - 2)
-    pytest.param({'MARS': 2, 'num': 2, 'XTOT': 3, 'nu18': 1,
-                  'c00100': 80000., 'c05800': 5000.},
+    pytest.param(None, {'MARS': 2, 'num': 2, 'XTOT': 3, 'nu18': 1,
+                        'c00100': 80000., 'c05800': 5000.},
                  (0., 500., 0.), id='other dependent age 17'),
     # line 10 = 16000 after rounding 15500 up; line 11 = 800;
     # line 12 = 2200 - 800
-    pytest.param({'MARS': 1, 'num': 1, 'XTOT': 2, 'n24': 1,
-                  'c00100': 215500., 'c05800': 40000., 'exact': 1},
+    pytest.param(None, {'MARS': 1, 'num': 1, 'XTOT': 2, 'n24': 1,
+                        'c00100': 215500., 'c05800': 40000., 'exact': 1},
                  (1400., 0., 0.), id='phase-out exact'),
     # without rounding: 2200 - 0.05 * 15500
-    pytest.param({'MARS': 1, 'num': 1, 'XTOT': 2, 'n24': 1,
-                  'c00100': 215500., 'c05800': 40000.},
+    pytest.param(None, {'MARS': 1, 'num': 1, 'XTOT': 2, 'n24': 1,
+                        'c00100': 215500., 'c05800': 40000.},
                  (1425., 0., 0.), id='phase-out smoothed'),
     # line 11 = 0.05 * 100000 = 5000 exceeds line 8 = 2200
-    pytest.param({'MARS': 2, 'num': 2, 'XTOT': 3, 'n24': 1,
-                  'c00100': 500000., 'c05800': 100000.},
+    pytest.param(None, {'MARS': 2, 'num': 2, 'XTOT': 3, 'n24': 1,
+                        'c00100': 500000., 'c05800': 100000.},
                  (0., 0., 0.), id='phased out'),
     # Credit Limit Worksheet A: 5000 - (1000 + 1500 + 500) = 2000;
     # line 14 = min(4400, 2000); 2400 left for Part II
-    pytest.param({'MARS': 2, 'num': 2, 'XTOT': 4, 'n24': 2,
-                  'c00100': 100000., 'c05800': 5000., 'c07180': 1000.,
-                  'c07230': 1500., 'e07240': 500.},
+    pytest.param(None, {'MARS': 2, 'num': 2, 'XTOT': 4, 'n24': 2,
+                        'c00100': 100000., 'c05800': 5000., 'c07180': 1000.,
+                        'c07230': 1500., 'e07240': 500.},
                  (2000., 0., 2400.), id='other credits limit'),
+    # reform: a 17-year-old is a qualifying child, so line 5 = 2200 and
+    # line 7 = 500 * (3 - 1 - 2) = 0 (compare the age 17 case above)
+    pytest.param(CTC_INCLUDE17_REFORM,
+                 {'MARS': 2, 'num': 2, 'XTOT': 3, 'nu18': 1,
+                  'age_head': 40, 'age_spouse': 40,
+                  'c00100': 80000., 'c05800': 5000.},
+                 (2200., 0., 0.), id='reform include age 17'),
+    # reform: the line 12 amount of 2700 is not limited by the 1000 of
+    # tax, so nothing is left for Part II (compare the tax limited
+    # child and other dependent case above)
+    pytest.param(CTC_REFUNDABLE_REFORM,
+                 {'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
+                  'c00100': 30000., 'c05800': 1000.},
+                 (2200., 500., 0.), id='reform refundable'),
 ])
-def test_ChildDepTaxCredit(call_calcfunc, rvars, expected):
+def test_ChildDepTaxCredit(call_calcfunc, reform, rvars, expected):
     """
     Tests the ChildDepTaxCredit function against 2025 Schedule 8812 logic
     """
-    actual = call_calcfunc('ChildDepTaxCredit', **rvars)
+    actual = call_calcfunc('ChildDepTaxCredit', reform=reform, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
@@ -2862,6 +2965,11 @@ CTC_NEW_REFUND_LIMIT_REFORM = {
     'CTC_new_refund_limited': {2025: True},
     'CTC_new_refund_limit_payroll_rt': {2025: 1.0},
 }
+CTC_NEW_ALL_PAYROLL_REFORM = {
+    **CTC_NEW_REFUND_LIMIT_REFORM,
+    'CTC_new_refund_limited_all_payroll': {2025: True},
+}
+CTC_NEW_INCLUDE17_REFORM = {**CTC_NEW_REFORM, 'CTC_include17': {2025: True}}
 
 
 @pytest.mark.parametrize('reform, rvars, expected', [
@@ -2896,6 +3004,17 @@ CTC_NEW_REFUND_LIMIT_REFORM = {
                  {'MARS': 4, 'n24': 2, 'nu06': 1, 'c00100': 50000.,
                   'c09200': 500., 'ptax_oasdi': 1000.},
                  1500., id='reform refund limit'),
+    # all-payroll refund-limit reform: refund = 2600 - 500 = 2100;
+    # limit = 1.0 * 1600 total payroll tax; credit = 2600 - (2100 - 1600)
+    pytest.param(CTC_NEW_ALL_PAYROLL_REFORM,
+                 {'MARS': 4, 'n24': 2, 'nu06': 1, 'c00100': 50000.,
+                  'c09200': 500., 'ptax_oasdi': 1000., 'payrolltax': 1600.},
+                 2100., id='reform refund limit all payroll'),
+    # reform including a 17-year-old as a qualifying child: 1 * 1000
+    # (compare the reform no children case above)
+    pytest.param(CTC_NEW_INCLUDE17_REFORM,
+                 {'MARS': 4, 'nu18': 1, 'age_head': 40, 'c00100': 50000.},
+                 1000., id='reform include age 17'),
 ])
 def test_CTC_new(call_calcfunc, reform, rvars, expected):
     """

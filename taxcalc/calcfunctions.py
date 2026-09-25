@@ -3784,6 +3784,8 @@ def SchR(age_head, age_spouse, MARS, c00100,
     # ---- eligibility gate: 65+ paths only (disability not modeled) ----
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         # ---- Part I -> Part III line 10 (base) and line 15 (AGI threshold) --
+        line10 = 0.
+        line15 = 0.
         if MARS == 2:
             if age_head >= 65 and age_spouse >= 65:
                 line10 = 7500.   # Box 3 (MFJ, both 65+)
@@ -3796,9 +3798,6 @@ def SchR(age_head, age_spouse, MARS, c00100,
         elif MARS in (1, 4, 5):
             line10 = 5000.       # Box 1 (Single/HoH/QSS 65+)
             line15 = 7500.
-        else:
-            line10 = 0.
-            line15 = 0.
         line12 = line10  # line 12 = line 10 (no disability claimed)
         # ---- Part III lines 13-17: nontaxable income + AGI excess -----------
         line13a = max(0., e02400 - c02500)  # nontaxable OASDI
