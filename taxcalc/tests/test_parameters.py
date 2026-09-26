@@ -231,14 +231,12 @@ def test_json_file_contents(tests_path, fname):
                 f"indexable={pindexable}\n"
             )
             failures += msg
-        # ensure that indexable is False when value_type is not real
+        # check that indexable is False when type is not real
         if param.get("indexable", False) and param["type"] != "float":
-            pindexable = param.get("indexable", False)
-            ptype = param["value_type"]
             msg = (
                 f"param:<{pname}>; "
-                f"indexable={pindexable}; "
-                f"type={ptype}\n"
+                "is indexable when type is not float; "
+                f"type={param["type"]}\n"
             )
             failures += msg
     o = None
@@ -252,9 +250,9 @@ def test_json_file_contents(tests_path, fname):
     for k in o:
         if k[0].isupper():  # find parameters by case of first letter
             param_list.append(k)
-    for param in param_list:
-        for y in known_years:
-            o.set_year(y)
+    for y in sorted(known_years):
+        o.set_year(y)  # set_year is expensive, so call it once per year
+        for param in param_list:
             if np.isnan(getattr(o, param)).any():
                 msg = f"param:<{param}>; not found in year={y}\n"
                 failures += msg
