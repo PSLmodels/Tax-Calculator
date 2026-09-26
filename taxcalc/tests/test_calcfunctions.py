@@ -2205,12 +2205,62 @@ def test_EITCamount(basic_frac, earnings, agi, expected):
     pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
                   'c00100': 33000., 'c01000': 13000.}, 0.,
                  id='capital gain above limit'),
+    # Pub 596 rule 11: joint filers with neither spouse aged 25-64
+    pytest.param({'MARS': 2, 'EIC': 0, 'age_head': 22, 'age_spouse': 70,
+                  'earned': 8000., 'c00100': 8000.}, 0.,
+                 id='no children joint neither spouse eligible'),
+    # Not on the form: claiming probability is 1.03 * (3265.33 / 4328)
+    # = 0.7771, so the credit is claimed when credit_claim_urn is 0.7
+    # (compare the one child phase-out case above)
+    pytest.param({'MARS': 1, 'EIC': 1, 'earned': 30000.,
+                  'c00100': 30000., 'credit_claim_urn': 0.7}, 3265.33,
+                 id='claimed'),
+    # Not on the form: the credit is not claimed when credit_claim_urn
+    # is 0.8, which exceeds the 0.7771 claiming probability
+    pytest.param({'MARS': 1, 'EIC': 1, 'earned': 30000.,
+                  'c00100': 30000., 'credit_claim_urn': 0.8}, 0.,
+                 id='not claimed'),
+    # Not on the form: claiming probability is 1.03 * max(0.4, 76.5 / 649)
+    # = 0.412, so a 0.0765 * 1000 credit is not claimed when
+    # credit_claim_urn is 0.5
+    pytest.param({'MARS': 1, 'EIC': 0, 'age_head': 30, 'earned': 1000.,
+                  'c00100': 1000., 'credit_claim_urn': 0.5}, 0.,
+                 id='not claimed minimum probability'),
 ])
 def test_EITC(call_calcfunc, rvars, expected):
     """
     Tests the EITC function against 2025 EIC logic
     """
     actual = call_calcfunc('EITC', **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+EITC_INDIV_REFORM = {'EITC_indiv': {2025: True}}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # current law: joint phase-out start = 23350 + 7120 = 30470, so the
+    # filing-unit credit is min(0.34 * 30000, 4328)
+    pytest.param(None, {'MARS': 2, 'EIC': 1, 'earned': 30000.,
+                        'earned_p': 20000., 'earned_s': 10000.,
+                        'c00100': 30000.}, 4328., id='joint'),
+    # reform: per-spouse credits min(0.34 * 20000, 4328) = 4328 and
+    # min(0.34 * 10000, 4328) = 3400 are summed
+    pytest.param(EITC_INDIV_REFORM,
+                 {'MARS': 2, 'EIC': 1, 'earned': 30000.,
+                  'earned_p': 20000., 'earned_s': 10000.,
+                  'c00100': 30000.}, 7728., id='reform joint individual'),
+    # reform: per-spouse credits apply only to joint filers
+    pytest.param(EITC_INDIV_REFORM,
+                 {'MARS': 1, 'EIC': 1, 'earned': 30000.,
+                  'earned_p': 30000., 'c00100': 30000.}, 3265.33,
+                 id='reform single'),
+])
+def test_EITC_reform(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the EITC function under the reform-only EITC_indiv switch
+    """
+    actual = call_calcfunc('EITC', reform=reform, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
