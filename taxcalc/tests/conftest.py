@@ -3,7 +3,9 @@ The pytest configuration file.
 """
 
 import os
+import re
 import ast
+import glob
 import json
 import numpy
 import pandas
@@ -13,6 +15,43 @@ from taxcalc import Policy, calcfunctions
 
 # convert all numpy warnings into errors so they can be detected in tests
 numpy.seterr(all='raise')
+
+
+def pytest_sessionfinish(session):
+    """
+    Merge any cpscsv_agg_actual_YYYY-YYYY.csv chunk files written by the
+    failing test_cpscsv.py::test_agg year chunks into a single complete
+    cpscsv_agg_actual.csv file.  This hook runs after all the pytest-xdist
+    workers have finished, so the chunk files are merged without any race
+    among the workers.
+    """
+    if hasattr(session.config, 'workerinput'):
+        return  # skip in pytest-xdist workers; merge only in main process
+    merge_cpscsv_agg_chunks(os.path.abspath(os.path.dirname(__file__)))
+
+
+def merge_cpscsv_agg_chunks(tests_path):
+    """
+    Copy year columns from each cpscsv_agg_actual_YYYY-YYYY.csv chunk file
+    into the cpscsv_agg_expect.csv table, write the resulting table to the
+    cpscsv_agg_actual.csv file, and remove the chunk files.
+    """
+    chunk_paths = sorted(glob.glob(
+        os.path.join(tests_path, 'cpscsv_agg_actual_[0-9]*-[0-9]*.csv')
+    ))
+    if not chunk_paths:
+        return
+    expect_path = os.path.join(tests_path, 'cpscsv_agg_expect.csv')
+    table = pandas.read_csv(expect_path, index_col=0)
+    for chunk_path in chunk_paths:
+        match = re.search(r'_(\d{4})-(\d{4})\.csv$', chunk_path)
+        first_year, last_year = int(match.group(1)), int(match.group(2))
+        chunk = pandas.read_csv(chunk_path, index_col=0)
+        for year in range(first_year, last_year + 1):
+            table[str(year)] = chunk[str(year)].values
+        os.remove(chunk_path)
+    actual_path = os.path.join(tests_path, 'cpscsv_agg_actual.csv')
+    table.to_csv(actual_path, float_format='%.1f')
 
 
 @pytest.fixture(scope='session', name='tests_path')
