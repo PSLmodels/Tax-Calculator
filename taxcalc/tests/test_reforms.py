@@ -164,6 +164,61 @@ REFORM_YEARS = {
 }
 
 
+def _cases_records(tests_path, tax_year):
+    """
+    Return Records object containing the cases.csv data for tax_year.
+    """
+    cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')
+    return Records(data=cases_path,
+                   start_year=tax_year,  # set raw input data year
+                   gfactors=None,  # keeps raw data unchanged
+                   weights=None,
+                   adjust_ratios=None)
+
+
+def _res_and_out_are_same(calc, base):
+    """
+    Write calc output to base.res.csv file and return True if its contents
+    are the same as the base.out.csv file contents (in which case the
+    base.res.csv file is removed); otherwise return False.
+    """
+    varlist = [
+        'RECID', 'c00100', 'standard', 'c04800', 'iitax', 'payrolltax'
+    ]
+    # varnames  AGI    STD         TaxInc    ITAX     PTAX
+    stats = calc.dataframe(varlist)
+    stats['RECID'] = stats['RECID'].astype(int)
+    res_path = base + '.res.csv'
+    with open(res_path, 'w', encoding='utf-8') as resfile:
+        stats.to_csv(resfile, index=False, float_format='%.2f')
+    resdf = pd.read_csv(res_path)
+    outdf = pd.read_csv(base + '.out.csv')
+    for col in resdf:
+        if col not in outdf or not np.allclose(resdf[col], outdf[col]):
+            return False
+    os.remove(res_path)
+    return True
+
+
+@pytest.mark.reforms1
+@pytest.mark.parametrize('tax_year',
+                         sorted(set(REFORM_YEARS.values()) | {2020}))
+def test_clp_output(tax_year, tests_path, baseline_policies):
+    """
+    Use current-law policy to generate static tax results for small set of
+    filing units in a single tax_year and compare those results with
+    expected results from a CSV-formatted file.
+    """
+    cases = _cases_records(tests_path, tax_year)
+    calc = Calculator(policy=baseline_policies['policy_current_law.json'],
+                      records=cases, verbose=False)
+    calc.advance_to_year(tax_year)
+    calc.calc_all()
+    base = os.path.join(tests_path, '..', 'reforms', f'clp-{tax_year}')
+    if not _res_and_out_are_same(calc, base):
+        raise ValueError(f'clp-{tax_year}.res.csv has res-vs-out differences')
+
+
 @pytest.mark.reforms1
 @pytest.mark.parametrize(
     'reform_file,tax_year',
@@ -171,7 +226,7 @@ REFORM_YEARS = {
      for f in REFORM_FILES],
 )
 def test_reform_json_and_output(reform_file, tax_year, tests_path,
-                                full_claiming_assumption):
+                                baseline_policies):
     """
     Check that each JSON reform file can be converted into a reform dictionary
     that can then be passed to the Policy class implement_reform method that
@@ -180,95 +235,24 @@ def test_reform_json_and_output(reform_file, tax_year, tests_path,
     filing units in a single tax_year and compare those results with
     expected results from a CSV-formatted file.
     """
-    # pylint: disable=too-many-statements,too-many-locals
-
-    # embedded function used only in test_reform_json_and_output
-    def write_res_file(calc, resfilename):
-        """
-        Write calc output to CSV-formatted file with resfilename.
-        """
-        varlist = [
-            'RECID', 'c00100', 'standard', 'c04800', 'iitax', 'payrolltax'
-        ]
-        # varnames  AGI    STD         TaxInc    ITAX     PTAX
-        stats = calc.dataframe(varlist)
-        stats['RECID'] = stats['RECID'].astype(int)
-        with open(resfilename, 'w', encoding='utf-8') as resfile:
-            stats.to_csv(resfile, index=False, float_format='%.2f')
-
-    # embedded function used only in test_reform_json_and_output
-    def res_and_out_are_same(base):
-        """
-        Return True if base.res.csv and base.out.csv file contents are same;
-        return False if base.res.csv and base.out.csv file contents differ.
-        """
-        resdf = pd.read_csv(base + '.res.csv')
-        outdf = pd.read_csv(base + '.out.csv')
-        diffs = False
-        for col in resdf:
-            if col in outdf:
-                if not np.allclose(resdf[col], outdf[col]):
-                    diffs = True
-            else:
-                diffs = True
-        return not diffs
-
-    # specify Records object containing cases data
-    cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')
-    cases = Records(data=cases_path,
-                    start_year=tax_year,  # set raw input data year
-                    gfactors=None,  # keeps raw data unchanged
-                    weights=None,
-                    adjust_ratios=None)
-    # specify list of reform failures
-    failures = []
-    # specify current-law-policy Calculator object
-    pol = Policy()
-    pol.implement_reform(full_claiming_assumption)
-    calc = Calculator(policy=pol, records=cases, verbose=False)
-    calc.advance_to_year(tax_year)
-    calc.calc_all()
-    clp_base = cases_path.replace('cases.csv', f'clp-{tax_year}')
-    res_path = clp_base + '.res.csv'
-    write_res_file(calc, res_path)
-    if res_and_out_are_same(clp_base):
-        os.remove(res_path)
-    else:
-        failures.append(res_path)
-    del calc
-    # read 2017_law.json reform file and specify its parameters dictionary
-    pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
-    pre_tcja = Policy.read_json_reform(pre_tcja_jrf)
-    # check reform file contents and reform results for each reform
     jrf = os.path.join(tests_path, '..', 'reforms', reform_file)
     # determine reform's baseline by reading contents of jrf
     with open(jrf, 'r', encoding='utf-8') as rfile:
         jrf_text = rfile.read()
-    pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
+    if 'Reform_Baseline: 2017_law.json' in jrf_text:
+        baseline_name = '2017_law.json'
+    else:
+        baseline_name = 'policy_current_law.json'
     # implement the reform relative to its baseline
-    reform = Policy.read_json_reform(jrf_text)
-    pol = Policy()  # current-law policy
-    pol.implement_reform(full_claiming_assumption)
-    if pre_tcja_baseline:
-        pol.implement_reform(pre_tcja)
-        assert not pol.parameter_errors
-    pol.implement_reform(reform)
+    pol = copy.deepcopy(baseline_policies[baseline_name])
+    pol.implement_reform(Policy.read_json_reform(jrf_text))
     assert not pol.parameter_errors
-    calc = Calculator(policy=pol, records=cases, verbose=False)
+    calc = Calculator(policy=pol, records=_cases_records(tests_path, tax_year),
+                      verbose=False)
     calc.advance_to_year(tax_year)
     calc.calc_all()
-    res_path = jrf.replace('.json', '.res.csv')
-    write_res_file(calc, res_path)
-    if res_and_out_are_same(res_path.replace('.res.csv', '')):
-        os.remove(res_path)
-    else:
-        failures.append(res_path)
-    del calc
-    if failures:
-        msg = 'Following reforms have res-vs-out differences:\n'
-        for ref in failures:
-            msg += f'{os.path.basename(ref)}\n'
-        raise ValueError(msg)
+    if not _res_and_out_are_same(calc, jrf.replace('.json', '')):
+        raise ValueError(f'{reform_file} has res-vs-out differences')
 
 
 def reform_results(reform_dict, records, baseline_policies):

@@ -182,49 +182,52 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
         return False
 
 
-def test_flexible_last_budget_year(cps_fullsample):
+def test_flexible_last_budget_year(cps_subsample):
     """
-    Test flexible LAST_BUDGET_YEAR logic using cps.csv file.
+    Test flexible LAST_BUDGET_YEAR logic using cps.csv subsample.
     """
+    # pylint: disable=too-many-locals
     tax_calc_year = Policy.LAST_BUDGET_YEAR - 1
     growdiff_year = tax_calc_year - 1
     growdiff_dict = {'AWAGE': {growdiff_year: 0.01, tax_calc_year: 0.0}}
 
-    def default_calculator(growdiff_dictionary):
+    def policy_and_growfactors(last_b_year):
         """
-        Return CPS-based Calculator object using default LAST_BUDGET_YEAR.
-        """
-        g_factors = GrowFactors()
-        gdiff = GrowDiff()
-        gdiff.update_growdiff(growdiff_dictionary)
-        gdiff.apply_to(g_factors)
-        pol = Policy(gfactors=g_factors)
-        rec = Records.cps_constructor(data=cps_fullsample, gfactors=g_factors)
-        calc = Calculator(policy=pol, records=rec)
-        return calc
-
-    def flexible_calculator(growdiff_dictionary, last_b_year):
-        """
-        Return CPS-based Calculator object using custom LAST_BUDGET_YEAR.
+        Return Policy and GrowFactors objects using specified last_b_year.
         """
         g_factors = GrowFactors()
         gdiff = GrowDiff(last_budget_year=last_b_year)
-        gdiff.update_growdiff(growdiff_dictionary)
+        gdiff.update_growdiff(growdiff_dict)
         gdiff.apply_to(g_factors)
         pol = Policy(gfactors=g_factors, last_budget_year=last_b_year)
-        rec = Records.cps_constructor(data=cps_fullsample, gfactors=g_factors)
-        calc = Calculator(policy=pol, records=rec)
-        return calc
+        return pol, g_factors
 
     # begin main test logic
-    cdef = default_calculator(growdiff_dict)
-    cdef.advance_to_year(tax_calc_year)
-    cdef.calc_all()
-    iitax_def = round(cdef.weighted_total('iitax'))
+    pol_def, gf_def = policy_and_growfactors(Policy.LAST_BUDGET_YEAR)
+    pol_flx, gf_flx = policy_and_growfactors(tax_calc_year)
 
-    cflx = flexible_calculator(growdiff_dict, tax_calc_year)
-    cflx.advance_to_year(tax_calc_year)
-    cflx.calc_all()
-    iitax_flx = round(cflx.weighted_total('iitax'))
+    # check that policy parameter values are the same in all years
+    # through tax_calc_year
+    years = list(range(Policy.JSON_START_YEAR, tax_calc_year + 1))
+    assert set(pol_flx.keys()) == set(pol_def.keys())
+    for pname in pol_def.keys():
+        assert np.allclose(
+            pol_flx.to_array(pname, year=years),
+            pol_def.to_array(pname, year=years)
+        ), pname
 
-    assert np.allclose([iitax_flx], [iitax_def])
+    # check that grow factors are the same in all years through tax_calc_year
+    assert np.allclose(
+        gf_flx.gfdf.loc[:tax_calc_year].to_numpy(),
+        gf_def.gfdf.loc[:tax_calc_year].to_numpy()
+    )
+
+    # check that tax calculations in tax_calc_year are the same
+    iitax = {}
+    for key, pol, gfs in (('def', pol_def, gf_def), ('flx', pol_flx, gf_flx)):
+        rec = Records.cps_constructor(data=cps_subsample, gfactors=gfs)
+        calc = Calculator(policy=pol, records=rec)
+        calc.advance_to_year(tax_calc_year)
+        calc.calc_all()
+        iitax[key] = round(calc.weighted_total('iitax'))
+    assert np.allclose([iitax['flx']], [iitax['def']])

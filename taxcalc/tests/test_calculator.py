@@ -993,7 +993,7 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     return expanded_income
 
 
-def test_custom_calculator_market_income(cps_subsample, tests_path):
+def test_custom_calculator_market_income(cps_subsample):
     """
     Test the customized-Calculator-class technique (illustrated by
     recipe05.py in the repository root) that overrides ExpandIncome
@@ -1024,25 +1024,16 @@ def test_custom_calculator_market_income(cps_subsample, tests_path):
             tc.AfterTaxIncome(self.__policy, self.__records)
             # pylint: enable=no-value-for-parameter
 
-    # specify Policy object for pre-TCJA policy
-    reforms_path = os.path.join(tests_path, '..', 'reforms')
-    reform1 = tc.Policy.read_json_reform(
-        os.path.join(reforms_path, '2017_law.json')
-    )
-    reform2 = tc.Policy.read_json_reform(
-        os.path.join(reforms_path, 'TCJA.json')
-    )
+    # specify Policy object for current-law policy
+    cyr = 2026
     bpolicy = tc.Policy()
-    bpolicy.implement_reform(reform1, print_warnings=False,
-                             raise_errors=False)
-    assert not bpolicy.parameter_errors
 
-    # specify Policy object for TCJA reform relative to pre-TCJA policy
+    # specify Policy object for reform that raises the standard deduction
+    # amount by $1000 for each MARS type in cyr
+    std_amounts = bpolicy.to_array('STD', year=cyr)[0] + 1000.
+    reform = {'STD': {cyr: std_amounts.tolist()}}
     rpolicy = tc.Policy()
-    rpolicy.implement_reform(reform1, print_warnings=False,
-                             raise_errors=False)
-    assert not rpolicy.parameter_errors
-    rpolicy.implement_reform(reform2, print_warnings=False,
+    rpolicy.implement_reform(reform, print_warnings=False,
                              raise_errors=False)
     assert not rpolicy.parameter_errors
 
@@ -1051,7 +1042,6 @@ def test_custom_calculator_market_income(cps_subsample, tests_path):
     calc1 = Calculator(policy=bpolicy, records=recs)
     calc2 = Calculator(policy=rpolicy, records=recs)
 
-    cyr = 2018
     calc1.advance_to_year(cyr)
     calc1.calc_all()
     calc2.advance_to_year(cyr)
