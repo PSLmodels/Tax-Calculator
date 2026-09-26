@@ -6,6 +6,7 @@ Test example JSON policy reform files in taxcalc/reforms directory
 # pylint --disable=locally-disabled test_reforms.py
 
 import os
+import copy
 import glob
 import json
 import pytest
@@ -270,35 +271,28 @@ def test_reform_json_and_output(reform_file, tax_year, tests_path,
         raise ValueError(msg)
 
 
-def reform_results(reform_dict, cps_data, reform_2017_law,
-                   full_claiming_assumption):
+def reform_results(reform_dict, records, baseline_policies):
     """
     Return list of actual results for the reform specified by reform_dict.
+    Note that the records and baseline_policies objects can be shared
+    across calls because the Calculator constructor makes deep copies
+    of its policy and records arguments.
     """
     # pylint: disable=too-many-locals
-    rec = Records.cps_constructor(data=cps_data)
     # create baseline Calculator object, calc1
-    pol1 = Policy()
-    pol1.implement_reform(full_claiming_assumption)
-    if reform_dict['baseline'] == '2017_law.json':
-        pol1.implement_reform(reform_2017_law)
-    elif reform_dict['baseline'] == 'policy_current_law.json':
-        pass
-    else:
-        msg = 'illegal baseline value {}'
-        raise ValueError(msg.format(reform_dict['baseline']))
-    calc1 = Calculator(policy=pol1, records=rec, verbose=False)
+    baseline_name = reform_dict['baseline']
+    if baseline_name not in baseline_policies:
+        raise ValueError(f'illegal baseline value {baseline_name}')
+    pol1 = baseline_policies[baseline_name]
+    calc1 = Calculator(policy=pol1, records=records, verbose=False)
     # create reform Calculator object, calc2
     start_year = reform_dict['start_year']
     reform = {}
     for name, value in reform_dict['value'].items():
         reform[name] = {start_year: value}
-    pol2 = Policy()
-    pol2.implement_reform(full_claiming_assumption)
-    if reform_dict['baseline'] == '2017_law.json':
-        pol2.implement_reform(reform_2017_law)
+    pol2 = copy.deepcopy(pol1)
     pol2.implement_reform(reform)
-    calc2 = Calculator(policy=pol2, records=rec, verbose=False)
+    calc2 = Calculator(policy=pol2, records=records, verbose=False)
     # increment both Calculator objects to reform's start_year
     calc1.advance_to_year(start_year)
     calc2.advance_to_year(start_year)
@@ -320,13 +314,33 @@ def reform_results(reform_dict, cps_data, reform_2017_law,
     return [float(f'{results[iyr]:.1f}') for iyr in range(0, num_years)]
 
 
-@pytest.fixture(scope='module', name='baseline_2017_law')
-def fixture_baseline_2017_law(tests_path):
+@pytest.fixture(scope='module', name='baseline_policies')
+def fixture_baseline_policies(tests_path, full_claiming_assumption):
     """
-    Read ../reforms/2017_law.json and return its policy dictionary.
+    Return dictionary of baseline Policy objects keyed by the baseline
+    names used in the reforms.json file.  Building these objects once
+    per module (rather than once per reform) greatly reduces the
+    execution time of test_reforms.
     """
+    clp_pol = Policy()
+    clp_pol.implement_reform(full_claiming_assumption)
+    assert not clp_pol.parameter_errors
     pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
-    return Policy.read_json_reform(pre_tcja_jrf)
+    pre_tcja_pol = copy.deepcopy(clp_pol)
+    pre_tcja_pol.implement_reform(Policy.read_json_reform(pre_tcja_jrf))
+    assert not pre_tcja_pol.parameter_errors
+    return {
+        'policy_current_law.json': clp_pol,
+        '2017_law.json': pre_tcja_pol,
+    }
+
+
+@pytest.fixture(scope='module', name='cps_subsample_records')
+def fixture_cps_subsample_records(cps_subsample):
+    """
+    Return Records object containing the cps_subsample data.
+    """
+    return Records.cps_constructor(data=cps_subsample)
 
 
 REFORMS_PATH = os.path.join(os.path.dirname(__file__), 'reforms.json')
@@ -391,15 +405,13 @@ def test_reforms_expect_ids(reforms_dict, reforms_expect):
 
 @pytest.mark.reforms2
 @pytest.mark.parametrize('rid', REFORM_IDS)
-def test_reforms(rid, baseline_2017_law, reforms_dict, reforms_expect,
-                 cps_subsample, full_claiming_assumption):
+def test_reforms(rid, reforms_dict, reforms_expect,
+                 cps_subsample_records, baseline_policies):
     """
     Compare actual and expected results for the reform with id equal to rid.
     """
-    # pylint: disable=too-many-arguments,too-many-positional-arguments
     actual = reform_results(reforms_dict[rid],
-                            cps_subsample, baseline_2017_law,
-                            full_claiming_assumption)
+                            cps_subsample_records, baseline_policies)
     expect = reforms_expect[rid]
     if not np.allclose(actual, expect, atol=0.0, rtol=0.0):
         act_str = ','.join(f'{res:.1f}' for res in actual)
