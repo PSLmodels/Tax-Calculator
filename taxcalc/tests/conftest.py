@@ -126,6 +126,9 @@ def call_calcfunc_fixture(calcfunc_argnames, policy_cache, monkeypatch):
                 args.append(getattr(pol, name)[0])
             else:
                 args.append(0)
-        return getattr(calcfunctions, fname)(*args)
+        func = getattr(calcfunctions, fname)
+        # call the pure Python function wrapped by a JIT decorator, if any
+        func = getattr(func, 'py_func', func)
+        return func(*args)
 
     return _call

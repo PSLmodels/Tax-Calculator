@@ -1299,8 +1299,7 @@ def ItemDed(e17500, e18400, e18500, e19200,
     g20500: float
         Casualty / theft loss after Form 4684 10% AGI floor
     ID_Casualty_frt: float
-        Reform additional AGI-fraction floor (zero under current law
-        because g20500 is already post-Form-4684)
+        Reform additional AGI-fraction floor
     ID_Casualty_hc: float
         Reform haircut on casualty deduction
     ID_Casualty_c: list
@@ -1428,8 +1427,6 @@ def ItemDed(e17500, e18400, e18500, e19200,
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # ----------------------------------------------------------------
     # Sch A Casualty and Theft Losses (line 15)
-    # g20500 is post-Form-4684 (10% AGI floor already applied), so
-    # ID_Casualty_frt defaults to 0 under current law.
     # ----------------------------------------------------------------
     c20500 = (max(0., g20500 - ID_Casualty_frt * posagi) *
               (1. - ID_Casualty_hc))  # line 15
@@ -2229,7 +2226,9 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         (regular/non-AMT) tax bracket 2
     CG_brk3: list
         Top of long-term capital gains and qualified dividends
-        (regular/non-AMT) tax bracket 3
+        (regular/non-AMT) tax bracket 3 (reform-only taxable-income
+        threshold with gains stacked on top of ordinary income; default
+        9e+99 makes the fourth bracket inert under current law)
     dwks10: float
         Sum of dwks6 + dwks9
     dwks13: float
@@ -2316,11 +2315,16 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks32 = CG_rt3 * dwks31                  # line 32: 20% tax
 
         # ---- Reform-only: 4th capital-gains bracket (not in IRS form) ---
-        # Tax-Calculator extension that levies (CG_rt4 - CG_rt3) on the
-        # portion of total taxed cap gains above CG_brk3.  Inactive under
-        # current law (CG_rt4 = CG_rt3).
-        cg_all = dwks19 + dwks28 + dwks31
-        hi_base = max(0., cg_all - CG_brk3[MARS - 1])
+        # Tax-Calculator extension that, like CG_brk1 and CG_brk2 on lines
+        # 15 and 25, treats CG_brk3 as a taxable-income threshold with
+        # cap gains stacked on top of ordinary income.  The line 31 amount
+        # occupies taxable income from line 26 + line 28 to line 26 +
+        # line 28 + line 31; the part of it above CG_brk3 is taxed at
+        # CG_rt4 instead of CG_rt3.  Because CG_brk3 >= CG_brk2, only
+        # line 31 amounts can be above CG_brk3.  Inactive under current
+        # law (CG_brk3 = 9e+99).
+        cg_top = dwks26 + dwks28 + dwks31  # top of stacked 0/15/20% gains
+        hi_base = min(dwks31, max(0., cg_top - CG_brk3[MARS - 1]))
         hi_incremental_rate = CG_rt4 - CG_rt3
         highest_rate_incremental_tax = hi_incremental_rate * hi_base
 
@@ -2480,9 +2484,11 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
       - IRC §59(j) kiddie AMT: for filers under AMT_child_em_c_age
         (no qualifying older spouse), exemption capped at
         earned + AMT_child_em.
-      - Reform-only 4th cap-gains bracket above AMT_CG_brk3 taxed
-        at AMT_CG_rt4 (no form analogue; AMT_CG_brk3 default 9e+99
-        makes this inert under current law).
+      - Reform-only 4th cap-gains bracket: cap gains that, when
+        stacked on top of ordinary income, are above the AMT_CG_brk3
+        taxable-income threshold are taxed at AMT_CG_rt4 instead of
+        AMT_CG_rt3 (no form analogue; AMT_CG_brk3 default 9e+99 makes
+        this inert under current law).
 
     Downstream: c05800 → C1040 (Form 1040 line 16 + Sch 2 line 1) →
                          NonrefundableCredits → IITAX.
@@ -2575,8 +2581,9 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         Top of long-term capital gains and qualified dividends (AMT)
         tax bracket 2 (Form 6251 line 25: top of 15% bracket)
     AMT_CG_brk3: list
-        Reform-only top of cap-gains bracket 3 (default 9e+99 →
-        inert under current law)
+        Reform-only top of cap-gains bracket 3 (taxable-income
+        threshold with gains stacked on top of ordinary income;
+        default 9e+99 → inert under current law)
     AMT_CG_rt1: float
         Long term capital gain and qualified dividends (AMT) rate 1
         (0%)
@@ -2699,25 +2706,24 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         line30 = min(line24, line29)           # amount taxed at AMT_CG_rt2:15%
         cgtax2 = line30 * AMT_CG_rt2           # line 31 = 15% * line 30
         line32 = line23 + line30               # sum of 0% + 15% amounts
-        # Form 6251 line 33 = line 22 - line 32 (residual cap-gains for
-        # 20% bracket / reform-only 4th bracket).  Skip when line 22 ==
-        # line 32 (no residual).
-        if line22 == line32:
-            line33 = 0.                        # amount taxed at AMT_CG_rt3:20%
-            linex2 = 0.                        # amount taxed at AMT_CG_rt4:ref
-        else:
-            line33 = line22 - line32
-            # Reform-only 4th bracket above AMT_CG_brk3 (default
-            # 9e+99 → linex2 collapses to 0 under current law).
-            linex1 = min(line24,
-                         max(0., AMT_CG_brk3[MARS - 1] - line20 - line21))
-            linex2 = max(0., line30 - linex1)
+        line33 = line22 - line32               # amount taxed at AMT_CG_rt3:20%
         cgtax3 = line33 * AMT_CG_rt3           # line 34 = 20% * line 33
-        cgtax4 = linex2 * AMT_CG_rt4
+        # Reform-only 4th cap-gains bracket (not in IRS form) that, like
+        # AMT_CG_brk1 and AMT_CG_brk2 on lines 19 and 25 (and CG_brk3 in
+        # GainsTax), treats AMT_CG_brk3 as a taxable-income threshold with
+        # cap gains stacked on top of ordinary income.  The line 33 amount
+        # occupies taxable income from line 28 + line 30 to line 28 +
+        # line 30 + line 33; the part of it above AMT_CG_brk3 is taxed at
+        # AMT_CG_rt4 instead of AMT_CG_rt3.  Because AMT_CG_brk3 >=
+        # AMT_CG_brk2, only line 33 amounts can be above AMT_CG_brk3.
+        # Inactive under current law (AMT_CG_brk3 = 9e+99).
+        cg_top = line28 + line30 + line33      # top of stacked 0/15/20% gains
+        hi_base = min(line33, max(0., cg_top - AMT_CG_brk3[MARS - 1]))
+        cgtax4 = (AMT_CG_rt4 - AMT_CG_rt3) * hi_base
         if line14 == 0.:                       # line 35-37: §1250 taxation
             line37 = 0.
         else:
-            line36 = max(0., line6 - line17 - line32 - line33 - linex2)
+            line36 = max(0., line6 - line17 - line32 - line33)
             line37 = AMT_CG_rt1250 * line36
         line38 = line18 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line37
         line40 = min(flat_rate_tax, line38)    # min(line 38, line 39)
@@ -3778,6 +3784,8 @@ def SchR(age_head, age_spouse, MARS, c00100,
     # ---- eligibility gate: 65+ paths only (disability not modeled) ----
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         # ---- Part I -> Part III line 10 (base) and line 15 (AGI threshold) --
+        line10 = 0.
+        line15 = 0.
         if MARS == 2:
             if age_head >= 65 and age_spouse >= 65:
                 line10 = 7500.   # Box 3 (MFJ, both 65+)
@@ -3790,9 +3798,6 @@ def SchR(age_head, age_spouse, MARS, c00100,
         elif MARS in (1, 4, 5):
             line10 = 5000.       # Box 1 (Single/HoH/QSS 65+)
             line15 = 7500.
-        else:
-            line10 = 0.
-            line15 = 0.
         line12 = line10  # line 12 = line 10 (no disability claimed)
         # ---- Part III lines 13-17: nontaxable income + AGI excess -----------
         line13a = max(0., e02400 - c02500)  # nontaxable OASDI

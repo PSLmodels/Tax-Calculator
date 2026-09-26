@@ -166,7 +166,7 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error  
 
 
-####  `SECA_Earnings_thd`  
+####  `SECA_Earnings_deminimus`  
 _Description:_ Individual self-employment earnings below this amount are not subject to SECA taxes.  To compute earnings for this threshold, will multiply net self-employment by (1 - SECA_Earnings_hc).  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
@@ -1395,15 +1395,15 @@ _Known Values:_
 2015: [75000.0, 110000.0, 55000.0, 75000.0, 75000.0]  
 2016: [75000.0, 110000.0, 55000.0, 75000.0, 75000.0]  
 2017: [75000.0, 110000.0, 55000.0, 75000.0, 75000.0]  
-2018: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]  
-2019: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]  
-2020: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]  
-2021: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]  
-2022: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]  
-2023: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]  
-2024: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]  
-2025: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]  
-2026: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]  
+2018: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]  
+2019: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]  
+2020: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]  
+2021: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]  
+2022: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]  
+2023: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]  
+2024: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]  
+2025: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]  
+2026: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
 _Out-of-Range Action:_ error  
 
@@ -2159,7 +2159,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `AMT_CG_brk1`  
-_Description:_ The gains and dividends, stacked last, of AMT taxable income below this are taxed at AMT capital gain rate 1.  
+_Description:_ The gains and dividends (stacked on top of regular income) below this are taxed at AMT capital gain rate 1.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2184,7 +2184,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `AMT_CG_rt2`  
-_Description:_ Capital gain and qualified dividend (stacked on top of regular income) below threshold 2 and above threshold 1 are taxed at this rate.  
+_Description:_ Capital gain and qualified dividends (stacked on top of regular income) below threshold 2 and above threshold 1 are taxed at this rate.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2201,7 +2201,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `AMT_CG_brk2`  
-_Description:_ The gains and dividends, stacked last, of AMT taxable income below this threshold and above bracket 1 are taxed at AMT capital gain rate 2.  
+_Description:_ The gains and dividends (stacked on top of regular income) below this and above top of bracket 1 are taxed at AMT capital gain rate 2.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2226,7 +2226,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `AMT_CG_rt3`  
-_Description:_ The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 and below threshold 3 are taxed at this rate.  
+_Description:_ The capital gain and qualified dividends (stacked on top of regular income) above threshold 2 and below threshold 3 are taxed at this rate.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2243,7 +2243,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `AMT_CG_brk3`  
-_Description:_ The gains and dividends, stacked last, of AMT taxable income below this and above bracket 2 are taxed at capital gain rate 3; above thisthey are taxed at AMT capital gain rate 4.  Default value is essentially infinity.  
+_Description:_ The gains and dividends (stacked on top of regular income) below this and above top of bracket 2 are taxed at AMT capital gain rate 3; above this they are taxed at AMT capital gain rate 4.  Default value is essentially infinity.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2261,7 +2261,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `AMT_CG_rt4`  
-_Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  
+_Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 1.0 is a placeholder that has no effect while AMT_CG_brk3 is at its essentially-infinite default value, so any reform that lowers AMT_CG_brk3 must also specify this rate.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2434,7 +2434,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `CG_rt4`  
-_Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  
+_Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 1.0 is a placeholder that has no effect while CG_brk3 is at its essentially-infinite default value, so any reform that lowers CG_brk3 must also specify this rate.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2730,15 +2730,15 @@ _Known Values:_
 2015: [1.0, 1.0, 1.0, 1.0, 1.0]  
 2016: [1.0, 1.0, 1.0, 1.0, 1.0]  
 2017: [1.0, 1.0, 1.0, 1.0, 1.0]  
-2018: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]  
-2019: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]  
-2020: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]  
-2021: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]  
-2022: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]  
-2023: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]  
-2024: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]  
-2025: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]  
-2026: [75000.0, 150000.0, 75000.0, 75000.0, 150000.0]  
+2018: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]  
+2019: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]  
+2020: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]  
+2021: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]  
+2022: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]  
+2023: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]  
+2024: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]  
+2025: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]  
+2026: [75000.0, 150000.0, 75000.0, 75000.0, 75000.0]  
 _Valid Range:_ min = 1 and max = 9e+99  
 _Out-of-Range Action:_ error  
 
@@ -4690,13 +4690,13 @@ _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False
 _Value Type:_ float  
 _Known Values:_  
  for: [single, mjoint, mseparate, headhh, widow]  
-2013: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]  
-2014: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]  
-2015: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]  
-2016: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]  
-2017: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]  
-2018: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]  
-2019: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]  
+2013: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]  
+2014: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]  
+2015: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]  
+2016: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]  
+2017: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]  
+2018: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]  
+2019: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
 _Out-of-Range Action:_ error  
 
