@@ -1744,8 +1744,7 @@
 <span class="sd">    g20500: float</span>
 <span class="sd">        Casualty / theft loss after Form 4684 10% AGI floor</span>
 <span class="sd">    ID_Casualty_frt: float</span>
-<span class="sd">        Reform additional AGI-fraction floor (zero under current law</span>
-<span class="sd">        because g20500 is already post-Form-4684)</span>
+<span class="sd">        Reform additional AGI-fraction floor</span>
 <span class="sd">    ID_Casualty_hc: float</span>
 <span class="sd">        Reform haircut on casualty deduction</span>
 <span class="sd">    ID_Casualty_c: list</span>
@@ -1873,8 +1872,6 @@
     <span class="n">c19700</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19700</span><span class="p">,</span> <span class="n">ID_Charity_c</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="c1"># Sch A Casualty and Theft Losses (line 15)</span>
-    <span class="c1"># g20500 is post-Form-4684 (10% AGI floor already applied), so</span>
-    <span class="c1"># ID_Casualty_frt defaults to 0 under current law.</span>
     <span class="c1"># ----------------------------------------------------------------</span>
     <span class="n">c20500</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">g20500</span> <span class="o">-</span> <span class="n">ID_Casualty_frt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">)</span> <span class="o">*</span>
               <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">ID_Casualty_hc</span><span class="p">))</span>  <span class="c1"># line 15</span>
@@ -2677,7 +2674,9 @@
 <span class="sd">        (regular/non-AMT) tax bracket 2</span>
 <span class="sd">    CG_brk3: list</span>
 <span class="sd">        Top of long-term capital gains and qualified dividends</span>
-<span class="sd">        (regular/non-AMT) tax bracket 3</span>
+<span class="sd">        (regular/non-AMT) tax bracket 3 (reform-only taxable-income</span>
+<span class="sd">        threshold with gains stacked on top of ordinary income; default</span>
+<span class="sd">        9e+99 makes the fourth bracket inert under current law)</span>
 <span class="sd">    dwks10: float</span>
 <span class="sd">        Sum of dwks6 + dwks9</span>
 <span class="sd">    dwks13: float</span>
@@ -2764,11 +2763,16 @@
         <span class="n">dwks32</span> <span class="o">=</span> <span class="n">CG_rt3</span> <span class="o">*</span> <span class="n">dwks31</span>                  <span class="c1"># line 32: 20% tax</span>
 
         <span class="c1"># ---- Reform-only: 4th capital-gains bracket (not in IRS form) ---</span>
-        <span class="c1"># Tax-Calculator extension that levies (CG_rt4 - CG_rt3) on the</span>
-        <span class="c1"># portion of total taxed cap gains above CG_brk3.  Inactive under</span>
-        <span class="c1"># current law (CG_rt4 = CG_rt3).</span>
-        <span class="n">cg_all</span> <span class="o">=</span> <span class="n">dwks19</span> <span class="o">+</span> <span class="n">dwks28</span> <span class="o">+</span> <span class="n">dwks31</span>
-        <span class="n">hi_base</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">cg_all</span> <span class="o">-</span> <span class="n">CG_brk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># Tax-Calculator extension that, like CG_brk1 and CG_brk2 on lines</span>
+        <span class="c1"># 15 and 25, treats CG_brk3 as a taxable-income threshold with</span>
+        <span class="c1"># cap gains stacked on top of ordinary income.  The line 31 amount</span>
+        <span class="c1"># occupies taxable income from line 26 + line 28 to line 26 +</span>
+        <span class="c1"># line 28 + line 31; the part of it above CG_brk3 is taxed at</span>
+        <span class="c1"># CG_rt4 instead of CG_rt3.  Because CG_brk3 &gt;= CG_brk2, only</span>
+        <span class="c1"># line 31 amounts can be above CG_brk3.  Inactive under current</span>
+        <span class="c1"># law (CG_brk3 = 9e+99).</span>
+        <span class="n">cg_top</span> <span class="o">=</span> <span class="n">dwks26</span> <span class="o">+</span> <span class="n">dwks28</span> <span class="o">+</span> <span class="n">dwks31</span>  <span class="c1"># top of stacked 0/15/20% gains</span>
+        <span class="n">hi_base</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dwks31</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">cg_top</span> <span class="o">-</span> <span class="n">CG_brk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
         <span class="n">hi_incremental_rate</span> <span class="o">=</span> <span class="n">CG_rt4</span> <span class="o">-</span> <span class="n">CG_rt3</span>
         <span class="n">highest_rate_incremental_tax</span> <span class="o">=</span> <span class="n">hi_incremental_rate</span> <span class="o">*</span> <span class="n">hi_base</span>
 
@@ -2928,9 +2932,11 @@
 <span class="sd">      - IRC §59(j) kiddie AMT: for filers under AMT_child_em_c_age</span>
 <span class="sd">        (no qualifying older spouse), exemption capped at</span>
 <span class="sd">        earned + AMT_child_em.</span>
-<span class="sd">      - Reform-only 4th cap-gains bracket above AMT_CG_brk3 taxed</span>
-<span class="sd">        at AMT_CG_rt4 (no form analogue; AMT_CG_brk3 default 9e+99</span>
-<span class="sd">        makes this inert under current law).</span>
+<span class="sd">      - Reform-only 4th cap-gains bracket: cap gains that, when</span>
+<span class="sd">        stacked on top of ordinary income, are above the AMT_CG_brk3</span>
+<span class="sd">        taxable-income threshold are taxed at AMT_CG_rt4 instead of</span>
+<span class="sd">        AMT_CG_rt3 (no form analogue; AMT_CG_brk3 default 9e+99 makes</span>
+<span class="sd">        this inert under current law).</span>
 
 <span class="sd">    Downstream: c05800 → C1040 (Form 1040 line 16 + Sch 2 line 1) →</span>
 <span class="sd">                         NonrefundableCredits → IITAX.</span>
@@ -3023,8 +3029,9 @@
 <span class="sd">        Top of long-term capital gains and qualified dividends (AMT)</span>
 <span class="sd">        tax bracket 2 (Form 6251 line 25: top of 15% bracket)</span>
 <span class="sd">    AMT_CG_brk3: list</span>
-<span class="sd">        Reform-only top of cap-gains bracket 3 (default 9e+99 →</span>
-<span class="sd">        inert under current law)</span>
+<span class="sd">        Reform-only top of cap-gains bracket 3 (taxable-income</span>
+<span class="sd">        threshold with gains stacked on top of ordinary income;</span>
+<span class="sd">        default 9e+99 → inert under current law)</span>
 <span class="sd">    AMT_CG_rt1: float</span>
 <span class="sd">        Long term capital gain and qualified dividends (AMT) rate 1</span>
 <span class="sd">        (0%)</span>
@@ -3147,25 +3154,24 @@
         <span class="n">line30</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line24</span><span class="p">,</span> <span class="n">line29</span><span class="p">)</span>           <span class="c1"># amount taxed at AMT_CG_rt2:15%</span>
         <span class="n">cgtax2</span> <span class="o">=</span> <span class="n">line30</span> <span class="o">*</span> <span class="n">AMT_CG_rt2</span>           <span class="c1"># line 31 = 15% * line 30</span>
         <span class="n">line32</span> <span class="o">=</span> <span class="n">line23</span> <span class="o">+</span> <span class="n">line30</span>               <span class="c1"># sum of 0% + 15% amounts</span>
-        <span class="c1"># Form 6251 line 33 = line 22 - line 32 (residual cap-gains for</span>
-        <span class="c1"># 20% bracket / reform-only 4th bracket).  Skip when line 22 ==</span>
-        <span class="c1"># line 32 (no residual).</span>
-        <span class="k">if</span> <span class="n">line22</span> <span class="o">==</span> <span class="n">line32</span><span class="p">:</span>
-            <span class="n">line33</span> <span class="o">=</span> <span class="mf">0.</span>                        <span class="c1"># amount taxed at AMT_CG_rt3:20%</span>
-            <span class="n">linex2</span> <span class="o">=</span> <span class="mf">0.</span>                        <span class="c1"># amount taxed at AMT_CG_rt4:ref</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">line33</span> <span class="o">=</span> <span class="n">line22</span> <span class="o">-</span> <span class="n">line32</span>
-            <span class="c1"># Reform-only 4th bracket above AMT_CG_brk3 (default</span>
-            <span class="c1"># 9e+99 → linex2 collapses to 0 under current law).</span>
-            <span class="n">linex1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line24</span><span class="p">,</span>
-                         <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMT_CG_brk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">line20</span> <span class="o">-</span> <span class="n">line21</span><span class="p">))</span>
-            <span class="n">linex2</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line30</span> <span class="o">-</span> <span class="n">linex1</span><span class="p">)</span>
+        <span class="n">line33</span> <span class="o">=</span> <span class="n">line22</span> <span class="o">-</span> <span class="n">line32</span>               <span class="c1"># amount taxed at AMT_CG_rt3:20%</span>
         <span class="n">cgtax3</span> <span class="o">=</span> <span class="n">line33</span> <span class="o">*</span> <span class="n">AMT_CG_rt3</span>           <span class="c1"># line 34 = 20% * line 33</span>
-        <span class="n">cgtax4</span> <span class="o">=</span> <span class="n">linex2</span> <span class="o">*</span> <span class="n">AMT_CG_rt4</span>
+        <span class="c1"># Reform-only 4th cap-gains bracket (not in IRS form) that, like</span>
+        <span class="c1"># AMT_CG_brk1 and AMT_CG_brk2 on lines 19 and 25 (and CG_brk3 in</span>
+        <span class="c1"># GainsTax), treats AMT_CG_brk3 as a taxable-income threshold with</span>
+        <span class="c1"># cap gains stacked on top of ordinary income.  The line 33 amount</span>
+        <span class="c1"># occupies taxable income from line 28 + line 30 to line 28 +</span>
+        <span class="c1"># line 30 + line 33; the part of it above AMT_CG_brk3 is taxed at</span>
+        <span class="c1"># AMT_CG_rt4 instead of AMT_CG_rt3.  Because AMT_CG_brk3 &gt;=</span>
+        <span class="c1"># AMT_CG_brk2, only line 33 amounts can be above AMT_CG_brk3.</span>
+        <span class="c1"># Inactive under current law (AMT_CG_brk3 = 9e+99).</span>
+        <span class="n">cg_top</span> <span class="o">=</span> <span class="n">line28</span> <span class="o">+</span> <span class="n">line30</span> <span class="o">+</span> <span class="n">line33</span>      <span class="c1"># top of stacked 0/15/20% gains</span>
+        <span class="n">hi_base</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line33</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">cg_top</span> <span class="o">-</span> <span class="n">AMT_CG_brk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+        <span class="n">cgtax4</span> <span class="o">=</span> <span class="p">(</span><span class="n">AMT_CG_rt4</span> <span class="o">-</span> <span class="n">AMT_CG_rt3</span><span class="p">)</span> <span class="o">*</span> <span class="n">hi_base</span>
         <span class="k">if</span> <span class="n">line14</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>                       <span class="c1"># line 35-37: §1250 taxation</span>
             <span class="n">line37</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">line36</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line6</span> <span class="o">-</span> <span class="n">line17</span> <span class="o">-</span> <span class="n">line32</span> <span class="o">-</span> <span class="n">line33</span> <span class="o">-</span> <span class="n">linex2</span><span class="p">)</span>
+            <span class="n">line36</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line6</span> <span class="o">-</span> <span class="n">line17</span> <span class="o">-</span> <span class="n">line32</span> <span class="o">-</span> <span class="n">line33</span><span class="p">)</span>
             <span class="n">line37</span> <span class="o">=</span> <span class="n">AMT_CG_rt1250</span> <span class="o">*</span> <span class="n">line36</span>
         <span class="n">line38</span> <span class="o">=</span> <span class="n">line18</span> <span class="o">+</span> <span class="n">cgtax1</span> <span class="o">+</span> <span class="n">cgtax2</span> <span class="o">+</span> <span class="n">cgtax3</span> <span class="o">+</span> <span class="n">cgtax4</span> <span class="o">+</span> <span class="n">line37</span>
         <span class="n">line40</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">flat_rate_tax</span><span class="p">,</span> <span class="n">line38</span><span class="p">)</span>    <span class="c1"># min(line 38, line 39)</span>
@@ -4229,6 +4235,8 @@
     <span class="c1"># ---- eligibility gate: 65+ paths only (disability not modeled) ----</span>
     <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span> <span class="ow">or</span> <span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">):</span>
         <span class="c1"># ---- Part I -&gt; Part III line 10 (base) and line 15 (AGI threshold) --</span>
+        <span class="n">line10</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">line15</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">:</span>
                 <span class="n">line10</span> <span class="o">=</span> <span class="mf">7500.</span>   <span class="c1"># Box 3 (MFJ, both 65+)</span>
@@ -4241,9 +4249,6 @@
         <span class="k">elif</span> <span class="n">MARS</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
             <span class="n">line10</span> <span class="o">=</span> <span class="mf">5000.</span>       <span class="c1"># Box 1 (Single/HoH/QSS 65+)</span>
             <span class="n">line15</span> <span class="o">=</span> <span class="mf">7500.</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">line10</span> <span class="o">=</span> <span class="mf">0.</span>
-            <span class="n">line15</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">line12</span> <span class="o">=</span> <span class="n">line10</span>  <span class="c1"># line 12 = line 10 (no disability claimed)</span>
         <span class="c1"># ---- Part III lines 13-17: nontaxable income + AGI excess -----------</span>
         <span class="n">line13a</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e02400</span> <span class="o">-</span> <span class="n">c02500</span><span class="p">)</span>  <span class="c1"># nontaxable OASDI</span>

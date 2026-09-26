@@ -529,7 +529,7 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-ss-trt-employer"><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employer</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-ss-trt-employee"><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employee</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ss-earnings-c"><code class="docutils literal notranslate"><span class="pre">SS_Earnings_c</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seca-earnings-thd"><code class="docutils literal notranslate"><span class="pre">SECA_Earnings_thd</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seca-earnings-deminimus"><code class="docutils literal notranslate"><span class="pre">SECA_Earnings_deminimus</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ss-earnings-thd"><code class="docutils literal notranslate"><span class="pre">SS_Earnings_thd</span></code></a></li>
 </ul>
 </li>
@@ -1123,8 +1123,8 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
-<section id="seca-earnings-thd">
-<h4><code class="docutils literal notranslate"><span class="pre">SECA_Earnings_thd</span></code><a class="headerlink" href="#seca-earnings-thd" title="Link to this heading">#</a></h4>
+<section id="seca-earnings-deminimus">
+<h4><code class="docutils literal notranslate"><span class="pre">SECA_Earnings_deminimus</span></code><a class="headerlink" href="#seca-earnings-deminimus" title="Link to this heading">#</a></h4>
 <p><em>Description:</em> Individual self-employment earnings below this amount are not subject to SECA taxes.  To compute earnings for this threshold, will multiply net self-employment by (1 - SECA_Earnings_hc).<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True <em>TMD data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
@@ -2373,15 +2373,15 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 2015: [75000.0, 110000.0, 55000.0, 75000.0, 75000.0]<br />
 2016: [75000.0, 110000.0, 55000.0, 75000.0, 75000.0]<br />
 2017: [75000.0, 110000.0, 55000.0, 75000.0, 75000.0]<br />
-2018: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]<br />
-2019: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]<br />
-2020: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]<br />
-2021: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]<br />
-2022: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]<br />
-2023: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]<br />
-2024: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]<br />
-2025: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]<br />
-2026: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]<br />
+2018: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]<br />
+2019: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]<br />
+2020: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]<br />
+2021: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]<br />
+2022: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]<br />
+2023: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]<br />
+2024: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]<br />
+2025: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]<br />
+2026: [200000.0, 400000.0, 200000.0, 200000.0, 200000.0]<br />
 <em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
@@ -3151,7 +3151,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </section>
 <section id="amt-cg-brk1">
 <h4><code class="docutils literal notranslate"><span class="pre">AMT_CG_brk1</span></code><a class="headerlink" href="#amt-cg-brk1" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The gains and dividends, stacked last, of AMT taxable income below this are taxed at AMT capital gain rate 1.<br />
+<p><em>Description:</em> The gains and dividends (stacked on top of regular income) below this are taxed at AMT capital gain rate 1.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True <em>TMD data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> True<br />
 <em>Value Type:</em> float<br />
@@ -3176,7 +3176,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </section>
 <section id="amt-cg-rt2">
 <h4><code class="docutils literal notranslate"><span class="pre">AMT_CG_rt2</span></code><a class="headerlink" href="#amt-cg-rt2" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> Capital gain and qualified dividend (stacked on top of regular income) below threshold 2 and above threshold 1 are taxed at this rate.<br />
+<p><em>Description:</em> Capital gain and qualified dividends (stacked on top of regular income) below threshold 2 and above threshold 1 are taxed at this rate.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True <em>TMD data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> float<br />
@@ -3193,7 +3193,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </section>
 <section id="amt-cg-brk2">
 <h4><code class="docutils literal notranslate"><span class="pre">AMT_CG_brk2</span></code><a class="headerlink" href="#amt-cg-brk2" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The gains and dividends, stacked last, of AMT taxable income below this threshold and above bracket 1 are taxed at AMT capital gain rate 2.<br />
+<p><em>Description:</em> The gains and dividends (stacked on top of regular income) below this and above top of bracket 1 are taxed at AMT capital gain rate 2.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True <em>TMD data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> True<br />
 <em>Value Type:</em> float<br />
@@ -3218,7 +3218,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </section>
 <section id="amt-cg-rt3">
 <h4><code class="docutils literal notranslate"><span class="pre">AMT_CG_rt3</span></code><a class="headerlink" href="#amt-cg-rt3" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 and below threshold 3 are taxed at this rate.<br />
+<p><em>Description:</em> The capital gain and qualified dividends (stacked on top of regular income) above threshold 2 and below threshold 3 are taxed at this rate.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True <em>TMD data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> float<br />
@@ -3235,7 +3235,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </section>
 <section id="amt-cg-brk3">
 <h4><code class="docutils literal notranslate"><span class="pre">AMT_CG_brk3</span></code><a class="headerlink" href="#amt-cg-brk3" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The gains and dividends, stacked last, of AMT taxable income below this and above bracket 2 are taxed at capital gain rate 3; above thisthey are taxed at AMT capital gain rate 4.  Default value is essentially infinity.<br />
+<p><em>Description:</em> The gains and dividends (stacked on top of regular income) below this and above top of bracket 2 are taxed at AMT capital gain rate 3; above this they are taxed at AMT capital gain rate 4.  Default value is essentially infinity.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True <em>TMD data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> True<br />
 <em>Value Type:</em> float<br />
@@ -3253,7 +3253,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </section>
 <section id="amt-cg-rt4">
 <h4><code class="docutils literal notranslate"><span class="pre">AMT_CG_rt4</span></code><a class="headerlink" href="#amt-cg-rt4" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.<br />
+<p><em>Description:</em> The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 1.0 is a placeholder that has no effect while AMT_CG_brk3 is at its essentially-infinite default value, so any reform that lowers AMT_CG_brk3 must also specify this rate.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> False <em>TMD data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> float<br />
@@ -3427,7 +3427,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </section>
 <section id="cg-rt4">
 <h4><code class="docutils literal notranslate"><span class="pre">CG_rt4</span></code><a class="headerlink" href="#cg-rt4" title="Link to this heading">#</a></h4>
-<p><em>Description:</em> The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.<br />
+<p><em>Description:</em> The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 1.0 is a placeholder that has no effect while CG_brk3 is at its essentially-infinite default value, so any reform that lowers CG_brk3 must also specify this rate.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True <em>TMD data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> float<br />
@@ -3727,15 +3727,15 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 2015: [1.0, 1.0, 1.0, 1.0, 1.0]<br />
 2016: [1.0, 1.0, 1.0, 1.0, 1.0]<br />
 2017: [1.0, 1.0, 1.0, 1.0, 1.0]<br />
-2018: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]<br />
-2019: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]<br />
-2020: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]<br />
-2021: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]<br />
-2022: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]<br />
-2023: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]<br />
-2024: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]<br />
-2025: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]<br />
-2026: [75000.0, 150000.0, 75000.0, 75000.0, 150000.0]<br />
+2018: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]<br />
+2019: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]<br />
+2020: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]<br />
+2021: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]<br />
+2022: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]<br />
+2023: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]<br />
+2024: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]<br />
+2025: [50000.0, 100000.0, 50000.0, 50000.0, 50000.0]<br />
+2026: [75000.0, 150000.0, 75000.0, 75000.0, 75000.0]<br />
 <em>Valid Range:</em> min = 1 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
@@ -5705,13 +5705,13 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Value Type:</em> float<br />
 <em>Known Values:</em><br />
 for: [single, mjoint, mseparate, headhh, widow]<br />
-2013: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]<br />
-2014: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]<br />
-2015: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]<br />
-2016: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]<br />
-2017: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]<br />
-2018: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]<br />
-2019: [100000.0, 200000.0, 100000.0, 100000.0, 200000.0]<br />
+2013: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]<br />
+2014: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]<br />
+2015: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]<br />
+2016: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]<br />
+2017: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]<br />
+2018: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]<br />
+2019: [100000.0, 200000.0, 100000.0, 100000.0, 100000.0]<br />
 <em>Valid Range:</em> min = 0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </section>
@@ -5979,7 +5979,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-ss-trt-employer"><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employer</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fica-ss-trt-employee"><code class="docutils literal notranslate"><span class="pre">FICA_ss_trt_employee</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ss-earnings-c"><code class="docutils literal notranslate"><span class="pre">SS_Earnings_c</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seca-earnings-thd"><code class="docutils literal notranslate"><span class="pre">SECA_Earnings_thd</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#seca-earnings-deminimus"><code class="docutils literal notranslate"><span class="pre">SECA_Earnings_deminimus</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ss-earnings-thd"><code class="docutils literal notranslate"><span class="pre">SS_Earnings_thd</span></code></a></li>
 </ul>
 </li>
