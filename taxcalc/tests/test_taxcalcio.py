@@ -352,19 +352,26 @@ def test_ctor_init_with_cps_files():
     """
     # specify valid tax_year for cps.csv input data
     txyr = 2020
-    for rid in [0, 99]:
-        tcio = TaxCalcIO('cps.csv', txyr,
-                         None, None, None, None,
-                         runid=rid)
-        tcio.init('cps.csv', txyr,
-                  None, None, None, None,
-                  exact_calculations=False)
-        assert not tcio.errmsg
-        assert tcio.tax_year() == txyr
-        # test advance_to_year method
-        tcio.silent = False
-        tcio.advance_to_year(txyr + 1)
-        assert tcio.tax_year() == txyr + 1
+    tcio = TaxCalcIO('cps.csv', txyr,
+                     None, None, None, None)
+    assert tcio.output_filename == 'cps-20-#-#-#-#.xxx'
+    tcio.init('cps.csv', txyr,
+              None, None, None, None,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    assert tcio.tax_year() == txyr
+    # test advance_to_year method
+    tcio.silent = False
+    tcio.advance_to_year(txyr + 1)
+    assert tcio.tax_year() == txyr + 1
+    assert tcio.output_filename == 'cps-21-#-#-#-#.xxx'
+    # specify runid, which affects only the output file name that is
+    # set in the TaxCalcIO constructor, so no need to call init method
+    tcio = TaxCalcIO('cps.csv', txyr,
+                     None, None, None, None,
+                     runid=99)
+    assert not tcio.errmsg
+    assert tcio.output_filename == 'run99-20.xxx'
     # specify invalid tax_year for cps.csv input data
     txyr = 2013
     tcio = TaxCalcIO('cps.csv', txyr,
