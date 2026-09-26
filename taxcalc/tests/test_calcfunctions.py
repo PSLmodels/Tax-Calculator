@@ -2090,6 +2090,8 @@ def test_F2441(call_calcfunc, reform, rvars, expected):
 # ----------------------------------------------------------------------
 
 
+# Note on EITCamount and EITC function testing:
+#
 # EITC test cases use the 2025 current-law EITC parameters, which match
 # the 2025 Form 1040 instructions (EIC Worksheet A and the EIC Table) and
 # Pub 596, indexed by the number of qualifying children (0, 1, 2, 3+):
@@ -2099,8 +2101,11 @@ def test_F2441(call_calcfunc, reform, rvars, expected):
 #     (plus [7110, 7120, 7120, 7120] when married filing jointly)
 #   phase-out rate = [0.0765, 0.1598, 0.2106, 0.2106]
 #   investment income limit = 11950
-# The expected values use the formula behind the EIC Table rather than
-# the table's $50 income bands.
+#
+# The expected values are computed from the statutory formula (IRC §32) at
+# the exact income amount, so they differ slightly from the EIC Table, which
+# evaluates the formula at the midpoint of each $50 income band and rounds
+# to whole dollars.
 
 
 @pytest.mark.parametrize('basic_frac, earnings, agi, expected', [
@@ -2148,6 +2153,10 @@ def test_EITCamount(basic_frac, earnings, agi, expected):
 # ----------------------------------------------------------------------
 # EITC
 # ----------------------------------------------------------------------
+
+
+# Read the "Note on EITCamount and EITC function testing" above,
+# just below the EITCamount banner comment.
 
 
 @pytest.mark.parametrize('rvars, expected', [
