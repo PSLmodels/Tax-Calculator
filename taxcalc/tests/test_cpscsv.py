@@ -15,6 +15,7 @@ Read Tax-Calculator/TESTING.md for details.
 import os
 import numpy as np
 import pandas as pd
+import pytest
 from taxcalc.growfactors import GrowFactors
 from taxcalc.growdiff import GrowDiff
 from taxcalc.policy import Policy
@@ -24,14 +25,29 @@ from taxcalc.calculator import Calculator
 
 START_YEAR = 2017
 NUM_YEARS = 19
+# split the NUM_YEARS into chunks that pytest-xdist can execute in parallel
+# (each chunk is a (first_year, number_of_years) pair)
+YEAR_CHUNKS = [(2017, 7), (2024, 6), (2030, 6)]
 
 
-def test_agg(tests_path, cps_fullsample, full_claiming_assumption):
+def test_year_chunks():
     """
-    Test current-law aggregate taxes using cps.csv file.
+    Check that YEAR_CHUNKS exactly cover the NUM_YEARS starting in START_YEAR.
     """
-    # pylint: disable=too-many-statements,too-many-locals
-    nyrs = NUM_YEARS
+    years = []
+    for first_year, nyrs in YEAR_CHUNKS:
+        years.extend(range(first_year, first_year + nyrs))
+    assert years == list(range(START_YEAR, START_YEAR + NUM_YEARS))
+
+
+@pytest.mark.parametrize('first_year, nyrs', YEAR_CHUNKS)
+def test_agg(first_year, nyrs,
+             tests_path, cps_fullsample, full_claiming_assumption):
+    """
+    Test current-law aggregate taxes using cps.csv file for nyrs years
+    beginning with first_year.
+    """
+    # pylint: disable=too-many-locals
     # create a baseline Policy object with current-law policy parameters
     baseline_policy = Policy()
     baseline_policy.implement_reform(full_claiming_assumption)
@@ -39,24 +55,29 @@ def test_agg(tests_path, cps_fullsample, full_claiming_assumption):
     recs = Records.cps_constructor(data=cps_fullsample)
     # create a Calculator object using baseline policy and cps records
     calc = Calculator(policy=baseline_policy, records=recs)
-    calc.advance_to_year(START_YEAR)
-    calc_start_year = calc.current_year
+    calc.advance_to_year(first_year)
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
     adt = calc.diagnostic_table(nyrs).round(1)  # column labels are int
-    taxes_fullsample = adt.loc['Combined Liability ($b)']
     # compare actual DataFrame, adt, with the expected DataFrame, edt
     aggres_path = os.path.join(tests_path, 'cpscsv_agg_expect.csv')
-    edt = pd.read_csv(aggres_path, index_col=False)  # column labels are str
-    edt.drop('Unnamed: 0', axis='columns', inplace=True)
-    assert len(adt.columns.values) == len(edt.columns.values)
+    edt = pd.read_csv(aggres_path, index_col=0)  # column labels are str
+    years = [str(year) for year in range(first_year, first_year + nyrs)]
+    assert list(adt.columns.values) == [int(year) for year in years]
+    assert set(years).issubset(set(edt.columns.values))
     diffs = False
     for icol in adt.columns.values:
         if not np.allclose(adt[icol], edt[str(icol)]):
             diffs = True
     if diffs:
-        new_filename = f'{aggres_path[:-10]}actual.csv'
-        adt.to_csv(new_filename, float_format='%.1f')
-        msg = 'CPSCSV AGG RESULTS DIFFER\n'
+        # write this chunk's actual results to a chunk file, which is
+        # merged into cpscsv_agg_actual.csv at the end of the pytest session
+        # by the pytest_sessionfinish hook in conftest.py
+        last_year = first_year + nyrs - 1
+        chunk_filename = (
+            f'{aggres_path[:-10]}actual_{first_year}-{last_year}.csv'
+        )
+        adt.to_csv(chunk_filename, float_format='%.1f')
+        msg = f'CPSCSV AGG RESULTS DIFFER IN {first_year}-{last_year}\n'
         msg += '-------------------------------------------------\n'
         msg += '--- NEW RESULTS IN cpscsv_agg_actual.csv FILE ---\n'
         msg += '--- if new OK, copy cpscsv_agg_actual.csv to  ---\n'
@@ -65,7 +86,24 @@ def test_agg(tests_path, cps_fullsample, full_claiming_assumption):
         msg += '---       (both are in taxcalc/tests)         ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
+
+
+def test_agg_subsample(tests_path, cps_fullsample, full_claiming_assumption):
+    """
+    Test that current-law aggregate taxes computed using an unweighted
+    sub-sample of cps.csv records are close to the full-sample taxes,
+    which are read from the cpscsv_agg_expect.csv file (whose contents
+    are checked by the test_agg function).
+    """
+    # pylint: disable=too-many-locals
+    nyrs = NUM_YEARS
+    # get full-sample combined tax liability from expected results file
+    aggres_path = os.path.join(tests_path, 'cpscsv_agg_expect.csv')
+    edt = pd.read_csv(aggres_path, index_col=0)  # column labels are str
+    taxes_fullsample = edt.loc['Combined Liability ($b)']
     # create aggregate diagnostic table using unweighted sub-sample of records
+    baseline_policy = Policy()
+    baseline_policy.implement_reform(full_claiming_assumption)
     rn_seed = 180  # to ensure sub-sample is always the same
     subfrac = 0.07  # sub-sample fraction
     subsample = cps_fullsample.sample(frac=subfrac, random_state=rn_seed)
@@ -75,25 +113,24 @@ def test_agg(tests_path, cps_fullsample, full_claiming_assumption):
     adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc['Combined Liability ($b)']
-    print('taxes_submsampe = ', taxes_subsample)
-    print('TAXES full sample = ', taxes_fullsample)
     msg = ''
-    for cyr in range(calc_start_year, calc_start_year + nyrs):
-        if cyr == calc_start_year:
+    for cyr in range(START_YEAR, START_YEAR + nyrs):
+        if cyr == START_YEAR:
             reltol = 0.0232
         else:
             reltol = 0.0444
-        if not np.allclose(taxes_subsample[cyr], taxes_fullsample[cyr],
-                           atol=0.0, rtol=reltol):
-            reldiff = (taxes_subsample[cyr] / taxes_fullsample[cyr]) - 1.
+        tax_sub = taxes_subsample[cyr]
+        tax_full = taxes_fullsample[str(cyr)]
+        if not np.allclose(tax_sub, tax_full, atol=0.0, rtol=reltol):
+            reldiff = (tax_sub / tax_full) - 1.
             line1 = f'\nCPSCSV AGG SUB-vs-FULL RESULTS DIFFER IN {cyr}'
             line2 = (
                 f'\n  when subfrac={subfrac:.3f}, rtol={reltol:.4f}, '
                 f'seed={rn_seed}'
             )
             line3 = (
-                f'\n  with sub={taxes_subsample[cyr]:.3f}, '
-                f'full={taxes_fullsample[cyr]:.3f}, '
+                f'\n  with sub={tax_sub:.3f}, '
+                f'full={tax_full:.3f}, '
                 f'rdiff={reldiff:.4f}'
             )
             msg += line1 + line2 + line3

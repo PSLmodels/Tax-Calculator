@@ -699,20 +699,8 @@ def test_ce_aftertax_income(cps_subsample):
 
 
 @pytest.mark.itmded_vars
-@pytest.mark.parametrize('year, cvname, hcname',
-                         [(2018, 'c17000', 'ID_Medical_hc'),
-                          (2018, 'c18300', 'ID_AllTaxes_hc'),
-                          (2018, 'c19200', 'ID_InterestPaid_hc'),
-                          (2018, 'c19700', 'ID_Charity_hc'),
-                          (2018, 'c20500', 'ID_Casualty_hc'),
-                          (2018, 'c20800', 'ID_Miscellaneous_hc'),
-                          (2017, 'c17000', 'ID_Medical_hc'),
-                          (2017, 'c18300', 'ID_AllTaxes_hc'),
-                          (2017, 'c19200', 'ID_InterestPaid_hc'),
-                          (2017, 'c19700', 'ID_Charity_hc'),
-                          (2017, 'c20500', 'ID_Casualty_hc'),
-                          (2017, 'c20800', 'ID_Miscellaneous_hc')])
-def test_itemded_component_amounts(year, cvname, hcname, cps_fullsample):
+@pytest.mark.parametrize('year', [2017, 2018])
+def test_itemded_component_amounts(year, cps_subsample):
     """
     Check that all c04470 components are adjusted to reflect the filing
     unit's standard-vs-itemized-deduction decision.  Check for 2018
@@ -725,7 +713,23 @@ def test_itemded_component_amounts(year, cvname, hcname, cps_fullsample):
     here use c21060, instead of c04470, as the itemized deductions total.
     """
     # pylint: disable=too-many-locals
-    recs = tc.Records.cps_constructor(data=cps_fullsample)
+    components = [
+        ('c17000', 'ID_Medical_hc'),
+        ('c18300', 'ID_AllTaxes_hc'),
+        ('c19200', 'ID_InterestPaid_hc'),
+        ('c19700', 'ID_Charity_hc'),
+        ('c20500', 'ID_Casualty_hc'),
+        ('c20800', 'ID_Miscellaneous_hc'),
+    ]
+    if year == 2017:
+        # pre-Pease limitation total itemized deductions
+        itmded_var = 'c21060'
+    elif year == 2018:
+        # total itemized deductions (no Pease-like limitation)
+        itmded_var = 'c04470'
+    else:
+        raise ValueError(f'illegal year value = {year}')
+    recs = tc.Records.cps_constructor(data=cps_subsample)
     # policy1 such that everybody itemizes deductions and all are allowed
     policy1 = tc.Policy()
     reform1 = {
@@ -734,47 +738,40 @@ def test_itemded_component_amounts(year, cvname, hcname, cps_fullsample):
     }
     policy1.implement_reform(reform1)
     assert not policy1.parameter_errors
-    # policy2 such that everybody itemizes deductions but one is disallowed
-    policy2 = tc.Policy()
-    reform2 = {
-        'STD_Aged': {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
-        'STD': {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
-        hcname: {year: 1.0}
-    }
-    policy2.implement_reform(reform2)
-    assert not policy2.parameter_errors
-    # compute tax liability in specified year
+    # compute tax liability in specified year under policy1
     calc1 = tc.Calculator(policy=policy1, records=recs, verbose=True)
     calc1.advance_to_year(year)
     calc1.calc_all()
-    calc2 = tc.Calculator(policy=policy2, records=recs, verbose=True)
-    calc2.advance_to_year(year)
-    calc2.calc_all()
     # confirm that nobody is taking the standard deduction
     assert np.allclose(calc1.array('standard'), 0.)
-    assert np.allclose(calc2.array('standard'), 0.)
-    # calculate different in total itemized deductions
-    if year == 2017:
-        # pre-Pease limitation total itemized deductions
-        itmded1 = calc1.weighted_total('c21060') * 1e-9
-        itmded2 = calc2.weighted_total('c21060') * 1e-9
-    elif year == 2018:
-        # total itemized deductions (no Pease-like limitation)
-        itmded1 = calc1.weighted_total('c04470') * 1e-9
-        itmded2 = calc2.weighted_total('c04470') * 1e-9
-    else:
-        raise ValueError(f'illegal year value = {year}')
-    difference_in_total_itmded = itmded1 - itmded2
-    # calculate itemized component amount
-    component_amt = calc1.weighted_total(cvname) * 1e-9
-    # confirm that component amount is equal to difference in total deductions
-    if not np.allclose(component_amt, difference_in_total_itmded):
-        msg = (
-            f'\nyear={year} {cvname}={component_amt:.6f}  !=  '
-            f'{difference_in_total_itmded:.6f}='
-            'difference_in_total_itemized_deductions'
-        )
-        raise ValueError(msg)
+    itmded1 = calc1.weighted_total(itmded_var) * 1e-9
+    # check each itemized deduction component
+    errmsg = ''
+    for cvname, hcname in components:
+        # policy2 such that everybody itemizes deductions but one is disallowed
+        policy2 = copy.deepcopy(policy1)
+        policy2.implement_reform({hcname: {year: 1.0}})
+        assert not policy2.parameter_errors
+        # compute tax liability in specified year under policy2
+        calc2 = tc.Calculator(policy=policy2, records=recs, verbose=True)
+        calc2.advance_to_year(year)
+        calc2.calc_all()
+        # confirm that nobody is taking the standard deduction
+        assert np.allclose(calc2.array('standard'), 0.)
+        # calculate difference in total itemized deductions
+        itmded2 = calc2.weighted_total(itmded_var) * 1e-9
+        difference_in_total_itmded = itmded1 - itmded2
+        # calculate itemized component amount
+        component_amt = calc1.weighted_total(cvname) * 1e-9
+        # confirm component amount is equal to difference in total deductions
+        if not np.allclose(component_amt, difference_in_total_itmded):
+            errmsg += (
+                f'\nyear={year} {cvname}={component_amt:.6f}  !=  '
+                f'{difference_in_total_itmded:.6f}='
+                'difference_in_total_itemized_deductions'
+            )
+    if errmsg:
+        raise ValueError(errmsg)
 
 
 @pytest.mark.qbid
