@@ -138,7 +138,7 @@ class TaxCalcIO():
             '.dumpdb',
         ]
         for ext in extensions:
-            delete_file(self.output_filename.replace('.xxx', ext))
+            delete_file(self._output_filename_with(ext))
 
     def init(self, input_data, tax_year, baseline, reform,
              assump, behavior, exact_calculations):
@@ -214,7 +214,7 @@ class TaxCalcIO():
         self.pol_bas = self._make_policy(policy_gfactors_bas, last_b_year)
         if self.specified_baseline:
             self._apply_poldicts(self.pol_bas, poldicts_bas)
-        # ... the reform Policy object (no reform implies reform == baseline)
+        # ... the reform Policy object (no reform implies current-law policy)
         if self.specified_reform:
             self.pol_ref = self._make_policy(policy_gfactors_ref, last_b_year)
             self._apply_poldicts(self.pol_ref, poldicts_ref)
@@ -497,6 +497,15 @@ class TaxCalcIO():
         """
         return f'{self.fname_stem}-{str(year)[2:]}{self.fname_tail}'
 
+    def _output_filename_with(self, ext):
+        """
+        Return self.output_filename with its trailing .xxx replaced by ext.
+
+        Note that only the trailing .xxx is replaced because the stem or
+        tail of the output file name may itself contain the .xxx string.
+        """
+        return self.output_filename[:-len('.xxx')] + ext
+
     def _check_input_data(self, input_data):
         """
         Check the INPUT data specified in the constructor, appending any
@@ -525,8 +534,10 @@ class TaxCalcIO():
                 'ERROR: INPUT file name ending in puf.csv is not supported\n'
             )
         # check existence of INPUT file
-        # (cps.csv data are packaged with the taxcalc package)
-        self.cps_input_data = input_data.endswith('cps.csv')
+        # (cps.csv data are packaged with the taxcalc package and are used
+        #  only when INPUT is exactly cps.csv, so that a user file whose name
+        #  merely ends in cps.csv is not silently replaced by packaged data)
+        self.cps_input_data = input_data == 'cps.csv'
         self.tmd_input_data = input_data.endswith('tmd.csv')
         if (
                 not self.cps_input_data and
@@ -590,6 +601,12 @@ class TaxCalcIO():
         if set(self.behvdict.keys()) != {'esf', 'sub', 'inc', 'cg'}:
             add_error('contains extra or missing parameters')
             self.errmsg += 'Valid parameters are "esf", "sub", "inc", "cg"'
+            return False
+        # check elasticity types
+        for name, value in self.behvdict.items():
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                add_error(f'contains non-numeric "{name}" elasticity')
+        if self.errmsg:
             return False
         # check elasticity values
         if self.behvdict['esf'] < 0.0 or self.behvdict['esf'] > 1.0:
@@ -783,7 +800,7 @@ class TaxCalcIO():
         Write policy parameter values from calc to the ext output file.
         """
         year = calc.current_year
-        fname = self.output_filename.replace('.xxx', ext)
+        fname = self._output_filename_with(ext)
         pnames = Policy.parameter_list()
         if jsonparams:
             pdict = {}
@@ -813,7 +830,7 @@ class TaxCalcIO():
         Write tables to text file.
         """
         # pylint: disable=too-many-locals
-        tab_fname = self.output_filename.replace('.xxx', '.tables')
+        tab_fname = self._output_filename_with('.tables')
         # skip tables if there are not some positive weights
         if self.calc_bas.total_weight() <= 0.:
             with open(tab_fname, 'w', encoding='utf-8') as tfile:
@@ -945,7 +962,7 @@ class TaxCalcIO():
         ]
         fnames = []
         for suffix, title, build_graph in graph_specs:
-            fname = self.output_filename.replace('.xxx', suffix)
+            fname = self._output_filename_with(suffix)
             fnames.append(fname)
             if pos_wght_sum:
                 fig = build_graph()
@@ -970,7 +987,7 @@ class TaxCalcIO():
         txt = (
             '<html>\n'
             f'<head><title>{title}</title></head>\n'
-            f'<body><center<h1>{reason}</h1></center></body>\n'
+            f'<body><center><h1>{reason}</h1></center></body>\n'
             '</html>\n'
         )
         with open(fname, 'w', encoding='utf-8') as gfile:
@@ -1004,7 +1021,7 @@ class TaxCalcIO():
         # begin main logic
         assert isinstance(dump_varlist, list)
         assert len(dump_varlist) > 0
-        db_fname = self.output_filename.replace('.xxx', '.dumpdb')
+        db_fname = self._output_filename_with('.dumpdb')
         dbcon = sqlite3.connect(db_fname)
         # write base table
         outdf = pd.DataFrame()

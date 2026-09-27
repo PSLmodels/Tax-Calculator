@@ -297,6 +297,42 @@ def test_ctor_puf_input_data_error(input_data):
     assert 'INPUT file could not be found' not in tcio.errmsg
 
 
+def test_ctor_cps_input_data_detection(tmp_path):
+    """
+    Ensure only INPUT of exactly cps.csv uses the packaged CPS data, and
+    that a user file whose name merely ends in cps.csv is read as raw data.
+    """
+    # INPUT of exactly cps.csv implies packaged CPS input data
+    tcio = TaxCalcIO(input_data='cps.csv', tax_year=2020,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert not tcio.errmsg
+    assert tcio.cps_input_data
+    # nonexistent INPUT file ending in cps.csv generates an error
+    missing = str(tmp_path / 'no-such-directory' / 'mycps.csv')
+    tcio = TaxCalcIO(input_data=missing, tax_year=2020,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert 'INPUT file could not be found' in tcio.errmsg
+    assert not tcio.cps_input_data
+    # existing INPUT file ending in cps.csv is read as raw input data
+    userfile = tmp_path / 'mycps.csv'
+    userfile.write_text(RAWINPUT, encoding='utf-8')
+    tcio = TaxCalcIO(input_data=str(userfile), tax_year=2020,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert not tcio.errmsg
+    assert not tcio.cps_input_data
+    tcio.init(input_data=str(userfile), tax_year=2020,
+              baseline=None, reform=None,
+              assump=None, behavior=None,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    assert not tcio.aging_input_data
+    assert tcio.calc_ref.array_len == 4
+    assert tcio.calc_bas.array_len == 4
+
+
 @pytest.mark.parametrize('year, base, ref, asm', [
     (2000, 'reformfile0', 'reformfile0', None),
     (2099, 'reformfile0', 'reformfile0', None),
@@ -640,6 +676,37 @@ def test_tables(reformfile1):
     tcio.delete_output_files()
 
 
+def test_output_filename_containing_xxx(tmp_path, monkeypatch):
+    """
+    Ensure output file names are correct when the INPUT file name
+    contains the .xxx string that ends the TaxCalcIO.output_filename.
+    """
+    monkeypatch.chdir(tmp_path)
+    infile = tmp_path / 'data.xxx.csv'
+    infile.write_text(RAWINPUT, encoding='utf-8')
+    tcio = TaxCalcIO(input_data=str(infile), tax_year=2020,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert not tcio.errmsg
+    assert tcio.output_filename == 'data.xxx-20-#-#-#-#.xxx'
+    tcio.init(input_data=str(infile), tax_year=2020,
+              baseline=None, reform=None,
+              assump=None, behavior=None,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    tcio.analyze(output_params=True, output_tables=True)
+    expected = {
+        'data.xxx-20-#-#-#-#-params.baseline',
+        'data.xxx-20-#-#-#-#-params.reform',
+        'data.xxx-20-#-#-#-#.tables',
+    }
+    written = {path.name for path in tmp_path.iterdir()} - {infile.name}
+    assert written == expected
+    tcio.delete_output_files()
+    written = {path.name for path in tmp_path.iterdir()} - {infile.name}
+    assert not written
+
+
 def test_graphs(reformfile1):
     """
     Test TaxCalcIO with output_graphs=True.
@@ -913,6 +980,29 @@ def test_init_behavior1_errors(behvfile1):
     assert 'negative "sub" elasticity' in tcio.errmsg
     assert 'positive "inc" elasticity' in tcio.errmsg
     assert 'positive "cg" elasticity' in tcio.errmsg
+
+
+def test_init_behavior_nonnumeric_errors(tmp_path):
+    """
+    Check TaxCalcIO.init method generates error messages rather than
+    raising an exception when BEHAVIOR file contains non-numeric values.
+    """
+    behvfile = tmp_path / 'behv.json'
+    behvfile.write_text(
+        '{"esf": "0.5", "sub": true, "inc": null, "cg": 0}\n',
+        encoding='utf-8',
+    )
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    tcio = TaxCalcIO(input_data=recdf, tax_year=2024, baseline=None,
+                     reform=None, assump=None, behavior=str(behvfile))
+    assert not tcio.errmsg
+    tcio.init(input_data=recdf, tax_year=2024, baseline=None, reform=None,
+              assump=None, behavior=str(behvfile), exact_calculations=True)
+    assert 'non-numeric "esf" elasticity' in tcio.errmsg
+    assert 'non-numeric "sub" elasticity' in tcio.errmsg
+    assert 'non-numeric "inc" elasticity' in tcio.errmsg
+    assert 'non-numeric "cg" elasticity' not in tcio.errmsg
 
 
 @pytest.fixture(scope='session', name='badjsonfile')
