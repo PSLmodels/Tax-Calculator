@@ -76,10 +76,10 @@ class GrowDiff(Parameters):
         """
         assert isinstance(growfactors, GrowFactors)
         for gfvn in GrowFactors.VALID_NAMES:
-            _gfvn = f'_{gfvn}'
+            # get diff_array just once for each gfvn because doing so is slow
+            diff_array = getattr(self, f'_{gfvn}')
             for i in range(0, self.num_years):
                 cyr = i + self.start_year
-                diff_array = getattr(self, _gfvn)
                 growfactors.update(gfvn, cyr, diff_array[i])
 
     def set_rates(self):

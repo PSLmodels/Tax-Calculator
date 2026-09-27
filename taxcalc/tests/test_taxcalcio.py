@@ -14,7 +14,7 @@ from pathlib import Path
 import tempfile
 import pytest
 import pandas as pd
-from taxcalc import TaxCalcIO, Policy
+from taxcalc import TaxCalcIO, Policy, GrowFactors
 
 
 RAWINPUT = (
@@ -527,6 +527,48 @@ def test_init_growdiff_response_without_reform(
     assert (msg in tcio.errmsg) == error_expected
     if not error_expected:
         assert not tcio.errmsg
+
+
+def test_init_applies_growdiff_values(tmp_path, reformfile0):
+    """
+    Ensure TaxCalcIO.init method applies nonzero growdiff_baseline values
+    to both baseline and reform growfactors, and nonzero growdiff_response
+    values to only reform growfactors.
+    """
+    bas_diff = 0.01
+    res_diff = 0.02
+    assumpfile = tmp_path / 'assump.json'
+    assumpfile.write_text(
+        '{"consumption": {}, '
+        f'"growdiff_baseline": {{"AWAGE": {{"2015": {bas_diff}}}, '
+        f'"ACPIU": {{"2015": {bas_diff}}}}}, '
+        f'"growdiff_response": {{"AWAGE": {{"2015": {res_diff}}}}}}}\n',
+        encoding='utf-8',
+    )
+    taxyear = 2020
+    tcio = TaxCalcIO(input_data='cps.csv', tax_year=taxyear,
+                     baseline=None, reform=reformfile0.name,
+                     assump=str(assumpfile), behavior=None)
+    assert not tcio.errmsg
+    tcio.init(input_data='cps.csv', tax_year=taxyear,
+              baseline=None, reform=reformfile0.name,
+              assump=str(assumpfile), behavior=None,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    # check growfactors used to extrapolate input data
+    clp_awage = GrowFactors().factor_value('AWAGE', taxyear)
+    bas_awage = tcio.recs_bas.gfactors.factor_value('AWAGE', taxyear)
+    ref_awage = tcio.recs_ref.gfactors.factor_value('AWAGE', taxyear)
+    assert bas_awage == pytest.approx(clp_awage + bas_diff)
+    assert ref_awage == pytest.approx(clp_awage + bas_diff + res_diff)
+    # check growfactors used to index policy parameters, which have an
+    # effect only in years after the last year of known parameter values
+    lyr = Policy.LAST_BUDGET_YEAR
+    clp = Policy()
+    clp.set_year(lyr)
+    for pol in (tcio.pol_bas, tcio.pol_ref):
+        pol.set_year(lyr)
+        assert (pol.STD > clp.STD).all()
 
 
 @pytest.mark.parametrize('baseline, reform, bas_changed, ref_changed', [

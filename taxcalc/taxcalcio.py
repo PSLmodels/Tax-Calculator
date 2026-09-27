@@ -216,11 +216,18 @@ class TaxCalcIO():
             self.errmsg += f'ERROR: {msg}\n'
         # baseline GrowFactors objects reflect only gdiff_baseline, while
         # reform GrowFactors objects reflect gdiff_baseline plus gdiff_response
+        # Note: applying a GrowDiff object whose values are all zero leaves
+        #       the GrowFactors object unchanged, so it is skipped (because
+        #       the apply_to method is relatively slow)
+        gdiffs_bas = [gd for gd in (gdiff_baseline,) if gd.has_any_response()]
+        gdiffs_ref = [gd for gd in (gdiff_baseline, gdiff_response)
+                      if gd.has_any_response()]
         for gfactors in (gfactors_bas, policy_gfactors_bas):
-            gdiff_baseline.apply_to(gfactors)
+            for gdiff in gdiffs_bas:
+                gdiff.apply_to(gfactors)
         for gfactors in (gfactors_ref, policy_gfactors_ref):
-            gdiff_baseline.apply_to(gfactors)
-            gdiff_response.apply_to(gfactors)
+            for gdiff in gdiffs_ref:
+                gdiff.apply_to(gfactors)
         # create Policy objects:
         # ... the baseline Policy object
         self.pol_bas = self._make_policy(policy_gfactors_bas, last_b_year)
