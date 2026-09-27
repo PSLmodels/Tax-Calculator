@@ -77,7 +77,6 @@ class TaxCalcIO():
                  assump, behavior, runid=0, silent=True):
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         self.silent = silent
-        self.gf_reform = None
         self.errmsg = ''
         self.behvdict = None
         self.cps_input_data = False
@@ -213,7 +212,6 @@ class TaxCalcIO():
         for gfactors in (gfactors_ref, policy_gfactors_ref):
             gdiff_baseline.apply_to(gfactors)
             gdiff_response.apply_to(gfactors)
-        self.gf_reform = copy.deepcopy(gfactors_ref)
         # create Policy objects:
         # ... the baseline Policy object
         self.pol_bas = self._make_policy(policy_gfactors_bas, last_b_year)
