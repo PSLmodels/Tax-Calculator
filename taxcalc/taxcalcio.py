@@ -395,11 +395,13 @@ class TaxCalcIO():
         else:  # if assuming no behavioral responses
             self.calc_bas.calc_all()
             self.calc_ref.calc_all()
-        # handle MTR output variables
-        mtr_ptax_bas = None
-        mtr_itax_bas = None
-        mtr_ptax_ref = None
-        mtr_itax_ref = None
+        # compute marginal tax rates (MTRs) just once if they are needed
+        # for --graphs output or for MTR variables in --dumpdb output
+        # Note: each mtr call returns a (ptax, itax, combined) tuple of
+        #       arrays computed with respect to taxpayer earnings (e00200p)
+        #       and without including employer payroll taxes in compensation,
+        #       which are the mtr_graph method's default MTR specifications
+        mtr_output = False
         if output_dump:
             assert isinstance(dump_varlist, list)
             assert len(dump_varlist) > 0
@@ -407,26 +409,24 @@ class TaxCalcIO():
                 'mtr_itax' in dump_varlist or
                 'mtr_ptax' in dump_varlist
             )
-            if mtr_output:
-                mtr_ptax_bas, mtr_itax_bas, _ = self.calc_bas.mtr(
-                    wrt_full_compensation=False,
-                    calc_all_already_called=True)
-                mtr_ptax_ref, mtr_itax_ref, _ = self.calc_ref.mtr(
-                    wrt_full_compensation=False,
-                    calc_all_already_called=True)
+        mtr_bas = None
+        mtr_ref = None
+        if output_graphs or mtr_output:
+            mtr_bas = self.calc_bas.mtr(
+                wrt_full_compensation=False,
+                calc_all_already_called=True)
+            mtr_ref = self.calc_ref.mtr(
+                wrt_full_compensation=False,
+                calc_all_already_called=True)
         # optionally write --tables output to text file
         if output_tables:
             self._write_tables_file()
         # optionally write --graphs output to HTML files
         if output_graphs:
-            self._write_graph_files()
+            self._write_graph_files(mtr_bas, mtr_ref)
         # optionally write --dumpdb output to SQLite database file
         if output_dump:
-            self._write_dumpdb_file(
-                dump_varlist,
-                mtr_ptax_ref, mtr_itax_ref,
-                mtr_ptax_bas, mtr_itax_bas,
-            )
+            self._write_dumpdb_file(dump_varlist, mtr_bas, mtr_ref)
 
     def write_policy_params_files(self, jsonparams=False):
         """
@@ -980,9 +980,11 @@ class TaxCalcIO():
         tfile.write(row)
         # pylint: enable=consider-using-f-string
 
-    def _write_graph_files(self):
+    def _write_graph_files(self, mtr_bas, mtr_ref):
         """
-        Write graphs to HTML files.
+        Write graphs to HTML files, using the mtr_bas and mtr_ref tuples
+        of marginal tax rate arrays (returned by the mtr method of the
+        baseline and reform Calculator objects) to construct the MTR graph.
         All graphs contain same number of filing units in each quantile.
         """
         # - weights don't change with reform, so use calc_bas as in tables
@@ -999,7 +1001,9 @@ class TaxCalcIO():
              lambda: self.calc_bas.mtr_graph(
                  self.calc_ref,
                  alt_e00200p_text='Taxpayer Earnings',
-                 pop_quantiles=False)),
+                 pop_quantiles=False,
+                 mtr_self=mtr_bas,
+                 mtr_calc=mtr_ref)),
         ]
         fnames = []
         for suffix, title, build_graph in graph_specs:
@@ -1052,26 +1056,24 @@ class TaxCalcIO():
         )
         dbcon.commit()
 
-    def _write_dumpdb_file(
-            self,
-            dump_varlist,
-            mtr_ptax_ref, mtr_itax_ref,
-            mtr_ptax_bas, mtr_itax_bas,
-    ):
+    def _write_dumpdb_file(self, dump_varlist, mtr_bas, mtr_ref):
         """
-        Write dump output to SQLite database file.
+        Write dump output to SQLite database file, where mtr_bas and
+        mtr_ref are either None (when dump_varlist contains no MTR
+        variables) or the (ptax, itax, combined) tuples of marginal tax
+        rate arrays returned by the mtr method of the baseline and reform
+        Calculator objects.
         """
-        # pylint: disable=too-many-arguments,too-many-positional-arguments
-        def _dump_output(calcx, dumpvars, mtr_itax, mtr_ptax):
+        def _dump_output(calcx, dumpvars, mtrs):
             """
             Extract dump output from calcx and return it as Pandas DataFrame.
             """
             odict = {}
             for var in dumpvars:
                 if var == 'mtr_itax':
-                    odict[var] = pd.Series(mtr_itax)
+                    odict[var] = pd.Series(mtrs[1])
                 elif var == 'mtr_ptax':
-                    odict[var] = pd.Series(mtr_ptax)
+                    odict[var] = pd.Series(mtrs[0])
                 else:
                     odict[var] = pd.Series(calcx.array(var))
             odf = pd.concat(odict, axis=1)
@@ -1116,18 +1118,12 @@ class TaxCalcIO():
         TaxCalcIO._write_dumpdb_table(outdf, 'income_group_definition', dbcon)
         del outdf
         # write baseline table
-        outdf = _dump_output(
-            self.calc_bas, dump_varlist,
-            mtr_itax_bas, mtr_ptax_bas,
-        )
+        outdf = _dump_output(self.calc_bas, dump_varlist, mtr_bas)
         assert len(outdf.index) == self.calc_bas.array_len
         TaxCalcIO._write_dumpdb_table(outdf, 'baseline', dbcon)
         del outdf
         # write reform table
-        outdf = _dump_output(
-            self.calc_ref, dump_varlist,
-            mtr_itax_ref, mtr_ptax_ref,
-        )
+        outdf = _dump_output(self.calc_ref, dump_varlist, mtr_ref)
         assert len(outdf.index) == self.calc_ref.array_len
         TaxCalcIO._write_dumpdb_table(outdf, 'reform', dbcon)
         del outdf
