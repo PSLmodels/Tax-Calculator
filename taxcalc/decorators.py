@@ -18,7 +18,7 @@ import tempfile
 import functools
 import numpy as np
 import numba
-from numba.misc.appdirs import AppDirs
+from numba.misc.appdirs import user_cache_dir
 from taxcalc.policy import Policy
 
 
@@ -70,7 +70,7 @@ def jit_cache_root():
     numba_root = os.environ.get("NUMBA_CACHE_DIR")
     if numba_root:
         return os.path.join(numba_root, "taxcalc")
-    return AppDirs(appname="taxcalc", appauthor=False).user_cache_dir
+    return user_cache_dir(appname="taxcalc", appauthor=False, opinion=False)
 
 
 def source_hash():
