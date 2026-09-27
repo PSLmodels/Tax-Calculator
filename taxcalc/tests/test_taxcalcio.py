@@ -14,7 +14,7 @@ from pathlib import Path
 import tempfile
 import pytest
 import pandas as pd
-from taxcalc import TaxCalcIO
+from taxcalc import TaxCalcIO, Policy
 
 
 RAWINPUT = (
@@ -527,6 +527,50 @@ def test_init_growdiff_response_without_reform(
     assert (msg in tcio.errmsg) == error_expected
     if not error_expected:
         assert not tcio.errmsg
+
+
+@pytest.mark.parametrize('baseline, reform, bas_changed, ref_changed', [
+    (None, None, False, False),
+    ('reformfile0', None, True, False),
+    (None, 'reformfile0', False, True),
+    ('reformfile0', 'reformfile0', True, True),
+])
+def test_init_baseline_and_reform_policy(
+        reformfile0, baseline, reform, bas_changed, ref_changed,
+):
+    """
+    Ensure TaxCalcIO.init method creates baseline and reform Policy objects
+    that reflect only the BASELINE and REFORM files, respectively, so that
+    the reform policy is current-law policy when there is no REFORM file
+    even when there is a BASELINE file.
+    """
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    taxyear = 2020
+    reform_value = 700000  # reformfile0 value of SS_Earnings_c in 2020
+    clp = Policy()
+    clp.set_year(taxyear)
+    clp_value = clp.SS_Earnings_c
+    assert clp_value != reform_value
+    baseline = reformfile0.name if baseline else None
+    reform = reformfile0.name if reform else None
+    tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
+                     tax_year=taxyear,
+                     baseline=baseline, reform=reform,
+                     assump=None, behavior=None)
+    assert not tcio.errmsg
+    tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
+              tax_year=taxyear,
+              baseline=baseline, reform=reform,
+              assump=None, behavior=None,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    assert tcio.pol_ref is not tcio.pol_bas
+    expect_bas = reform_value if bas_changed else clp_value
+    expect_ref = reform_value if ref_changed else clp_value
+    assert tcio.pol_bas.SS_Earnings_c == expect_bas
+    assert tcio.pol_ref.SS_Earnings_c == expect_ref
+    assert tcio.calc_bas.policy_param('SS_Earnings_c') == expect_bas
+    assert tcio.calc_ref.policy_param('SS_Earnings_c') == expect_ref
 
 
 def test_ctor_init_with_cps_files():

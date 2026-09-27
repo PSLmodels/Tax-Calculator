@@ -7,7 +7,6 @@ Tax-Calculator Input-Output class.
 # pylint: disable=too-many-lines
 import os
 import re
-import gc
 import copy
 import json
 import sqlite3
@@ -231,8 +230,10 @@ class TaxCalcIO():
         if self.specified_reform:
             self.pol_ref = self._make_policy(policy_gfactors_ref, last_b_year)
             self._apply_poldicts(self.pol_ref, poldicts_ref)
-        else:
+        elif self.specified_baseline:
             self.pol_ref = self._make_policy(policy_gfactors_bas, last_b_year)
+        else:  # pol_ref is identical to pol_bas, so copy it (which is faster)
+            self.pol_ref = copy.deepcopy(self.pol_bas)
         # create Consumption object
         self.con = Consumption(last_budget_year=last_b_year)
         try:
@@ -250,13 +251,16 @@ class TaxCalcIO():
             self.cps_input_data or
             self.tmd_input_data
         )
+        # Note: input data are read only once (because reading is slow) and
+        #       then copied; a Records object uses its gfactors only when
+        #       extrapolating data in its increment_year method, so the
+        #       copy's gfactors are replaced before any extrapolation
         if self.aging_input_data:
             self.recs_ref = self._make_records(
                 gfactors_ref, input_data, tax_year, exact_calculations,
             )
-            self.recs_bas = self._make_records(
-                gfactors_bas, input_data, tax_year, exact_calculations,
-            )
+            self.recs_bas = copy.deepcopy(self.recs_ref)
+            self.recs_bas.gfactors = gfactors_bas
             # extrapolate input data to tax_year
             while self.recs_ref.current_year < tax_year:
                 self.recs_ref.increment_year()
@@ -914,10 +918,6 @@ class TaxCalcIO():
                 year,
                 tkind='Differences',
             )
-        # delete intermediate DataFrame objects
-        del distdf
-        del diffdf
-        gc.collect()
         if not self.silent:
             print(  # pragma: no cover
                 f'Write tabular output to file {tab_fname}'
@@ -979,9 +979,6 @@ class TaxCalcIO():
         ])
         tfile.write(row)
         # pylint: enable=consider-using-f-string
-        del gdfx
-        del series
-        gc.collect()
 
     def _write_graph_files(self):
         """
@@ -1012,7 +1009,6 @@ class TaxCalcIO():
                 fig = build_graph()
                 write_graph_file(fig, fname, title)
                 del fig
-                gc.collect()
             else:
                 reason = 'No graph because sum of weights is not positive'
                 TaxCalcIO._write_empty_graph_file(fname, title, reason)
@@ -1036,6 +1032,25 @@ class TaxCalcIO():
         )
         with open(fname, 'w', encoding='utf-8') as gfile:
             gfile.write(txt)
+
+    @staticmethod
+    def _write_dumpdb_table(dframe, tname, dbcon):
+        """
+        Write dframe contents to a new tname table in the dbcon database.
+
+        Note that this produces the same table schema and contents as
+        dframe.to_sql(tname, dbcon, index=False) but is substantially
+        faster for the wide dump tables because the rows are passed to
+        SQLite directly without the pandas to_sql overhead.
+        """
+        dbcon.execute(pd.io.sql.get_schema(dframe, tname))
+        placeholders = ','.join(['?'] * len(dframe.columns))
+        columns = [dframe[col].to_numpy().tolist() for col in dframe.columns]
+        rows = zip(*columns)
+        dbcon.executemany(
+            f'INSERT INTO "{tname}" VALUES ({placeholders})', rows
+        )
+        dbcon.commit()
 
     def _write_dumpdb_file(
             self,
@@ -1087,7 +1102,7 @@ class TaxCalcIO():
             labels=False,  # pd.cut returns bins numbered 0,1,2,...
         )
         assert len(outdf.index) == self.calc_bas.array_len
-        outdf.to_sql('base', dbcon, index=False)
+        TaxCalcIO._write_dumpdb_table(outdf, 'base', dbcon)
         del outdf
         # write income_group_definition table
         num_groups = len(expanded_income_bin_edges) - 1
@@ -1098,7 +1113,7 @@ class TaxCalcIO():
         outdf['income_lower'] = np.array(expanded_income_bin_edges[:-1])
         outdf['income_up_to'] = np.array(expanded_income_bin_edges[1:])
         assert len(outdf.index) == num_groups
-        outdf.to_sql('income_group_definition', dbcon, index=False)
+        TaxCalcIO._write_dumpdb_table(outdf, 'income_group_definition', dbcon)
         del outdf
         # write baseline table
         outdf = _dump_output(
@@ -1106,7 +1121,7 @@ class TaxCalcIO():
             mtr_itax_bas, mtr_ptax_bas,
         )
         assert len(outdf.index) == self.calc_bas.array_len
-        outdf.to_sql('baseline', dbcon, index=False)
+        TaxCalcIO._write_dumpdb_table(outdf, 'baseline', dbcon)
         del outdf
         # write reform table
         outdf = _dump_output(
@@ -1114,11 +1129,9 @@ class TaxCalcIO():
             mtr_itax_ref, mtr_ptax_ref,
         )
         assert len(outdf.index) == self.calc_ref.array_len
-        outdf.to_sql('reform', dbcon, index=False)
+        TaxCalcIO._write_dumpdb_table(outdf, 'reform', dbcon)
         del outdf
         dbcon.close()
-        del dbcon
-        gc.collect()
         if not self.silent:
             print(  # pragma: no cover
                 f'Write dump output to sqlite3 database file {db_fname}'
