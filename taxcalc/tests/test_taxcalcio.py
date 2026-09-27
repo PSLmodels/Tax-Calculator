@@ -498,6 +498,33 @@ def test_dump_variables(dumpvar_str, str_valid, num_vars):
         assert len(varlist) == num_vars
 
 
+def test_dump_variables_preserves_errmsg():
+    """
+    Ensure TaxCalcIO dump_variables method appends to, rather than resets,
+    any existing error message, and that an existing error message does not
+    cause valid dump variables to be treated as invalid.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    tcio = TaxCalcIO(input_data=recdf, tax_year=2018,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert not tcio.errmsg
+    prior_errmsg = 'ERROR: prior error\n'
+    # valid dump variables leave existing error message unchanged
+    tcio.errmsg = prior_errmsg
+    varlist = tcio.dump_variables('iitax payrolltax c00100')
+    assert varlist == ['RECID', 'iitax', 'payrolltax', 'c00100']
+    assert tcio.errmsg == prior_errmsg
+    # invalid dump variables are appended to existing error message
+    varlist = tcio.dump_variables('iitax kombined')
+    assert not varlist
+    assert tcio.errmsg == (
+        prior_errmsg +
+        'ERROR: invalid variable name kombined in DUMPVARS file\n'
+    )
+
+
 def test_output_options_min(reformfile1, assumpfile1):
     """
     Test TaxCalcIO output_dump options with minimal dump variables.

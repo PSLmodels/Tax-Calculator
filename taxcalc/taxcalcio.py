@@ -454,10 +454,9 @@ class TaxCalcIO():
         """
         Return list of variable names extracted from dumpvars_str, plus
         minimal baseline/reform variables even if not in dumpvars_str.
-        Also, builds self.errmsg if any specified variables are not valid.
+        Also, appends to self.errmsg if any specified variables are not valid.
         """
         assert isinstance(dumpvars_str, str)
-        self.errmsg = ''
         # get read and calc Records variables
         recs_vinfo = Records(data=None)  # contains records VARINFO only
         valid_set = (
@@ -477,12 +476,17 @@ class TaxCalcIO():
                 str.maketrans(',;|', '   ')
             ).split()
             # ... check that all dumpvars items are valid
+            # Note: errors are collected in a local variable so that any
+            #       existing self.errmsg content is preserved and does not
+            #       cause valid dumpvars to be treated as invalid
             valid_set |= set(TaxCalcIO.MTR_DUMPVARS)
+            errmsg = ''
             for var in dumpvars:
                 if var not in valid_set:
                     msg = f'invalid variable name {var} in DUMPVARS file'
-                    self.errmsg += f'ERROR: {msg}\n'
-            if self.errmsg:
+                    errmsg += f'ERROR: {msg}\n'
+            if errmsg:
+                self.errmsg += errmsg
                 return []
         # construct variable list, omitting duplicates and the BASE_DUMPVARS
         # variables, which are written to the dumpdb base table
