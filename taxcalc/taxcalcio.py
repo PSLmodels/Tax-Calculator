@@ -201,6 +201,11 @@ class TaxCalcIO():
             assumpdict['growdiff_baseline'], last_b_year)
         gdiff_response = self._make_growdiff(
             assumpdict['growdiff_response'], last_b_year)
+        # growdiff_response specifies growth differences that are a response
+        # to a reform, so it makes no sense to specify it without a reform
+        if not self.specified_reform and gdiff_response.has_any_response():
+            msg = 'ASSUMP file has growdiff_response but there is no REFORM'
+            self.errmsg += f'ERROR: {msg}\n'
         # baseline GrowFactors objects reflect only gdiff_baseline, while
         # reform GrowFactors objects reflect gdiff_baseline plus gdiff_response
         for gfactors in (gfactors_bas, policy_gfactors_bas):

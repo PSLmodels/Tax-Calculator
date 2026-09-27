@@ -382,6 +382,41 @@ def test_init_errors(reformfile0, errorreformfile, errorassumpfile,
     assert tcio.errmsg
 
 
+@pytest.mark.parametrize('reform, growdiff_response, error_expected', [
+    (None, '{}', False),
+    (None, '{"ABOOK": {"2020": 0.0}}', False),
+    (None, '{"ABOOK": {"2020": 0.01}}', True),
+    ('reformfile0', '{"ABOOK": {"2020": 0.01}}', False),
+])
+def test_init_growdiff_response_without_reform(
+        tmp_path, reformfile0, reform, growdiff_response, error_expected,
+):
+    """
+    Ensure TaxCalcIO.init method generates an error message when ASSUMP
+    file specifies a nonzero growdiff_response but there is no REFORM.
+    """
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    assumpfile = tmp_path / 'assump.json'
+    assumpfile.write_text(
+        '{"consumption": {}, "growdiff_baseline": {}, '
+        f'"growdiff_response": {growdiff_response}}}\n',
+        encoding='utf-8',
+    )
+    reform = reformfile0.name if reform else None
+    tcio = TaxCalcIO(input_data='cps.csv', tax_year=2020,
+                     baseline=None, reform=reform,
+                     assump=str(assumpfile), behavior=None)
+    assert not tcio.errmsg
+    tcio.init(input_data='cps.csv', tax_year=2020,
+              baseline=None, reform=reform,
+              assump=str(assumpfile), behavior=None,
+              exact_calculations=False)
+    msg = 'ASSUMP file has growdiff_response but there is no REFORM'
+    assert (msg in tcio.errmsg) == error_expected
+    if not error_expected:
+        assert not tcio.errmsg
+
+
 def test_ctor_init_with_cps_files():
     """
     Test use of CPS input files.
