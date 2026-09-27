@@ -1260,7 +1260,9 @@
                   <span class="n">mtr_wrt_full_compen</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                   <span class="n">income_measure</span><span class="o">=</span><span class="s1">'expanded_income'</span><span class="p">,</span>
                   <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                  <span class="n">dollar_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                  <span class="n">dollar_weighting</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">mtr_self</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">mtr_calc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create marginal tax rate graph that can be written to an HTML</span>
 <span class="sd">        file (using the write_graph_file utility function) or shown on</span>
@@ -1334,6 +1336,20 @@
 <span class="sd">            True produces a graph x axis that shows income_measure</span>
 <span class="sd">            (not filing unit) percentiles.</span>
 
+<span class="sd">        mtr_self : None or tuple</span>
+<span class="sd">            None implies the marginal tax rates for self are computed by</span>
+<span class="sd">            calling self.mtr() using the mtr_variable and mtr_wrt_full_compen</span>
+<span class="sd">            arguments; otherwise, the tuple of three arrays returned by an</span>
+<span class="sd">            earlier self.mtr() call, which avoids repeating that calculation.</span>
+<span class="sd">            Note that it is the caller's responsibility to ensure that the</span>
+<span class="sd">            earlier self.mtr() call used the same variable_str and</span>
+<span class="sd">            wrt_full_compensation values as the mtr_variable and</span>
+<span class="sd">            mtr_wrt_full_compen arguments of this method.</span>
+
+<span class="sd">        mtr_calc : None or tuple</span>
+<span class="sd">            same as mtr_self except for the calc Calculator object;</span>
+<span class="sd">            mtr_self and mtr_calc must both be None or both be tuples.</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        graph that is a bokeh.plotting figure object</span>
@@ -1356,13 +1372,18 @@
             <span class="n">income_variable</span> <span class="o">=</span> <span class="s1">'e00200'</span>
         <span class="c1"># check validity of mtr_measure parameter</span>
         <span class="k">assert</span> <span class="n">mtr_measure</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'combined'</span><span class="p">,</span> <span class="s1">'itax'</span><span class="p">,</span> <span class="s1">'ptax'</span><span class="p">)</span>
-        <span class="c1"># calculate marginal tax rates</span>
-        <span class="p">(</span><span class="n">mtr1_ptax</span><span class="p">,</span> <span class="n">mtr1_itax</span><span class="p">,</span>
-         <span class="n">mtr1_combined</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">variable_str</span><span class="o">=</span><span class="n">mtr_variable</span><span class="p">,</span>
-                                   <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="n">mtr_wrt_full_compen</span><span class="p">)</span>
-        <span class="p">(</span><span class="n">mtr2_ptax</span><span class="p">,</span> <span class="n">mtr2_itax</span><span class="p">,</span>
-         <span class="n">mtr2_combined</span><span class="p">)</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">variable_str</span><span class="o">=</span><span class="n">mtr_variable</span><span class="p">,</span>
-                                   <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="n">mtr_wrt_full_compen</span><span class="p">)</span>
+        <span class="c1"># calculate marginal tax rates unless they were specified</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">mtr_self</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">mtr_calc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span>
+            <span class="s1">'mtr_self and mtr_calc must both be None or both be tuples'</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">mtr_self</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mtr_self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">variable_str</span><span class="o">=</span><span class="n">mtr_variable</span><span class="p">,</span>
+                                <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="n">mtr_wrt_full_compen</span><span class="p">)</span>
+            <span class="n">mtr_calc</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">variable_str</span><span class="o">=</span><span class="n">mtr_variable</span><span class="p">,</span>
+                                <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="n">mtr_wrt_full_compen</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">mtr_self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">mtr_calc</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+        <span class="p">(</span><span class="n">mtr1_ptax</span><span class="p">,</span> <span class="n">mtr1_itax</span><span class="p">,</span> <span class="n">mtr1_combined</span><span class="p">)</span> <span class="o">=</span> <span class="n">mtr_self</span>
+        <span class="p">(</span><span class="n">mtr2_ptax</span><span class="p">,</span> <span class="n">mtr2_itax</span><span class="p">,</span> <span class="n">mtr2_combined</span><span class="p">)</span> <span class="o">=</span> <span class="n">mtr_calc</span>
         <span class="k">if</span> <span class="n">mtr_measure</span> <span class="o">==</span> <span class="s1">'itax'</span><span class="p">:</span>
             <span class="n">mtr1</span> <span class="o">=</span> <span class="n">mtr1_itax</span>
             <span class="n">mtr2</span> <span class="o">=</span> <span class="n">mtr2_itax</span>
