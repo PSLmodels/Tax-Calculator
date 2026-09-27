@@ -14,7 +14,7 @@ from pathlib import Path
 import tempfile
 import pytest
 import pandas as pd
-from taxcalc import TaxCalcIO
+from taxcalc import TaxCalcIO, Policy, GrowFactors
 
 
 RAWINPUT = (
@@ -297,6 +297,154 @@ def test_ctor_puf_input_data_error(input_data):
     assert 'INPUT file could not be found' not in tcio.errmsg
 
 
+def test_ctor_cps_input_data_detection(tmp_path):
+    """
+    Ensure only INPUT of exactly cps.csv uses the packaged CPS data, and
+    that a user file whose name merely ends in cps.csv is read as raw data.
+    """
+    # INPUT of exactly cps.csv implies packaged CPS input data
+    tcio = TaxCalcIO(input_data='cps.csv', tax_year=2020,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert not tcio.errmsg
+    assert tcio.cps_input_data
+    # nonexistent INPUT file ending in cps.csv generates an error
+    missing = str(tmp_path / 'no-such-directory' / 'mycps.csv')
+    tcio = TaxCalcIO(input_data=missing, tax_year=2020,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert 'INPUT file could not be found' in tcio.errmsg
+    assert not tcio.cps_input_data
+    # existing INPUT file ending in cps.csv is read as raw input data
+    userfile = tmp_path / 'mycps.csv'
+    userfile.write_text(RAWINPUT, encoding='utf-8')
+    tcio = TaxCalcIO(input_data=str(userfile), tax_year=2020,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert not tcio.errmsg
+    assert not tcio.cps_input_data
+    tcio.init(input_data=str(userfile), tax_year=2020,
+              baseline=None, reform=None,
+              assump=None, behavior=None,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    assert not tcio.aging_input_data
+    assert tcio.calc_ref.array_len == 4
+    assert tcio.calc_bas.array_len == 4
+
+
+@pytest.fixture(name='tmdfolder')
+def fixture_tmdfolder(tmp_path, monkeypatch):
+    """
+    Folder containing fake TMD files (with national weights for 2022-2026
+    and nm area weights for 2022-2024) that is also the current directory.
+    """
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv('TMD_AREA', raising=False)
+    (tmp_path / 'tmd.csv').write_text(RAWINPUT, encoding='utf-8')
+    gfpath = Path(__file__).resolve().parents[1] / 'growfactors.csv'
+    (tmp_path / 'tmd_growfactors.csv').write_text(
+        gfpath.read_text(encoding='utf-8'), encoding='utf-8'
+    )
+    for fname, last_year in [('tmd_weights.csv.gz', 2026),
+                             ('nm_tmd_weights.csv.gz', 2024)]:
+        wdf = pd.DataFrame(
+            {f'WT{year}': [100] * 4 for year in range(2022, last_year + 1)}
+        )
+        wdf.to_csv(tmp_path / fname, index=False)
+    return tmp_path
+
+
+def _tmd_tcio(tmdfolder, tax_year):
+    """
+    Return TaxCalcIO object constructed using TMD input data in tmdfolder.
+    """
+    return TaxCalcIO(input_data=str(tmdfolder / 'tmd.csv'),
+                     tax_year=tax_year,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+
+
+def _init_tmd_tcio(tcio, tmdfolder, tax_year):
+    """
+    Call init method of TaxCalcIO object that uses TMD input data.
+    """
+    tcio.init(input_data=str(tmdfolder / 'tmd.csv'), tax_year=tax_year,
+              baseline=None, reform=None,
+              assump=None, behavior=None,
+              exact_calculations=False)
+
+
+@pytest.mark.parametrize('area, last_year, stem', [
+    (None, 2026, 'tmd'),
+    ('nm', 2024, 'tmd_nm'),
+])
+def test_tmd_weights_last_year(tmdfolder, monkeypatch,
+                               area, last_year, stem):
+    """
+    Ensure TMD TAXYEAR must not be after the last year in the weights file
+    nor before the TMD data year.
+    """
+    if area is not None:
+        monkeypatch.setenv('TMD_AREA', area)
+    tcio = _tmd_tcio(tmdfolder, last_year)
+    assert not tcio.errmsg
+    assert tcio.tmd_input_data
+    assert tcio.tmd_weights_last_year == last_year
+    assert tcio.output_filename.startswith(f'{stem}-{last_year % 100}-')
+    for year, msg in [(last_year + 1, f'is greater than {last_year}'),
+                      (2021, 'is less than 2022')]:
+        tcio = _tmd_tcio(tmdfolder, year)
+        assert not tcio.errmsg
+        _init_tmd_tcio(tcio, tmdfolder, year)
+        assert msg in tcio.errmsg
+
+
+@pytest.mark.parametrize('area', ['', 'NM', 'nm-01', '../nm', 'nm 01'])
+def test_tmd_area_invalid(tmdfolder, monkeypatch, area):
+    """
+    Ensure TMD_AREA value must be lowercase letters and digits.
+    """
+    monkeypatch.setenv('TMD_AREA', area)
+    tcio = _tmd_tcio(tmdfolder, 2024)
+    assert 'is not a non-empty string of lowercase' in tcio.errmsg
+    assert tcio.tmd_weights is None
+
+
+def test_tmd_area_missing_weights_file(tmdfolder, monkeypatch):
+    """
+    Ensure missing area weights file generates an error.
+    """
+    monkeypatch.setenv('TMD_AREA', 'nm01')
+    tcio = _tmd_tcio(tmdfolder, 2024)
+    assert 'nm01_tmd_weights.csv.gz could not be found' in tcio.errmsg
+
+
+def test_tmd_weights_file_without_wt_columns(tmdfolder):
+    """
+    Ensure weights file containing no WTyyyy columns generates an error.
+    """
+    pd.DataFrame({'RECID': [1, 2, 3, 4]}).to_csv(
+        tmdfolder / 'tmd_weights.csv.gz', index=False
+    )
+    tcio = _tmd_tcio(tmdfolder, 2024)
+    assert 'contains no WTyyyy columns' in tcio.errmsg
+
+
+@pytest.mark.parametrize('input_data', ['cps.csv', 'dataframe'])
+def test_tmd_area_with_non_tmd_input(monkeypatch, input_data):
+    """
+    Ensure TMD_AREA is rejected when INPUT is not TMD data.
+    """
+    monkeypatch.setenv('TMD_AREA', 'nm')
+    if input_data == 'dataframe':
+        input_data = pd.read_csv(StringIO(RAWINPUT))
+    tcio = TaxCalcIO(input_data=input_data, tax_year=2024,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert 'TMD_AREA environment variable is set' in tcio.errmsg
+
+
 @pytest.mark.parametrize('year, base, ref, asm', [
     (2000, 'reformfile0', 'reformfile0', None),
     (2099, 'reformfile0', 'reformfile0', None),
@@ -344,6 +492,127 @@ def test_init_errors(reformfile0, errorreformfile, errorassumpfile,
               assump=assump, behavior=behavior,
               exact_calculations=True)
     assert tcio.errmsg
+
+
+@pytest.mark.parametrize('reform, growdiff_response, error_expected', [
+    (None, '{}', False),
+    (None, '{"ABOOK": {"2020": 0.0}}', False),
+    (None, '{"ABOOK": {"2020": 0.01}}', True),
+    ('reformfile0', '{"ABOOK": {"2020": 0.01}}', False),
+])
+def test_init_growdiff_response_without_reform(
+        tmp_path, reformfile0, reform, growdiff_response, error_expected,
+):
+    """
+    Ensure TaxCalcIO.init method generates an error message when ASSUMP
+    file specifies a nonzero growdiff_response but there is no REFORM.
+    """
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    assumpfile = tmp_path / 'assump.json'
+    assumpfile.write_text(
+        '{"consumption": {}, "growdiff_baseline": {}, '
+        f'"growdiff_response": {growdiff_response}}}\n',
+        encoding='utf-8',
+    )
+    reform = reformfile0.name if reform else None
+    tcio = TaxCalcIO(input_data='cps.csv', tax_year=2020,
+                     baseline=None, reform=reform,
+                     assump=str(assumpfile), behavior=None)
+    assert not tcio.errmsg
+    tcio.init(input_data='cps.csv', tax_year=2020,
+              baseline=None, reform=reform,
+              assump=str(assumpfile), behavior=None,
+              exact_calculations=False)
+    msg = 'ASSUMP file has growdiff_response but there is no REFORM'
+    assert (msg in tcio.errmsg) == error_expected
+    if not error_expected:
+        assert not tcio.errmsg
+
+
+def test_init_applies_growdiff_values(tmp_path, reformfile0):
+    """
+    Ensure TaxCalcIO.init method applies nonzero growdiff_baseline values
+    to both baseline and reform growfactors, and nonzero growdiff_response
+    values to only reform growfactors.
+    """
+    bas_diff = 0.01
+    res_diff = 0.02
+    assumpfile = tmp_path / 'assump.json'
+    assumpfile.write_text(
+        '{"consumption": {}, '
+        f'"growdiff_baseline": {{"AWAGE": {{"2015": {bas_diff}}}, '
+        f'"ACPIU": {{"2015": {bas_diff}}}}}, '
+        f'"growdiff_response": {{"AWAGE": {{"2015": {res_diff}}}}}}}\n',
+        encoding='utf-8',
+    )
+    taxyear = 2020
+    tcio = TaxCalcIO(input_data='cps.csv', tax_year=taxyear,
+                     baseline=None, reform=reformfile0.name,
+                     assump=str(assumpfile), behavior=None)
+    assert not tcio.errmsg
+    tcio.init(input_data='cps.csv', tax_year=taxyear,
+              baseline=None, reform=reformfile0.name,
+              assump=str(assumpfile), behavior=None,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    # check growfactors used to extrapolate input data
+    clp_awage = GrowFactors().factor_value('AWAGE', taxyear)
+    bas_awage = tcio.recs_bas.gfactors.factor_value('AWAGE', taxyear)
+    ref_awage = tcio.recs_ref.gfactors.factor_value('AWAGE', taxyear)
+    assert bas_awage == pytest.approx(clp_awage + bas_diff)
+    assert ref_awage == pytest.approx(clp_awage + bas_diff + res_diff)
+    # check growfactors used to index policy parameters, which have an
+    # effect only in years after the last year of known parameter values
+    lyr = Policy.LAST_BUDGET_YEAR
+    clp = Policy()
+    clp.set_year(lyr)
+    for pol in (tcio.pol_bas, tcio.pol_ref):
+        pol.set_year(lyr)
+        assert (pol.STD > clp.STD).all()
+
+
+@pytest.mark.parametrize('baseline, reform, bas_changed, ref_changed', [
+    (None, None, False, False),
+    ('reformfile0', None, True, False),
+    (None, 'reformfile0', False, True),
+    ('reformfile0', 'reformfile0', True, True),
+])
+def test_init_baseline_and_reform_policy(
+        reformfile0, baseline, reform, bas_changed, ref_changed,
+):
+    """
+    Ensure TaxCalcIO.init method creates baseline and reform Policy objects
+    that reflect only the BASELINE and REFORM files, respectively, so that
+    the reform policy is current-law policy when there is no REFORM file
+    even when there is a BASELINE file.
+    """
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    taxyear = 2020
+    reform_value = 700000  # reformfile0 value of SS_Earnings_c in 2020
+    clp = Policy()
+    clp.set_year(taxyear)
+    clp_value = clp.SS_Earnings_c
+    assert clp_value != reform_value
+    baseline = reformfile0.name if baseline else None
+    reform = reformfile0.name if reform else None
+    tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
+                     tax_year=taxyear,
+                     baseline=baseline, reform=reform,
+                     assump=None, behavior=None)
+    assert not tcio.errmsg
+    tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
+              tax_year=taxyear,
+              baseline=baseline, reform=reform,
+              assump=None, behavior=None,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    assert tcio.pol_ref is not tcio.pol_bas
+    expect_bas = reform_value if bas_changed else clp_value
+    expect_ref = reform_value if ref_changed else clp_value
+    assert tcio.pol_bas.SS_Earnings_c == expect_bas
+    assert tcio.pol_ref.SS_Earnings_c == expect_ref
+    assert tcio.calc_bas.policy_param('SS_Earnings_c') == expect_bas
+    assert tcio.calc_ref.policy_param('SS_Earnings_c') == expect_ref
 
 
 def test_ctor_init_with_cps_files():
@@ -425,6 +694,33 @@ def test_dump_variables(dumpvar_str, str_valid, num_vars):
     assert valid == str_valid
     if valid:
         assert len(varlist) == num_vars
+
+
+def test_dump_variables_preserves_errmsg():
+    """
+    Ensure TaxCalcIO dump_variables method appends to, rather than resets,
+    any existing error message, and that an existing error message does not
+    cause valid dump variables to be treated as invalid.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    tcio = TaxCalcIO(input_data=recdf, tax_year=2018,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert not tcio.errmsg
+    prior_errmsg = 'ERROR: prior error\n'
+    # valid dump variables leave existing error message unchanged
+    tcio.errmsg = prior_errmsg
+    varlist = tcio.dump_variables('iitax payrolltax c00100')
+    assert varlist == ['RECID', 'iitax', 'payrolltax', 'c00100']
+    assert tcio.errmsg == prior_errmsg
+    # invalid dump variables are appended to existing error message
+    varlist = tcio.dump_variables('iitax kombined')
+    assert not varlist
+    assert tcio.errmsg == (
+        prior_errmsg +
+        'ERROR: invalid variable name kombined in DUMPVARS file\n'
+    )
 
 
 def test_output_options_min(reformfile1, assumpfile1):
@@ -638,6 +934,37 @@ def test_tables(reformfile1):
     # create TaxCalcIO tables file
     tcio.analyze(output_tables=True)
     tcio.delete_output_files()
+
+
+def test_output_filename_containing_xxx(tmp_path, monkeypatch):
+    """
+    Ensure output file names are correct when the INPUT file name
+    contains the .xxx string that ends the TaxCalcIO.output_filename.
+    """
+    monkeypatch.chdir(tmp_path)
+    infile = tmp_path / 'data.xxx.csv'
+    infile.write_text(RAWINPUT, encoding='utf-8')
+    tcio = TaxCalcIO(input_data=str(infile), tax_year=2020,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert not tcio.errmsg
+    assert tcio.output_filename == 'data.xxx-20-#-#-#-#.xxx'
+    tcio.init(input_data=str(infile), tax_year=2020,
+              baseline=None, reform=None,
+              assump=None, behavior=None,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    tcio.analyze(output_params=True, output_tables=True)
+    expected = {
+        'data.xxx-20-#-#-#-#-params.baseline',
+        'data.xxx-20-#-#-#-#-params.reform',
+        'data.xxx-20-#-#-#-#.tables',
+    }
+    written = {path.name for path in tmp_path.iterdir()} - {infile.name}
+    assert written == expected
+    tcio.delete_output_files()
+    written = {path.name for path in tmp_path.iterdir()} - {infile.name}
+    assert not written
 
 
 def test_graphs(reformfile1):
@@ -913,6 +1240,91 @@ def test_init_behavior1_errors(behvfile1):
     assert 'negative "sub" elasticity' in tcio.errmsg
     assert 'positive "inc" elasticity' in tcio.errmsg
     assert 'positive "cg" elasticity' in tcio.errmsg
+
+
+def test_init_behavior_nonnumeric_errors(tmp_path):
+    """
+    Check TaxCalcIO.init method generates error messages rather than
+    raising an exception when BEHAVIOR file contains non-numeric values.
+    """
+    behvfile = tmp_path / 'behv.json'
+    behvfile.write_text(
+        '{"esf": "0.5", "sub": true, "inc": null, "cg": 0}\n',
+        encoding='utf-8',
+    )
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    tcio = TaxCalcIO(input_data=recdf, tax_year=2024, baseline=None,
+                     reform=None, assump=None, behavior=str(behvfile))
+    assert not tcio.errmsg
+    tcio.init(input_data=recdf, tax_year=2024, baseline=None, reform=None,
+              assump=None, behavior=str(behvfile), exact_calculations=True)
+    assert 'non-numeric "esf" elasticity' in tcio.errmsg
+    assert 'non-numeric "sub" elasticity' in tcio.errmsg
+    assert 'non-numeric "inc" elasticity' in tcio.errmsg
+    assert 'non-numeric "cg" elasticity' not in tcio.errmsg
+
+
+@pytest.fixture(scope='session', name='badjsonfile')
+def fixture_badjsonfile():
+    """
+    Temporary file, with .json extension, that contains invalid JSON.
+    """
+    contents = """
+    {
+    "esf": 0,
+    "sub": 0,,
+    "inc": 0,
+    "cg": 0
+    }
+    """
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as jfile:
+        jfile.write(contents)
+    yield jfile
+    if os.path.isfile(jfile.name):
+        try:
+            os.remove(jfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.mark.parametrize('label', ['BASELINE', 'REFORM'])
+def test_ctor_policy_file_invalid_json(badjsonfile, label):
+    """
+    Check TaxCalcIO constructor generates error message when BASELINE or
+    REFORM file contains invalid JSON.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    json_fname = badjsonfile.name
+    tcio = TaxCalcIO(
+        input_data=recdf, tax_year=2024,
+        baseline=json_fname if label == 'BASELINE' else None,
+        reform=json_fname if label == 'REFORM' else None,
+        assump=None, behavior=None,
+    )
+    exp_msg = f'ERROR: {label} file {json_fname} contains invalid JSON\n'
+    assert exp_msg in tcio.errmsg
+
+
+def test_init_behavior_file_invalid_json(badjsonfile):
+    """
+    Check TaxCalcIO.init method generates error message when BEHAVIOR file
+    contains invalid JSON.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    behv_fname = badjsonfile.name
+    tcio = TaxCalcIO(input_data=recdf, tax_year=2024, baseline=None,
+                     reform=None, assump=None, behavior=behv_fname)
+    assert not tcio.errmsg
+    tcio.init(input_data=recdf, tax_year=2024, baseline=None, reform=None,
+              assump=None, behavior=behv_fname, exact_calculations=True)
+    exp_msg = f'ERROR: BEHAVIOR file {behv_fname} contains invalid JSON\n'
+    assert exp_msg in tcio.errmsg
+    assert tcio.behvdict is None
 
 
 @pytest.fixture(scope='session', name='behvfile2')

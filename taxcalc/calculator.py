@@ -757,7 +757,9 @@ class Calculator():
                   mtr_wrt_full_compen=False,
                   income_measure='expanded_income',
                   pop_quantiles=False,
-                  dollar_weighting=False):
+                  dollar_weighting=False,
+                  mtr_self=None,
+                  mtr_calc=None):
         """
         Create marginal tax rate graph that can be written to an HTML
         file (using the write_graph_file utility function) or shown on
@@ -831,6 +833,20 @@ class Calculator():
             True produces a graph x axis that shows income_measure
             (not filing unit) percentiles.
 
+        mtr_self : None or tuple
+            None implies the marginal tax rates for self are computed by
+            calling self.mtr() using the mtr_variable and mtr_wrt_full_compen
+            arguments; otherwise, the tuple of three arrays returned by an
+            earlier self.mtr() call, which avoids repeating that calculation.
+            Note that it is the caller's responsibility to ensure that the
+            earlier self.mtr() call used the same variable_str and
+            wrt_full_compensation values as the mtr_variable and
+            mtr_wrt_full_compen arguments of this method.
+
+        mtr_calc : None or tuple
+            same as mtr_self except for the calc Calculator object;
+            mtr_self and mtr_calc must both be None or both be tuples.
+
         Returns
         -------
         graph that is a bokeh.plotting figure object
@@ -853,13 +869,18 @@ class Calculator():
             income_variable = 'e00200'
         # check validity of mtr_measure parameter
         assert mtr_measure in ('combined', 'itax', 'ptax')
-        # calculate marginal tax rates
-        (mtr1_ptax, mtr1_itax,
-         mtr1_combined) = self.mtr(variable_str=mtr_variable,
-                                   wrt_full_compensation=mtr_wrt_full_compen)
-        (mtr2_ptax, mtr2_itax,
-         mtr2_combined) = calc.mtr(variable_str=mtr_variable,
-                                   wrt_full_compensation=mtr_wrt_full_compen)
+        # calculate marginal tax rates unless they were specified
+        assert (mtr_self is None) == (mtr_calc is None), (
+            'mtr_self and mtr_calc must both be None or both be tuples'
+        )
+        if mtr_self is None:
+            mtr_self = self.mtr(variable_str=mtr_variable,
+                                wrt_full_compensation=mtr_wrt_full_compen)
+            mtr_calc = calc.mtr(variable_str=mtr_variable,
+                                wrt_full_compensation=mtr_wrt_full_compen)
+        assert len(mtr_self) == 3 and len(mtr_calc) == 3
+        (mtr1_ptax, mtr1_itax, mtr1_combined) = mtr_self
+        (mtr2_ptax, mtr2_itax, mtr2_combined) = mtr_calc
         if mtr_measure == 'itax':
             mtr1 = mtr1_itax
             mtr2 = mtr2_itax

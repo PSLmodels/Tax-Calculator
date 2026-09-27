@@ -647,6 +647,41 @@ def test_mtr_graph(cps_subsample):
     assert fig
 
 
+def test_mtr_graph_with_specified_mtrs(cps_subsample):
+    """
+    Test mtr_graph method when marginal tax rates are specified.
+    """
+    recs = tc.Records.cps_constructor(data=cps_subsample)
+    calc1 = tc.Calculator(policy=tc.Policy(), records=recs)
+    calc1.calc_all()
+    reform = {'II_rt7': {calc1.current_year: 0.45}}
+    pol = tc.Policy()
+    pol.implement_reform(reform)
+    calc2 = tc.Calculator(policy=pol, records=recs)
+    calc2.calc_all()
+    # graph using mtr_graph-computed marginal tax rates
+    fig1 = calc1.mtr_graph(calc2)
+    # graph using earlier-computed marginal tax rates
+    mtr1 = calc1.mtr(wrt_full_compensation=False,
+                     calc_all_already_called=True)
+    mtr2 = calc2.mtr(wrt_full_compensation=False,
+                     calc_all_already_called=True)
+    fig2 = calc1.mtr_graph(calc2, mtr_self=mtr1, mtr_calc=mtr2)
+    # check that the two graphs contain the same data
+    assert len(fig1.renderers) == len(fig2.renderers)
+    for rend1, rend2 in zip(fig1.renderers, fig2.renderers):
+        data1 = rend1.data_source.data
+        data2 = rend2.data_source.data
+        assert data1.keys() == data2.keys()
+        for key in data1:
+            assert np.array_equal(data1[key], data2[key])
+    # check that specifying only one set of marginal tax rates is an error
+    with pytest.raises(AssertionError):
+        calc1.mtr_graph(calc2, mtr_self=mtr1)
+    with pytest.raises(AssertionError):
+        calc1.mtr_graph(calc2, mtr_calc=mtr2)
+
+
 def test_atr_graph(cps_subsample):
     """
     Test atr_graph method.
