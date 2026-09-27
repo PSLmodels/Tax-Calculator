@@ -582,7 +582,7 @@ class TaxCalcIO():
             json_text = jfile.read()
         try:
             self.behvdict = json_to_dict(json_text)
-        except ValueError as valerr:  # pragma: no cover
+        except ValueError as valerr:
             add_error('contains invalid JSON')
             self.errmsg += f'{valerr}'
             return False
@@ -650,7 +650,7 @@ class TaxCalcIO():
                     json_text = jfile.read()
                     try:
                         _ = json_to_dict(json_text)
-                    except ValueError as valerr:  # pragma: no cover
+                    except ValueError as valerr:
                         msg = f'{path} contains invalid JSON'
                         self.errmsg += f'ERROR: {label} file {msg}\n'
                         self.errmsg += f'{valerr}'

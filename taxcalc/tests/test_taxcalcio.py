@@ -915,6 +915,68 @@ def test_init_behavior1_errors(behvfile1):
     assert 'positive "cg" elasticity' in tcio.errmsg
 
 
+@pytest.fixture(scope='session', name='badjsonfile')
+def fixture_badjsonfile():
+    """
+    Temporary file, with .json extension, that contains invalid JSON.
+    """
+    contents = """
+    {
+    "esf": 0,
+    "sub": 0,,
+    "inc": 0,
+    "cg": 0
+    }
+    """
+    with tempfile.NamedTemporaryFile(
+            suffix='.json', mode='a', delete=False
+    ) as jfile:
+        jfile.write(contents)
+    yield jfile
+    if os.path.isfile(jfile.name):
+        try:
+            os.remove(jfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.mark.parametrize('label', ['BASELINE', 'REFORM'])
+def test_ctor_policy_file_invalid_json(badjsonfile, label):
+    """
+    Check TaxCalcIO constructor generates error message when BASELINE or
+    REFORM file contains invalid JSON.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    json_fname = badjsonfile.name
+    tcio = TaxCalcIO(
+        input_data=recdf, tax_year=2024,
+        baseline=json_fname if label == 'BASELINE' else None,
+        reform=json_fname if label == 'REFORM' else None,
+        assump=None, behavior=None,
+    )
+    exp_msg = f'ERROR: {label} file {json_fname} contains invalid JSON\n'
+    assert exp_msg in tcio.errmsg
+
+
+def test_init_behavior_file_invalid_json(badjsonfile):
+    """
+    Check TaxCalcIO.init method generates error message when BEHAVIOR file
+    contains invalid JSON.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    behv_fname = badjsonfile.name
+    tcio = TaxCalcIO(input_data=recdf, tax_year=2024, baseline=None,
+                     reform=None, assump=None, behavior=behv_fname)
+    assert not tcio.errmsg
+    tcio.init(input_data=recdf, tax_year=2024, baseline=None, reform=None,
+              assump=None, behavior=behv_fname, exact_calculations=True)
+    exp_msg = f'ERROR: BEHAVIOR file {behv_fname} contains invalid JSON\n'
+    assert exp_msg in tcio.errmsg
+    assert tcio.behvdict is None
+
+
 @pytest.fixture(scope='session', name='behvfile2')
 def fixture_behvfile2():
     """
