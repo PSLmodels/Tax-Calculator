@@ -7,7 +7,7 @@ dependencies:
 - "numpy>=2.4"
 - "pandas>=3.0"
 - "bokeh>=3.7"
-- "numba>=0.64"
+- "numba==0.67.0"
 - curl
 - setuptools
 - pytest
