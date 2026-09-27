@@ -6,6 +6,7 @@ Tax-Calculator Input-Output class.
 # pylint --disable=locally-disabled taxcalcio.py
 # pylint: disable=too-many-lines
 import os
+import re
 import gc
 import copy
 import json
@@ -82,12 +83,19 @@ class TaxCalcIO():
         self.cps_input_data = False
         self.tmd_input_data = False
         self.tmd_weights = None
+        self.tmd_weights_last_year = None
         self.tmd_gfactor = None
         # check INPUT data and get stem, the year-independent part of the
         # output file name (the tax year is spliced in when
         # self.output_filename is built below and when the advance_to_year
         # method rebuilds it for a later year)
         stem = self._check_input_data(input_data)
+        # TMD_AREA environment variable is meaningful only for TMD input data
+        if 'TMD_AREA' in os.environ and not self.tmd_input_data:
+            self.errmsg += (
+                'ERROR: TMD_AREA environment variable is set '
+                'but INPUT is not TMD data\n'
+            )
         # check each optional input file, getting the fragment that it
         # contributes to legacy output file names
         self.specified_baseline = isinstance(baseline, str)
@@ -162,20 +170,22 @@ class TaxCalcIO():
         policy_gfactors_ref = GrowFactors()
         # instantiate base/reform GrowFactors objects used to extrapolate data
         if self.tmd_input_data:
-            gfactors_bas = GrowFactors(self.tmd_gfactor)  # pragma: no cover
-            gfactors_ref = GrowFactors(self.tmd_gfactor)  # pragma: no cover
+            gfactors_bas = GrowFactors(self.tmd_gfactor)
+            gfactors_ref = GrowFactors(self.tmd_gfactor)
         else:
             gfactors_bas = GrowFactors()
             gfactors_ref = GrowFactors()
         # check tax_year validity
         max_tax_year = gfactors_bas.last_year
+        if self.tmd_input_data:
+            max_tax_year = min(max_tax_year, self.tmd_weights_last_year)
         if tax_year > max_tax_year:
             msg = f'TAXYEAR={tax_year} is greater than {max_tax_year}'
             self.errmsg += f'ERROR: {msg}\n'
         if self.cps_input_data:
             min_data_year = Records.CPSCSV_YEAR
         elif self.tmd_input_data:
-            min_data_year = Records.TMDCSV_YEAR  # pragma: no cover
+            min_data_year = Records.TMDCSV_YEAR
         else:
             min_data_year = Policy.JSON_START_YEAR
         min_tax_year = max(Policy.JSON_START_YEAR, min_data_year)
@@ -553,21 +563,48 @@ class TaxCalcIO():
         ):
             self.errmsg += 'ERROR: INPUT file could not be found\n'
         # TMD input data imply weights and gfactor files in the same folder
-        if self.tmd_input_data:  # pragma: no cover
-            tmd_dir = os.path.dirname(input_data)
-            if 'TMD_AREA' in os.environ:
-                area = os.environ['TMD_AREA']
-                wfile = f'{area}_tmd_weights.csv.gz'
-                stem = f'{fname[:-4]}_{area}'
-            else:  # using national weights
-                wfile = 'tmd_weights.csv.gz'
-            self.tmd_weights = os.path.join(tmd_dir, wfile)
-            self.tmd_gfactor = os.path.join(tmd_dir, 'tmd_growfactors.csv')
-            for kind, path in [('weights', self.tmd_weights),
-                               ('gfactor', self.tmd_gfactor)]:
-                if not os.path.isfile(path):
-                    msg = f'{kind} file {path} could not be found'
-                    self.errmsg += f'ERROR: {msg}\n'
+        if self.tmd_input_data:
+            stem = self._check_tmd_files(input_data, stem)
+        return stem
+
+    def _check_tmd_files(self, input_data, stem):
+        """
+        Check the TMD weights and growfactors files that are in the same
+        folder as the TMD INPUT file, appending any errors to self.errmsg.
+        Return the stem of the output file name, which includes any
+        TMD_AREA value.
+        """
+        tmd_dir = os.path.dirname(input_data)
+        if 'TMD_AREA' in os.environ:
+            area = os.environ['TMD_AREA']
+            if not re.fullmatch('[a-z0-9]+', area):
+                self.errmsg += (
+                    f'ERROR: TMD_AREA value "{area}" is not a '
+                    'non-empty string of lowercase letters and digits\n'
+                )
+                return stem
+            wfile = f'{area}_tmd_weights.csv.gz'
+            stem = f'{stem}_{area}'
+        else:  # using national weights
+            wfile = 'tmd_weights.csv.gz'
+        self.tmd_weights = os.path.join(tmd_dir, wfile)
+        self.tmd_gfactor = os.path.join(tmd_dir, 'tmd_growfactors.csv')
+        for kind, path in [('weights', self.tmd_weights),
+                           ('gfactor', self.tmd_gfactor)]:
+            if not os.path.isfile(path):
+                msg = f'{kind} file {path} could not be found'
+                self.errmsg += f'ERROR: {msg}\n'
+        # get last year for which the weights file contains weights
+        if os.path.isfile(self.tmd_weights):
+            wcols = pd.read_csv(self.tmd_weights, nrows=0).columns
+            wyears = [int(col[2:]) for col in wcols
+                      if re.fullmatch('WT[0-9]{4}', col)]
+            if wyears:
+                self.tmd_weights_last_year = max(wyears)
+            else:
+                msg = (f'weights file {self.tmd_weights} '
+                       'contains no WTyyyy columns')
+                self.errmsg += f'ERROR: {msg}\n'
         return stem
 
     def _check_file_arg(self, arg, label, check_files):

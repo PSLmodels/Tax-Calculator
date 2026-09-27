@@ -333,6 +333,118 @@ def test_ctor_cps_input_data_detection(tmp_path):
     assert tcio.calc_bas.array_len == 4
 
 
+@pytest.fixture(name='tmdfolder')
+def fixture_tmdfolder(tmp_path, monkeypatch):
+    """
+    Folder containing fake TMD files (with national weights for 2022-2026
+    and nm area weights for 2022-2024) that is also the current directory.
+    """
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv('TMD_AREA', raising=False)
+    (tmp_path / 'tmd.csv').write_text(RAWINPUT, encoding='utf-8')
+    gfpath = Path(__file__).resolve().parents[1] / 'growfactors.csv'
+    (tmp_path / 'tmd_growfactors.csv').write_text(
+        gfpath.read_text(encoding='utf-8'), encoding='utf-8'
+    )
+    for fname, last_year in [('tmd_weights.csv.gz', 2026),
+                             ('nm_tmd_weights.csv.gz', 2024)]:
+        wdf = pd.DataFrame(
+            {f'WT{year}': [100] * 4 for year in range(2022, last_year + 1)}
+        )
+        wdf.to_csv(tmp_path / fname, index=False)
+    return tmp_path
+
+
+def _tmd_tcio(tmdfolder, tax_year):
+    """
+    Return TaxCalcIO object constructed using TMD input data in tmdfolder.
+    """
+    return TaxCalcIO(input_data=str(tmdfolder / 'tmd.csv'),
+                     tax_year=tax_year,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+
+
+def _init_tmd_tcio(tcio, tmdfolder, tax_year):
+    """
+    Call init method of TaxCalcIO object that uses TMD input data.
+    """
+    tcio.init(input_data=str(tmdfolder / 'tmd.csv'), tax_year=tax_year,
+              baseline=None, reform=None,
+              assump=None, behavior=None,
+              exact_calculations=False)
+
+
+@pytest.mark.parametrize('area, last_year, stem', [
+    (None, 2026, 'tmd'),
+    ('nm', 2024, 'tmd_nm'),
+])
+def test_tmd_weights_last_year(tmdfolder, monkeypatch,
+                               area, last_year, stem):
+    """
+    Ensure TMD TAXYEAR must not be after the last year in the weights file
+    nor before the TMD data year.
+    """
+    if area is not None:
+        monkeypatch.setenv('TMD_AREA', area)
+    tcio = _tmd_tcio(tmdfolder, last_year)
+    assert not tcio.errmsg
+    assert tcio.tmd_input_data
+    assert tcio.tmd_weights_last_year == last_year
+    assert tcio.output_filename.startswith(f'{stem}-{last_year % 100}-')
+    for year, msg in [(last_year + 1, f'is greater than {last_year}'),
+                      (2021, 'is less than 2022')]:
+        tcio = _tmd_tcio(tmdfolder, year)
+        assert not tcio.errmsg
+        _init_tmd_tcio(tcio, tmdfolder, year)
+        assert msg in tcio.errmsg
+
+
+@pytest.mark.parametrize('area', ['', 'NM', 'nm-01', '../nm', 'nm 01'])
+def test_tmd_area_invalid(tmdfolder, monkeypatch, area):
+    """
+    Ensure TMD_AREA value must be lowercase letters and digits.
+    """
+    monkeypatch.setenv('TMD_AREA', area)
+    tcio = _tmd_tcio(tmdfolder, 2024)
+    assert 'is not a non-empty string of lowercase' in tcio.errmsg
+    assert tcio.tmd_weights is None
+
+
+def test_tmd_area_missing_weights_file(tmdfolder, monkeypatch):
+    """
+    Ensure missing area weights file generates an error.
+    """
+    monkeypatch.setenv('TMD_AREA', 'nm01')
+    tcio = _tmd_tcio(tmdfolder, 2024)
+    assert 'nm01_tmd_weights.csv.gz could not be found' in tcio.errmsg
+
+
+def test_tmd_weights_file_without_wt_columns(tmdfolder):
+    """
+    Ensure weights file containing no WTyyyy columns generates an error.
+    """
+    pd.DataFrame({'RECID': [1, 2, 3, 4]}).to_csv(
+        tmdfolder / 'tmd_weights.csv.gz', index=False
+    )
+    tcio = _tmd_tcio(tmdfolder, 2024)
+    assert 'contains no WTyyyy columns' in tcio.errmsg
+
+
+@pytest.mark.parametrize('input_data', ['cps.csv', 'dataframe'])
+def test_tmd_area_with_non_tmd_input(monkeypatch, input_data):
+    """
+    Ensure TMD_AREA is rejected when INPUT is not TMD data.
+    """
+    monkeypatch.setenv('TMD_AREA', 'nm')
+    if input_data == 'dataframe':
+        input_data = pd.read_csv(StringIO(RAWINPUT))
+    tcio = TaxCalcIO(input_data=input_data, tax_year=2024,
+                     baseline=None, reform=None,
+                     assump=None, behavior=None)
+    assert 'TMD_AREA environment variable is set' in tcio.errmsg
+
+
 @pytest.mark.parametrize('year, base, ref, asm', [
     (2000, 'reformfile0', 'reformfile0', None),
     (2099, 'reformfile0', 'reformfile0', None),
