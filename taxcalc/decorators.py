@@ -7,10 +7,18 @@ of Tax-Calculator functions in the calcfunctions.py module.
 # pylint --disable=locally-disabled decorators.py
 
 import os
+import sys
 import io
 import ast
+import time
+import shutil
 import inspect
+import hashlib
+import tempfile
+import functools
+import numpy as np
 import numba
+from numba.misc.appdirs import user_cache_dir
 from taxcalc.policy import Policy
 
 
@@ -39,10 +47,178 @@ def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
     return wrap
 
 
+# Functions defined in the CACHED_MODULE, and the apply-style functions
+# made from them, have their JIT-compiled code cached on disk in a folder
+# whose name is a hash of the source code the compiled code depends on.
+CACHED_MODULE = "taxcalc.calcfunctions"
+
+# Cache folders for other source hashes that have not been used for more
+# than JIT_CACHE_MAX_AGE_DAYS days are deleted when taxcalc is imported.
+JIT_CACHE_MAX_AGE_DAYS = 90
+
+
+def jit_cache_root():
+    """
+    Return path of folder that holds the on-disk cache of JIT-compiled
+    functions, which is the TAXCALC_JIT_CACHE_DIR environment variable
+    value if set, otherwise the taxcalc subfolder of the NUMBA_CACHE_DIR
+    folder if set, otherwise the taxcalc folder in the user's cache folder.
+    """
+    root = os.environ.get("TAXCALC_JIT_CACHE_DIR")
+    if root:
+        return root
+    numba_root = os.environ.get("NUMBA_CACHE_DIR")
+    if numba_root:
+        return os.path.join(numba_root, "taxcalc")
+    return user_cache_dir(appname="taxcalc", appauthor=False, opinion=False)
+
+
+def source_hash():
+    """
+    Return hash of the calcfunctions.py and decorators.py source code
+    and of the Python, NumPy, and Numba versions, all of which affect the
+    JIT-compiled code.  Any change in these produces a new hash value.
+    """
+    hsh = hashlib.sha256()
+    here = os.path.dirname(os.path.abspath(__file__))
+    for fname in ("calcfunctions.py", "decorators.py"):
+        with open(os.path.join(here, fname), "rb") as sfile:
+            hsh.update(sfile.read())
+    for version in (sys.version, np.__version__, numba.__version__):
+        hsh.update(version.encode())
+    return hsh.hexdigest()[:16]
+
+
+def prune_jit_cache(root, current):
+    """
+    Mark the current cache folder in the root folder as used now, and
+    delete the other cache folders in the root folder that have not
+    been used for more than JIT_CACHE_MAX_AGE_DAYS days.  Only folders
+    whose names look like a source_hash() value are ever deleted.
+    """
+    os.utime(os.path.join(root, current))
+    oldest = time.time() - JIT_CACHE_MAX_AGE_DAYS * 24 * 60 * 60
+    hexdigits = set("0123456789abcdef")
+    for entry in os.scandir(root):
+        if (
+                entry.name == current or
+                len(entry.name) != len(current) or
+                not set(entry.name) <= hexdigits or
+                not entry.is_dir(follow_symlinks=False)
+        ):
+            continue
+        if entry.stat(follow_symlinks=False).st_mtime < oldest:
+            shutil.rmtree(entry.path, ignore_errors=True)
+
+
+@functools.cache
+def jit_cache_class():
+    """
+    Return the Numba cache class that stores the compiled code in the
+    jit_cache_root()/source_hash() folder, or None if that folder is not
+    writable or if Numba does not provide the internal classes needed to
+    construct the cache class.
+    """
+    # pylint: disable=import-outside-toplevel
+    try:
+        from numba.core.caching import (
+            _CacheLocator, CompileResultCacheImpl, FunctionCache
+        )
+    except ImportError:
+        return None
+    root = jit_cache_root()
+    current = source_hash()
+    cache_path = os.path.join(root, current)
+    try:
+        os.makedirs(cache_path, exist_ok=True)
+        tempfile.TemporaryFile(dir=cache_path).close()
+    except OSError:
+        return None
+    try:
+        prune_jit_cache(root, current)
+    except OSError:
+        pass
+
+    class Locator(_CacheLocator):
+        """
+        Numba cache locator that puts every cached function in the
+        cache_path folder, which changes whenever the source code the
+        compiled code depends on changes.
+        """
+        def __init__(self, py_func):
+            self._tag = py_func.taxcalc_cache_tag
+
+        def get_cache_path(self):
+            return cache_path
+
+        def get_source_stamp(self):
+            return os.path.basename(cache_path)
+
+        def get_disambiguator(self):
+            return self._tag
+
+        @classmethod
+        def from_function(cls, py_func, py_file):
+            if not hasattr(py_func, "taxcalc_cache_tag"):
+                return None
+            return cls(py_func)
+
+    class CacheImpl(CompileResultCacheImpl):
+        """
+        Numba cache implementation that uses only the Locator class.
+        """
+        _locator_classes = [Locator]
+
+    class Cache(FunctionCache):
+        """
+        Numba function cache that uses the CacheImpl class.
+        """
+        _impl_class = CacheImpl
+
+    return Cache
+
+
+def enable_jit_cache(dispatcher, tag):
+    """
+    Turn on on-disk caching of the specified Numba dispatcher's compiled
+    code, where tag uniquely identifies the dispatcher's function.  If
+    the cache folder is not writable, the dispatcher is left uncached.
+    """
+    cache_class = jit_cache_class()
+    if cache_class is None:
+        return
+    dispatcher.py_func.taxcalc_cache_tag = tag
+    try:
+        # pylint: disable=protected-access
+        dispatcher._cache = cache_class(dispatcher.py_func)
+    except (OSError, RuntimeError):
+        pass
+
+
+def cached_jit(cache_tag=None, **kwargs):
+    """
+    Return a decorator that JIT-compiles a function using numba.jit with
+    the specified kwargs and caches the compiled code on disk if the
+    function is defined in the CACHED_MODULE or if cache_tag is not None.
+    """
+    def wrap(func):
+        """
+        wrap function nested in cached_jit function.
+        """
+        dispatcher = numba.jit(**kwargs)(func)
+        tag = cache_tag
+        if tag is None and func.__module__ == CACHED_MODULE:
+            tag = func.__qualname__
+        if tag is not None:
+            enable_jit_cache(dispatcher, tag)
+        return dispatcher
+    return wrap
+
+
 if DO_JIT is False or "NOTAXCALCJIT" in os.environ:
     JIT = id_wrapper
 else:
-    JIT = numba.jit
+    JIT = cached_jit
 
 
 class GetReturnNode(ast.NodeVisitor):
@@ -192,10 +368,15 @@ def make_apply_function(func, out_args, in_args, parameters,
     apfunc = create_apply_function_string(out_args, in_args, parameters)
     func_code = compile(apfunc, "<string>", "exec")
     fakeglobals = {}
+    # __name__ must be an importable module for Numba to load cached code
     eval(func_code,  # pylint: disable=eval-used
-         {"jitted_f": jitted_f}, fakeglobals)
+         {"jitted_f": jitted_f, "__name__": __name__}, fakeglobals)
     if do_jit:
-        return JIT(**kwargs)(fakeglobals["ap_func"])
+        cache_tag = None
+        if func.__module__ == CACHED_MODULE:
+            aphash = hashlib.sha256(apfunc.encode()).hexdigest()[:12]
+            cache_tag = f"ap_{func.__name__}_{aphash}"
+        return JIT(cache_tag=cache_tag, **kwargs)(fakeglobals["ap_func"])
     return fakeglobals["ap_func"]
 
 
@@ -257,7 +438,7 @@ def iterate_jit(parameters=None, **kwargs):
         # Get the input arguments from the function
         in_args = inspect.getfullargspec(func).args
         # Get the numba.jit arguments
-        jit_args_list = inspect.getfullargspec(JIT).args + ["nopython"]
+        jit_args_list = inspect.getfullargspec(numba.jit).args + ["nopython"]
         kwargs_for_jit = {}
         for key, val in kwargs.items():
             if key in jit_args_list:

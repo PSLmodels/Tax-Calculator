@@ -22,7 +22,7 @@ License-File: LICENSE
 Requires-Dist: numpy>=2.4
 Requires-Dist: pandas>=3.0
 Requires-Dist: bokeh>=3.7
-Requires-Dist: numba>=0.64
+Requires-Dist: numba==0.67.0
 Requires-Dist: paramtools>=0.20.0
 Dynamic: classifier
 Dynamic: description

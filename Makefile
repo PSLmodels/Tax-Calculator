@@ -11,7 +11,7 @@ help:
 	@echo "TARGETS:"
 	@echo "help       : show this help message"
 	@echo "package    : build and install local taxcalc package"
-	@echo "clean      : remove .pyc files and local taxcalc package"
+	@echo "clean      : remove .pyc files, JIT cache, and local taxcalc package"
 	@echo "cstest     : generate coding-style errors using the"
 	@echo "             pycodestyle and pylint tools"
 	@echo "pytest     : generate report for and cleanup after"
@@ -33,6 +33,9 @@ help:
 clean:
 	@find . -name *pyc -exec rm {} \;
 	@find . -name *cache -maxdepth 1 -exec rm -r {} \;
+	@NOTAXCALCJIT=1 python -c "import shutil; \
+	  from taxcalc.decorators import jit_cache_root; \
+	  shutil.rmtree(jit_cache_root(), ignore_errors=True)"
 	@pip uninstall taxcalc --yes --quiet 2>&1 > /dev/null
 
 .PHONY=package

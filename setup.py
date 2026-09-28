@@ -25,7 +25,7 @@ config = {
         "numpy>=2.4",
         "pandas>=3.0",
         "bokeh>=3.7",
-        "numba>=0.64",
+        "numba==0.67.0",
         "paramtools>=0.20.0"
     ],
     "classifiers": [
