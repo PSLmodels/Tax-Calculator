@@ -50,7 +50,7 @@ pip install "mcp[cli]>=2.0.0" > pip_install.results
 pip install "psutil>=7.2.0" >> pip_install.results
 
 # execute installation verification test in the FOLDER
-echo "-- Installation verification test takes about half a minute to execute"
+echo "-- Installation verification test may take half a minute to execute"
 ./tca-test
 echo "-- Move into the new FOLDER using the 'cd $FOLDER' command, then"
 echo "   start using TCA interactively by executing the './tca-exec' command"
