@@ -5,6 +5,44 @@ Go
 for a complete commit history.
 
 
+2026-10-01 Release 6.8.4
+------------------------
+(last merged pull request is
+[#3158](https://github.com/PSLmodels/Tax-Calculator/pull/3158))
+
+**This is a minor enhancement and bug fix release.**
+
+**API Changes**
+
+**New Features**
+- Add unit tests of three functions in `calcfunctions.py`
+  [[#3148](https://github.com/PSLmodels/Tax-Calculator/pull/3148)
+   by Akshita Kumari]
+- Refactor existing and add new unit tests of `calcfunctions.py` functions
+  [[#3150](https://github.com/PSLmodels/Tax-Calculator/pull/3150) and
+   [#3151](https://github.com/PSLmodels/Tax-Calculator/pull/3151) and
+   [#3152](https://github.com/PSLmodels/Tax-Calculator/pull/3152)
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]
+- Refactor slow-running unit tests to reduce execution time
+  [[#3153](https://github.com/PSLmodels/Tax-Calculator/pull/3153) and
+   [#3154](https://github.com/PSLmodels/Tax-Calculator/pull/3154)
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]
+- Revise `taxcalcio.py` by adding tests and refactoring for execution speed
+  [[#3155](https://github.com/PSLmodels/Tax-Calculator/pull/3155)
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]
+- Add caching of numba JIT compiled functions from `calcfunctions.py`
+  [[#3156](https://github.com/PSLmodels/Tax-Calculator/pull/3156)
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]
+- Update expected CLI test results after switch to TMD 2.2.1 input data
+  [[#3158](https://github.com/PSLmodels/Tax-Calculator/pull/3158)
+   by Martin Holmer]
+
+**Bug Fixes**
+- Fix bugs in `calcfunctions.py` tax-calculation logic
+  [[#3149](https://github.com/PSLmodels/Tax-Calculator/pull/3149)
+   by Martin Holmer]
+
+
 2026-09-21 Release 6.8.3
 ------------------------
 (last merged pull request is
@@ -15,11 +53,11 @@ for a complete commit history.
 **API Changes**
 
 **New Features**
-- Remove CLI support for the old 2011 PUF input files
-  [[#3146](https://github.com/PSLmodels/Tax-Calculator/pull/3146)
-   by Martin Holmer]
 - Update expected CLI test results for new TMD 2.2.0 input data weights
   [[#3144](https://github.com/PSLmodels/Tax-Calculator/pull/3144)
+   by Martin Holmer]
+- Remove CLI support for the old 2011 PUF input files
+  [[#3146](https://github.com/PSLmodels/Tax-Calculator/pull/3146)
    by Martin Holmer]
 
 **Bug Fixes**
@@ -52,25 +90,25 @@ for a complete commit history.
 **API Changes**
 
 **New Features**
-- Simplify `Makefile` targets and update GitHub Actions workflows
-  [[#3134](https://github.com/PSLmodels/Tax-Calculator/pull/3134) and
-   [#3135](https://github.com/PSLmodels/Tax-Calculator/pull/3135)
+- Add behavioral-response functions,docs,tests from Behavioral-Responses repo
+  [[#3123](https://github.com/PSLmodels/Tax-Calculator/pull/3123),
+   [#3124](https://github.com/PSLmodels/Tax-Calculator/pull/3124) and
+   [#3126](https://github.com/PSLmodels/Tax-Calculator/pull/3126)
    by Martin Holmer]
-- Drop support for Python 3.11 and add support for Python 3.14
-  [[#3132](https://github.com/PSLmodels/Tax-Calculator/pull/3132)
+- Add `ptax_er_p` and `ptax_er_s` calculated variables
+  [[#3125](https://github.com/PSLmodels/Tax-Calculator/pull/3125)
    by Martin Holmer]
 - Make tests and CI execute faster using more parallel processing
   [[#3130](https://github.com/PSLmodels/Tax-Calculator/pull/3130),
    [#3131](https://github.com/PSLmodels/Tax-Calculator/pull/3131) and
    [#3133](https://github.com/PSLmodels/Tax-Calculator/pull/3133)
    by Martin Holmer]
-- Add `ptax_er_p` and `ptax_er_s` calculated variables
-  [[#3125](https://github.com/PSLmodels/Tax-Calculator/pull/3125)
+- Drop support for Python 3.11 and add support for Python 3.14
+  [[#3132](https://github.com/PSLmodels/Tax-Calculator/pull/3132)
    by Martin Holmer]
-- Add behavioral-response functions,docs,tests from Behavioral-Responses repo
-  [[#3123](https://github.com/PSLmodels/Tax-Calculator/pull/3123),
-   [#3124](https://github.com/PSLmodels/Tax-Calculator/pull/3124) and
-   [#3126](https://github.com/PSLmodels/Tax-Calculator/pull/3126)
+- Simplify `Makefile` targets and update GitHub Actions workflows
+  [[#3134](https://github.com/PSLmodels/Tax-Calculator/pull/3134) and
+   [#3135](https://github.com/PSLmodels/Tax-Calculator/pull/3135)
    by Martin Holmer]
 
 **Bug Fixes**
@@ -89,17 +127,17 @@ for a complete commit history.
 **API Changes**
 
 **New Features**
-- Add mention of ongoing model use by Congressional Research Service (CRS)
-  [[#3121](https://github.com/PSLmodels/Tax-Calculator/pull/3121)
-   by Jason DeBacker]
+- Add focus on AI-assisted model-dev and model-use agents to project roadmap
+  [[#3114](https://github.com/PSLmodels/Tax-Calculator/pull/3114)
+   by Martin Holmer]
 - Add initial versions of agent workflows and associated documentation
   [[#3115](https://github.com/PSLmodels/Tax-Calculator/pull/3115),
    [#3117](https://github.com/PSLmodels/Tax-Calculator/pull/3117) and
    [#3120](https://github.com/PSLmodels/Tax-Calculator/pull/3120)
    by Martin Holmer]
-- Add focus on AI-assisted model-dev and model-use agents to project roadmap
-  [[#3114](https://github.com/PSLmodels/Tax-Calculator/pull/3114)
-   by Martin Holmer]
+- Add mention of ongoing model use by Congressional Research Service (CRS)
+  [[#3121](https://github.com/PSLmodels/Tax-Calculator/pull/3121)
+   by Jason DeBacker]
    
 **Bug Fixes**
 
