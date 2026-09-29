@@ -300,18 +300,18 @@ for a complete commit history.
   [[#3016](https://github.com/PSLmodels/Tax-Calculator/pull/3016)
    through
    [#3067](https://github.com/PSLmodels/Tax-Calculator/pull/3067)
-   by Martin Holmer with the assistance of Claude Code 2.1 running Opus 4.7]
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]
 - Rename calculated variable `dwks19` as `dwks18` to match 2025 IRS form
   line number.
   [[#3024](https://github.com/PSLmodels/Tax-Calculator/pull/3024)
-   by Martin Holmer with the assistance of Claude Code]
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]
 - Rename policy parameter `ALD_AlimonyReceived_hc` as
   `AlimonyReceived_frac_in_AGI`.
   [[#3026](https://github.com/PSLmodels/Tax-Calculator/pull/3026)
-   by Martin Holmer with the assistance of Claude Code]
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]
 - Add policy parameter `STD_Dep_earned_add` and use in `StdDed` function logic.
   [[#3040](https://github.com/PSLmodels/Tax-Calculator/pull/3040)
-   by Martin Holmer with the assistance of Claude Code]
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]
 
 **Bug Fixes**
 - Extensive `calcfunctions.py` code review identified and fixed
@@ -321,15 +321,15 @@ for a complete commit history.
   [[#3016](https://github.com/PSLmodels/Tax-Calculator/pull/3016)
    through
    [#3067](https://github.com/PSLmodels/Tax-Calculator/pull/3067)
-   by Martin Holmer with the assistance of Claude Code 2.1 running Opus 4.7]
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]
 - Fix QBID bugs in `TaxIncome` function.  Effect:
     tmd-26.tables: 2644.3 → 2645.3 (+0.04 percent relative change).
   [[#3042](https://github.com/PSLmodels/Tax-Calculator/pull/3042)
-   by Martin Holmer with the assistance of Claude Code]
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]
 - Fix `AMT` function bugs.  Effect:
    tmd-26.tables: 2645.3 → 2644.0 (-0.05 percent relative change).
   [[#3049](https://github.com/PSLmodels/Tax-Calculator/pull/3049)
-   by Martin Holmer with the assistance of Claude Code]
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]
 
 
 2026-04-27 Release 6.5.3
