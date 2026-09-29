@@ -19,7 +19,7 @@ for a complete commit history.
   [[#3148](https://github.com/PSLmodels/Tax-Calculator/pull/3148)
    by Akshita Kumari]
 - Refactor existing and add new unit tests of `calcfunctions.py` functions
-  [[#3150](https://github.com/PSLmodels/Tax-Calculator/pull/3150) and
+  [[#3150](https://github.com/PSLmodels/Tax-Calculator/pull/3150),
    [#3151](https://github.com/PSLmodels/Tax-Calculator/pull/3151) and
    [#3152](https://github.com/PSLmodels/Tax-Calculator/pull/3152)
    by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]
@@ -33,7 +33,7 @@ for a complete commit history.
 - Add caching of numba JIT compiled functions from `calcfunctions.py`
   [[#3156](https://github.com/PSLmodels/Tax-Calculator/pull/3156)
    by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]
-- Update expected CLI test results after switch to TMD 2.2.1 input data
+- Update expected CLI test results for new TMD 2.2.1 input data files
   [[#3158](https://github.com/PSLmodels/Tax-Calculator/pull/3158)
    by Martin Holmer]
 
