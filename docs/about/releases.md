@@ -8,7 +8,7 @@ for a complete commit history.
 2026-10-01 Release 6.8.4
 ------------------------
 (last merged pull request is
-[#3158](https://github.com/PSLmodels/Tax-Calculator/pull/3158))
+[#3161](https://github.com/PSLmodels/Tax-Calculator/pull/3161))
 
 **This is a minor enhancement and bug fix release.**
 
@@ -40,6 +40,9 @@ for a complete commit history.
 **Bug Fixes**
 - Fix bugs in `calcfunctions.py` tax-calculation logic
   [[#3149](https://github.com/PSLmodels/Tax-Calculator/pull/3149)
+   by Martin Holmer]
+- Fix OBBBA itemized deduction limitation logic for tax years 2026+
+  [[#3161](https://github.com/PSLmodels/Tax-Calculator/pull/3161)
    by Martin Holmer]
 
 
