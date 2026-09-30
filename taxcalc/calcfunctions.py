@@ -1470,7 +1470,7 @@ def ItemDed(e17500, e18400, e18500, e19200,
         assert c21040 <= 0.0, 'Pease and OBBBA cannot both be in effect'
         tincome = max(0., c00100 - c04600)
         texcess = max(0., tincome - II_brk6[MARS - 1])
-        reduction = ID_reduction_rate * texcess
+        reduction = ID_reduction_rate * min(c04470, texcess)
     c04470 = max(0., c04470 - reduction)
     c04470 = min(c04470, ID_c[MARS - 1])
     return (c17000, c18300, c19200, c19700, c20500, c20800,

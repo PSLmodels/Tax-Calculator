@@ -1124,10 +1124,10 @@ ID_ALL_ITEMS = {
                   37000.),
                  id='Pease reform'),
     # reduction reform: taxable income 700000 exceeds the 626350 top
-    # bracket threshold by 73650; 20000 - 0.05 * 73650
+    # bracket threshold by 73650; 20000 - 0.05 * min(20000, 73650)
     pytest.param(ID_REDUCTION_REFORM, {'MARS': 1, 'c00100': 700000.,
                                        'e19200': 20000.},
-                 (0., 0., 20000., 0., 0., 0., 0., 20000., 16317.5),
+                 (0., 0., 20000., 0., 0., 0., 0., 20000., 19000.),
                  id='reduction reform'),
     # reduction reform: taxable income below the top bracket threshold
     pytest.param(ID_REDUCTION_REFORM, {'MARS': 1, 'c00100': 600000.,
