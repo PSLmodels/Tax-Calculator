@@ -507,6 +507,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-4">2026-10-01 Release 6.8.4</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-3">2026-09-21 Release 6.8.3</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-2">2026-09-03 Release 6.8.2</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-1">2026-08-21 Release 6.8.1</a></li>
@@ -659,6 +660,46 @@
 <p>Go
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<section id="release-6-8-4">
+<h2>2026-10-01 Release 6.8.4<a class="headerlink" href="#release-6-8-4" title="Link to this heading">#</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3161">#3161</a>)</p>
+<p><strong>This is a minor enhancement and bug fix release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Add unit tests of three functions in <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code>
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3148">#3148</a>
+by Akshita Kumari]</p></li>
+<li><p>Refactor existing and add new unit tests of <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code> functions
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3150">#3150</a>,
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3151">#3151</a> and
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3152">#3152</a>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]</p></li>
+<li><p>Refactor slow-running unit tests to reduce execution time
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3153">#3153</a> and
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3154">#3154</a>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]</p></li>
+<li><p>Revise <code class="docutils literal notranslate"><span class="pre">taxcalcio.py</span></code> by adding tests and refactoring for execution speed
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3155">#3155</a>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]</p></li>
+<li><p>Add caching of numba JIT compiled functions from <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code>
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3156">#3156</a>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]</p></li>
+<li><p>Update expected CLI test results for new TMD 2.2.1 input data files
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3158">#3158</a>
+by Martin Holmer]</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul class="simple">
+<li><p>Fix bugs in <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code> tax-calculation logic
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3149">#3149</a>
+by Martin Holmer]</p></li>
+<li><p>Fix OBBBA itemized deduction limitation logic for tax years 2026+
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3161">#3161</a>
+by Martin Holmer]</p></li>
+</ul>
+</section>
 <section id="release-6-8-3">
 <h2>2026-09-21 Release 6.8.3<a class="headerlink" href="#release-6-8-3" title="Link to this heading">#</a></h2>
 <p>(last merged pull request is
@@ -667,11 +708,11 @@ for a complete commit history.</p>
 <p><strong>API Changes</strong></p>
 <p><strong>New Features</strong></p>
 <ul class="simple">
-<li><p>Remove CLI support for the old 2011 PUF input files
-[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3146">#3146</a>
-by Martin Holmer]</p></li>
 <li><p>Update expected CLI test results for new TMD 2.2.0 input data weights
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3144">#3144</a>
+by Martin Holmer]</p></li>
+<li><p>Remove CLI support for the old 2011 PUF input files
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3146">#3146</a>
 by Martin Holmer]</p></li>
 </ul>
 <p><strong>Bug Fixes</strong></p>
@@ -698,25 +739,25 @@ by Martin Holmer assisted by Claude Code 2.1 running Opus 5]</p></li>
 <p><strong>API Changes</strong></p>
 <p><strong>New Features</strong></p>
 <ul class="simple">
-<li><p>Simplify <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> targets and update GitHub Actions workflows
-[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3134">#3134</a> and
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3135">#3135</a>
+<li><p>Add behavioral-response functions,docs,tests from Behavioral-Responses repo
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3123">#3123</a>,
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3124">#3124</a> and
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3126">#3126</a>
 by Martin Holmer]</p></li>
-<li><p>Drop support for Python 3.11 and add support for Python 3.14
-[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3132">#3132</a>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">ptax_er_p</span></code> and <code class="docutils literal notranslate"><span class="pre">ptax_er_s</span></code> calculated variables
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3125">#3125</a>
 by Martin Holmer]</p></li>
 <li><p>Make tests and CI execute faster using more parallel processing
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3130">#3130</a>,
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3131">#3131</a> and
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3133">#3133</a>
 by Martin Holmer]</p></li>
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">ptax_er_p</span></code> and <code class="docutils literal notranslate"><span class="pre">ptax_er_s</span></code> calculated variables
-[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3125">#3125</a>
+<li><p>Drop support for Python 3.11 and add support for Python 3.14
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3132">#3132</a>
 by Martin Holmer]</p></li>
-<li><p>Add behavioral-response functions,docs,tests from Behavioral-Responses repo
-[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3123">#3123</a>,
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3124">#3124</a> and
-<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3126">#3126</a>
+<li><p>Simplify <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> targets and update GitHub Actions workflows
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3134">#3134</a> and
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3135">#3135</a>
 by Martin Holmer]</p></li>
 </ul>
 <p><strong>Bug Fixes</strong></p>
@@ -734,17 +775,17 @@ by Martin Holmer]</p></li>
 <p><strong>API Changes</strong></p>
 <p><strong>New Features</strong></p>
 <ul class="simple">
-<li><p>Add mention of ongoing model use by Congressional Research Service (CRS)
-[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3121">#3121</a>
-by Jason DeBacker]</p></li>
+<li><p>Add focus on AI-assisted model-dev and model-use agents to project roadmap
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3114">#3114</a>
+by Martin Holmer]</p></li>
 <li><p>Add initial versions of agent workflows and associated documentation
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3115">#3115</a>,
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3117">#3117</a> and
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3120">#3120</a>
 by Martin Holmer]</p></li>
-<li><p>Add focus on AI-assisted model-dev and model-use agents to project roadmap
-[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3114">#3114</a>
-by Martin Holmer]</p></li>
+<li><p>Add mention of ongoing model use by Congressional Research Service (CRS)
+[<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3121">#3121</a>
+by Jason DeBacker]</p></li>
 </ul>
 <p><strong>Bug Fixes</strong></p>
 </section>
@@ -890,18 +931,18 @@ documentation.
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3016">#3016</a>
 through
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3067">#3067</a>
-by Martin Holmer with the assistance of Claude Code 2.1 running Opus 4.7]</p></li>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]</p></li>
 <li><p>Rename calculated variable <code class="docutils literal notranslate"><span class="pre">dwks19</span></code> as <code class="docutils literal notranslate"><span class="pre">dwks18</span></code> to match 2025 IRS form
 line number.
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3024">#3024</a>
-by Martin Holmer with the assistance of Claude Code]</p></li>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]</p></li>
 <li><p>Rename policy parameter <code class="docutils literal notranslate"><span class="pre">ALD_AlimonyReceived_hc</span></code> as
 <code class="docutils literal notranslate"><span class="pre">AlimonyReceived_frac_in_AGI</span></code>.
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3026">#3026</a>
-by Martin Holmer with the assistance of Claude Code]</p></li>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]</p></li>
 <li><p>Add policy parameter <code class="docutils literal notranslate"><span class="pre">STD_Dep_earned_add</span></code> and use in <code class="docutils literal notranslate"><span class="pre">StdDed</span></code> function logic.
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3040">#3040</a>
-by Martin Holmer with the assistance of Claude Code]</p></li>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]</p></li>
 </ul>
 <p><strong>Bug Fixes</strong></p>
 <ul class="simple">
@@ -912,15 +953,15 @@ income tax liability; only bug fixes that had a measurable effect on
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3016">#3016</a>
 through
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3067">#3067</a>
-by Martin Holmer with the assistance of Claude Code 2.1 running Opus 4.7]</p></li>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]</p></li>
 <li><p>Fix QBID bugs in <code class="docutils literal notranslate"><span class="pre">TaxIncome</span></code> function.  Effect:
 tmd-26.tables: 2644.3 → 2645.3 (+0.04 percent relative change).
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3042">#3042</a>
-by Martin Holmer with the assistance of Claude Code]</p></li>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]</p></li>
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">AMT</span></code> function bugs.  Effect:
 tmd-26.tables: 2645.3 → 2644.0 (-0.05 percent relative change).
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/3049">#3049</a>
-by Martin Holmer with the assistance of Claude Code]</p></li>
+by Martin Holmer assisted by Claude Code 2.1 running Opus 4.7]</p></li>
 </ul>
 </section>
 <section id="release-6-5-3">
@@ -4076,6 +4117,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-4">2026-10-01 Release 6.8.4</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-3">2026-09-21 Release 6.8.3</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-2">2026-09-03 Release 6.8.2</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-6-8-1">2026-08-21 Release 6.8.1</a></li>
