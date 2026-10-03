@@ -28,11 +28,13 @@ execute the "make package" command to create the `tc` command.
 
 TCA is used in a folder **outside** the Tax-Calculator repository
 tree.  If you have already installed TCA in such a TCA-work folder,
-move to that TCA-work folder and execute the "./tca-exec" command.
-If you get a startup error saying the previously installed TCA is
-not up to date with your Tax-Calculator version, then re-install
-TCA into the existing TCA-work folder as described in the next
-paragraph.
+move to that TCA-work folder and execute the "./tca-exec" command.  If
+you get a startup error saying the previously installed TCA is not up
+to date with your Tax-Calculator version, then re-install TCA into the
+existing TCA-work folder as described in the next paragraph.  When you
+are finished with your TCA seesion, optionally save the session
+conversation using the `\export` command and then enter the `/exit`
+command.
 
 If you have not already created such a TCA-work folder, move to the
 `agents/tca` folder in the Tax-Calculator repository tree and execute
