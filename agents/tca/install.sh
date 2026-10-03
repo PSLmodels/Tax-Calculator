@@ -40,7 +40,7 @@ if [[ -f runs.db ]]; then
     cp runs.db runs.db-old
     rm -f runs.db
 fi
-find . -regex "\./run[0-9]+-[0-9]+.*" -exec rm -f {} \;
+rm -f run<->-[0-9][0-9]*(N)
 unzip -oq tca.zip
 rm tca.zip
 ./add_mcp_tca.sh > /dev/null
