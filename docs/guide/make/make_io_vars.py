@@ -19,7 +19,8 @@ def make_io_vars(path, iotype):
         return '##  `' + df.index + '`  \n'
 
     def required(df):
-        return np.where(df.required, '**_Required Input Variable_**  \n', '')
+        is_required = df.required.fillna(False).astype(bool)
+        return np.where(is_required, '**_Required Input Variable_**  \n', '')
 
     def description(df):
         return '_Description_: ' + df.desc + '  \n'
