@@ -60,5 +60,6 @@ def create_io_df(path, iotype):
         json_text = vfile.read()
     variables = tc.json_to_dict(json_text)
     assert isinstance(variables, dict)
-    # Create DataFrames for input and output variables.
-    return pd.DataFrame(variables[iotype]).transpose()
+    # Create DataFrame sorted alphabetically (ignoring case) by variable name.
+    df = pd.DataFrame(variables[iotype]).transpose()
+    return df.sort_index(key=lambda idx: idx.str.lower())

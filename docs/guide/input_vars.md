@@ -7,46 +7,8 @@ There are no subsections, just a long list of input variables that Tax-Calculato
 The Availability information indicates which input data files contain the variable.
 
 
-##  `DSI`  
-_Description_: 1 if claimed as dependent on another return; otherwise 0  
-_Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
-
-
-##  `EIC`  
-_Description_: number of EIC qualifying children (range: 0 to 3)  
-_Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
-
-
-##  `FLPDYR`  
-_Description_: Calendar year for which taxes are calculated  
-_Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
-
-
-##  `MARS`  
-**_Required Input Variable_**  
-_Description_: Filing (marital) status: line number of the checked box [1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er)]  
-_Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
-
-
-##  `MIDR`  
-_Description_: 1 if separately filing spouse itemizes; otherwise 0  
-_Datatype_: int  
-_Availability_: taxdata_puf, taxmicrodata_tmd  
-
-
-##  `RECID`  
-**_Required Input Variable_**  
-_Description_: Unique numeric identifier for filing unit; appears as RECID variable in tc CLI minimal output  
-_Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
-
-
-##  `XTOT`  
-_Description_: Total number of exemptions for filing unit  
+##  `a_lineno`  
+_Description_: CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
@@ -69,6 +31,12 @@ _Datatype_: int
 _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
 
+##  `auto_loan_interest`  
+_Description_: Filing unit's interest payments on OBBBA-qualified auto loans  
+_Datatype_: float  
+_Availability_: taxmicrodata_tmd  
+
+
 ##  `blind_head`  
 _Description_: 1 if taxpayer is blind; otherwise 0  
 _Datatype_: int  
@@ -87,6 +55,18 @@ _Datatype_: float
 _Availability_: taxdata_puf, taxmicrodata_tmd  
 
 
+##  `data_source`  
+_Description_: 1 if unit is created primarily from IRS-SOI PUF data; 0 if created primarily from CPS data (not used in tax-calculation logic)  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxmicrodata_tmd  
+
+
+##  `DSI`  
+_Description_: 1 if claimed as dependent on another return; otherwise 0  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+
+
 ##  `e00200`  
 _Description_: Wages, salaries, tips/otime for filing unit net of pension contributions  
 _Datatype_: float  
@@ -101,18 +81,6 @@ _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd
 
 ##  `e00200s`  
 _Description_: Wages, salaries, tips/otime for spouse net of pension contributions (pencon_s)  
-_Datatype_: float  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
-
-
-##  `pencon_p`  
-_Description_: Contributions to defined-contribution pension plans for taxpayer  
-_Datatype_: float  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
-
-
-##  `pencon_s`  
-_Description_: Contributions to defined-contribution pension plans for spouse  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
@@ -393,12 +361,6 @@ _Datatype_: float
 _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
 
-##  `g20500`  
-_Description_: Itemizable gross (before 10% AGI disregard) casualty or theft loss  
-_Datatype_: float  
-_Availability_: taxdata_puf, taxmicrodata_tmd  
-
-
 ##  `e24515`  
 _Description_: Sch D: Un-Recaptured Section 1250 Gain  
 _Datatype_: float  
@@ -441,10 +403,22 @@ _Datatype_: float
 _Availability_: taxdata_puf, taxmicrodata_tmd  
 
 
+##  `e87521`  
+_Description_: Total tentative AmOppCredit amount for all students  
+_Datatype_: float  
+_Availability_: taxdata_puf, taxmicrodata_tmd  
+
+
 ##  `e87530`  
 _Description_: Adjusted qualified lifetime learning expenses for all students  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxmicrodata_tmd  
+
+
+##  `EIC`  
+_Description_: number of EIC qualifying children (range: 0 to 3)  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
 
 ##  `elderly_dependents`  
@@ -465,12 +439,6 @@ _Datatype_: int
 _Availability_: taxdata_puf, taxmicrodata_tmd  
 
 
-##  `a_lineno`  
-_Description_: CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)  
-_Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
-
-
 ##  `ffpos`  
 _Description_: CPS family identifier within household (not used in tax-calculation logic)  
 _Datatype_: int  
@@ -483,16 +451,28 @@ _Datatype_: int
 _Availability_: taxdata_puf, taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
 
+##  `FLPDYR`  
+_Description_: Calendar year for which taxes are calculated  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+
+
+##  `g20500`  
+_Description_: Itemizable gross (before 10% AGI disregard) casualty or theft loss  
+_Datatype_: float  
+_Availability_: taxdata_puf, taxmicrodata_tmd  
+
+
 ##  `h_seq`  
 _Description_: CPS household sequence number (not used in tax-calculation logic)  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
 
-##  `data_source`  
-_Description_: 1 if unit is created primarily from IRS-SOI PUF data; 0 if created primarily from CPS data (not used in tax-calculation logic)  
-_Datatype_: int  
-_Availability_: taxdata_puf, taxmicrodata_tmd  
+##  `housing_ben`  
+_Description_: Imputed housing benefits  
+_Datatype_: float  
+_Availability_: taxdata_cps, taxmicrodata_tmd  
 
 
 ##  `k1bx14p`  
@@ -507,6 +487,13 @@ _Datatype_: float
 _Availability_: taxdata_puf, taxmicrodata_tmd  
 
 
+##  `MARS`  
+**_Required Input Variable_**  
+_Description_: Filing (marital) status: line number of the checked box [1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er)]  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+
+
 ##  `mcaid_ben`  
 _Description_: Imputed Medicaid benefits expressed as the actuarial value of Medicaid health insurance  
 _Datatype_: float  
@@ -517,6 +504,24 @@ _Availability_: taxdata_cps, taxmicrodata_tmd
 _Description_: Imputed Medicare benefits expressed as the actuarial value of Medicare health insurance  
 _Datatype_: float  
 _Availability_: taxdata_cps, taxmicrodata_tmd  
+
+
+##  `MIDR`  
+_Description_: 1 if separately filing spouse itemizes; otherwise 0  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxmicrodata_tmd  
+
+
+##  `n1820`  
+_Description_: Number of people age 18-20 years old in the filing unit  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+
+
+##  `n21`  
+_Description_: Number of people 21 years old or older in the filing unit  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
 
 ##  `n24`  
@@ -543,22 +548,16 @@ _Datatype_: int
 _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
 
-##  `n1820`  
-_Description_: Number of people age 18-20 years old in the filing unit  
-_Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
-
-
-##  `n21`  
-_Description_: Number of people 21 years old or older in the filing unit  
-_Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
-
-
 ##  `other_ben`  
 _Description_: Non-imputed benefits  
 _Datatype_: float  
 _Availability_: taxdata_cps, taxmicrodata_tmd  
+
+
+##  `overtime_income`  
+_Description_: Filing unit's OBBBA-qualified overtime income  
+_Datatype_: float  
+_Availability_: taxmicrodata_tmd  
 
 
 ##  `p08000`  
@@ -579,10 +578,41 @@ _Datatype_: float
 _Availability_: taxdata_puf, taxmicrodata_tmd  
 
 
-##  `e87521`  
-_Description_: Total tentative AmOppCredit amount for all students  
+##  `pencon_p`  
+_Description_: Contributions to defined-contribution pension plans for taxpayer  
 _Datatype_: float  
-_Availability_: taxdata_puf, taxmicrodata_tmd  
+_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+
+
+##  `pencon_s`  
+_Description_: Contributions to defined-contribution pension plans for spouse  
+_Datatype_: float  
+_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+
+
+##  `PT_binc_w2_wages`  
+_Description_: Filing unit's share of total W-2 wages paid by the pass-through business  
+_Datatype_: float  
+_Availability_: taxmicrodata_tmd  
+
+
+##  `PT_SSTB_income`  
+_Description_: Value of one implies business income is from a specified service trade or business (SSTB); value of zero implies business income is from a qualified trade or business  
+_Datatype_: int  
+_Availability_: taxmicrodata_tmd  
+
+
+##  `PT_ubia_property`  
+_Description_: Filing unit's share of total business property owned by the pass-through business  
+_Datatype_: float  
+_Availability_: taxmicrodata_tmd  
+
+
+##  `RECID`  
+**_Required Input Variable_**  
+_Description_: Unique numeric identifier for filing unit; appears as RECID variable in tc CLI minimal output  
+_Datatype_: int  
+_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
 
 ##  `s006`  
@@ -593,12 +623,6 @@ _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd
 
 ##  `snap_ben`  
 _Description_: Imputed SNAP benefits  
-_Datatype_: float  
-_Availability_: taxdata_cps, taxmicrodata_tmd  
-
-
-##  `housing_ben`  
-_Description_: Imputed housing benefits  
 _Datatype_: float  
 _Availability_: taxdata_cps, taxmicrodata_tmd  
 
@@ -615,6 +639,12 @@ _Datatype_: float
 _Availability_: taxdata_cps, taxmicrodata_tmd  
 
 
+##  `tip_income`  
+_Description_: Filing unit's OBBBA-qualified tip income  
+_Datatype_: float  
+_Availability_: taxmicrodata_tmd  
+
+
 ##  `vet_ben`  
 _Description_: Imputed Veteran's benefits  
 _Datatype_: float  
@@ -627,37 +657,7 @@ _Datatype_: float
 _Availability_: taxdata_cps, taxmicrodata_tmd  
 
 
-##  `PT_SSTB_income`  
-_Description_: Value of one implies business income is from a specified service trade or business (SSTB); value of zero implies business income is from a qualified trade or business  
+##  `XTOT`  
+_Description_: Total number of exemptions for filing unit  
 _Datatype_: int  
-_Availability_: taxmicrodata_tmd  
-
-
-##  `PT_binc_w2_wages`  
-_Description_: Filing unit's share of total W-2 wages paid by the pass-through business  
-_Datatype_: float  
-_Availability_: taxmicrodata_tmd  
-
-
-##  `PT_ubia_property`  
-_Description_: Filing unit's share of total business property owned by the pass-through business  
-_Datatype_: float  
-_Availability_: taxmicrodata_tmd  
-
-
-##  `auto_loan_interest`  
-_Description_: Filing unit's interest payments on OBBBA-qualified auto loans  
-_Datatype_: float  
-_Availability_: taxmicrodata_tmd  
-
-
-##  `overtime_income`  
-_Description_: Filing unit's OBBBA-qualified overtime income  
-_Datatype_: float  
-_Availability_: taxmicrodata_tmd  
-
-
-##  `tip_income`  
-_Description_: Filing unit's OBBBA-qualified tip income  
-_Datatype_: float  
-_Availability_: taxmicrodata_tmd  
+_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
