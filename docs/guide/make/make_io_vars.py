@@ -31,16 +31,6 @@ def make_io_vars(path, iotype):
     def availability(df):
         return '_Availability_: ' + df.availability + '  \n'
 
-    def form_one(row):
-        txt = '_IRS Form Location:_  \n'
-        formdict = row.form
-        for yrange in sorted(formdict.keys()):
-            txt += '{}: {}  \n'.format(yrange, formdict[yrange])
-        return txt
-
-    def form(df):
-        return df.apply(form_one, axis=1)
-
     # Create DataFrame with one record per variable.
     df = create_io_df(path, iotype)
     # Create txt, a pandas Series.
@@ -50,7 +40,6 @@ def make_io_vars(path, iotype):
     txt += description(df) + datatype(df)
     if iotype == 'read':
         txt += availability(df)
-    txt += form(df)
     # Return single string.
     return '\n\n'.join(txt)
 

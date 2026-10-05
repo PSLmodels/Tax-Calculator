@@ -2261,18 +2261,18 @@ _Out-of-Range Action:_ error
 
 
 ####  `AMT_CG_rt4`  
-_Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 1.0 is a placeholder that has no effect while AMT_CG_brk3 is at its essentially-infinite default value, so any reform that lowers AMT_CG_brk3 must also specify this rate.  
+_Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 0.2 is a placeholder that has no effect while AMT_CG_brk3 is at its essentially-infinite default value, so any reform that lowers AMT_CG_brk3 must also specify a higher rate.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
-2013: 1.0  
-2014: 1.0  
-2015: 1.0  
-2016: 1.0  
-2017: 1.0  
-2018: 1.0  
-2019: 1.0  
+2013: 0.2  
+2014: 0.2  
+2015: 0.2  
+2016: 0.2  
+2017: 0.2  
+2018: 0.2  
+2019: 0.2  
 _Valid Range:_ min = 0 and max = 1  
 _Out-of-Range Action:_ error  
 
@@ -2434,18 +2434,18 @@ _Out-of-Range Action:_ error
 
 
 ####  `CG_rt4`  
-_Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 1.0 is a placeholder that has no effect while CG_brk3 is at its essentially-infinite default value, so any reform that lowers CG_brk3 must also specify this rate.  
+_Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 0.2 is a placeholder that has no effect while CG_brk3 is at its essentially-infinite default value, so any reform that lowers CG_brk3 must also specify a higher rate.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
-2013: 1.0  
-2014: 1.0  
-2015: 1.0  
-2016: 1.0  
-2017: 1.0  
-2018: 1.0  
-2019: 1.0  
+2013: 0.2  
+2014: 0.2  
+2015: 0.2  
+2016: 0.2  
+2017: 0.2  
+2018: 0.2  
+2019: 0.2  
 _Valid Range:_ min = 0 and max = 1  
 _Out-of-Range Action:_ error  
 

@@ -12,7 +12,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
-from taxcalc import GrowFactors, Policy, Records
+from taxcalc import GrowFactors, Records
 
 
 def test_incorrect_records_instantiation(cps_subsample, cps_fullsample):
@@ -230,12 +230,8 @@ def test_records_variables_content(tests_path):
     """
     Check completeness and consistency of records_variables.json content.
     """
-    # pylint: disable=too-many-locals
-
     # specify test information
-    reqkeys = ['type', 'desc', 'form']
-    first_year = Policy.JSON_START_YEAR
-    last_form_year = 2017
+    reqkeys = ['type', 'desc']
     # read JSON variable file into a dictionary
     path = os.path.join(tests_path, '..', 'records_variables.json')
     with open(path, 'r', encoding='utf-8') as vfile:
@@ -252,38 +248,6 @@ def test_records_variables_content(tests_path):
             # check that required is true if it is present
             if 'required' in variable:
                 assert variable['required'] is True
-            # check that forminfo is dictionary with sensible year ranges
-            forminfo = variable['form']
-            assert isinstance(forminfo, dict)
-            yranges = sorted(forminfo.keys())
-            num_yranges = len(yranges)
-            prior_eyr = first_year - 1
-            yrange_num = 0
-            for yrange in yranges:
-                yrange_num += 1
-                yrlist = yrange.split('-')
-                fyr = int(yrlist[0])
-                if yrlist[1] == '20??':
-                    indefinite_yrange = True
-                    assert yrange_num == num_yranges
-                else:
-                    indefinite_yrange = False
-                    eyr = int(yrlist[1])
-                    if fyr != (prior_eyr + 1):
-                        msg1 = f'{vname} fyr {fyr}'
-                        msg2 = f'!= prior_eyr_1 {prior_eyr + 1}'
-                        assert msg1 == msg2
-                    if eyr > last_form_year:
-                        msg1 = f'{vname} eyr {eyr}'
-                        msg2 = f'> last_form_year {last_form_year}'
-                        assert msg1 == msg2
-                    prior_eyr = eyr
-            if not indefinite_yrange and len(yranges) > 0:
-                prior_ey_ok = prior_eyr in (last_form_year, last_form_year - 1)
-                if not prior_ey_ok:
-                    msg1 = f'{vname} prior_eyr {prior_eyr}'
-                    msg2 = f'!= last_form_year {last_form_year}'
-                    assert msg1 == msg2
 
 
 def test_csv_input_vars_md_contents(tests_path):
