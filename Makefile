@@ -24,8 +24,8 @@ help:
 	@echo "             tc --test"
 	@echo "tctest-jit : generate report for and cleanup after"
 	@echo "             tc --test when environment var NOTAXCALCJIT is set"
-	@echo "tests      : execute cstest, pytest, brtest, idtest"
 	@echo "docs       : generate docs/guide/{*_vars.md,policy_params.md}"
+	@echo "tests      : execute cstest, pytest, brtest, idtest, docs"
 	@echo "coverage   : generate pytest coverage report"
 	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
 	@echo "git-pr N=n : create local pr-n branch containing upstream PR"
@@ -97,10 +97,11 @@ idtest: package
 
 .PHONY=docs
 docs: package
+	@echo "Executing docs/guide/make/make_uguide.py"
 	@python docs/guide/make/make_uguide.py
 
 .PHONY=tests
-tests: clean cstest pytest brtest idtest
+tests: clean cstest pytest brtest idtest docs
 
 define coverage-cleanup
 rm -f .coverage .coverage.* htmlcov/*
