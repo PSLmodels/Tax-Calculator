@@ -1,6 +1,10 @@
-import taxcalc as tc
-import pandas as pd
+"""
+Creates documentation markdown text for input and output variables.
+"""
+
 import numpy as np
+import pandas as pd
+import taxcalc as tc
 
 
 def make_io_vars(path, iotype):
@@ -56,7 +60,7 @@ def create_io_df(path, iotype):
         DataFrame including input and output variables.
     """
     # Read json file and convert to a dict.
-    with open(path) as vfile:
+    with open(path, 'r', encoding='utf-8') as vfile:
         json_text = vfile.read()
     variables = tc.json_to_dict(json_text)
     assert isinstance(variables, dict)

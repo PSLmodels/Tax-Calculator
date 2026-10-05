@@ -10,8 +10,8 @@ this folder, and JSON files from Tax-Calculator.
 import os
 import sys
 # Other scripts in this folder.
-import make_params
-import make_io_vars
+import make_params  # pylint: disable=import-error
+import make_io_vars  # pylint: disable=import-error
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -33,6 +33,9 @@ END_YEAR_LONG = 2027
 
 
 def main():
+    """
+    Generates all four user-guide markdown files.
+    """
     # Policy parameters.
     policy_param_text = make_params.make_params(POLICY_PATH, 'policy')
     write_file(policy_param_text, 'policy_params')
@@ -65,9 +68,9 @@ def write_file(text, file):
     """
     template = os.path.join(TEMPLATE_PATH, file + '_template.md')
     outfile = os.path.join(OUTPUT_PATH, file + '.md')
-    with open(template, 'r') as f:
+    with open(template, 'r', encoding='utf-8') as f:
         template_text = f.read()
-    with open(outfile, 'w') as f:
+    with open(outfile, 'w', encoding='utf-8') as f:
         f.write(template_text + '\n\n' + text)
 
 
