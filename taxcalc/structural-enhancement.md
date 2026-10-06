@@ -36,7 +36,6 @@ STEP 2: CREATE GIT BRANCH
 
 STEP 3: MAKE BRANCH CHANGES
 - Identify any new parameters for `policy_current_law.json`
-  * avoid creating new section1 and section2 values
   * set current-law parameter values so that they leave results generated
     by the current version of Tax-Calculator unchanged
 - Identify any new variables for `records_variables.json`

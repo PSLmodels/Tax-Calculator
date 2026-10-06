@@ -346,7 +346,7 @@ def test_diff_count_precision():
     """
     Estimate bootstrap standard error and confidence interval for count
     statistics ('tax_cut' and 'tax_inc') in difference table generated
-    using puf.csv input data taking no account of tbi privacy fuzzing and
+    using puf.csv input data taking no account of privacy fuzzing and
     assuming all filing units in each bin have the same weight.  These
     assumptions imply that the estimates produced here are likely to
     over-estimate the precision of the count statistics.
@@ -367,7 +367,7 @@ def test_diff_count_precision():
     A  215525
 
     STANDARD BINS:
-    0    7081 <--- negative income bin was dropped in TaxBrain display
+    0    7081 <--- negative income bin was dropped in difference table display
     1   19355
     2   22722
     3   20098
@@ -378,10 +378,11 @@ def test_diff_count_precision():
     8   25225
     9   15123
     10  10570 <--- smallest unweighted bin count
-    11  23113 <--- second largest unweighted WEBAPP bin count
+    11  23113 <--- second largest unweighted STANDARD bin count
     A  215525
 
-    Background information on Trump2017.json reform used in TaxBrain run 16649:
+    Background information on Trump2017.json reform used in an earlier
+    difference-table analysis:
 
     STANDARD bin 10 ($500-1000 thousand) has weighted count of 1179 thousand;
                     weighted count of units with tax increase is 32 thousand.
@@ -389,7 +390,7 @@ def test_diff_count_precision():
     So, the mean weight for all units in STANDARD bin 10 is 111.5421 and the
     unweighted number with a tax increase is 287 assuming all units in that
     bin have the same weight.  (Note that 287 * 111.5421 is about 32,012.58,
-    which rounds to the 32 thousand shown in the TaxBrain difference table.)
+    which rounds to the 32 thousand shown in the difference table.)
 
     STANDARD bin 11 ($1000+ thousand) has weighted count of 636 thousand;
                     weighted count of units with tax increase is 27 thousand.
@@ -397,7 +398,7 @@ def test_diff_count_precision():
     So, the mean weight for all units in STANDARD bin 11 is about 27.517 and
     the unweighted number with a tax increase is 981 assuming all units in
     that bin have the same weight.  (Note that 981 * 27.517 is about 26,994.18,
-    which rounds to the 27 thousand shown in the TaxBrain difference table.)
+    which rounds to the 27 thousand shown in the difference table.)
     """
     dump = False  # setting to True implies results printed and test fails
     seed = 123456789
