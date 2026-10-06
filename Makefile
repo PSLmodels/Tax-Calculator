@@ -24,7 +24,8 @@ help:
 	@echo "             tc --test"
 	@echo "tctest-jit : generate report for and cleanup after"
 	@echo "             tc --test when environment var NOTAXCALCJIT is set"
-	@echo "tests      : execute cstest, pytest, brtest, idtest"
+	@echo "docs       : generate docs/guide/{*_vars.md,policy_params.md}"
+	@echo "tests      : execute cstest, pytest, brtest, idtest, docs"
 	@echo "coverage   : generate pytest coverage report"
 	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
 	@echo "git-pr N=n : create local pr-n branch containing upstream PR"
@@ -74,7 +75,7 @@ TESTS_JSON_FILES := $(shell ls -l ./taxcalc/tests/*json | awk '{print $$9}')
 PYLINT_DISABLE = locally-disabled,duplicate-code,cyclic-import
 PYLINT_OPTIONS = --disable=$(PYLINT_DISABLE) --score=no --jobs=4 \
                  --check-quote-consistency=yes
-EXCLUDED_PATHS = docs,taxcalc/validation
+EXCLUDED_PATHS = taxcalc/validation
 
 .PHONY=cstest
 cstest:
@@ -94,8 +95,13 @@ idtest: package
 	@echo "Executing taxcalc/cli/input_data_tests"
 	@cd taxcalc/cli/input_data_tests ; ./tests.sh
 
+.PHONY=docs
+docs: package
+	@echo "Executing docs/guide/make/make_uguide.py"
+	@python docs/guide/make/make_uguide.py
+
 .PHONY=tests
-tests: clean cstest pytest brtest idtest
+tests: clean cstest pytest brtest idtest docs
 
 define coverage-cleanup
 rm -f .coverage .coverage.* htmlcov/*

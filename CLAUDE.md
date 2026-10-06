@@ -100,7 +100,7 @@ indicates a bug in the branch changes.
 
 CI enforces `pycodestyle` (ignoring W503, W504, E712) and `pylint`
 (disabling `locally-disabled,duplicate-code,cyclic-import`, with
-quote-consistency checking on) across everything except `docs/` and
+quote-consistency checking on) across everything except
 `taxcalc/validation/`. The calcfunctions use short mathematical
 variable names (`# pylint: disable=invalid-name`) that mirror IRS form
 line items — match that convention rather than renaming for clarity.

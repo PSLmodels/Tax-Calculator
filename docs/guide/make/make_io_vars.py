@@ -1,6 +1,10 @@
-import taxcalc as tc
-import pandas as pd
+"""
+Creates documentation markdown text for input and output variables.
+"""
+
 import numpy as np
+import pandas as pd
+import taxcalc as tc
 
 
 def make_io_vars(path, iotype):
@@ -31,16 +35,6 @@ def make_io_vars(path, iotype):
     def availability(df):
         return '_Availability_: ' + df.availability + '  \n'
 
-    def form_one(row):
-        txt = '_IRS Form Location:_  \n'
-        formdict = row.form
-        for yrange in sorted(formdict.keys()):
-            txt += '{}: {}  \n'.format(yrange, formdict[yrange])
-        return txt
-
-    def form(df):
-        return df.apply(form_one, axis=1)
-
     # Create DataFrame with one record per variable.
     df = create_io_df(path, iotype)
     # Create txt, a pandas Series.
@@ -50,7 +44,6 @@ def make_io_vars(path, iotype):
     txt += description(df) + datatype(df)
     if iotype == 'read':
         txt += availability(df)
-    txt += form(df)
     # Return single string.
     return '\n\n'.join(txt)
 
@@ -67,9 +60,10 @@ def create_io_df(path, iotype):
         DataFrame including input and output variables.
     """
     # Read json file and convert to a dict.
-    with open(path) as vfile:
+    with open(path, 'r', encoding='utf-8') as vfile:
         json_text = vfile.read()
     variables = tc.json_to_dict(json_text)
     assert isinstance(variables, dict)
-    # Create DataFrames for input and output variables.
-    return pd.DataFrame(variables[iotype]).transpose()
+    # Create DataFrame sorted alphabetically (ignoring case) by variable name.
+    df = pd.DataFrame(variables[iotype]).transpose()
+    return df.sort_index(key=lambda idx: idx.str.lower())
