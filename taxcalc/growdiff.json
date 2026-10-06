@@ -39,12 +39,6 @@
             }
         },
         "additional_members": {
-            "section_1": {
-                "type": "str"
-            },
-            "section_2": {
-                "type": "str"
-            },
             "start_year": {
                 "type": "int"
             },

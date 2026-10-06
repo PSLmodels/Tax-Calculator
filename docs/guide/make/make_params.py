@@ -17,25 +17,6 @@ START_YEAR = 2013
 END_YEAR_SHORT = 2020
 END_YEAR_LONG = 2027
 
-# Order for policy_params.md.
-SECTION_1_ORDER = ['Parameter Indexing',
-                   'Payroll Taxes',
-                   'Social Security Taxability',
-                   'Above The Line Deductions',
-                   'Personal Exemptions',
-                   'Standard Deduction',
-                   'Nonrefundable Credits',
-                   'Child/Dependent Credits',
-                   'Itemized Deductions',
-                   'Capital Gains And Dividends',
-                   'Personal Income',
-                   'Other Taxes',
-                   'Refundable Credits',
-                   'Surtaxes',
-                   'Universal Basic Income',
-                   'Benefits',
-                   'Other Parameters (not in Tax-Brain webapp)']
-
 
 def make_params(path, ptype):
     """ Make string with all parameter information.
@@ -56,31 +37,9 @@ def make_params(path, ptype):
         df = df.join(pd.DataFrame(reformat_params()).transpose())
     # Add parameter text for policy, consumption, and growdiff parameter types.
     df['content'] = paramtextdf(df, ptype)
-    # Only policy parameters have sections.
+    # Sort policy parameters alphabetically (ignoring case) by name.
     if ptype == 'policy':
-        df.section_1 = np.where(
-            df.section_1 == '',
-            'Other Parameters (not in Tax-Brain webapp)',
-            df.section_1
-        )
-        section_1_order_index = dict(zip(SECTION_1_ORDER,
-                                         range(len(SECTION_1_ORDER))))
-        df['section_1_order'] = df.section_1.map(section_1_order_index)
-        df.sort_values(['section_1_order', 'section_2'], inplace=True)
-        # Add section titles when they change.
-        df['new_section_1'] = ~df.section_1.eq(df.section_1.shift())
-        df['new_section_2'] = (
-            ~df.section_2.eq(df.section_2.shift()) &
-            (df.section_2 > '')
-        )
-        df['section_1_content'] = np.where(
-            df.new_section_1, '## ' + df.section_1 + '\n\n', ''
-        )
-        df['section_2_content'] = np.where(
-            df.new_section_2, '### ' + df.section_2 + '\n\n', ''
-        )
-        # Concatenate section titles with content for each parameter.
-        df.content = df.section_1_content + df.section_2_content + df.content
+        df = df.sort_index(key=lambda idx: idx.str.lower())
     # Return a single string.
     return '\n\n'.join(df.content)
 
@@ -104,7 +63,7 @@ def boolstr(b):
 
 
 def paramtextdf(df, ptype):  # pylint: disable=too-many-locals
-    """ Don't include sections - do that later.
+    """ Return Series of parameter text for each parameter.
 
     Args:
         df: DataFrame representing parameters.
