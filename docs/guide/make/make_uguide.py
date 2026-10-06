@@ -43,8 +43,9 @@ def main():
     growdiff_param_text = make_params.make_params(GROWDIFF_PATH, 'growdiff')
     consumption_param_text = make_params.make_params(CONSUMPTION_PATH,
                                                      'consumption')
-    assumption_param_text = ('## Growdiff\n\n' + growdiff_param_text +
-                             '\n\n## Consumption\n\n' + consumption_param_text)
+    assumption_param_text = ('### Growdiff\n\n' + growdiff_param_text +
+                             '\n\n### Consumption\n\n' +
+                             consumption_param_text)
     write_file(assumption_param_text, 'assumption_params')
     # Input and output variables.
     input_var_text = make_io_vars.make_io_vars(IOVARS_PATH, 'read')

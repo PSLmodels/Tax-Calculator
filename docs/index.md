@@ -18,7 +18,7 @@ conda install conda-forge::taxcalc
 When using sample data that represent the USA population,
 Tax-Calculator can estimate the aggregate revenue and distributional
 effects of tax reforms.  Read
-{doc}`usage/data` for information about the three different prepared
+[](usage/data.md) for information about the three different prepared
 sample data sets that Tax-Calculator knows how to handle.
 
 Tax-Calculator can also process custom-created data on one or more filing
@@ -50,7 +50,7 @@ cross-model validation work with NBER's TAXSIM-35 model is described
 
 ## Latest release
 
-{doc}`6.8.4 (2026-10-01) <about/releases>`
+[6.8.4 (2026-10-01)](about/releases.md)
 
 If you are already using Tax-Calculator, upgrade using the following command:
 ```
@@ -61,7 +61,7 @@ or
 conda update conda-forge::taxcalc
 ```
 
-If you're a new user, read {doc}`usage/starting`.
+If you're a new user, read [](usage/starting.md).
 
 ## Disclaimer
 

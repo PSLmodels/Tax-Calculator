@@ -12,7 +12,7 @@ editor (for example, TextEdit on Mac or Notepad on Windows).
 ## Test `tc` CLI
 
 The `tc` CLI is part of the Tax-Calculator `taxcalc` package you
-installed on your computer as part of {doc}`../usage/starting`.
+installed on your computer as part of [](../usage/starting.md).
 
 To check your installation of `tc`, enter the following command:
 
@@ -87,8 +87,8 @@ A JSON behavior file used with the `--behavior` option must contain
 all four of the `esf`, `sub`, `inc`, and `cg` parameters; specify a
 parameter as `0.0` to turn off that response channel.  The meaning
 and appropriate values of the four parameters are described in
-{doc}`behavior_params`, and the logic that uses them is documented in
-{doc}`../api/behresp`.  Note in particular that `cg` is a
+[](behavior_params.md), and the logic that uses them is documented in
+[](../api/behresp.md).  Note in particular that `cg` is a
 semi-elasticity rather than the tax-rate elasticity usually reported
 in the literature.
 
@@ -100,7 +100,7 @@ Census public-use files, the IRS-SOI Public Use File is
 proprietary. If you or your organization has paid IRS to use the PUF
 version being by Tax-Calculator, then it may be possible for us to
 share with you our PUF-derived sample: the 2015-based `tmd.csv`,
-which is described in {doc}`../usage/data`.
+which is described in [](../usage/data.md).
 Otherwise, you have two choices.
 
 **First**, you can easily create with a text editor a CSV-formatted
@@ -218,7 +218,7 @@ endings.
 An input file name ending in `puf.csv` is rejected by `tc` with an
 error message.  The 2011 PUF-derived input data prepared by the
 taxdata repository can be used only with the Python API, as described
-in {doc}`../usage/data`.
+in [](../usage/data.md).
 
 ## Initiate reform analysis
 
@@ -400,6 +400,7 @@ as decribed
 [here](https://github.com/PSLmodels/Tax-Calculator/pull/2900#issue-3047043290)
 and below in the final section of this document.
 
+(cli-tab-results)=
 ## Tabulate reform results
 
 Given the [prevalence](https://sqlite.org/mostdeployed.html) of

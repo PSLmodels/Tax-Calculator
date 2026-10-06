@@ -4,13 +4,13 @@ Testing
 This description of Tax-Calculator testing procedures is written for a
 person who wants to contribute changes to Tax-Calculator source code.
 
-It assumes that you have read {doc}`contributor_guide` and
-{doc}`param_naming`, have forked the [central GitHub Tax-Calculator
+It assumes that you have read [](contributor_guide.md) and
+[](param_naming.md), have forked the [central GitHub Tax-Calculator
 repository](https://github.com/PSLmodels/Tax-Calculator) to your
 GitHub account, and have cloned that forked copy to your local
 computer.
 
-This document also assumes that you have read {doc}`pr_workflow`
+This document also assumes that you have read [](pr_workflow.md)
 so that you understand where the testing procedures fit into
 the broader workflow of preparing a pull request that changes
 Tax-Calculator source code.

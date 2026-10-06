@@ -55,7 +55,7 @@ difference table for income tax liability by expanded-income deciles.
     called after `calc_all()` has been called on both Calculator objects.
 
 For examples of Python scripts that use these classes and methods, see
-{doc}`../recipes/index`.
+[](../recipes/index.md).
 
 For detailed documentation and source code for these three classes, see:
 

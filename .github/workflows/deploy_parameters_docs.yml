@@ -26,11 +26,12 @@ jobs:
       - name: Build # Build Jupyter Book
         shell: bash -l {0}
         run: |
-          pip install "jupyter-book<2"
           pip install -e .
           python docs/guide/make/make_uguide.py
+          python docs/api/make/make_api.py
           cd docs
-          jb build .
+          jupyter-book build --html --execute
+          python make_redirects.py
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4

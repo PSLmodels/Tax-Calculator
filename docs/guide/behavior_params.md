@@ -6,7 +6,7 @@ changes in input variables caused by a tax reform in a
 partial-equilibrium setting is contained in the `response` function in
 the Tax-Calculator `behresp` module.  The complete documentation of
 that function, including the response equations and the way responses
-are applied to input variables, is on the {doc}`../api/behresp` page.
+are applied to input variables, is on the [](../api/behresp.md) page.
 
 By default Tax-Calculator assumes no behavioral responses to a tax
 reform, which is the same as saying the behavior parameters (or
@@ -33,7 +33,7 @@ because the OASDI payroll tax is capped per person while the HI payroll
 tax is uncapped: an earner below the OASDI cap receives a proportional
 earnings change, whereas for an earner above the cap the OASDI portion
 of the change is a lump sum that leaves their marginal wage unaffected.
-See the {doc}`../api/behresp` page for the equations.
+See the [](../api/behresp.md) page for the equations.
 
 `sub`: substitution elasticity of taxable income, defined as the
 proportional change in taxable income divided by the proportional
@@ -56,7 +56,7 @@ two differ by roughly a factor of four: the JCT-CBO tax-rate
 elasticity estimate of -0.792 corresponds to a `cg` semi-elasticity of
 about -3.45.  Specifying `cg` equal to a published tax-rate elasticity
 is a common mistake that generates a much smaller capital-gains
-response than intended.  See the {doc}`../api/behresp` page for the
+response than intended.  See the [](../api/behresp.md) page for the
 details of this conversion.
 
 When the elasticities are used in a Python program, they are supplied

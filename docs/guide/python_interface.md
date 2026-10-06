@@ -9,6 +9,6 @@ output variables, and assumption parameters, will be useful to you
 either way you use Tax-Calculator.
 
 If you want to learn more about how to write Python programs that use
-Tax-Calculator, follow the {doc}`../../recipes/index`, which contains
+Tax-Calculator, follow the [](../recipes/index.md), which contains
 a collection of tested recipes that employ both basic and advanced
 techniques.
