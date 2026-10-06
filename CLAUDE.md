@@ -98,7 +98,7 @@ indicates a bug in the branch changes.
 
 ## Coding style
 
-CI enforces `pycodestyle` (ignoring W503, W504, E712) and `pylint`
+`make cstest` runs `pycodestyle` (ignoring W503, W504, E712) and `pylint`
 (disabling `locally-disabled,duplicate-code,cyclic-import`, with
 quote-consistency checking on) across everything except
 `taxcalc/validation/`. The calcfunctions use short mathematical
