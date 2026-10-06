@@ -1,0 +1,83 @@
+version: 1
+project:
+  title: Tax-Calculator
+  authors:
+    - name: Policy Simulation Library
+  exclude:
+    - api/make
+    - guide/make
+    - guide/templates
+    - recipes/md_src
+    - '**/README.md'
+  github: PSLmodels/Tax-Calculator
+  thebe:
+    binder:
+      repo: PSLmodels/Tax-Calculator
+      provider: github
+      url: https://mybinder.org
+      ref: master
+  toc:
+    - file: index.md
+    - title: Usage
+      children:
+        - file: usage/starting.md
+        - file: usage/overview.md
+        - file: usage/data.md
+        - file: guide/index.md
+          children:
+            - file: guide/python_interface.md
+            - file: guide/cli.md
+            - file: guide/policy_params.md
+            - file: guide/input_vars.md
+            - file: guide/output_vars.md
+            - file: guide/assumption_params.md
+            - file: guide/behavior_params.md
+        - file: recipes/index.md
+          children:
+            - file: recipes/recipe00.ipynb
+            - file: recipes/recipe01.ipynb
+            - file: recipes/recipe02.ipynb
+            - file: recipes/recipe03.ipynb
+            - file: recipes/recipe04.ipynb
+            - file: recipes/recipe04_pandas.ipynb
+            - file: recipes/recipe05.ipynb
+            - file: recipes/recipe06.ipynb
+    - title: About
+      children:
+        - file: about/history.md
+        - file: about/releases.md
+        - file: about/roadmap.md
+        - file: about/LICENSE.md
+    - title: Contributing
+      children:
+        - file: contributing/contributor_guide.md
+        - file: contributing/pr_workflow.md
+        - file: contributing/param_naming.md
+        - file: contributing/testing.md
+        - file: contributing/RELEASING.md
+    - title: API
+      children:
+        - file: api/public_api.md
+          children:
+            - file: api/behresp.md
+            - file: api/calcfunctions.md
+            - file: api/calculator.md
+            - file: api/consumption.md
+            - file: api/data.md
+            - file: api/decorators.md
+            - file: api/growdiff.md
+            - file: api/growfactors.md
+            - file: api/parameters.md
+            - file: api/policy.md
+            - file: api/records.md
+            - file: api/taxcalcio.md
+            - file: api/utils.md
+            - file: api/utilsprvt.md
+    - title: Tax-Calculator use cases
+      children:
+        - file: use_cases.md
+site:
+  options:
+    logo: PSL.svg
+    folders: true
+  template: book-theme

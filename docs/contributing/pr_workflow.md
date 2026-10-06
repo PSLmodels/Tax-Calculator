@@ -3,8 +3,8 @@ Pull request workflow
 
 This description of the git/GitHub workflow is written for a person
 who wants to contribute changes to Tax-Calculator source code.  It
-assumes that you have read the {doc}`contributor_guide` and and
-{doc}`param_naming`, have forked the [central GitHub Tax-Calculator
+assumes that you have read the [](contributor_guide.md) and and
+[](param_naming.md), have forked the [central GitHub Tax-Calculator
 repository](https://github.com/PSLmodels/Tax-Calculator) to your
 GitHub account, and have cloned that forked copy to your local
 computer.
@@ -57,7 +57,7 @@ you want to rename in place of `OLDNAME` and type in the new name of
 the file in place of `NEWNAME`).
 
 5. Next test your proposed source-code changes in two ways: for coding
-style and for substantive results.  Read {doc}`testing` for how to
+style and for substantive results.  Read [](testing.md) for how to
 conduct these tests on your local computer.
 
 6. When you have successfully tested your changes, commit the changes

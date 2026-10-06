@@ -4,14 +4,14 @@ Contributor guide
 The purpose of this guide is to get you to the point where you can
 make improvements to Tax-Calculator and share them with the rest
 of the development team as a GitHub pull request.
-This document assumes that you have read {doc}`../usage/starting` and
-{doc}`../recipes/index`.
+This document assumes that you have read [](../usage/starting.md) and
+[](../recipes/index.md).
 
 If the objective of your Tax-Calculator improvement is to add the
 ability to analyze a tax reform that cannot be analyzed using existing
 policy parameters, then you need to follow the steps described in this
 paragraph **before** preparing a pull request.
-(a) Modify {doc}`../recipes/recipe06` to
+(a) Modify [](../recipes/recipe06.ipynb) to
 analyze the kind of tax reform you want to add to the list of reforms
 that can be analyzed parametricly by Tax-Calculator.
 (b) Raise a Tax-Calculator issue in which you show your modified
@@ -129,7 +129,7 @@ page](https://github.com).
     conda env update
     ```
     
-    For more detail on Tax-Calculator testing procedures, read {doc}`testing`.
+    For more detail on Tax-Calculator testing procedures, read [](testing.md).
     If the tests still don't pass, please contact us.
 
 If you've made it this far, you've successfully made a remote copy (a
@@ -148,6 +148,7 @@ section introduces some standard Git practices and guides you through
 the contribution process.
 
 
+(workflow)=
 ## Workflow
 
 The following text describes a typical workflow for changing
@@ -219,7 +220,7 @@ situations, in which case other contributors are here to help.
    ```
 
 3. If your changes involve creating a new tax policy parameter, be
-   sure to read about the Tax-Calculator {doc}`param_naming`.
+   sure to read about the Tax-Calculator [](param_naming.md).
 
 4. As you make changes, frequently check that your changes do not
    violate Tax-Calculator coding style, introduce bugs, or degrade the
@@ -229,7 +230,10 @@ situations, in which case other contributors are here to help.
    make cstest
    make pytest
    ```
-   Consult {doc}`testing` for more details.
+   Consult [](testing.md) for more details.  If your changes involve
+   this documentation, see the
+   [docs README](https://github.com/PSLmodels/Tax-Calculator/blob/master/docs/README.md)
+   for how to build and preview the documentation website.
 
    If the tests do not pass, try to fix the problem by using the
    information provided by the error message.  If this isn't possible
@@ -304,6 +308,6 @@ branch, commit them (step 6), and push them to your remote repo (step
 7), and these changes will be automatically incorporated into your
 pull request.
 
-You should now read the more detailed {doc}`pr_workflow` document.
+You should now read the more detailed [](pr_workflow.md) document.
 
 This is the end of the Contributor Guide document.

@@ -50,7 +50,7 @@ def test_for_consistency(tests_path):
         'pycodestyle',
         'pylint',
         'pip',
-        'jupyter-book<2.0',
+        'jupyter-book>=2.0',
         'setuptools'
     ])
     # read conda.recipe/meta.yaml requirements

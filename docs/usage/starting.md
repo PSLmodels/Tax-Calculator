@@ -49,11 +49,11 @@ by clicking on the _Watch_ button in the upper-right corner of the
 
 ## Read Tax-Calculator user guide
 
-Read the {doc}`../guide/index` about how to conduct tax analysis with
+Read the [](../guide/index.md) about how to conduct tax analysis with
 Tax-Calculator two different ways:
 (a) without doing any computer programming, or
 (b) by writing Python programs.
-Then after reading the {doc}`overview`, you will be in a position to do any of
+Then after reading the [](overview.md), you will be in a position to do any of
 the following:
 
 1.  If you want to **ask a question**,
@@ -72,7 +72,7 @@ result is not the same as what you get when filling out the relevant IRS tax
 form.
 
 4.  If you want to **propose code changes**, follow the directions in the
-{doc}`../contributing/contributor_guide` on how to fork and clone the
+[](../contributing/contributor_guide.md) on how to fork and clone the
 Tax-Calculator git repository.
 Before developing any code changes, be sure to read completely the contributor
 guide.

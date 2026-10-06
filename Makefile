@@ -24,7 +24,10 @@ help:
 	@echo "             tc --test"
 	@echo "tctest-jit : generate report for and cleanup after"
 	@echo "             tc --test when environment var NOTAXCALCJIT is set"
-	@echo "docs       : generate docs/guide/{*_vars.md,policy_params.md}"
+	@echo "docs       : generate docs/guide/{*_vars.md,*_params.md} and"
+	@echo "             docs/api/*.md files"
+	@echo "docs-peek  : preview docs at http://localhost:3000 (Ctrl-C ends)"
+	@echo "docs-html  : build docs/_build/html website just as CI does"
 	@echo "tests      : execute cstest, pytest, brtest, idtest, docs"
 	@echo "coverage   : generate pytest coverage report"
 	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
@@ -99,6 +102,19 @@ idtest: package
 docs: package
 	@echo "Executing docs/guide/make/make_uguide.py"
 	@python docs/guide/make/make_uguide.py
+	@echo "Executing docs/api/make/make_api.py"
+	@python docs/api/make/make_api.py
+
+.PHONY=docs-peek
+docs-peek: docs
+	@cd docs ; jupyter-book start
+
+.PHONY=docs-html
+docs-html: docs
+	@echo "Building docs/_build/html website"
+	@cd docs ; rm -rf _build ; \
+	  jupyter-book build --html --execute --strict && \
+	  python make_redirects.py
 
 .PHONY=tests
 tests: clean cstest pytest brtest idtest docs
