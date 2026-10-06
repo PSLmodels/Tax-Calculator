@@ -62,6 +62,12 @@ versions (for example, `guide/policy_params.html` is now
 that existing links to the website continue to work.  The script fails
 if a file in the `myst.yml` table of contents has no website page.
 
+Each redirect page points to the new URL with a trailing slash (for
+example, `/usage/data/`).  This is necessary because GitHub Pages
+responds to a `/usage/data` request by serving the `usage/data.html`
+redirect page (rather than the `usage/data/index.html` website page),
+so a redirect to `/usage/data` would loop forever.
+
 ## GitHub CI workflows
 
 Three workflows in the `.github/workflows` folder build the website:

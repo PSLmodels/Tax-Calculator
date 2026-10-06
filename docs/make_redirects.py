@@ -4,6 +4,12 @@ URLs used by jupyter-book versions before 2.0 (for example,
 guide/policy_params.html) still work after jupyter-book 2.0 changed
 them (for example, to guide/policy-params).
 
+Each redirect page points to the new URL with a trailing slash (for
+example, /usage/data/) because GitHub Pages serves a usage/data.html
+file, when one exists, in response to a /usage/data request.  Without
+the trailing slash, a redirect page whose old URL differs from its new
+URL only by the .html extension would redirect to itself forever.
+
 Execute this script in the docs folder after the jupyter-book build.
 """
 # CODING-STYLE CHECKS:
@@ -56,7 +62,7 @@ def main():
             continue
         os.makedirs(os.path.dirname(old_page_path), exist_ok=True)
         with open(old_page_path, 'w', encoding='utf-8') as f:
-            f.write(REDIRECT_PAGE.format(url=new_url))
+            f.write(REDIRECT_PAGE.format(url=redirect_url(new_url)))
     # Normal return code
     return 0
 
@@ -83,6 +89,16 @@ def new_page_url(path):
     if slug.endswith('/index'):
         slug = slug[:-len('/index')]
     return '/' + slug
+
+
+def redirect_url(url):
+    """
+    Returns specified page URL with a trailing slash, which GitHub Pages
+    maps only to the page's index.html file.
+    """
+    if url.endswith('/'):
+        return url
+    return url + '/'
 
 
 if __name__ == '__main__':
