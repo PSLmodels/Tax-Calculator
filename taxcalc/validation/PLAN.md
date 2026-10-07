@@ -39,6 +39,9 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | Work folder | `pe_taxsim/work/`, ignored by `pe_taxsim/.gitignore`. |
 | Rental income and QBI (D1) | (2026-10-07) `otherprop` goes only to `e02000`, not `e27200`: the pinned PE-taxsim runner pins `rental_income_would_be_qualified` to False, so rental income is not QBI in PE either. |
 | `pe_emulation.json` | (2026-10-07) Two entries: `eitc_claim_prob_scale` and `actc_claim_prob_scale` = 9e99 (full take-up, like PE); the three old TAXSIM-35 entries are dropped.  A third entry, `AMT_child_em_c_age` = 19, was removed by the user after current law was corrected to 19 on master. |
+| `--exact` | (2026-10-07) `run_tc.py` runs the TC CLI with `--exact`, so TC rounds phase-out excesses as the statute, the forms, and PE do. |
+| 2021 TC CTC bugs | (2026-10-07) B1 (`ODC_is_refundable` true in 2021) and B2 (`CTC_new` lacks the section 24(i)(4)(B) cap) are fixed on a separate branch off `master`, then merged here; the a21 expect file waits for that. |
+| PE 2021 `actc` | (2026-10-07) Keep comparing `actc` in 2021; PE's `refundable_ctc` quirk is listed as expected differences. |
 | Sparse business income | (2026-10-07) In sets b/c each of `psemp`, `ssemp`, `pbusinc`, `sbusinc`, `scorp` is nonzero for only 25% of units, so b/c include moderate-income units that get credits. |
 
 ## Target layout
@@ -207,14 +210,18 @@ At the end of every session:
 - [x] Run on a 100-unit a21 to shake out plumbing.
 
 ### Phase 8 — Triage assumption set `a` (wages, ages, dependents) 2021-2025  (several sessions)
-- [ ] Run a21..a25; for each distinct difference pattern, find a
+- [x] Run a21..a25; for each distinct difference pattern, find a
       representative unit and classify it:
       (1) translation/mapping error → fix Phase 2/5/6 code;
       (2) PE convention → `pe_emulation.json` entry (with user approval);
       (3) PE bug → note for upstream issue;
       (4) Tax-Calculator bug → report to user (fix per protocol).
-- [ ] Document explained diffs in `Differences_Explained.md`; create
-      `expected_differences/aYY-taxdiffs-expect.csv` with user approval.
+- [x] Document explained diffs in `Differences_Explained.md`; create
+      `expected_differences/aYY-taxdiffs-expect.csv` with user approval
+      (a22-a25 done).
+- [ ] After the TC 2021 CTC fixes (B1, B2) reach this branch: rerun
+      a21, confirm only `v26` and `actc` differences remain and match
+      `Differences_Explained.md`, then create the a21 expect file.
 
 ### Phase 9 — Triage set `b` (adds non-labor and business income)  (several sessions)
 - [ ] Same procedure as Phase 8 (expect SE tax, QBID, cap gains,
@@ -269,7 +276,7 @@ At the end of every session:
 | 5 taxsim_to_tc.py | done (2026-10-07) |
 | 6 run_tc.py | done (2026-10-07) |
 | 7 compare.py / validate.py | done (2026-10-07) |
-| 8 Triage a | not started |
+| 8 Triage a | a22-a25 done; a21 waits for TC fixes B1/B2 on master |
 | 9 Triage b | not started |
 | 10 Triage c | not started |
 | 11 Finish | not started |
@@ -597,3 +604,46 @@ At the end of every session:
   * Next step: Phase 8, triage set `a` (start with the a22-a25 `v26`
     differences, then the 2021 `actc`/`v22`/`fiitax` differences and
     watch item W1).
+- 2026-10-07: Phase 8 session (set `a`).
+  * Patterns found (counts of |diff| > $1, N=10,000 each):
+    - `v26` in every year (1,128-2,259 units): PE bug, no tax effect.
+      PE `amt_income = taxable_income + standard_deduction` with
+      taxable income floored at 0, so units with zero taxable income
+      get the standard deduction instead of AGI (Form 6251 line 1 may
+      be negative).  In 2025 PE also omits the senior-deduction
+      add-back (a section 151 deduction, disallowed by 56(b)(1)(E));
+      353 a25 units with positive taxable income differ by exactly
+      the senior deduction.  `v27` is zero in both models.
+    - a21 `fiitax`/`v22` $25 steps: TC phased the CTC out smoothly
+      (`exact=0`); PE rounds per "$1,000 or fraction thereof".  Fixed
+      in `run_tc.py` by adding `--exact` (the `exact` input column is
+      ignored by the CLI, which sets it from `--exact`).  This also
+      removed nearly all b/c `fiitax`/`v22` differences (e.g. b22
+      797 -> 7) and all 600 c21 `v24` differences; set a 2022-2025
+      unchanged.
+    - a21 `fiitax`/`v22` remaining 923: two TC bugs.  B1 = W1
+      (refundable ODC in 2021).  B2 = `CTC_new` reduces the ARPA
+      increase without the 24(i)(4)(B) cap (5% x (200k/400k - ARPA
+      threshold) = $6,250 single, $4,375 HoH, $12,500 joint).  A
+      scratch statutory 2021 Sch 8812 calculation reproduces PE `v22`
+      for all 10,000 a21 units and TC `v22` for all units when B1 and
+      B2 are introduced.  Examples: id 3 (B1), id 33 (B2).
+    - a21 `actc` (1,599): PE `refundable_ctc` in 2021 is
+      `min(ctc incl. ODC, ctc_refundable_maximum - ctc_phase_out)`,
+      ignoring the ARPA first-stage reduction; reproduced for all
+      a21 units.  PE output-definition quirk (upstream issue), no
+      `fiitax` effect in the sample.  Plus B2 effects.
+  * User decisions (Decisions table): fix B1/B2 on a separate branch
+    off master; keep 2021 `actc` in the comparison with the PE quirk
+    as expected differences; create a22-a25 expect files now.
+  * Rewrote `Differences_Explained.md` (set a).  Created
+    `expected_differences/a22..a25-taxdiffs-expect.csv` (v26 only);
+    a22-a25 PASS.  VARIABLES.md W1 marked confirmed.
+  * Upstream PE issues to draft in Phase 11: (1) `amt_income` floors
+    taxable income at zero; (2) 2025 senior deduction not added back
+    to AMT income; (3) 2021 `refundable_ctc` definition.
+  * Next step: user fixes B1/B2 on a branch off master (TC tests
+    with expected results may change; needs approval there), merges
+    master into this branch; then rerun a21, check that only the
+    documented `v26`/`actc` differences remain, create the a21 expect
+    file, and start Phase 9 (set b).

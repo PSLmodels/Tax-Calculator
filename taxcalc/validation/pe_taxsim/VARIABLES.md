@@ -249,12 +249,13 @@ Open decisions and watch items
   written only to `e02000`, not to `e27200`, because the PE-taxsim
   runner forces `rental_income_would_be_qualified` to False (an
   earlier draft of this document wrongly said PE counts it as QBI).
-- **W1 (watch): 2021 credit for other dependents.**  TC sets
-  `ODC_is_refundable = true` for 2021, but under ARPA only the child
-  credit became refundable; PE keeps the $500 credit nonrefundable in
-  2021.  Units with an adult or age-18+ dependent and little tax will
-  differ in `v22` and `fiitax`.  This looks like a TC bug; confirm it
-  with sample data in Phase 8 and then report it.
+- **W1 (confirmed 2026-10-07 as a TC bug): 2021 credit for other
+  dependents.**  TC sets `ODC_is_refundable = true` for 2021, but
+  under ARPA only the child credit became refundable; PE keeps the
+  $500 credit nonrefundable in 2021.  The a21 data confirm it (see
+  `Differences_Explained.md`); it is to be fixed on a branch off
+  `master`, together with a second 2021 TC bug (the uncapped ARPA
+  phase-out in `CTC_new`).
 - **W2 (resolved 2026-10-07): QBI reduction for SECA.**  PE, like TC,
   reduces QBI by the deductible part of self-employment tax
   (`qbi.deduction_definition` includes `self_employment_tax_ald_person`).

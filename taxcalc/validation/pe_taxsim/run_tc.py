@@ -6,8 +6,11 @@ USAGE: python run_tc.py LETTER YEAR
 
 reads work/LYY.in-tc.csv (written by taxsim_to_tc.py) and writes
 work/LYY.dumpdb and work/LYY.out-tc.csv in the folder containing this
-script.  The CLI runs with the pe_emulation.json reform and the
-dumpvars.txt variables, and the TAXSIM-format output follows the output
+script.  The CLI runs with the pe_emulation.json reform, the
+dumpvars.txt variables, and the --exact option, which makes
+Tax-Calculator round phase-out excesses as the statute and tax forms
+do (e.g., $50 per $1,000 "or fraction thereof" for the child tax
+credit), as PE does.  The TAXSIM-format output follows the output
 table in VARIABLES.md.
 
 The CLI is run as "python -m taxcalc.cli.tc" with the top-level folder
@@ -75,7 +78,7 @@ def run_cli(lyy, year, workdir):
         infile.name, str(year),
         "--reform", str(EMULATION_FILE),
         "--dumpdb", "--dumpvars", str(DUMPVARS_FILE),
-        "--silent",
+        "--exact", "--silent",
     ]
     env = dict(os.environ)
     env["PYTHONPATH"] = os.pathsep.join(

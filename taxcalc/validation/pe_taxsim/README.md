@@ -94,8 +94,15 @@ Step 4
 
 ```
 python -m taxcalc.cli.tc LYY.in-tc.csv 20YY --reform ../pe_emulation.json \
-    --dumpdb --dumpvars ../dumpvars.txt --silent
+    --dumpdb --dumpvars ../dumpvars.txt --exact --silent
 ```
+
+The `--exact` option makes Tax-Calculator round phase-out excesses
+the way the statute and tax forms do (for example, the child tax
+credit falls by $50 for each $1,000 "or fraction thereof" of income
+above the threshold), as PE does; without it, Tax-Calculator phases
+credits out smoothly, which differs from PE in 2021, whose $112,500
+head-of-household threshold is not a multiple of $1,000.
 
 It renames the CLI's SQLite output to `work/LYY.dumpdb` and converts
 the `reform` table (current law plus `pe_emulation.json`) into the
