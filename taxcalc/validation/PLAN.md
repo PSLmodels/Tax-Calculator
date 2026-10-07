@@ -60,6 +60,7 @@ taxcalc/validation/
     validate.py              driver: runs steps 3-5 (and optionally 1-2) for letters x years
     samples/LYY.in.csv.gz            committed step-1 samples
     pe_output/LYY.out-pe.csv.gz      committed step-2 outputs
+    pe_output/LYY.out-pe.stamp.json  versions, input/output SHA-256, run date
     expected_differences/LYY-taxdiffs-expect.csv
 ```
 
@@ -172,11 +173,11 @@ At the end of every session:
 - [x] Self-check: required columns, value ranges, no NaNs.
 
 ### Phase 4 — Step 2: `run_pe.py`  (1 session to write; runs may span days)
-- [ ] Reads `pe_pin.json`; builds the `uvx` command; runs via `subprocess`;
+- [x] Reads `pe_pin.json`; builds the `uvx` command; runs via `subprocess`;
       never imports PolicyEngine.
-- [ ] Writes `pe_output/LYY.out-pe.csv.gz`; refuses to overwrite without `--force`.
-- [ ] Verifies output row count and ids match the input sample.
-- [ ] Generate a21..a25 first (needed for Phase 7); then b, c.
+- [x] Writes `pe_output/LYY.out-pe.csv.gz`; refuses to overwrite without `--force`.
+- [x] Verifies output row count and ids match the input sample.
+- [x] Generate a21..a25 first (needed for Phase 7); then b, c.
 
 ### Phase 5 — Step 3: `taxsim_to_tc.py`  (≈1 session)
 - [ ] Implement the input table from VARIABLES.md (replace old quirks
@@ -262,7 +263,7 @@ At the end of every session:
 | 1 Salvage / skeleton | done (2026-10-07) |
 | 2 VARIABLES.md | done; reviewed and merged by user (2026-10-07) |
 | 3 generate_sample.py | done (2026-10-07) |
-| 4 run_pe.py + PE outputs | not started |
+| 4 run_pe.py + PE outputs | done (2026-10-07) |
 | 5 taxsim_to_tc.py | not started |
 | 6 run_tc.py | not started |
 | 7 compare.py / validate.py | not started |
@@ -433,3 +434,33 @@ At the end of every session:
   * Generated all 15 committed samples (N=10,000; 3.3 MB total).
   * Next step: Phase 4, write `run_pe.py` and generate a21..a25 PE
     outputs.  Before Phase 5, record D1 and the emulation decision.
+- 2026-10-07: Phase 4 session.
+  * Phase 2 review item was already checked; nothing to change there.
+  * Wrote `run_pe.py`: `python run_pe.py LETTER YEAR [--force]
+    [--indir DIR] [--outdir DIR]`.  Builds the uvx command from
+    `pe_pin.json` (incl. `--with policyengine-us==...` and
+    `pe_cli_options`); never imports PolicyEngine.  Before running,
+    it asks the uv env (`uvx ... python -c`) for the resolved
+    policyengine-us, policyengine-core, and Python versions and stops
+    if any differs from the pin.  It gunzips the sample to a temp dir,
+    runs PE, checks the output (the 41 expected columns, row count,
+    taxsimid and year equal to the input, no NaNs, state 0), then
+    gzips the PE output bytes unchanged (mtime 0) to
+    `pe_output/LYY.out-pe.csv.gz` and writes
+    `pe_output/LYY.out-pe.stamp.json` (pinned versions, input/output
+    SHA-256, run date and seconds).  Refuses to overwrite without
+    `--force`.  Rerunning gives a byte-identical output.
+    pycodestyle and pylint are clean.  README.md updated for step 2.
+  * Generated all 15 PE outputs (N=10,000): 12 s each; 7.6 MB total
+    gzipped (larger than the samples because PE writes floats).
+  * Nonzero counts worth remembering for triage: set a has no
+    QBID/NIIT/AMT(v14), as expected; a21 RRC (`cares`) 2,969 and
+    ACTC 5,130 vs about 1,700-1,800 in a22-a25.  In b/c, NIIT is
+    nonzero for ~87% of units, QBID ~10-14%, EITC (v25) almost never
+    (see Phase 3 log), ACTC small except in 2021.  c21 CDCC (v24)
+    2,140 vs ~6,200 in c22-c25: correct, because the 2021 ARPA CDCC
+    phases out completely at high AGI and the median AGI of c21 units
+    with child care is ~$557k.
+  * Next step: record decision D1 (rental income in QBI) and the
+    `pe_emulation.json` proposal from VARIABLES.md in the Decisions
+    table; then Phase 5 (`taxsim_to_tc.py`).

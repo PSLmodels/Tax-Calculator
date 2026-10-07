@@ -1,8 +1,8 @@
 Validation against policyengine-taxsim
 =====================================
 
-**Status: under construction.**  `generate_sample.py` (step 1) is
-done.  The other Python scripts in this folder were copied from the
+**Status: under construction.**  `generate_sample.py` (step 1) and
+`run_pe.py` (step 2) are done.  The other Python scripts in this folder were copied from the
 earlier TAXSIM-35 validation and have not yet been revised; they do
 not work yet.
 
@@ -16,7 +16,8 @@ or `c`) and a two-digit year `YY`.  The comparison runs in five steps:
 1. `generate_sample.py` writes a TAXSIM-format sample `samples/LYY.in.csv.gz`
    (always `state=0`, `idtl=2`).
 2. `run_pe.py` runs policyengine-taxsim on the sample and writes
-   `pe_output/LYY.out-pe.csv.gz`.
+   `pe_output/LYY.out-pe.csv.gz` plus a version stamp
+   `pe_output/LYY.out-pe.stamp.json`.
 3. `taxsim_to_tc.py` translates the sample into a Tax-Calculator input file.
 4. `run_tc.py` runs the Tax-Calculator CLI with the `pe_emulation.json`
    reform and converts its output to TAXSIM format.
@@ -56,6 +57,14 @@ uvx --python 3.13 \
     policyengine-taxsim policyengine LYY.in.csv --output LYY.out-pe.csv \
     --scorp-treatment active
 ```
+
+`python run_pe.py L YYYY` builds and runs this command from
+`pe_pin.json`, first checking that the uv environment resolves to the
+pinned `policyengine-us`, `policyengine-core`, and Python versions.
+It refuses to overwrite an existing PE output unless `--force` is
+given, and it checks that the output has the expected columns and the
+same `taxsimid` and `year` values as the input sample.  A 10,000-unit
+run takes about two minutes.
 
 The `--with policyengine-us==...` option is required, because
 policyengine-taxsim does not set an upper bound on its
