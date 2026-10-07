@@ -754,13 +754,13 @@ _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
 _Known Values:_  
-2013: 18  
-2014: 18  
-2015: 18  
-2016: 18  
-2017: 18  
-2018: 18  
-2019: 18  
+2013: 19  
+2014: 19  
+2015: 19  
+2016: 19  
+2017: 19  
+2018: 19  
+2019: 19  
 _Valid Range:_ min = 0 and max = 30  
 _Out-of-Range Action:_ error  
 
