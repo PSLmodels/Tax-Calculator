@@ -1,11 +1,10 @@
 Validation against policyengine-taxsim
 =====================================
 
-**Status: under construction.**  `generate_sample.py` (step 1),
-`run_pe.py` (step 2), `taxsim_to_tc.py` (step 3), and `run_tc.py`
-(step 4) are done.  The other Python scripts in this folder were
-copied from the earlier TAXSIM-35 validation and have not yet been
-revised; they do not work yet.
+**Status: under construction.**  The scripts for all five steps and
+the `validate.py` driver are done, but the differences have not yet
+been examined, so there are no expected-differences files yet and
+every comparison fails.
 
 This folder compares Tax-Calculator's **federal** income and payroll
 tax results with those of
@@ -110,3 +109,49 @@ weights=None)`: the input values are used unchanged for TAXYEAR (no
 growfactor aging), `FLPDYR` is set to TAXYEAR, and all weights are
 zero, which matters only for the `--tables` and `--graphs` output that
 step 4 does not use.
+
+Step 5
+------
+
+`python compare.py L YYYY [--tolerance T]` compares
+`pe_output/LYY.out-pe.csv.gz` with `work/LYY.out-tc.csv` for the
+variables marked "Compare" in the output table in
+[`VARIABLES.md`](VARIABLES.md) (`v13`, `v17`, and `v19` only for the
+units described there).  It writes two files to
+`work/actual_differences/`:
+
+- `LYY-taxdiffs-actual.csv` has one row (`taxsimid`, `variable`, `pe`,
+  `tc`, `diff`) for each compared value whose absolute difference,
+  `diff = tc - pe`, exceeds the tolerance (default $1).
+- `LYY-taxdiffs-summary.csv` has, for each compared variable, the
+  number of units compared, the number of differences, and the
+  maximum and mean absolute difference.
+
+The comparison passes when the actual differences are exactly the same
+as those in `expected_differences/LYY-taxdiffs-expect.csv` (the same
+units, variables, and values to the cent), or when there are no actual
+differences and no expected-differences file.  The exit code is 0 for
+pass, 1 for fail, and 2 for an error.
+
+Running all the steps
+---------------------
+
+`python validate.py` runs steps 3-5 for every letter and year using
+the committed samples and PE outputs, prints each comparison, and ends
+with a pass/fail summary; its exit code is 0 only when every
+comparison passes.  All fifteen comparisons take about one minute.
+Use `--letters` (e.g., `ab`) and `--years` (e.g., `2021,2023-2025`) to
+run a subset, and `--tolerance` to change the tolerance.
+
+With `--regen`, `validate.py` first runs steps 1 and 2
+(`generate_sample.py` and `run_pe.py --force`), which **overwrites**
+the samples and PE outputs.  Do that in the committed folders only
+deliberately.  `--datadir DIR` makes `validate.py` use the
+`samples`, `pe_output`, `expected_differences`, and `work` folders in
+`DIR` instead of those next to the scripts, so a quick trial run with
+a small sample leaves the committed files alone:
+
+```
+python validate.py --letters a --years 2021 --regen --size 100 \
+    --datadir /some/scratch/folder
+```

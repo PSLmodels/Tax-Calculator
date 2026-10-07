@@ -219,26 +219,27 @@ dropped:
 
 | Old entry | Why it is dropped |
 |---|---|
-| `AMT_child_em_c_age: 24` | PE's age limit is 19, not 24 (replaced by the new entry below) |
+| `AMT_child_em_c_age: 24` | PE's age limit is 19, not 24 |
 | `EITC_excess_InvestIncome_rt: 1.0` | PE applies the statutory investment-income cliff (`eitc_investment_income_eligible`), as TC does by default |
 | `AlimonyReceived_frac_in_AGI: 1.0` | `nonprop` is ignored by PE and always 0 in the samples |
 
-Three new entries were adopted (2026-10-07).  The first two are needed
-because PE computes credit entitlement with full take-up
-(`takes_up_eitc` defaults to True), whereas TC's default
-`eitc_claim_prob_scale = 1.03` (minimum probability 0.4) and
-`actc_claim_prob_scale = 1.1` (minimum 0.0) randomly zero some EITC
-and ACTC amounts using `credit_claim_urn`.  The third is needed
-because PE applies the IRC section 59(j) kiddie-AMT exemption limit
-(`amt_kiddie_tax_applies`) to non-student filers younger than 19 (the
-section 152(c)(3) non-student age limit), whereas TC's default
-`AMT_child_em_c_age` is 18; the samples contain heads aged 17 and 18.
+Two new entries were adopted (2026-10-07), because PE computes credit
+entitlement with full take-up (`takes_up_eitc` defaults to True),
+whereas TC's default `eitc_claim_prob_scale = 1.03` (minimum
+probability 0.4) and `actc_claim_prob_scale = 1.1` (minimum 0.0)
+randomly zero some EITC and ACTC amounts using `credit_claim_urn`.
 
 ```
 "eitc_claim_prob_scale": {"2013": 9e99},
-"actc_claim_prob_scale": {"2013": 9e99},
-"AMT_child_em_c_age": {"2013": 19}
+"actc_claim_prob_scale": {"2013": 9e99}
 ```
+
+A third entry, `AMT_child_em_c_age: 19`, was adopted and then dropped
+(2026-10-07): PE applies the IRC section 59(j) kiddie-AMT exemption
+limit (`amt_kiddie_tax_applies`) to non-student filers younger than 19
+(the section 152(c)(3) non-student age limit), and TC's current-law
+value of `AMT_child_em_c_age` was corrected on master from 18 to 19,
+so no emulation is needed.
 
 
 Open decisions and watch items

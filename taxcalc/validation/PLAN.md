@@ -38,7 +38,7 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | Old CSV docs | (2026-10-07) `CSV_INPUT_VARS.md`/`CSV_OUTPUT_VARS.md` removed; `VARIABLES.md` replaces them. |
 | Work folder | `pe_taxsim/work/`, ignored by `pe_taxsim/.gitignore`. |
 | Rental income and QBI (D1) | (2026-10-07) `otherprop` goes only to `e02000`, not `e27200`: the pinned PE-taxsim runner pins `rental_income_would_be_qualified` to False, so rental income is not QBI in PE either. |
-| `pe_emulation.json` | (2026-10-07) Three entries: `eitc_claim_prob_scale` and `actc_claim_prob_scale` = 9e99 (full take-up, like PE) and `AMT_child_em_c_age` = 19 (PE's non-student kiddie-AMT age limit); the three old TAXSIM-35 entries are dropped. |
+| `pe_emulation.json` | (2026-10-07) Two entries: `eitc_claim_prob_scale` and `actc_claim_prob_scale` = 9e99 (full take-up, like PE); the three old TAXSIM-35 entries are dropped.  A third entry, `AMT_child_em_c_age` = 19, was removed by the user after current law was corrected to 19 on master. |
 | Sparse business income | (2026-10-07) In sets b/c each of `psemp`, `ssemp`, `pbusinc`, `sbusinc`, `scorp` is nonzero for only 25% of units, so b/c include moderate-income units that get credits. |
 
 ## Target layout
@@ -198,13 +198,13 @@ At the end of every session:
 - [x] `pe_emulation.json` written in Phase 5 (see Decisions table).
 
 ### Phase 7 — Step 5: `compare.py` and `validate.py`  (≈1 session)
-- [ ] Per-variable absolute differences; tolerance $1 (configurable).
-- [ ] Write `actual_differences/LYY-taxdiffs-actual.csv` (id, variable,
+- [x] Per-variable absolute differences; tolerance $1 (configurable).
+- [x] Write `actual_differences/LYY-taxdiffs-actual.csv` (id, variable,
       pe, tc, diff) plus a per-variable summary (count, max, mean abs).
-- [ ] Pass/fail = actual diffs match expected diffs file exactly.
-- [ ] `validate.py`: loop over letters × years; default runs steps 3-5
+- [x] Pass/fail = actual diffs match expected diffs file exactly.
+- [x] `validate.py`: loop over letters × years; default runs steps 3-5
       from committed samples and PE outputs; `--regen` also runs 1-2.
-- [ ] Run on a 100-unit a21 to shake out plumbing.
+- [x] Run on a 100-unit a21 to shake out plumbing.
 
 ### Phase 8 — Triage assumption set `a` (wages, ages, dependents) 2021-2025  (several sessions)
 - [ ] Run a21..a25; for each distinct difference pattern, find a
@@ -268,7 +268,7 @@ At the end of every session:
 | 4 run_pe.py + PE outputs | done (2026-10-07) |
 | 5 taxsim_to_tc.py | done (2026-10-07) |
 | 6 run_tc.py | done (2026-10-07) |
-| 7 compare.py / validate.py | not started |
+| 7 compare.py / validate.py | done (2026-10-07) |
 | 8 Triage a | not started |
 | 9 Triage b | not started |
 | 10 Triage c | not started |
@@ -535,3 +535,65 @@ At the end of every session:
     amount in 2025 (the statute gives the married amount); MARS=5 is
     not in our samples.
   * Next step: Phase 7 (`compare.py`, `validate.py`).
+- 2026-10-07: Phase 7 session.
+  * Before this session the user corrected `STD_Aged` (2022-2024 widow,
+    2023 single/headhh) and `AMT_child_em_c_age` (18 -> 19) on master,
+    merged master into this branch, and removed the
+    `AMT_child_em_c_age` entry from `pe_emulation.json`.  Decisions
+    table and VARIABLES.md emulation section updated to match.
+  * Re-ran steps 3-4 for all 15 samples and compared with the cached PE
+    outputs.  The b23 `v13`/`v18`/`v28` differences (aged standard
+    deduction) are gone.  Counts of |tc - pe| > $1 (v13/v17/v19 only
+    where compared):
+    ```
+         fiitax v17 qbid v18 v19 v28  v26 v27  v22 actc v24
+    a21    1195   0    0   0   0   0 1128   0 1195 1735   0
+    a22       0   0    0   0   0   0 1193   0    0    0   0
+    a23       0   0    0   0   0   0 1257   0    0    0   0
+    a24       0   0    0   0   0   0 1377   0    0    0   0
+    a25       0   0    0   0   0   0 2259   0    0    0   0
+    b21    1225   0    0   0   0   0    0   4 1222 1585   0
+    b22     797   0    0   0   0   0    0   7  791    1   0
+    b23     809   0    0   0   0   0    2   6  805    0   0
+    b24     782   0    0   0   0   0    1   7  776    0   0
+    b25     875   0    0   0   0   0  886  12  865    1   0
+    c21    1539   0    1   3   0   2    5   7 1247 1654 600
+    c22     814   0    0   0   0   0    4   6  807    1   2
+    c23     815   0    0   1   0   1    8   7  809    1   2
+    c24     777   0    0   2   1   2    5   4  772    0   2
+    c25     864   1    0   4   0   0  940   5  860    1   0
+    ```
+    Zero differences everywhere in fica, tfica, addmed, v44, v10, v11,
+    v12, v13, v14, niit, v25, and cares.  Triage hints: set a has
+    1,100-2,300 `v26` (AMT income) differences in every year with no
+    `v27` effect; b/c 2022-2025 have ~800 `v22` differences that drive
+    `fiitax`; 2021 `actc`/`v22` differences (W1-like); c21 `v24` 600.
+  * Rewrote `compare.py`: `python compare.py LETTER YEAR [--tolerance T]
+    [--pedir DIR] [--workdir DIR] [--expectdir DIR]`.  Compares the 23
+    VARIABLES.md "Compare" variables (`v13` only where TC `v17 == 0`,
+    `v17` only where TC `v13 == 0`, `v19` only where `tc_dwks10 == 0`)
+    after rounding both to cents; writes
+    `work/actual_differences/LYY-taxdiffs-actual.csv` (taxsimid,
+    variable, pe, tc, diff = tc - pe; rows with |diff| > T, default 1)
+    and `LYY-taxdiffs-summary.csv` (variable, compared, count, max_abs,
+    mean_abs).  Passes when the actual rows equal the
+    `expected_differences/LYY-taxdiffs-expect.csv` rows exactly (as
+    written to cents), or when there are no differences and no expect
+    file.  Exit code 0 pass, 1 fail, 2 error.  Verified: identical
+    expect file passes; one changed value, one missing row, a missing
+    file, and a malformed file are all detected.
+  * Wrote `validate.py`: `python validate.py [--letters abc] [--years
+    2021-2025] [--tolerance T] [--regen [--size N]] [--datadir DIR]`
+    runs each step script as a subprocess and prints a PASS/FAIL
+    summary (exit 0 only if all pass).  `--regen` runs
+    `generate_sample.py` and `run_pe.py --force` first (overwrites
+    samples and PE outputs in DATADIR).  `--datadir` (default: the
+    script folder) holds samples/, pe_output/, expected_differences/,
+    work/, so trial runs stay out of committed folders.  All 15
+    comparisons take ~1 minute; all FAIL now (no expect files).
+  * 100-unit a21 `--regen` run in a scratch DATADIR worked end to end
+    (PE 11 s).  pycodestyle and pylint clean for both scripts.
+    README.md documents step 5 and `validate.py`.
+  * Next step: Phase 8, triage set `a` (start with the a22-a25 `v26`
+    differences, then the 2021 `actc`/`v22`/`fiitax` differences and
+    watch item W1).
