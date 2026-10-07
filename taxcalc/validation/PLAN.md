@@ -149,18 +149,18 @@ At the end of every session:
 - [x] Stub `pe_taxsim/README.md` with environment setup (uv, pinned SHA).
 
 ### Phase 2 — Variable correspondence: `VARIABLES.md`  (1-2 sessions)
-- [ ] Input table: each TAXSIM input variable used → Tax-Calculator
+- [x] Input table: each TAXSIM input variable used → Tax-Calculator
       variable(s) and transformation, including MARS from `mstat` +
       dependents, `XTOT`, child-age variables (`nu06`, `nu13`, `nu18`,
       `n24`, `f2441`, `EIC`, `elderly_dependents`), age of head/spouse,
       split wages, SE income, qualified dividends, cap gains, pensions,
       Social Security, UI, itemized deductions, child-care expenses,
       S-corp / business income and QBID inputs.
-- [ ] Output table: each TAXSIM `idtl=2` variable (`fiitax`, `fica`,
+- [x] Output table: each TAXSIM `idtl=2` variable (`fiitax`, `fica`,
       `v10`..`v28`, others PE emits) → Tax-Calculator expression,
       with year-specific notes (2021 fully refundable CTC/CDCC and RRC;
       2025 OBBBA provisions such as the senior deduction).
-- [ ] Mark variables excluded from comparison and why.
+- [x] Mark variables excluded from comparison and why.
 - [ ] Get user review of VARIABLES.md before coding Phases 3-6.
 
 ### Phase 3 — Step 1: `generate_sample.py`  (≈1 session)
@@ -253,7 +253,7 @@ At the end of every session:
 |---|---|
 | 0 Tooling / PE smoke test | done (2026-10-07) |
 | 1 Salvage / skeleton | done (2026-10-07) |
-| 2 VARIABLES.md | not started |
+| 2 VARIABLES.md | draft done; awaiting user review (2026-10-07) |
 | 3 generate_sample.py | not started |
 | 4 run_pe.py + PE outputs | not started |
 | 5 taxsim_to_tc.py | not started |
@@ -363,3 +363,28 @@ At the end of every session:
     left alone (mention to user at PR time).
   * Next step: Phase 2, write `VARIABLES.md` (input table first),
     using the PE input-handling facts from the Phase 0 log.
+- 2026-10-07: Phase 2 session.
+  * Wrote `pe_taxsim/VARIABLES.md` (input table, output table,
+    exclusions, year notes, `pe_emulation.json` proposal, open items)
+    from the pinned PE-taxsim source (in the uv git cache at
+    `~/.cache/uv/git-v1/checkouts/*/3e2a758/`) and policyengine-us
+    2.30.1 source (uv archive cache), plus TC `calcfunctions.py`.
+  * Main findings:
+    - TC default `eitc_claim_prob_scale`/`actc_claim_prob_scale`
+      randomly zero some EITC/ACTC via `credit_claim_urn`; proposed
+      emulation entries set both to 9e99 (full take-up, as in PE).
+    - All three old emulation entries proposed for removal.
+    - PE sums `mortgage`+`otheritem` into fully deductible interest:
+      TC `e19200 = mortgage + otheritem` (old `otheritem->e18400` wrong).
+    - PE counts rental income (`otherprop`) as QBI; TC does not.
+      Open decision D1 (recommend also writing `otherprop` to `e27200`).
+    - TC 2021 `ODC_is_refundable = true`, but ARPA made only the child
+      credit refundable and PE keeps ODC nonrefundable: likely TC bug
+      (watch item W1); confirm with data in Phase 8, then report.
+    - TC `soi_iitax=false`, so `iitax`/`payrolltax` split matches PE
+      `fiitax`/`fica`.  2021 ARPA CTC increase is TC `ctc_new`.
+    - `v13`/`v17` compared conditionally on TC's itemizing choice;
+      `v19` only when `dwks10 == 0`; `frate` excluded (method differs).
+  * Next step: user reviews VARIABLES.md and decides D1 and the
+    emulation proposal (record both in the Decisions table); then
+    Phase 3.
