@@ -37,6 +37,8 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | S-corp NIIT | (2026-10-07) Every PE run uses `--scorp-treatment active`, matching TC current law (`NIIT_PT_taxed` false); recorded as `pe_cli_options` in `pe_pin.json`. |
 | Old CSV docs | (2026-10-07) `CSV_INPUT_VARS.md`/`CSV_OUTPUT_VARS.md` removed; `VARIABLES.md` replaces them. |
 | Work folder | `pe_taxsim/work/`, ignored by `pe_taxsim/.gitignore`. |
+| Rental income and QBI (D1) | (2026-10-07) `otherprop` goes only to `e02000`, not `e27200`: the pinned PE-taxsim runner pins `rental_income_would_be_qualified` to False, so rental income is not QBI in PE either. |
+| `pe_emulation.json` | (2026-10-07) Three entries: `eitc_claim_prob_scale` and `actc_claim_prob_scale` = 9e99 (full take-up, like PE) and `AMT_child_em_c_age` = 19 (PE's non-student kiddie-AMT age limit); the three old TAXSIM-35 entries are dropped. |
 | Sparse business income | (2026-10-07) In sets b/c each of `psemp`, `ssemp`, `pbusinc`, `sbusinc`, `scorp` is nonzero for only 25% of units, so b/c include moderate-income units that get credits. |
 
 ## Target layout
@@ -180,9 +182,9 @@ At the end of every session:
 - [x] Generate a21..a25 first (needed for Phase 7); then b, c.
 
 ### Phase 5 — Step 3: `taxsim_to_tc.py`  (≈1 session)
-- [ ] Implement the input table from VARIABLES.md (replace old quirks
+- [x] Implement the input table from VARIABLES.md (replace old quirks
       where VARIABLES.md says so).
-- [ ] Self-checks: `e00200 == e00200p + e00200s`, `e00900` likewise,
+- [x] Self-checks: `e00200 == e00200p + e00200s`, `e00900` likewise,
       valid MARS, `XTOT` consistency, child counts nested
       (nu06 ≤ nu13 ≤ nu18), no unknown columns
       (verify all names exist in `records_variables.json`).
@@ -193,7 +195,7 @@ At the end of every session:
 - [ ] Run `python -m taxcalc.cli.tc LYY.in-tc.csv 20YY --reform pe_emulation.json --dumpdb --dumpvars dumpvars.txt --silent`.
 - [ ] Read the SQLite dump; build TAXSIM-format output per VARIABLES.md
       (salvaging `process_taxcalc_output.py` logic, updated for 2021-2025).
-- [ ] Start `pe_emulation.json` empty except entries justified in Phase 2.
+- [x] `pe_emulation.json` written in Phase 5 (see Decisions table).
 
 ### Phase 7 — Step 5: `compare.py` and `validate.py`  (≈1 session)
 - [ ] Per-variable absolute differences; tolerance $1 (configurable).
@@ -264,7 +266,7 @@ At the end of every session:
 | 2 VARIABLES.md | done; reviewed and merged by user (2026-10-07) |
 | 3 generate_sample.py | done (2026-10-07) |
 | 4 run_pe.py + PE outputs | done (2026-10-07) |
-| 5 taxsim_to_tc.py | not started |
+| 5 taxsim_to_tc.py | done (2026-10-07) |
 | 6 run_tc.py | not started |
 | 7 compare.py / validate.py | not started |
 | 8 Triage a | not started |
@@ -464,3 +466,37 @@ At the end of every session:
   * Next step: record decision D1 (rental income in QBI) and the
     `pe_emulation.json` proposal from VARIABLES.md in the Decisions
     table; then Phase 5 (`taxsim_to_tc.py`).
+- 2026-10-07: Phase 5 session.
+  * Decisions (now in the Decisions table), after showing the user
+    options with pros and cons:
+    - D1: the premise in VARIABLES.md was wrong.  policyengine-us
+      counts `rental_income` as QBI by default, but the pinned PE-taxsim
+      runner (`runners/policyengine_runner.py` ~line 1258) pins
+      `rental_income_would_be_qualified` to False for every row, as
+      TAXSIM does.  Confirmed in the PE outputs: no b23/c23 unit
+      without business income has `qbid > 0`.  So `otherprop` goes
+      only to `e02000`.
+    - `pe_emulation.json` rewritten with three commented entries:
+      EITC/ACTC take-up scale 9e99, and `AMT_child_em_c_age = 19`
+      (PE `amt_kiddie_tax_applies` uses the section 152(c)(3)
+      non-student age limit 19; the samples have heads aged 17-18).
+      The old TAXSIM-35 entries were dropped.  Checked that `Policy`
+      accepts the reform.
+    - W2 resolved: PE also reduces QBI by the deductible part of SECA
+      (`qbi.deduction_definition`).  PE pins
+      `w2_wages_from_qualified_business` only with the unused
+      `assume_w2_wages` option, so VARIABLES.md is right on W-2 wages.
+  * VARIABLES.md updated (otherprop row, QBI paragraph, `qbid` note,
+    emulation section, D1/W2 entries).
+  * Rewrote `taxsim_to_tc.py`: `python taxsim_to_tc.py LETTER YEAR
+    [--indir DIR] [--outdir DIR]` reads `samples/LYY.in.csv.gz` and
+    writes `work/LYY.in-tc.csv` (38 columns, in a fixed order).
+    `translate()` implements the VARIABLES.md input tables;
+    `check_tc_input()` checks the Phase 5 list plus spouse-zero,
+    dependent-count, dividend/pension, and e02000 >= e26270
+    constraints.  Fault-injection tests confirmed the checks fire.
+    pycodestyle and pylint are clean.  All 15 files translate; a21, b23,
+    and c25 load in `Records(..., gfactors=None, weights=None)` and run
+    through `calc_all()` with the emulation reform.
+  * Next step: Phase 6, `run_tc.py` (first verify how the CLI handles
+    a custom input file for TAXYEAR).

@@ -1,8 +1,8 @@
 Validation against policyengine-taxsim
 =====================================
 
-**Status: under construction.**  `generate_sample.py` (step 1) and
-`run_pe.py` (step 2) are done.  The other Python scripts in this folder were copied from the
+**Status: under construction.**  `generate_sample.py` (step 1),
+`run_pe.py` (step 2), and `taxsim_to_tc.py` (step 3) are done.  The other Python scripts in this folder were copied from the
 earlier TAXSIM-35 validation and have not yet been revised; they do
 not work yet.
 
@@ -71,3 +71,16 @@ policyengine-taxsim does not set an upper bound on its
 `policyengine-us` dependency.  Change the pin only deliberately,
 because doing so requires regenerating all the committed PE outputs
 and re-examining all the differences.
+
+Step 3
+------
+
+`python taxsim_to_tc.py L YYYY` translates `samples/LYY.in.csv.gz`
+into the Tax-Calculator CLI input file `work/LYY.in-tc.csv`, following
+the input tables in [`VARIABLES.md`](VARIABLES.md).  It stops if a
+TAXSIM input that has no translation (`nonprop`, `transfers`,
+`rentpaid`, `pprofinc`, `sprofinc`) is nonzero, and it checks that
+every output column is a Tax-Calculator input variable, that `MARS`
+and `XTOT` agree with `mstat` and `depx`, that the wage and
+self-employment totals equal the sums of their spouse parts, and that
+the dependent counts are nested by age.
