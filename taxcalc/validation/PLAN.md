@@ -115,16 +115,17 @@ At the end of every session:
 
 ### Phase 0 — Tooling and PE smoke test  (≈1 session)
 - [x] Install uv; record `uv --version` (0.12.23, 2026-10-07).
-- [ ] Choose the policyengine-taxsim commit SHA to pin (latest `main` at that time).
-- [ ] Run a 5-row hand-written TAXSIM file (`state=0`, `idtl=2`, one row per
+- [x] Choose the policyengine-taxsim commit SHA to pin (latest `main` at that time):
+      `3e2a7589c8acda0edd2aa9e748d726c9ca9262d0` (2026-09-30, v3.0.1).
+- [x] Run a 5-row hand-written TAXSIM file (`state=0`, `idtl=2`, one row per
       year 2021-2025) with
       `uvx --python 3.13 --from git+https://github.com/PolicyEngine/policyengine-taxsim@SHA policyengine-taxsim policyengine IN --output OUT`.
-- [ ] Record in `pe_pin.json`: SHA, resolved `policyengine-us` version
+- [x] Record in `pe_pin.json`: SHA, resolved `policyengine-us` version
       (`uvx ... python -c 'import policyengine_us; ...'` or `uv pip list`), Python version.
-- [ ] Inspect the output columns actually produced at `idtl=2`; list them in the Session log.
-- [ ] Time a 1,000-unit run to set the final sample size N (target: one
+- [x] Inspect the output columns actually produced at `idtl=2`; list them in the Session log.
+- [x] Time a 1,000-unit run to set the final sample size N (target: one
       full LYY run well under an hour).
-- [ ] Find out from PE-taxsim source/docs: which TAXSIM input variables it
+- [x] Find out from PE-taxsim source/docs: which TAXSIM input variables it
       honors (esp. dependent ages `age1..`, `dep13/17/18`, `scorp`,
       `pbusinc/pprofinc`, `otheritem`, `mortgage`, `childcare`), and the
       meaning of `--disable-salt` and `--scorp-treatment` (decide whether to use them).
@@ -228,8 +229,10 @@ At the end of every session:
 - PE version churn: results depend on the pinned SHA and resolved
   `policyengine-us`; re-pinning means regenerating all committed PE
   outputs and re-triaging.  Re-pin only deliberately.
-- `uvx --from git+...@SHA` still resolves `policyengine-us` at install
-  time; if reproducibility drifts, add `--with policyengine-us==X.Y.Z`.
+- `uvx --from git+...@SHA` alone still resolves `policyengine-us` at
+  install time, so `run_pe.py` must always add
+  `--with policyengine-us==<pe_pin.json value>` (verified 2026-10-07
+  to give identical output to the unpinned run).
 - TAXSIM output variables may not map one-to-one onto Tax-Calculator
   concepts (especially credit splits in 2021 and OBBBA items in 2025).
 - 2025 is the least stable year in both models.
@@ -242,7 +245,7 @@ At the end of every session:
 
 | Phase | State |
 |---|---|
-| 0 Tooling / PE smoke test | in progress (uv installed) |
+| 0 Tooling / PE smoke test | done (2026-10-07); two user decisions pending, see Session log |
 | 1 Salvage / skeleton | not started |
 | 2 VARIABLES.md | not started |
 | 3 generate_sample.py | not started |
@@ -262,3 +265,69 @@ At the end of every session:
   plan.  Homebrew is absent, so uv 0.12.23 was installed with the
   Astral installer into `~/.local/bin`.  Next step: Phase 0, choose
   the policyengine-taxsim SHA to pin and run the 5-row smoke test.
+- 2026-10-07: Phase 0 session.
+  * Pinned policyengine-taxsim `3e2a7589` (main, 2026-09-30, v3.0.1);
+    resolved policyengine-us 2.30.1, policyengine-core 3.32.21,
+    Python 3.13.16 (3.13 works although pyproject classifiers stop at
+    3.12).  Recorded in `pe_taxsim/pe_pin.json` (new, uncommitted).
+    Canonical step-2 command:
+    `uvx --python 3.13 --from git+https://github.com/PolicyEngine/policyengine-taxsim@SHA --with policyengine-us==2.30.1 policyengine-taxsim policyengine IN.csv --output OUT.csv`
+  * 5-row smoke test (one row per year 2021-2025) ran cleanly; values
+    sane (e.g. 2023 HoH 1-child EITC 3445.29 matches statute exactly,
+    i.e. PE does NOT use EITC-table rounding; 2021 RRC in `cares`).
+  * `idtl=2` output columns (41): taxsimid year state fiitax siitax fica
+    tfica v10 v11 v12 v13 v14 v17 qbid niit addmed v18 v19 v22 v24 v25
+    v26 v27 v28 v29 v32 v34 v35 v36 srebate v37 v38 v39 v40 v42 v43 v44
+    actc cares frate srate.  Notes: no `v23`; refundable CTC is in
+    `actc`.  `fica` = employee+employer payroll tax incl. SECA; `tfica`
+    = employee half (= v29).  `addmed` is NOT in fiitax (README).
+    `niit` IS in fiitax.  v17 reports itemized deductions even when the
+    unit takes the standard deduction.  `frate` = federal marginal rate.
+    v44 nonzero for wage earners (meaning TBD in Phase 2).
+    v32-v43, siitax, srate, srebate are state items (all 0; ignore).
+  * Timing: 1,000-unit `c23` sample (old taxsim_input.py) ran in 10.4 s
+    wall (cached env; first uvx env build ~25 s).  PE speed is not a
+    constraint: N=10,000 takes ~2 min, so Phase 1 can set N=10,000 (or
+    larger if repo size allows).
+  * Input handling found in PE-taxsim source (`config/variable_mappings.yaml`,
+    `core/utils.py:convert_taxsim32_dependents`) and verified by probe runs:
+    - `dep13/dep17/dep18` are honored only when no `ageN` columns are
+      present; converted to ages 10 (<13), 15 (13-16), 17 (17), and 21
+      (depx-dep18 extra dependents, treated as non-student adult
+      dependents: ODC $500, HoH status, no EITC).  So with dep13-style
+      input no child is ever under 6 (2021 CTC $3,600 never applies).
+    - Any `ageN == 0` (or NaN) is silently changed to 10 (verified: 2021
+      CTC for age1=0 is $3,000, for age1=3 is $3,600).  Generator must
+      use ages >= 1 for infants.
+    - `nonprop` is IGNORED by the PolicyEngine runner (verified: +$10,000
+      nonprop changes nothing).  Generator should set nonprop=0 (or the
+      comparison must drop it from TC input).
+    - `otherprop` -> rental_income; `pui`+`sui` -> unemployment_compensation;
+      `transfers` -> general_assistance (non-taxable); `rentpaid` -> rent.
+    - `psemp/ssemp` and `pbusinc/sbusinc` all -> self_employment_income
+      (SECA + non-SSTB QBI, per person); `pprofinc/sprofinc` ->
+      sstb_self_employment_income (SECA + SSTB-phased QBI);
+      `scorp` -> partnership_s_corp_income (QBI, no SECA).
+    - `dividends` are treated as QUALIFIED dividends.
+    - `mortgage` + `otheritem` are summed into deductible_mortgage_interest:
+      fully deductible, no floor, outside the SALT cap, no AMT add-back.
+    - `childcare` -> tax_unit_childcare_expenses.
+  * `--disable-salt`: zeroes state income/sales tax in the SALT deduction.
+    With `state=0`, PE already does this automatically for every row, so
+    the flag is redundant for us: do not use it.
+  * `--scorp-treatment passive|active` (NIIT only): default `passive` with
+    PE-US >= 2.10.1.  Tax-Calculator's NetInvIncTax excludes e26270 from
+    NII by default (i.e., active) unless `NIIT_PT_taxed` is True.
+  * DECISIONS PENDING (ask user at start of next session, then record in
+    the Decisions table):
+    (1) Dependent ages: switch the generator from dep13/17/18 to explicit
+        `age1..ageN` (ages >= 1), recommended, so under-6, 17-year-old,
+        and adult-dependent cases are all exercised and TC's nu06/nu13/
+        nu18/n24/EIC/f2441 can be derived exactly.
+    (2) S-corp NIIT: run PE with `--scorp-treatment active` (matches TC
+        current law, recommended), or keep PE default `passive` and add
+        `NIIT_PT_taxed: true` to pe_emulation.json.
+  * Old-generator quirk noticed: in `c23`, psemp/ssemp max is only 350
+    (looks like a units bug; the business-income vars reach 350,000).
+    Re-examine in Phase 3.
+  * Next step: get the two decisions above, then start Phase 1.
