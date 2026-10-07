@@ -250,42 +250,6 @@ def test_records_variables_content(tests_path):
                 assert variable['required'] is True
 
 
-def test_csv_input_vars_md_contents(tests_path):
-    """
-    Check CSV_INPUT_VARS.md contents against Records.USABLE_READ_VARS
-    """
-    # read variable names in CSV_INPUT_VARS.md file (checking for duplicates)
-    civ_path = os.path.join(tests_path, '..', 'validation',
-                            'CSV_INPUT_VARS.md')
-    civ_set = set()
-    with open(civ_path, 'r', encoding='utf-8') as civfile:
-        msg = 'DUPLICATE VARIABLE(S) IN CSV_INPUT_VARS.MD FILE:\n'
-        found_duplicates = False
-        for line in civfile:
-            str_list = line.split('|', 2)
-            if len(str_list) != 3:
-                continue  # because line is not part of the markdown table
-            assert str_list[0] == ''  # because line starts with | character
-            var = (str_list[1]).strip()  # remove surrounding whitespace
-            if var == 'Var-name' or var[0] == ':':
-                continue  # skip two lines that are the table head
-            if var in civ_set:
-                found_duplicates = True
-                msg += f'VARIABLE= {var}\n'
-            else:
-                civ_set.add(var)
-        if found_duplicates:
-            raise ValueError(msg)
-    # check that civ_set is a subset of Records.USABLE_READ_VARS set
-    records_varinfo = Records(data=None)
-    if not civ_set.issubset(records_varinfo.USABLE_READ_VARS):
-        valid_less_civ = records_varinfo.USABLE_READ_VARS - civ_set
-        msg = 'VARIABLE(S) IN USABLE_READ_VARS BUT NOT CSV_INPUT_VARS.MD:\n'
-        for var in valid_less_civ:
-            msg += f'VARIABLE= {var}\n'  # pylint: disable=consider-using-join
-        raise ValueError(msg)
-
-
 def test_cps_availability(tests_path, cps_data_path):
     """
     Cross-check records_variables.json data with variables in cps.csv file.

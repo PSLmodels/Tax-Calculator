@@ -33,6 +33,10 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | PE outputs | Commit compressed PE outputs (`LYY.out-pe.csv.gz`) plus a version stamp so steps 3-5 can be rerun without uv/PE. |
 | Compare | Detailed TAXSIM `idtl=2` output variables (AGI, taxable income, regular tax, AMT, CTC/ACTC, CDCC, EITC, payroll tax, income tax, etc.) via a documented variable correspondence. |
 | Plan storage | This file, committed on the branch. |
+| Dependent ages | (2026-10-07) Generator specifies dependents with explicit `age1..ageN` (all ages >= 1), not `dep13/dep17/dep18`; TC child-count variables are derived from these ages. |
+| S-corp NIIT | (2026-10-07) Every PE run uses `--scorp-treatment active`, matching TC current law (`NIIT_PT_taxed` false); recorded as `pe_cli_options` in `pe_pin.json`. |
+| Old CSV docs | (2026-10-07) `CSV_INPUT_VARS.md`/`CSV_OUTPUT_VARS.md` removed; `VARIABLES.md` replaces them. |
+| Work folder | `pe_taxsim/work/`, ignored by `pe_taxsim/.gitignore`. |
 
 ## Target layout
 
@@ -59,7 +63,7 @@ taxcalc/validation/
 ```
 
 Generated working files (`*.in-tc.csv`, `*.out-tc`, SQLite dumps,
-`actual_differences/`) are written to a git-ignored work folder.
+`actual_differences/`) are written to the git-ignored `pe_taxsim/work/` folder.
 
 ## Known facts gathered during planning (2026-10-07)
 
@@ -78,7 +82,9 @@ Generated working files (`*.in-tc.csv`, `*.out-tc`, SQLite dumps,
   `python -m taxcalc.cli.tc` from the repo root so the working-tree
   code is validated without installing the package.
 - `make cstest` excludes `taxcalc/validation/` (Makefile `EXCLUDED_PATHS`).
-- `CSV_INPUT_VARS.md` / `CSV_OUTPUT_VARS.md` are not referenced elsewhere in the repo.
+- `CSV_INPUT_VARS.md` / `CSV_OUTPUT_VARS.md`: thought to be unreferenced, but
+  `test_records.py::test_csv_input_vars_md_contents` read the former
+  (vacuously: the file had no table); see Phase 1 log.
 - Old `taxsim_emulation.json` entries: `AMT_child_em_c_age=24`,
   `EITC_excess_InvestIncome_rt=1.0`, `AlimonyReceived_frac_in_AGI=1.0`
   — each must be re-justified (or dropped) for PE, not copied blindly.
@@ -131,16 +137,16 @@ At the end of every session:
       meaning of `--disable-salt` and `--scorp-treatment` (decide whether to use them).
 
 ### Phase 1 — Salvage, remove obsolete code, skeleton  (≈1 session)
-- [ ] `git mv` ancestors into `pe_taxsim/` under their new names
+- [x] `git mv` ancestors into `pe_taxsim/` under their new names
       (generate_sample.py, taxsim_to_tc.py, run_tc.py, compare.py,
       pe_emulation.json, Differences_Explained.md); keep the old content
       for now so history shows the evolution.
-- [ ] `git rm` the rest of `taxsim35/` (input_setup.py, tc_sims.py,
+- [x] `git rm` the rest of `taxsim35/` (input_setup.py, tc_sims.py,
       tests_35.py, README.md, old expected_differences/) and `tests_35.sh`.
-- [ ] Decide with user whether `CSV_INPUT_VARS.md`/`CSV_OUTPUT_VARS.md` are kept, folded into `VARIABLES.md`, or removed.
-- [ ] Add a `.gitignore` in `pe_taxsim/` for the work folder.
-- [ ] Rewrite `taxcalc/validation/README.md` (short overview, link to `pe_taxsim/README.md`).
-- [ ] Stub `pe_taxsim/README.md` with environment setup (uv, pinned SHA).
+- [x] Decide with user whether `CSV_INPUT_VARS.md`/`CSV_OUTPUT_VARS.md` are kept, folded into `VARIABLES.md`, or removed.
+- [x] Add a `.gitignore` in `pe_taxsim/` for the work folder.
+- [x] Rewrite `taxcalc/validation/README.md` (short overview, link to `pe_taxsim/README.md`).
+- [x] Stub `pe_taxsim/README.md` with environment setup (uv, pinned SHA).
 
 ### Phase 2 — Variable correspondence: `VARIABLES.md`  (1-2 sessions)
 - [ ] Input table: each TAXSIM input variable used → Tax-Calculator
@@ -245,8 +251,8 @@ At the end of every session:
 
 | Phase | State |
 |---|---|
-| 0 Tooling / PE smoke test | done (2026-10-07); two user decisions pending, see Session log |
-| 1 Salvage / skeleton | not started |
+| 0 Tooling / PE smoke test | done (2026-10-07) |
+| 1 Salvage / skeleton | done (2026-10-07) |
 | 2 VARIABLES.md | not started |
 | 3 generate_sample.py | not started |
 | 4 run_pe.py + PE outputs | not started |
@@ -331,3 +337,29 @@ At the end of every session:
     (looks like a units bug; the business-income vars reach 350,000).
     Re-examine in Phase 3.
   * Next step: get the two decisions above, then start Phase 1.
+- 2026-10-07: Phase 1 session.
+  * User decisions (now in the Decisions table): explicit `age1..ageN`
+    dependent ages; PE runs with `--scorp-treatment active` (added as
+    `pe_cli_options` to `pe_pin.json`); `CSV_INPUT_VARS.md` and
+    `CSV_OUTPUT_VARS.md` removed.
+  * `git mv` into `pe_taxsim/` (content unchanged): taxsim_input.py ->
+    generate_sample.py, prepare_taxcalc_input.py -> taxsim_to_tc.py,
+    process_taxcalc_output.py -> run_tc.py, main_comparison.py ->
+    compare.py, taxsim_emulation.json -> pe_emulation.json,
+    Differences_Explained.md.  `git rm` of the rest of `taxsim35/`
+    (incl. old 2017-2021 expected_differences) and `tests_35.sh`.
+  * Removing `CSV_INPUT_VARS.md` broke `test_records.py::
+    test_csv_input_vars_md_contents`, which was vacuous (the file had
+    no variable table, so it checked an empty set).  With user approval
+    the test was deleted.  `test_records.py` + `test_calcfunctions.py`
+    pass (418) and `make cstest` is clean; full `make pytest` not run.
+  * Added `pe_taxsim/.gitignore` (ignores `work/`); removed the obsolete
+    `taxsim35/actual_differences/` line from the top-level `.gitignore`.
+  * Rewrote `taxcalc/validation/README.md`; stubbed `pe_taxsim/README.md`
+    (five steps, uv setup, pinned uvx command).  Updated the validation
+    link in `docs/index.md`, which pointed at the deleted taxsim35 README.
+  * Not touched: `taxcalc.egg-info/SOURCES.txt` is tracked and still
+    lists the removed files; it is regenerated by packaging, so it was
+    left alone (mention to user at PR time).
+  * Next step: Phase 2, write `VARIABLES.md` (input table first),
+    using the PE input-handling facts from the Phase 0 log.

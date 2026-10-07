@@ -22,6 +22,3 @@ tmd*csv*
 
 # Built documentation
 docs/_build/
-
-# Validation files
-taxcalc/validation/taxsim35/actual_differences/

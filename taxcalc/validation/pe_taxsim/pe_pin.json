@@ -9,5 +9,10 @@
     "python_version": "3.13",
     "python_version_resolved": "3.13.16",
     "uv_version": "0.12.23",
-    "pinned_on": "2026-10-07"
+    "pinned_on": "2026-10-07",
+    "pe_cli_options": [
+        "--scorp-treatment",
+        "active"
+    ],
+    "_comment_pe_cli_options": "Extra policyengine-taxsim CLI options used in every step-2 run: active S-corp treatment matches Tax-Calculator current law, which excludes e26270 from NIIT net investment income (NIIT_PT_taxed=false)."
 }
