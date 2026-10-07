@@ -1,7 +1,7 @@
 // JSON "reform" file that specifies the changes in current-law policy
 // required to make Tax-Calculator use the same defensible conventions
-// as policyengine-taxsim (the pinned version in pe_pin.json).  Every
-// entry is explained below; see VARIABLES.md for details.
+// as policyengine-taxsim (the pinned version in pe_pin.json).
+// Every entry is explained below; see VARIABLES.md for details.
 //
 // (1) eitc_claim_prob_scale = 9e99 (rather than 1.03)
 // (2) actc_claim_prob_scale = 9e99 (rather than 1.1)
@@ -12,18 +12,7 @@
 //     True), so these two parameters are set to 9e99, the documented
 //     value that implies every filing unit claims its credit.
 //
-// (3) AMT_child_em_c_age = 19 (rather than 18)
-//     Neither model has the full-time-student and support information
-//     needed to apply exactly the IRC section 59(j) AMT exemption limit
-//     for children subject to the kiddie tax.  Tax-Calculator applies the
-//     limit to filers younger than 18, while PE (amt_kiddie_tax_applies)
-//     applies it to non-student filers younger than 19, the IRC section
-//     152(c)(3) non-student age limit.  The samples contain heads aged
-//     17 and 18, so the age-18 heads would otherwise differ.
 {
     "eitc_claim_prob_scale": {"2013": 9e99},
-
-    "actc_claim_prob_scale": {"2013": 9e99},
-
-    "AMT_child_em_c_age": {"2013": 19}
+    "actc_claim_prob_scale": {"2013": 9e99}
 }
