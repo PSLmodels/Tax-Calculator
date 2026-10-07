@@ -1,0 +1,5 @@
+FLPDYR
+iitax payrolltax ptax_er_p ptax_er_s ptax_amc e00200
+c00100 e02300 c02500 standard c04600 c04470 qbided c04800
+c05200 dwks10 taxbc c62100 c09600 niit
+c07220 odc ctc_new c11070 c07180 CDCC_refund eitc recovery_rebate_credit

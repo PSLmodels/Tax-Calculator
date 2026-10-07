@@ -66,7 +66,7 @@ taxcalc/validation/
     expected_differences/LYY-taxdiffs-expect.csv
 ```
 
-Generated working files (`*.in-tc.csv`, `*.out-tc`, SQLite dumps,
+Generated working files (`*.in-tc.csv`, `*.dumpdb`, `*.out-tc.csv`,
 `actual_differences/`) are written to the git-ignored `pe_taxsim/work/` folder.
 
 ## Known facts gathered during planning (2026-10-07)
@@ -190,10 +190,10 @@ At the end of every session:
       (verify all names exist in `records_variables.json`).
 
 ### Phase 6 — Step 4: `run_tc.py`  (1-2 sessions)
-- [ ] Verify how the CLI treats a custom input file for TAXYEAR (no
+- [x] Verify how the CLI treats a custom input file for TAXYEAR (no
       extrapolation/growfactor aging, weights not needed); document the result.
-- [ ] Run `python -m taxcalc.cli.tc LYY.in-tc.csv 20YY --reform pe_emulation.json --dumpdb --dumpvars dumpvars.txt --silent`.
-- [ ] Read the SQLite dump; build TAXSIM-format output per VARIABLES.md
+- [x] Run `python -m taxcalc.cli.tc LYY.in-tc.csv 20YY --reform pe_emulation.json --dumpdb --dumpvars dumpvars.txt --silent`.
+- [x] Read the SQLite dump; build TAXSIM-format output per VARIABLES.md
       (salvaging `process_taxcalc_output.py` logic, updated for 2021-2025).
 - [x] `pe_emulation.json` written in Phase 5 (see Decisions table).
 
@@ -267,7 +267,7 @@ At the end of every session:
 | 3 generate_sample.py | done (2026-10-07) |
 | 4 run_pe.py + PE outputs | done (2026-10-07) |
 | 5 taxsim_to_tc.py | done (2026-10-07) |
-| 6 run_tc.py | not started |
+| 6 run_tc.py | done (2026-10-07) |
 | 7 compare.py / validate.py | not started |
 | 8 Triage a | not started |
 | 9 Triage b | not started |
@@ -500,3 +500,38 @@ At the end of every session:
     through `calc_all()` with the emulation reform.
   * Next step: Phase 6, `run_tc.py` (first verify how the CLI handles
     a custom input file for TAXYEAR).
+- 2026-10-07: Phase 6 session.
+  * Verified (taxcalcio.py and a trial run): for an INPUT that is not
+    `cps.csv` or `tmd.csv`, the CLI builds `Records(data, start_year=
+    TAXYEAR, gfactors=None, weights=None)` and a Calculator with
+    `sync_years=False`, so input values are used unchanged (no aging),
+    `FLPDYR` is set to TAXYEAR, and `s006` is 0 (weights are not
+    needed).  Output files go to the current working folder.
+    Documented in README.md (step 4) and the run_tc.py docstring.
+  * Rewrote `run_tc.py`: `python run_tc.py LETTER YEAR [--workdir DIR]`
+    runs `python -m taxcalc.cli.tc` in `work/` with the repo root
+    first on PYTHONPATH (working-tree code), the `pe_emulation.json`
+    reform, and the new committed `dumpvars.txt`; renames the CLI dump
+    to `work/LYY.dumpdb`; reads its `reform` table; and writes
+    `work/LYY.out-tc.csv` with the 23 compared TAXSIM columns from the
+    VARIABLES.md output table plus `tc_dwks10` (needed by step 5 to
+    decide when `v19` is compared; VARIABLES.md notes this).  The
+    `v44` HI rate comes from a `Policy` object with the emulation
+    reform.  `v13`/`v17` are written unconditionally; step 5 compares
+    `v13` only where TC `v17 == 0` and `v17` only where TC `v13 == 0`.
+    Checks columns, row count, taxsimid, year, NaNs.  pycodestyle and
+    pylint clean.  ~3.5 s per 10,000-unit file.
+  * Plumbing preview (a21, a22, b23, c25 vs PE; |diff| > $1 counts):
+    fica, tfica, addmed, v44, v10, v11, v12, v14, v24, v25, cares,
+    niit all match exactly in a21/b23/c25.  Differences to triage:
+    a21 fiitax/v22 1,195, actc 1,735 (PE 2021 `actc` seems to include
+    ODC amounts; also W1-like v22 cases), v26 1,128; b23 v13/v18/v28/
+    v22 ~845, qbid 52, v26 54; c25 fiitax 864, v22 860, v26 940.
+  * Likely TC bug found (report to user, not yet fixed): every b23
+    v13 difference is exactly -$50 for unmarried aged heads: TC
+    `STD_Aged` for 2023 is $1,800 for MARS 1/4, but Rev. Proc. 2022-38
+    sets $1,850.  Also noticed: TC's MARS=5 (surviving spouse)
+    `STD_Aged` uses the unmarried amount in 2021-2024 but the married
+    amount in 2025 (the statute gives the married amount); MARS=5 is
+    not in our samples.
+  * Next step: Phase 7 (`compare.py`, `validate.py`).

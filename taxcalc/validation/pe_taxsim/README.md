@@ -2,9 +2,10 @@ Validation against policyengine-taxsim
 =====================================
 
 **Status: under construction.**  `generate_sample.py` (step 1),
-`run_pe.py` (step 2), and `taxsim_to_tc.py` (step 3) are done.  The other Python scripts in this folder were copied from the
-earlier TAXSIM-35 validation and have not yet been revised; they do
-not work yet.
+`run_pe.py` (step 2), `taxsim_to_tc.py` (step 3), and `run_tc.py`
+(step 4) are done.  The other Python scripts in this folder were
+copied from the earlier TAXSIM-35 validation and have not yet been
+revised; they do not work yet.
 
 This folder compares Tax-Calculator's **federal** income and payroll
 tax results with those of
@@ -84,3 +85,28 @@ every output column is a Tax-Calculator input variable, that `MARS`
 and `XTOT` agree with `mstat` and `depx`, that the wage and
 self-employment totals equal the sums of their spouse parts, and that
 the dependent counts are nested by age.
+
+Step 4
+------
+
+`python run_tc.py L YYYY` runs the Tax-Calculator CLI on
+`work/LYY.in-tc.csv`, which is equivalent to this command run in the
+`work/` folder with the top-level repository folder on `PYTHONPATH`:
+
+```
+python -m taxcalc.cli.tc LYY.in-tc.csv 20YY --reform ../pe_emulation.json \
+    --dumpdb --dumpvars ../dumpvars.txt --silent
+```
+
+It renames the CLI's SQLite output to `work/LYY.dumpdb` and converts
+the `reform` table (current law plus `pe_emulation.json`) into the
+TAXSIM-format file `work/LYY.out-tc.csv`, following the output table in
+[`VARIABLES.md`](VARIABLES.md).  A 10,000-unit run takes about four
+seconds.
+
+Because the input file is neither `cps.csv` nor `tmd.csv`, the CLI
+reads it with `Records(start_year=TAXYEAR, gfactors=None,
+weights=None)`: the input values are used unchanged for TAXYEAR (no
+growfactor aging), `FLPDYR` is set to TAXYEAR, and all weights are
+zero, which matters only for the `--tables` and `--graphs` output that
+step 4 does not use.
