@@ -3023,12 +3023,12 @@
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 1750.0
+                "value": 1400.0
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 1800.0
+                "value": 1850.0
             },
             {
                 "year": 2023,
@@ -3043,12 +3043,12 @@
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 1800.0
+                "value": 1850.0
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 1800.0
+                "value": 1500.0
             },
             {
                 "year": 2024,
@@ -3073,7 +3073,7 @@
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 1950.0
+                "value": 1550.0
             },
             {
                 "year": 2025,
@@ -17857,7 +17857,7 @@
         "value": [
             {
                 "year": 2013,
-                "value": 18
+                "value": 19
             }
         ],
         "validators": {
