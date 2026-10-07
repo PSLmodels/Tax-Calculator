@@ -37,6 +37,7 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | S-corp NIIT | (2026-10-07) Every PE run uses `--scorp-treatment active`, matching TC current law (`NIIT_PT_taxed` false); recorded as `pe_cli_options` in `pe_pin.json`. |
 | Old CSV docs | (2026-10-07) `CSV_INPUT_VARS.md`/`CSV_OUTPUT_VARS.md` removed; `VARIABLES.md` replaces them. |
 | Work folder | `pe_taxsim/work/`, ignored by `pe_taxsim/.gitignore`. |
+| Sparse business income | (2026-10-07) In sets b/c each of `psemp`, `ssemp`, `pbusinc`, `sbusinc`, `scorp` is nonzero for only 25% of units, so b/c include moderate-income units that get credits. |
 
 ## Target layout
 
@@ -161,14 +162,14 @@ At the end of every session:
       with year-specific notes (2021 fully refundable CTC/CDCC and RRC;
       2025 OBBBA provisions such as the senior deduction).
 - [x] Mark variables excluded from comparison and why.
-- [ ] Get user review of VARIABLES.md before coding Phases 3-6.
+- [x] Get user review of VARIABLES.md before coding Phases 3-6.
 
 ### Phase 3 — Step 1: `generate_sample.py`  (≈1 session)
-- [ ] Year range 2021-2025; `state=0`; `idtl=2`; CLI args: letter, year, N, seed offset.
-- [ ] Keep a/b/c assumption sets; revise only where VARIABLES.md requires
+- [x] Year range 2021-2025; `state=0`; `idtl=2`; CLI args: letter, year, N, seed offset.
+- [x] Keep a/b/c assumption sets; revise only where VARIABLES.md requires
       (e.g., dependent-age inputs PE honors).
-- [ ] Deterministic seed per (letter, year); write `samples/LYY.in.csv.gz`.
-- [ ] Self-check: required columns, value ranges, no NaNs.
+- [x] Deterministic seed per (letter, year); write `samples/LYY.in.csv.gz`.
+- [x] Self-check: required columns, value ranges, no NaNs.
 
 ### Phase 4 — Step 2: `run_pe.py`  (1 session to write; runs may span days)
 - [ ] Reads `pe_pin.json`; builds the `uvx` command; runs via `subprocess`;
@@ -225,6 +226,12 @@ At the end of every session:
 - [ ] Optional: run `pycodestyle`/`pylint` on `pe_taxsim/*.py` even
       though `make cstest` skips them; ask user whether to include
       `pe_taxsim/` in cstest.
+- [ ] Ask user whether to add a thin `taxcalc/validation/Makefile`
+      whose targets only call `validate.py` (e.g., `make validate`,
+      `make clean` of `work/`).  Con: file-dependency rules would
+      silently regenerate the canonical committed samples and PE
+      outputs whenever a script changes, and would duplicate
+      `validate.py`; so no per-file sample/PE-output rules.
 - [ ] Confirm `make pytest` is unaffected; clean up stray files.
 - [ ] Draft list of upstream PE issues for the user.
 - [ ] Ask user whether to keep or delete this PLAN.md, whether to commit,
@@ -253,8 +260,8 @@ At the end of every session:
 |---|---|
 | 0 Tooling / PE smoke test | done (2026-10-07) |
 | 1 Salvage / skeleton | done (2026-10-07) |
-| 2 VARIABLES.md | draft done; awaiting user review (2026-10-07) |
-| 3 generate_sample.py | not started |
+| 2 VARIABLES.md | done; reviewed and merged by user (2026-10-07) |
+| 3 generate_sample.py | done (2026-10-07) |
 | 4 run_pe.py + PE outputs | not started |
 | 5 taxsim_to_tc.py | not started |
 | 6 run_tc.py | not started |
@@ -388,3 +395,41 @@ At the end of every session:
   * Next step: user reviews VARIABLES.md and decides D1 and the
     emulation proposal (record both in the Decisions table); then
     Phase 3.
+- 2026-10-07: Phase 3 session.
+  * User reviewed and merged VARIABLES.md; Phase 2 marked done.
+    Decision D1 (rental income in QBI) and the `pe_emulation.json`
+    proposal are still not recorded in the Decisions table; they are
+    needed by Phases 5-6, not by Phase 3.
+  * Rewrote `generate_sample.py`: CLI `python generate_sample.py
+    LETTER YEAR [--size N] [--offset K] [--outdir DIR]` (YEAR is
+    2021-2025, default N=10,000); writes `samples/LYY.in.csv.gz`
+    (gzip mtime 0, so reruns are byte-identical).  Seed is
+    `np.random.default_rng([123456789, letter index, year, offset])`.
+    Columns: taxsimid year state mstat page sage depx age1..age5,
+    then the old income/deduction columns and idtl (no dep13/17/18).
+  * Changes from the old generator, per VARIABLES.md: dependent ages
+    uniform on 1..23, sorted youngest first, 0 in unused slots (PE
+    builds dependents from `depx`, so unused slots are ignored);
+    `nonprop = transfers = rentpaid = pprofinc = sprofinc = 0`;
+    spouse columns (incl. `sui`, which the old code missed) are 0 when
+    `mstat == 1`; `childcare` is 0 unless a dependent is under 13;
+    `psemp`/`ssemp` are in dollars (units bug fixed).
+  * Fixing the units bug made every b/c unit's income very high (in
+    a 50-row c21 PE run the minimum AGI was $471k, so no credits).  User
+    chose sparse business income (Decisions table).  In 300 c21 rows
+    PE then gives ACTC 76, CDCC 65, RRC 9, QBID 34, NIIT 268, but EITC
+    0 and AMT 0.  EITC is zero because b/c investment income (up to
+    $90k) almost always exceeds the EITC investment-income limit;
+    EITC is exercised only in set a.  Revisit if b/c EITC coverage is
+    wanted.
+  * PE check of the new layout: in 300 a21 rows every low-income
+    unit with children got ACTC exactly $3,600 per child under 6 plus
+    $3,000 per other child under 18, so `age1..age5` are honored.
+  * `check_sample()` enforces columns, row count, no NaNs, taxsimid
+    1..N, year, idtl, mstat, zero columns, single-filer spouse zeros,
+    age ranges, unused age slots 0, childcare rule, cap-gain ranges,
+    non-negative amounts, and $1,000 multiples.  pycodestyle and
+    pylint are clean.
+  * Generated all 15 committed samples (N=10,000; 3.3 MB total).
+  * Next step: Phase 4, write `run_pe.py` and generate a21..a25 PE
+    outputs.  Before Phase 5, record D1 and the emulation decision.

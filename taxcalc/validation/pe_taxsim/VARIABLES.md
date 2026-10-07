@@ -126,6 +126,10 @@ take their default value of zero.
 - Write `childcare = 0` when no dependent is under 13.
 - Fix the old units bug: `psemp`/`ssemp` must be in dollars
   (thousands times 1000), like the other income amounts.
+- In sets b and c, make each of `psemp`, `ssemp`, `pbusinc`,
+  `sbusinc`, and `scorp` nonzero for only a fraction (25%) of units,
+  so that those sets include units with incomes low enough to get
+  the income-tested credits.
 
 
 Output variables

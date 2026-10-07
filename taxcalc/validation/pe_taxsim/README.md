@@ -1,9 +1,10 @@
 Validation against policyengine-taxsim
 =====================================
 
-**Status: under construction.**  The Python scripts in this folder
-were copied from the earlier TAXSIM-35 validation and have not yet
-been revised; they do not work yet.
+**Status: under construction.**  `generate_sample.py` (step 1) is
+done.  The other Python scripts in this folder were copied from the
+earlier TAXSIM-35 validation and have not yet been revised; they do
+not work yet.
 
 This folder compares Tax-Calculator's **federal** income and payroll
 tax results with those of
