@@ -2277,9 +2277,10 @@ def test_EITC_reform(call_calcfunc, reform, rvars, expected):
 # next multiple of 1000 (line 10).  The exact flag selects that
 # rounding.  Schedule 8812 line 14 reports only the total nonrefundable
 # credit; Tax-Calculator splits it between CTC and ODC in proportion to
-# lines 5 and 7.  The returned tuple is (c07220, odc, codtc_limited).
-# The reform-only CTC_include17 and CTC_is_refundable switches are both
-# false under 2025 current law.
+# lines 5 and 7, except under CTC_is_refundable, where ODC comes first
+# as on 2021 Schedule 8812 line 14a.  The returned tuple is (c07220,
+# odc, codtc_limited).  The reform-only CTC_include17 and
+# CTC_is_refundable switches are both false under 2025 current law.
 CTC_INCLUDE17_REFORM = {'CTC_include17': {2025: True}}
 CTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
 
@@ -2341,6 +2342,13 @@ CTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
                  {'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
                   'c00100': 30000., 'c05800': 1000.},
                  (2200., 500., 0.), id='reform refundable'),
+    # reform: line 11 = 0.05 * 30000 = 1500; line 12 = 2700 - 1500 =
+    # 1200, of which ODC gets 500 first (2021 Sch 8812 line 14a) and
+    # the refundable CTC gets the remaining 700 (line 14b)
+    pytest.param(CTC_REFUNDABLE_REFORM,
+                 {'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
+                  'c00100': 230000., 'c05800': 40000.},
+                 (700., 500., 0.), id='reform refundable phase-out'),
 ])
 def test_ChildDepTaxCredit(call_calcfunc, reform, rvars, expected):
     """
@@ -2837,6 +2845,19 @@ def test_NonrefundableCredits(call_calcfunc, reform, rvars, expected):
     Part I and Form 1040 line 19 credit ordering
     """
     actual = call_calcfunc('NonrefundableCredits', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+def test_NonrefundableCredits_2021(call_calcfunc):
+    """
+    Tests that under 2021 current law (ARPA) the CTC is refundable and so
+    is not limited, while the ODC is nonrefundable and so is limited by
+    the 300 of tax liability (2021 Sch 8812 lines 14c-14d)
+    """
+    actual = call_calcfunc('NonrefundableCredits', year=2021,
+                           c05800=300., c07220=3000., odc=500.)
+    expected = (0., 0., 3000., 0., 0., 300.,
+                0., 0., 0., 0., 0., 0., 0.)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
