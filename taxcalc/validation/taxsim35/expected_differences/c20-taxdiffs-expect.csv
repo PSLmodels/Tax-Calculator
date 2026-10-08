@@ -1,0 +1,25 @@
+,# of differing records,max_diff,max_diff_index,max_diff_taxsim_val,max_diff_taxcalc_val
+iitax,1000,-27587.579999999958,966,377963.72,350376.14
+statetax,0,0.0,no diff,no diff,no diff
+payrolltax,938,17032.1,397,31756.92,48789.02
+mtr_inctax,390,-26.560000000000002,153,55.56,29.0
+mtr_state,0,0.0,no diff,no diff,no diff
+c00100,571,8800.0,912,148171.91,156971.91
+e02300,1,19000.0,912,0.0,19000.0
+c02500,0,0.0,no diff,no diff,no diff
+post_phase_out_pe,0,0.0,no diff,no diff,no diff
+phased_out_pe,0,0.0,no diff,no diff,no diff
+c21040,0,0.0,no diff,no diff,no diff
+c04470,0,0.0,no diff,no diff,no diff
+c04800,1000,-74561.02000000002,966,1192564.1,1118003.08
+taxbc,1000,-30679.309999999998,830,319552.27,288872.96
+exemption_surtax,0,0.0,no diff,no diff,no diff
+gen_tax_credit,0,0.0,no diff,no diff,no diff
+non_refundable_child_odep_credit,11,402.75,218,6454.73,6857.48
+c11070,0,0.0,no diff,no diff,no diff
+c07180,0,0.0,no diff,no diff,no diff
+eitc,0,0.0,no diff,no diff,no diff
+c62100,1000,-74561.02000000002,966,1202564.1,1128003.08
+amt_liability,0,0.0,no diff,no diff,no diff
+iitax_before_credits_ex_AMT,1000,-27587.579999999958,966,377887.72,350300.14
+recovery_rebate_credit,2,472.78,449,0.0,472.78

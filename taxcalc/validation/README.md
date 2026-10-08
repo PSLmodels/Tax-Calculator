@@ -21,6 +21,7 @@ a TAXSIM-35 emulator built on `policyengine-us`.  The tools, inputs,
 expected differences, and instructions for rerunning the comparison
 are in the [`pe_taxsim`](pe_taxsim/README.md) folder.
 
-Earlier validation against NBER's Internet TAXSIM-35 (2017-2021) is
-in this repository's git history, in the `taxcalc/validation/taxsim35`
-folder.
+A historical record of the earlier validation against NBER's Internet
+TAXSIM-35 (2017-2021) is in the [`taxsim35`](taxsim35/README.md)
+folder; the code used to run that validation is in this repository's
+git history.

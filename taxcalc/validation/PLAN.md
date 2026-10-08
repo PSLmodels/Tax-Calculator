@@ -26,7 +26,7 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | Scope | Federal taxes only; every TAXSIM input row has `state=0`. |
 | Environments | Approach A+C: steps 1, 3, 4, 5 run in the `taxcalc-dev` conda env; step 2 runs `policyengine-taxsim` via `uvx` at a **pinned commit SHA** in an ephemeral uv-managed env. No PolicyEngine package is ever installed in `taxcalc-dev` or added to `environment.yml`/`setup.py`. |
 | uv install | Astral installer (no Homebrew on this Mac): `curl -LsSf https://astral.sh/uv/install.sh \| env INSTALLER_NO_MODIFY_PATH=1 sh`, which puts `uv`/`uvx` in `~/.local/bin` (already on PATH in every conda env); update with `uv self update`. |
-| Code layout | Remove obsolete `taxcalc/validation/taxsim35/` tree and `tests_35.sh`; new code lives in `taxcalc/validation/pe_taxsim/`; rewrite `taxcalc/validation/README.md` to point there. |
+| Code layout | Remove obsolete `taxcalc/validation/taxsim35/` code and `tests_35.sh` (but see Historical record below); new code lives in `taxcalc/validation/pe_taxsim/`; rewrite `taxcalc/validation/README.md` to point there. |
 | Salvage | Reuse logic from `taxsim_input.py`, `prepare_taxcalc_input.py`, `process_taxcalc_output.py`, `main_comparison.py`, `taxsim_emulation.json`, `Differences_Explained.md` (via `git mv` where a file is the clear ancestor, to keep history). |
 | Samples | Reuse a/b/c assumption sets from `taxsim_input.py`, extended to 2021-2025; ~10,000 units per file (final N set in Phase 1 after timing PE); tiny N (e.g., 100) during development. |
 | Emulation | A JSON reform `pe_emulation.json` makes Tax-Calculator mimic PE where PE uses a defensible but different convention; every entry carries a comment explaining why.  All other differences are fixed or documented as expected. |
@@ -43,6 +43,7 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | 2021 TC CTC bugs | (2026-10-07) B1 (`ODC_is_refundable` true in 2021) and B2 (`CTC_new` lacks the section 24(i)(4)(B) cap) are fixed on a separate branch off `master`, then merged here; the a21 expect file waits for that. |
 | PE 2021 `actc` | (2026-10-07) Keep comparing `actc` in 2021; PE's `refundable_ctc` quirk is listed as expected differences. |
 | Sparse business income | (2026-10-07) In sets b/c each of `psemp`, `ssemp`, `pbusinc`, `sbusinc`, `scorp` is nonzero for only 25% of units, so b/c include moderate-income units that get credits. |
+| Historical record | (2026-10-08) Restore from master, unchanged except for a note at the top of the README: `taxsim35/README.md`, `taxsim35/Differences_Explained.md`, `taxsim35/taxsim_emulation.json`, and `taxsim35/expected_differences/` (2017-2021).  `taxcalc/validation/README.md` links to `taxsim35/README.md`. |
 
 ## Target layout
 
@@ -50,6 +51,9 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 taxcalc/validation/
   README.md                  rewritten overview (points to pe_taxsim/)
   PLAN.md                    this file (delete or keep at PR time; ask user)
+  taxsim35/                  historical record of TAXSIM-35 validation (no code)
+    README.md, Differences_Explained.md, taxsim_emulation.json,
+    expected_differences/    2017-2021 a/b/c expect files
   pe_taxsim/
     README.md                how to run; environment setup; results summary
     VARIABLES.md             TAXSIM<->Tax-Calculator input and output correspondence
