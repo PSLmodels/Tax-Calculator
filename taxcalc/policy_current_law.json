@@ -6988,7 +6988,7 @@
         "title": "AGI level at which ID_AllTaxes_c cap starts to be phased out",
         "description": "The cap on state and local income, sales and real estate tax deductions is phased out when AGI exceeds this amount.",
         "indexable": true,
-        "indexed": true,
+        "indexed": false,
         "type": "float",
         "value": [
             {
@@ -7040,6 +7040,106 @@
                 "year": 2025,
                 "MARS": "widow",
                 "value": 500000
+            },
+            {
+                "year": 2026,
+                "MARS": "single",
+                "value": 505000
+            },
+            {
+                "year": 2026,
+                "MARS": "mjoint",
+                "value": 505000
+            },
+            {
+                "year": 2026,
+                "MARS": "mseparate",
+                "value": 252500
+            },
+            {
+                "year": 2026,
+                "MARS": "headhh",
+                "value": 505000
+            },
+            {
+                "year": 2026,
+                "MARS": "widow",
+                "value": 505000
+            },
+            {
+                "year": 2027,
+                "MARS": "single",
+                "value": 510050
+            },
+            {
+                "year": 2027,
+                "MARS": "mjoint",
+                "value": 510050
+            },
+            {
+                "year": 2027,
+                "MARS": "mseparate",
+                "value": 255025
+            },
+            {
+                "year": 2027,
+                "MARS": "headhh",
+                "value": 510050
+            },
+            {
+                "year": 2027,
+                "MARS": "widow",
+                "value": 510050
+            },
+            {
+                "year": 2028,
+                "MARS": "single",
+                "value": 515151
+            },
+            {
+                "year": 2028,
+                "MARS": "mjoint",
+                "value": 515151
+            },
+            {
+                "year": 2028,
+                "MARS": "mseparate",
+                "value": 257575
+            },
+            {
+                "year": 2028,
+                "MARS": "headhh",
+                "value": 515151
+            },
+            {
+                "year": 2028,
+                "MARS": "widow",
+                "value": 515151
+            },
+            {
+                "year": 2029,
+                "MARS": "single",
+                "value": 520302
+            },
+            {
+                "year": 2029,
+                "MARS": "mjoint",
+                "value": 520302
+            },
+            {
+                "year": 2029,
+                "MARS": "mseparate",
+                "value": 260151
+            },
+            {
+                "year": 2029,
+                "MARS": "headhh",
+                "value": 520302
+            },
+            {
+                "year": 2029,
+                "MARS": "widow",
+                "value": 520302
             },
             {
                 "year": 2030,
