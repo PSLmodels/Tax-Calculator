@@ -3132,7 +3132,7 @@ c09200: float
 ## CTC_new
 
 ```python
-def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus, CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17, CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt, CTC_new_refund_limited_all_payroll, payrolltax, exact, n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi, c09200, ctc_new)
+def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus, CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17, CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt, CTC_new_refund_limited_all_payroll, payrolltax, exact, CTC_c, CTC_c_under6_bonus, CTC_ps, CTC_prt, ODC_c, n24, nu06, age_head, age_spouse, nu18, XTOT, num, c00100, MARS, ptax_oasdi, c09200, ctc_new)
 ```
 
 [source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4582)
@@ -3159,7 +3159,17 @@ Body sections:
       (an AGI-based phase-in).
   (C) AGI phase-out: reduction of `CTC_new_prt` per dollar of AGI above
       `CTC_new_ps[MARS-1]`, with `exact==1` rounding excess up to the
-      next $1000 (mirrors the Sch 8812 line-9 step).
+      next $1000 (mirrors the Sch 8812 line-9 step).  When
+      `CTC_new_prt > 0` and `CTC_new_ps[MARS-1] < CTC_ps[MARS-1]` (the
+      ARPA-style structure), the reduction is capped at
+      `CTC_new_prt·(CTC_ps[MARS-1] - CTC_new_ps[MARS-1])`, as in IRC
+      section 24(i)(4)(B) (2021 Sch 8812 Line 5 Worksheet).
+  (C2) combined-credit phase-out, only under the ARPA-style structure
+      defined in (C): above `CTC_ps[MARS-1]` the `CTC_prt`
+      reduction applies to the sum of the tentative CTC, ODC, and
+      `ctc_new` (2021 Sch 8812 lines 8-12); the part of that reduction
+      not absorbed by the tentative CTC and ODC in `ChildDepTaxCredit`
+      reduces `ctc_new`.
   (D) reform-only payroll-tax refundability cap: when
       `CTC_new_refund_limited=true`, the portion of `ctc_new` exceeding
       pre-refundable-credits liability `c09200` is capped at
@@ -3205,6 +3215,18 @@ payrolltax: float
 exact: int
     When 1, round the phase-out excess up to the next $1000 (Sch 8812
     line-9 step); when 0, use the smooth excess.
+CTC_c: float
+    Maximum nonrefundable CTC per qualifying child; used to compute the
+    tentative CTC in section (C2).
+CTC_c_under6_bonus: float
+    Bonus CTC amount for each under-6 dependent; used in section (C2).
+CTC_ps: list
+    MARS-indexed AGI threshold of the `ChildDepTaxCredit` phase-out;
+    caps the section (C) reduction and starts section (C2).
+CTC_prt: float
+    `ChildDepTaxCredit` phase-out rate; used in section (C2).
+ODC_c: float
+    Maximum credit per other dependent; used in section (C2).
 n24: int
     Number of CTC-eligible children (a condition for which is being
     under age 17).
@@ -3217,6 +3239,11 @@ age_spouse: int
 nu18: int
     Number of dependents under 18 years old; used by the
     `CTC_include17` widening.
+XTOT: int
+    Total number of exemptions for filing unit; used to count other
+    dependents in section (C2).
+num: int
+    2 when MARS is 2 (married filing jointly), otherwise 1.
 c00100: float
     Adjusted Gross Income (AGI); floored at 0 as `posagi`.
 MARS: int
@@ -3242,7 +3269,7 @@ ctc_new: float
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, c09200, CDCC_refund, recovery_rebate_credit, eitc, c07220, odc, CTC_is_refundable, ODC_is_refundable, soi_iitax, setax, e09800, ptax_amc, refund, ctc_total, ctc_refundable, ctc_nonrefundable, iitax, payrolltax, combined)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4721)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4770)
 
 ```text
 Final assembly: sums refundable credits and computes total income-tax
@@ -3402,7 +3429,7 @@ combined: float
 def FairShareTax(c00100, MARS, ptax_was, ptax_er_p, ptax_er_s, setax, ptax_amc, FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi, fstax, iitax, combined, surtax)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4921)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4970)
 
 ```text
 Computes Fair Share Tax (aka "Buffett Rule") — a reform-only minimum
@@ -3492,7 +3519,7 @@ surtax: float
 def LumpSumTax(DSI, num, XTOT, LST, lumpsum_tax, combined)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5028)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5077)
 
 ```text
 Computes a per-capita lump-sum ("head") tax and adds it to combined taxes.
@@ -3537,7 +3564,7 @@ combined: float
 def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600, e00700, e00800, e00900, e01100, e01200, e01400, e01500, e02000, e02100, p22250, p23250, cmbtp, ptax_er_p, ptax_er_s, benefit_value_total, expanded_income)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5076)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5125)
 
 ```text
 Computes the records-bound `expanded_income` aggregate — a broad
@@ -3641,7 +3668,7 @@ expanded_income: float
 def AfterTaxIncome(combined, expanded_income, aftertax_income)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5211)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5260)
 
 ```text
 Computes the records-bound `aftertax_income` = `expanded_income`

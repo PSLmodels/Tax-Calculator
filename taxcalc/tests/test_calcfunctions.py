@@ -3110,12 +3110,61 @@ CTC_NEW_INCLUDE17_REFORM = {**CTC_NEW_REFORM, 'CTC_include17': {2025: True}}
     pytest.param(CTC_NEW_INCLUDE17_REFORM,
                  {'MARS': 4, 'nu18': 1, 'age_head': 40, 'c00100': 50000.},
                  1000., id='reform include age 17'),
+    # reform without a CTC_new phase-out: 1000 is not reduced above
+    # CTC_ps, where the CTC_ps phase-out exceeds the 2200 tentative CTC
+    pytest.param({'CTC_new_c': {2025: 1000},
+                  'CTC_new_for_all': {2025: True}},
+                 {'MARS': 1, 'n24': 1, 'c00100': 500000.},
+                 1000., id='reform no phase-out'),
 ])
 def test_CTC_new(call_calcfunc, reform, rvars, expected):
     """
     Tests the CTC_new function
     """
     actual = call_calcfunc('CTC_new', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# Under 2021 current law (ARPA), the CTC_new increase is 1600 per child
+# under 6.  Its phase-out above CTC_new_ps is capped by IRC section
+# 24(i)(4)(B) at 0.05 * (CTC_ps - CTC_new_ps), which is 4375 for a
+# head of household, and above CTC_ps the 0.05 * excess reduction of
+# the combined credit first reduces the tentative CTC and ODC (line 8)
+# and only then ctc_new.  Each case has three children under 6, so the
+# increase is 4800 and the tentative CTC is 6000.
+HOH3 = {'MARS': 4, 'n24': 3, 'nu18': 3, 'nu06': 3, 'age_head': 40,
+        'num': 1, 'XTOT': 4}
+
+
+@pytest.mark.parametrize('rvars, expected', [
+    # 4800 - 0.05 * (150000 - 112500), which is below the cap
+    pytest.param({**HOH3, 'c00100': 150000.}, 2925., id='below cap'),
+    # 4800 - 4375 cap
+    pytest.param({**HOH3, 'c00100': 210000.}, 425., id='at cap'),
+    # 0.05 * (325000 - 200000) = 6250, of which 250 exceeds the 6000
+    # tentative CTC: 425 - 250
+    pytest.param({**HOH3, 'c00100': 325000.}, 175., id='above CTC_ps'),
+    # excess 125500 rounded up to 126000: 0.05 * 126000 = 6300, of
+    # which 300 exceeds the 6000 tentative CTC: 425 - 300
+    pytest.param({**HOH3, 'c00100': 325500., 'exact': 1}, 125.,
+                 id='above CTC_ps exact'),
+    # 0.05 * 140000 = 7000 exceeds 6000 + 425
+    pytest.param({**HOH3, 'c00100': 340000.}, 0., id='fully phased out'),
+    # one other dependent adds 500 ODC to line 8, so the 6250
+    # reduction is fully absorbed by the 6500 tentative CTC and ODC
+    pytest.param({**HOH3, 'XTOT': 5, 'c00100': 325000.}, 425.,
+                 id='above CTC_ps with ODC'),
+    # joint: 8 * 1600 = 12800 increase capped at 0.05 * 250000 = 12500
+    pytest.param({'MARS': 2, 'n24': 8, 'nu18': 8, 'nu06': 8,
+                  'age_head': 40, 'age_spouse': 40, 'num': 2, 'XTOT': 10,
+                  'c00100': 420000.},
+                 300., id='joint at cap'),
+])
+def test_CTC_new_2021(call_calcfunc, rvars, expected):
+    """
+    Tests the CTC_new function under 2021 current law
+    """
+    actual = call_calcfunc('CTC_new', year=2021, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
