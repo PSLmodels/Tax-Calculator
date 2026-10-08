@@ -3410,10 +3410,13 @@ def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
                       e07260 * (1. - CR_ResidentialEnergy_hc) +  # res energy
                       c07200)                                    # Schedule R
         clwA_limit = max(0., c05800 - clwA_other)
-        if CTC_is_refundable:  # reform-only: skip tax-liability cap
-            c07220 = line12 * line5 / line8
-            odc = max(0., line12 - c07220)
-            codtc_limited = max(0., line12 - c07220 - odc)
+        if CTC_is_refundable:  # skip tax-liability cap (as in 2021)
+            # 2021 Sch 8812 line 14a: ODC portion comes first; ODC is
+            # then limited by tax liability in NonrefundableCredits
+            odc = min(line7, line12)
+            # 2021 Sch 8812 line 14b: refundable CTC is the remainder
+            c07220 = line12 - odc
+            codtc_limited = 0.
         else:
             # Sch 8812 line 14: smaller of line 12 or Credit Limit Worksheet A
             line14 = min(line12, clwA_limit)

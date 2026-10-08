@@ -29,8 +29,6 @@
                "2021": [0, 0, 0, 0, 0]},
     "CTC_is_refundable": {"2021": true,
                           "2022": false},
-    "ODC_is_refundable": {"2021": true,
-                          "2022": false},
     "CTC_include17": {"2021": true,
                       "2022": false},
     "CTC_new_c": {"2021": 1000,

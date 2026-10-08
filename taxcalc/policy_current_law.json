@@ -19114,14 +19114,6 @@
             {
                 "year": 2013,
                 "value": false
-            },
-            {
-                "year": 2021,
-                "value": true
-            },
-            {
-                "year": 2022,
-                "value": false
             }
         ],
         "validators": {
