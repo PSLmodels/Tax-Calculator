@@ -1,11 +1,6 @@
 Validation against policyengine-taxsim
 =====================================
 
-**Status: under construction.**  The scripts for all five steps and
-the `validate.py` driver are done, but the differences have not yet
-been examined, so there are no expected-differences files yet and
-every comparison fails.
-
 This folder compares Tax-Calculator's **federal** income and payroll
 tax results with those of
 [policyengine-taxsim](https://github.com/PolicyEngine/policyengine-taxsim)
@@ -27,6 +22,120 @@ or `c`) and a two-digit year `YY`.  The comparison runs in five steps:
 The samples and PE outputs are committed, so steps 3-5 can be rerun
 using only the `taxcalc-dev` conda environment.  Generated working
 files are written to the git-ignored `work/` folder.
+
+Other files in this folder:
+[`VARIABLES.md`](VARIABLES.md) documents how each TAXSIM input and
+output variable corresponds to Tax-Calculator variables;
+[`Differences_Explained.md`](Differences_Explained.md) explains every
+expected difference; [`pe_pin.json`](pe_pin.json) pins the PE version;
+[`pe_emulation.json`](pe_emulation.json) is the Tax-Calculator reform
+that adopts PE's conventions; and `dumpvars.txt` lists the
+Tax-Calculator variables that step 4 writes.
+
+Rerunning the comparison
+------------------------
+
+From the top-level repository folder, in the `taxcalc-dev` conda
+environment, run:
+
+```
+python taxcalc/validation/pe_taxsim/validate.py
+```
+
+This runs steps 3-5 for all fifteen samples (letters `a`, `b`, `c`
+times years 2021-2025) in about one minute and ends with a PASS/FAIL
+summary.  Neither uv nor PolicyEngine is needed.  Every comparison
+should pass.  A failure means that a Tax-Calculator change altered at
+least one compared result: look at
+`work/actual_differences/LYY-taxdiffs-actual.csv` and decide whether
+the change fixes a bug (then update
+[`Differences_Explained.md`](Differences_Explained.md) and the expect
+file) or introduces one.  See [Running all the
+steps](#running-all-the-steps) for options.
+
+Results summary
+---------------
+
+Results are for the pinned PE version (policyengine-taxsim 3.0.1,
+commit `3e2a758`, with policyengine-us 2.30.1) and 10,000 random
+filing units in each sample.  The three assumption sets are:
+
+- `a`: wages, ages of head and spouse, and up to five dependents;
+- `b`: adds pensions, Social Security benefits, dividends, interest,
+  capital gains and losses, unemployment compensation, rental income,
+  and self-employment, business, and S-corporation income (each of
+  the last three nonzero in only 25% of units);
+- `c`: adds property taxes, mortgage interest, other itemized
+  deductions, and child care expenses.
+
+Twenty-three TAXSIM output variables are compared (see
+[`VARIABLES.md`](VARIABLES.md)).  After the corrections listed below,
+all of them agree to within $1 except for the explained differences.
+This table counts the units with at least one difference and the
+units with a `fiitax` (federal income tax) difference:
+
+| Sample | 2021 units / fiitax | 2022 | 2023 | 2024 | 2025 |
+|---|---|---|---|---|---|
+| `a` | 2,617 / 0 | 1,193 / 0 | 1,257 / 0 | 1,377 / 0 | 2,259 / 0 |
+| `b` | 1,013 / 4 | 7 / 7 | 8 / 6 | 8 / 7 | 898 / 12 |
+| `c` | 1,090 / 8 | 12 / 8 | 15 / 8 | 10 / 7 | 945 / 5 |
+
+Payroll taxes (`fica`, `tfica`, `addmed`, and the `v44` Medicare
+rate) and many income tax items (AGI, taxable unemployment
+compensation and Social Security benefits, the standard deduction,
+exemptions, EITC, the 2021 recovery rebate credit, and NIIT) agree in
+every unit of every sample.  Most
+of the remaining differences are in intermediate amounts that do not
+affect tax: AMT income (`v26`) and, in 2021, the refundable part of
+the child tax credit (`actc`).  The few `fiitax` differences are
+explained by a PE AMT error for filers under 19 and by PE's
+assumption that everyone aged 5-17 is a full-time student.
+
+The comparison found these Tax-Calculator bugs, which have been fixed
+on `master`:
+
+- the 2023 aged/blind standard deduction amounts for single and
+  head-of-household filers, and the 2022-2024 amounts for surviving
+  spouses, were wrong (`STD_Aged`);
+- the kiddie-tax AMT exemption cap applied only to children under 18
+  rather than under 19 (`AMT_child_em_c_age`);
+- in 2021 the credit for other dependents was refundable
+  (`ODC_is_refundable`), but ARPA made only the child credit refundable;
+- in 2021 the phase-out of the ARPA child tax credit increase lacked
+  the section 24(i)(4)(B) cap (`CTC_new`).
+
+It also found one Tax-Calculator bug that PE shares, so it causes no
+difference: the kiddie-tax AMT exemption cap is applied to joint
+filers under 19, although section 1(g)(2)(C) excludes a child who
+files a joint return.
+
+The remaining differences, all explained in
+[`Differences_Explained.md`](Differences_Explained.md), are:
+
+| Variables | Years | Cause | Class |
+|---|---|---|---|
+| `v26` | all | PE floors taxable income at zero when computing AMT income | PE bug, no tax effect |
+| `v26` | 2025 | PE does not add the senior deduction back to AMT income | PE bug, no tax effect |
+| `actc` | 2021 | PE's refundable CTC ignores the ARPA first-stage reduction and includes ODC | PE output definition |
+| `v27`, `fiitax`, others | all | PE's kiddie-tax AMT base omits the standard-deduction add-back | PE bug |
+| `v24`, `fiitax` | 2022-2024 | PE treats a spouse aged 17 as a full-time student for the CDCC | convention |
+| `v18`, `v26` | 2021, 2023, 2025 | itemizing choice when both deductions give the same (zero) tax | convention, no tax effect |
+| `v17`, `v26` | 2025 | PE limits the SALT deduction to AGI | PE output definition, no tax effect |
+
+The only `pe_emulation.json` entries assume full take-up of the EITC
+and the refundable child tax credit, as PE does.
+
+Validation of a new tax year
+----------------------------
+
+To add a year, change `LAST_YEAR` in all six scripts, check the
+year-specific logic in `run_tc.py` and [`VARIABLES.md`](VARIABLES.md)
+for the new year's law changes, generate the samples and PE outputs
+for the new year (steps 1 and 2), and examine every difference the
+way the existing ones were examined before creating the new expect
+files.  To move to a newer PE version, change `pe_pin.json`,
+regenerate all fifteen PE outputs with `run_pe.py --force`, and
+re-examine every difference; the samples need not change.
 
 Environment setup
 -----------------

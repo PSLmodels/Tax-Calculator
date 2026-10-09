@@ -45,6 +45,9 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | Sparse business income | (2026-10-07) In sets b/c each of `psemp`, `ssemp`, `pbusinc`, `sbusinc`, `scorp` is nonzero for only 25% of units, so b/c include moderate-income units that get credits. |
 | Kiddie-AMT joint filers (B3) | (2026-10-09) TC (and PE) apply the 59(j) kiddie-AMT exemption cap to joint filers under 19, though 1(g)(2)(C) excludes a child filing a joint return; fix on a separate branch off `master`.  No PE/TC difference results. |
 | Itemizing tie-break | (2026-10-09) Keep TC's rule (on a tax tie, itemize only if tax is positive); the resulting zero-tax `v18`/`v26` differences from PE are expected. |
+| cstest scope | (2026-10-09) `make cstest` checks `pe_taxsim/*.py`; `EXCLUDED_PATHS` is now `taxcalc/validation/taxsim35` (CLAUDE.md updated). |
+| Validation Makefile | (2026-10-09) None; `validate.py` is the single entry point. |
+| PLAN.md at PR time | (2026-10-09) Keep it committed. |
 | Historical record | (2026-10-08) Restore from master, unchanged except for a note at the top of the README: `taxsim35/README.md`, `taxsim35/Differences_Explained.md`, `taxsim35/taxsim_emulation.json`, and `taxsim35/expected_differences/` (2017-2021).  `taxcalc/validation/README.md` links to `taxsim35/README.md`. |
 
 ## Target layout
@@ -94,7 +97,8 @@ Generated working files (`*.in-tc.csv`, `*.dumpdb`, `*.out-tc.csv`,
 - `tc` is not on PATH in `taxcalc-dev`; step 4 should call
   `python -m taxcalc.cli.tc` from the repo root so the working-tree
   code is validated without installing the package.
-- `make cstest` excludes `taxcalc/validation/` (Makefile `EXCLUDED_PATHS`).
+- `make cstest` excluded `taxcalc/validation/` (Makefile `EXCLUDED_PATHS`);
+  since Phase 11 it excludes only `taxcalc/validation/taxsim35/`.
 - `CSV_INPUT_VARS.md` / `CSV_OUTPUT_VARS.md`: thought to be unreferenced, but
   `test_records.py::test_csv_input_vars_md_contents` read the former
   (vacuously: the file had no table); see Phase 1 log.
@@ -242,18 +246,18 @@ At the end of every session:
 - [x] Create c21-c25 expect files (user approved, 2026-10-09).
 
 ### Phase 11 — Finish  (≈1 session)
-- [ ] Final `README.md` with results summary and rerun instructions.
-- [ ] Optional: run `pycodestyle`/`pylint` on `pe_taxsim/*.py` even
+- [x] Final `README.md` with results summary and rerun instructions.
+- [x] Optional: run `pycodestyle`/`pylint` on `pe_taxsim/*.py` even
       though `make cstest` skips them; ask user whether to include
-      `pe_taxsim/` in cstest.
-- [ ] Ask user whether to add a thin `taxcalc/validation/Makefile`
+      `pe_taxsim/` in cstest (user: include it).
+- [x] Ask user whether to add a thin `taxcalc/validation/Makefile`
       whose targets only call `validate.py` (e.g., `make validate`,
       `make clean` of `work/`).  Con: file-dependency rules would
       silently regenerate the canonical committed samples and PE
       outputs whenever a script changes, and would duplicate
-      `validate.py`; so no per-file sample/PE-output rules.
-- [ ] Confirm `make pytest` is unaffected; clean up stray files.
-- [ ] Draft list of upstream PE issues for the user.
+      `validate.py`; so no per-file sample/PE-output rules (user: no Makefile).
+- [x] Confirm `make pytest` is unaffected; clean up stray files.
+- [x] Draft list of upstream PE issues for the user.
 - [ ] Ask user whether to keep or delete this PLAN.md, whether to commit,
       and whether to open a PR.
 
@@ -289,7 +293,7 @@ At the end of every session:
 | 8 Triage a | done (2026-10-09) |
 | 9 Triage b | done (2026-10-09) |
 | 10 Triage c | done (2026-10-09) |
-| 11 Finish | not started |
+| 11 Finish | done except commit/PR decision (2026-10-09) |
 
 ## Session log
 
@@ -742,3 +746,28 @@ At the end of every session:
   * Created `expected_differences/a21-taxdiffs-expect.csv` (copy of
     the actual differences, user approved); a21 PASS.
   * Next step: Phase 11.
+- 2026-10-09: Phase 11 session (finish).
+  * Full `validate.py` run: all 15 comparisons PASS (before and after
+    this session's script edits).  `make pytest`: 789 passed.
+  * `pe_taxsim/README.md`: removed the "under construction" note;
+    added a file guide, a "Rerunning the comparison" section, a
+    results summary (assumption sets, per-sample counts of units with
+    any difference and with a `fiitax` difference, TC bugs found and
+    fixed, B3, table of remaining difference patterns), and a section
+    on adding a year or re-pinning PE.
+  * `pe_taxsim/*.py` pass pycodestyle and pylint with the cstest
+    options after fixing five `inconsistent-quotes` warnings in
+    `compare.py` and `run_pe.py` (single-quoted keys inside f-strings,
+    moved into local variables).  User chose to include `pe_taxsim/`
+    in `make cstest` (Makefile `EXCLUDED_PATHS` narrowed to
+    `taxsim35/`; CLAUDE.md coding-style sentence updated); `make
+    cstest` is clean.  User chose no validation Makefile and to keep
+    this PLAN.md.
+  * Drafted six upstream PE issues (five policyengine-us issues, one
+    note), given to the user in the session (not committed): kiddie-tax
+    AMT base, `amt_income` zero floor, 2025 senior deduction AMT
+    add-back, 2021 `refundable_ctc`, SALT limited to AGI, and the K-12
+    student imputation note.
+  * TC bug B3 (kiddie-AMT cap for joint filers) is still unfixed on
+    `master`; README lists it as found, not fixed.
+  * Next step: user decides whether to commit and whether to open a PR.

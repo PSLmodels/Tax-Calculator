@@ -63,6 +63,7 @@ def uvx_prefix(pin):
         raise RuntimeError("uvx is not on PATH; see README.md for setup")
     repo = pin["policyengine_taxsim_repo"]
     sha = pin["policyengine_taxsim_sha"]
+    peus = pin["policyengine_us_version"]
     return [
         uvx,
         "--python",
@@ -70,7 +71,7 @@ def uvx_prefix(pin):
         "--from",
         f"git+{repo}@{sha}",
         "--with",
-        f"policyengine-us=={pin['policyengine_us_version']}",
+        f"policyengine-us=={peus}",
     ]
 
 

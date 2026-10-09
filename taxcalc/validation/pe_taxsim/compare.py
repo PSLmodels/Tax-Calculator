@@ -155,10 +155,11 @@ def report(lyy, summary, unexpected, tolerance, expectfile):
     """
     Print the comparison results for sample LYY.
     """
-    print(f"{lyy}: {summary['count'].sum()} differences "
-          f"(|tc - pe| > {tolerance:g}) in "
-          f"{(summary['count'] > 0).sum()} variables")
     nonzero = summary[summary["count"] > 0]
+    num_diffs = summary["count"].sum()
+    print(f"{lyy}: {num_diffs} differences "
+          f"(|tc - pe| > {tolerance:g}) in "
+          f"{len(nonzero)} variables")
     if not nonzero.empty:
         print(nonzero.to_string(index=False))
     if not expectfile.is_file():
@@ -168,9 +169,11 @@ def report(lyy, summary, unexpected, tolerance, expectfile):
         print(f"{lyy}: PASS")
     else:
         counts = unexpected["where"].value_counts()
-        print(f"{lyy}: FAIL: {counts.get('actual_only', 0)} actual "
+        num_actual_only = counts.get("actual_only", 0)
+        num_expect_only = counts.get("expect_only", 0)
+        print(f"{lyy}: FAIL: {num_actual_only} actual "
               f"differences are not expected and "
-              f"{counts.get('expect_only', 0)} expected differences "
+              f"{num_expect_only} expected differences "
               "did not occur")
 
 
