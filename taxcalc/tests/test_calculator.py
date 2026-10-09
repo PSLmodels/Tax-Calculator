@@ -809,6 +809,41 @@ def test_itemded_component_amounts(year, cps_subsample):
         raise ValueError(errmsg)
 
 
+@pytest.mark.parametrize('year, thd, mfs_thd, mfj_salt, mfs_salt', [
+    (2026, 505000, 252500, 35900.0, 17950.0),
+    (2027, 510050, 255025, 37819.0, 18909.5),
+    (2028, 515151, 257575, 39757.3, 19878.5),
+    (2029, 520302, 260151, 41624.0, 20812.0),
+])
+def test_salt_cap_phaseout(year, thd, mfs_thd, mfj_salt, mfs_salt):
+    """
+    Check the OBBBA SALT cap phaseout threshold and the resulting SALT
+    deduction for a MFJ and a MFS filing unit.  IRC section 164(b)(7)(B)
+    sets the threshold at $505,000 for 2026 and at 101 percent of the
+    prior-year threshold for 2027 through 2029 (half that amount for a
+    married individual filing a separate return).  The IRS confirms the
+    2026 threshold of $505,000 ($252,500 MFS) in "Correction to state and
+    local income tax deduction amount in the 2026 Form 1040-ES".
+    """
+    pol = tc.Policy()
+    pol.set_year(year)
+    assert np.allclose(pol.ID_AllTaxes_c_ps[0],
+                       [thd, thd, mfs_thd, thd, thd])
+    # one MFJ and one MFS filing unit with AGI near the threshold and
+    # with state and local income taxes above the SALT cap
+    funits_df = pd.read_csv(StringIO(
+        'RECID,MARS,e00200,e00200p,e00200s,e18400\n'
+        '1,2,520000,520000,0,50000\n'
+        '2,3,260000,260000,0,25000\n'
+    ))
+    recs = tc.Records(data=funits_df, start_year=year,
+                      gfactors=None, weights=None, adjust_ratios=None)
+    calc = tc.Calculator(policy=tc.Policy(), records=recs)
+    assert calc.current_year == year
+    calc.calc_all()
+    assert np.allclose(calc.array('c18300'), [mfj_salt, mfs_salt])
+
+
 @pytest.mark.qbid
 def test_qbid_calculation():
     """
