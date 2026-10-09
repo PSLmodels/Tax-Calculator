@@ -3410,10 +3410,13 @@ def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
                       e07260 * (1. - CR_ResidentialEnergy_hc) +  # res energy
                       c07200)                                    # Schedule R
         clwA_limit = max(0., c05800 - clwA_other)
-        if CTC_is_refundable:  # reform-only: skip tax-liability cap
-            c07220 = line12 * line5 / line8
-            odc = max(0., line12 - c07220)
-            codtc_limited = max(0., line12 - c07220 - odc)
+        if CTC_is_refundable:  # skip tax-liability cap (as in 2021)
+            # 2021 Sch 8812 line 14a: ODC portion comes first; ODC is
+            # then limited by tax liability in NonrefundableCredits
+            odc = min(line7, line12)
+            # 2021 Sch 8812 line 14b: refundable CTC is the remainder
+            c07220 = line12 - odc
+            codtc_limited = 0.
         else:
             # Sch 8812 line 14: smaller of line 12 or Credit Limit Worksheet A
             line14 = min(line12, clwA_limit)
@@ -4580,8 +4583,9 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
             CTC_new_refund_limited_all_payroll, payrolltax, exact,
-            n24, nu06, age_head, age_spouse, nu18, c00100, MARS, ptax_oasdi,
-            c09200, ctc_new):
+            CTC_c, CTC_c_under6_bonus, CTC_ps, CTC_prt, ODC_c,
+            n24, nu06, age_head, age_spouse, nu18, XTOT, num,
+            c00100, MARS, ptax_oasdi, c09200, ctc_new):
     """
     Computes a reform-construct refundable Child Tax Credit (`ctc_new`)
     that is added on top of, not in place of, the current-law CTC/ODC
@@ -4604,7 +4608,17 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
           (an AGI-based phase-in).
       (C) AGI phase-out: reduction of `CTC_new_prt` per dollar of AGI above
           `CTC_new_ps[MARS-1]`, with `exact==1` rounding excess up to the
-          next $1000 (mirrors the Sch 8812 line-9 step).
+          next $1000 (mirrors the Sch 8812 line-9 step).  When
+          `CTC_new_prt > 0` and `CTC_new_ps[MARS-1] < CTC_ps[MARS-1]` (the
+          ARPA-style structure), the reduction is capped at
+          `CTC_new_prt·(CTC_ps[MARS-1] - CTC_new_ps[MARS-1])`, as in IRC
+          section 24(i)(4)(B) (2021 Sch 8812 Line 5 Worksheet).
+      (C2) combined-credit phase-out, only under the ARPA-style structure
+          defined in (C): above `CTC_ps[MARS-1]` the `CTC_prt`
+          reduction applies to the sum of the tentative CTC, ODC, and
+          `ctc_new` (2021 Sch 8812 lines 8-12); the part of that reduction
+          not absorbed by the tentative CTC and ODC in `ChildDepTaxCredit`
+          reduces `ctc_new`.
       (D) reform-only payroll-tax refundability cap: when
           `CTC_new_refund_limited=true`, the portion of `ctc_new` exceeding
           pre-refundable-credits liability `c09200` is capped at
@@ -4650,6 +4664,18 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
     exact: int
         When 1, round the phase-out excess up to the next $1000 (Sch 8812
         line-9 step); when 0, use the smooth excess.
+    CTC_c: float
+        Maximum nonrefundable CTC per qualifying child; used to compute the
+        tentative CTC in section (C2).
+    CTC_c_under6_bonus: float
+        Bonus CTC amount for each under-6 dependent; used in section (C2).
+    CTC_ps: list
+        MARS-indexed AGI threshold of the `ChildDepTaxCredit` phase-out;
+        caps the section (C) reduction and starts section (C2).
+    CTC_prt: float
+        `ChildDepTaxCredit` phase-out rate; used in section (C2).
+    ODC_c: float
+        Maximum credit per other dependent; used in section (C2).
     n24: int
         Number of CTC-eligible children (a condition for which is being
         under age 17).
@@ -4662,6 +4688,11 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
     nu18: int
         Number of dependents under 18 years old; used by the
         `CTC_include17` widening.
+    XTOT: int
+        Total number of exemptions for filing unit; used to count other
+        dependents in section (C2).
+    num: int
+        2 when MARS is 2 (married filing jointly), otherwise 1.
     c00100: float
         Adjusted Gross Income (AGI); floored at 0 as `posagi`.
     MARS: int
@@ -4680,6 +4711,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         Reform-only new refundable child tax credit; fed into `IITAX` on
         the refundable side.
     """
+    # pylint: disable=too-many-branches
     # (A) qualifying-child count (under-18 widening is reform-only)
     if CTC_include17:
         tu18 = int(age_head < 18)   # taxpayer is under age 18
@@ -4695,11 +4727,31 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             ctc_new = min(CTC_new_rt * posagi, ctc_new)
         # (C) AGI phase-out above CTC_new_ps[MARS-1]
         ymax = CTC_new_ps[MARS - 1]
+        ctc_ps = CTC_ps[MARS - 1]
+        # ARPA-style structure: ctc_new phases out below CTC_ps
+        arpa = CTC_new_prt > 0. and ymax < ctc_ps
         if posagi > ymax:
             excess = posagi - ymax
             if exact == 1:  # exact calculation as on tax form
                 excess = math.ceil(excess / 1000.) * 1000.
-            ctc_new = max(0., ctc_new - CTC_new_prt * excess)
+            reduction = CTC_new_prt * excess
+            # IRC section 24(i)(4)(B): reduction cannot exceed CTC_new_prt
+            # times the gap between the CTC_ps and CTC_new_ps thresholds
+            # (2021 Sch 8812 Line 5 Worksheet)
+            if arpa:
+                reduction = min(reduction, CTC_new_prt * (ctc_ps - ymax))
+            ctc_new = max(0., ctc_new - reduction)
+        # (C2) CTC_ps phase-out of the combined credit: the portion of the
+        # CTC_prt reduction not absorbed by the tentative CTC and ODC in
+        # ChildDepTaxCredit (2021 Sch 8812 lines 8-12) reduces ctc_new
+        if arpa and ctc_new > 0. and posagi > ctc_ps:
+            excess = posagi - ctc_ps
+            if exact == 1:  # exact calculation as on tax form
+                excess = math.ceil(excess / 1000.) * 1000.
+            line5 = CTC_c * childnum + CTC_c_under6_bonus * nu06
+            line7 = ODC_c * max(0, XTOT - childnum - num)
+            unabsorbed = max(0., CTC_prt * excess - (line5 + line7))
+            ctc_new = max(0., ctc_new - unabsorbed)
         # (D) reform-only payroll-tax cap on the refund portion
         if ctc_new > 0. and CTC_new_refund_limited:
             refund_new = max(0., ctc_new - c09200)

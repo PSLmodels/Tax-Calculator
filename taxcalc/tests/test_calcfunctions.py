@@ -2277,9 +2277,10 @@ def test_EITC_reform(call_calcfunc, reform, rvars, expected):
 # next multiple of 1000 (line 10).  The exact flag selects that
 # rounding.  Schedule 8812 line 14 reports only the total nonrefundable
 # credit; Tax-Calculator splits it between CTC and ODC in proportion to
-# lines 5 and 7.  The returned tuple is (c07220, odc, codtc_limited).
-# The reform-only CTC_include17 and CTC_is_refundable switches are both
-# false under 2025 current law.
+# lines 5 and 7, except under CTC_is_refundable, where ODC comes first
+# as on 2021 Schedule 8812 line 14a.  The returned tuple is (c07220,
+# odc, codtc_limited).  The reform-only CTC_include17 and
+# CTC_is_refundable switches are both false under 2025 current law.
 CTC_INCLUDE17_REFORM = {'CTC_include17': {2025: True}}
 CTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
 
@@ -2341,6 +2342,13 @@ CTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
                  {'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
                   'c00100': 30000., 'c05800': 1000.},
                  (2200., 500., 0.), id='reform refundable'),
+    # reform: line 11 = 0.05 * 30000 = 1500; line 12 = 2700 - 1500 =
+    # 1200, of which ODC gets 500 first (2021 Sch 8812 line 14a) and
+    # the refundable CTC gets the remaining 700 (line 14b)
+    pytest.param(CTC_REFUNDABLE_REFORM,
+                 {'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
+                  'c00100': 230000., 'c05800': 40000.},
+                 (700., 500., 0.), id='reform refundable phase-out'),
 ])
 def test_ChildDepTaxCredit(call_calcfunc, reform, rvars, expected):
     """
@@ -2840,6 +2848,19 @@ def test_NonrefundableCredits(call_calcfunc, reform, rvars, expected):
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
+def test_NonrefundableCredits_2021(call_calcfunc):
+    """
+    Tests that under 2021 current law (ARPA) the CTC is refundable and so
+    is not limited, while the ODC is nonrefundable and so is limited by
+    the 300 of tax liability (2021 Sch 8812 lines 14c-14d)
+    """
+    actual = call_calcfunc('NonrefundableCredits', year=2021,
+                           c05800=300., c07220=3000., odc=500.)
+    expected = (0., 0., 3000., 0., 0., 300.,
+                0., 0., 0., 0., 0., 0., 0.)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
 # ----------------------------------------------------------------------
 # AdditionalCTC
 # ----------------------------------------------------------------------
@@ -3089,12 +3110,61 @@ CTC_NEW_INCLUDE17_REFORM = {**CTC_NEW_REFORM, 'CTC_include17': {2025: True}}
     pytest.param(CTC_NEW_INCLUDE17_REFORM,
                  {'MARS': 4, 'nu18': 1, 'age_head': 40, 'c00100': 50000.},
                  1000., id='reform include age 17'),
+    # reform without a CTC_new phase-out: 1000 is not reduced above
+    # CTC_ps, where the CTC_ps phase-out exceeds the 2200 tentative CTC
+    pytest.param({'CTC_new_c': {2025: 1000},
+                  'CTC_new_for_all': {2025: True}},
+                 {'MARS': 1, 'n24': 1, 'c00100': 500000.},
+                 1000., id='reform no phase-out'),
 ])
 def test_CTC_new(call_calcfunc, reform, rvars, expected):
     """
     Tests the CTC_new function
     """
     actual = call_calcfunc('CTC_new', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# Under 2021 current law (ARPA), the CTC_new increase is 1600 per child
+# under 6.  Its phase-out above CTC_new_ps is capped by IRC section
+# 24(i)(4)(B) at 0.05 * (CTC_ps - CTC_new_ps), which is 4375 for a
+# head of household, and above CTC_ps the 0.05 * excess reduction of
+# the combined credit first reduces the tentative CTC and ODC (line 8)
+# and only then ctc_new.  Each case has three children under 6, so the
+# increase is 4800 and the tentative CTC is 6000.
+HOH3 = {'MARS': 4, 'n24': 3, 'nu18': 3, 'nu06': 3, 'age_head': 40,
+        'num': 1, 'XTOT': 4}
+
+
+@pytest.mark.parametrize('rvars, expected', [
+    # 4800 - 0.05 * (150000 - 112500), which is below the cap
+    pytest.param({**HOH3, 'c00100': 150000.}, 2925., id='below cap'),
+    # 4800 - 4375 cap
+    pytest.param({**HOH3, 'c00100': 210000.}, 425., id='at cap'),
+    # 0.05 * (325000 - 200000) = 6250, of which 250 exceeds the 6000
+    # tentative CTC: 425 - 250
+    pytest.param({**HOH3, 'c00100': 325000.}, 175., id='above CTC_ps'),
+    # excess 125500 rounded up to 126000: 0.05 * 126000 = 6300, of
+    # which 300 exceeds the 6000 tentative CTC: 425 - 300
+    pytest.param({**HOH3, 'c00100': 325500., 'exact': 1}, 125.,
+                 id='above CTC_ps exact'),
+    # 0.05 * 140000 = 7000 exceeds 6000 + 425
+    pytest.param({**HOH3, 'c00100': 340000.}, 0., id='fully phased out'),
+    # one other dependent adds 500 ODC to line 8, so the 6250
+    # reduction is fully absorbed by the 6500 tentative CTC and ODC
+    pytest.param({**HOH3, 'XTOT': 5, 'c00100': 325000.}, 425.,
+                 id='above CTC_ps with ODC'),
+    # joint: 8 * 1600 = 12800 increase capped at 0.05 * 250000 = 12500
+    pytest.param({'MARS': 2, 'n24': 8, 'nu18': 8, 'nu06': 8,
+                  'age_head': 40, 'age_spouse': 40, 'num': 2, 'XTOT': 10,
+                  'c00100': 420000.},
+                 300., id='joint at cap'),
+])
+def test_CTC_new_2021(call_calcfunc, rvars, expected):
+    """
+    Tests the CTC_new function under 2021 current law
+    """
+    actual = call_calcfunc('CTC_new', year=2021, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
