@@ -2428,8 +2428,8 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
 @iterate_jit(nopython=True)
 def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         c04470, c20800, c21040, e24515, MARS, dwks18,
-        dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
-        earned, cmbtp, qbided,
+        dwks14, c05700, e62900, e00700, dwks10, age_head, earned,
+        cmbtp, qbided,
         tip_income_deduction, overtime_income_deduction,
         auto_loan_interest_deduction,
         AMT_child_em_c_age, AMT_brk1,
@@ -2481,9 +2481,9 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
       - MARS == 3 (MFS): exemption fully phased out when
         c62100 > AMT_em_pe (IRC §55(d)(3) "$900,350 see instructions"
         cliff).
-      - IRC §59(j) kiddie AMT: for filers under AMT_child_em_c_age
-        (no qualifying older spouse), exemption capped at
-        earned + AMT_child_em.
+      - IRC §59(j) kiddie AMT: for non-joint filers under
+        AMT_child_em_c_age, exemption capped at earned + AMT_child_em
+        (IRC §1(g)(2)(C): kiddie tax never applies to a joint return).
       - Reform-only 4th cap-gains bracket: cap gains that, when
         stacked on top of ordinary income, are above the AMT_CG_brk3
         taxable-income threshold are taxed at AMT_CG_rt4 instead of
@@ -2553,8 +2553,6 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         Kiddie-AMT exemption increment: earned + this amount
     age_head: int
         Age in years of taxpayer (i.e. primary adult); 0 = unset
-    age_spouse: int
-        Age in years of spouse (i.e. secondary adult if present)
     earned: float
         Earned income for filing unit
     AMT_brk1: list
@@ -2662,11 +2660,10 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
     if MARS == 3 and c62100 > AMT_em_pe:
         line5 = 0.
     # IRC §59(j) kiddie-AMT cap: exemption limited to earned +
-    # AMT_child_em when filer is under AMT_child_em_c_age (and no
-    # qualifying older spouse).
+    # AMT_child_em when filer is under AMT_child_em_c_age and does not
+    # file a joint return (IRC §1(g)(2)(C)).
     young_head = age_head != 0 and age_head < AMT_child_em_c_age
-    no_or_young_spouse = age_spouse < AMT_child_em_c_age
-    if young_head and no_or_young_spouse:
+    if young_head and MARS != 2:
         line5 = min(line5, earned + AMT_child_em)
     # line 6: AMT taxable income less AMT exemption amount
     line6 = max(0., c62100 - line5)
