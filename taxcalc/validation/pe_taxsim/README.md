@@ -77,8 +77,8 @@ units with a `fiitax` (federal income tax) difference:
 | Sample | 2021 units / fiitax | 2022 | 2023 | 2024 | 2025 |
 |---|---|---|---|---|---|
 | `a` | 2,617 / 0 | 1,193 / 0 | 1,257 / 0 | 1,377 / 0 | 2,259 / 0 |
-| `b` | 1,013 / 4 | 7 / 7 | 8 / 6 | 8 / 7 | 898 / 12 |
-| `c` | 1,090 / 8 | 12 / 8 | 15 / 8 | 10 / 7 | 945 / 5 |
+| `b` | 1,013 / 4 | 6 / 6 | 8 / 6 | 7 / 6 | 898 / 12 |
+| `c` | 1,090 / 8 | 12 / 8 | 14 / 7 | 10 / 7 | 945 / 5 |
 
 Payroll taxes (`fica`, `tfica`, `addmed`, and the `v44` Medicare
 rate) and many income tax items (AGI, taxable unemployment
@@ -88,7 +88,7 @@ every unit of every sample.  Most
 of the remaining differences are in intermediate amounts that do not
 affect tax: AMT income (`v26`) and, in 2021, the refundable part of
 the child tax credit (`actc`).  The few `fiitax` differences are
-explained by a PE AMT error for filers under 19 and by PE's
+explained by PE AMT errors for filers under 19 and by PE's
 assumption that everyone aged 5-17 is a full-time student.
 
 The comparison found these Tax-Calculator bugs, which have been fixed
@@ -102,12 +102,10 @@ on `master`:
 - in 2021 the credit for other dependents was refundable
   (`ODC_is_refundable`), but ARPA made only the child credit refundable;
 - in 2021 the phase-out of the ARPA child tax credit increase lacked
-  the section 24(i)(4)(B) cap (`CTC_new`).
-
-It also found one Tax-Calculator bug that PE shares, so it causes no
-difference: the kiddie-tax AMT exemption cap is applied to joint
-filers under 19, although section 1(g)(2)(C) excludes a child who
-files a joint return.
+  the section 24(i)(4)(B) cap (`CTC_new`);
+- the kiddie-tax AMT exemption cap was applied to joint filers under
+  19, although section 1(g)(2)(C) excludes a child who files a joint
+  return (PE still has this error, so it now causes differences).
 
 The remaining differences, all explained in
 [`Differences_Explained.md`](Differences_Explained.md), are:
@@ -118,6 +116,7 @@ The remaining differences, all explained in
 | `v26` | 2025 | PE does not add the senior deduction back to AMT income | PE bug, no tax effect |
 | `actc` | 2021 | PE's refundable CTC ignores the ARPA first-stage reduction and includes ODC | PE output definition |
 | `v27`, `fiitax`, others | all | PE's kiddie-tax AMT base omits the standard-deduction add-back | PE bug |
+| `v27`, `fiitax` | 2021, 2022 | PE applies the kiddie-tax AMT exemption cap to joint filers | PE bug |
 | `v24`, `fiitax` | 2022-2024 | PE treats a spouse aged 17 as a full-time student for the CDCC | convention |
 | `v18`, `v26` | 2021, 2023, 2025 | itemizing choice when both deductions give the same (zero) tax | convention, no tax effect |
 | `v17`, `v26` | 2025 | PE limits the SALT deduction to AGI | PE output definition, no tax effect |

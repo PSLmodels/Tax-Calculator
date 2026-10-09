@@ -114,9 +114,9 @@ b21 units.  Since the 2021 TC fixes (B1, B2) the 2021 `v22` and
 ### All years: `v27` (AMT), `fiitax`, and sometimes `v22`/`actc` — PE bug
 
 Every remaining `v27` difference is a unit to which both models apply
-the section 59(j) kiddie-tax AMT exemption cap (head under age 19 and
-spouse, if any, under 19; these samples have no full-time-student
-input, so the student age limit never applies).  `diff` is 26% of the
+the section 59(j) kiddie-tax AMT exemption cap (a non-joint filer
+under age 19; these samples have no full-time-student input, so the
+student age limit never applies).  `diff` is 26% of the
 standard deduction (e.g., $4,888 = 26% x $18,800 for 2021 head of
 household; $5,408 for 2023 head of household; $6,142.50 for 2025 head
 of household), or less when PE's AMT is not positive.  PE's
@@ -135,10 +135,21 @@ nonrefundable credits.  (Example: b23 id 3287, head of household aged
 $38,600: both models give `v26` $59,400, but PE's AMT base is $38,600,
 so TC `v27` $7,598, PE $2,190.)
 
-Both models also apply the cap to joint filers aged under 19, although
-section 1(g)(2)(C) excludes a child who files a joint return (and so
-does section 59(j), which applies only to a child to whom section 1(g)
-applies).  This shared error causes no difference here.
+### 2021-2022: `v27` (AMT) and `fiitax` for joint filers under 19 — PE bug
+
+PE applies the kiddie-tax AMT exemption cap to a joint return when
+both spouses are under 19 (`amt_kiddie_tax_applies` checks only the
+ages of head and spouse), although section 1(g)(2)(C) excludes a child
+who files a joint return (and so does section 59(j), which applies
+only to a child to whom section 1(g) applies).  TC made the same error
+until it was fixed on `master` (bug B3); TC now gives these units the
+full joint AMT exemption, so `diff` is negative: TC `v27` is zero and
+PE `v27` is positive (b21 id 8 and b22 id 1462).  (Example: b21 id 8,
+joint, aged 18 and 17, wages $12,000 and $17,000: TC `v27` $0, PE
+$3,572.)  Before the TC fix, these two units appeared in the pattern
+above with a positive `diff`, and three other joint units (b22 id
+9230, b24 id 3902, c23 id 3365) differed because PE's AMT was zero
+while TC's was positive; those three now agree.
 
 
 ## `c` files (adds itemized deductions and child care)
@@ -148,7 +159,8 @@ differences: the zero-taxable-income `v26` pattern (3-7 units per
 year, plus the units below), the 2025 senior-deduction `v26` pattern
 (about 935 c25 units), PE's 2021 `actc` definition (about 1,080 c21
 units; the formula reproduces PE's `actc` for all 10,000 c21 units),
-and the kiddie-tax AMT pattern (5-8 units per year).  In set `c` the
+and the kiddie-tax AMT pattern for non-joint filers (5-8 units per
+year).  In set `c` the
 kiddie-tax AMT pattern can also change the itemizing choice: each
 model picks the deduction giving the lower tax under its own AMT, so
 some of these units also differ in `v18`, `v28`, `v26`, and `qbid`

@@ -239,7 +239,11 @@ A third entry, `AMT_child_em_c_age: 19`, was adopted and then dropped
 limit (`amt_kiddie_tax_applies`) to non-student filers younger than 19
 (the section 152(c)(3) non-student age limit), and TC's current-law
 value of `AMT_child_em_c_age` was corrected on master from 18 to 19,
-so no emulation is needed.
+so no emulation is needed.  PE also applies the limit to a joint return
+when both spouses are under 19; TC no longer does (bug B3, fixed on
+master 2026-10-09), because section 1(g)(2)(C) excludes a child who
+files a joint return.  This is a PE bug, so it is not emulated (see
+`Differences_Explained.md`).
 
 
 Open decisions and watch items
