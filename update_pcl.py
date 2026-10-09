@@ -583,19 +583,6 @@ NEW_KNOWN_ITEMS = {
         {'year': 2026, 'MARS': 'headhh', 'value': 2050.0},
         {'year': 2026, 'MARS': 'widow', 'value': 1650.0},
     ],
-    'ID_AllTaxes_c_ps': [
-        {'year': 2025, 'MARS': 'single', 'value': 500000},
-        {'year': 2025, 'MARS': 'mjoint', 'value': 500000},
-        {'year': 2025, 'MARS': 'mseparate', 'value': 250000},
-        {'year': 2025, 'MARS': 'headhh', 'value': 500000},
-        {'year': 2025, 'MARS': 'widow', 'value': 500000},
-
-        {'year': 2030, 'MARS': 'single', 'value': 9e+99},
-        {'year': 2030, 'MARS': 'mjoint', 'value': 9e+99},
-        {'year': 2030, 'MARS': 'mseparate', 'value': 9e+99},
-        {'year': 2030, 'MARS': 'headhh', 'value': 9e+99},
-        {'year': 2030, 'MARS': 'widow', 'value': 9e+99},
-    ],
     'PT_qbid_taxinc_thd': [
         {'year': 2023, 'MARS': 'single', 'value': 182100.0},
         {'year': 2023, 'MARS': 'mjoint', 'value': 364200.0},
