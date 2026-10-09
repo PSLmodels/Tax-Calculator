@@ -2557,7 +2557,7 @@ _Out-of-Range Action:_ error
 ####  `ID_AllTaxes_c_ps`  
 _Description:_ The cap on state and local income, sales and real estate tax deductions is phased out when AGI exceeds this amount.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
  for: [single, mjoint, mseparate, headhh, widow]  
