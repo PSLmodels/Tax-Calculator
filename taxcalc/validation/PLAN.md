@@ -44,6 +44,7 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | PE 2021 `actc` | (2026-10-07) Keep comparing `actc` in 2021; PE's `refundable_ctc` quirk is listed as expected differences. |
 | Sparse business income | (2026-10-07) In sets b/c each of `psemp`, `ssemp`, `pbusinc`, `sbusinc`, `scorp` is nonzero for only 25% of units, so b/c include moderate-income units that get credits. |
 | Kiddie-AMT joint filers (B3) | (2026-10-09) TC (and PE) apply the 59(j) kiddie-AMT exemption cap to joint filers under 19, though 1(g)(2)(C) excludes a child filing a joint return; fix on a separate branch off `master`.  No PE/TC difference results. |
+| Itemizing tie-break | (2026-10-09) Keep TC's rule (on a tax tie, itemize only if tax is positive); the resulting zero-tax `v18`/`v26` differences from PE are expected. |
 | Historical record | (2026-10-08) Restore from master, unchanged except for a note at the top of the README: `taxsim35/README.md`, `taxsim35/Differences_Explained.md`, `taxsim35/taxsim_emulation.json`, and `taxsim35/expected_differences/` (2017-2021).  `taxcalc/validation/README.md` links to `taxsim35/README.md`. |
 
 ## Target layout
@@ -224,9 +225,10 @@ At the end of every session:
 - [x] Document explained diffs in `Differences_Explained.md`; create
       `expected_differences/aYY-taxdiffs-expect.csv` with user approval
       (a22-a25 done).
-- [ ] After the TC 2021 CTC fixes (B1, B2) reach this branch: rerun
+- [x] After the TC 2021 CTC fixes (B1, B2) reach this branch: rerun
       a21, confirm only `v26` and `actc` differences remain and match
-      `Differences_Explained.md`, then create the a21 expect file.
+      `Differences_Explained.md`, then create the a21 expect file
+      (user approved, 2026-10-09).
 
 ### Phase 9 — Triage set `b` (adds non-labor and business income)  (several sessions)
 - [x] Same procedure as Phase 8 (expect SE tax, QBID, cap gains,
@@ -234,8 +236,10 @@ At the end of every session:
       with user approval (2026-10-09).
 
 ### Phase 10 — Triage set `c` (adds itemized deductions, child care)  (several sessions)
-- [ ] Same procedure as Phase 8 (expect itemizing choice, SALT cap,
-      CDCC issues).
+- [x] Same procedure as Phase 8 (expect itemizing choice, SALT cap,
+      CDCC issues); set-c section of `Differences_Explained.md`
+      written (2026-10-09).
+- [x] Create c21-c25 expect files (user approved, 2026-10-09).
 
 ### Phase 11 — Finish  (≈1 session)
 - [ ] Final `README.md` with results summary and rerun instructions.
@@ -282,9 +286,9 @@ At the end of every session:
 | 5 taxsim_to_tc.py | done (2026-10-07) |
 | 6 run_tc.py | done (2026-10-07) |
 | 7 compare.py / validate.py | done (2026-10-07) |
-| 8 Triage a | a22-a25 done; a21 waits for TC fixes B1/B2 on master |
+| 8 Triage a | done (2026-10-09) |
 | 9 Triage b | done (2026-10-09) |
-| 10 Triage c | not started |
+| 10 Triage c | done (2026-10-09) |
 | 11 Finish | not started |
 
 ## Session log
@@ -687,3 +691,54 @@ At the end of every session:
     units each (CDCC); c25 `v17` 1, `v18` 4; plus known `v26`/`actc`.
   * Next step: Phase 10 (set c); also, when the user allows, create
     the a21 expect file (Phase 8 last task).
+- 2026-10-09: Phase 10 session (set `c`).
+  * a22-a25 and b21-b25 not rerun this session; c21-c25 FAIL only
+    because no expect files exist.  Every set-c difference is now
+    explained (Differences_Explained.md, new set-c section):
+    - Known patterns: zero-taxable-income `v26` (3-7 units per year),
+      2025 senior-deduction `v26` (~935 c25 units), 2021 `actc` PE
+      definition (~1,080 c21 units), kiddie-AMT (5-8 units per year).
+      In set c the kiddie-AMT pattern also flips the itemizing choice
+      in a few units, adding `v18`/`v28`/`v26`/`qbid` differences
+      (e.g. c21 id 5788).
+    - New, convention: CDCC `v24`/`fiitax` (c22 2, c23 1, c24 2
+      units).  PE imputes everyone aged 5-17 as a K-12 full-time
+      student (`is_in_k12_school`), so a 17-year-old spouse gets the
+      section 21(d)(2) deemed earned income ($3,000/$6,000); TAXSIM
+      input has no student flag and TC has nothing to emulate it.
+    - New, convention, no tax effect: itemizing tie-break.  PE itemizes
+      on a tax tie whenever itemized > standard; TC does so only when
+      `std_taxes > 0` (`Calculator._calc_one_year`), so zero-tax units
+      differ in `v18`/`v26` (c21 1, c23 1, c25 4 units).
+    - New, PE output definition, no tax effect: PE limits SALT to AGI
+      (`gov.simulation.limit_itemized_deductions_to_taxable_income`,
+      default true); c25 id 9032 `v17`/`v26`.
+  * Verified in a scratch copy of TC (not committed): PE's kiddie-AMT
+    convention plus PE's tie-break leave only the CDCC units, c25 id
+    9032 `v17`, the known 2021 `actc`, and `v26` differences, and a
+    formula (taxable-income floor + senior deduction) reproduces PE
+    `v26` for every one except id 9032 (explained by the SALT limit).
+  * No new TC bug found.
+  * Upstream PE issue candidates to add in Phase 11: (5) SALT
+    deduction limited to AGI by a default-on simulation option (no
+    tax effect); maybe (6) K-12 student imputation for spouses aged
+    17 (a design choice; mention, do not file as a bug).
+  * User approved the c21-c25 expect files (copies of the actual
+    differences); a full `validate.py` run passes all files except
+    a21, which has no expect file yet.  User chose to keep TC's
+    tie-break rule (Decisions table).  Not committed (user's choice).
+  * Next step: when the user allows, create the a21 expect file
+    (Phase 8 last task); then Phase 11.
+- 2026-10-09: Phase 8 completion session (a21 only; no other work).
+  * Reran a21: only `v26` (1,128 units) and `actc` (1,489 units)
+    differ; `v22` and `fiitax` agree in every unit.  Rechecked with a
+    scratch script (not committed): the `v26` units are exactly the
+    zero-taxable-income units (TC `v26` = AGI, PE `v26` = standard
+    deduction, `v27` zero in both), and the documented PE 2021
+    `refundable_ctc` formula reproduces PE `actc` for all 10,000 units.
+  * Differences_Explained.md: the 2021 `fiitax`/`v22` section now says
+    the B1/B2 TC bugs are fixed and no such differences remain; the
+    `actc` section no longer refers to them.
+  * Created `expected_differences/a21-taxdiffs-expect.csv` (copy of
+    the actual differences, user approved); a21 PASS.
+  * Next step: Phase 11.
