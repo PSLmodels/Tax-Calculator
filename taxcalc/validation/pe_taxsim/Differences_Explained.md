@@ -95,3 +95,44 @@ the cap bug above).  PE's `v22` and `fiitax` are nevertheless correct
 in every a21 unit, because PE limits `ctc_value` correctly, so this
 affects only the reported `actc` split.  The formula above reproduces
 PE's `actc` for all 10,000 a21 units.
+
+
+## `b` files (adds non-labor and business income)
+
+The set-`a` explanations above for `v26` (all years and 2025) and for
+2021 `actc` also explain every set-`b` difference in those variables:
+the zero-taxable-income `v26` pattern occurs in a few units each year,
+the 2025 senior-deduction `v26` pattern in about 900 aged units (`diff`
+equals TC's `senior_deduction` to within a few cents), and the formula
+for PE's 2021 `refundable_ctc` reproduces PE's `actc` for all 10,000
+b21 units.  Since the 2021 TC fixes (B1, B2) the 2021 `v22` and
+`fiitax` differences are gone.  The only new pattern is the following.
+
+### All years: `v27` (AMT), `fiitax`, and sometimes `v22`/`actc` — PE bug
+
+Every remaining `v27` difference is a unit to which both models apply
+the section 59(j) kiddie-tax AMT exemption cap (head under age 19 and
+spouse, if any, under 19; these samples have no full-time-student
+input, so the student age limit never applies).  `diff` is 26% of the
+standard deduction (e.g., $4,888 = 26% x $18,800 for 2021 head of
+household; $5,408 for 2023 head of household; $6,142.50 for 2025 head
+of household), or less when PE's AMT is not positive.  PE's
+`amt_income_less_exemptions` uses taxable income instead of AMT income
+for these filers ("the deductions are not added back"), so PE's AMT
+base omits the standard-deduction add-back on Form 6251 line 2a.
+Section 59(j) changes only the exemption (limited to earned income
+plus the child amount); it does not change AMT income, and the Form
+6251 instructions make no exception to line 2a for children.  PE
+reports the correct `v26` (AMT income) for these units, but does not
+use it.  A scratch TC run with PE's convention removes every set-`b`
+`v27` and `fiitax` difference, and the few `v22`/`actc` differences,
+which occur in units whose larger TC AMT leaves less tax for the
+nonrefundable credits.  (Example: b23 id 3287, head of household aged
+17, one child aged 12, wages $1,000, AGI $59,400, taxable income
+$38,600: both models give `v26` $59,400, but PE's AMT base is $38,600,
+so TC `v27` $7,598, PE $2,190.)
+
+Both models also apply the cap to joint filers aged under 19, although
+section 1(g)(2)(C) excludes a child who files a joint return (and so
+does section 59(j), which applies only to a child to whom section 1(g)
+applies).  This shared error causes no difference here.

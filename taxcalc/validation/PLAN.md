@@ -43,6 +43,7 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | 2021 TC CTC bugs | (2026-10-07) B1 (`ODC_is_refundable` true in 2021) and B2 (`CTC_new` lacks the section 24(i)(4)(B) cap) are fixed on a separate branch off `master`, then merged here; the a21 expect file waits for that. |
 | PE 2021 `actc` | (2026-10-07) Keep comparing `actc` in 2021; PE's `refundable_ctc` quirk is listed as expected differences. |
 | Sparse business income | (2026-10-07) In sets b/c each of `psemp`, `ssemp`, `pbusinc`, `sbusinc`, `scorp` is nonzero for only 25% of units, so b/c include moderate-income units that get credits. |
+| Kiddie-AMT joint filers (B3) | (2026-10-09) TC (and PE) apply the 59(j) kiddie-AMT exemption cap to joint filers under 19, though 1(g)(2)(C) excludes a child filing a joint return; fix on a separate branch off `master`.  No PE/TC difference results. |
 | Historical record | (2026-10-08) Restore from master, unchanged except for a note at the top of the README: `taxsim35/README.md`, `taxsim35/Differences_Explained.md`, `taxsim35/taxsim_emulation.json`, and `taxsim35/expected_differences/` (2017-2021).  `taxcalc/validation/README.md` links to `taxsim35/README.md`. |
 
 ## Target layout
@@ -228,8 +229,9 @@ At the end of every session:
       `Differences_Explained.md`, then create the a21 expect file.
 
 ### Phase 9 — Triage set `b` (adds non-labor and business income)  (several sessions)
-- [ ] Same procedure as Phase 8 (expect SE tax, QBID, cap gains,
-      Social Security, AMT issues).
+- [x] Same procedure as Phase 8 (expect SE tax, QBID, cap gains,
+      Social Security, AMT issues).  b21-b25 expect files created
+      with user approval (2026-10-09).
 
 ### Phase 10 — Triage set `c` (adds itemized deductions, child care)  (several sessions)
 - [ ] Same procedure as Phase 8 (expect itemizing choice, SALT cap,
@@ -281,7 +283,7 @@ At the end of every session:
 | 6 run_tc.py | done (2026-10-07) |
 | 7 compare.py / validate.py | done (2026-10-07) |
 | 8 Triage a | a22-a25 done; a21 waits for TC fixes B1/B2 on master |
-| 9 Triage b | not started |
+| 9 Triage b | done (2026-10-09) |
 | 10 Triage c | not started |
 | 11 Finish | not started |
 
@@ -651,3 +653,37 @@ At the end of every session:
     master into this branch; then rerun a21, check that only the
     documented `v26`/`actc` differences remain, create the a21 expect
     file, and start Phase 9 (set b).
+- 2026-10-09: Phase 9 session (set `b`).
+  * After the B1/B2 fixes were merged in, a full rerun shows a21 has
+    only `v26` (1,128) and `actc` (1,489) differences; the documented
+    PE 2021 `refundable_ctc` formula reproduces PE `actc` for all
+    10,000 units in each of a21, b21, and c21.  The a21 expect file
+    (last Phase 8 task) was not created: this session was limited to
+    Phase 9.  a22-a25 still PASS.  The ~800 b/c `fiitax`/`v22`
+    differences per year seen in Phase 7 were already gone (`--exact`).
+  * Set b patterns (|diff| > $1):
+    - `v27`/`fiitax` (4-12 units per year), plus one `v22` (and
+      sometimes `actc`) unit in b21, b22, b23, b25: PE bug.  PE's
+      `amt_income_less_exemptions` uses taxable income instead of
+      AMT income when `amt_kiddie_tax_applies`, dropping the line-2a
+      standard-deduction add-back; `diff` = 26% x standard deduction.
+      A scratch TC copy with PE's convention (scratchpad, not
+      committed) removed every set-b `v27`/`fiitax`/`v22`/`actc`
+      difference except 2021 `actc`.
+    - `v26`: zero-taxable-income pattern (3 units in b23-b25) and
+      2025 senior-deduction pattern (885 b25 units; `diff` equals
+      TC `senior_deduction` to within 4 cents): known PE bugs.
+    - b21 `actc` (1,009): known PE output definition.
+  * Differences_Explained.md: added the set-b section.  Created
+    `expected_differences/b21..b25-taxdiffs-expect.csv` (user
+    approved); b21-b25 PASS.
+  * TC bug B3 (Decisions table), shared with PE, so no difference:
+    kiddie-AMT cap applied to joint filers.  User: fix on a
+    separate branch off master.
+  * Upstream PE issue to add in Phase 11: (4) kiddie-tax AMT base
+    omits the standard-deduction add-back.
+  * Set c preview (for Phase 10), after removing the kiddie-AMT
+    pattern: c21 `v18` 1 and `v26` 3; c22-c24 `fiitax`/`v24` 1-2
+    units each (CDCC); c25 `v17` 1, `v18` 4; plus known `v26`/`actc`.
+  * Next step: Phase 10 (set c); also, when the user allows, create
+    the a21 expect file (Phase 8 last task).
