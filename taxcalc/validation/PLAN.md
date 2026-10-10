@@ -43,7 +43,7 @@ in five steps for each sample (assumption set letter `L`, year `YY`):
 | 2021 TC CTC bugs | (2026-10-07) B1 (`ODC_is_refundable` true in 2021) and B2 (`CTC_new` lacks the section 24(i)(4)(B) cap) are fixed on a separate branch off `master`, then merged here; the a21 expect file waits for that. |
 | PE 2021 `actc` | (2026-10-07) Keep comparing `actc` in 2021; PE's `refundable_ctc` quirk is listed as expected differences. |
 | Sparse business income | (2026-10-07) In sets b/c each of `psemp`, `ssemp`, `pbusinc`, `sbusinc`, `scorp` is nonzero for only 25% of units, so b/c include moderate-income units that get credits. |
-| Kiddie-AMT joint filers (B3) | (2026-10-09) TC applied (and PE applies) the 59(j) kiddie-AMT exemption cap to joint filers under 19, though 1(g)(2)(C) excludes a child filing a joint return; fixed on a separate branch off `master` and merged here (commit `08161d2e`).  PE still applies the cap, so joint units under 19 now differ (b21 id 8, b22 id 1462); expect files b21, b22, b24, c23 replaced with user approval. |
+| Kiddie-AMT joint filers (B3) | (2026-10-09) TC applied (and PE applies) the 59(j) kiddie-AMT exemption cap to joint filers under 19, though 1(g)(2)(C) excludes a child filing a joint return; fixed on a separate branch off `master` and merged here (commit `08161d2e`; reached `master` as PR #3180).  PE still applies the cap, so joint units under 19 now differ (b21 id 8, b22 id 1462); expect files b21, b22, b24, c23 replaced with user approval. |
 | Itemizing tie-break | (2026-10-09) Keep TC's rule (on a tax tie, itemize only if tax is positive); the resulting zero-tax `v18`/`v26` differences from PE are expected. |
 | cstest scope | (2026-10-09) `make cstest` checks `pe_taxsim/*.py`; `EXCLUDED_PATHS` is now `taxcalc/validation/taxsim35` (CLAUDE.md updated). |
 | Validation Makefile | (2026-10-09) None; `validate.py` is the single entry point. |
@@ -293,7 +293,7 @@ At the end of every session:
 | 8 Triage a | done (2026-10-09) |
 | 9 Triage b | done (2026-10-09) |
 | 10 Triage c | done (2026-10-09) |
-| 11 Finish | done except commit/PR decision; B3 follow-up done (2026-10-09) |
+| 11 Finish | done except commit/PR decision; B3 follow-up done (2026-10-09); rechecked after master merge (2026-10-10) |
 
 ## Session log
 
@@ -789,4 +789,15 @@ At the end of every session:
   * Upstream PE issue (7), separate from the kiddie-tax AMT base issue
     (user's choice): `amt_kiddie_tax_applies` should exclude joint
     returns (section 1(g)(2)(C)).
+  * Next step: user decides whether to commit and whether to open a PR.
+- 2026-10-10: Master-merge recheck session.
+  * Merged master (commit `c4b53bc7`), which brings in PR #3176
+    (`fix-salt-cap-ps`): `ID_AllTaxes_c_ps` (SALT cap phase-out
+    threshold) is no longer indexed and has explicit 2026-2029 values
+    (`OBBBA.json` updated to match).  Only 2026 and later change, so
+    the 2021-2025 samples are unaffected.
+  * Full `validate.py` run: all 15 comparisons PASS; no expect files
+    changed.  `README.md`, `Differences_Explained.md`, and
+    `VARIABLES.md` already describe B1, B2 (PRs #3178, #3179) and B3
+    (PR #3180) as fixed, so they were not changed.
   * Next step: user decides whether to commit and whether to open a PR.
