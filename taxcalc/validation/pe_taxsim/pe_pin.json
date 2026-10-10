@@ -1,0 +1,18 @@
+{
+    "_comment": "Pinned policyengine-taxsim environment used to generate pe_output/*.out-pe.csv.gz.  Re-pin only deliberately: doing so requires regenerating all PE outputs and re-triaging.",
+    "policyengine_taxsim_repo": "https://github.com/PolicyEngine/policyengine-taxsim",
+    "policyengine_taxsim_sha": "3e2a7589c8acda0edd2aa9e748d726c9ca9262d0",
+    "policyengine_taxsim_sha_date": "2026-09-30",
+    "policyengine_taxsim_version": "3.0.1",
+    "policyengine_us_version": "2.30.1",
+    "policyengine_core_version": "3.32.21",
+    "python_version": "3.13",
+    "python_version_resolved": "3.13.16",
+    "uv_version": "0.12.23",
+    "pinned_on": "2026-10-07",
+    "pe_cli_options": [
+        "--scorp-treatment",
+        "active"
+    ],
+    "_comment_pe_cli_options": "Extra policyengine-taxsim CLI options used in every step-2 run: active S-corp treatment matches Tax-Calculator current law, which excludes e26270 from NIIT net investment income (NIIT_PT_taxed=false)."
+}

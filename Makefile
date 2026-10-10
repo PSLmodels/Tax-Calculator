@@ -78,7 +78,7 @@ TESTS_JSON_FILES := $(shell ls -l ./taxcalc/tests/*json | awk '{print $$9}')
 PYLINT_DISABLE = locally-disabled,duplicate-code,cyclic-import
 PYLINT_OPTIONS = --disable=$(PYLINT_DISABLE) --score=no --jobs=4 \
                  --check-quote-consistency=yes
-EXCLUDED_PATHS = taxcalc/validation
+EXCLUDED_PATHS = taxcalc/validation/taxsim35
 
 .PHONY=cstest
 cstest:

@@ -1,0 +1,18 @@
+// JSON "reform" file that specifies the changes in current-law policy
+// required to make Tax-Calculator use the same defensible conventions
+// as policyengine-taxsim (the pinned version in pe_pin.json).
+// Every entry is explained below; see VARIABLES.md for details.
+//
+// (1) eitc_claim_prob_scale = 9e99 (rather than 1.03)
+// (2) actc_claim_prob_scale = 9e99 (rather than 1.1)
+//     By default Tax-Calculator models incomplete take-up of the EITC
+//     and the refundable child tax credit by randomly zeroing some
+//     credit amounts (using the credit_claim_urn variable).  PE computes
+//     credit entitlement with full take-up (takes_up_eitc defaults to
+//     True), so these two parameters are set to 9e99, the documented
+//     value that implies every filing unit claims its credit.
+//
+{
+    "eitc_claim_prob_scale": {"2013": 9e99},
+    "actc_claim_prob_scale": {"2013": 9e99}
+}

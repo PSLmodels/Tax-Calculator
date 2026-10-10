@@ -1,3 +1,12 @@
+> **Historical record.** This validation against NBER's Internet
+> TAXSIM-35 (2017-2021) is no longer maintained, and the code used
+> to run it has been removed from the repository (it remains in the
+> git history).  This README, `Differences_Explained.md`,
+> `taxsim_emulation.json`, and the `expected_differences` folder are
+> retained unchanged as a record of that work.  The current
+> cross-model validation is in the [`pe_taxsim`](../pe_taxsim/README.md)
+> folder.
+
 Validation of Tax-Calculator against Internet TAXSIM-35
 =======================================================
 
