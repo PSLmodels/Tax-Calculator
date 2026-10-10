@@ -1,5 +1,5 @@
 Validation against policyengine-taxsim
-=====================================
+======================================
 
 This folder compares Tax-Calculator's **federal** income and payroll
 tax results with those of
@@ -69,10 +69,10 @@ filing units in each sample.  The three assumption sets are:
   deductions, and child care expenses.
 
 Twenty-three TAXSIM output variables are compared (see
-[`VARIABLES.md`](VARIABLES.md)).  After the corrections listed below,
-all of them agree to within $1 except for the explained differences.
-This table counts the units with at least one difference and the
-units with a `fiitax` (federal income tax) difference:
+[`VARIABLES.md`](VARIABLES.md)).  All of them agree to within $1
+except for the explained differences.  This table counts the units
+with at least one difference and the units with a `fiitax` (federal
+income tax) difference:
 
 | Sample | 2021 units / fiitax | 2022 | 2023 | 2024 | 2025 |
 |---|---|---|---|---|---|
@@ -80,46 +80,16 @@ units with a `fiitax` (federal income tax) difference:
 | `b` | 1,013 / 4 | 6 / 6 | 8 / 6 | 7 / 6 | 898 / 12 |
 | `c` | 1,090 / 8 | 12 / 8 | 14 / 7 | 10 / 7 | 945 / 5 |
 
-Payroll taxes (`fica`, `tfica`, `addmed`, and the `v44` Medicare
-rate) and many income tax items (AGI, taxable unemployment
-compensation and Social Security benefits, the standard deduction,
-exemptions, EITC, the 2021 recovery rebate credit, and NIIT) agree in
-every unit of every sample.  Most
-of the remaining differences are in intermediate amounts that do not
-affect tax: AMT income (`v26`) and, in 2021, the refundable part of
-the child tax credit (`actc`).  The few `fiitax` differences are
-explained by PE AMT errors for filers under 19 and by PE's
-assumption that everyone aged 5-17 is a full-time student.
+Payroll taxes (`fica`, `tfica`, `addmed`, and the `v44` Medicare rate)
+and many income tax items (AGI, taxable unemployment compensation and
+Social Security benefits, the standard deduction, exemptions, EITC,
+the 2021 recovery rebate credit, and NIIT) agree in every unit of
+every sample.  Most of the remaining differences are in intermediate
+amounts that do not affect tax: AMT income (`v26`) and, in 2021, the
+refundable part of the child tax credit (`actc`).
 
-The comparison found these Tax-Calculator bugs, which have been fixed
-on `master`:
-
-- the 2023 aged/blind standard deduction amounts for single and
-  head-of-household filers, and the 2022-2024 amounts for surviving
-  spouses, were wrong (`STD_Aged`);
-- the kiddie-tax AMT exemption cap applied only to children under 18
-  rather than under 19 (`AMT_child_em_c_age`);
-- in 2021 the credit for other dependents was refundable
-  (`ODC_is_refundable`), but ARPA made only the child credit refundable;
-- in 2021 the phase-out of the ARPA child tax credit increase lacked
-  the section 24(i)(4)(B) cap (`CTC_new`);
-- the kiddie-tax AMT exemption cap was applied to joint filers under
-  19, although section 1(g)(2)(C) excludes a child who files a joint
-  return (PE still has this error, so it now causes differences).
-
-The remaining differences, all explained in
-[`Differences_Explained.md`](Differences_Explained.md), are:
-
-| Variables | Years | Cause | Class |
-|---|---|---|---|
-| `v26` | all | PE floors taxable income at zero when computing AMT income | PE bug, no tax effect |
-| `v26` | 2025 | PE does not add the senior deduction back to AMT income | PE bug, no tax effect |
-| `actc` | 2021 | PE's refundable CTC ignores the ARPA first-stage reduction and includes ODC | PE output definition |
-| `v27`, `fiitax`, others | all | PE's kiddie-tax AMT base omits the standard-deduction add-back | PE bug |
-| `v27`, `fiitax` | 2021, 2022 | PE applies the kiddie-tax AMT exemption cap to joint filers | PE bug |
-| `v24`, `fiitax` | 2022-2024 | PE treats a spouse aged 17 as a full-time student for the CDCC | convention |
-| `v18`, `v26` | 2021, 2023, 2025 | itemizing choice when both deductions give the same (zero) tax | convention, no tax effect |
-| `v17`, `v26` | 2025 | PE limits the SALT deduction to AGI | PE output definition, no tax effect |
+The remaining differences are explained in
+[`Differences_Explained.md`](Differences_Explained.md).
 
 The only `pe_emulation.json` entries assume full take-up of the EITC
 and the refundable child tax credit, as PE does.
