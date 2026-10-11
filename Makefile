@@ -16,6 +16,8 @@ help:
 	@echo "             pycodestyle and pylint tools"
 	@echo "pytest     : generate report for and cleanup after"
 	@echo "             pytest -m ''"
+	@echo "valtest    : generate report for and cleanup after executing"
+	@echo "             taxcalc/validation/pe_taxsim/test.sh"
 	@echo "brtest     : generate report for and cleanup after executing"
 	@echo "             taxcalc/cli/behavioral_responses_tests/tests.sh"
 	@echo "idtest     : generate report for and cleanup after executing"
@@ -28,7 +30,7 @@ help:
 	@echo "             docs/api/*.md files"
 	@echo "docs-peek  : preview docs at http://localhost:3000 (Ctrl-C ends)"
 	@echo "docs-html  : build docs/_build/html website just as CI does"
-	@echo "tests      : execute cstest, pytest, brtest, idtest, docs"
+	@echo "tests      : execute cstest, pytest, valtest, brtest, idtest, docs"
 	@echo "coverage   : generate pytest coverage report"
 	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
 	@echo "git-pr N=n : create local pr-n branch containing upstream PR"
@@ -62,6 +64,11 @@ rm -f test.csv
 rm -f test-18-*
 pip uninstall taxcalc --yes --quiet 2>&1 > /dev/null
 endef
+
+.PHONY=valtest
+valtest: clean
+	@echo "Executing taxcalc/validation/pe_taxsim/test.sh"
+	@cd taxcalc/validation/pe_taxsim ; ./test.sh
 
 .PHONY=tctest
 tctest: package
@@ -117,7 +124,7 @@ docs-html: docs
 	  python make_redirects.py
 
 .PHONY=tests
-tests: clean cstest pytest brtest idtest docs
+tests: clean cstest pytest valtest brtest idtest docs
 
 define coverage-cleanup
 rm -f .coverage .coverage.* htmlcov/*
