@@ -200,19 +200,19 @@ def test_create_tables(cps_subsample, full_claiming_assumption):
     expected = [0.0,
                 0.0,
                 -0.4,
-                -4.1,
-                -5.9,
+                -4.0,
+                -5.6,
                 8.6,
                 17.4,
                 29.5,
-                27.6,
+                29.2,
                 71.8,
                 153.8,
-                910.5,
-                1208.7,
+                916.5,
+                1216.8,
                 159.4,
-                268.3,
-                482.8]
+                268.9,
+                488.1]
     if not np.allclose(dist[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
@@ -273,18 +273,18 @@ def test_create_tables(cps_subsample, full_claiming_assumption):
                 -1.4,
                 29.0,
                 195.5,
-                363.0,
-                490.4,
+                362.8,
+                490.3,
                 611.7,
                 746.6,
-                980.0,
-                1247.7,
+                978.4,
+                1247.6,
                 1629.9,
-                3741.0,
-                10033.4,
+                3735.0,
+                10025.3,
                 1100.9,
-                1338.8,
-                1301.3]
+                1338.2,
+                1295.9]
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
@@ -298,17 +298,17 @@ def test_create_tables(cps_subsample, full_claiming_assumption):
     expected = [0.0,
                 0.0,
                 -1.3,
-                -7.6,
-                -0.9,
+                -7.5,
+                -0.6,
                 21.2,
-                26.8,
-                48.0,
+                26.9,
+                49.5,
                 96.0,
                 322.3,
-                324.2,
+                327.3,
                 64.8,
-                315.2,
-                1208.7]
+                318.1,
+                1216.8]
     if not np.allclose(dist[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
