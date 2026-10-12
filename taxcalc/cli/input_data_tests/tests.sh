@@ -45,5 +45,11 @@ if [ $? -eq 0 ]; then
     rm tmd-25-#-niit_repeal-#-#.tables
 fi
 
+tc ../../../tmd.csv 2025 --reform eitc_repeal.json  --exact --tables --silent
+diff -q tmd-25-#-eitc_repeal-#-#.tables tmd-25-eitc_repeal.tables
+if [ $? -eq 0 ]; then
+    rm tmd-25-#-eitc_repeal-#-#.tables
+fi
+
 echo "Runtime: $SECONDS seconds" >&2
 exit 0
