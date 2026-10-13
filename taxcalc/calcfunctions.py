@@ -672,8 +672,10 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
              max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
     if CG_nodiff:
         # reform: when QDCG receive no preferential rates, partially
-        # exclude (qualified dividends + net capital gain) from AGI
-        qdcg_pos = max(0., e00650 + c01000)
+        # exclude (qualified dividends + net capital gain, including
+        # capital gain distributions reported directly on Form 1040
+        # line 7) from AGI
+        qdcg_pos = max(0., e00650 + c01000 + e01100)
         qdcg_exclusion = (min(CG_ec, qdcg_pos) +
                           CG_reinvest_ec_rt * max(0., qdcg_pos - CG_ec))
         ymod1 = max(0., ymod1 - qdcg_exclusion)
@@ -1719,7 +1721,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS,
            e00900, c03260, e03270, e03300, e26270, e02100, e27200,
-           e00650, p22250, p23250,
+           e00650, e01100, p22250, p23250,
            senior_deduction, overtime_income_deduction,
            tip_income_deduction, auto_loan_interest_deduction,
            PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
@@ -1749,7 +1751,9 @@ def TaxInc(c00100, standard, c04470, c04600, MARS,
             phase-in reduction; above the window the cap binds in full.
       - All filers face the Part IV income limitation: deduction may
         not exceed PT_qbid_rt * (pre-QBID taxinc - net_cg), where
-        net_cg = qualified dividends + net long-term capital gain.
+        net_cg = qualified dividends + net capital gain (including
+        capital gain distributions reported directly on Form 1040
+        line 7).
 
     QBI components (Form 8995 line 1c instructions): Sch C net profit
     `e00900`, Sch E partnership/S-corp `e26270`, Sch F `e02100`, Sch E
@@ -1815,6 +1819,10 @@ def TaxInc(c00100, standard, c04470, c04600, MARS,
         Schedule E farm rent net income/loss (QBI component)
     e00650: float
         Qualified dividends (Form 8995 line 12 / 8995-A line 34 input)
+    e01100: float
+        Capital gain distributions reported directly on Form 1040
+        line 7 by filers not required to file Sch D (Form 8995 line 12
+        / 8995-A line 34 input)
     p22250: float
         Sch D Part I line 7 (net short-term capital gain/loss); used
         to compute §1(h) net capital gain for Form 8995 line 12 /
@@ -1973,13 +1981,16 @@ def TaxInc(c00100, standard, c04470, c04600, MARS,
         # the form 8995 instructions. Net STCG must NOT enter net_cg,
         # so we use p22250/p23250 directly rather than the post-cap
         # Sch D total c01000 = p22250 + p23250 (capped at -3000).
+        # Capital gain distributions reported directly on Form 1040
+        # line 7 (e01100, mutually exclusive with Sch D filing) are
+        # also net capital gain, as in GainsTax.
         # Income cap = PT_qbid_rt * (pre_qbid_taxinc - net_cg) is
         # line 36 / 14; final qbided = min(line 32, line 36) is
         # line 37 / 15.
         # ------------------------------------------------------------
         net_ltcg = max(0., p23250)
         net_stcl = max(0., -p22250)
-        net_cg = max(0., net_ltcg - net_stcl) + e00650
+        net_cg = max(0., net_ltcg - net_stcl) + e01100 + e00650
         taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
         qbided = min(qbided, taxinc_cap)
         # ------------------------------------------------------------
@@ -2744,7 +2755,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
 
 
 @iterate_jit(nopython=True)
-def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
+def NetInvIncTax(e00300, e00600, e01100, e02000, e26270, c01000,
                  c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, niit):
     """
     Computes the Net Investment Income Tax (NIIT) per Form 8960 (2025),
@@ -2772,11 +2783,17 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
                 section-1411 t-or-b      <- -e26270 when NIIT_PT_taxed is
                                             False (default); 0 otherwise
       * line 4c Combine 4a + 4b          <- e02000 [- e26270]
-      * line 5a Property-disposition gain<- c01000 (Sch D §1211(b)-capped
-                                            net cap gain/loss, Form 1040
-                                            line 7)
+      * line 5a Property-disposition gain<- c01000 + e01100 (Form 1040
+                                            line 7: Sch D §1211(b)-capped
+                                            net cap gain/loss or capital
+                                            gain distributions reported
+                                            without Sch D); Sch 1 line 4
+                                            Form 4797 gain (e01200) is
+                                            excluded because line 5b,
+                                            which removes non-section-1411
+                                            t-or-b gain, is not modeled
       * line 5b/5c Exclusions/adjustment NOT MODELED
-      * line 5d Combine 5a+5b+5c         <- c01000
+      * line 5d Combine 5a+5b+5c         <- c01000 + e01100
       * line 6  CFC/PFIC adjustments     NOT MODELED
       * line 7  Other modifications      NOT MODELED
       * line 8  Total investment income  <- sum of above
@@ -2803,6 +2820,9 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
         Taxable interest income (Form 8960 line 1)
     e00600: float
         Ordinary dividends included in AGI (Form 8960 line 2)
+    e01100: float
+        Capital gain distributions reported directly on Form 1040
+        line 7 by filers not required to file Sch D (Form 8960 line 5a)
     e02000: float
         Schedule E total rental, royalty, partnership, S-corporation,
         trust, and trade-or-business income/loss (Form 8960 line 4a)
@@ -2845,7 +2865,7 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
         line4c = e02000                             # line 4b adjustment = 0
     else:
         line4c = e02000 - e26270                    # line 4b = -e26270
-    line5d = c01000                                 # lines 5b/5c not modeled
+    line5d = c01000 + e01100                        # lines 5b/5c not modeled
     # lines 6, 7: not modeled
     line8 = line1 + line2 + line4c + line5d         # line 8
 
@@ -3078,7 +3098,7 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 
 @iterate_jit(nopython=True)
 def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
-         MARS, DSI, c00100, e00300, e00400, e00600, c01000,
+         MARS, DSI, c00100, e00300, e00400, e00600, c01000, e01100,
          e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s, EIC,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_addon_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
@@ -3116,7 +3136,8 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
       (D) Pub 596 Rule 6: investment-income cliff (IRC §32(i)).
           Investment income = taxable interest (`e00300`) + tax-exempt
           interest (`e00400`) + ordinary dividends (`e00600`) + net
-          capital gain (`max(0, c01000)`) + net non-passive rents and
+          capital gain (`max(0, c01000 + e01100)`, which is Form 1040
+          line 7 if more than zero) + net non-passive rents and
           royalties (`max(0, e02000 - e26270)`, removing Sch E
           partnership/S-corp).  The form's hard cliff at
           `EITC_InvestIncome_c` ($11,950 for 2025) is modeled as a
@@ -3161,8 +3182,12 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
         component)
     c01000: float
         Capital-loss-limited Schedule D total (Sch D line 21;
-        investment income uses `max(0, c01000)` — only net gain
-        per IRC §32(i)(2)(D))
+        investment income uses `max(0, c01000 + e01100)` — only net
+        gain per IRC §32(i)(2)(D))
+    e01100: float
+        Capital gain distributions reported directly on Form 1040
+        line 7 by filers not required to file Sch D (investment-income
+        component)
     e02000: float
         Schedule E total rental, royalty, partnership, S-corp,
         etc., income/loss
@@ -3274,7 +3299,7 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
     # default 9e+99 the reduction immediately drives c59660 to 0.
     if c59660 > 0.:
         invinc = (e00400 + e00300 + e00600 +
-                  max(0., c01000) + max(0., (e02000 - e26270)))
+                  max(0., c01000 + e01100) + max(0., (e02000 - e26270)))
         if invinc > EITC_InvestIncome_c:
             red = EITC_excess_InvestIncome_rt * (invinc - EITC_InvestIncome_c)
             c59660 = max(0., c59660 - red)

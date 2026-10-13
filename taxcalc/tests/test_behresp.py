@@ -96,9 +96,9 @@ def test_nondefault_response_function(be_inc, cps_subsample):
     del df1
     del df2
     if be_inc == 0.0:
-        assert np.allclose([itax1, itax2], [1037.310, 984.848])
+        assert np.allclose([itax1, itax2], [1051.114, 998.604])
     elif be_inc == -0.1:
-        assert np.allclose([itax1, itax2], [1037.310, 983.694])
+        assert np.allclose([itax1, itax2], [1051.114, 997.449])
 
 
 def test_income_effect_only(cps_subsample):
@@ -129,7 +129,7 @@ def test_income_effect_only(cps_subsample):
     itax2 = round((df2['iitax'] * df2['s006']).sum() * 1e-9, 3)
     del df1
     del df2
-    assert np.allclose([itax1, itax2], [1037.310, 981.565])
+    assert np.allclose([itax1, itax2], [1051.114, 995.355])
 
 
 def test_capital_gains_effect_only(cps_subsample):

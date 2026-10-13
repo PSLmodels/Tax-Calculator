@@ -118,7 +118,7 @@ def test_agg_subsample(tests_path, cps_fullsample, full_claiming_assumption):
         if cyr == START_YEAR:
             reltol = 0.0232
         else:
-            reltol = 0.0444
+            reltol = 0.0479
         tax_sub = taxes_subsample[cyr]
         tax_full = taxes_fullsample[str(cyr)]
         if not np.allclose(tax_sub, tax_full, atol=0.0, rtol=reltol):

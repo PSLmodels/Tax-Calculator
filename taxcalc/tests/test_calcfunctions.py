@@ -1365,6 +1365,13 @@ QBID_UNLIMITED_REFORM = {'PT_qbid_limited': {2025: False}}
                  {'MARS': 1, 'c00100': 60000., 'standard': 15750.,
                   'e26270': 50000., 'p22250': -4000., 'p23250': 10000.},
                  (36600., 7650.), id='Form 8995 net capital gain'),
+    # Form 8995: line 12 net capital gain includes capital gain
+    # distributions reported directly on Form 1040 line 7 (e01100);
+    # line 14 = 0.2 * (44250 - 6000) = 7650 (compare the case above)
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 60000., 'standard': 15750.,
+                  'e26270': 50000., 'e01100': 6000.},
+                 (36600., 7650.), id='Form 8995 capital gain distributions'),
     # Form 8995-A above the 247300 phase-in end: line 3 = 60000;
     # line 5 = 0.5 * 80000 = 40000; line 9 = 0.25 * 80000 = 20000;
     # line 11 = min(60000, 40000); line 36 = 0.2 * 384250 = 76850
@@ -1943,6 +1950,11 @@ NIIT_PT_TAXED_REFORM = {'NIIT_PT_taxed': {2025: True}}
     # line 15 = 10000 below line 12 = 45000: 0.038 * 10000
     pytest.param(None, {**NIIT_INCOME, 'MARS': 1, 'c00100': 210000.},
                  380., id='excess below nii'),
+    # line 5a includes capital gain distributions reported directly on
+    # Form 1040 line 7 (e01100): line 8 = 10000; line 15 = 110000;
+    # 0.038 * 10000
+    pytest.param(None, {'MARS': 1, 'e01100': 10000., 'c00100': 310000.},
+                 380., id='capital gain distributions'),
     # negative investment income is floored at zero by line 12
     pytest.param(None,
                  {'MARS': 1, 'e02000': -50000., 'c01000': -3000.,
@@ -2205,6 +2217,11 @@ def test_EITCamount(basic_frac, earnings, agi, expected):
     pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
                   'c00100': 33000., 'c01000': 13000.}, 0.,
                  id='capital gain above limit'),
+    # Pub 596 rule 6: capital gain distributions reported directly on
+    # Form 1040 line 7 (e01100) above the limit
+    pytest.param({'MARS': 4, 'EIC': 3, 'earned': 20000.,
+                  'c00100': 33000., 'e01100': 13000.}, 0.,
+                 id='capital gain distributions above limit'),
     # Pub 596 rule 11: joint filers with neither spouse aged 25-64
     pytest.param({'MARS': 2, 'EIC': 0, 'age_head': 22, 'age_spouse': 70,
                   'earned': 8000., 'c00100': 8000.}, 0.,
