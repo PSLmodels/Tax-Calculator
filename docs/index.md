@@ -50,7 +50,7 @@ cross-model validation work is described
 
 ## Latest release
 
-[6.8.4 (2026-10-01)](about/releases.md)
+[6.8.5 (2026-10-XX)](about/releases.md)
 
 If you are already using Tax-Calculator, upgrade using the following command:
 ```
