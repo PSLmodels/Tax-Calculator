@@ -1,6 +1,11 @@
 Recorded use cases
 ==================
 
+\[82\] Keightley, Mark P. Estimated Effects on Effective Tax Rates and Revenues of Increasing the 199A Deduction for Pass-Through Businesses. Congressional Research Services.
+September 24, 2026. URL:
+<https://www.congress.gov/crs-product/IF13321/>
+(visited on 2026-10-13).
+
 \[81\] Keightley, Mark P. and Brendan McDermott. A Comparison of Two Open-Source Tax Microsimulation Models. Congressional Research Services.
 July 30, 2026. URL:
 <https://www.congress.gov/crs-product/R49052/>
