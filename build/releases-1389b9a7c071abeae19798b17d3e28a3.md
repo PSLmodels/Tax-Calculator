@@ -5,6 +5,75 @@ Go
 for a complete commit history.
 
 
+2026-10-16 Release 6.8.5
+------------------------
+(last merged pull request is
+[#3187](https://github.com/PSLmodels/Tax-Calculator/pull/3187))
+
+**This is a minor enhancement and bug fix release.**
+
+**API Changes**
+
+**New Features**
+- Update `agents/tca/README.md` and `agents/tca/install.sh`
+  [[#3163](https://github.com/PSLmodels/Tax-Calculator/pull/3163)
+   by Martin Holmer]
+- Streamline variables and parameter metadata
+  [[#3167](https://github.com/PSLmodels/Tax-Calculator/pull/3167) and
+   [#3168](https://github.com/PSLmodels/Tax-Calculator/pull/3168)
+   by Martin Holmer]
+- Revise documentation to use Jupyter Book 2
+  [[#3169](https://github.com/PSLmodels/Tax-Calculator/pull/3169)
+   by Martin Holmer]
+- Make minor `CLAUDE.md` revision suggested by "/doctor prompt-audit"
+  [[#3172](https://github.com/PSLmodels/Tax-Calculator/pull/3172)
+   by Martin Holmer]
+- Validate against PolicyEngine-US using PolicyEngine-TAXSIM
+  [[#3175](https://github.com/PSLmodels/Tax-Calculator/pull/3175)
+   by Martin Holmer]
+- Add TMD `taxcalc/cli/input_data_tests` with QBID, NIIT, and EITC
+  repeal reforms
+  [[#3182](https://github.com/PSLmodels/Tax-Calculator/pull/3182) and
+   [#3185](https://github.com/PSLmodels/Tax-Calculator/pull/3185)
+   by Martin Holmer]
+- Add `valtest` target to `Makefile`
+  [[#3183](https://github.com/PSLmodels/Tax-Calculator/pull/3183)
+   by Martin Holmer]
+- Update expected CLI test results for new TMD 2.2.2 input data files
+  [[#3186](https://github.com/PSLmodels/Tax-Calculator/pull/3186)
+   by Martin Holmer]
+- Add recent CRS paper as a use case
+  [[#3187](https://github.com/PSLmodels/Tax-Calculator/pull/3187)
+   by Jason DeBacker]
+
+**Bug Fixes**
+- Fix bug in `docs/guide/make/make_io_vars.py` module
+  [[#3166](https://github.com/PSLmodels/Tax-Calculator/pull/3166)
+   by Martin Holmer]
+- Fix documentation bug reported in issue #3170
+  [[#3171](https://github.com/PSLmodels/Tax-Calculator/pull/3171)
+   by Martin Holmer]
+- Fix several policy parameter values
+  [[#3173](https://github.com/PSLmodels/Tax-Calculator/pull/3173)
+   by Martin Holmer]
+- Fix `STD_Aged` values in `update_pcl.py`
+  [[#3174](https://github.com/PSLmodels/Tax-Calculator/pull/3174)
+   by Martin Holmer]
+- Fix OBBBA SALT cap phase-out threshold for 2026-2029
+  [[#3176](https://github.com/PSLmodels/Tax-Calculator/pull/3176)
+   by Kyle Boos]
+- Fix CTC bugs in 2021 ODC refundability and 2021 phase-out logic
+  [[#3178](https://github.com/PSLmodels/Tax-Calculator/pull/3178) and
+   [#3179](https://github.com/PSLmodels/Tax-Calculator/pull/3179)
+   by Martin Holmer]
+- Fix logic bug in `AMT` function
+  [[#3180](https://github.com/PSLmodels/Tax-Calculator/pull/3180)
+   by Martin Holmer]
+- Fix `e01100`-related bugs
+  [[#3184](https://github.com/PSLmodels/Tax-Calculator/pull/3184)
+   by Martin Holmer]
+
+
 2026-10-01 Release 6.8.4
 ------------------------
 (last merged pull request is
