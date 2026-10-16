@@ -9,11 +9,11 @@ In the top-level Tax-Calculator directory, do the following:
 --> run `git switch master`  [to get on master branch]
 --> run `./gitsync`  [to ensure master is up-to-date with GitHub version]
 --> run `make clean`  [to remove any local taxcalc package]
---> run `git checkout -b X-Y-Z`  [to create X-Y-Z (e.g., `4-4-1`) branch]
+--> run `git checkout -b X-Y-Z`  [to create X-Y-Z (e.g., `6-8-5`) branch]
 --> specify release X.Y.Z in setup.py, taxcalc/__init__.py, docs/index.md
 --> edit docs/about/releases.md to finalize detailed X.Y.Z features
 --> run `python update_pcl.py`  [to update policy_current_law.json]
---> run `make tests`  [executes cstest, pytest, brtest, idtest]
+--> run `make tests`  [executes cstest, pytest, valtest, brtest, idtest]
 --> run `make tctest-jit`  [to ensure JIT decorators are not hiding bugs]
 --> run `make transfer` in T-C-LLM repo  [to install agents/tca/tca.zip]
 --> commit X-Y-Z branch and push to origin
