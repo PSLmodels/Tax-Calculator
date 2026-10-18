@@ -73,7 +73,7 @@ they all pass.  If a test command fails, return to step 3 revising
 changes until all tests pass.  These tests should all pass because a
 structural enhancment **adds** capabilities; it does not change how
 taxes are calculated under current-law policy or under the reforms that
-are already parameterized.  The order matters: the pytest command
+are already parameterized.  The order matters: the valtest command
 uninstalls the local taxcalc package that the brtest and idtest
 commands build and install.  Because they build and install the
 package, the brtest and idtest commands take considerably longer than
@@ -84,6 +84,11 @@ the other commands.
 - Execute the "make pytest > respy 2>&1 ; echo EXIT=$?" command
   * Test fails if the EXIT value is not zero (consult the respy file to
     diagnose the failure; do not rely on the last line of respy alone,
+    because collection errors and crashes are reported differently from
+    test failures)
+- Execute the "make valtest > resvt 2>&1 ; echo EXIT=$?" command
+  * Test fails if the EXIT value is not zero (consult the resvt file to
+    diagnose the failure; do not rely on the last line of resvt alone,
     because collection errors and crashes are reported differently from
     test failures)
 - Execute the "make brtest > resbr 2>&1" command and then the
@@ -103,8 +108,8 @@ containing expected test results, in order to make a failing test pass
 without first asking the user for approval.
 
 STEP 5: ASK IF SHOULD COMMIT CHANGES
-- Action: remove the rescs, respy, resbr, and resid files generated in
-          step 4, because they are not ignored by git and must not be
+- Action: remove the rescs, respy, resvt, resbr, and resid files generated
+          in step 4, because they are not ignored by git and must not be
           committed
 - Action: check "git status" for stray test output files, such as
           df-??-#-* files, which are left behind when a failing
