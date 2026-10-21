@@ -8,8 +8,7 @@ how Tax-Calculator output is converted into TAXSIM-format output
 policyengine-taxsim output (step 5, `compare.py`).
 
 All statements about policyengine-taxsim ("PE") describe the pinned
-version in [`pe_pin.json`](pe_pin.json) (policyengine-taxsim
-`3e2a7589`, policyengine-us 2.30.1), as read from its source code
+version in [`pe_pin.json`](pe_pin.json), as read from its source code
 (`config/variable_mappings.yaml`, `core/input_mapper.py`,
 `runners/policyengine_runner.py`) and checked by probe runs.  They
 must be rechecked whenever the pin changes.
@@ -98,9 +97,10 @@ policyengine-us includes `rental_income` in QBI by default
 (`rental_income_would_be_qualified` defaults to True), but the PE-taxsim
 runner (`runners/policyengine_runner.py`) pins that variable to False
 for every row, as TAXSIM does; Tax-Calculator's QBI includes rental
-income only through `e27200`, which is left at zero (decision D1).
+income only through `e27200`, which is left at zero.
 Both models reduce QBI by the deductible part of self-employment tax
-(TC `c03260`; PE `qbi.deduction_definition`).  Neither model gets any W-2 wages or UBIA of the
+(TC `c03260`; PE `qbi.deduction_definition`).
+Neither model gets any W-2 wages or UBIA of the
 business (`PT_binc_w2_wages = PT_ubia_property = 0`; PE's
 `w2_wages_from_qualified_business` is left unset), so both limit the
 deduction the same way above the QBID taxable-income threshold.
@@ -111,7 +111,7 @@ deduction the same way above the QBID taxable-income threshold.
 |---|---|---|---|
 | `proptax` | `real_estate_taxes`: SALT, subject to the SALT cap and AMT add-back | `e18500` | copy |
 | (none) | state/local income or sales tax pinned to 0 | `e18400` | 0 |
-| `mortgage`+`otheritem` | both summed into `deductible_mortgage_interest`: fully deductible, no AGI floor, outside the SALT cap, no AMT add-back | `e19200` | `e19200 = mortgage + otheritem` (the old `otheritem -> e18400` mapping is wrong for PE) |
+| `mortgage`+`otheritem` | both summed into `deductible_mortgage_interest`: fully deductible, no AGI floor, outside the SALT cap, no AMT add-back | `e19200` | `e19200 = mortgage + otheritem` |
 | `childcare` | `tax_unit_childcare_expenses` | `e32800` | copy; the generator writes 0 unless some dependent is under 13 |
 
 ### Tax-Calculator inputs set to constants
@@ -129,8 +129,6 @@ take their default value of zero.
 - Write `nonprop = transfers = rentpaid = pprofinc = sprofinc = 0`.
 - Write `sage = ssemp = swages = sui = sbusinc = 0` when `mstat == 1`.
 - Write `childcare = 0` when no dependent is under 13.
-- Fix the old units bug: `psemp`/`ssemp` must be in dollars
-  (thousands times 1000), like the other income amounts.
 - In sets b and c, make each of `psemp`, `ssemp`, `pbusinc`,
   `sbusinc`, and `scorp` nonzero for only a fraction (25%) of units,
   so that those sets include units with incomes low enough to get
@@ -140,7 +138,7 @@ take their default value of zero.
 Output variables
 ----------------
 
-PE emits 41 columns at `idtl=2` (Phase 0 log).  The table below maps
+PE emits 41 columns when `idtl=2`.  The table below maps
 each federal column to a Tax-Calculator expression that `run_tc.py`
 computes from the `--dumpdb` output.  "Compare" says whether `compare.py`
 checks the variable (tolerance $1 unless noted).
@@ -179,7 +177,7 @@ ptax_amc` (no `e09800` in these samples).
 | `v24` | `cdcc` (2021: full refundable credit; otherwise capped at tax) | `c07180 + CDCC_refund` | yes | |
 | `v25` | `eitc` | `eitc` | yes | requires full take-up in TC; see `pe_emulation.json` below |
 | `cares` | `recovery_rebate_credit` | `recovery_rebate_credit` | yes | nonzero only in 2021 |
-| `frate` | `income_tax` change from a $100 wage increase split by wage shares | (none) | no | TC's CLI `mtr_itax` uses a $0.01 increase in `e00200p` only; the methods differ, so `frate` is excluded (could be revisited with a custom TC computation) |
+| `frate` | `income_tax` change from a $100 wage increase split by wage shares | (none) | no | TC's CLI `mtr_itax` uses a $0.01 increase in `e00200p` only; the methods differ, so `frate` is excluded |
 
 ### Excluded PE columns
 
@@ -191,8 +189,7 @@ ptax_amc` (no `e09800` in these samples).
 | `frate` | different marginal-rate methods (see above) |
 
 `v15`, `v16`, `v20`, `v21`, and `v23` are marked unimplemented in PE
-and are not emitted.  The old pipeline's `v15`/`v16`/`v20`/`v21`
-placeholders (`phased_out_pe`, `c21040`, zeros) are dropped.
+and are not emitted.
 
 ### Year-specific notes
 
@@ -214,8 +211,8 @@ placeholders (`phased_out_pe`, `c21040`, zeros) are dropped.
 `pe_emulation.json` contents
 ----------------------------
 
-The three entries carried over from the TAXSIM-35 emulation are
-dropped:
+The three emulation entries carried over from the older TAXSIM-35
+validation work have been dropped:
 
 | Old entry | Why it is dropped |
 |---|---|
@@ -227,39 +224,10 @@ Two new entries were adopted (2026-10-07), because PE computes credit
 entitlement with full take-up (`takes_up_eitc` defaults to True),
 whereas TC's default `eitc_claim_prob_scale = 1.03` (minimum
 probability 0.4) and `actc_claim_prob_scale = 1.1` (minimum 0.0)
-randomly zero some EITC and ACTC amounts using `credit_claim_urn`.
+randomly zero out some EITC and ACTC amounts using the
+internally-generated `credit_claim_urn` variable.
 
 ```
 "eitc_claim_prob_scale": {"2013": 9e99},
 "actc_claim_prob_scale": {"2013": 9e99}
 ```
-
-A third entry, `AMT_child_em_c_age: 19`, was adopted and then dropped
-(2026-10-07): PE applies the IRC section 59(j) kiddie-AMT exemption
-limit (`amt_kiddie_tax_applies`) to non-student filers younger than 19
-(the section 152(c)(3) non-student age limit), and TC's current-law
-value of `AMT_child_em_c_age` was corrected on master from 18 to 19,
-so no emulation is needed.  PE also applies the limit to a joint return
-when both spouses are under 19; TC no longer does (bug B3, fixed on
-master 2026-10-09), because section 1(g)(2)(C) excludes a child who
-files a joint return.  This is a PE bug, so it is not emulated (see
-`Differences_Explained.md`).
-
-
-Open decisions and watch items
-------------------------------
-
-- **D1 (decided 2026-10-07): rental income in QBI.**  `otherprop` is
-  written only to `e02000`, not to `e27200`, because the PE-taxsim
-  runner forces `rental_income_would_be_qualified` to False (an
-  earlier draft of this document wrongly said PE counts it as QBI).
-- **W1 (confirmed 2026-10-07 as a TC bug): 2021 credit for other
-  dependents.**  TC sets `ODC_is_refundable = true` for 2021, but
-  under ARPA only the child credit became refundable; PE keeps the
-  $500 credit nonrefundable in 2021.  The a21 data confirm it (see
-  `Differences_Explained.md`); it is to be fixed on a branch off
-  `master`, together with a second 2021 TC bug (the uncapped ARPA
-  phase-out in `CTC_new`).
-- **W2 (resolved 2026-10-07): QBI reduction for SECA.**  PE, like TC,
-  reduces QBI by the deductible part of self-employment tax
-  (`qbi.deduction_definition` includes `self_employment_tax_ald_person`).

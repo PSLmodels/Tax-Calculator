@@ -21,15 +21,33 @@ The exit code is 0 when every comparison passes and 1 otherwise.
 """
 
 import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+PIN_FILE = HERE / "pe_pin.json"
 
 VALID_LETTERS = "abc"
 FIRST_YEAR = 2021
 LAST_YEAR = 2025
+
+
+def print_pin():
+    """
+    Print the pe_pin.json information, omitting the comment entries.
+    """
+    with open(PIN_FILE, "r", encoding="utf-8") as pfile:
+        pin = json.load(pfile)
+    print("===== PE_PIN =====")
+    for key, val in pin.items():
+        if key.startswith("_"):
+            continue
+        if isinstance(val, list):
+            val = " ".join(val)
+        print(f"{key}: {val}")
+    sys.stdout.flush()
 
 
 def run_step(script, args):
@@ -138,6 +156,7 @@ def main():
               "and work (default is the folder containing this script)"),
     )
     args = parser.parse_args()
+    print_pin()
     letters = list(args.letters)
     if not letters or any(ltr not in VALID_LETTERS for ltr in letters):
         sys.stderr.write(f"ERROR: --letters must use only {VALID_LETTERS}\n")

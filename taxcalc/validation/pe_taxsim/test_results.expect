@@ -1,3 +1,15 @@
+===== PE_PIN =====
+policyengine_taxsim_repo: https://github.com/PolicyEngine/policyengine-taxsim
+policyengine_taxsim_sha: 3e2a7589c8acda0edd2aa9e748d726c9ca9262d0
+policyengine_taxsim_sha_date: 2026-09-30
+policyengine_taxsim_version: 3.0.1
+policyengine_us_version: 2.30.1
+policyengine_core_version: 3.32.21
+python_version: 3.13
+python_version_resolved: 3.13.16
+uv_version: 0.12.23
+pinned_on: 2026-10-07
+pe_cli_options: --scorp-treatment active
 ===== a21 =====
 a21: 2617 differences (|tc - pe| > 1) in 2 variables
 variable  compared  count  max_abs  mean_abs
