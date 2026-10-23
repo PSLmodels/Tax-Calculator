@@ -3428,3 +3428,75 @@ def test_AfterTaxIncome(call_calcfunc, rvars, expected):
     """
     actual = call_calcfunc('AfterTaxIncome', **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# CTC_new_family_max
+# ----------------------------------------------------------------------
+
+
+# A 2022 child allowance (CA) reform that replaces the CTC with a
+# refundable allowance of 4200 per child under 6 and 3000 per child
+# aged 6-17, capped at 15000 per filing unit, and phased out at 0.05
+# per dollar of AGI above the CTC_ps thresholds.  The cap applies
+# before the phase-out.
+CA_REFORM = {
+    'CTC_c': {2022: 0},
+    'CTC_new_c': {2022: 3000},
+    'CTC_new_c_under6_bonus': {2022: 1200},
+    'CTC_new_family_max': {2022: 15000},
+    'CTC_new_ps': {2022: [200000, 400000, 200000, 200000, 200000]},
+    'CTC_new_prt': {2022: 0.05},
+    'CTC_new_for_all': {2022: True},
+    'CTC_include17': {2022: True},
+}
+# five children, three under 6 and two aged 6-16
+MFJ5 = {'MARS': 2, 'n24': 5, 'nu18': 5, 'nu06': 3,
+        'age_head': 40, 'age_spouse': 40}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # 2022 current law: no new CTC
+    pytest.param(None, {**MFJ5, 'c00100': 80000.}, 0.,
+                 id='current law'),
+    # one child under 6: 3000 + 1200
+    pytest.param(CA_REFORM,
+                 {'MARS': 1, 'n24': 1, 'nu18': 1, 'nu06': 1,
+                  'age_head': 30, 'c00100': 50000.},
+                 4200., id='one child under 6'),
+    # children aged 8 and 17, the latter not in n24: 2 * 3000
+    pytest.param(CA_REFORM,
+                 {'MARS': 2, 'n24': 1, 'nu18': 2, 'age_head': 40,
+                  'age_spouse': 40, 'c00100': 80000.},
+                 6000., id='children aged 8 and 17'),
+    # 5 * 3000 + 3 * 1200 = 18600 capped at 15000
+    pytest.param(CA_REFORM, {**MFJ5, 'c00100': 80000.}, 15000.,
+                 id='family cap'),
+    # cap before phase-out: 15000 - 0.05 * (450000 - 400000)
+    pytest.param(CA_REFORM, {**MFJ5, 'c00100': 450000.}, 12500.,
+                 id='family cap then phase-out'),
+    # excess 50500 rounded up to 51000: 15000 - 0.05 * 51000
+    pytest.param(CA_REFORM, {**MFJ5, 'c00100': 450500., 'exact': 1},
+                 12450., id='family cap then phase-out exact'),
+    # 15000 fully phased out at 400000 + 15000 / 0.05
+    pytest.param(CA_REFORM, {**MFJ5, 'c00100': 700000.}, 0.,
+                 id='fully phased out'),
+    # head of household, one child aged 10: 3000 - 0.05 * 30000
+    pytest.param(CA_REFORM,
+                 {'MARS': 4, 'n24': 1, 'nu18': 1, 'age_head': 35,
+                  'c00100': 230000.},
+                 1500., id='head of household phase-out'),
+    # cap after phase-in: min(0.15 * 50000, 2 * 3000) = 6000 capped
+    # at 5000
+    pytest.param({'CTC_new_c': {2022: 3000},
+                  'CTC_new_rt': {2022: 0.15},
+                  'CTC_new_family_max': {2022: 5000}},
+                 {'MARS': 1, 'n24': 2, 'c00100': 50000.},
+                 5000., id='family cap after phase-in'),
+])
+def test_CTC_new_family_max(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the CTC_new function's CTC_new_family_max cap
+    """
+    actual = call_calcfunc('CTC_new', reform=reform, year=2022, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'

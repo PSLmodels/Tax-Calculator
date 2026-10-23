@@ -1871,6 +1871,23 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error  
 
 
+####  `CTC_new_family_max`  
+_Description:_ The sum of CTC_new_c times the number of qualifying children and CTC_new_c_under6_bonus times the number of children under six (as limited by the CTC_new_rt phase-in when CTC_new_for_all is false) cannot exceed this amount for a filing unit.  The cap is applied before the CTC_new_ps phase-out.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 9e+99  
+2014: 9e+99  
+2015: 9e+99  
+2016: 9e+99  
+2017: 9e+99  
+2018: 9e+99  
+2019: 9e+99  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
 ####  `CTC_new_for_all`  
 _Description:_ The maximum amount of the new refundable child tax credit does not depend on AGI when true; otherwise, see CTC_new_rt.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  

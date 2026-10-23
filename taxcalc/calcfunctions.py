@@ -4602,8 +4602,9 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 @iterate_jit(nopython=True)
 def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
-            CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
-            CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
+            CTC_new_family_max, CTC_new_ps, CTC_new_prt, CTC_new_for_all,
+            CTC_include17, CTC_new_refund_limited,
+            CTC_new_refund_limit_payroll_rt,
             CTC_new_refund_limited_all_payroll, payrolltax, exact,
             CTC_c, CTC_c_under6_bonus, CTC_ps, CTC_prt, ODC_c,
             n24, nu06, age_head, age_spouse, nu18, XTOT, num,
@@ -4627,7 +4628,8 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
           block as in `ChildDepTaxCredit` row 29).
       (B) tentative credit: `CTC_new_c·childnum + CTC_new_c_under6_bonus·nu06`,
           optionally capped at `CTC_new_rt·posagi` when `CTC_new_for_all=false`
-          (an AGI-based phase-in).
+          (an AGI-based phase-in), and then capped at the per-filing-unit
+          maximum `CTC_new_family_max` (9e99, so no cap, under current law).
       (C) AGI phase-out: reduction of `CTC_new_prt` per dollar of AGI above
           `CTC_new_ps[MARS-1]`, with `exact==1` rounding excess up to the
           next $1000 (mirrors the Sch 8812 line-9 step).  When
@@ -4661,6 +4663,9 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         Reform: AGI phase-in rate when `CTC_new_for_all=false`.
     CTC_new_c_under6_bonus: float
         Reform: bonus added to `CTC_new_c` for each under-6 dependent.
+    CTC_new_family_max: float
+        Reform: maximum tentative credit per filing unit, applied before
+        the AGI phase-out.
     CTC_new_ps: list
         Reform: MARS-indexed AGI threshold at which the phase-out begins.
     CTC_new_prt: float
@@ -4747,6 +4752,8 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         ctc_new = CTC_new_c * childnum + CTC_new_c_under6_bonus * nu06
         if not CTC_new_for_all:
             ctc_new = min(CTC_new_rt * posagi, ctc_new)
+        # reform-only per-filing-unit maximum
+        ctc_new = min(ctc_new, CTC_new_family_max)
         # (C) AGI phase-out above CTC_new_ps[MARS-1]
         ymax = CTC_new_ps[MARS - 1]
         ctc_ps = CTC_ps[MARS - 1]

@@ -21472,6 +21472,30 @@
             "tmd": true
         }
     },
+    "CTC_new_family_max": {
+        "title": "Maximum new refundable child tax credit per filing unit",
+        "description": "The sum of CTC_new_c times the number of qualifying children and CTC_new_c_under6_bonus times the number of children under six (as limited by the CTC_new_rt phase-in when CTC_new_for_all is false) cannot exceed this amount for a filing unit.  The cap is applied before the CTC_new_ps phase-out.",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 9e+99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true,
+            "tmd": true
+        }
+    },
     "CTC_new_for_all": {
         "title": "Whether or not maximum amount of the new refundable child tax credit is available to all",
         "description": "The maximum amount of the new refundable child tax credit does not depend on AGI when true; otherwise, see CTC_new_rt.",
