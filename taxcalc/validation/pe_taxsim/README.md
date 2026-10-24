@@ -91,7 +91,7 @@ for the new year (steps 1 and 2), and examine every difference the
 way the existing ones were examined before creating the new expect
 files.  To move to a newer PE version, update `pe_pin.json` (see
 [Updating the PE pin](#updating-the-pe-pin)), regenerate all fifteen
-PE outputs with `python run_pe.py --force`, and re-examine every difference;
+PE outputs with `python run_pe.py --all --force`, and re-examine every difference;
 the samples need not change.
 
 Environment setup
@@ -132,7 +132,12 @@ pinned `policyengine-taxsim`, `policyengine-us`, `policyengine-core`,
 and Python versions.  It refuses to overwrite an existing PE output
 unless `--force` is given, and it checks that the output has the
 expected columns and the same `taxsimid` and `year` values as the
-input sample.  A 10,000-unit run takes about two minutes.
+input sample.  A 10,000-unit run takes about fifteen seconds.
+`python run_pe.py --all` runs all fifteen samples, using five
+concurrent processes unless `--jobs N` specifies a different number;
+it resolves the pinned uv environment once before starting the
+concurrent runs, reports any run that fails, and takes a little over
+one minute with the default five processes.
 
 The `--with policyengine-us==...` option is required, because
 policyengine-taxsim does not set an upper bound on its
@@ -155,7 +160,7 @@ candidate pin with uvx to get the `policyengine-taxsim`,
 Use `--sha SHA` to pin a specific policyengine-taxsim commit instead
 of the newest one, and `--python X.Y` to change the pinned Python
 version.  The `pe_cli_options` entry is never changed.  After writing
-a new pin, regenerate all the PE outputs (`python run_pe.py --force`),
+a new pin, regenerate all the PE outputs (`python run_pe.py --all --force`),
 re-examine every difference, and update the PE versions mentioned in
 this file (such as in the uvx command above) and in
 [`SUMMARY.md`](SUMMARY.md).
