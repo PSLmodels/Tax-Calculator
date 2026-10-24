@@ -3,7 +3,7 @@ Runs the validation for each specified assumption-set letter and year.
 
 USAGE: python validate.py [--letters LETTERS] [--years YEARS]
                           [--tolerance T] [--regen [--size N]]
-                          [--datadir DIR]
+                          [--datadir DIR] [--prune]
 
 By default, runs steps 3-5 (taxsim_to_tc.py, run_tc.py, compare.py)
 for every letter (abc) and year (2021-2025) using the committed
@@ -17,7 +17,10 @@ samples, pe_output, expected_differences, and work folders, so a
 tiny trial run can be kept out of the committed folders, for example:
   python validate.py --letters a --years 2021 --regen --size 100 \\
                      --datadir /some/scratch/folder
-The exit code is 0 when every comparison passes and 1 otherwise.
+With --prune, compare.py removes expected differences that are not
+actual from each expect file that has no unexpected actual differences
+(see compare.py).  The exit code is 0 when every comparison passes and
+1 otherwise.
 """
 
 import argparse
@@ -88,7 +91,7 @@ def validate(letter, year, args, datadir):
         "--pedir", str(pedir),
         "--workdir", str(workdir),
         "--expectdir", str(expectdir),
-    ])
+    ] + (["--prune"] if args.prune else []))
     return {0: "PASS", 1: "FAIL"}.get(code, "ERROR in compare.py")
 
 
@@ -154,6 +157,12 @@ def main():
         default=str(HERE),
         help=("folder holding samples, pe_output, expected_differences, "
               "and work (default is the folder containing this script)"),
+    )
+    parser.add_argument(
+        "--prune",
+        action="store_true",
+        help=("prune expected differences that are not actual from the "
+              "expect files (see compare.py)"),
     )
     args = parser.parse_args()
     print_pin()

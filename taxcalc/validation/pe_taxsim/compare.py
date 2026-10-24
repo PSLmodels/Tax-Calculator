@@ -2,7 +2,7 @@
 Compares policyengine-taxsim and Tax-Calculator TAXSIM-format output
 (step 5 of the validation).
 
-USAGE: python compare.py LETTER YEAR [--tolerance T]
+USAGE: python compare.py LETTER YEAR [--tolerance T] [--prune]
 
 reads pe_output/LYY.out-pe.csv.gz (written by run_pe.py) and
 work/LYY.out-tc.csv (written by run_tc.py), and writes these files to
@@ -18,6 +18,11 @@ The comparison passes when the actual differences are exactly the same
 as those in expected_differences/LYY-taxdiffs-expect.csv, or when there
 are no actual differences and no expected-differences file.  The exit
 code is 0 when the comparison passes, 1 when it fails, and 2 on error.
+With --prune, a comparison that fails only because some expected
+differences are not actual (for example, after a new PE version fixes
+some differences) is made to pass by replacing the expect file with
+the actual differences, or by deleting the expect file when there are
+no actual differences.
 The compared variables follow the output table in VARIABLES.md.
 """
 
@@ -168,15 +173,41 @@ def report(lyy, summary, unexpected, tolerance, expectfile):
     if unexpected.empty:
         print(f"{lyy}: PASS")
     else:
-        print(f"{lyy}: FAIL")
+        num_act = (unexpected["where"] == "actual_only").sum()
+        num_exp = (unexpected["where"] == "expect_only").sum()
+        print(f"{lyy}: FAIL because {num_act} actual differences are "
+              f"not expected and {num_exp} expected differences are "
+              "not actual")
 
 
-def compare(lyy, year, tolerance, dirs):
+def prune(lyy, diffs, unexpected, expectfile):
+    """
+    Replace EXPECTFILE with the actual DIFFS (or delete EXPECTFILE when
+    there are no DIFFS) if the UNEXPECTED differences are all expected
+    differences that are not actual, print what was done, and return
+    True if EXPECTFILE was pruned.
+    """
+    if unexpected.empty or (unexpected["where"] != "expect_only").any():
+        return False
+    if diffs.empty:
+        expectfile.unlink()
+        print(f"{lyy}: PRUNE deleted {expectfile.name} because all "
+              f"{len(unexpected)} expected differences are not actual")
+    else:
+        diffs.to_csv(expectfile, index=False, float_format="%.2f")
+        print(f"{lyy}: PRUNE removed {len(unexpected)} expected "
+              f"differences that are not actual from {expectfile.name}")
+    return True
+
+
+def compare(lyy, year, tolerance, dirs, prune_expect=False):
     """
     Compare the PE and Tax-Calculator outputs for sample LYY in YEAR,
     write the actual-differences files, print a report, and return
     True if the comparison passes.  DIRS is a dictionary with the
-    "pe", "work", and "expect" folders.
+    "pe", "work", and "expect" folders.  If PRUNE_EXPECT is True,
+    a comparison that fails only because some expected differences
+    are not actual is made to pass by pruning the expect file.
     """
     workdir = dirs["work"]
     peo = pd.read_csv(dirs["pe"] / f"{lyy}.out-pe.csv.gz")
@@ -192,6 +223,9 @@ def compare(lyy, year, tolerance, dirs):
     expectfile = dirs["expect"] / f"{lyy}-taxdiffs-expect.csv"
     unexpected = unexpected_differences(diffs, expectfile)
     report(lyy, summary, unexpected, tolerance, expectfile)
+    if prune_expect and prune(lyy, diffs, unexpected, expectfile):
+        print(f"{lyy}: PASS after PRUNE")
+        return True
     return unexpected.empty
 
 
@@ -240,6 +274,13 @@ def main():
         help=("expected-differences folder (default is "
               "expected_differences next to this script)"),
     )
+    parser.add_argument(
+        "--prune",
+        action="store_true",
+        help=("remove expected differences that are not actual from the "
+              "expect file when there are no unexpected actual "
+              "differences"),
+    )
     args = parser.parse_args()
     if args.tolerance < 0:
         sys.stderr.write("ERROR: --tolerance must be non-negative\n")
@@ -253,6 +294,7 @@ def main():
                 "work": Path(args.workdir).resolve(),
                 "expect": Path(args.expectdir).resolve(),
             },
+            prune_expect=args.prune,
         )
     except (FileNotFoundError, ValueError) as err:
         sys.stderr.write(f"ERROR: {err}\n")

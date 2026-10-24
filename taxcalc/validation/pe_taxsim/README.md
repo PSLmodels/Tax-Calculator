@@ -165,6 +165,20 @@ re-examine every difference, and update the PE versions mentioned in
 this file (such as in the uvx command above) and in
 [`SUMMARY.md`](SUMMARY.md).
 
+A new PE version often removes some or all of a sample's expected
+differences, which makes that sample's comparison fail with expected
+differences that are not actual.  `python validate.py --prune` handles
+this automatically for every sample that has no unexpected actual
+differences: it replaces `expected_differences/LYY-taxdiffs-expect.csv`
+with `work/actual_differences/LYY-taxdiffs-actual.csv`, or deletes the
+expect file if no actual differences remain.  A sample that still
+fails after pruning has new differences that must be examined.  Then
+rerun `validate.py`, check that every comparison passes, and
+regenerate `test_results.expect`.
+Never regenerate `test_results.expect` while any comparison fails:
+`test.sh` (run by `make valtest`) fails if `test_results.expect`
+contains a FAIL result.
+
 Step 3
 ------
 

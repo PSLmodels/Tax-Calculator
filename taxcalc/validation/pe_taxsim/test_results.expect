@@ -14,74 +14,84 @@ pe_cli_options: --scorp-treatment active
 a21: 1489 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
     actc     10000   1489   1600.0     650.2
-a21: FAIL
+a21: PASS
 ===== a22 =====
 a22: 0 differences (|tc - pe| > 1) in 0 variables
-a22: FAIL
+a22: no a22-taxdiffs-expect.csv file, so no differences are expected
+a22: PASS
 ===== a23 =====
 a23: 0 differences (|tc - pe| > 1) in 0 variables
-a23: FAIL
+a23: no a23-taxdiffs-expect.csv file, so no differences are expected
+a23: PASS
 ===== a24 =====
 a24: 0 differences (|tc - pe| > 1) in 0 variables
-a24: FAIL
+a24: no a24-taxdiffs-expect.csv file, so no differences are expected
+a24: PASS
 ===== a25 =====
 a25: 0 differences (|tc - pe| > 1) in 0 variables
-a25: FAIL
+a25: no a25-taxdiffs-expect.csv file, so no differences are expected
+a25: PASS
 ===== b21 =====
 b21: 1009 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
     actc     10000   1009   1600.0    644.25
-b21: FAIL
+b21: PASS
 ===== b22 =====
 b22: 0 differences (|tc - pe| > 1) in 0 variables
-b22: FAIL
+b22: no b22-taxdiffs-expect.csv file, so no differences are expected
+b22: PASS
 ===== b23 =====
 b23: 0 differences (|tc - pe| > 1) in 0 variables
-b23: FAIL
+b23: no b23-taxdiffs-expect.csv file, so no differences are expected
+b23: PASS
 ===== b24 =====
 b24: 0 differences (|tc - pe| > 1) in 0 variables
-b24: FAIL
+b24: no b24-taxdiffs-expect.csv file, so no differences are expected
+b24: PASS
 ===== b25 =====
 b25: 0 differences (|tc - pe| > 1) in 0 variables
-b25: FAIL
+b25: no b25-taxdiffs-expect.csv file, so no differences are expected
+b25: PASS
 ===== c21 =====
 c21: 1084 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
      v18     10000      1   1250.0   1250.00
      v26     10000      1  30000.0  30000.00
     actc     10000   1082   1600.0    644.82
-c21: FAIL
+c21: PASS
 ===== c22 =====
 c22: 0 differences (|tc - pe| > 1) in 0 variables
-c22: FAIL
+c22: no c22-taxdiffs-expect.csv file, so no differences are expected
+c22: PASS
 ===== c23 =====
 c23: 1 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
      v26     10000      1  38000.0   38000.0
-c23: FAIL
+c23: PASS
 ===== c24 =====
 c24: 0 differences (|tc - pe| > 1) in 0 variables
-c24: FAIL
+c24: no c24-taxdiffs-expect.csv file, so no differences are expected
+c24: PASS
 ===== c25 =====
 c25: 11 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
      v17      6834      1   3250.0   3250.00
      v18     10000      4  14225.0   7156.25
      v26     10000      6  41000.0  31333.33
-c25: FAIL
+c25: PASS
 ===== SUMMARY =====
-a21: FAIL
-a22: FAIL
-a23: FAIL
-a24: FAIL
-a25: FAIL
-b21: FAIL
-b22: FAIL
-b23: FAIL
-b24: FAIL
-b25: FAIL
-c21: FAIL
-c22: FAIL
-c23: FAIL
-c24: FAIL
-c25: FAIL
+a21: PASS
+a22: PASS
+a23: PASS
+a24: PASS
+a25: PASS
+b21: PASS
+b22: PASS
+b23: PASS
+b24: PASS
+b25: PASS
+c21: PASS
+c22: PASS
+c23: PASS
+c24: PASS
+c25: PASS

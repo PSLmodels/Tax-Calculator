@@ -24,69 +24,36 @@ in either federal income tax or payroll taxes.  The intermediate variable
 differences below do not affect income or payroll tax liability.
 
 ```
-(taxcalc-dev) pe_taxsim> grep -E '=====|fiitax|fica' test_results.expect | grep -v -E 'PIN|SUMMARY'
-===== a21 =====
-===== a22 =====
-===== a23 =====
-===== a24 =====
-===== a25 =====
-===== b21 =====
-===== b22 =====
-===== b23 =====
-===== b24 =====
-===== b25 =====
-===== c21 =====
-===== c22 =====
-===== c23 =====
-===== c24 =====
-===== c25 =====
-
-(taxcalc-dev) pe_taxsim> awk 'NR>12&&$2!="FAIL"&&$2!="FAIL:"' test_results.expect
-===== a21 =====
+(taxcalc-dev) pe_taxsim> awk '$3~/differences/||NF==5' test_results.expect
 a21: 1489 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
     actc     10000   1489   1600.0     650.2
-===== a22 =====
 a22: 0 differences (|tc - pe| > 1) in 0 variables
-===== a23 =====
 a23: 0 differences (|tc - pe| > 1) in 0 variables
-===== a24 =====
 a24: 0 differences (|tc - pe| > 1) in 0 variables
-===== a25 =====
 a25: 0 differences (|tc - pe| > 1) in 0 variables
-===== b21 =====
 b21: 1009 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
     actc     10000   1009   1600.0    644.25
-===== b22 =====
 b22: 0 differences (|tc - pe| > 1) in 0 variables
-===== b23 =====
 b23: 0 differences (|tc - pe| > 1) in 0 variables
-===== b24 =====
 b24: 0 differences (|tc - pe| > 1) in 0 variables
-===== b25 =====
 b25: 0 differences (|tc - pe| > 1) in 0 variables
-===== c21 =====
 c21: 1084 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
      v18     10000      1   1250.0   1250.00
      v26     10000      1  30000.0  30000.00
     actc     10000   1082   1600.0    644.82
-===== c22 =====
 c22: 0 differences (|tc - pe| > 1) in 0 variables
-===== c23 =====
 c23: 1 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
      v26     10000      1  38000.0   38000.0
-===== c24 =====
 c24: 0 differences (|tc - pe| > 1) in 0 variables
-===== c25 =====
 c25: 11 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
      v17      6834      1   3250.0   3250.00
      v18     10000      4  14225.0   7156.25
      v26     10000      6  41000.0  31333.33
-===== SUMMARY =====
 ```
 
 # Diffs Analysis
