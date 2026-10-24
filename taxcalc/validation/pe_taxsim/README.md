@@ -89,9 +89,10 @@ year-specific logic in `run_tc.py` and [`VARIABLES.md`](VARIABLES.md)
 for the new year's law changes, generate the samples and PE outputs
 for the new year (steps 1 and 2), and examine every difference the
 way the existing ones were examined before creating the new expect
-files.  To move to a newer PE version, change `pe_pin.json`,
-regenerate all fifteen PE outputs with `run_pe.py --force`, and
-re-examine every difference; the samples need not change.
+files.  To move to a newer PE version, update `pe_pin.json` (see
+[Updating the PE pin](#updating-the-pe-pin)), regenerate all fifteen
+PE outputs with `python run_pe.py --force`, and re-examine every difference;
+the samples need not change.
 
 Environment setup
 -----------------
@@ -111,31 +112,53 @@ curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 sh
 
 and update it later with `uv self update`.
 
-The policyengine-taxsim commit, the `policyengine-us` version, the
-Python version, and the extra policyengine-taxsim options are pinned
-in [`pe_pin.json`](pe_pin.json).  Step 2 is equivalent to this command:
+The policyengine-taxsim commit, the `policyengine-us` and
+`policyengine-core` versions, the Python version, and the extra
+policyengine-taxsim options are pinned in [`pe_pin.json`](pe_pin.json).
+Step 2 is equivalent to this command:
 
 ```
 uvx --python 3.13 \
     --from git+https://github.com/PolicyEngine/policyengine-taxsim@3e2a7589c8acda0edd2aa9e748d726c9ca9262d0 \
     --with policyengine-us==2.30.1 \
+    --with policyengine-core==3.32.21 \
     policyengine-taxsim policyengine LYY.in.csv --output LYY.out-pe.csv \
     --scorp-treatment active
 ```
 
 `python run_pe.py L YYYY` builds and runs this command from
 `pe_pin.json`, first checking that the uv environment resolves to the
-pinned `policyengine-us`, `policyengine-core`, and Python versions.
-It refuses to overwrite an existing PE output unless `--force` is
-given, and it checks that the output has the expected columns and the
-same `taxsimid` and `year` values as the input sample.  A 10,000-unit
-run takes about two minutes.
+pinned `policyengine-taxsim`, `policyengine-us`, `policyengine-core`,
+and Python versions.  It refuses to overwrite an existing PE output
+unless `--force` is given, and it checks that the output has the
+expected columns and the same `taxsimid` and `year` values as the
+input sample.  A 10,000-unit run takes about two minutes.
 
 The `--with policyengine-us==...` option is required, because
 policyengine-taxsim does not set an upper bound on its
-`policyengine-us` dependency.  Change the pin only deliberately,
-because doing so requires regenerating all the committed PE outputs
-and re-examining all the differences.
+`policyengine-us` dependency, and the `--with policyengine-core==...`
+option is required, because `policyengine-us` does not set an upper
+bound on its `policyengine-core` dependency.  Change the pin only
+deliberately, because doing so requires regenerating all the committed
+PE outputs and re-examining all the differences.
+
+Updating the PE pin
+-------------------
+
+`python update_pe_pin.py` finds the newest commit on the
+policyengine-taxsim default branch (using the GitHub API) and the
+newest `policyengine-us` release (using the PyPI API), resolves that
+candidate pin with uvx to get the `policyengine-taxsim`,
+`policyengine-core`, and Python versions actually used, and lists each
+`pe_pin.json` entry that would change.  It is a dry run unless
+`--write` is given, and it never writes a pin that uvx cannot resolve.
+Use `--sha SHA` to pin a specific policyengine-taxsim commit instead
+of the newest one, and `--python X.Y` to change the pinned Python
+version.  The `pe_cli_options` entry is never changed.  After writing
+a new pin, regenerate all the PE outputs (`python run_pe.py --force`),
+re-examine every difference, and update the PE versions mentioned in
+this file (such as in the uvx command above) and in
+[`SUMMARY.md`](SUMMARY.md).
 
 Step 3
 ------

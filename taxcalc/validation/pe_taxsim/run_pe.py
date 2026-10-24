@@ -53,10 +53,11 @@ def read_pin():
         return json.load(pfile)
 
 
-def uvx_prefix(pin):
+def uvx_prefix(pin, pin_core=True):
     """
     Return list containing the uvx command and options that select the
-    pinned policyengine-taxsim environment.
+    pinned policyengine-taxsim environment; when PIN_CORE is False, uv
+    chooses the newest compatible policyengine-core version.
     """
     uvx = shutil.which("uvx")
     if uvx is None:
@@ -64,7 +65,7 @@ def uvx_prefix(pin):
     repo = pin["policyengine_taxsim_repo"]
     sha = pin["policyengine_taxsim_sha"]
     peus = pin["policyengine_us_version"]
-    return [
+    prefix = [
         uvx,
         "--python",
         pin["python_version"],
@@ -73,6 +74,10 @@ def uvx_prefix(pin):
         "--with",
         f"policyengine-us=={peus}",
     ]
+    if pin_core:
+        pecore = pin["policyengine_core_version"]
+        prefix += ["--with", f"policyengine-core=={pecore}"]
+    return prefix
 
 
 def pe_command(pin, infile, outfile):
@@ -88,20 +93,22 @@ def pe_command(pin, infile, outfile):
     )
 
 
-def resolved_versions(pin):
+def resolved_versions(pin, pin_core=True):
     """
     Return dictionary containing the package and Python versions that
-    are actually used in the pinned environment.
+    are actually used in the pinned environment (see uvx_prefix for the
+    meaning of PIN_CORE).
     """
     code = (
         "import importlib.metadata as m, json, platform; "
         "print(json.dumps({"
+        "'policyengine_taxsim_version': m.version('policyengine-taxsim'), "
         "'policyengine_us_version': m.version('policyengine-us'), "
         "'policyengine_core_version': m.version('policyengine-core'), "
         "'python_version_resolved': platform.python_version()}))"
     )
     proc = subprocess.run(
-        uvx_prefix(pin) + ["python", "-c", code],
+        uvx_prefix(pin, pin_core) + ["python", "-c", code],
         check=True,
         capture_output=True,
         text=True,
