@@ -1,147 +1,87 @@
 ===== PE_PIN =====
 policyengine_taxsim_repo: https://github.com/PolicyEngine/policyengine-taxsim
-policyengine_taxsim_sha: 3e2a7589c8acda0edd2aa9e748d726c9ca9262d0
-policyengine_taxsim_sha_date: 2026-09-30
-policyengine_taxsim_version: 3.0.1
-policyengine_us_version: 2.30.1
-policyengine_core_version: 3.32.21
+policyengine_taxsim_sha: 2e3e6cb003aefc977ee4a6f9b2a8a701595dec2f
+policyengine_taxsim_sha_date: 2026-10-23
+policyengine_taxsim_version: 3.2.5
+policyengine_us_version: 2.62.8
+policyengine_core_version: 3.33.12
 python_version: 3.13
 python_version_resolved: 3.13.16
 uv_version: 0.12.23
-pinned_on: 2026-10-07
+pinned_on: 2026-10-24
 pe_cli_options: --scorp-treatment active
 ===== a21 =====
-a21: 2617 differences (|tc - pe| > 1) in 2 variables
+a21: 1489 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
-     v26     10000   1128  26800.0   9883.69
-    actc     10000   1489   1600.0    650.20
-a21: PASS
+    actc     10000   1489   1600.0     650.2
+a21: FAIL: 0 actual differences are not expected and 1128 expected differences did not occur
 ===== a22 =====
-a22: 1193 differences (|tc - pe| > 1) in 1 variables
-variable  compared  count  max_abs  mean_abs
-     v26     10000   1193  28700.0   9802.05
-a22: PASS
+a22: 0 differences (|tc - pe| > 1) in 0 variables
+a22: FAIL: 0 actual differences are not expected and 1193 expected differences did not occur
 ===== a23 =====
-a23: 1257 differences (|tc - pe| > 1) in 1 variables
-variable  compared  count  max_abs  mean_abs
-     v26     10000   1257  30700.0  10879.79
-a23: PASS
+a23: 0 differences (|tc - pe| > 1) in 0 variables
+a23: FAIL: 0 actual differences are not expected and 1257 expected differences did not occur
 ===== a24 =====
-a24: 1377 differences (|tc - pe| > 1) in 1 variables
-variable  compared  count  max_abs  mean_abs
-     v26     10000   1377  31300.0   11414.6
-a24: PASS
+a24: 0 differences (|tc - pe| > 1) in 0 variables
+a24: FAIL: 0 actual differences are not expected and 1377 expected differences did not occur
 ===== a25 =====
-a25: 2259 differences (|tc - pe| > 1) in 1 variables
-variable  compared  count  max_abs  mean_abs
-     v26     10000   2259  33700.0  10168.97
-a25: PASS
+a25: 0 differences (|tc - pe| > 1) in 0 variables
+a25: FAIL: 0 actual differences are not expected and 2259 expected differences did not occur
 ===== b21 =====
-b21: 1018 differences (|tc - pe| > 1) in 4 variables
+b21: 1009 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000      4   4888.0   4125.62
-     v27     10000      4   4888.0   4217.38
-     v22     10000      1    367.0    367.00
     actc     10000   1009   1600.0    644.25
-b21: PASS
+b21: FAIL: 0 actual differences are not expected and 9 expected differences did not occur
 ===== b22 =====
-b22: 14 differences (|tc - pe| > 1) in 4 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000      6   5044.0   3543.08
-     v27     10000      6   5044.0   3543.08
-     v22     10000      1    737.0    737.00
-    actc     10000      1    737.0    737.00
-b22: PASS
+b22: 0 differences (|tc - pe| > 1) in 0 variables
+b22: FAIL: 0 actual differences are not expected and 14 expected differences did not occur
 ===== b23 =====
-b23: 15 differences (|tc - pe| > 1) in 4 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000      6  5408.01   3823.92
-     v26     10000      2  3650.00   3525.00
-     v27     10000      6  5408.00   4257.58
-     v22     10000      1  2602.00   2602.00
-b23: PASS
+b23: 0 differences (|tc - pe| > 1) in 0 variables
+b23: FAIL: 0 actual differences are not expected and 15 expected differences did not occur
 ===== b24 =====
-b24: 13 differences (|tc - pe| > 1) in 3 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000      6   4526.0   3469.05
-     v26     10000      1    550.0    550.00
-     v27     10000      6   4526.0   3469.05
-b24: PASS
+b24: 0 differences (|tc - pe| > 1) in 0 variables
+b24: FAIL: 0 actual differences are not expected and 13 expected differences did not occur
 ===== b25 =====
-b25: 912 differences (|tc - pe| > 1) in 5 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000     12  6142.50   4148.46
-     v26     10000    886 12000.01   6001.27
-     v27     10000     12  6142.50   4467.34
-     v22     10000      1  3979.50   3979.50
-    actc     10000      1   153.00    153.00
-b25: PASS
+b25: 0 differences (|tc - pe| > 1) in 0 variables
+b25: FAIL: 0 actual differences are not expected and 912 expected differences did not occur
 ===== c21 =====
-c21: 1108 differences (|tc - pe| > 1) in 7 variables
+c21: 1084 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000      8  2834.62   2002.45
-    qbid     10000      1   102.40    102.40
-     v18     10000      3  3800.00   1984.13
-     v28     10000      2   912.00    564.29
-     v26     10000      5 16750.00   9494.52
-     v27     10000      7  2618.05   2127.29
-    actc     10000   1082  1600.00    644.82
-c21: PASS
+     v18     10000      1   1250.0   1250.00
+     v26     10000      1  30000.0  30000.00
+    actc     10000   1082   1600.0    644.82
+c21: FAIL: 1 actual differences are not expected and 25 expected differences did not occur
 ===== c22 =====
-c22: 22 differences (|tc - pe| > 1) in 6 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000      8   2600.0   1329.62
-     v26     10000      4  14800.0  11737.50
-     v27     10000      6   2600.0   1639.50
-     v22     10000      1     68.0     68.00
-    actc     10000      1     68.0     68.00
-     v24     10000      2    600.0    400.00
-c22: PASS
+c22: 0 differences (|tc - pe| > 1) in 0 variables
+c22: FAIL: 0 actual differences are not expected and 22 expected differences did not occur
 ===== c23 =====
-c23: 23 differences (|tc - pe| > 1) in 6 variables
+c23: 1 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000      7   2340.0   1331.50
-     v26     10000      7  17825.0   8735.71
-     v27     10000      6   2600.0   1658.83
-     v22     10000      1   1909.0   1909.00
-    actc     10000      1     76.5     76.50
-     v24     10000      1   1200.0   1200.00
-c23: PASS
+     v26     10000      1  38000.0   38000.0
+c23: FAIL: 1 actual differences are not expected and 23 expected differences did not occur
 ===== c24 =====
-c24: 23 differences (|tc - pe| > 1) in 7 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000      7   2600.0   1587.14
-     v18     10000      2   1900.0   1400.00
-     v19       326      1    665.0    665.00
-     v28     10000      2    665.0    440.50
-     v26     10000      5  13150.0   9350.00
-     v27     10000      4   2600.0   2407.25
-     v24     10000      2    400.0    300.00
-c24: PASS
+c24: 0 differences (|tc - pe| > 1) in 0 variables
+c24: FAIL: 0 actual differences are not expected and 23 expected differences did not occur
 ===== c25 =====
-c25: 957 differences (|tc - pe| > 1) in 7 variables
+c25: 11 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000      5   2529.0   1368.80
      v17      6834      1   3250.0   3250.00
      v18     10000      4  14225.0   7156.25
-     v26     10000    940  41850.0   6516.85
-     v27     10000      5   2529.0   1368.80
-     v22     10000      1   1032.0   1032.00
-    actc     10000      1   1032.0   1032.00
-c25: PASS
+     v26     10000      6  41000.0  31333.33
+c25: FAIL: 6 actual differences are not expected and 952 expected differences did not occur
 ===== SUMMARY =====
-a21: PASS
-a22: PASS
-a23: PASS
-a24: PASS
-a25: PASS
-b21: PASS
-b22: PASS
-b23: PASS
-b24: PASS
-b25: PASS
-c21: PASS
-c22: PASS
-c23: PASS
-c24: PASS
-c25: PASS
+a21: FAIL
+a22: FAIL
+a23: FAIL
+a24: FAIL
+a25: FAIL
+b21: FAIL
+b22: FAIL
+b23: FAIL
+b24: FAIL
+b25: FAIL
+c21: FAIL
+c22: FAIL
+c23: FAIL
+c24: FAIL
+c25: FAIL
