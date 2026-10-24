@@ -1764,6 +1764,7 @@ def test_AGIsurtax(call_calcfunc, reform, rvars, expected):
 # plus Sch 2 line 1.
 AMT_MEDICAL_REFORM = {'AMT_Medical_frt': {2025: 0.025}}
 AMT_EM_PE_REFORM = {'AMT_em_pe': {2025: 700000}}
+AMT_CHILD_EM_C_AGE_REFORM = {'AMT_child_em_c_age': {2025: 19}}
 AMT_CG_BRK3_REFORM = {
     'AMT_CG_brk3': {2025: [1e6, 1e6, 1e6, 1e6, 1e6]},
     'AMT_CG_rt4': {2025: 0.25},
@@ -1843,13 +1844,21 @@ AMT_CG_BRK3_REFORM = {
                   'cmbtp': 400000., 'taxbc': 104203.75},
                  (800000., 117405.25, 221609.),
                  id='reform separate exemption eliminated'),
-    # IRC 59(j) filer under age 18 with no earned income:
-    # line 5 = min(88100, 0 + 9550); line 6 = 60000 - 9550 = 50450;
-    # line 7 = 0.26 * 50450 = 13117; line 11 = 13117 - 5000
+    # under current law AMT_child_em_c_age is zero after 2017, so a
+    # filer under age 18 with no earned income gets the full 88100
+    # exemption: line 6 = max(0, 60000 - 88100) = 0; no AMT
     pytest.param(None,
                  {'MARS': 1, 'standard': 15750., 'c00100': 60000.,
                   'age_head': 15, 'taxbc': 5000.},
-                 (60000., 8117., 13117.), id='kiddie exemption'),
+                 (60000., 0., 5000.), id='no kiddie exemption'),
+    # reform-only IRC 59(j) age ceiling of 19 for a filer under age 18
+    # with no earned income: line 5 = min(88100, 0 + 9550);
+    # line 6 = 60000 - 9550 = 50450; line 7 = 0.26 * 50450 = 13117;
+    # line 11 = 13117 - 5000
+    pytest.param(AMT_CHILD_EM_C_AGE_REFORM,
+                 {'MARS': 1, 'standard': 15750., 'c00100': 60000.,
+                  'age_head': 15, 'taxbc': 5000.},
+                 (60000., 8117., 13117.), id='reform kiddie exemption'),
     # Part III with 100000 of long-term gain and 150000 of ISO
     # preference: line 6 = 450000 - 88100 = 361900;
     # line 17 = 361900 - 100000 = 261900;

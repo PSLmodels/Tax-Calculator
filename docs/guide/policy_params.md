@@ -759,8 +759,8 @@ _Known Values:_
 2015: 19  
 2016: 19  
 2017: 19  
-2018: 19  
-2019: 19  
+2018: 0  
+2019: 0  
 _Valid Range:_ min = 0 and max = 30  
 _Out-of-Range Action:_ error  
 

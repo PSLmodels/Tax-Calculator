@@ -28,91 +28,47 @@ a24: FAIL: 0 actual differences are not expected and 1377 expected differences d
 a25: 0 differences (|tc - pe| > 1) in 0 variables
 a25: FAIL: 0 actual differences are not expected and 2259 expected differences did not occur
 ===== b21 =====
-b21: 1016 differences (|tc - pe| > 1) in 4 variables
+b21: 1009 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000      3   7493.0   5616.83
-     v27     10000      3   7493.0   5739.17
-     v22     10000      1    367.0    367.00
     actc     10000   1009   1600.0    644.25
-b21: FAIL: 4 actual differences are not expected and 6 expected differences did not occur
+b21: FAIL: 0 actual differences are not expected and 9 expected differences did not occur
 ===== b22 =====
-b22: 12 differences (|tc - pe| > 1) in 4 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000      5   6462.0    3878.5
-     v27     10000      5   6462.0    3878.5
-     v22     10000      1    737.0     737.0
-    actc     10000      1    737.0     737.0
-b22: FAIL: 2 actual differences are not expected and 4 expected differences did not occur
+b22: 0 differences (|tc - pe| > 1) in 0 variables
+b22: FAIL: 0 actual differences are not expected and 14 expected differences did not occur
 ===== b23 =====
-b23: 13 differences (|tc - pe| > 1) in 3 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000      6   9939.0   5208.68
-     v27     10000      6   9939.0   5669.01
-     v22     10000      1   2762.0   2762.00
-b23: FAIL: 8 actual differences are not expected and 10 expected differences did not occur
+b23: 0 differences (|tc - pe| > 1) in 0 variables
+b23: FAIL: 0 actual differences are not expected and 15 expected differences did not occur
 ===== b24 =====
-b24: 12 differences (|tc - pe| > 1) in 2 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000      6   6046.5   3947.46
-     v27     10000      6   6046.5   3947.46
-b24: FAIL: 4 actual differences are not expected and 5 expected differences did not occur
+b24: 0 differences (|tc - pe| > 1) in 0 variables
+b24: FAIL: 0 actual differences are not expected and 13 expected differences did not occur
 ===== b25 =====
-b25: 27 differences (|tc - pe| > 1) in 4 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000     12  12247.0   5397.88
-     v27     10000     12  12247.0   5855.13
-     v22     10000      2   4883.0   2820.00
-    actc     10000      1    153.0    153.00
-b25: FAIL: 13 actual differences are not expected and 898 expected differences did not occur
+b25: 0 differences (|tc - pe| > 1) in 0 variables
+b25: FAIL: 0 actual differences are not expected and 912 expected differences did not occur
 ===== c21 =====
-c21: 1106 differences (|tc - pe| > 1) in 7 variables
+c21: 1084 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000      8  9344.50   4023.50
-    qbid     10000      1   102.40    102.40
-     v18     10000      3  3800.00   1984.13
-     v28     10000      2   912.00    564.29
-     v26     10000      3 30000.00  14299.20
-     v27     10000      7  9127.93   4437.06
-    actc     10000   1082  1600.00    644.82
-c21: FAIL: 11 actual differences are not expected and 13 expected differences did not occur
+     v18     10000      1   1250.0   1250.00
+     v26     10000      1  30000.0  30000.00
+    actc     10000   1082   1600.0    644.82
+c21: FAIL: 1 actual differences are not expected and 25 expected differences did not occur
 ===== c22 =====
-c22: 14 differences (|tc - pe| > 1) in 4 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000      6   6111.0   2247.33
-     v27     10000      6   6111.0   2247.33
-     v22     10000      1     68.0     68.00
-    actc     10000      1     68.0     68.00
-c22: FAIL: 4 actual differences are not expected and 12 expected differences did not occur
+c22: 0 differences (|tc - pe| > 1) in 0 variables
+c22: FAIL: 0 actual differences are not expected and 22 expected differences did not occur
 ===== c23 =====
-c23: 15 differences (|tc - pe| > 1) in 5 variables
+c23: 1 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000      6   4262.0   1984.75
-     v26     10000      1  38000.0  38000.00
-     v27     10000      6   5847.0   2831.33
-     v22     10000      1   5156.0   5156.00
-    actc     10000      1     76.5     76.50
-c23: FAIL: 7 actual differences are not expected and 15 expected differences did not occur
+     v26     10000      1  38000.0   38000.0
+c23: FAIL: 1 actual differences are not expected and 23 expected differences did not occur
 ===== c24 =====
-c24: 16 differences (|tc - pe| > 1) in 6 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000      5   7596.0    3808.6
-     v18     10000      2   1900.0    1400.0
-     v19       326      1    665.0     665.0
-     v28     10000      2    665.0     440.5
-     v26     10000      2  13000.0   11500.0
-     v27     10000      4   7596.0    4540.5
-c24: FAIL: 6 actual differences are not expected and 13 expected differences did not occur
+c24: 0 differences (|tc - pe| > 1) in 0 variables
+c24: FAIL: 0 actual differences are not expected and 23 expected differences did not occur
 ===== c25 =====
-c25: 23 differences (|tc - pe| > 1) in 7 variables
+c25: 11 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000      5   7967.0   3583.80
      v17      6834      1   3250.0   3250.00
      v18     10000      4  14225.0   7156.25
      v26     10000      6  41000.0  31333.33
-     v27     10000      5   7967.0   3583.80
-     v22     10000      1   1032.0   1032.00
-    actc     10000      1   1032.0   1032.00
-c25: FAIL: 10 actual differences are not expected and 944 expected differences did not occur
+c25: FAIL: 6 actual differences are not expected and 952 expected differences did not occur
 ===== SUMMARY =====
 a21: FAIL
 a22: FAIL
