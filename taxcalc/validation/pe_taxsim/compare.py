@@ -168,13 +168,7 @@ def report(lyy, summary, unexpected, tolerance, expectfile):
     if unexpected.empty:
         print(f"{lyy}: PASS")
     else:
-        counts = unexpected["where"].value_counts()
-        num_actual_only = counts.get("actual_only", 0)
-        num_expect_only = counts.get("expect_only", 0)
-        print(f"{lyy}: FAIL: {num_actual_only} actual "
-              f"differences are not expected and "
-              f"{num_expect_only} expected differences "
-              "did not occur")
+        print(f"{lyy}: FAIL")
 
 
 def compare(lyy, year, tolerance, dirs):

@@ -14,61 +14,61 @@ pe_cli_options: --scorp-treatment active
 a21: 1489 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
     actc     10000   1489   1600.0     650.2
-a21: FAIL: 0 actual differences are not expected and 1128 expected differences did not occur
+a21: FAIL
 ===== a22 =====
 a22: 0 differences (|tc - pe| > 1) in 0 variables
-a22: FAIL: 0 actual differences are not expected and 1193 expected differences did not occur
+a22: FAIL
 ===== a23 =====
 a23: 0 differences (|tc - pe| > 1) in 0 variables
-a23: FAIL: 0 actual differences are not expected and 1257 expected differences did not occur
+a23: FAIL
 ===== a24 =====
 a24: 0 differences (|tc - pe| > 1) in 0 variables
-a24: FAIL: 0 actual differences are not expected and 1377 expected differences did not occur
+a24: FAIL
 ===== a25 =====
 a25: 0 differences (|tc - pe| > 1) in 0 variables
-a25: FAIL: 0 actual differences are not expected and 2259 expected differences did not occur
+a25: FAIL
 ===== b21 =====
 b21: 1009 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
     actc     10000   1009   1600.0    644.25
-b21: FAIL: 0 actual differences are not expected and 9 expected differences did not occur
+b21: FAIL
 ===== b22 =====
 b22: 0 differences (|tc - pe| > 1) in 0 variables
-b22: FAIL: 0 actual differences are not expected and 14 expected differences did not occur
+b22: FAIL
 ===== b23 =====
 b23: 0 differences (|tc - pe| > 1) in 0 variables
-b23: FAIL: 0 actual differences are not expected and 15 expected differences did not occur
+b23: FAIL
 ===== b24 =====
 b24: 0 differences (|tc - pe| > 1) in 0 variables
-b24: FAIL: 0 actual differences are not expected and 13 expected differences did not occur
+b24: FAIL
 ===== b25 =====
 b25: 0 differences (|tc - pe| > 1) in 0 variables
-b25: FAIL: 0 actual differences are not expected and 912 expected differences did not occur
+b25: FAIL
 ===== c21 =====
 c21: 1084 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
      v18     10000      1   1250.0   1250.00
      v26     10000      1  30000.0  30000.00
     actc     10000   1082   1600.0    644.82
-c21: FAIL: 1 actual differences are not expected and 25 expected differences did not occur
+c21: FAIL
 ===== c22 =====
 c22: 0 differences (|tc - pe| > 1) in 0 variables
-c22: FAIL: 0 actual differences are not expected and 22 expected differences did not occur
+c22: FAIL
 ===== c23 =====
 c23: 1 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
      v26     10000      1  38000.0   38000.0
-c23: FAIL: 1 actual differences are not expected and 23 expected differences did not occur
+c23: FAIL
 ===== c24 =====
 c24: 0 differences (|tc - pe| > 1) in 0 variables
-c24: FAIL: 0 actual differences are not expected and 23 expected differences did not occur
+c24: FAIL
 ===== c25 =====
 c25: 11 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
      v17      6834      1   3250.0   3250.00
      v18     10000      4  14225.0   7156.25
      v26     10000      6  41000.0  31333.33
-c25: FAIL: 6 actual differences are not expected and 952 expected differences did not occur
+c25: FAIL
 ===== SUMMARY =====
 a21: FAIL
 a22: FAIL
