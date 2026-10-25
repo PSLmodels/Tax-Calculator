@@ -113,7 +113,8 @@ def test_calc_and_used_vars(tests_path):
             found_error1 = True
             msg1 += f'VAR NOT CALCULATED: {var}\n'
     # Test (2):
-    faux_functions = ['EITCamount', 'SchXYZ', 'BenefitPrograms']
+    faux_functions = ['EITCamount', 'SchXYZ', 'TopBracketBelow25',
+                      'BenefitPrograms']
     found_error2 = False
     msg2 = 'calculated & returned variables are not function arguments\n'
     for fname in fnames:
@@ -1570,6 +1571,40 @@ def test_SchXYZTax(call_calcfunc, reform, rvars, expected):
 
 
 # ----------------------------------------------------------------------
+# TopBracketBelow25
+# ----------------------------------------------------------------------
+
+
+# TopBracketBelow25 returns the amount of taxable income taxed at an
+# ordinary rate below 25 percent, which is the 2025 Schedule D Tax
+# Worksheet line 19 amount (the top of the 24% bracket) under 2025
+# current law and the top of the 15% bracket under 2017 law.
+II_RT4_REFORM = {'II_rt4': {2025: 0.25}}
+
+
+@pytest.mark.parametrize('reform, year, MARS, expected', [
+    # 2025 Sch D TW line 19 amount for single filers
+    pytest.param(None, 2025, 1, 197300., id='single'),
+    # 2025 Sch D TW line 19 amount for joint filers
+    pytest.param(None, 2025, 2, 394600., id='joint'),
+    # 2017 rates are 10/15/25/28/33/35/39.6, so the amount is the top
+    # of the 15% bracket, which equals the 2017 0% capital-gain threshold
+    pytest.param(None, 2017, 1, 37950., id='single 2017'),
+    # reform raising the 24% rate to 25% makes the amount the top of
+    # the 22% bracket
+    pytest.param(II_RT4_REFORM, 2025, 1, 103350., id='reform 25 percent'),
+])
+def test_TopBracketBelow25(call_calcfunc, reform, year, MARS, expected):
+    """
+    Tests the TopBracketBelow25 function against the 2025 Schedule D Tax
+    Worksheet line 19 amounts and the 2017 rate schedule
+    """
+    actual = call_calcfunc('TopBracketBelow25', reform=reform, year=year,
+                           MARS=MARS)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
 # GainsTax
 # ----------------------------------------------------------------------
 
@@ -1578,14 +1613,16 @@ def test_SchXYZTax(call_calcfunc, reform, rvars, expected):
 # 2025 Qualified Dividends and Capital Gain Tax Worksheet (QDCGTW) and
 # the 2025 Schedule D Tax Worksheet (Sch D TW): a 0% rate up to line 15
 # amounts of 48350 (96700 when married filing jointly), a 15% rate up to
-# line 25 amounts of 533400 (600050 when married filing jointly), and a
-# 20% rate above that.  Each c05200 value is the Tax Rate Schedule tax
-# on c04800 (see test_SchXYZTax).  The CG_rt4 and CG_brk3 parameters
-# define a reform-only fourth rate bracket that is inert under 2025
-# current law; like the line 15 and line 25 amounts, CG_brk3 is a
-# taxable-income threshold with gains stacked on top of ordinary
-# income.  The returned tuple is
-# (dwks10, dwks13, dwks14, dwks18, dwks43, c05700, taxbc).
+# line 26 amounts of 533400 (600050 when married filing jointly), and a
+# 20% rate above that.  Sch D TW 25% and 28% rate gain is taxed at
+# ordinary rates up to the line 19 amount of 197300 (394600 when married
+# filing jointly), which is the top of the 24% bracket.  Each c05200
+# value is the Tax Rate Schedule tax on c04800 (see test_SchXYZTax).
+# The CG_rt4 and CG_brk3 parameters define a reform-only fourth rate
+# bracket that is inert under 2025 current law; like the line 15 and
+# line 26 amounts, CG_brk3 is a taxable-income threshold with gains
+# stacked on top of ordinary income.  The returned tuple is
+# (dwks10, dwks13, dwks14, dwks21, dwks45, c05700, taxbc).
 CG_NODIFF_REFORM = {'CG_nodiff': {2025: True}}
 CG_BRK3_REFORM = {
     'CG_brk3': {2025: [1e6, 1e6, 1e6, 1e6, 1e6]},
@@ -1639,6 +1676,7 @@ CG_BRK3_REFORM = {
                  id='long-term gain top rate'),
     # Sch D TW with 30000 of un-recaptured section 1250 gain:
     # line 13 = 100000 - 30000; line 18 = 300000 - 100000;
+    # line 21 = max(200000, min(230000, 197300)) = 200000;
     # 70000 @ 15% + 30000 @ 25% + Schedule X tax on 200000 of 41063
     pytest.param(None,
                  {'MARS': 1, 'c04800': 300000., 'c05200': 74547.25,
@@ -1654,6 +1692,27 @@ CG_BRK3_REFORM = {
                   'e24518': 30000.},
                  (100000., 70000., 230000., 200000., 59963., 0., 59963.),
                  id='28 percent rate gain'),
+    # Sch D TW with 30000 of un-recaptured section 1250 gain that is
+    # below the line 19 amount: line 13 = 80000 - 30000; line 14 =
+    # 140000 - 50000; line 18 = 140000 - 80000; line 19 = 140000;
+    # line 21 = max(60000, min(90000, 140000)) = 90000, so the gain is
+    # taxed at ordinary rates: 50000 @ 15% + Schedule X tax on 90000 of
+    # 5578.50 + 0.22 * (90000 - 48475); line 46 = 17651 + 0.24 *
+    # (140000 - 103350)
+    pytest.param(None,
+                 {'MARS': 1, 'c04800': 140000., 'c05200': 26447.,
+                  'p23250': 80000., 'c23650': 80000.,
+                  'e24515': 30000.},
+                 (80000., 50000., 90000., 90000., 22214., 0., 22214.),
+                 id='section 1250 gain below line 19'),
+    # Sch D TW with 30000 of 28% rate gain that is below the line 19
+    # amount: same worksheet amounts as the previous case
+    pytest.param(None,
+                 {'MARS': 1, 'c04800': 140000., 'c05200': 26447.,
+                  'p23250': 80000., 'c23650': 80000.,
+                  'e24518': 30000.},
+                 (80000., 50000., 90000., 90000., 22214., 0., 22214.),
+                 id='28 percent rate gain below line 19'),
     # reform-only CG_nodiff taxes qualified dividends at ordinary rates
     pytest.param(CG_NODIFF_REFORM,
                  {'MARS': 1, 'c04800': 50000., 'c05200': 5914.,
@@ -1686,6 +1745,37 @@ def test_GainsTax(call_calcfunc, reform, rvars, expected):
     Capital Gain Tax Worksheet and the 2025 Schedule D Tax Worksheet
     """
     actual = call_calcfunc('GainsTax', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+@pytest.mark.parametrize('rvars, expected', [
+    # 2017 single filer with 30000 of un-recaptured section 1250 gain:
+    # line 13 = 80000 - 30000; line 14 = 160000 - 50000; line 15 =
+    # 37950; line 18 = 160000 - 80000; line 19 = 37950 (top of the 15%
+    # bracket); line 21 = max(80000, min(110000, 37950)) = 80000;
+    # 50000 @ 15% + 30000 @ 25% + Schedule X tax on 80000 of
+    # 5226.25 + 0.25 * (80000 - 37950); line 46 = 18713.75 + 0.28 *
+    # (160000 - 91900)
+    pytest.param({'MARS': 1, 'c04800': 160000., 'c05200': 37781.75,
+                  'p23250': 80000., 'c23650': 80000., 'e24515': 30000.},
+                 (80000., 50000., 110000., 80000., 30738.75, 0.,
+                  30738.75),
+                 id='section 1250 gain'),
+    # 2017 single filer with 30000 of 28% rate gain: same worksheet
+    # amounts as the previous case, but 30000 @ 28% instead of 25%
+    pytest.param({'MARS': 1, 'c04800': 160000., 'c05200': 37781.75,
+                  'p23250': 80000., 'c23650': 80000., 'e24518': 30000.},
+                 (80000., 50000., 110000., 80000., 31638.75, 0.,
+                  31638.75),
+                 id='28 percent rate gain'),
+])
+def test_GainsTax_2017(call_calcfunc, rvars, expected):
+    """
+    Tests that under 2017 law, whose 25% rate bracket starts at the top
+    of the 15% bracket, the GainsTax function taxes 25% and 28% rate
+    gain at ordinary rates only up to the top of the 15% bracket
+    """
+    actual = call_calcfunc('GainsTax', year=2017, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
 
 
@@ -1869,7 +1959,7 @@ AMT_CG_BRK3_REFORM = {
     pytest.param(None,
                  {'MARS': 1, 'standard': 15750., 'c00100': 300000.,
                   'cmbtp': 150000., 'dwks10': 100000., 'dwks13': 100000.,
-                  'dwks14': 184250., 'dwks18': 184250., 'taxbc': 52067.},
+                  'dwks14': 184250., 'dwks21': 184250., 'taxbc': 52067.},
                  (450000., 31483., 83550.), id='part III 15 percent'),
     # Part III for joint filers with 60000 of long-term gain and 300000
     # of ISO preference: line 6 = 441500 - 137000 = 304500;
@@ -1880,7 +1970,7 @@ AMT_CG_BRK3_REFORM = {
     pytest.param(None,
                  {'MARS': 2, 'standard': 31500., 'c00100': 141500.,
                   'cmbtp': 300000., 'dwks10': 60000., 'dwks13': 60000.,
-                  'dwks14': 50000., 'dwks18': 50000., 'taxbc': 7518.},
+                  'dwks14': 50000., 'dwks21': 50000., 'taxbc': 7518.},
                  (441500., 58155., 65673.), id='part III zero percent'),
     # Part III with 600000 of long-term gain and 500000 of ISO
     # preference: line 5 = 0; line 6 = 1215750; line 17 = 615750;
@@ -1891,7 +1981,7 @@ AMT_CG_BRK3_REFORM = {
     pytest.param(None,
                  {'MARS': 1, 'standard': 15750., 'c00100': 715750.,
                   'cmbtp': 500000., 'dwks10': 600000., 'dwks13': 600000.,
-                  'dwks14': 100000., 'dwks18': 100000., 'taxbc': 115244.},
+                  'dwks14': 100000., 'dwks21': 100000., 'taxbc': 115244.},
                  (1215750., 150714., 265958.), id='part III 20 percent'),
     # reform-only fourth bracket taxes long-term gain stacked above
     # 1000000 of taxable income at 25%: with 1200000 of long-term gain
@@ -1904,7 +1994,7 @@ AMT_CG_BRK3_REFORM = {
     pytest.param(AMT_CG_BRK3_REFORM,
                  {'MARS': 1, 'standard': 15750., 'c00100': 1315750.,
                   'cmbtp': 500000., 'dwks10': 1.2e6, 'dwks13': 1.2e6,
-                  'dwks14': 100000., 'dwks18': 100000., 'taxbc': 235244.},
+                  'dwks14': 100000., 'dwks21': 100000., 'taxbc': 235244.},
                  (1815750., 165714., 400958.), id='reform fourth bracket'),
     # Part III with 30000 of unrecaptured section 1250 gain (see the
     # test_GainsTax section 1250 case) and 200000 of ISO preference:
@@ -1915,7 +2005,7 @@ AMT_CG_BRK3_REFORM = {
     pytest.param(None,
                  {'MARS': 1, 'standard': 15750., 'c00100': 315750.,
                   'cmbtp': 200000., 'dwks10': 100000., 'dwks13': 70000.,
-                  'dwks14': 230000., 'dwks18': 200000., 'e24515': 30000.,
+                  'dwks14': 230000., 'dwks21': 200000., 'e24515': 30000.,
                   'taxbc': 59063.},
                  (515750., 45897., 104960.), id='part III section 1250'),
 ])

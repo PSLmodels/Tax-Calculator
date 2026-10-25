@@ -837,11 +837,11 @@
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used"
     },
-    "dwks18": {
+    "dwks21": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used"
     },
-    "dwks43": {
+    "dwks45": {
       "type": "float",
       "desc": "separate tax on long-term capital gains and qualified dividends"
     },

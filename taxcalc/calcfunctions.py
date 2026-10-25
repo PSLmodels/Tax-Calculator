@@ -2128,6 +2128,84 @@ def SchXYZTax(c04800, MARS,
     return c05200
 
 
+@JIT(nopython=True)
+def TopBracketBelow25(MARS,
+                      II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+                      II_rt6, II_rt7, II_rt8,
+                      II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+                      II_brk6, II_brk7):
+    """
+    Function that returns the amount of taxable income taxed at an
+    ordinary rate below 25 percent (IRC section 1(h)(1)(A)(ii)(I)),
+    which is the bottom of the lowest II_rt? bracket whose rate is at
+    least 25 percent.  This is the Schedule D Tax Worksheet line 19
+    amount: the top of the 24% bracket under 2018+ law and the top of
+    the 15% bracket under 2013-2017 law.  If no rate is at least 25
+    percent, all taxable income is taxed below 25 percent, so 9e99 is
+    returned.
+
+    Parameters
+    ----------
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate,
+                                  4=household-head, 5=widow(er))
+    II_rt1: float
+        Personal income (regular/non-AMT) tax rate 1
+    II_rt2: float
+        Personal income (regular/non-AMT) tax rate 2
+    II_rt3: float
+        Personal income (regular/non-AMT) tax rate 3
+    II_rt4: float
+        Personal income (regular/non-AMT) tax rate 4
+    II_rt5: float
+        Personal income (regular/non-AMT) tax rate 5
+    II_rt6: float
+        Personal income (regular/non-AMT) tax rate 6
+    II_rt7: float
+        Personal income (regular/non-AMT) tax rate 7
+    II_rt8: float
+        Personal income (regular/non-AMT) tax rate 8
+    II_brk1: list
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 1
+    II_brk2: list
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 2
+    II_brk3: list
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 3
+    II_brk4: list
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 4
+    II_brk5: list
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 5
+    II_brk6: list
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 6
+    II_brk7: list
+        Personal income (regular/non-AMT) tax bracket (upper threshold) 7
+
+    Returns
+    -------
+    Amount of taxable income taxed at an ordinary rate below 25 percent
+    """
+    # check brackets from the top down, so the last assignment made is
+    # for the lowest bracket with a rate of at least 25 percent
+    top_below25 = 9e99
+    if II_rt8 >= 0.25:
+        top_below25 = II_brk7[MARS - 1]
+    if II_rt7 >= 0.25:
+        top_below25 = II_brk6[MARS - 1]
+    if II_rt6 >= 0.25:
+        top_below25 = II_brk5[MARS - 1]
+    if II_rt5 >= 0.25:
+        top_below25 = II_brk4[MARS - 1]
+    if II_rt4 >= 0.25:
+        top_below25 = II_brk3[MARS - 1]
+    if II_rt3 >= 0.25:
+        top_below25 = II_brk2[MARS - 1]
+    if II_rt2 >= 0.25:
+        top_below25 = II_brk1[MARS - 1]
+    if II_rt1 >= 0.25:
+        top_below25 = 0.
+    return top_below25
+
+
 @iterate_jit(nopython=True)
 def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              e24515, e24518, MARS, c04800, c05200,
@@ -2135,7 +2213,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
              CG_nodiff,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
-             dwks10, dwks13, dwks14, dwks18, dwks43, c05700, taxbc):
+             dwks10, dwks13, dwks14, dwks21, dwks45, c05700, taxbc):
     """
     Computes the regular-tax preference for long-term capital gains and
     qualified dividends.  Implements both IRS worksheets in a single body:
@@ -2145,13 +2223,19 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
       * Schedule D Tax Worksheet (Sch D TW) from the 2025 Schedule D
         instructions, which is QDCGTW plus extra rate buckets for
         un-recaptured section 1250 gain (25%) and collectibles 28%-rate
-        gain (lines 11-12 and 33-41).
+        gain (lines 11-13, 19-21, and 35-43).
 
     Sch D TW reduces algebraically to QDCGTW when both e24515 and e24518
     are zero, so the code runs the Sch D TW computation unconditionally
-    and lets the Sch D-only blocks vanish when not applicable.  Section
+    and lets the Sch D-only blocks vanish when not applicable.  Local
+    variable dwksNN holds the amount on 2025 Sch D TW line NN.  Section
     banners below mark which IRS-worksheet lines are common to both
     worksheets and which belong to Sch D TW only.
+
+    The Sch D TW line 19 amount (the top of the 24% bracket in the 2025
+    worksheet) is computed by the TopBracketBelow25 function from the
+    ordinary rate schedule, so that it is also correct for pre-2018 law
+    and for reforms that change the II_rt? rates.
 
     If CG_nodiff is true, qualified dividends and long-term capital gains
     are taxed at ordinary rates and the worksheet is skipped.
@@ -2246,9 +2330,9 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         Difference of dwks10 - dwks12
     dwks14: float
         Maximum of 0 and dwks1 - dwks13
-    dwks18: float
-        Maximum of dwks16 and dwks17
-    dwks43: float
+    dwks21: float
+        Maximum of dwks18 and dwks20 (taxable income taxed at ordinary rates)
+    dwks45: float
         separate tax on long-term capital gains and qualified dividends
     c05700: float
         Lump sum distributions
@@ -2263,9 +2347,9 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         Difference of dwks10 - dwks12
     dwks14: float
         Maximum of 0 and dwks1 - dwks13
-    dwks18: float
-        Maximum of dwks16 and dwks17
-    dwks43: float
+    dwks21: float
+        Maximum of dwks18 and dwks20 (taxable income taxed at ordinary rates)
+    dwks45: float
         separate tax on long-term capital gains and qualified dividends
     c05700: float
         Lump sum distributions
@@ -2303,64 +2387,77 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks12 = min(dwks9, dwks11)       # line 12
         dwks13 = dwks10 - dwks12          # line 13
 
-        # ---- Sch D TW lines 14-19 (rate-bracket setup, common) ----------
+        # ---- Sch D TW lines 14-22 (rate-bracket setup) ------------------
         dwks14 = max(0., dwks1 - dwks13)          # line 14
-        dwks15 = min(CG_brk1[MARS - 1], dwks1)    # line 15
-        dwks16 = min(dwks14, dwks15)              # line 16
-        dwks17 = max(0., dwks1 - dwks10)          # line 17
-        dwks18 = max(dwks16, dwks17)              # line 18
-        dwks19 = dwks15 - dwks16                  # line 19: amount @ 0%
-        lowest_rate_tax = CG_rt1 * dwks19         # line 20: 0% tax (=0)
+        dwks15 = CG_brk1[MARS - 1]                # line 15: 0% threshold
+        dwks16 = min(dwks1, dwks15)               # line 16
+        dwks17 = min(dwks14, dwks16)              # line 17
+        dwks18 = max(0., dwks1 - dwks10)          # line 18
+        # lines 19-21 (Sch D TW only): 25% and 28% rate gain is taxed at
+        # ordinary rates up to the amount of taxable income taxed at an
+        # ordinary rate below 25% (IRC 1(h)(1)(A)(ii)(I)), which is the
+        # line 19 amount.  Line 21 equals line 18 when e24515 = e24518 = 0
+        # because then line 14 equals line 18.
+        dwks19 = min(dwks1, TopBracketBelow25(    # line 19
+            MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+            II_rt6, II_rt7, II_rt8,
+            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+            II_brk6, II_brk7))
+        dwks20 = min(dwks14, dwks19)              # line 20
+        dwks21 = max(dwks18, dwks20)              # line 21
+        dwks22 = dwks16 - dwks17                  # line 22: amount @ 0%
+        lowest_rate_tax = CG_rt1 * dwks22         # 0% tax (=0)
 
-        # ---- Sch D TW lines 21-32 (15% and 20% rate buckets, common) ----
-        dwks21 = min(dwks1, dwks13)               # line 21
-        dwks22 = dwks19                           # line 22
-        dwks23 = max(0., dwks21 - dwks22)         # line 23
-        dwks25 = min(CG_brk2[MARS - 1], dwks1)    # line 25
-        dwks26 = dwks18 + dwks19                  # line 26
-        dwks27 = max(0., dwks25 - dwks26)         # line 27
-        dwks28 = min(dwks23, dwks27)              # line 28: amount @ 15%
-        dwks29 = CG_rt2 * dwks28                  # line 29: 15% tax
-        dwks30 = dwks22 + dwks28                  # line 30
-        dwks31 = dwks21 - dwks30                  # line 31: amount @ 20%
-        dwks32 = CG_rt3 * dwks31                  # line 32: 20% tax
+        # ---- Sch D TW lines 23-34 (15% and 20% rate buckets, common) ----
+        dwks23 = min(dwks1, dwks13)               # line 23
+        dwks24 = dwks22                           # line 24
+        dwks25 = max(0., dwks23 - dwks24)         # line 25
+        dwks26 = CG_brk2[MARS - 1]                # line 26: 15% threshold
+        dwks27 = min(dwks1, dwks26)               # line 27
+        dwks28 = dwks21 + dwks22                  # line 28
+        dwks29 = max(0., dwks27 - dwks28)         # line 29
+        dwks30 = min(dwks25, dwks29)              # line 30: amount @ 15%
+        dwks31 = CG_rt2 * dwks30                  # line 31: 15% tax
+        dwks32 = dwks24 + dwks30                  # line 32
+        dwks33 = dwks23 - dwks32                  # line 33: amount @ 20%
+        dwks34 = CG_rt3 * dwks33                  # line 34: 20% tax
 
         # ---- Reform-only: 4th capital-gains bracket (not in IRS form) ---
         # Tax-Calculator extension that, like CG_brk1 and CG_brk2 on lines
-        # 15 and 25, treats CG_brk3 as a taxable-income threshold with
-        # cap gains stacked on top of ordinary income.  The line 31 amount
-        # occupies taxable income from line 26 + line 28 to line 26 +
-        # line 28 + line 31; the part of it above CG_brk3 is taxed at
+        # 15 and 26, treats CG_brk3 as a taxable-income threshold with
+        # cap gains stacked on top of ordinary income.  The line 33 amount
+        # occupies taxable income from line 28 + line 30 to line 28 +
+        # line 30 + line 33; the part of it above CG_brk3 is taxed at
         # CG_rt4 instead of CG_rt3.  Because CG_brk3 >= CG_brk2, only
-        # line 31 amounts can be above CG_brk3.  Inactive under current
+        # line 33 amounts can be above CG_brk3.  Inactive under current
         # law (CG_brk3 = 9e+99).
-        cg_top = dwks26 + dwks28 + dwks31  # top of stacked 0/15/20% gains
-        hi_base = min(dwks31, max(0., cg_top - CG_brk3[MARS - 1]))
+        cg_top = dwks28 + dwks30 + dwks33  # top of stacked 0/15/20% gains
+        hi_base = min(dwks33, max(0., cg_top - CG_brk3[MARS - 1]))
         hi_incremental_rate = CG_rt4 - CG_rt3
         highest_rate_incremental_tax = hi_incremental_rate * hi_base
 
-        # ---- Sch D TW lines 33-41 (Sch D TW only: 25% and 28% rates) ----
+        # ---- Sch D TW lines 35-43 (Sch D TW only: 25% and 28% rates) ----
         # These blocks zero out when e24515 = e24518 = 0, recovering QDCGTW.
-        dwks33 = min(dwks9, e24515)           # line 33
-        dwks34 = dwks10 + dwks18              # line 34
-        dwks36 = max(0., dwks34 - dwks1)      # line 36 (line 35 omitted)
-        dwks37 = max(0., dwks33 - dwks36)     # line 37: amount @ 25%
-        dwks38 = 0.25 * dwks37                # line 38: 25% tax
-        dwks39 = dwks18 + dwks19 + dwks28 + dwks31 + dwks37   # line 39
-        dwks40 = dwks1 - dwks39               # line 40: amount @ 28%
-        dwks41 = 0.28 * dwks40                # line 41: 28% tax
+        dwks35 = min(dwks9, e24515)           # line 35
+        dwks36 = dwks10 + dwks21              # line 36
+        dwks38 = max(0., dwks36 - dwks1)      # line 38 (line 37 = line 1)
+        dwks39 = max(0., dwks35 - dwks38)     # line 39: amount @ 25%
+        dwks40 = 0.25 * dwks39                # line 40: 25% tax
+        dwks41 = dwks21 + dwks22 + dwks30 + dwks33 + dwks39   # line 41
+        dwks42 = dwks1 - dwks41               # line 42: amount @ 28%
+        dwks43 = 0.28 * dwks42                # line 43: 28% tax
 
-        # ---- Sch D TW lines 42-45 (final assembly, common) --------------
-        dwks42 = SchXYZ(dwks18, MARS,         # line 42: ordinary tax
+        # ---- Sch D TW lines 44-47 (final assembly, common) --------------
+        dwks44 = SchXYZ(dwks21, MARS,         # line 44: ordinary tax
                         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                         II_rt6, II_rt7, II_rt8,
                         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
                         II_brk6, II_brk7)
-        dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
-                  lowest_rate_tax + highest_rate_incremental_tax)  # line 43
-        dwks44 = c05200                       # line 44: ordinary tax on line 1
-        dwks45 = min(dwks43, dwks44)          # line 45: smaller of 43, 44
-        c24580 = dwks45
+        dwks45 = (dwks31 + dwks34 + dwks40 + dwks43 + dwks44 +
+                  lowest_rate_tax + highest_rate_incremental_tax)  # line 45
+        dwks46 = c05200                       # line 46: ordinary tax on line 1
+        dwks47 = min(dwks45, dwks46)          # line 47: smaller of 45, 46
+        c24580 = dwks47
 
     else:  # no qualified-rate preference
 
@@ -2368,14 +2465,14 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks10 = max(0., min(p23250, c23650)) + e01100
         dwks13 = 0.
         dwks14 = 0.
-        dwks18 = 0.
-        dwks43 = 0.
+        dwks21 = 0.
+        dwks45 = 0.
 
     # final assembly (foreign earned income exclusion assumed zero, so
     # c05100 = c24580; Form 4972 lump-sum distributions not modeled)
     c05700 = 0.
     taxbc = c24580
-    return (dwks10, dwks13, dwks14, dwks18, dwks43, c05700, taxbc)
+    return (dwks10, dwks13, dwks14, dwks21, dwks45, c05700, taxbc)
 
 
 @iterate_jit(nopython=True)
@@ -2438,7 +2535,7 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
 
 @iterate_jit(nopython=True)
 def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
-        c04470, c20800, c21040, e24515, MARS, dwks18,
+        c04470, c20800, c21040, e24515, MARS, dwks21,
         dwks14, c05700, e62900, e00700, dwks10, age_head, earned,
         cmbtp, qbided,
         tip_income_deduction, overtime_income_deduction,
@@ -2579,7 +2676,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         QDCGTW line 4 / Sch D TW line 13 (Form 6251 line 13)
     dwks14: float
         QDCGTW line 5 / Sch D TW line 14 (Form 6251 line 20)
-    dwks18: float
+    dwks21: float
         QDCGTW line 5 / Sch D TW line 21 (Form 6251 line 27)
     dwks10: float
         Schedule D Tax Worksheet line 10 (cap on Form 6251 line 15)
@@ -2686,7 +2783,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
     amt_brk1 = AMT_brk1[MARS - 1]
     flat_rate_tax = (AMT_rt1 * line6 +
                      AMT_rt2_addon * max(0., line6 - amt_brk1))
-    if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks18 > 0. or e24515 > 0.:
+    if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks21 > 0. or e24515 > 0.:
         # ------------------------------------------------------------
         # Form 6251 Part III (lines 12-40): tax computation using
         # maximum capital gains rates. line 12 == line 6.
@@ -2708,7 +2805,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         line24 = line22 - line23
         # line 25 = AMT_CG_brk2[MARS-1] (top of 15% bracket)
         # line 26 == line 21
-        line27 = dwks18                        # QDCGTW ln 5 / SchDTW ln 21
+        line27 = dwks21                        # QDCGTW ln 5 / SchDTW ln 21
         line28 = line21 + line27
         line29 = max(0., AMT_CG_brk2[MARS - 1] - line28)
         line30 = min(line24, line29)           # amount taxed at AMT_CG_rt2:15%

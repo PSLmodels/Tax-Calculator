@@ -286,12 +286,12 @@ _Description_: search taxcalc/calcfunctions.py for how calculated and used
 _Datatype_: float  
 
 
-##  `dwks18`  
+##  `dwks21`  
 _Description_: search taxcalc/calcfunctions.py for how calculated and used  
 _Datatype_: float  
 
 
-##  `dwks43`  
+##  `dwks45`  
 _Description_: separate tax on long-term capital gains and qualified dividends  
 _Datatype_: float  
 
