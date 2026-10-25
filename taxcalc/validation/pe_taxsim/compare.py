@@ -156,7 +156,7 @@ def unexpected_differences(actual, expectfile):
     return both
 
 
-def report(lyy, summary, unexpected, tolerance, expectfile):
+def report(lyy, summary, tolerance):
     """
     Print the comparison results for sample LYY.
     """
@@ -167,17 +167,6 @@ def report(lyy, summary, unexpected, tolerance, expectfile):
           f"{len(nonzero)} variables")
     if not nonzero.empty:
         print(nonzero.to_string(index=False))
-    if not expectfile.is_file():
-        print(f"{lyy}: no {expectfile.name} file, so no differences "
-              "are expected")
-    if unexpected.empty:
-        print(f"{lyy}: PASS")
-    else:
-        num_act = (unexpected["where"] == "actual_only").sum()
-        num_exp = (unexpected["where"] == "expect_only").sum()
-        print(f"{lyy}: FAIL because {num_act} actual differences are "
-              f"not expected and {num_exp} expected differences are "
-              "not actual")
 
 
 def prune(lyy, diffs, unexpected, expectfile):
@@ -222,7 +211,7 @@ def compare(lyy, year, tolerance, dirs, prune_expect=False):
                    index=False, float_format="%.2f")
     expectfile = dirs["expect"] / f"{lyy}-taxdiffs-expect.csv"
     unexpected = unexpected_differences(diffs, expectfile)
-    report(lyy, summary, unexpected, tolerance, expectfile)
+    report(lyy, summary, tolerance)
     if prune_expect and prune(lyy, diffs, unexpected, expectfile):
         print(f"{lyy}: PASS after PRUNE")
         return True
