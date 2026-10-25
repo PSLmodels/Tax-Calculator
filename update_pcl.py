@@ -504,7 +504,7 @@ NEW_KNOWN_ITEMS = {
 
         {'year': 2025, 'value': 900350.0},
 
-        {'year': 2026, 'value': 639200.0},
+        {'year': 2026, 'value': 640200.0},
     ],
     'AMT_child_em': [
         {'year': 2023, 'value': 8800.0},

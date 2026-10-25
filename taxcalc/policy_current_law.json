@@ -17950,7 +17950,7 @@
     },
     "AMT_child_em_c_age": {
         "title": "Age ceiling for special AMT exemption",
-        "description": "Individuals under this age must use the child AMT exemption rules.",
+        "description": "Individuals under this age must use the child AMT exemption rules.  The value is zero beginning in 2018 because IRC section 55(d)(4)(A)(iii) (added by P.L. 116-94, sec. 501(b), for years after 2017 and made permanent by P.L. 119-21, sec. 70107) provides that section 59(j) shall not apply.",
         "indexable": false,
         "indexed": false,
         "type": "int",
@@ -17958,6 +17958,10 @@
             {
                 "year": 2013,
                 "value": 19
+            },
+            {
+                "year": 2018,
+                "value": 0
             }
         ],
         "validators": {
@@ -18451,7 +18455,7 @@
             },
             {
                 "year": 2026,
-                "value": 639200.0
+                "value": 640200.0
             }
         ],
         "validators": {

@@ -1831,25 +1831,41 @@ AMT_CG_BRK3_REFORM = {
                  {'MARS': 1, 'standard': 15750., 'c00100': 700000.,
                   'cmbtp': 300000., 'taxbc': 210192.75},
                  (1e6, 65025.25, 275218.), id='exemption phased out'),
-    # married filing separately with line 4 above AMT_em_pe: under 2025
-    # current law, line 4 above 900350 already phases out all of the
-    # 68500 exemption, but lowering AMT_em_pe to 700000 eliminates the
-    # 68500 - 0.25 * (800000 - 626350) = 25087.5 exemption;
-    # line 4 = 400000 + 400000 of line 2i ISO preference;
-    # line 7 = 0.26 * 800000 + 0.02 * (800000 - 119550) = 221609;
-    # line 11 = 221609 - 104203.75 (regular tax on 384250)
+    # married filing separately with line 4 above AMT_em_pe (Form 6251
+    # "Line 4" instructions, IRC 55(d)(2) last sentence): lowering
+    # AMT_em_pe to 700000 adds min(68500, 0.25 * (800000 - 700000))
+    # = 25000 to line 4 = 400000 + 400000 of line 2i ISO preference;
+    # line 5 = 68500 - 0.25 * (825000 - 626350) = 18837.5;
+    # line 6 = 806162.5; line 7 = 0.28 * 806162.5 - 2391 = 223334.5;
+    # line 11 = 223334.5 - 104203.75 (regular tax on 384250)
     pytest.param(AMT_EM_PE_REFORM,
                  {'MARS': 3, 'standard': 15750., 'c00100': 400000.,
                   'cmbtp': 400000., 'taxbc': 104203.75},
-                 (800000., 117405.25, 221609.),
-                 id='reform separate exemption eliminated'),
-    # IRC 59(j) filer under age 18 with no earned income:
-    # line 5 = min(88100, 0 + 9550); line 6 = 60000 - 9550 = 50450;
-    # line 7 = 0.26 * 50450 = 13117; line 11 = 13117 - 5000
+                 (825000., 119130.75, 223334.5),
+                 id='reform separate line 4 add-on'),
+    # married filing separately, 2025 current law: line 4 of 1200000 is
+    # at least 1174350, so the full 68500 is added: line 4 = 1268500;
+    # line 7 = 0.28 * 1268500 - 2391 = 352789; line 11 = 352789 - 104203.75
+    pytest.param(None,
+                 {'MARS': 3, 'standard': 15750., 'c00100': 400000.,
+                  'cmbtp': 800000., 'taxbc': 104203.75},
+                 (1268500., 248585.25, 352789.),
+                 id='separate line 4 add-on'),
+    # IRC 55(d)(4)(A)(iii): section 59(j) does not apply after 2017, so
+    # under current law a filer under age 18 gets the full exemption:
+    # line 6 = 60000 - 88100 < 0, so no AMT
     pytest.param(None,
                  {'MARS': 1, 'standard': 15750., 'c00100': 60000.,
                   'age_head': 15, 'taxbc': 5000.},
-                 (60000., 8117., 13117.), id='kiddie exemption'),
+                 (60000., 0., 5000.), id='no kiddie exemption cap'),
+    # reform-only IRC 59(j) cap (pre-2018 law) for a filer under age 18
+    # with no earned income: line 5 = min(88100, 0 + 9550);
+    # line 6 = 60000 - 9550 = 50450; line 7 = 0.26 * 50450 = 13117;
+    # line 11 = 13117 - 5000
+    pytest.param({'AMT_child_em_c_age': {2025: 19}},
+                 {'MARS': 1, 'standard': 15750., 'c00100': 60000.,
+                  'age_head': 15, 'taxbc': 5000.},
+                 (60000., 8117., 13117.), id='reform kiddie exemption'),
     # Part III with 100000 of long-term gain and 150000 of ISO
     # preference: line 6 = 450000 - 88100 = 361900;
     # line 17 = 361900 - 100000 = 261900;

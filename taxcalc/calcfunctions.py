@@ -2308,7 +2308,16 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks15 = min(CG_brk1[MARS - 1], dwks1)    # line 15
         dwks16 = min(dwks14, dwks15)              # line 16
         dwks17 = max(0., dwks1 - dwks10)          # line 17
-        dwks18 = max(dwks16, dwks17)              # line 18
+        # Sch D TW lines 19-21 (IRS numbering): line 19 = smaller of
+        # line 1 or the top of the 24% bracket ($197,300 single in
+        # 2025); line 20 = smaller of line 14 or line 19; line 21 =
+        # larger of line 18 or line 20.  This lets 25%/28%-rate gain
+        # be taxed at ordinary rates up to the top of the 24% bracket.
+        # Without un-recaptured section 1250 or 28%-rate gain line 14
+        # equals line 18, so this is a no-op for the QDCGTW.
+        dwks19_irs = min(dwks1, II_brk4[MARS - 1])    # IRS line 19
+        dwks20_irs = min(dwks14, dwks19_irs)          # IRS line 20
+        dwks18 = max(dwks17, dwks20_irs)          # IRS line 21
         dwks19 = dwks15 - dwks16                  # line 19: amount @ 0%
         lowest_rate_tax = CG_rt1 * dwks19         # line 20: 0% tax (=0)
 
@@ -2489,12 +2498,14 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         tax, regular-tax base, AMT.
 
     Special rules:
-      - MARS == 3 (MFS): exemption fully phased out when
-        c62100 > AMT_em_pe (IRC §55(d)(3) "$900,350 see instructions"
-        cliff).
+      - MARS == 3 (MFS): when c62100 > AMT_em_pe ($900,350 in 2025)
+        AMTI is increased by min(AMT_em, AMT_prt * excess) (IRC
+        §55(d)(2) last sentence; Form 6251 "Line 4" instructions).
       - IRC §59(j) kiddie AMT: for non-joint filers under
         AMT_child_em_c_age, exemption capped at earned + AMT_child_em
         (IRC §1(g)(2)(C): kiddie tax never applies to a joint return).
+        Inert after 2017 (AMT_child_em_c_age = 0) because IRC
+        §55(d)(4)(A)(iii) says section 59(j) shall not apply.
       - Reform-only 4th cap-gains bracket: cap gains that, when
         stacked on top of ordinary income, are above the AMT_CG_brk3
         taxable-income threshold are taxed at AMT_CG_rt4 instead of
@@ -2661,6 +2672,12 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         # line 2a (IRC 56(b)(1)(E)), so it nets out of AMTI entirely
         c62100 = c00100 - e00700 - qbided - sch1a_amount
     c62100 += cmbtp  # Form 6251 lines 2c-2t + 3: AMT prefs/adjustments
+    # IRC 55(d)(2) last sentence (Form 6251 "Line 4" instructions):
+    # married filing separately with AMTI above the complete-phaseout
+    # amount (AMT_em_pe, $900,350 in 2025) must add the lesser of
+    # AMT_prt times the excess or the MFS exemption amount.
+    if MARS == 3 and c62100 > AMT_em_pe:
+        c62100 += min(AMT_em[MARS - 1], AMT_prt * (c62100 - AMT_em_pe))
     # c62100 is AMT taxable income = Form 6251 line 4
     # --------------------------------------------------------------------
     # Form 6251 Part II top (lines 5-6): exemption and AMTI less exemption
@@ -2668,8 +2685,6 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
     # line 5: AMT exemption amount (with phase-out)
     line5 = max(0., AMT_em[MARS - 1] - AMT_prt *
                 max(0., c62100 - AMT_em_ps[MARS - 1]))
-    if MARS == 3 and c62100 > AMT_em_pe:
-        line5 = 0.
     # IRC §59(j) kiddie-AMT cap: exemption limited to earned +
     # AMT_child_em when filer is under AMT_child_em_c_age and does not
     # file a joint return (IRC §1(g)(2)(C)).
