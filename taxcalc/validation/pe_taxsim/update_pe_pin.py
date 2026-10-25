@@ -167,8 +167,8 @@ def main():
         f"wrote {run_pe.PIN_FILE.name}; next steps:\n"
         "  1. regenerate all PE outputs with run_pe.py --all --force\n"
         "  2. run validate.py and re-examine every difference\n"
-        "  3. update expected_differences, test_results.expect,\n"
-        "     and the PE versions mentioned in README.md and SUMMARY.md\n"
+        "  3. update test_results.expect and the PE versions\n"
+        "     mentioned in README.md and SUMMARY.md\n"
     )
     return 0
 

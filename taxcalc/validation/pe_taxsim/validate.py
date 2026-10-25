@@ -3,24 +3,21 @@ Runs the validation for each specified assumption-set letter and year.
 
 USAGE: python validate.py [--letters LETTERS] [--years YEARS]
                           [--tolerance T] [--regen [--size N]]
-                          [--datadir DIR] [--prune]
+                          [--datadir DIR]
 
 By default, runs steps 3-5 (taxsim_to_tc.py, run_tc.py, compare.py)
 for every letter (abc) and year (2021-2025) using the committed
-samples and PE outputs, and prints a pass/fail table.  With --regen,
-first runs steps 1-2 (generate_sample.py, run_pe.py --force), which
-OVERWRITES the samples and PE outputs in DATADIR; PE outputs are
-committed, so regenerate them only deliberately (see PLAN.md).
+samples and PE outputs, and prints each comparison summary.  With
+--regen, first runs steps 1-2 (generate_sample.py, run_pe.py --force),
+which OVERWRITES the samples and PE outputs in DATADIR; PE outputs are
+committed, so regenerate them only deliberately (see README.md).
 
 DATADIR (default is the folder containing this script) holds the
-samples, pe_output, expected_differences, and work folders, so a
-tiny trial run can be kept out of the committed folders, for example:
+samples, pe_output, and work folders, so a tiny trial run can be kept
+out of the committed folders, for example:
   python validate.py --letters a --years 2021 --regen --size 100 \\
                      --datadir /some/scratch/folder
-With --prune, compare.py removes expected differences that are not
-actual from each expect file that has no unexpected actual differences
-(see compare.py).  The exit code is 0 when every comparison passes and
-1 otherwise.
+The exit code is 0 when every step runs without error and 1 otherwise.
 """
 
 import argparse
@@ -65,12 +62,11 @@ def run_step(script, args):
 def validate(letter, year, args, datadir):
     """
     Run the validation steps for LETTER and YEAR and return a result
-    string: PASS, FAIL, or the name of the step that failed to run.
+    string: OK or the name of the step that failed to run.
     """
     sampledir = datadir / "samples"
     pedir = datadir / "pe_output"
     workdir = datadir / "work"
-    expectdir = datadir / "expected_differences"
     for folder in (sampledir, pedir, workdir):
         folder.mkdir(parents=True, exist_ok=True)
     lyear = [letter, str(year)]
@@ -83,16 +79,14 @@ def validate(letter, year, args, datadir):
     steps.append(("taxsim_to_tc.py", lyear + [
         "--indir", str(sampledir), "--outdir", str(workdir)]))
     steps.append(("run_tc.py", lyear + ["--workdir", str(workdir)]))
+    steps.append(("compare.py", lyear + [
+        "--tolerance", str(args.tolerance),
+        "--pedir", str(pedir),
+        "--workdir", str(workdir)]))
     for script, script_args in steps:
         if run_step(script, script_args) != 0:
             return f"ERROR in {script}"
-    code = run_step("compare.py", lyear + [
-        "--tolerance", str(args.tolerance),
-        "--pedir", str(pedir),
-        "--workdir", str(workdir),
-        "--expectdir", str(expectdir),
-    ] + (["--prune"] if args.prune else []))
-    return {0: "PASS", 1: "FAIL"}.get(code, "ERROR in compare.py")
+    return "OK"
 
 
 def parse_years(text):
@@ -155,14 +149,8 @@ def main():
     parser.add_argument(
         "--datadir",
         default=str(HERE),
-        help=("folder holding samples, pe_output, expected_differences, "
-              "and work (default is the folder containing this script)"),
-    )
-    parser.add_argument(
-        "--prune",
-        action="store_true",
-        help=("prune expected differences that are not actual from the "
-              "expect files (see compare.py)"),
+        help=("folder holding samples, pe_output, and work "
+              "(default is the folder containing this script)"),
     )
     args = parser.parse_args()
     print_pin()
@@ -177,7 +165,7 @@ def main():
             lyy = f"{letter}{year % 100:02d}"
             print(f"===== {lyy} =====", flush=True)
             results[lyy] = validate(letter, year, args, datadir)
-    return 0
+    return 0 if all(res == "OK" for res in results.values()) else 1
 
 
 if __name__ == "__main__":

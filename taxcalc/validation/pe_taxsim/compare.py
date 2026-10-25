@@ -2,7 +2,7 @@
 Compares policyengine-taxsim and Tax-Calculator TAXSIM-format output
 (step 5 of the validation).
 
-USAGE: python compare.py LETTER YEAR [--tolerance T] [--prune]
+USAGE: python compare.py LETTER YEAR [--tolerance T]
 
 reads pe_output/LYY.out-pe.csv.gz (written by run_pe.py) and
 work/LYY.out-tc.csv (written by run_tc.py), and writes these files to
@@ -14,15 +14,8 @@ work/actual_differences/:
   LYY-taxdiffs-summary.csv  for each compared variable, the number of
                             units compared, the number of differences,
                             and the maximum and mean absolute difference
-The comparison passes when the actual differences are exactly the same
-as those in expected_differences/LYY-taxdiffs-expect.csv, or when there
-are no actual differences and no expected-differences file.  The exit
-code is 0 when the comparison passes, 1 when it fails, and 2 on error.
-With --prune, a comparison that fails only because some expected
-differences are not actual (for example, after a new PE version fixes
-some differences) is made to pass by replacing the expect file with
-the actual differences, or by deleting the expect file when there are
-no actual differences.
+and prints a summary of the differences.  The exit code is 0 on success
+and 2 on error.
 The compared variables follow the output table in VARIABLES.md.
 """
 
@@ -128,34 +121,6 @@ def differences(peo, tco, tolerance):
     return diffs, summary
 
 
-def unexpected_differences(actual, expectfile):
-    """
-    Return DataFrame of the rows that are in only one of the ACTUAL
-    differences and the EXPECTFILE differences (an empty DataFrame
-    means they match exactly), with a "where" column saying which.
-    A missing EXPECTFILE means that no differences are expected.
-    """
-    if expectfile.is_file():
-        expect = pd.read_csv(expectfile)
-        if list(expect.columns) != DIFF_COLUMNS:
-            raise ValueError(f"{expectfile} does not have columns "
-                             f"{DIFF_COLUMNS}")
-    else:
-        expect = pd.DataFrame(columns=DIFF_COLUMNS)
-    # compare the values as they are written to the CSV files
-    act = actual.astype({"taxsimid": int, "variable": str})
-    exp = expect.astype({"taxsimid": int, "variable": str})
-    for col in ["pe", "tc", "diff"]:
-        act[col] = act[col].map(lambda x: f"{x:.2f}")
-        exp[col] = exp[col].astype(float).map(lambda x: f"{x:.2f}")
-    both = act.merge(exp, how="outer", on=DIFF_COLUMNS, indicator="where")
-    both = both[both["where"] != "both"].reset_index(drop=True)
-    both["where"] = both["where"].map(
-        {"left_only": "actual_only", "right_only": "expect_only"}
-    )
-    return both
-
-
 def report(lyy, summary, tolerance):
     """
     Print the comparison results for sample LYY.
@@ -169,34 +134,11 @@ def report(lyy, summary, tolerance):
         print(nonzero.to_string(index=False))
 
 
-def prune(lyy, diffs, unexpected, expectfile):
-    """
-    Replace EXPECTFILE with the actual DIFFS (or delete EXPECTFILE when
-    there are no DIFFS) if the UNEXPECTED differences are all expected
-    differences that are not actual, print what was done, and return
-    True if EXPECTFILE was pruned.
-    """
-    if unexpected.empty or (unexpected["where"] != "expect_only").any():
-        return False
-    if diffs.empty:
-        expectfile.unlink()
-        print(f"{lyy}: PRUNE deleted {expectfile.name} because all "
-              f"{len(unexpected)} expected differences are not actual")
-    else:
-        diffs.to_csv(expectfile, index=False, float_format="%.2f")
-        print(f"{lyy}: PRUNE removed {len(unexpected)} expected "
-              f"differences that are not actual from {expectfile.name}")
-    return True
-
-
-def compare(lyy, year, tolerance, dirs, prune_expect=False):
+def compare(lyy, year, tolerance, dirs):
     """
     Compare the PE and Tax-Calculator outputs for sample LYY in YEAR,
-    write the actual-differences files, print a report, and return
-    True if the comparison passes.  DIRS is a dictionary with the
-    "pe", "work", and "expect" folders.  If PRUNE_EXPECT is True,
-    a comparison that fails only because some expected differences
-    are not actual is made to pass by pruning the expect file.
+    write the actual-differences files, and print a report.  DIRS is a
+    dictionary with the "pe" and "work" folders.
     """
     workdir = dirs["work"]
     peo = pd.read_csv(dirs["pe"] / f"{lyy}.out-pe.csv.gz")
@@ -209,13 +151,7 @@ def compare(lyy, year, tolerance, dirs, prune_expect=False):
                  index=False, float_format="%.2f")
     summary.to_csv(actdir / f"{lyy}-taxdiffs-summary.csv",
                    index=False, float_format="%.2f")
-    expectfile = dirs["expect"] / f"{lyy}-taxdiffs-expect.csv"
-    unexpected = unexpected_differences(diffs, expectfile)
     report(lyy, summary, tolerance)
-    if prune_expect and prune(lyy, diffs, unexpected, expectfile):
-        print(f"{lyy}: PASS after PRUNE")
-        return True
-    return unexpected.empty
 
 
 def main():
@@ -226,8 +162,7 @@ def main():
         prog="python compare.py",
         description=(
             "Compares pe_output/LYY.out-pe.csv.gz with work/LYY.out-tc.csv "
-            "and checks the differences against "
-            "expected_differences/LYY-taxdiffs-expect.csv."
+            "and writes the differences to work/actual_differences/."
         ),
     )
     parser.add_argument(
@@ -257,38 +192,23 @@ def main():
         default=str(HERE / "work"),
         help="working folder (default is work next to this script)",
     )
-    parser.add_argument(
-        "--expectdir",
-        default=str(HERE / "expected_differences"),
-        help=("expected-differences folder (default is "
-              "expected_differences next to this script)"),
-    )
-    parser.add_argument(
-        "--prune",
-        action="store_true",
-        help=("remove expected differences that are not actual from the "
-              "expect file when there are no unexpected actual "
-              "differences"),
-    )
     args = parser.parse_args()
     if args.tolerance < 0:
         sys.stderr.write("ERROR: --tolerance must be non-negative\n")
         return 2
     lyy = f"{args.LETTER}{args.YEAR % 100:02d}"
     try:
-        passed = compare(
+        compare(
             lyy, args.YEAR, args.tolerance,
             {
                 "pe": Path(args.pedir).resolve(),
                 "work": Path(args.workdir).resolve(),
-                "expect": Path(args.expectdir).resolve(),
             },
-            prune_expect=args.prune,
         )
     except (FileNotFoundError, ValueError) as err:
         sys.stderr.write(f"ERROR: {err}\n")
         return 2
-    return 0 if passed else 1
+    return 0
 
 
 if __name__ == "__main__":

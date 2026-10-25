@@ -19,8 +19,8 @@ The comparison involves five steps:
 3. `taxsim_to_tc.py` translates the sample into a Tax-Calculator input file.
 4. `run_tc.py` runs the Tax-Calculator CLI with the `pe_emulation.json`
    reform and converts its output to TAXSIM format.
-5. `compare.py` compares the two outputs and checks the differences
-   against `expected_differences/LYY-taxdiffs-expect.csv`.
+5. `compare.py` compares the two outputs, writes the differences to
+   the `work/actual_differences/` folder, and prints a summary of them.
 
 The samples and PE outputs are committed, so steps 3-5 can be rerun
 using only the `taxcalc-dev` conda environment.  Generated working
@@ -44,16 +44,17 @@ python taxcalc/validation/pe_taxsim/validate.py
 ```
 
 This runs steps 3-5 for all fifteen samples (letters `a`, `b`, `c`
-times years 2021-2025) in about one minute and ends with a PASS/FAIL
-summary.  Neither uv nor PolicyEngine is needed.  Every comparison
-should pass.  A failure means that a Tax-Calculator change altered at
-least one compared result: compare
-`work/actual_differences/LYY-taxdiffs-actual.csv` with
-`expected_differences/LYY-taxdiffs-expect.csv` and decide whether the
-change fixes a bug (then copy the actual file over the
-`LYY-taxdiffs-expect.csv` file and update `test_results.expect`) or
-whether the Tax-Calculator change introduces a bug.  See
-[Running all the steps](#running-all-the-steps) for options.
+times years 2021-2025) in about one minute and prints a summary of the
+differences for each sample.  Neither uv nor PolicyEngine is needed.
+The `test.sh` script (run by `make valtest`) runs `validate.py` and
+checks that its output is the same as the committed
+`test_results.expect` file.  A difference means that a Tax-Calculator
+change altered at least one compared result: examine the
+`work/actual_differences/LYY-taxdiffs-actual.csv` file for each sample
+whose summary changed and decide whether the change fixes a bug (then
+regenerate `test_results.expect`) or whether the Tax-Calculator change
+introduces a bug.  See [Running all the steps](#running-all-the-steps)
+for options.
 
 Results summary
 ---------------
@@ -88,8 +89,8 @@ To add a year, change `LAST_YEAR` in all six scripts, check the
 year-specific logic in `run_tc.py` and [`VARIABLES.md`](VARIABLES.md)
 for the new year's law changes, generate the samples and PE outputs
 for the new year (steps 1 and 2), and examine every difference the
-way the existing ones were examined before creating the new expect
-files.  To move to a newer PE version, update `pe_pin.json` (see
+way the existing ones were examined before regenerating
+`test_results.expect`.  To move to a newer PE version, update `pe_pin.json` (see
 [Updating the PE pin](#updating-the-pe-pin)), regenerate all fifteen
 PE outputs with `python run_pe.py --all --force`, and re-examine every difference;
 the samples need not change.
@@ -165,19 +166,10 @@ re-examine every difference, and update the PE versions mentioned in
 this file (such as in the uvx command above) and in
 [`SUMMARY.md`](SUMMARY.md).
 
-A new PE version often removes some or all of a sample's expected
-differences, which makes that sample's comparison fail with expected
-differences that are not actual.  `python validate.py --prune` handles
-this automatically for every sample that has no unexpected actual
-differences: it replaces `expected_differences/LYY-taxdiffs-expect.csv`
-with `work/actual_differences/LYY-taxdiffs-actual.csv`, or deletes the
-expect file if no actual differences remain.  A sample that still
-fails after pruning has new differences that must be examined.  Then
-rerun `validate.py`, check that every comparison passes, and
-regenerate `test_results.expect`.
-Never regenerate `test_results.expect` while any comparison fails:
-`test.sh` (run by `make valtest`) fails if `test_results.expect`
-contains a FAIL result.
+A new PE version often removes some of the differences and may add
+new ones.  Run `validate.py`, examine every new or changed difference
+in `work/actual_differences/`, and then regenerate
+`test_results.expect`.
 
 Step 3
 ------
@@ -232,7 +224,8 @@ Step 5
 variables marked "Compare" in the output table in
 [`VARIABLES.md`](VARIABLES.md) (`v13`, `v17`, and `v19` only for the
 units described there).  It writes two files to
-`work/actual_differences/`:
+`work/actual_differences/` and prints the summary rows for the
+variables that have differences:
 
 - `LYY-taxdiffs-actual.csv` has one row (`taxsimid`, `variable`, `pe`,
   `tc`, `diff`) for each compared value whose absolute difference,
@@ -241,19 +234,15 @@ units described there).  It writes two files to
   number of units compared, the number of differences, and the
   maximum and mean absolute difference.
 
-The comparison passes when the actual differences are exactly the same
-as those in `expected_differences/LYY-taxdiffs-expect.csv` (the same
-units, variables, and values to the cent), or when there are no actual
-differences and no expected-differences file.  The exit code is 0 for
-pass, 1 for fail, and 2 for an error.
+The exit code is 0 on success and 2 on error.
 
 Running all the steps
 ---------------------
 
 `python validate.py` runs steps 3-5 for every letter and year using
-the committed samples and PE outputs, prints each comparison, and ends
-with a pass/fail summary; its exit code is 0 only when every
-comparison passes.  All fifteen comparisons take about one minute.
+the committed samples and PE outputs and prints each comparison; its
+exit code is 0 only when every step runs without error.  All fifteen
+comparisons take about one minute.
 Use `--letters` (e.g., `ab`) and `--years` (e.g., `2021,2023-2025`) to
 run a subset, and `--tolerance` to change the tolerance.
 
@@ -261,8 +250,7 @@ With `--regen`, `validate.py` first runs steps 1 and 2
 (`generate_sample.py` and `run_pe.py --force`), which **overwrites**
 the samples and PE outputs.  Do that in the committed folders only
 deliberately.  `--datadir DIR` makes `validate.py` use the
-`samples`, `pe_output`, `expected_differences`, and `work` folders in
-`DIR` instead of those next to the scripts, so a quick trial run with
+`samples`, `pe_output`, and `work` folders in `DIR` instead of those next to the scripts, so a quick trial run with
 a small sample leaves the committed files alone:
 
 ```
