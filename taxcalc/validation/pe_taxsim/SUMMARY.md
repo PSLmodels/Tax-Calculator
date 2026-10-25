@@ -81,8 +81,8 @@ on Tax-Calculator master branch at Sun Oct 25 11:15:24 EDT 2026.
 Read the taxcalc/validation/pe_taxsim/test_results.expect file and
 analyze each of the differences, writing a summary of the nature and
 cause of each difference at the bottom of the
-taxcalc/validation/pe_taxsim/SUMMARY.md file just below the
-## Results: line.
+taxcalc/validation/pe_taxsim/SUMMARY.md file just below the Results:
+line.
 
 ## Results:
 
