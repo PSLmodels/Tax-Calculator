@@ -19,8 +19,8 @@ The comparison involves five steps:
 3. `taxsim_to_tc.py` translates the sample into a Tax-Calculator input file.
 4. `run_tc.py` runs the Tax-Calculator CLI with the `pe_emulation.json`
    reform and converts its output to TAXSIM format.
-5. `compare.py` compares the two outputs and checks the differences
-   against `expected_differences/LYY-taxdiffs-expect.csv`.
+5. `compare.py` compares the two outputs, writes the differences to
+   the `work/differences/` folder, and prints a summary of them.
 
 The samples and PE outputs are committed, so steps 3-5 can be rerun
 using only the `taxcalc-dev` conda environment.  Generated working
@@ -44,16 +44,17 @@ python taxcalc/validation/pe_taxsim/validate.py
 ```
 
 This runs steps 3-5 for all fifteen samples (letters `a`, `b`, `c`
-times years 2021-2025) in about one minute and ends with a PASS/FAIL
-summary.  Neither uv nor PolicyEngine is needed.  Every comparison
-should pass.  A failure means that a Tax-Calculator change altered at
-least one compared result: compare
-`work/actual_differences/LYY-taxdiffs-actual.csv` with
-`expected_differences/LYY-taxdiffs-expect.csv` and decide whether the
-change fixes a bug (then copy the actual file over the
-`LYY-taxdiffs-expect.csv` file and update `test_results.expect`) or
-whether the Tax-Calculator change introduces a bug.  See
-[Running all the steps](#running-all-the-steps) for options.
+times years 2021-2025) in about one minute and prints a summary of the
+differences for each sample.  Neither uv nor PolicyEngine is needed.
+The `test.sh` script (run by `make valtest`) runs `validate.py` and
+checks that its output is the same as the committed
+`test_results.expect` file.  A difference means that a Tax-Calculator
+change altered at least one compared result: examine the
+`work/differences/LYY-taxdiffs.csv` file for each sample
+whose summary changed and decide whether the change fixes a bug (then
+regenerate `test_results.expect`) or whether the Tax-Calculator change
+introduces a bug.  See [Running all the steps](#running-all-the-steps)
+for options.
 
 Results summary
 ---------------
@@ -88,10 +89,11 @@ To add a year, change `LAST_YEAR` in all six scripts, check the
 year-specific logic in `run_tc.py` and [`VARIABLES.md`](VARIABLES.md)
 for the new year's law changes, generate the samples and PE outputs
 for the new year (steps 1 and 2), and examine every difference the
-way the existing ones were examined before creating the new expect
-files.  To move to a newer PE version, change `pe_pin.json`,
-regenerate all fifteen PE outputs with `run_pe.py --force`, and
-re-examine every difference; the samples need not change.
+way the existing ones were examined before regenerating
+`test_results.expect`.  To move to a newer PE version, update `pe_pin.json` (see
+[Updating the PE pin](#updating-the-pe-pin)), regenerate all fifteen
+PE outputs with `python run_pe.py --all --force`, and re-examine every difference;
+the samples need not change.
 
 Environment setup
 -----------------
@@ -111,31 +113,63 @@ curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 sh
 
 and update it later with `uv self update`.
 
-The policyengine-taxsim commit, the `policyengine-us` version, the
-Python version, and the extra policyengine-taxsim options are pinned
-in [`pe_pin.json`](pe_pin.json).  Step 2 is equivalent to this command:
+The policyengine-taxsim commit, the `policyengine-us` and
+`policyengine-core` versions, the Python version, and the extra
+policyengine-taxsim options are pinned in [`pe_pin.json`](pe_pin.json).
+Step 2 is equivalent to this command:
 
 ```
 uvx --python 3.13 \
     --from git+https://github.com/PolicyEngine/policyengine-taxsim@3e2a7589c8acda0edd2aa9e748d726c9ca9262d0 \
     --with policyengine-us==2.30.1 \
+    --with policyengine-core==3.32.21 \
     policyengine-taxsim policyengine LYY.in.csv --output LYY.out-pe.csv \
     --scorp-treatment active
 ```
 
 `python run_pe.py L YYYY` builds and runs this command from
 `pe_pin.json`, first checking that the uv environment resolves to the
-pinned `policyengine-us`, `policyengine-core`, and Python versions.
-It refuses to overwrite an existing PE output unless `--force` is
-given, and it checks that the output has the expected columns and the
-same `taxsimid` and `year` values as the input sample.  A 10,000-unit
-run takes about two minutes.
+pinned `policyengine-taxsim`, `policyengine-us`, `policyengine-core`,
+and Python versions.  It refuses to overwrite an existing PE output
+unless `--force` is given, and it checks that the output has the
+expected columns and the same `taxsimid` and `year` values as the
+input sample.  A 10,000-unit run takes about fifteen seconds.
+`python run_pe.py --all` runs all fifteen samples, using five
+concurrent processes unless `--jobs N` specifies a different number;
+it resolves the pinned uv environment once before starting the
+concurrent runs, reports any run that fails, and takes a little over
+one minute with the default five processes.
 
 The `--with policyengine-us==...` option is required, because
 policyengine-taxsim does not set an upper bound on its
-`policyengine-us` dependency.  Change the pin only deliberately,
-because doing so requires regenerating all the committed PE outputs
-and re-examining all the differences.
+`policyengine-us` dependency, and the `--with policyengine-core==...`
+option is required, because `policyengine-us` does not set an upper
+bound on its `policyengine-core` dependency.  Change the pin only
+deliberately, because doing so requires regenerating all the committed
+PE outputs and re-examining all the differences.
+
+Updating the PE pin
+-------------------
+
+`python update_pe_pin.py` finds the newest commit on the
+policyengine-taxsim default branch (using the GitHub API) and the
+newest `policyengine-us` release (using the PyPI API), resolves that
+candidate pin with uvx to get the `policyengine-taxsim`,
+`policyengine-core`, and Python versions actually used, and lists each
+`pe_pin.json` entry that would change.  It is a dry run unless
+`--write` is given, and it never writes a pin that uvx cannot resolve.
+Use `--sha SHA` to pin a specific policyengine-taxsim commit instead
+of the newest one, and `--python X.Y` to change the pinned Python
+version.  The `pe_cli_options` entry is never changed.  After writing
+a new pin, regenerate all the PE outputs (`python run_pe.py --all --force`),
+re-examine every difference, and update the PE versions mentioned in
+this file (such as in the uvx command above) and in
+[`SUMMARY.md`](SUMMARY.md).
+
+A new PE version often removes some of the differences and may add
+new ones.  Run `validate.py`, examine every new or changed difference
+in `work/differences/`, and then regenerate
+`test_results.expect`.
 
 Step 3
 ------
@@ -190,28 +224,25 @@ Step 5
 variables marked "Compare" in the output table in
 [`VARIABLES.md`](VARIABLES.md) (`v13`, `v17`, and `v19` only for the
 units described there).  It writes two files to
-`work/actual_differences/`:
+`work/differences/` and prints the summary rows for the
+variables that have differences:
 
-- `LYY-taxdiffs-actual.csv` has one row (`taxsimid`, `variable`, `pe`,
+- `LYY-taxdiffs.csv` has one row (`taxsimid`, `variable`, `pe`,
   `tc`, `diff`) for each compared value whose absolute difference,
   `diff = tc - pe`, exceeds the tolerance (default $1).
 - `LYY-taxdiffs-summary.csv` has, for each compared variable, the
   number of units compared, the number of differences, and the
   maximum and mean absolute difference.
 
-The comparison passes when the actual differences are exactly the same
-as those in `expected_differences/LYY-taxdiffs-expect.csv` (the same
-units, variables, and values to the cent), or when there are no actual
-differences and no expected-differences file.  The exit code is 0 for
-pass, 1 for fail, and 2 for an error.
+The exit code is 0 on success and 2 on error.
 
 Running all the steps
 ---------------------
 
 `python validate.py` runs steps 3-5 for every letter and year using
-the committed samples and PE outputs, prints each comparison, and ends
-with a pass/fail summary; its exit code is 0 only when every
-comparison passes.  All fifteen comparisons take about one minute.
+the committed samples and PE outputs and prints each comparison; its
+exit code is 0 only when every step runs without error.  All fifteen
+comparisons take about one minute.
 Use `--letters` (e.g., `ab`) and `--years` (e.g., `2021,2023-2025`) to
 run a subset, and `--tolerance` to change the tolerance.
 
@@ -219,8 +250,7 @@ With `--regen`, `validate.py` first runs steps 1 and 2
 (`generate_sample.py` and `run_pe.py --force`), which **overwrites**
 the samples and PE outputs.  Do that in the committed folders only
 deliberately.  `--datadir DIR` makes `validate.py` use the
-`samples`, `pe_output`, `expected_differences`, and `work` folders in
-`DIR` instead of those next to the scripts, so a quick trial run with
+`samples`, `pe_output`, and `work` folders in `DIR` instead of those next to the scripts, so a quick trial run with
 a small sample leaves the committed files alone:
 
 ```
