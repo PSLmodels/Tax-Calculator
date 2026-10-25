@@ -1580,6 +1580,8 @@ def test_SchXYZTax(call_calcfunc, reform, rvars, expected):
 # Worksheet line 19 amount (the top of the 24% bracket) under 2025
 # current law and the top of the 15% bracket under 2017 law.
 II_RT4_REFORM = {'II_rt4': {2025: 0.25}}
+II_RT2_REFORM = {'II_rt2': {2025: 0.25}}
+II_RT1_REFORM = {'II_rt1': {2025: 0.25}}
 
 
 @pytest.mark.parametrize('reform, year, MARS, expected', [
@@ -1593,6 +1595,12 @@ II_RT4_REFORM = {'II_rt4': {2025: 0.25}}
     # reform raising the 24% rate to 25% makes the amount the top of
     # the 22% bracket
     pytest.param(II_RT4_REFORM, 2025, 1, 103350., id='reform 25 percent'),
+    # reform raising the 12% rate to 25% makes the amount the top of
+    # the 10% bracket
+    pytest.param(II_RT2_REFORM, 2025, 1, 11925., id='reform rt2 25 percent'),
+    # reform raising the 10% rate to 25% means no taxable income is
+    # taxed below 25 percent
+    pytest.param(II_RT1_REFORM, 2025, 1, 0., id='reform rt1 25 percent'),
 ])
 def test_TopBracketBelow25(call_calcfunc, reform, year, MARS, expected):
     """
