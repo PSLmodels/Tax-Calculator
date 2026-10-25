@@ -6,8 +6,8 @@ USAGE: python compare.py LETTER YEAR [--tolerance T]
 
 reads pe_output/LYY.out-pe.csv.gz (written by run_pe.py) and
 work/LYY.out-tc.csv (written by run_tc.py), and writes these files to
-work/actual_differences/:
-  LYY-taxdiffs-actual.csv   one row (taxsimid, variable, pe, tc, diff)
+work/differences/:
+  LYY-taxdiffs.csv          one row (taxsimid, variable, pe, tc, diff)
                             for each compared value whose absolute
                             difference, diff = tc - pe, exceeds T
                             (default $1)
@@ -137,7 +137,7 @@ def report(lyy, summary, tolerance):
 def compare(lyy, year, tolerance, dirs):
     """
     Compare the PE and Tax-Calculator outputs for sample LYY in YEAR,
-    write the actual-differences files, and print a report.  DIRS is a
+    write the differences files, and print a report.  DIRS is a
     dictionary with the "pe" and "work" folders.
     """
     workdir = dirs["work"]
@@ -145,11 +145,11 @@ def compare(lyy, year, tolerance, dirs):
     tco = pd.read_csv(workdir / f"{lyy}.out-tc.csv")
     check_inputs(peo, tco, year)
     diffs, summary = differences(peo, tco, tolerance)
-    actdir = workdir / "actual_differences"
-    actdir.mkdir(exist_ok=True)
-    diffs.to_csv(actdir / f"{lyy}-taxdiffs-actual.csv",
+    diffdir = workdir / "differences"
+    diffdir.mkdir(exist_ok=True)
+    diffs.to_csv(diffdir / f"{lyy}-taxdiffs.csv",
                  index=False, float_format="%.2f")
-    summary.to_csv(actdir / f"{lyy}-taxdiffs-summary.csv",
+    summary.to_csv(diffdir / f"{lyy}-taxdiffs-summary.csv",
                    index=False, float_format="%.2f")
     report(lyy, summary, tolerance)
 
@@ -162,7 +162,7 @@ def main():
         prog="python compare.py",
         description=(
             "Compares pe_output/LYY.out-pe.csv.gz with work/LYY.out-tc.csv "
-            "and writes the differences to work/actual_differences/."
+            "and writes the differences to work/differences/."
         ),
     )
     parser.add_argument(

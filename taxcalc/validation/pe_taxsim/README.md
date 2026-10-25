@@ -20,7 +20,7 @@ The comparison involves five steps:
 4. `run_tc.py` runs the Tax-Calculator CLI with the `pe_emulation.json`
    reform and converts its output to TAXSIM format.
 5. `compare.py` compares the two outputs, writes the differences to
-   the `work/actual_differences/` folder, and prints a summary of them.
+   the `work/differences/` folder, and prints a summary of them.
 
 The samples and PE outputs are committed, so steps 3-5 can be rerun
 using only the `taxcalc-dev` conda environment.  Generated working
@@ -50,7 +50,7 @@ The `test.sh` script (run by `make valtest`) runs `validate.py` and
 checks that its output is the same as the committed
 `test_results.expect` file.  A difference means that a Tax-Calculator
 change altered at least one compared result: examine the
-`work/actual_differences/LYY-taxdiffs-actual.csv` file for each sample
+`work/differences/LYY-taxdiffs.csv` file for each sample
 whose summary changed and decide whether the change fixes a bug (then
 regenerate `test_results.expect`) or whether the Tax-Calculator change
 introduces a bug.  See [Running all the steps](#running-all-the-steps)
@@ -168,7 +168,7 @@ this file (such as in the uvx command above) and in
 
 A new PE version often removes some of the differences and may add
 new ones.  Run `validate.py`, examine every new or changed difference
-in `work/actual_differences/`, and then regenerate
+in `work/differences/`, and then regenerate
 `test_results.expect`.
 
 Step 3
@@ -224,10 +224,10 @@ Step 5
 variables marked "Compare" in the output table in
 [`VARIABLES.md`](VARIABLES.md) (`v13`, `v17`, and `v19` only for the
 units described there).  It writes two files to
-`work/actual_differences/` and prints the summary rows for the
+`work/differences/` and prints the summary rows for the
 variables that have differences:
 
-- `LYY-taxdiffs-actual.csv` has one row (`taxsimid`, `variable`, `pe`,
+- `LYY-taxdiffs.csv` has one row (`taxsimid`, `variable`, `pe`,
   `tc`, `diff`) for each compared value whose absolute difference,
   `diff = tc - pe`, exceeds the tolerance (default $1).
 - `LYY-taxdiffs-summary.csv` has, for each compared variable, the
