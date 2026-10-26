@@ -1861,7 +1861,14 @@ def test_AGIsurtax(call_calcfunc, reform, rvars, expected):
 # which are Form 6251 line 4, Form 6251 line 11, and Form 1040 line 16
 # plus Sch 2 line 1.
 AMT_MEDICAL_REFORM = {'AMT_Medical_frt': {2025: 0.025}}
-AMT_EM_PE_REFORM = {'AMT_em_pe': {2025: 700000}}
+AMT_SEPARATE_EM_REFORM = {
+    'AMT_em': {2025: [88100, 137000, 100000, 88100, 137000]},
+}
+AMT_PRT_REFORM = {  # 2026 OBBBA exemption parameters in 2025
+    'AMT_em': {2025: [90100, 140200, 70100, 90100, 140200]},
+    'AMT_em_ps': {2025: [500000, 1000000, 500000, 500000, 1000000]},
+    'AMT_prt': {2025: 0.5},
+}
 AMT_CHILD_EM_C_AGE_REFORM = {'AMT_child_em_c_age': {2025: 19}}
 AMT_CG_BRK3_REFORM = {
     'AMT_CG_brk3': {2025: [1e6, 1e6, 1e6, 1e6, 1e6]},
@@ -1930,18 +1937,60 @@ AMT_CG_BRK3_REFORM = {
                  {'MARS': 1, 'standard': 15750., 'c00100': 700000.,
                   'cmbtp': 300000., 'taxbc': 210192.75},
                  (1e6, 65025.25, 275218.), id='exemption phased out'),
-    # married filing separately with line 4 above AMT_em_pe: under 2025
-    # current law, line 4 above 900350 already phases out all of the
-    # 68500 exemption, but lowering AMT_em_pe to 700000 eliminates the
-    # 68500 - 0.25 * (800000 - 626350) = 25087.5 exemption;
-    # line 4 = 400000 + 400000 of line 2i ISO preference;
-    # line 7 = 0.26 * 800000 + 0.02 * (800000 - 119550) = 221609;
-    # line 11 = 221609 - 104203.75 (regular tax on 384250)
-    pytest.param(AMT_EM_PE_REFORM,
+    # married filing separately with line 4 below the 900350 point at
+    # which the exemption is fully phased out, so there is no line 4
+    # add-on: line 4 = 400000 + 400000 of line 2i ISO preference;
+    # line 5 = 68500 - 0.25 * (800000 - 626350) = 25087.5;
+    # line 6 = 774912.5; line 7 = 0.26 * 774912.5 + 0.02 * (774912.5
+    # - 119550) = 214584.5; line 11 = 214584.5 - 104203.75 (regular
+    # tax on 384250)
+    pytest.param(None,
                  {'MARS': 3, 'standard': 15750., 'c00100': 400000.,
                   'cmbtp': 400000., 'taxbc': 104203.75},
-                 (800000., 117405.25, 221609.),
-                 id='reform separate exemption eliminated'),
+                 (800000., 110380.75, 214584.5),
+                 id='separate exemption partly phased out'),
+    # married filing separately with line 4 before the add-on of
+    # 400000 + 600350 = 1000350: the line 4 instructions add the
+    # lesser of 0.25 * (1000350 - 900350) = 25000 or 68500, so
+    # line 4 = 1025350; line 5 = 0; line 7 = 0.26 * 1025350 + 0.02 *
+    # (1025350 - 119550) = 284707; line 11 = 284707 - 104203.75
+    pytest.param(None,
+                 {'MARS': 3, 'standard': 15750., 'c00100': 400000.,
+                  'cmbtp': 600350., 'taxbc': 104203.75},
+                 (1025350., 180503.25, 284707.),
+                 id='separate line 4 partial add-on'),
+    # married filing separately with line 4 before the add-on of
+    # 1200000: the line 4 instructions add the lesser of 0.25 *
+    # (1200000 - 900350) = 74912.5 or 68500, so line 4 = 1268500;
+    # line 7 = 0.28 * 1268500 - 2391 = 352789; line 11 = 352789
+    # - 104203.75
+    pytest.param(None,
+                 {'MARS': 3, 'standard': 15750., 'c00100': 400000.,
+                  'cmbtp': 800000., 'taxbc': 104203.75},
+                 (1268500., 248585.25, 352789.),
+                 id='separate line 4 full add-on'),
+    # as above with the MFS exemption raised to 100000, which moves
+    # the full phase-out point to 626350 + 100000 / 0.25 = 1026350:
+    # the add-on is the lesser of 0.25 * (1200000 - 1026350)
+    # = 43412.5 or 100000, so line 4 = 1243412.5; line 7 = 0.26 *
+    # 1243412.5 + 0.02 * (1243412.5 - 119550) = 345764.5
+    pytest.param(AMT_SEPARATE_EM_REFORM,
+                 {'MARS': 3, 'standard': 15750., 'c00100': 400000.,
+                  'cmbtp': 800000., 'taxbc': 104203.75},
+                 (1243412.5, 241560.75, 345764.5),
+                 id='reform separate exemption add-on'),
+    # married filing separately under the 2026 OBBBA exemption
+    # parameters, where the full phase-out point is 500000 + 70100 /
+    # 0.5 = 640200 and the add-on rate is AMT_prt = 0.5: line 4
+    # before the add-on is 700000, so the add-on is the lesser of 0.5
+    # * (700000 - 640200) = 29900 or 70100 and line 4 = 729900;
+    # line 7 = 0.26 * 729900 + 0.02 * (729900 - 119550) = 201981;
+    # line 11 = 201981 - 104203.75
+    pytest.param(AMT_PRT_REFORM,
+                 {'MARS': 3, 'standard': 15750., 'c00100': 400000.,
+                  'cmbtp': 300000., 'taxbc': 104203.75},
+                 (729900., 97777.25, 201981.),
+                 id='reform separate 50 percent add-on'),
     # under current law AMT_child_em_c_age is zero after 2017, so a
     # filer under age 18 with no earned income gets the full 88100
     # exemption: line 6 = max(0, 60000 - 88100) = 0; no AMT

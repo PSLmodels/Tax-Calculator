@@ -19,7 +19,7 @@
 // - 3: STD and II_em parameters
 // - 4: CTC_* and ACTC_* parameters
 // - 5: ODC_c parameter
-// - 6: three different AMT_em* parameters
+// - 6: two different AMT_em* parameters
 // - 7: three ALD_* parameters
 // - 8: seven different ID_* parameters
 // - 9: many parameters not altered by TCJA except for indexing change
@@ -57,7 +57,6 @@
     "ODC_c": {"2018": 0},
     "AMT_em": {"2017": [54300, 84500, 42250, 54300, 84500]},
     "AMT_em_ps": {"2017": [120700, 160900, 80450, 120700, 160900]},
-    "AMT_em_pe": {"2017": 249450},
     "ALD_BusinessLosses_c": {"2017": [9e99, 9e99, 9e99, 9e99, 9e99]},
     "ALD_AlimonyPaid_hc": {"2019": 0},
     "AlimonyReceived_frac_in_AGI": {"2019": 1},

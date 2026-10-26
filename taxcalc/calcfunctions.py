@@ -2542,7 +2542,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         auto_loan_interest_deduction,
         AMT_child_em_c_age, AMT_brk1,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2_addon,
-        AMT_child_em, AMT_em_ps, AMT_em_pe, AMT_Medical_frt,
+        AMT_child_em, AMT_em_ps, AMT_Medical_frt,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
         AMT_CG_rt3, AMT_CG_rt4, AMT_CG_rt1250, c05800, c09600, c62100):
     """
@@ -2586,9 +2586,13 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         tax, regular-tax base, AMT.
 
     Special rules:
-      - MARS == 3 (MFS): exemption fully phased out when
-        c62100 > AMT_em_pe (IRC §55(d)(3) "$900,350 see instructions"
-        cliff).
+      - MARS == 3 (MFS): IRC §55(d)(2) last sentence (Form 6251
+        line 4 instructions) increases AMTI by the lesser of AMT_prt
+        times the excess of AMTI over the point where the MFS
+        exemption is fully phased out ($900,350 in 2025) or the MFS
+        exemption amount.  That end point is computed as
+        AMT_em_ps + AMT_em / AMT_prt rather than read from a
+        separate parameter.
       - IRC §59(j) kiddie AMT: for non-joint filers under
         AMT_child_em_c_age, exemption capped at earned + AMT_child_em
         (IRC §1(g)(2)(C): kiddie tax never applies to a joint return).
@@ -2652,9 +2656,6 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         AMT exemption phaseout rate (line 5 phaseout)
     AMT_em_ps: list
         AMT exemption phaseout start by MARS
-    AMT_em_pe: float
-        AMT exemption phaseout ending AMT taxable income for
-        married filing separately (MARS == 3 cliff)
     AMT_child_em_c_age: float
         Age ceiling for IRC §59(j) kiddie-AMT exemption cap
     AMT_child_em: float
@@ -2758,6 +2759,17 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
         # line 2a (IRC 56(b)(1)(E)), so it nets out of AMTI entirely
         c62100 = c00100 - e00700 - qbided - sch1a_amount
     c62100 += cmbtp  # Form 6251 lines 2c-2t + 3: AMT prefs/adjustments
+    # IRC 55(d)(2) last sentence (Form 6251 line 4 instructions): an MFS
+    # filer adds to AMTI the lesser of AMT_prt times the excess of AMTI
+    # over the point where the MFS exemption is fully phased out, or the
+    # MFS exemption amount.  OBBBA's 55(d)(4)(A)(ii)(IV) substitutes 50
+    # percent for 25 percent in paragraph (2) beginning in 2026; using
+    # AMT_prt for the add-on rate is an interpretation that should be
+    # confirmed against the 2026 Form 6251 instructions.
+    if MARS == 3 and AMT_prt > 0.:
+        mfs_em = AMT_em[MARS - 1]
+        mfs_pe = AMT_em_ps[MARS - 1] + mfs_em / AMT_prt
+        c62100 += min(mfs_em, AMT_prt * max(0., c62100 - mfs_pe))
     # c62100 is AMT taxable income = Form 6251 line 4
     # --------------------------------------------------------------------
     # Form 6251 Part II top (lines 5-6): exemption and AMTI less exemption
@@ -2765,8 +2777,6 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc,
     # line 5: AMT exemption amount (with phase-out)
     line5 = max(0., AMT_em[MARS - 1] - AMT_prt *
                 max(0., c62100 - AMT_em_ps[MARS - 1]))
-    if MARS == 3 and c62100 > AMT_em_pe:
-        line5 = 0.
     # IRC §59(j) kiddie-AMT cap: exemption limited to earned +
     # AMT_child_em when filer is under AMT_child_em_c_age and does not
     # file a joint return (IRC §1(g)(2)(C)).

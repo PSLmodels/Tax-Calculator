@@ -790,30 +790,6 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error  
 
 
-####  `AMT_em_pe`  
-_Description:_ The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
-_Value Type:_ float  
-_Known Values:_  
-2013: 238550.0  
-2014: 242450.0  
-2015: 246250.0  
-2016: 247450.0  
-2017: 249450.0  
-2018: 718800.0  
-2019: 733700.0  
-2020: 745200.0  
-2021: 752800.0  
-2022: 776100.0  
-2023: 831150.0  
-2024: 875950.0  
-2025: 900350.0  
-2026: 639200.0  
-_Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error  
-
-
 ####  `AMT_em_ps`  
 _Description:_ AMT exemption starts to decrease when AMT taxable income goes beyond this threshold.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  

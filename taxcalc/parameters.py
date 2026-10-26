@@ -331,7 +331,7 @@ class Parameters(paramtools.Parameters):
                            'PT_qbid_taxinc_thd',
                            'ALD_BusinessLosses_c',
                            'STD', 'II_em', 'II_em_ps',
-                           'AMT_em', 'AMT_em_ps', 'AMT_em_pe',
+                           'AMT_em', 'AMT_em_ps',
                            'ID_ps', 'ID_AllTaxes_c']
             final_ifactor = 1.0
             pyear = 2017  # prior year before TCJA first implemented
