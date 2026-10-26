@@ -158,6 +158,10 @@ class Policy(Parameters):
         ),
         # following parameter was removed in PR 3198
         'AMT_em_pe': 'was removed in Tax-Calculator 6.8.6',
+        # following parameters were removed in PR 3199
+        'FST_AGI_trt': 'was removed in Tax-Calculator 6.8.6',
+        'FST_AGI_thd_lo': 'was removed in Tax-Calculator 6.8.6',
+        'FST_AGI_thd_hi': 'was removed in Tax-Calculator 6.8.6',
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}

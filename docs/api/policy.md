@@ -54,7 +54,7 @@ user-defined last_budget_year.
 def read_json_reform(obj)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py#L191)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py#L195)
 
 ```text
 Return a reform dictionary suitable for use with implement_reform
@@ -69,7 +69,7 @@ pointing to a valid JSON file hosted online, or a valid JSON text.
 def implement_reform(self, reform: dict, print_warnings=True, raise_errors=True)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py#L200)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py#L204)
 
 ```text
 Implement reform using a Tax-Calculator-style reform dictionary.
@@ -81,7 +81,7 @@ Implement reform using a Tax-Calculator-style reform dictionary.
 def parameter_list()
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py#L223)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py#L227)
 
 ```text
 Returns list of parameter names in the policy_current_law.json file.
@@ -93,7 +93,7 @@ Returns list of parameter names in the policy_current_law.json file.
 def set_rates(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py#L235)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py#L239)
 
 ```text
 Initialize policy parameter indexing rates.

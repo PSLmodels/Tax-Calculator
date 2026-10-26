@@ -23,7 +23,7 @@ from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    AmOppCreditParts, EducationTaxCredit,
                                    CharityCredit,
                                    NonrefundableCredits, C1040, IITAX,
-                                   FairShareTax, LumpSumTax, BenefitPrograms,
+                                   LumpSumTax, BenefitPrograms,
                                    ExpandIncome, AfterTaxIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
@@ -171,7 +171,6 @@ class Calculator():
         UBI(self.__policy, self.__records)
         BenefitPrograms(self)
         self._calc_one_year(zero_out_calc_vars)
-        FairShareTax(self.__policy, self.__records)
         LumpSumTax(self.__policy, self.__records)
         ExpandIncome(self.__policy, self.__records)
         AfterTaxIncome(self.__policy, self.__records)

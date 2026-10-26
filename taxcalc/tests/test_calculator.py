@@ -1088,7 +1088,6 @@ def test_custom_calculator_market_income(cps_subsample):
             tc.BenefitPrograms(self)
             self._calc_one_year(zero_out_calc_vars)
             # pylint: disable=no-value-for-parameter
-            tc.FairShareTax(self.__policy, self.__records)
             tc.LumpSumTax(self.__policy, self.__records)
             ExpandIncome(self.__policy, self.__records)  # customized above
             tc.AfterTaxIncome(self.__policy, self.__records)

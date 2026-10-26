@@ -160,7 +160,6 @@ class Calculator(tc.Calculator):
         self._calc_one_year(zero_out_calc_vars)
         tc.BenefitSurtax(self)
         tc.BenefitLimitation(self)
-        tc.FairShareTax(self.__policy, self.__records)
         tc.LumpSumTax(self.__policy, self.__records)
         # specify new method to set pseudo COLR policy parameters
         self.specify_pseudo_colr_policy()  # (see above)
