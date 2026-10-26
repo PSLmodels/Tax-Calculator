@@ -81,7 +81,7 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
 
         def _extrapolate(self, year):
             val = getattr(self, 'e00300')
-            setattr(
+            setattr(  # pylint: disable=attribute-defined-outside-init
                 self, 'e00300', val * self.gfactors.factor_value('AINTS', year)
             )
 
