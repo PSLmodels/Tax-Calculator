@@ -845,10 +845,6 @@
       "type": "float",
       "desc": "separate tax on long-term capital gains and qualified dividends"
     },
-    "fstax": {
-      "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
-    },
     "invinc_agi_ec": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used"

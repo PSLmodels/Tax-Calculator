@@ -114,7 +114,6 @@ class Calculator(tc.Calculator):
         tc.UBI(self.__policy, self.__records)
         tc.BenefitPrograms(self)
         self._calc_one_year(zero_out_calc_vars)
-        tc.FairShareTax(self.__policy, self.__records)
         tc.LumpSumTax(self.__policy, self.__records)
         ExpandIncome(self.__policy, self.__records)  # customized (see above)
         tc.AfterTaxIncome(self.__policy, self.__records)
