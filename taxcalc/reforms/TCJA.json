@@ -17,7 +17,7 @@
 // - 3: STD (can safely ignore WARNINGs about 2026+ values)
 // - 4: II_em
 // - 5: ODC_c, _CTC_c, _CTC_ps, _ACTC_c, _ACTC_Income_thd
-// - 6: AMT_em*
+// - 6: AMT_em*, AMT_child_em_c_age
 // - 7: ALD_*
 // - 8: ID_* (can safely ignore WARNINGs about values for several parameters)
 // - 9: parameter_indexing_CPI_offset
@@ -117,6 +117,12 @@
     "AMT_CG_brk1": {"2018": [38600, 77200, 38600, 51700, 77200]},
     "AMT_CG_brk2": {"2018": [425800, 479000, 239500, 452400, 479000]},
     "AMT_child_em": {"2018": 7600},
+    // The IRC 59(j) child AMT exemption cap was turned off for 2018-2025
+    // by the SECURE Act (P.L. 116-94, sec. 501), not by TCJA itself, but
+    // that retroactive change is included here because there is no
+    // SECURE Act reform file.  The cap returns when TCJA expires.
+    "AMT_child_em_c_age": {"2018": 0,
+                           "2026": 19},
     "AMT_brk1": {"2018": [191100, 191100,  95550, 191100, 191100]},
     "EITC_c": {"2018": [519, 3461, 5716, 6431]},
     "EITC_MaxEligAge": {"2022":125, "2023": 125},

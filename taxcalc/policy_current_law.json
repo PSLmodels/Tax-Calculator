@@ -17874,7 +17874,7 @@
     },
     "AMT_child_em": {
         "title": "Child AMT exemption additional income base",
-        "description": "The child's AMT exemption is capped by this amount plus the child's earned income.",
+        "description": "Under IRC section 59(j), the AMT exemption of a child subject to the kiddie tax is capped by this amount plus the child's earned income.  The cap applies only to filers younger than AMT_child_em_c_age, so this amount has no effect under current law after 2017 (even though IRS continues to publish it).",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -17950,7 +17950,7 @@
     },
     "AMT_child_em_c_age": {
         "title": "Age ceiling for special AMT exemption",
-        "description": "Individuals under this age must use the child AMT exemption rules.",
+        "description": "Individuals under this age must use the IRC section 59(j) child AMT exemption cap; a value of zero turns the cap off.  IRC section 55(d)(4)(A)(iii), added by the SECURE Act (P.L. 116-94) for 2018-2025 and made permanent by OBBBA (P.L. 119-21), says section 59(j) does not apply, so this value is zero after 2017.",
         "indexable": false,
         "indexed": false,
         "type": "int",

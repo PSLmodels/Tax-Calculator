@@ -11,6 +11,7 @@
     "AMT_em": {"2026": [73429, 114267, 57134, 73429, 114267]},
     "AMT_em_ps": {"2026": [163220, 217581, 108790, 163220, 217581]},
     "AMT_prt": {"2026": 0.25},
+    "AMT_child_em_c_age": {"2026": 19},
 
     // Group B: Personal Income Tax Rates and Brackets
     "II_rt1": {"2026": 0.10},

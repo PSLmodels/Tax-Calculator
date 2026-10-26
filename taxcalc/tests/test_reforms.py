@@ -51,6 +51,7 @@ def test_2017_law_reform(tests_path):
         # ... parameters affected by TCJA and that are not indexed
         'ID_Charity_crt_all': {'relation': '=', 'value': 0.5},
         'II_rt3': {'relation': '=', 'value': 0.25},
+        'AMT_child_em_c_age': {'relation': '=', 'value': 19},
         # ... parameters affected by TCJA and that are indexed
         'II_brk3': {'relation': '>', 'value': 91900},
         'STD': {'relation': '<', 'value': 7000},
@@ -413,7 +414,7 @@ def test_reforms(rid, reforms_dict, reforms_expect,
 @pytest.mark.parametrize('reform_filename, expected_diff', [
     ('ext.json', 59.508),
     ('OBBBA.json', 0.0),
-    ('NoOBBBA.json', 306.383),
+    ('NoOBBBA.json', 306.524),
 ])
 def test_reforms_cps(
         reform_filename,
