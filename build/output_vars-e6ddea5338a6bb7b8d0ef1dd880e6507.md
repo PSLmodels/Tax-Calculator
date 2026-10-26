@@ -326,11 +326,6 @@ _Description_: Broad income measure that includes benefit_value_total
 _Datatype_: float  
 
 
-##  `fstax`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
-_Datatype_: float  
-
-
 ##  `iitax`  
 _Description_: Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output  
 _Datatype_: float  
