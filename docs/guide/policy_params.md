@@ -725,7 +725,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `AMT_child_em`  
-_Description:_ The child's AMT exemption is capped by this amount plus the child's earned income.  
+_Description:_ Under IRC section 59(j), the AMT exemption of a child subject to the kiddie tax is capped by this amount plus the child's earned income.  The cap applies only to filers younger than AMT_child_em_c_age, so this amount has no effect under current law after 2017 (even though IRS continues to publish it).  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ False  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -749,7 +749,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `AMT_child_em_c_age`  
-_Description:_ Individuals under this age must use the child AMT exemption rules.  
+_Description:_ Individuals under this age must use the IRC section 59(j) child AMT exemption cap; a value of zero turns the cap off.  IRC section 55(d)(4)(A)(iii), added by the SECURE Act (P.L. 116-94) for 2018-2025 and made permanent by OBBBA (P.L. 119-21), says section 59(j) does not apply, so this value is zero after 2017.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
@@ -761,6 +761,13 @@ _Known Values:_
 2017: 19  
 2018: 0  
 2019: 0  
+2020: 0  
+2021: 0  
+2022: 0  
+2023: 0  
+2024: 0  
+2025: 0  
+2026: 0  
 _Valid Range:_ min = 0 and max = 30  
 _Out-of-Range Action:_ error  
 
@@ -786,30 +793,6 @@ _Known Values:_
 2024: [85700.0, 133300.0, 66650.0, 85700.0, 133300.0]  
 2025: [88100.0, 137000.0, 68500.0, 88100.0, 137000.0]  
 2026: [90100.0, 140200.0, 70100.0, 90100.0, 140200.0]  
-_Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error  
-
-
-####  `AMT_em_pe`  
-_Description:_ The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
-_Value Type:_ float  
-_Known Values:_  
-2013: 238550.0  
-2014: 242450.0  
-2015: 246250.0  
-2016: 247450.0  
-2017: 249450.0  
-2018: 718800.0  
-2019: 733700.0  
-2020: 745200.0  
-2021: 752800.0  
-2022: 776100.0  
-2023: 831150.0  
-2024: 875950.0  
-2025: 900350.0  
-2026: 639200.0  
 _Valid Range:_ min = 0 and max = 9e+99  
 _Out-of-Range Action:_ error  
 

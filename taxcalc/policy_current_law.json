@@ -17874,7 +17874,7 @@
     },
     "AMT_child_em": {
         "title": "Child AMT exemption additional income base",
-        "description": "The child's AMT exemption is capped by this amount plus the child's earned income.",
+        "description": "Under IRC section 59(j), the AMT exemption of a child subject to the kiddie tax is capped by this amount plus the child's earned income.  The cap applies only to filers younger than AMT_child_em_c_age, so this amount has no effect under current law after 2017 (even though IRS continues to publish it).",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -17950,7 +17950,7 @@
     },
     "AMT_child_em_c_age": {
         "title": "Age ceiling for special AMT exemption",
-        "description": "Individuals under this age must use the child AMT exemption rules.",
+        "description": "Individuals under this age must use the IRC section 59(j) child AMT exemption cap; a value of zero turns the cap off.  IRC section 55(d)(4)(A)(iii), added by the SECURE Act (P.L. 116-94) for 2018-2025 and made permanent by OBBBA (P.L. 119-21), says section 59(j) does not apply, so this value is zero after 2017.",
         "indexable": false,
         "indexed": false,
         "type": "int",
@@ -18391,82 +18391,6 @@
         "compatible_data": {
             "puf": true,
             "cps": true,
-            "tmd": true
-        }
-    },
-    "AMT_em_pe": {
-        "title": "AMT exemption phaseout ending AMT taxable income for Married filing Separately",
-        "description": "The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.",
-        "indexable": true,
-        "indexed": true,
-        "type": "float",
-        "value": [
-            {
-                "year": 2013,
-                "value": 238550.0
-            },
-            {
-                "year": 2014,
-                "value": 242450.0
-            },
-            {
-                "year": 2015,
-                "value": 246250.0
-            },
-            {
-                "year": 2016,
-                "value": 247450.0
-            },
-            {
-                "year": 2017,
-                "value": 249450.0
-            },
-            {
-                "year": 2018,
-                "value": 718800.0
-            },
-            {
-                "year": 2019,
-                "value": 733700.0
-            },
-            {
-                "year": 2020,
-                "value": 745200.0
-            },
-            {
-                "year": 2021,
-                "value": 752800.0
-            },
-            {
-                "year": 2022,
-                "value": 776100.0
-            },
-            {
-                "year": 2023,
-                "value": 831150.0
-            },
-            {
-                "year": 2024,
-                "value": 875950.0
-            },
-            {
-                "year": 2025,
-                "value": 900350.0
-            },
-            {
-                "year": 2026,
-                "value": 639200.0
-            }
-        ],
-        "validators": {
-            "range": {
-                "min": 0,
-                "max": 9e+99
-            }
-        },
-        "compatible_data": {
-            "puf": true,
-            "cps": false,
             "tmd": true
         }
     },

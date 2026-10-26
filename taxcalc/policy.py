@@ -156,6 +156,8 @@ class Policy(Parameters):
         'SECA_Earnings_thd': (
             'was renamed SECA_Earnings_deminimus in Tax-Calculator 6.8.4'
         ),
+        # following parameter was removed in PR 3198
+        'AMT_em_pe': 'was removed in Tax-Calculator 6.8.6',
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}

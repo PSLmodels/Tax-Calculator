@@ -497,15 +497,6 @@ NEW_KNOWN_ITEMS = {
         {'year': 2026, 'MARS': 'headhh', 'value': 500000.0},
         {'year': 2026, 'MARS': 'widow', 'value': 1000000.0},
     ],
-    'AMT_em_pe': [
-        {'year': 2023, 'value': 831150.0},
-
-        {'year': 2024, 'value': 875950.0},
-
-        {'year': 2025, 'value': 900350.0},
-
-        {'year': 2026, 'value': 639200.0},
-    ],
     'AMT_child_em': [
         {'year': 2023, 'value': 8800.0},
 
