@@ -93,7 +93,9 @@ Read JSON reform file and use (the default) static analysis assumptions.
 ```{code-cell} ipython3
 :hide-output: false
 
-reform_filename = 'github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/reformA.json'
+# (reform files are read from the local repository; outside the repository
+# use github://PSLmodels:Tax-Calculator@master/docs/recipes/_static/ prefix)
+reform_filename = '_static/reformA.json'
 params = tc.Calculator.read_json_param_objects(reform_filename, None)
 ```
 
