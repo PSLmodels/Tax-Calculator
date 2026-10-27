@@ -134,8 +134,6 @@ taxcalc/reforms/SandersDeFazio.out.csv
 taxcalc/reforms/TCJA.json
 taxcalc/reforms/TCJA.md
 taxcalc/reforms/TCJA.out.csv
-taxcalc/reforms/Trump2016.json
-taxcalc/reforms/Trump2016.out.csv
 taxcalc/reforms/Trump2017.json
 taxcalc/reforms/Trump2017.out.csv
 taxcalc/reforms/cases.csv

@@ -296,66 +296,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
 
 
 @iterate_jit(nopython=True)
-def DependentCare(nu13, elderly_dependents, earned,
-                  MARS, ALD_Dependents_thd, ALD_Dependents_hc,
-                  ALD_Dependents_Child_c, ALD_Dependents_Elder_c,
-                  care_deduction):
-    """
-    Computes the dependent-care above-the-line deduction.
-
-    Reform-only construct (originally specified for the 2016 Trump campaign
-    tax plan); no IRS form correspondence. Inert under current law because
-    all four ALD_Dependents_* parameters default to 0.0, which forces
-    care_deduction = 0. for every record.
-
-    The income test is a cliff, not a phaseout: filing units with earned
-    income above ALD_Dependents_thd[MARS-1] receive zero deduction.
-
-    care_deduction is summed into c02900 (Sch 1 line 26) by Adj under the
-    legacy/reform-only banner.
-
-    Parameters
-    ----------
-    nu13: int
-        Number of dependents under 13 years old
-    elderly_dependents: int
-        Number of elderly dependents age 65+ in filing unit other than
-        taxpayer and spouse
-    earned: float
-        Earned income for filing unit
-    MARS: int
-        Filing marital status (1=single, 2=joint, 3=separate,
-                               4=household-head, 5=widow(er))
-    ALD_Dependents_thd: list
-        Maximum income to qualify for dependent care deduction
-    ALD_Dependents_hc: float
-        Deduction for childcare costs haircut
-    ALD_Dependents_Child_c: float
-        National weighted average cost of childcare, ceiling for
-        available childcare deduction
-    ALD_Dependents_Elder_c: float
-        Eldercare deduction ceiling
-
-    Returns
-    -------
-    care_deduction: float
-        Total above the line deductions for dependent care.
-    """
-    earned_thd = ALD_Dependents_thd[MARS - 1]
-    if earned <= earned_thd:
-        hc_frac = 1. - ALD_Dependents_hc
-        child_ded = hc_frac * nu13 * ALD_Dependents_Child_c
-        elder_ded = hc_frac * elderly_dependents * ALD_Dependents_Elder_c
-        care_deduction = child_ded + elder_ded
-    else:
-        care_deduction = 0.
-    return care_deduction
-
-
-@iterate_jit(nopython=True)
 def Adj(e03220, e03290, c03260, e03300, e03270,
         e03400, e03500, e03150, e03210,
-        e03230, e03240, care_deduction,
+        e03230, e03240,
         ALD_EducatorExpenses_hc, ALD_HSADeduction_hc,
         ALD_KEOGH_SEP_hc, ALD_SelfEmp_HealthIns_hc,
         ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc,
@@ -393,8 +336,6 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
     e03240: float
         Domestic production activity deduction, Form 8903
         (legacy; expired after 2017)
-    care_deduction: float
-        Dependent care expense deduction (reform construct)
     ALD_EducatorExpenses_hc: float
         Educator expenses haircut
     ALD_HSADeduction_hc: float
@@ -436,10 +377,9 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
         (1. - ALD_AlimonyPaid_hc) * e03500 +         # Sch 1 line 19a
         (1. - ALD_IRAContributions_hc) * e03150 +    # Sch 1 line 20
         (1. - ALD_StudentLoan_hc) * e03210 +         # Sch 1 line 21
-        # legacy / reform-only items (zero under current law):
+        # legacy items (zero under current law):
         (1. - ALD_Tuition_hc) * e03230 +             # ALD repealed post-2020
-        (1. - ALD_DomesticProduction_hc) * e03240 +  # ALD expired post-2017
-        care_deduction                               # ALD reform construct
+        (1. - ALD_DomesticProduction_hc) * e03240    # ALD expired post-2017
     )
     return c02900
 

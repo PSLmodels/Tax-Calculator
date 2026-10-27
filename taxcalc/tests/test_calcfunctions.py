@@ -360,47 +360,6 @@ def test_EI_PayrollTax(call_calcfunc, rvars, expected):
 
 
 # ----------------------------------------------------------------------
-# DependentCare
-# ----------------------------------------------------------------------
-
-
-# DependentCare is a reform-only above-the-line deduction with no IRS
-# form; its parameters are all zero under 2025 current law.
-DEPCARE_REFORM = {
-    'ALD_Dependents_thd': {2025: [250000, 500000, 250000, 500000, 250000]},
-    'ALD_Dependents_hc': {2025: 0.2},
-    'ALD_Dependents_Child_c': {2025: 7165},
-    'ALD_Dependents_Elder_c': {2025: 5000},
-}
-
-
-@pytest.mark.parametrize('reform, rvars, expected', [
-    # 2025 current law: earned income exceeds the zero threshold
-    pytest.param(None, {'MARS': 4, 'nu13': 2, 'earned': 100000.}, 0.,
-                 id='current law'),
-    # reform: 0.8 * (2 * 7165 + 1 * 5000)
-    pytest.param(DEPCARE_REFORM,
-                 {'MARS': 4, 'nu13': 2, 'elderly_dependents': 1,
-                  'earned': 100000.}, 15464., id='reform below threshold'),
-    # reform: earned income at the threshold still qualifies:
-    # 0.8 * 7165
-    pytest.param(DEPCARE_REFORM,
-                 {'MARS': 1, 'nu13': 1, 'earned': 250000.}, 5732.,
-                 id='reform at threshold'),
-    # reform: the income test is a cliff, not a phaseout
-    pytest.param(DEPCARE_REFORM,
-                 {'MARS': 1, 'nu13': 1, 'earned': 250001.}, 0.,
-                 id='reform above threshold'),
-])
-def test_DependentCare(call_calcfunc, reform, rvars, expected):
-    """
-    Tests the DependentCare function
-    """
-    actual = call_calcfunc('DependentCare', reform=reform, **rvars)
-    assert np.allclose(actual, expected), f'{actual} != {expected}'
-
-
-# ----------------------------------------------------------------------
 # Adj
 # ----------------------------------------------------------------------
 
@@ -442,9 +401,6 @@ ADJ_RESTORE_REFORM = {
     # all items together: legacy items add nothing to 26900
     pytest.param(None, {**ADJ_SCH1_ITEMS, **ADJ_LEGACY_ITEMS}, 26900.,
                  id='all items'),
-    # the reform-only dependent care deduction passes through unchanged
-    pytest.param(None, {'care_deduction': 5000.}, 5000.,
-                 id='care deduction'),
     # reform: 26900 - 0.5 * 7000 - 1.0 * 2500; the deductible part of
     # self-employment tax (c03260) is not subject to a haircut
     pytest.param(ADJ_HAIRCUT_REFORM, ADJ_SCH1_ITEMS, 20900.,

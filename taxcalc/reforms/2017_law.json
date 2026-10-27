@@ -69,8 +69,6 @@
     "ID_Miscellaneous_hc": {"2018": 0},
     "ID_Medical_frt": {"2017": 0.1},
 
-    "ALD_Dependents_Child_c": {"2017": 0},
-    "ALD_Dependents_Elder_c": {"2017": 0},
     "II_em_ps": {"2017": [261500, 313800, 156900, 287650, 313800]},
     "STD_Dep": {"2017": 1050},
     "STD_Aged": {"2017": [1550, 1250, 1250, 1550, 1550]},
