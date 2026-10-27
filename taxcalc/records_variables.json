@@ -613,10 +613,6 @@
       "type": "float",
       "desc": "Standard deduction (zero for itemizers)"
     },
-    "surtax": {
-      "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
-    },
     "taxbc": {
       "type": "float",
       "desc": "Regular tax on regular taxable income before credits"

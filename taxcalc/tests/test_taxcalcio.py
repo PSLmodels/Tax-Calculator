@@ -656,19 +656,19 @@ def test_ctor_init_with_cps_files():
     ("""
     MARS;iitax	payrolltax|combined,
     c00100
-    surtax
+    taxbc
     """, True, 6),  # these 6 variables minus MARS plus RECID
 
-    ('ALL', True, 203),
-    # 203 =
-    # all 208 vars in records_variables.json (see test_records.py)
+    ('ALL', True, 202),
+    # 202 =
+    # all 207 vars in records_variables.json (see test_records.py)
     # minus 2 TaxCalcIO.UNUSED_DUMPVARS (see taxcalcio.py)
     # minus 5 TaxCalcIO.BASE_DUMPVARS omitting RECID (see taxcalcio.py)
     # plus 2 TaxCalcIO.MTR_DUMPVARS (see taxcalcio.py)
 
     ("""
     MARS;iitax	payrolltax|kombined,c00100
-    surtax
+    taxbc
     RECID
     FLPDYR
     """, False, 0)

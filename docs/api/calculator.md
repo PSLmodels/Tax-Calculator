@@ -874,7 +874,7 @@ Call TaxInc through AMT functions.
 def _calc_one_year(self, zero_out_calc_vars=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1417)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1416)
 
 ```text
 Call all the functions except those in the calc_all() method.
