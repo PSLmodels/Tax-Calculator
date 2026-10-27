@@ -154,63 +154,13 @@ earned_s: float
     Earned income for spouse
 ```
 
-## DependentCare
-
-```python
-def DependentCare(nu13, elderly_dependents, earned, MARS, ALD_Dependents_thd, ALD_Dependents_hc, ALD_Dependents_Child_c, ALD_Dependents_Elder_c, care_deduction)
-```
-
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L299)
-
-```text
-Computes the dependent-care above-the-line deduction.
-
-Reform-only construct (originally specified for the 2016 Trump campaign
-tax plan); no IRS form correspondence. Inert under current law because
-all four ALD_Dependents_* parameters default to 0.0, which forces
-care_deduction = 0. for every record.
-
-The income test is a cliff, not a phaseout: filing units with earned
-income above ALD_Dependents_thd[MARS-1] receive zero deduction.
-
-care_deduction is summed into c02900 (Sch 1 line 26) by Adj under the
-legacy/reform-only banner.
-
-Parameters
-----------
-nu13: int
-    Number of dependents under 13 years old
-elderly_dependents: int
-    Number of elderly dependents age 65+ in filing unit other than
-    taxpayer and spouse
-earned: float
-    Earned income for filing unit
-MARS: int
-    Filing marital status (1=single, 2=joint, 3=separate,
-                           4=household-head, 5=widow(er))
-ALD_Dependents_thd: list
-    Maximum income to qualify for dependent care deduction
-ALD_Dependents_hc: float
-    Deduction for childcare costs haircut
-ALD_Dependents_Child_c: float
-    National weighted average cost of childcare, ceiling for
-    available childcare deduction
-ALD_Dependents_Elder_c: float
-    Eldercare deduction ceiling
-
-Returns
--------
-care_deduction: float
-    Total above the line deductions for dependent care.
-```
-
 ## Adj
 
 ```python
-def Adj(e03220, e03290, c03260, e03300, e03270, e03400, e03500, e03150, e03210, e03230, e03240, care_deduction, ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_KEOGH_SEP_hc, ALD_SelfEmp_HealthIns_hc, ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_IRAContributions_hc, ALD_StudentLoan_hc, ALD_Tuition_hc, ALD_DomesticProduction_hc, c02900)
+def Adj(e03220, e03290, c03260, e03300, e03270, e03400, e03500, e03150, e03210, e03230, e03240, ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_KEOGH_SEP_hc, ALD_SelfEmp_HealthIns_hc, ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_IRAContributions_hc, ALD_StudentLoan_hc, ALD_Tuition_hc, ALD_DomesticProduction_hc, c02900)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L356)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L299)
 
 ```text
 Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
@@ -243,8 +193,6 @@ e03230: float
 e03240: float
     Domestic production activity deduction, Form 8903
     (legacy; expired after 2017)
-care_deduction: float
-    Dependent care expense deduction (reform construct)
 ALD_EducatorExpenses_hc: float
     Educator expenses haircut
 ALD_HSADeduction_hc: float
@@ -279,7 +227,7 @@ c02900: float
 def ALD_InvInc_ec_base(p22250, p23250, e00300, e00600, e01100, e01200, MARS, invinc_ec_base, Capital_loss_limitation)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L448)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L388)
 
 ```text
 Computes invinc_ec_base, the base amount of investment income that
@@ -334,7 +282,7 @@ invinc_ec_base: float
 def CapGainsLoss(p22250, p23250, Capital_loss_limitation, MARS, c23650, c01000)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L508)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L448)
 
 ```text
 Schedule D Part III netting of short-term and long-term capital
@@ -374,7 +322,7 @@ c01000: float
 def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800, e00900, e01100, e01200, e01400, e01700, e02000, e02100, e02300, e02400, c01000, c02900, e03210, e03230, e03240, ALD_StudentLoan_hc, ALD_Tuition_hc, ALD_DomesticProduction_hc, ALD_InvInc_ec_rt, invinc_ec_base, CG_nodiff, CG_ec, CG_reinvest_ec_rt, ALD_BusinessLosses_c, AlimonyReceived_frac_in_AGI, MARS, ymod, ymod1, invinc_agi_ec)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L549)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L489)
 
 ```text
 Builds ymod1 (Form 1040 income lines + Schedule 1 Part I, the
@@ -486,7 +434,7 @@ invinc_agi_ec: float
 def SSBenefits(MARS, ymod, e02400, SS_all_in_agi, SS_thd1, SS_thd2, SS_percentage1, SS_percentage2, c02500)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L698)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L638)
 
 ```text
 Calculates the taxable portion of OASDI benefits, c02500
@@ -557,7 +505,7 @@ c02500: float
 def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt, ubi, taxable_ubi, nontaxable_ubi)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L786)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L726)
 
 ```text
 Calculates total and taxable Universal Basic Income (UBI) amount.
@@ -613,7 +561,7 @@ nontaxable_ubi: float
 def AGI(ymod1, c02500, c02900, XTOT, MARS, DSI, exact, nu18, taxable_ubi, II_em, II_em_ps, II_em_po_step_size, II_em_prt, II_no_em_nu18, e02300, UI_thd, UI_em, c00100, pre_c04600, c04600)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L842)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L782)
 
 ```text
 Computes Adjusted Gross Income (c00100, Form 1040 line 11) and
@@ -686,7 +634,7 @@ c04600: float
 def MiscDed(age_head, age_spouse, MARS, c00100, exact, SeniorDed_c, SeniorDed_ps, SeniorDed_prt, overtime_income, OvertimeIncomeDed_c, OvertimeIncomeDed_ps, OvertimeIncomeDed_po_step_size, OvertimeIncomeDed_po_rate_per_step, tip_income, TipIncomeDed_c, TipIncomeDed_ps, TipIncomeDed_po_step_size, TipIncomeDed_po_rate_per_step, auto_loan_interest, AutoLoanInterestDed_c, AutoLoanInterestDed_ps, AutoLoanInterestDed_po_step_size, AutoLoanInterestDed_po_rate_per_step, senior_deduction, overtime_income_deduction, tip_income_deduction, auto_loan_interest_deduction)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L952)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L892)
 
 ```text
 Computes the four below-the-line additional deductions on
@@ -802,7 +750,7 @@ auto_loan_interest_deduction: float
 def ItemDed(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500, MARS, age_head, age_spouse, c00100, c04600, c04470, c21040, c21060, c17000, c18300, c19200, c19700, c20500, c20800, II_brk6, ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc, ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt, ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash, ID_prt, ID_crt, ID_c, ID_StateLocalTax_hc, ID_Charity_frt, ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc, ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c, ID_InterestPaid_c, ID_Charity_c, ID_Casualty_c, ID_Miscellaneous_c, ID_AllTaxes_c, ID_AllTaxes_hc, ID_AllTaxes_c_ps, ID_AllTaxes_c_po_rate, ID_AllTaxes_c_po_floor, ID_StateLocalTax_crt, ID_RealEstate_crt, ID_Charity_f, ID_reduction_rate)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L1171)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L1111)
 
 ```text
 Calculates itemized deductions, Schedule A (Form 1040).
@@ -981,7 +929,7 @@ c17000, c18300, c19200, c19700, c20500, c20800, c21040, c21060, c04470
 def AdditionalMedicareTax(MARS, e00200, pencon_p, pencon_s, e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s, FICA_ss_trt_employer, FICA_ss_trt_employee, FICA_mc_trt_employer, FICA_mc_trt_employee, SECA_Earnings_deminimus, AMEDT_ec, AMEDT_rt, ptax_amc)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L1483)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L1423)
 
 ```text
 Form 8959 Additional Medicare Tax. Liability flows into Schedule 2
@@ -1080,7 +1028,7 @@ ptax_amc: float
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep, STD_Dep_earned_add, MARS, MIDR, blind_head, blind_spouse, standard, e19800, STD_charity_ded_nonitemizers_max)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L1608)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L1548)
 
 ```text
 Computes standard deduction (Form 1040 line 12).
@@ -1157,7 +1105,7 @@ standard: float
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, c03260, e03270, e03300, e26270, e02100, e27200, e00650, e01100, p22250, p23250, senior_deduction, overtime_income_deduction, tip_income_deduction, auto_loan_interest_deduction, PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt, PT_qbid_limited, PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt, PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, PT_qbid_ps, PT_qbid_prt, PT_qbid_min_ded, PT_qbid_min_qbi, c04800, qbided)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L1722)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L1662)
 
 ```text
 Form 1040 lines 13-15 (2025): the §199A pass-through Qualified
@@ -1325,7 +1273,7 @@ qbided: float
 def SchXYZ(taxable_income, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2023)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L1963)
 
 ```text
 Function that returns tax amount given the progressive tax rate
@@ -1381,7 +1329,7 @@ Regular individual income tax liability on all taxable income
 def SchXYZTax(c04800, MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7, c05200)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2112)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2052)
 
 ```text
 Function that routes c04800 (regular taxable income) through the
@@ -1396,7 +1344,7 @@ for the semantics of MARS, II_rt?, and II_brk?.
 def TopBracketBelow25(MARS, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2132)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2072)
 
 ```text
 Function that returns the amount of taxable income taxed at an
@@ -1455,7 +1403,7 @@ Amount of taxable income taxed at an ordinary rate below 25 percent
 def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e24515, e24518, MARS, c04800, c05200, II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7, CG_nodiff, CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3, dwks10, dwks13, dwks14, dwks21, dwks45, c05700, taxbc)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2210)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2150)
 
 ```text
 Computes the regular-tax preference for long-term capital gains and
@@ -1606,7 +1554,7 @@ taxbc: float
 def AMT(e07300, dwks13, standard, f6251, c00100, c17000, c18300, taxbc, c04470, c20800, c21040, e24515, MARS, dwks21, dwks14, c05700, e62900, e00700, dwks10, age_head, earned, cmbtp, qbided, tip_income_deduction, overtime_income_deduction, auto_loan_interest_deduction, AMT_child_em_c_age, AMT_brk1, AMT_em, AMT_prt, AMT_rt1, AMT_rt2_addon, AMT_child_em, AMT_em_ps, AMT_Medical_frt, AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2, AMT_CG_rt3, AMT_CG_rt4, AMT_CG_rt1250, c05800, c09600, c62100)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2479)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2419)
 
 ```text
 Computes Form 6251 (2025) Alternative Minimum Tax (AMT).
@@ -1804,7 +1752,7 @@ c05800: float
 def NetInvIncTax(e00300, e00600, e01100, e02000, e26270, c01000, c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, niit)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2807)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2747)
 
 ```text
 Computes the Net Investment Income Tax (NIIT) per Form 8960 (2025),
@@ -1913,7 +1861,7 @@ niit: float
 def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800, exact, c00100, CDCC_ps1, CDCC_ps2, CDCC_po1_rate_max, CDCC_po1_rate_min, CDCC_po2_rate_min, CDCC_po1_step_size, CDCC_po2_step_size, CDCC_po_rate_per_step, CDCC_refundable, c05800, e07300, c32800, c07180, CDCC_refund)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2933)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L2873)
 
 ```text
 Calculates Form 2441 (2025) Child and Dependent Care Expenses credit.
@@ -2023,7 +1971,7 @@ CDCC_refund: float
 def EITCamount(basic_frac, phasein_rate, earnings, max_amount, phaseout_start, agi, phaseout_rate)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3095)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3035)
 
 ```text
 Returns the EIC Worksheet A (or B) line 6 amount: the smaller of
@@ -2074,7 +2022,7 @@ eitc: float
 def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn, MARS, DSI, c00100, e00300, e00400, e00600, c01000, e01100, e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s, EIC, EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_addon_MarriedJ, EITC_rt, EITC_c, EITC_prt, EITC_basic_frac, EITC_InvestIncome_c, EITC_excess_InvestIncome_rt, EITC_indiv, EITC_sep_filers_elig, c59660)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3149)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3089)
 
 ```text
 Computes Earned Income Tax Credit (Form 1040 line 27a).
@@ -2230,7 +2178,7 @@ c59660: float
 def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num, c05800, e07260, CR_ResidentialEnergy_hc, e07300, CR_ForeignTax_hc, c07180, c07230, e07240, CR_RetirementSavings_hc, c07200, CTC_c, CTC_ps, CTC_prt, exact, ODC_c, CTC_c_under6_bonus, nu06, CTC_is_refundable, CTC_include17, c07220, odc, codtc_limited)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3369)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3309)
 
 ```text
 Computes nonrefundable Child Tax Credit and Credit for Other Dependents
@@ -2310,7 +2258,7 @@ codtc_limited: float
 def PersonalTaxCredit(MARS, c00100, XTOT, nu18, II_credit, II_credit_ps, II_credit_prt, II_credit_nr, II_credit_nr_ps, II_credit_nr_prt, RRC_c, RRC_ps, RRC_pe, RRC_prt, RRC_c_kids, RRC_c_unit, personal_refundable_credit, personal_nonrefundable_credit, recovery_rebate_credit)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3507)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3447)
 
 ```text
 Computes three reform-construct credits. None corresponds to a 2025
@@ -2412,7 +2360,7 @@ recovery_rebate_credit: float
 def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc, CR_AmOppNonRefundable_hc, c10960, c87668)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3644)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3584)
 
 ```text
 Computes the American Opportunity Credit (AOTC) refundable and
@@ -2498,7 +2446,7 @@ c87668: float
 def SchR(age_head, age_spouse, MARS, c00100, c05800, e07300, c07180, e02400, c02500, e01500, e01700, CR_SchR_hc, c07200)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3745)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3685)
 
 ```text
 Calculates Schedule R (2025) Credit for the Elderly or the Disabled,
@@ -2617,7 +2565,7 @@ c07200: float
 def EducationTaxCredit(exact, e87530, MARS, c00100, c05800, e07300, c07180, c07200, c87668, LLC_Expense_c, ETC_pe_Single, ETC_pe_Married, CR_Education_hc, c07230)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3905)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3845)
 
 ```text
 Computes Education Tax Credits (`c07230`, Schedule 3 line 3) from
@@ -2727,7 +2675,7 @@ c07230: float
 def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f, CR_Charity_frt, MARS, charity_credit)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4047)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L3987)
 
 ```text
 Computes nonrefundable credit for charitable giving (a reform
@@ -2784,7 +2732,7 @@ charity_credit: float
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400, e07600, p08000, odc, personal_nonrefundable_credit, CTC_is_refundable, ODC_is_refundable, CR_RetirementSavings_hc, CR_ForeignTax_hc, CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc, CR_MinimumTax_hc, CR_OtherCredits_hc, charity_credit, c07180, c07200, c07220, c07230, c07240, c07260, c07300, c07400, c07600, c08000)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4106)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4046)
 
 ```text
 Sequentially limits nonrefundable credits against remaining income
@@ -2957,7 +2905,7 @@ personal_nonrefundable_credit: float
 def AdditionalCTC(actc_claim_prob_min, actc_claim_prob_scale, credit_claim_urn, codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd, ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum, CTC_is_refundable, CTC_include17, CTC_c, age_head, age_spouse, MARS, nu18, ptax_was, c03260, e09800, c59660, e11200, c11070)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4349)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4289)
 
 ```text
 Calculates refundable Additional Child Tax Credit (ACTC), c11070,
@@ -3018,7 +2966,7 @@ c11070: float
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300, c07400, c07600, c08000, e09700, e09800, e09900, niit, setax, ptax_amc, othertaxes, c07100, c09200, odc, charity_credit, personal_nonrefundable_credit, CTC_is_refundable, ODC_is_refundable)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4475)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4415)
 
 ```text
 Assembles Form 1040 (2025) lines 22-24 + Schedule 2 (2025) Part II
@@ -3164,7 +3112,7 @@ c09200: float
 def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus, CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17, CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt, CTC_new_refund_limited_all_payroll, payrolltax, exact, CTC_c, CTC_c_under6_bonus, CTC_ps, CTC_prt, ODC_c, n24, nu06, age_head, age_spouse, nu18, XTOT, num, c00100, MARS, ptax_oasdi, c09200, ctc_new)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4653)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4593)
 
 ```text
 Computes a reform-construct refundable Child Tax Credit (`ctc_new`)
@@ -3298,7 +3246,7 @@ ctc_new: float
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, c09200, CDCC_refund, recovery_rebate_credit, eitc, c07220, odc, CTC_is_refundable, ODC_is_refundable, soi_iitax, setax, e09800, ptax_amc, refund, ctc_total, ctc_refundable, ctc_nonrefundable, iitax, payrolltax, combined)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4841)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4781)
 
 ```text
 Final assembly: sums refundable credits and computes total income-tax
@@ -3458,7 +3406,7 @@ combined: float
 def LumpSumTax(DSI, num, XTOT, LST, lumpsum_tax, combined)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5041)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L4981)
 
 ```text
 Computes a per-capita lump-sum ("head") tax and adds it to combined taxes.
@@ -3503,7 +3451,7 @@ combined: float
 def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600, e00700, e00800, e00900, e01100, e01200, e01400, e01500, e02000, e02100, p22250, p23250, cmbtp, ptax_er_p, ptax_er_s, benefit_value_total, expanded_income)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5089)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5029)
 
 ```text
 Computes the records-bound `expanded_income` aggregate — a broad
@@ -3607,7 +3555,7 @@ expanded_income: float
 def AfterTaxIncome(combined, expanded_income, aftertax_income)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5224)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py#L5164)
 
 ```text
 Computes the records-bound `aftertax_income` = `expanded_income`
