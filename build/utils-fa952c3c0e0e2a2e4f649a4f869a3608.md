@@ -161,7 +161,7 @@ specified income_measure.
 def create_difference_table(vdf1, vdf2, groupby, tax_to_diff, pop_quantiles=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L441)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L440)
 
 ```text
 Get results from two different vdf, construct tax difference results,
@@ -213,7 +213,7 @@ specified income_measure.
 def create_diagnostic_table(dframe_list, year_list)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L658)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L657)
 
 ```text
 Extract diagnostic table from list of Pandas DataFrame objects
@@ -237,7 +237,7 @@ Pandas DataFrame object containing the diagnostic table
 def mtr_graph_data(vdf, year, mars='ALL', mtr_measure='combined', mtr_variable='e00200p', alt_e00200p_text='', mtr_wrt_full_compen=False, income_measure='expanded_income', pop_quantiles=False, dollar_weighting=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L787)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L786)
 
 ```text
 Prepare marginal tax rate data needed by xtr_graph_plot utility function.
@@ -320,7 +320,7 @@ dictionary object suitable for passing to xtr_graph_plot utility function
 def atr_graph_data(vdf, year, mars='ALL', atr_measure='combined', pop_quantiles=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L969)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L968)
 
 ```text
 Prepare average tax rate data needed by xtr_graph_plot utility function.
@@ -370,7 +370,7 @@ dictionary object suitable for passing to xtr_graph_plot utility function
 def xtr_graph_plot(data, width=850, height=500, xlabel='', ylabel='', title='', legendloc='bottom_right')
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1097)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1096)
 
 ```text
 Plot marginal/average tax rate graph using data returned from either the
@@ -438,7 +438,7 @@ figure generate a vector graphics file such as an EPS file.
 def pch_graph_data(vdf, year, pop_quantiles=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1197)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1196)
 
 ```text
 Prepare percentage change in after-tax expanded income data needed by
@@ -467,7 +467,7 @@ dictionary object suitable for passing to pch_graph_plot utility function
 def pch_graph_plot(data, width=850, height=500, xlabel='', ylabel='', title='')
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1264)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1263)
 
 ```text
 Plot percentage change in after-tax expanded income using data returned
@@ -507,7 +507,7 @@ See Notes to xtr_graph_plot function.
 def write_graph_file(figure, filename, title)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1327)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1326)
 
 ```text
 Write HTML file named filename containing figure.
@@ -534,7 +534,7 @@ Nothing
 def isoelastic_utility_function(consumption, crra, cmin)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1352)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1351)
 
 ```text
 Calculate and return utility of consumption.
@@ -561,7 +561,7 @@ utility of consumption
 def expected_utility(consumption, probability, crra, cmin)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1385)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1384)
 
 ```text
 Calculate and return expected utility of consumption.
@@ -591,7 +591,7 @@ expected utility of consumption array
 def certainty_equivalent(exputil, crra, cmin)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1412)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1411)
 
 ```text
 Calculate and return certainty-equivalent of exputil of consumption
@@ -619,7 +619,7 @@ certainty-equivalent of specified expected utility, exputil
 def ce_aftertax_expanded_income(df1, df2, custom_params=None, require_no_agg_tax_change=True)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1444)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1443)
 
 ```text
 Return dictionary that contains certainty-equivalent of the
@@ -649,7 +649,7 @@ expected-utility and certainty-equivalent calculations.
 def read_egg_csv(fname, index_col=None)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1522)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1521)
 
 ```text
 Read from egg the file named fname that contains CSV data and
@@ -662,7 +662,7 @@ return pandas DataFrame containing the data.
 def read_egg_json(fname)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1537)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1536)
 
 ```text
 Read from egg the file named fname that contains JSON data and
@@ -675,7 +675,7 @@ return dictionary containing the data.
 def delete_file(filename)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1552)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1551)
 
 ```text
 Remove specified file if it exists.
@@ -687,7 +687,7 @@ Remove specified file if it exists.
 def bootstrap_se_ci(data, seed, num_samples, statistic, alpha)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1560)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1559)
 
 ```text
 Return bootstrap estimate of standard error of statistic and
@@ -701,7 +701,7 @@ in a dictionary along with specified seed and nun_samples (B) and alpha.
 def json_to_dict(jsontext)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1587)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py#L1586)
 
 ```text
 Convert specified JSON text into an ordered Python dictionary.
