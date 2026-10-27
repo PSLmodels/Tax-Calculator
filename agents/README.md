@@ -20,8 +20,12 @@ developer.  In particular, it has been supplied with a detailed
 workflow for making a local, and therefore, private **structural
 enhancement** (that is, adding parameters, variables, logic, and
 tests) so that the local version of the model can simulate a reform
-that the public version of the model cannot analyze.  It is important
-to use the phrase _structural enhancement_ in the agent prompt.
+that the public version of the model cannot analyze.
+
+It is important to use the phrase _structural enhancement_ in the
+agent prompt.  And it is helpful if you set Claude's `auto mode` to
+on.
+
 Here are several examples:
  - [PR 3116](https://github.com/PSLmodels/Tax-Calculator/pull/3116) (Aug 2026)
  - [PR 3194](https://github.com/PSLmodels/Tax-Calculator/pull/3194) (Oct 2026)

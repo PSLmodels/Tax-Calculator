@@ -8,7 +8,7 @@ Documentation of the `taxcalc.calculator` module.
 class Calculator(policy=None, records=None, verbose=False, sync_years=True, consumption=None)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L42)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L41)
 
 ```text
 Constructor for the Calculator class.
@@ -68,7 +68,7 @@ Records objects passed to each of the two Calculator constructors.
 def increment_year(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L143)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L142)
 
 ```text
 Advance all embedded objects to next year.
@@ -80,7 +80,7 @@ Advance all embedded objects to next year.
 def advance_to_year(self, year)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L152)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L151)
 
 ```text
 The advance_to_year function gives an optional way of implementing
@@ -94,7 +94,7 @@ as input.  New year must be at least the current year.
 def calc_all(self, zero_out_calc_vars=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L166)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L165)
 
 ```text
 Call all tax-calculation functions for the current_year.
@@ -106,7 +106,7 @@ Call all tax-calculation functions for the current_year.
 def weighted_total(self, variable_name)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L178)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L177)
 
 ```text
 Return all-filing-unit weighted total of named Records variable.
@@ -118,7 +118,7 @@ Return all-filing-unit weighted total of named Records variable.
 def total_weight(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L184)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L183)
 
 ```text
 Return all-filing-unit total of sampling weights.
@@ -131,7 +131,7 @@ NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()
 def dataframe(self, variable_list, all_vars=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L191)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L190)
 
 ```text
 Return Pandas DataFrame containing the listed variables from the
@@ -147,7 +147,7 @@ rates) are included in the returned Pandas DataFrame.
 def array(self, variable_name, variable_value=None)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L211)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L210)
 
 ```text
 If variable_value is None, return numpy ndarray containing the
@@ -163,7 +163,7 @@ If variable_value is not None, set named variable in embedded Records
 def n65(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L225)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L224)
 
 ```text
 Return numpy ndarray containing the number of
@@ -176,7 +176,7 @@ individuals age 65+ in each filing unit.
 def incarray(self, variable_name, variable_add)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L235)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L234)
 
 ```text
 Add variable_add to named variable in embedded Records object.
@@ -188,7 +188,7 @@ Add variable_add to named variable in embedded Records object.
 def zeroarray(self, variable_name)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L243)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L242)
 
 ```text
 Set named variable in embedded Records object to zeros.
@@ -200,7 +200,7 @@ Set named variable in embedded Records object to zeros.
 def store_records(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L249)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L248)
 
 ```text
 Make internal copy of embedded Records object that can then be
@@ -214,7 +214,7 @@ to the embedded Records object.
 def restore_records(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L258)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L257)
 
 ```text
 Set the embedded Records object to the stored Records object
@@ -227,7 +227,7 @@ that was saved in the last call to the store_records() method.
 def array_len(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L269)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L268)
 
 ```text
 Length of arrays in embedded Records object.
@@ -239,7 +239,7 @@ Length of arrays in embedded Records object.
 def policy_param(self, param_name, param_value=None)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L275)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L274)
 
 ```text
 If param_value is None, return named parameter in
@@ -255,7 +255,7 @@ If param_value is not None, set named parameter in
 def consump_param(self, param_name)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L291)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L290)
 
 ```text
 Return value of named parameter in embedded Consumption object.
@@ -267,7 +267,7 @@ Return value of named parameter in embedded Consumption object.
 def consump_benval_params(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L297)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L296)
 
 ```text
 Return list of benefit-consumption-value parameter values
@@ -280,7 +280,7 @@ in embedded Consumption object.
 def reform_errors(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L305)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L304)
 
 ```text
 Calculator class embedded Policy object's parameter_errors.
@@ -292,7 +292,7 @@ Calculator class embedded Policy object's parameter_errors.
 def current_year(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L312)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L311)
 
 ```text
 Calculator class current calendar year property.
@@ -304,7 +304,7 @@ Calculator class current calendar year property.
 def data_year(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L319)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L318)
 
 ```text
 Calculator class initial (i.e., first) records data year property.
@@ -316,7 +316,7 @@ Calculator class initial (i.e., first) records data year property.
 def diagnostic_table(self, num_years)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L325)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L324)
 
 ```text
 Generate multi-year diagnostic table containing aggregate statistics;
@@ -340,7 +340,7 @@ Pandas DataFrame object containing the multi-year diagnostic table
 def distribution_tables(self, calc, groupby, pop_quantiles=False, scaling=True)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L356)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L355)
 
 ```text
 Get results from self and calc, sort them by expanded_income into
@@ -405,7 +405,7 @@ specified income_measure.
 def difference_table(self, calc, groupby, tax_to_diff, pop_quantiles=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L477)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L476)
 
 ```text
 Get results from self and calc, sort them by expanded_income into
@@ -466,7 +466,7 @@ specified income_measure.
 def mtr(self, variable_str='e00200p', finite_diff=0.01, zero_out_calculated_vars=False, calc_all_already_called=False, wrt_full_compensation=True)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L555)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L554)
 
 ```text
 Calculates the marginal payroll, individual income, and combined
@@ -556,7 +556,7 @@ Valid variable_str values are:
 def mtr_graph(self, calc, mars='ALL', mtr_measure='combined', mtr_variable='e00200p', alt_e00200p_text='', mtr_wrt_full_compen=False, income_measure='expanded_income', pop_quantiles=False, dollar_weighting=False, mtr_self=None, mtr_calc=None)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L751)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L750)
 
 ```text
 Create marginal tax rate graph that can be written to an HTML
@@ -656,7 +656,7 @@ graph that is a bokeh.plotting figure object
 def atr_graph(self, calc, mars='ALL', atr_measure='combined', pop_quantiles=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L935)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L934)
 
 ```text
 Create average tax rate graph that can be written to an HTML
@@ -712,7 +712,7 @@ graph that is a bokeh.plotting figure object
 def pch_graph(self, calc, pop_quantiles=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1032)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1031)
 
 ```text
 Create percentage change in after-tax expanded income graph that
@@ -747,7 +747,7 @@ graph that is a bokeh.plotting figure object
 def read_json_param_objects(reform, assump)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1093)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1092)
 
 ```text
 Read JSON reform and assump objects and
@@ -799,7 +799,7 @@ suitable as input into the GrowDiff.update_growdiff method.
 def reform_documentation(params, growfactors, policy_dicts=None)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1147)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1146)
 
 ```text
 Generate reform documentation versus current-law policy.
@@ -831,7 +831,7 @@ doc: String
 def ce_aftertax_income(self, calc, custom_params=None, require_no_agg_tax_change=True)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1362)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1361)
 
 ```text
 Return dictionary that contains certainty-equivalent of the
@@ -862,7 +862,7 @@ income in the expected-utility and certainty-equivalent calculations.
 def _taxinc_to_amt(self)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1406)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1405)
 
 ```text
 Call TaxInc through AMT functions.
@@ -874,7 +874,7 @@ Call TaxInc through AMT functions.
 def _calc_one_year(self, zero_out_calc_vars=False)
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1416)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py#L1415)
 
 ```text
 Call all the functions except those in the calc_all() method.

@@ -264,23 +264,6 @@ _Valid Range:_ min = 0 and max = 1
 _Out-of-Range Action:_ error  
 
 
-####  `ALD_InvInc_ec_rt`  
-_Description:_ Decimal fraction of investment income base that can be excluded from AGI.  The final taxable investment income will be (1-_ALD_InvInc_ec_rt)*investment_income_base. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
-_Value Type:_ float  
-_Known Values:_  
-2013: 0.0  
-2014: 0.0  
-2015: 0.0  
-2016: 0.0  
-2017: 0.0  
-2018: 0.0  
-2019: 0.0  
-_Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error  
-
-
 ####  `ALD_IRAContributions_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of IRA contributions that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*IRA_Contribution.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  

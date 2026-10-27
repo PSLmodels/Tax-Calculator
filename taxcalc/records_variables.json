@@ -841,10 +841,6 @@
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used"
     },
-    "invinc_ec_base": {
-      "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
-    },
     "lumpsum_tax": {
       "type": "float",
       "desc": "Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output"

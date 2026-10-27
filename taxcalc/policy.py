@@ -157,19 +157,21 @@ class Policy(Parameters):
             'was renamed SECA_Earnings_deminimus in Tax-Calculator 6.8.4'
         ),
         # following parameter was removed in PR 3198
-        'AMT_em_pe': 'was removed in Tax-Calculator 6.8.6',
+        'AMT_em_pe': 'was removed in Tax-Calculator 6.9.0',
         # following parameters were removed in PR 3199
-        'FST_AGI_trt': 'was removed in Tax-Calculator 6.8.6',
-        'FST_AGI_thd_lo': 'was removed in Tax-Calculator 6.8.6',
-        'FST_AGI_thd_hi': 'was removed in Tax-Calculator 6.8.6',
+        'FST_AGI_trt': 'was removed in Tax-Calculator 6.9.0',
+        'FST_AGI_thd_lo': 'was removed in Tax-Calculator 6.9.0',
+        'FST_AGI_thd_hi': 'was removed in Tax-Calculator 6.9.0',
         # following parameters were removed in PR 3202
-        'AGI_surtax_trt': 'was removed in Tax-Calculator 6.8.6',
-        'AGI_surtax_thd': 'was removed in Tax-Calculator 6.8.6',
+        'AGI_surtax_trt': 'was removed in Tax-Calculator 6.9.0',
+        'AGI_surtax_thd': 'was removed in Tax-Calculator 6.9.0',
         # following parameters were removed in PR 3204
-        'ALD_Dependents_hc': 'was removed in Tax-Calculator 6.8.6',
-        'ALD_Dependents_Child_c': 'was removed in Tax-Calculator 6.8.6',
-        'ALD_Dependents_Elder_c': 'was removed in Tax-Calculator 6.8.6',
-        'ALD_Dependents_thd': 'was removed in Tax-Calculator 6.8.6',
+        'ALD_Dependents_hc': 'was removed in Tax-Calculator 6.9.0',
+        'ALD_Dependents_Child_c': 'was removed in Tax-Calculator 6.9.0',
+        'ALD_Dependents_Elder_c': 'was removed in Tax-Calculator 6.9.0',
+        'ALD_Dependents_thd': 'was removed in Tax-Calculator 6.9.0',
+        # following parameter was removed in PR 3205
+        'ALD_InvInc_ec_rt': 'was removed in Tax-Calculator 6.9.0',
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}
