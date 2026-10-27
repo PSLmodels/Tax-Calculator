@@ -189,7 +189,7 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
         dframe['adj_income_measure'] = np.divide(dframe[income_measure], adj)
     else:
         dframe['adj_income_measure'] = dframe[income_measure]
-    dframe.sort_values(by='adj_income_measure', inplace=True)
+    dframe = dframe.sort_values(by='adj_income_measure')
     if weight_by_income_measure:
         dframe['cumsum_temp'] = np.cumsum(
             np.multiply(dframe[income_measure].values, dframe['s006'].values)
@@ -240,7 +240,7 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
     labels = range(1, (num_bins + 1))
     dframe['table_row'] = pd.cut(dframe['cumsum_temp'], bin_edges,
                                  right=False, labels=labels)
-    dframe.drop('cumsum_temp', axis=1, inplace=True)
+    dframe = dframe.drop('cumsum_temp', axis=1)
     return dframe
 
 
@@ -434,7 +434,6 @@ def create_distribution_table(vdf, groupby, income_measure,
                 dist_table[col] *= 1e-9
                 dist_table.round({col: 3})
     # return table as Pandas DataFrame
-    vdf.sort_index(inplace=True)
     return dist_table
 
 

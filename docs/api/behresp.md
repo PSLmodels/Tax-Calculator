@@ -453,7 +453,7 @@ Note: the nature of the capital-gains elasticity used here is similar
 def pch_response(elasticity=np.zeros(1), val1=np.zeros(1), val2=np.zeros(1))
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behresp.py#L737)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behresp.py#L736)
 
 ```text
 Calculate the percentage change response, given an elasticity and
@@ -492,7 +492,7 @@ pch_response: numpy array
 def quantity_response(quantity=np.array([1]), price_elasticity=np.zeros(1), aftertax_price1=np.zeros(1), aftertax_price2=np.zeros(1), income_elasticity=np.zeros(1), aftertax_income1=np.zeros(1), aftertax_income2=np.zeros(1))
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behresp.py#L775)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behresp.py#L774)
 
 ```text
 Calculate dollar change in quantity using a log-log response equation,
@@ -574,7 +574,7 @@ response: numpy array
 def labor_response(earnings=np.array([1]), substitution_eti=np.zeros(1), mtr1=np.zeros(1), mtr2=np.zeros(1), income_elasticity=np.zeros(1), aftertax_income1=np.zeros(1), aftertax_income2=np.zeros(1))
 ```
 
-[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behresp.py#L867)
+[source](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/behresp.py#L866)
 
 ```text
 Calculate labor response given earnings, substitution elasticity of taxable

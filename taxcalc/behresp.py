@@ -704,10 +704,10 @@ def response(calc_1, calc_2, elasticities, dump=False):
     # Extract dataframe from calc1
     if dump:
         recs_vinfo = Records(data=None)  # contains records VARINFO only
-        dvars = sorted(recs_vinfo.USABLE_READ_VARS |
-                       recs_vinfo.CALCULATED_VARS)
+        dvars = sorted((recs_vinfo.USABLE_READ_VARS |
+                        recs_vinfo.CALCULATED_VARS) -
+                       {'mtr_inctax', 'mtr_paytax'})
         df1 = calc1.dataframe(dvars)
-        df1.drop(['mtr_inctax', 'mtr_paytax'], axis='columns', inplace=True)
         df1['mtr_combined'] = wage_mtr1 * 100
     else:
         df1 = calc1.dataframe(DIST_VARIABLES)
@@ -725,7 +725,6 @@ def response(calc_1, calc_2, elasticities, dump=False):
     # Extract dataframe from calc2_behv
     if dump:
         df2 = calc2_behv.dataframe(dvars)
-        df2.drop(['mtr_inctax', 'mtr_paytax'], axis='columns', inplace=True)
         df2['mtr_combined'] = wage_mtr2 * 100
     else:
         df2 = calc2_behv.dataframe(DIST_VARIABLES)
