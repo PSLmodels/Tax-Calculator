@@ -22,9 +22,9 @@ config = {
     "name": "taxcalc",
     "python_requires": ">=3.13",
     "install_requires": [
-        "numpy>=2.4",
-        "pandas>=3.0",
-        "bokeh>=3.7",
+        "numpy>=2.5",
+        "pandas>=3.1",
+        "bokeh>=3.10",
         "numba==0.68.0",
         "paramtools>=0.20.0"
     ],

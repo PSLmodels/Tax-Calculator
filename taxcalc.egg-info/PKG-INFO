@@ -19,9 +19,9 @@ Classifier: Topic :: Software Development :: Libraries :: Python Modules
 Requires-Python: >=3.13
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: numpy>=2.4
-Requires-Dist: pandas>=3.0
-Requires-Dist: bokeh>=3.7
+Requires-Dist: numpy>=2.5
+Requires-Dist: pandas>=3.1
+Requires-Dist: bokeh>=3.10
 Requires-Dist: numba==0.68.0
 Requires-Dist: paramtools>=0.20.0
 Dynamic: classifier
