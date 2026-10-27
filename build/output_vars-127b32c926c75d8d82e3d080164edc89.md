@@ -331,11 +331,6 @@ _Description_: search taxcalc/calcfunctions.py for how calculated and used
 _Datatype_: float  
 
 
-##  `invinc_ec_base`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
-_Datatype_: float  
-
-
 ##  `lumpsum_tax`  
 _Description_: Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output  
 _Datatype_: float  
