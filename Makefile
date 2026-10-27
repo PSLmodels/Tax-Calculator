@@ -83,7 +83,7 @@ TOPLEVEL_JSON_FILES := $(shell ls -l ./*json | awk '{print $$9}')
 TAXCALC_JSON_FILES := $(shell ls -l ./taxcalc/*json | awk '{print $$9}')
 TESTS_JSON_FILES := $(shell ls -l ./taxcalc/tests/*json | awk '{print $$9}')
 PYLINT_DISABLE = locally-disabled,duplicate-code,cyclic-import
-PYLINT_OPTIONS = --disable=$(PYLINT_DISABLE) --score=no --jobs=4 \
+PYLINT_OPTIONS = --disable=$(PYLINT_DISABLE) --score=no --jobs=1 \
                  --check-quote-consistency=yes
 EXCLUDED_PATHS = taxcalc/validation/taxsim35
 
