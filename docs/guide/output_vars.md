@@ -466,11 +466,6 @@ _Description_: Standard deduction (zero for itemizers)
 _Datatype_: float  
 
 
-##  `surtax`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
-_Datatype_: float  
-
-
 ##  `taxable_ubi`  
 _Description_: Amount of UBI benefit included in AGI  
 _Datatype_: float  

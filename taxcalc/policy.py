@@ -162,6 +162,9 @@ class Policy(Parameters):
         'FST_AGI_trt': 'was removed in Tax-Calculator 6.8.6',
         'FST_AGI_thd_lo': 'was removed in Tax-Calculator 6.8.6',
         'FST_AGI_thd_hi': 'was removed in Tax-Calculator 6.8.6',
+        # following parameters were removed in PR 3202
+        'AGI_surtax_trt': 'was removed in Tax-Calculator 6.8.6',
+        'AGI_surtax_thd': 'was removed in Tax-Calculator 6.8.6',
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}

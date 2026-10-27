@@ -140,41 +140,6 @@ _Valid Range:_ min = 0 and max = 1
 _Out-of-Range Action:_ error  
 
 
-####  `AGI_surtax_thd`  
-_Description:_ The aggregate gross income above this AGI surtax threshold is taxed at surtax rate on AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
-_Value Type:_ float  
-_Known Values:_  
- for: [single, mjoint, mseparate, headhh, widow]  
-2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-_Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error  
-
-
-####  `AGI_surtax_trt`  
-_Description:_ The surtax rate is applied to the portion of Adjusted Gross Income above the AGI surtax threshold.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
-_Value Type:_ float  
-_Known Values:_  
-2013: 0.0  
-2014: 0.0  
-2015: 0.0  
-2016: 0.0  
-2017: 0.0  
-2018: 0.0  
-2019: 0.0  
-_Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error  
-
-
 ####  `ALD_AlimonyPaid_hc`  
 _Description:_ Under pre-TCJA law, the full amount of alimony paid is taken as an adjustment from gross income in arriving at AGI. This haircut can be used to change the deduction allowed.  The final adjustment amount would be (1-Haircut)*AlimonyPaid.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  

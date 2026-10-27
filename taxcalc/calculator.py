@@ -11,7 +11,7 @@ import copy
 import numpy as np
 import pandas as pd
 import paramtools
-from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
+from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                    DependentCare, ALD_InvInc_ec_base,
                                    CapGainsLoss, AGIIncome,
@@ -1410,7 +1410,6 @@ class Calculator():
         TaxInc(self.__policy, self.__records)
         SchXYZTax(self.__policy, self.__records)
         GainsTax(self.__policy, self.__records)
-        AGIsurtax(self.__policy, self.__records)
         NetInvIncTax(self.__policy, self.__records)
         AMT(self.__policy, self.__records)
 
