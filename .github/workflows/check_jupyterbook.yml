@@ -15,7 +15,7 @@ jobs:
         with:
           activate-environment: taxcalc-dev
           environment-file: environment.yml
-          python-version: 3.12
+          python-version: 3.13
           auto-activate: false
 
       - name: Build # Build Jupyter Book
