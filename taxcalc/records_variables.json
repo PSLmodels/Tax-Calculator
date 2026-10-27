@@ -781,10 +781,6 @@
       "type": "float",
       "desc": "American Opportunity Credit non-refundable amount from Form 8863 (included in c07230)"
     },
-    "care_deduction": {
-      "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
-    },
     "ctc_new": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used"

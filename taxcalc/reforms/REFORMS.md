@@ -32,8 +32,6 @@ FAQ](https://github.com/PSLmodels/Tax-Calculator/issues/1830)
 to see how to use the compound-reform techique to analyze the reforms
 in this section.
 
-- [2016 Trump Campaign Tax Plan](Trump2016.json)
-
 - [2017 Trump Administration Tax Plan](Trump2017.json)
 
 - [2017 Brown-Khanna GAIN Act](BrownKhanna.json)

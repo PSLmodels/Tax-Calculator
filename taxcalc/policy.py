@@ -165,6 +165,11 @@ class Policy(Parameters):
         # following parameters were removed in PR 3202
         'AGI_surtax_trt': 'was removed in Tax-Calculator 6.8.6',
         'AGI_surtax_thd': 'was removed in Tax-Calculator 6.8.6',
+        # following parameters were removed in PR 3204
+        'ALD_Dependents_hc': 'was removed in Tax-Calculator 6.8.6',
+        'ALD_Dependents_Child_c': 'was removed in Tax-Calculator 6.8.6',
+        'ALD_Dependents_Elder_c': 'was removed in Tax-Calculator 6.8.6',
+        'ALD_Dependents_thd': 'was removed in Tax-Calculator 6.8.6',
     }
     # (2) specify which Policy parameters have been redefined
     REDEFINED_PARAMS = {}

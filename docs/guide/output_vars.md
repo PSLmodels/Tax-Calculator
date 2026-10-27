@@ -221,11 +221,6 @@ _Description_: American Opportunity Credit non-refundable amount from Form 8863 
 _Datatype_: float  
 
 
-##  `care_deduction`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
-_Datatype_: float  
-
-
 ##  `CDCC_refund`  
 _Description_: Refundable credit for child and dependent care expenses from Form 2441  
 _Datatype_: float  

@@ -649,8 +649,6 @@ NEW_KNOWN_ITEMS = {
         {'year': 2026, 'value': 1700.0},
     ],
     # OTHER PARAMS THAT ARE NOT INDEXED:
-    'ALD_Dependents_Child_c': LIST_SCALAR_ZERO,
-    'ALD_Dependents_Elder_c': LIST_SCALAR_ZERO,
     'II_em': LIST_SCALAR_ZERO,
     'II_em_ps': LIST_MARS_INF,
     'II_credit': LIST_MARS_ZERO,
