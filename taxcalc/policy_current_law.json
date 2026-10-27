@@ -1092,30 +1092,6 @@
             "tmd": true
         }
     },
-    "ALD_InvInc_ec_rt": {
-        "title": "Investment income exclusion rate haircut",
-        "description": "Decimal fraction of investment income base that can be excluded from AGI.  The final taxable investment income will be (1-_ALD_InvInc_ec_rt)*investment_income_base. Even though the excluded portion of investment income is not included in AGI, it still is included in investment income used to calculate the Net Investment Income Tax and Earned Income Tax Credit.",
-        "indexable": false,
-        "indexed": false,
-        "type": "float",
-        "value": [
-            {
-                "year": 2013,
-                "value": 0.0
-            }
-        ],
-        "validators": {
-            "range": {
-                "min": 0,
-                "max": 1
-            }
-        },
-        "compatible_data": {
-            "puf": true,
-            "cps": true,
-            "tmd": true
-        }
-    },
     "ALD_BusinessLosses_c": {
         "title": "Maximum amount of business losses deductible",
         "description": "Business losses in excess of this amount may not be deducted from AGI.",

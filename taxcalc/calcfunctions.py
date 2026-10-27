@@ -385,66 +385,6 @@ def Adj(e03220, e03290, c03260, e03300, e03270,
 
 
 @iterate_jit(nopython=True)
-def ALD_InvInc_ec_base(p22250, p23250,
-                       e00300, e00600, e01100, e01200, MARS,
-                       invinc_ec_base, Capital_loss_limitation):
-    """
-    Computes invinc_ec_base, the base amount of investment income that
-    the reform parameter ALD_InvInc_ec_rt multiplies in AGIIncome to
-    produce invinc_agi_ec, the dollar amount of investment income
-    excluded from AGI. No IRS form correspondence (reform plumbing);
-    inert under current law because ALD_InvInc_ec_rt defaults to 0.
-
-    The base is the sum of five investment-income components: taxable
-    interest, ordinary dividends, net capital gain/(loss) after the
-    Sch D §1211(b) per-MARS loss cap, capital-gain distributions not
-    reported on Schedule D, and other gain/(loss) from Form 4797.
-
-    Note: this function runs before CapGainsLoss in calc_all (so c01000
-    is not yet available) and therefore re-derives the loss-capped
-    capital gain locally as `cgain`. By construction `cgain` equals the
-    `c01000` that CapGainsLoss will produce one call later.
-
-    Parameters
-    ----------
-    p22250: float
-        Net short-term capital gain/(loss) (Schedule D line 7)
-    p23250: float
-        Net long-term capital gain/(loss) (Schedule D line 15)
-    e00300: float
-        Taxable interest (Form 1040 line 2b)
-    e00600: float
-        Ordinary dividends (Form 1040 line 3b)
-    e01100: float
-        Capital gain distributions not reported on Schedule D
-    e01200: float
-        Other gain/(loss) from Form 4797 (Schedule 1 line 4)
-    MARS: int
-        Filing marital status (1=single, 2=joint, 3=separate,
-                               4=household-head, 5=widow(er))
-    invinc_ec_base: float
-        Base investment income subject to the reform exclusion
-        (consumed by AGIIncome via ALD_InvInc_ec_rt)
-    Capital_loss_limitation: list
-        MARS-indexed dollar limit on net capital loss deductible
-        against ordinary income (Schedule D line 21 cap)
-
-    Returns
-    -------
-    invinc_ec_base: float
-        Base investment income subject to the reform exclusion
-    """
-    # Schedule D line 21 / IRC §1211(b): cap any net capital loss at the
-    # MARS-indexed limit. Re-derived here (rather than reusing c01000)
-    # because CapGainsLoss has not yet run; result equals c01000.
-    cgain = max(
-        (-1 * Capital_loss_limitation[MARS - 1]), p22250 + p23250
-    )
-    invinc_ec_base = e00300 + e00600 + cgain + e01100 + e01200
-    return invinc_ec_base
-
-
-@iterate_jit(nopython=True)
 def CapGainsLoss(p22250, p23250, Capital_loss_limitation, MARS,
                  c23650, c01000):
     """
@@ -490,7 +430,6 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
               e00900, e01100, e01200, e01400, e01700, e02000, e02100,
               e02300, e02400, c01000, c02900, e03210, e03230, e03240,
               ALD_StudentLoan_hc, ALD_Tuition_hc, ALD_DomesticProduction_hc,
-              ALD_InvInc_ec_rt, invinc_ec_base,
               CG_nodiff, CG_ec, CG_reinvest_ec_rt,
               ALD_BusinessLosses_c, AlimonyReceived_frac_in_AGI, MARS,
               ymod, ymod1, invinc_agi_ec):
@@ -498,8 +437,7 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
     Builds ymod1 (Form 1040 income lines + Schedule 1 Part I, the
     AGI building-block consumed by AGI()) and ymod (the modified-AGI
     used by SSBenefits to determine the taxable portion of OASDI
-    benefits). Reform-only investment-income and QDCG exclusions
-    are applied here.
+    benefits). The reform-only QDCG exclusion is applied here.
 
     Parameters
     ----------
@@ -560,11 +498,6 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
     ALD_DomesticProduction_hc: float
       Haircut on the domestic-production-activities deduction
       (1.0 from 2018, after TCJA §13305(a) repealed IRC §199)
-    ALD_InvInc_ec_rt: float
-      Reform exclusion rate for investment income
-    invinc_ec_base: float
-      Base investment income subject to the reform exclusion
-      (set by ALD_InvInc_ec_base)
     CG_nodiff: bool
       Reform: long-term capital gains and qualified dividends taxed
       at ordinary rates (no preferential treatment)
@@ -587,9 +520,9 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
       of OASDI benefits
     ymod1: float
       AGI build-up: Form 1040 income lines + Schedule 1 Part I,
-      net of reform investment-income and QDCG exclusions
+      net of the reform QDCG exclusion
     invinc_agi_ec: float
-      Reform exclusion of investment income from AGI
+      Reform exclusion of QDCG from AGI (when CG_nodiff)
 
     Returns
     -------
@@ -599,8 +532,6 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
     """
     # investment income (1040 lines 2b, 3b, 7 + Sch 1 line 4 + capgain distrib)
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
-    # reform: exclude a fraction of investment income from AGI
-    invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
     # ymod1 = Form 1040 income lines + Schedule 1 Part I
     # (e00800 = alimony received, Sch 1 line 2a, included only to the
     # extent of AlimonyReceived_frac_in_AGI -- TCJA excludes alimony
@@ -608,7 +539,7 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
     ymod1 = (e00200 + e00700 +
              AlimonyReceived_frac_in_AGI * e00800 +
              e01400 + e01700 +
-             invinc - invinc_agi_ec + e02100 + e02300 +
+             invinc + e02100 + e02300 +
              max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
     if CG_nodiff:
         # reform: when QDCG receive no preferential rates, partially
@@ -619,7 +550,9 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
         qdcg_exclusion = (min(CG_ec, qdcg_pos) +
                           CG_reinvest_ec_rt * max(0., qdcg_pos - CG_ec))
         ymod1 = max(0., ymod1 - qdcg_exclusion)
-        invinc_agi_ec += qdcg_exclusion
+        invinc_agi_ec = qdcg_exclusion
+    else:
+        invinc_agi_ec = 0.
     # ymod = modAGI used by the SS-benefits worksheet (Pub. 915).
     # Worksheet line 6 = "Schedule 1, lines 11 through 20, and 23 and
     # 25" — it excludes Sch 1 line 21 (student loan interest) and the

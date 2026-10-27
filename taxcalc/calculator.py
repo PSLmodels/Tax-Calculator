@@ -13,7 +13,6 @@ import pandas as pd
 import paramtools
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
-                                   ALD_InvInc_ec_base,
                                    CapGainsLoss, AGIIncome,
                                    SSBenefits, UBI, AGI, MiscDed,
                                    ItemDed, StdDed, AdditionalMedicareTax,
@@ -1423,7 +1422,6 @@ class Calculator():
         # pdb.set_trace()
         EI_PayrollTax(self.__policy, self.__records)
         Adj(self.__policy, self.__records)
-        ALD_InvInc_ec_base(self.__policy, self.__records)
         CapGainsLoss(self.__policy, self.__records)
         AGIIncome(self.__policy, self.__records)
         SSBenefits(self.__policy, self.__records)
