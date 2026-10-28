@@ -56,7 +56,7 @@ endef
 
 .PHONY=pytest
 pytest: clean
-	@cd taxcalc ; pytest -n6 --durations=0 --durations-min=9
+	@cd taxcalc ; pytest -n6 --durations=0 --durations-min=8
 	@$(pytest-cleanup)
 
 define tctest-cleanup
