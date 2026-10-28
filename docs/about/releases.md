@@ -5,6 +5,61 @@ Go
 for a complete commit history.
 
 
+2026-10-30 Release 6.9.0
+------------------------
+(last merged pull request is
+[#3207](https://github.com/PSLmodels/Tax-Calculator/pull/3207))
+
+**This is an enhancement and bug fix release.**
+
+**API Changes**
+- Add support for Python 3.15 and drop support for Python 3.12
+  [[#3200](https://github.com/PSLmodels/Tax-Calculator/pull/3200) and
+   [#3201](https://github.com/PSLmodels/Tax-Calculator/pull/3201)
+   by Martin Holmer]
+- Remove FairShare tax parameters and variable
+  [[#3199](https://github.com/PSLmodels/Tax-Calculator/pull/3199)
+   by Martin Holmer]
+- Remove AGI surtax parameters, code, tests, and documentation
+  [[#3202](https://github.com/PSLmodels/Tax-Calculator/pull/3202)
+   by Martin Holmer]
+- Remove `DependentCare` function and associated parameters and variable
+  [[#3204](https://github.com/PSLmodels/Tax-Calculator/pull/3204)
+   by Martin Holmer]
+- Remove `ALD_InvInc_ec_base` function and associated parameter and variable
+  [[#3205](https://github.com/PSLmodels/Tax-Calculator/pull/3205)
+   by Martin Holmer]
+
+**New Features**
+- Add `make valtest` command to agent instructions
+  [[#3189](https://github.com/PSLmodels/Tax-Calculator/pull/3189)
+   by Martin Holmer]
+- Revise `taxcalc/validation/pe_taxsim` documentation and update
+  the PolicyEngine-US version validated against
+  [[#3190](https://github.com/PSLmodels/Tax-Calculator/pull/3190),
+   [#3192](https://github.com/PSLmodels/Tax-Calculator/pull/3192),
+   [#3195](https://github.com/PSLmodels/Tax-Calculator/pull/3195), and
+   [#3197](https://github.com/PSLmodels/Tax-Calculator/pull/3197)
+   by Martin Holmer]
+- Require `numba` 0.68.0
+  [[#3193](https://github.com/PSLmodels/Tax-Calculator/pull/3193)
+   by Martin Holmer]
+- Refactor code to remove warnings that appeared after `pandas` upgrade
+  [[#3203](https://github.com/PSLmodels/Tax-Calculator/pull/3203)
+   by Martin Holmer]
+- Update expected test results for new TMD 2.2.3 input data files
+  [[#3207](https://github.com/PSLmodels/Tax-Calculator/pull/3207)
+   by Martin Holmer]
+
+**Bug Fixes**
+- Fix four bugs reported in submission #3196
+  [[#3198](https://github.com/PSLmodels/Tax-Calculator/pull/3198)
+   by Martin Holmer]
+- Fix `calcfunctions.py` typo
+  [[#3206](https://github.com/PSLmodels/Tax-Calculator/pull/3206)
+   by Martin Holmer]
+
+
 2026-10-16 Release 6.8.5
 ------------------------
 (last merged pull request is
