@@ -52,9 +52,11 @@ for a complete commit history.
    by Martin Holmer]
 
 **Bug Fixes**
-- Fix four bugs reported in submission #3196
-  [[#3198](https://github.com/PSLmodels/Tax-Calculator/pull/3198)
-   by Martin Holmer]
+- Fix four bugs reported in submission
+  [#3196](https://github.com/PSLmodels/Tax-Calculator/pull/3196) (by
+  Xamit Kadirbekov and Daniyal Kadirbekov)
+  [[#3198](https://github.com/PSLmodels/Tax-Calculator/pull/3198) by
+  Martin Holmer]
 - Fix `calcfunctions.py` typo
   [[#3206](https://github.com/PSLmodels/Tax-Calculator/pull/3206)
    by Martin Holmer]
