@@ -4326,7 +4326,7 @@ def AdditionalCTC(actc_claim_prob_min, actc_claim_prob_scale, credit_claim_urn,
                 line25 = c59660 + e11200
                 # Sch 8812 line 26: line 24 minus line 25 (not less than 0)
                 line26 = max(0., line24 - line25)
-                # Sch 8812 line 27 (Part II-b3157
+                # Sch 8812 line 27 (Part II-B):
                 #   min(line 17, max(line 20, line 26))
                 line27 = max(line20, line26)
                 c11070 = min(line17, line27)
