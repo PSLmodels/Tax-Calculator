@@ -6936,7 +6936,7 @@
     },
     "ID_AllTaxes_c_po_rate": {
         "title": "Rate at which ID_AllTaxes_c cap is phased-out above ID_AllTaxes_c_ps AGI",
-        "description": "The cap on state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_c_ps.",
+        "description": "The cap on state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_c_ps.  For married individuals filing separately, the cap is reduced at half this rate because IRC section 164(b)(6)-(7) applies the reduction to the unhalved cap and then allows half of the reduced cap.",
         "indexable": false,
         "indexed": false,
         "type": "float",

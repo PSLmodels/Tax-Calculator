@@ -810,9 +810,9 @@ def test_itemded_component_amounts(year, cps_subsample):
 
 
 @pytest.mark.parametrize('year, thd, mfs_thd, mfj_salt, mfs_salt', [
-    (2026, 505000, 252500, 35900.0, 17950.0),
-    (2027, 510050, 255025, 37819.0, 18909.5),
-    (2028, 515151, 257575, 39757.3, 19878.5),
+    (2026, 505000, 252500, 35900.0, 19075.0),
+    (2027, 510050, 255025, 37819.0, 19655.75),
+    (2028, 515151, 257575, 39757.3, 20242.25),
     (2029, 520302, 260151, 41624.0, 20812.0),
 ])
 def test_salt_cap_phaseout(year, thd, mfs_thd, mfj_salt, mfs_salt):
