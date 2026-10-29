@@ -77,15 +77,21 @@ def translate(smpl):
     bad = [var for var in MUST_BE_ZERO if (smpl[var] != 0).any()]
     if bad:
         raise ValueError(f"nonzero values of untranslated {bad}")
-    if not smpl.mstat.isin([1, 2]).all():
-        raise ValueError("mstat not always 1 or 2")
+    if not smpl.mstat.isin([1, 2, 6]).all():
+        raise ValueError("mstat not always 1, 2, or 6")
     joint = (smpl.mstat == 2).to_numpy()
+    mfs = (smpl.mstat == 6).to_numpy()
     depx = smpl.depx.to_numpy()
+    # PE treats an mstat 6 unit with a qualifying child as head of household
+    if (depx[mfs] > 0).any():
+        raise ValueError("mstat 6 with dependents")
     tc = pd.DataFrame(
         {tcvar: smpl[tsvar].to_numpy() for tsvar, tcvar in COPY_MAP.items()}
     )
     # filing status, exemptions, and spouse age
-    tc["MARS"] = np.where(joint, 2, np.where(depx > 0, 4, 1))
+    tc["MARS"] = np.where(
+        joint, 2, np.where(mfs, 3, np.where(depx > 0, 4, 1))
+    )
     tc["XTOT"] = depx + np.where(joint, 2, 1)
     tc["age_spouse"] = np.where(joint, smpl.sage, 0)
     # dependent counts from the ages of the depx dependents
@@ -150,9 +156,13 @@ def check_tc_input(tc, smpl):
         np.array_equal(tc.RECID.to_numpy(), smpl.taxsimid.to_numpy()),
         "RECID values differ from taxsimid",
     )
-    require(tc.MARS.isin([1, 2, 4]).all(), "MARS not always 1, 2, or 4")
+    require(tc.MARS.isin([1, 2, 3, 4]).all(), "MARS not always 1-4")
     require(
         np.array_equal(tc.MARS == 2, smpl.mstat == 2),
+        "MARS inconsistent with mstat",
+    )
+    require(
+        np.array_equal(tc.MARS == 3, smpl.mstat == 6),
         "MARS inconsistent with mstat",
     )
     require(

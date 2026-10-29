@@ -12,7 +12,11 @@ Each validation sample is identified by an assumption-set letter `L`
 The comparison involves five steps:
 
 1. `generate_sample.py` writes a TAXSIM-format sample `samples/LYY.in.csv.gz`
-   (always `state=0`, `idtl=2`).
+   (always `state=0`, `idtl=2`).  Its `--max-depx M` option (M in 3-5,
+   default 5) lowers the maximum number of dependents, and its
+   `--diverse-filers` option changes 20% of the single filers without
+   dependents to married filing separately (`mstat=6`); either option
+   requires `--outdir`, so the committed samples are never overwritten.
 2. `run_pe.py` runs policyengine-taxsim on the sample and writes
    `pe_output/LYY.out-pe.csv.gz` plus a version stamp
    `pe_output/LYY.out-pe.stamp.json`.
