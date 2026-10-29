@@ -1140,7 +1140,9 @@ def ItemDed(e17500, e18400, e18500, e19200,
         AGI level above which the line 5e SALT cap phases out
         ($500k / $250k MFS for 2025 per OBBBA)
     ID_AllTaxes_c_po_rate: float
-        Phaseout rate per dollar of AGI above ID_AllTaxes_c_ps
+        Phaseout rate per dollar of AGI above ID_AllTaxes_c_ps (half
+        this rate for MFS, because the reduction applies to the unhalved
+        cap, which is then halved for a separate filer)
     ID_AllTaxes_c_po_floor: list
         Floor below which the SALT cap cannot be reduced by the phaseout
     -- Sch A Interest You Paid (lines 8-10) --
@@ -1260,9 +1262,15 @@ def ItemDed(e17500, e18400, e18500, e19200,
     c18300 = (c18400 + c18500) * (1. - ID_AllTaxes_hc)  # line 5d sum + hc
     salt_cap = ID_AllTaxes_c[MARS - 1]  # line 5e base cap
     salt_ps = ID_AllTaxes_c_ps[MARS - 1]  # line 5e phaseout start
+    salt_po_rate = ID_AllTaxes_c_po_rate
+    if MARS == 3:
+        # IRC 164(b)(6)-(7) and the 2025 line 5e worksheet reduce the
+        # full (unhalved) cap and then halve it for a separate filer;
+        # with the halved MFS cap and floor that means a halved rate
+        salt_po_rate = 0.5 * ID_AllTaxes_c_po_rate
     if posagi > salt_ps:
         salt_excess_agi = posagi - salt_ps
-        salt_cap = max(0., salt_cap - salt_excess_agi * ID_AllTaxes_c_po_rate)
+        salt_cap = max(0., salt_cap - salt_excess_agi * salt_po_rate)
         salt_cap = max(salt_cap, ID_AllTaxes_c_po_floor[MARS - 1])
     # c18300 is line 5e final (= line 7, since line 6 is unmodeled)
     c18300 = min(c18300, salt_cap)

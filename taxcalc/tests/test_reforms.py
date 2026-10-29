@@ -412,9 +412,9 @@ def test_reforms(rid, reforms_dict, reforms_expect,
 
 @pytest.mark.obbba_reforms
 @pytest.mark.parametrize('reform_filename, expected_diff', [
-    ('ext.json', 59.508),
+    ('ext.json', 59.543),
     ('OBBBA.json', 0.0),
-    ('NoOBBBA.json', 306.524),
+    ('NoOBBBA.json', 306.555),
 ])
 def test_reforms_cps(
         reform_filename,
