@@ -8,7 +8,7 @@ for a complete commit history.
 2026-10-30 Release 6.9.0
 ------------------------
 (last merged pull request is
-[#3207](https://github.com/PSLmodels/Tax-Calculator/pull/3207))
+[#3210](https://github.com/PSLmodels/Tax-Calculator/pull/3210))
 
 **This is an enhancement and bug fix release.**
 
@@ -60,6 +60,10 @@ for a complete commit history.
 - Fix `calcfunctions.py` typo
   [[#3206](https://github.com/PSLmodels/Tax-Calculator/pull/3206)
    by Martin Holmer]
+- Fix MFS SALT deduction cap bug reported in issue
+  [#3209](https://github.com/PSLmodels/Tax-Calculator/pull/3209)
+  [[#3210](https://github.com/PSLmodels/Tax-Calculator/pull/3210) by
+  Martin Holmer]
 
 
 2026-10-16 Release 6.8.5
