@@ -2333,7 +2333,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `ID_AllTaxes_c_po_rate`  
-_Description:_ The cap on state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_c_ps.  
+_Description:_ The cap on state and local income, sales and real estate tax deductions is reduced at this rate when AGI exceeds ID_AllTaxes_c_ps.  For married individuals filing separately, the cap is reduced at half this rate because IRC section 164(b)(6)-(7) applies the reduction to the unhalved cap and then allows half of the reduced cap.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  

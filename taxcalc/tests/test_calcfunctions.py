@@ -874,10 +874,9 @@ def test_MiscDed(call_calcfunc, rvars, expected):
 # ItemDed test cases use the 2025 current-law values, which match the
 # 2025 Schedule A:
 #   line 3 medical floor is 7.5 percent of AGI;
-#   line 5e SALT cap is 40000 (20000 when married filing separately),
-#     reduced by 30 percent of AGI above 500000 (250000 when married
-#     filing separately), but not below 10000 (5000 when married filing
-#     separately);
+#   line 5e SALT cap is 40000 reduced by 30 percent of AGI above 500000
+#     (250000 when married filing separately), but not below 10000, with
+#     half of that amount allowed when married filing separately;
 #   line 14 charity is limited to 60 percent of AGI, with noncash gifts
 #     limited to 30 percent of AGI;
 #   line 15 casualty losses and line 16 other deductions are zero under
@@ -959,14 +958,20 @@ ID_ALL_ITEMS = {
     pytest.param(None, {'MARS': 1, 'c00100': 700000., 'e18400': 50000.},
                  (0., 10000., 0., 0., 0., 0., 0., 10000., 10000.),
                  id='SALT cap floor'),
-    # line 7: min(50000, 20000 - 0.3 * (275000 - 250000))
+    # line 7: min(50000, (40000 - 0.3 * (275000 - 250000)) / 2)
     pytest.param(None, {'MARS': 3, 'c00100': 275000., 'e18400': 50000.},
-                 (0., 12500., 0., 0., 0., 0., 0., 12500., 12500.),
+                 (0., 16250., 0., 0., 0., 0., 0., 16250., 16250.),
                  id='SALT cap phase-out separate'),
-    # line 7: min(50000, max(20000 - 0.3 * (350000 - 250000), 5000))
+    # line 7: min(50000, max(40000 - 0.3 * (350000 - 250000), 10000) / 2)
     pytest.param(None, {'MARS': 3, 'c00100': 350000., 'e18400': 50000.},
                  (0., 5000., 0., 0., 0., 0., 0., 5000., 5000.),
                  id='SALT cap floor separate'),
+    # issue 3209: line 7: min(25000, max(40000 - 0.3 * (300000 - 250000),
+    # 10000) / 2) when married filing separately
+    pytest.param(None, {'MARS': 3, 'c00100': 300000., 'e18400': 25000.,
+                        'e19200': 20000.},
+                 (0., 12500., 20000., 0., 0., 0., 0., 32500., 32500.),
+                 id='SALT cap phase-out separate issue 3209'),
     # line 10: interest is not limited
     pytest.param(None, {'MARS': 1, 'c00100': 100000., 'e19200': 12000.},
                  (0., 0., 12000., 0., 0., 0., 0., 12000., 12000.),
