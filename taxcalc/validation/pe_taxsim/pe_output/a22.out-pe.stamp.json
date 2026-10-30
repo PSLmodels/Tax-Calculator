@@ -1,8 +1,8 @@
 {
     "input_file": "a22.in.csv.gz",
-    "input_sha256": "b24307911a5627343d3c8bb6f31ffeece5397bae25b533ffaa03b1f95c5d68ac",
+    "input_sha256": "2f819452f3fcdedafb00a6e393fe2f2d1887e1dadb18b542f8e8e6ce01975020",
     "output_file": "a22.out-pe.csv.gz",
-    "output_sha256": "609eb195cd77e628b73da12c174b62a925fef1d8de54aadd1ad2ba45eb9d6153",
+    "output_sha256": "9e2999ea03c73a28be53c8ce232033b3b6e38bc8bc6450d9f3eca8ecf1bd3c5b",
     "rows": 10000,
     "policyengine_taxsim_sha": "2e3e6cb003aefc977ee4a6f9b2a8a701595dec2f",
     "pe_cli_options": [
@@ -13,6 +13,6 @@
     "policyengine_us_version": "2.62.8",
     "policyengine_core_version": "3.33.12",
     "python_version_resolved": "3.13.16",
-    "run_date": "2026-10-24",
-    "run_seconds": 17.8
+    "run_date": "2026-10-30",
+    "run_seconds": 32.6
 }

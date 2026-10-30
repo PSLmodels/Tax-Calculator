@@ -20,8 +20,7 @@ Notation: `p`/`s` suffixes denote the primary taxpayer and spouse;
 Input variables
 ---------------
 
-Every sample row has `state=0` and `idtl=2`, and `mstat` is 1 or 2
-(or 6 in samples generated with the `--diverse-filers` option).
+Every sample row has `state=0` and `idtl=2`, and `mstat` is 1, 2, or 6.
 PE simulates a `state=0` row in Texas but pins the state and local
 income/sales tax deduction to zero, so no state tax affects the
 federal results.
@@ -135,9 +134,11 @@ take their default value of zero.
   applies no relative-age test.
 - Write `nonprop = transfers = rentpaid = pprofinc = sprofinc = 0`.
 - Write `sage = ssemp = swages = sui = sbusinc = 0` when `mstat != 2`.
-- With `--diverse-filers`, change 20% of the `mstat == 1` units that
-  have no dependents to `mstat == 6`.  With `--max-depx M`, draw
-  `depx` from [0, M] rather than [0, 5].
+- Draw each unit's filing status first: 40% joint (`mstat == 2`,
+  `depx` drawn from [0, M]), 30% head of household (`mstat == 1`,
+  `depx` drawn from [1, M]), 15% single (`mstat == 1`, `depx == 0`),
+  and 15% married filing separately (`mstat == 6`, `depx == 0`),
+  where M is 5 unless `--max-depx M` specifies a smaller value.
 - Write `childcare = 0` when no dependent is under 13.
 - In sets b and c, make each of `psemp`, `ssemp`, `pbusinc`,
   `sbusinc`, and `scorp` nonzero for only a fraction (25%) of units,
@@ -240,4 +241,16 @@ internally-generated `credit_claim_urn` variable.
 ```
 "eitc_claim_prob_scale": {"2013": 9e99},
 "actc_claim_prob_scale": {"2013": 9e99}
+```
+
+Two more entries were adopted (2026-10-30), because PE treats every
+married filing separately unit as having lived with the spouse at
+some time during the year, so the base amounts in the taxable Social
+Security benefits worksheet are zero, whereas TC, which has no
+lived-apart-all-year input, uses the $25,000 and $34,000 base amounts
+that apply only to a separate filer who lived apart all year.
+
+```
+"SS_thd1": {"2013": [25000, 32000, 0, 25000, 25000]},
+"SS_thd2": {"2013": [34000, 44000, 0, 34000, 34000]}
 ```
