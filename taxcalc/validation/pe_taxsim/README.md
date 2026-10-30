@@ -126,9 +126,9 @@ Step 2 is equivalent to this command:
 
 ```
 uvx --python 3.13 \
-    --from git+https://github.com/PolicyEngine/policyengine-taxsim@3e2a7589c8acda0edd2aa9e748d726c9ca9262d0 \
-    --with policyengine-us==2.30.1 \
-    --with policyengine-core==3.32.21 \
+    --from git+https://github.com/PolicyEngine/policyengine-taxsim@c0d565948af3896e3a6e4d34970f7502d17cdf34 \
+    --with policyengine-us==2.87.0 \
+    --with policyengine-core==3.33.14 \
     policyengine-taxsim policyengine LYY.in.csv --output LYY.out-pe.csv \
     --scorp-treatment active
 ```
