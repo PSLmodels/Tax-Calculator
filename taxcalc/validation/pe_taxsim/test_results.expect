@@ -18,55 +18,31 @@ variable  compared  count  max_abs  mean_abs
 ===== a22 =====
 a22: 0 differences (|tc - pe| > 1) in 0 variables
 ===== a23 =====
-a23: 912 differences (|tc - pe| > 1) in 3 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000    304   2785.5   1345.24
-     v19     10000    304   2785.5   1345.24
-     v28     10000    304   2785.5   1345.24
+a23: 0 differences (|tc - pe| > 1) in 0 variables
 ===== a24 =====
 a24: 0 differences (|tc - pe| > 1) in 0 variables
 ===== a25 =====
 a25: 0 differences (|tc - pe| > 1) in 0 variables
 ===== b21 =====
-b21: 998 differences (|tc - pe| > 1) in 7 variables
+b21: 802 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000     37     5.26      2.22
-    qbid     10000     40    16.41      7.56
-     v18     10000     40    16.43      7.56
-     v19       296      2     2.34      1.82
-     v28     10000     37     5.26      2.21
-     v26     10000     40    16.43      7.56
-    actc     10000    802  1600.00    616.90
+    actc     10000    802   1600.0     616.9
 ===== b22 =====
 b22: 0 differences (|tc - pe| > 1) in 0 variables
 ===== b23 =====
-b23: 1754 differences (|tc - pe| > 1) in 3 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000    862  4625.03   3169.57
-     v19       304     30  4625.00   3617.32
-     v28     10000    862  4625.04   3169.57
+b23: 0 differences (|tc - pe| > 1) in 0 variables
 ===== b24 =====
 b24: 0 differences (|tc - pe| > 1) in 0 variables
 ===== b25 =====
 b25: 0 differences (|tc - pe| > 1) in 0 variables
 ===== c21 =====
-c21: 1081 differences (|tc - pe| > 1) in 7 variables
+c21: 873 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000     39     6.07      2.92
-    qbid     10000     43    18.96      9.20
-     v18     10000     43    18.97      9.20
-     v19       321      1     2.59      2.59
-     v28     10000     39     6.07      2.92
-     v26     10000     43    18.97      9.20
-    actc     10000    873  1600.00    639.00
+    actc     10000    873   1600.0     639.0
 ===== c22 =====
 c22: 0 differences (|tc - pe| > 1) in 0 variables
 ===== c23 =====
-c23: 1616 differences (|tc - pe| > 1) in 3 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000    795  4625.03   3043.34
-     v19       326     26  4625.01   2787.37
-     v28     10000    795  4625.03   3043.34
+c23: 0 differences (|tc - pe| > 1) in 0 variables
 ===== c24 =====
 c24: 2 differences (|tc - pe| > 1) in 2 variables
 variable  compared  count  max_abs  mean_abs
