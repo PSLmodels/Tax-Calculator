@@ -1,18 +1,18 @@
 {
     "input_file": "b22.in.csv.gz",
-    "input_sha256": "af20f55d49f40508468a639baf7969783ab5d5d8e5d6c32d65e542e1b68385e1",
+    "input_sha256": "3a598eb746bc5db03468d9f244e9c5f3b273234a9e16ed66be13dd0612bcf7f8",
     "output_file": "b22.out-pe.csv.gz",
-    "output_sha256": "94a92865c0f7a70b85fe6b6bfb1101df2f60fdc315db545ff0e15bbf7214c95d",
+    "output_sha256": "d60979a567513ef658e240e6bab013592a7f6bb530669273f8ba31a95e637032",
     "rows": 10000,
-    "policyengine_taxsim_sha": "2e3e6cb003aefc977ee4a6f9b2a8a701595dec2f",
+    "policyengine_taxsim_sha": "c0d565948af3896e3a6e4d34970f7502d17cdf34",
     "pe_cli_options": [
         "--scorp-treatment",
         "active"
     ],
-    "policyengine_taxsim_version": "3.2.5",
-    "policyengine_us_version": "2.62.8",
-    "policyengine_core_version": "3.33.12",
+    "policyengine_taxsim_version": "3.3.0",
+    "policyengine_us_version": "2.87.0",
+    "policyengine_core_version": "3.33.14",
     "python_version_resolved": "3.13.16",
-    "run_date": "2026-10-24",
-    "run_seconds": 18.6
+    "run_date": "2026-10-30",
+    "run_seconds": 20.4
 }

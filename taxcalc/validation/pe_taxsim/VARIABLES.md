@@ -20,7 +20,7 @@ Notation: `p`/`s` suffixes denote the primary taxpayer and spouse;
 Input variables
 ---------------
 
-Every sample row has `state=0` and `idtl=2`, and `mstat` is 1 or 2.
+Every sample row has `state=0` and `idtl=2`, and `mstat` is 1, 2, or 6.
 PE simulates a `state=0` row in Texas but pins the state and local
 income/sales tax deduction to zero, so no state tax affects the
 federal results.
@@ -33,7 +33,7 @@ federal results.
 | `year` | tax year | `FLPDYR` | copy |
 | `state` | always 0 | (none) | dropped |
 | `idtl` | always 2 | (none) | dropped |
-| `mstat` | 1: head only; 2: head + spouse (joint) | `MARS` | `2` if `mstat==2`; else `4` (head of household) if `depx>0`; else `1` |
+| `mstat` | 1: head only; 2: head + spouse (joint); 6: head only (married filing separately) | `MARS` | `2` if `mstat==2`; else `3` if `mstat==6`; else `4` (head of household) if `depx>0`; else `1` |
 | `page` | head age | `age_head` | copy |
 | `sage` | spouse age (joint only) | `age_spouse` | copy if `mstat==2`, else 0 |
 | `depx` | number of dependents | `XTOT` | `XTOT = depx + (2 if mstat==2 else 1)` |
@@ -44,6 +44,12 @@ federal results.
 because PE treats every TAXSIM dependent as a qualifying child (age
 < 19) or a qualifying relative (age >= 19, no gross income), both of
 which make the filer eligible for head-of-household status.
+
+An `mstat==6` unit never has dependents: PE treats a separated filer
+with a qualifying child as head of household (IRC 7703(b)), so only a
+childless `mstat==6` unit is married filing separately in both models.
+TAXSIM-35 has no `mstat` code for a qualifying surviving spouse, so
+the samples never contain `MARS=5` units.
 
 ### Dependent counts derived from `age1..age{depx}`
 
@@ -127,7 +133,12 @@ take their default value of zero.
   exercised.  Dependents need not be younger than the head: PE
   applies no relative-age test.
 - Write `nonprop = transfers = rentpaid = pprofinc = sprofinc = 0`.
-- Write `sage = ssemp = swages = sui = sbusinc = 0` when `mstat == 1`.
+- Write `sage = ssemp = swages = sui = sbusinc = 0` when `mstat != 2`.
+- Draw each unit's filing status first: 40% joint (`mstat == 2`,
+  `depx` drawn from [0, M]), 30% head of household (`mstat == 1`,
+  `depx` drawn from [1, M]), 15% single (`mstat == 1`, `depx == 0`),
+  and 15% married filing separately (`mstat == 6`, `depx == 0`),
+  where M is 5 unless `--max-depx M` specifies a smaller value.
 - Write `childcare = 0` when no dependent is under 13.
 - In sets b and c, make each of `psemp`, `ssemp`, `pbusinc`,
   `sbusinc`, and `scorp` nonzero for only a fraction (25%) of units,
@@ -230,4 +241,16 @@ internally-generated `credit_claim_urn` variable.
 ```
 "eitc_claim_prob_scale": {"2013": 9e99},
 "actc_claim_prob_scale": {"2013": 9e99}
+```
+
+Two more entries were adopted (2026-10-30), because PE treats every
+married filing separately unit as having lived with the spouse at
+some time during the year, so the base amounts in the taxable Social
+Security benefits worksheet are zero, whereas TC, which has no
+lived-apart-all-year input, uses the $25,000 and $34,000 base amounts
+that apply only to a separate filer who lived apart all year.
+
+```
+"SS_thd1": {"2013": [25000, 32000, 0, 25000, 25000]},
+"SS_thd2": {"2013": [34000, 44000, 0, 34000, 34000]}
 ```

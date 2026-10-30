@@ -3,8 +3,11 @@ Generates a random sample of tax filing units in TAXSIM-35 input format
 for use as policyengine-taxsim input (step 1 of the validation).
 
 USAGE: python generate_sample.py LETTER YEAR [--size N] [--offset K]
+       [--max-depx M] [--outdir DIR]
 
-writes samples/LYY.in.csv.gz in the folder containing this script.
+writes samples/LYY.in.csv.gz in the folder containing this script, or
+DIR/LYY.in.csv.gz when --outdir is specified (which is required when
+--max-depx changes the sample).
 See VARIABLES.md for the input variables and their constraints.
 """
 
@@ -20,6 +23,7 @@ FIRST_YEAR = 2021
 LAST_YEAR = 2025
 DEFAULT_SIZE = 10_000
 MAX_DEPX = 5
+MIN_MAX_DEPX = 3
 BASE_SEED = 123456789
 
 # TAXSIM input columns written to each sample file, in output order
@@ -70,19 +74,26 @@ ALWAYS_ZERO = [
 SPOUSE_COLUMNS = ["sage", "swages", "ssemp", "sui", "sbusinc"]
 
 
-def assumption_set(letter):
+def assumption_set(letter, max_depx=MAX_DEPX):
     """
     Return dictionary containing the assumption parameters for LETTER.
     Dollar amounts are in thousands of dollars.
     """
     adict = {}
     # demographic attributes:
-    adict["joint_frac"] = 0.60  # fraction of sample with mstat == 2
+    # fraction of sample with each filing status, where joint has
+    # mstat == 2 and zero or more dependents, head of household has
+    # mstat == 1 and one or more dependents, single has mstat == 1 and
+    # no dependents, and separate has mstat == 6 and no dependents
+    adict["joint_frac"] = 0.40
+    adict["hoh_frac"] = 0.30
+    adict["single_frac"] = 0.15
+    adict["separate_frac"] = 0.15
     adict["min_age"] = 17  # head age
     adict["max_age"] = 77  # head age
     adict["min_age_diff"] = -10  # spouse age minus head age
     adict["max_age_diff"] = 10  # spouse age minus head age
-    adict["max_depx"] = MAX_DEPX  # number of dependents
+    adict["max_depx"] = max_depx  # number of dependents
     adict["min_dep_age"] = 1  # PE changes a zero dependent age to 10
     adict["max_dep_age"] = 23  # covers every child-count age boundary
     # labor income:
@@ -144,13 +155,14 @@ def sample_seed(letter, year, offset):
     return [BASE_SEED, VALID_LETTERS.index(letter), year, offset]
 
 
-def generate_sample(letter, year, size, offset):
+def generate_sample(letter, year, size, offset, max_depx=MAX_DEPX):
     """
     Return DataFrame containing a random sample of SIZE filing units
     drawn using the LETTER assumption set for YEAR.
     """
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     # pylint: disable=too-many-locals,too-many-statements
-    assump = assumption_set(letter)
+    assump = assumption_set(letter, max_depx)
     rng = np.random.default_rng(sample_seed(letter, year, offset))
     zero = np.zeros(size, dtype=np.int64)
 
@@ -174,9 +186,20 @@ def generate_sample(letter, year, size, offset):
     smpl = pd.DataFrame({"taxsimid": np.arange(1, size + 1)})
     smpl["year"] = year
     smpl["state"] = 0
-    # marital status and ages
-    joint = rng.random(size) < assump["joint_frac"]
-    smpl["mstat"] = np.where(joint, 2, 1)
+    # filing status and ages
+    status = rng.choice(
+        4,
+        size,
+        p=[
+            assump["joint_frac"],
+            assump["hoh_frac"],
+            assump["single_frac"],
+            assump["separate_frac"],
+        ],
+    )
+    joint = status == 0
+    hoh = status == 1
+    smpl["mstat"] = np.where(joint, 2, np.where(status == 3, 6, 1))
     page = rng.integers(assump["min_age"], assump["max_age"] + 1, size)
     smpl["page"] = page
     age_diff = rng.integers(
@@ -186,17 +209,24 @@ def generate_sample(letter, year, size, offset):
     smpl["sage"] = np.where(joint, sage, zero)
     # dependents, with ages sorted youngest first and zero for unused slots
     depx = rng.integers(0, assump["max_depx"] + 1, size)
+    depx = np.where(
+        joint,
+        depx,
+        np.where(hoh, rng.integers(1, assump["max_depx"] + 1, size), zero),
+    )
     smpl["depx"] = depx
+    # ages are always drawn for MAX_DEPX slots so that max_depx affects
+    # only the depx draw
     ages = rng.integers(
         assump["min_dep_age"],
         assump["max_dep_age"] + 1,
-        (size, assump["max_depx"]),
+        (size, MAX_DEPX),
     )
-    slot = np.arange(assump["max_depx"])
+    slot = np.arange(MAX_DEPX)
     ages = np.where(slot < depx[:, np.newaxis], ages, 0)
     ages = np.sort(np.where(ages > 0, ages, 999), axis=1)
     ages = np.where(ages < 999, ages, 0)
-    for num in range(1, assump["max_depx"] + 1):
+    for num in range(1, MAX_DEPX + 1):
         smpl[f"age{num}"] = ages[:, num - 1]
     # labor income
     pwages = np.where(page >= 65, draw("wages_old"), draw("wages_yng"))
@@ -234,11 +264,13 @@ def generate_sample(letter, year, size, offset):
     return smpl[COLUMNS].astype(np.int64)
 
 
-def check_sample(smpl, letter, year, size):
+def check_sample(smpl, letter, year, size, max_depx=MAX_DEPX):
     """
     Raise ValueError if SMPL violates any of the VARIABLES.md constraints.
     """
-    assump = assumption_set(letter)
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-locals
+    assump = assumption_set(letter, max_depx)
     errors = []
 
     def require(condition, msg):
@@ -253,10 +285,14 @@ def check_sample(smpl, letter, year, size):
     )
     require((smpl.year == year).all(), "wrong year")
     require((smpl.idtl == 2).all(), "idtl not 2")
-    require(smpl.mstat.isin([1, 2]).all(), "mstat not 1 or 2")
+    require(smpl.mstat.isin([1, 2, 6]).all(), "mstat not 1, 2, or 6")
+    require(
+        (smpl.loc[smpl.mstat == 6, "depx"] == 0).all(),
+        "mstat 6 with dependents",
+    )
     for col in ALWAYS_ZERO:
         require((smpl[col] == 0).all(), f"{col} not zero")
-    single = smpl.mstat == 1
+    single = smpl.mstat != 2
     for col in SPOUSE_COLUMNS:
         require((smpl.loc[single, col] == 0).all(), f"{col} not zero")
     require(
@@ -337,9 +373,23 @@ def main():
         help="random-number seed offset (default 0)",
     )
     parser.add_argument(
+        "--max-depx",
+        type=int,
+        default=MAX_DEPX,
+        choices=range(MIN_MAX_DEPX, MAX_DEPX + 1),
+        metavar="M",
+        help=(
+            f"maximum number of dependents in [{MIN_MAX_DEPX},{MAX_DEPX}] "
+            f"(default {MAX_DEPX})"
+        ),
+    )
+    parser.add_argument(
         "--outdir",
-        default=str(Path(__file__).resolve().parent / "samples"),
-        help="output folder (default is samples next to this script)",
+        default=None,
+        help=(
+            "output folder (default is samples next to this script); "
+            "required with a non-default --max-depx"
+        ),
     )
     args = parser.parse_args()
     if args.size < 1:
@@ -348,9 +398,29 @@ def main():
     if args.offset < 0:
         sys.stderr.write("ERROR: --offset must be non-negative\n")
         return 1
-    smpl = generate_sample(args.LETTER, args.YEAR, args.size, args.offset)
-    check_sample(smpl, args.LETTER, args.YEAR, args.size)
-    outdir = Path(args.outdir)
+    if args.max_depx != MAX_DEPX and args.outdir is None:
+        sys.stderr.write(
+            "ERROR: --outdir is required with a non-default --max-depx\n"
+        )
+        return 1
+    smpl = generate_sample(
+        args.LETTER,
+        args.YEAR,
+        args.size,
+        args.offset,
+        args.max_depx,
+    )
+    check_sample(
+        smpl,
+        args.LETTER,
+        args.YEAR,
+        args.size,
+        args.max_depx,
+    )
+    if args.outdir is None:
+        outdir = Path(__file__).resolve().parent / "samples"
+    else:
+        outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     fname = f"{args.LETTER}{args.YEAR % 100:02d}.in.csv.gz"
     # a zero gzip mtime makes the file bytes depend only on the sample

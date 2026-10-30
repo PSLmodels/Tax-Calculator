@@ -12,7 +12,11 @@ Each validation sample is identified by an assumption-set letter `L`
 The comparison involves five steps:
 
 1. `generate_sample.py` writes a TAXSIM-format sample `samples/LYY.in.csv.gz`
-   (always `state=0`, `idtl=2`).
+   (always `state=0`, `idtl=2`) containing joint (40%), head of
+   household (30%), single (15%), and married filing separately (15%)
+   filing units.  Its `--max-depx M` option (M in 3-5, default 5)
+   lowers the maximum number of dependents and requires `--outdir`,
+   so the committed samples are never overwritten.
 2. `run_pe.py` runs policyengine-taxsim on the sample and writes
    `pe_output/LYY.out-pe.csv.gz` plus a version stamp
    `pe_output/LYY.out-pe.stamp.json`.
@@ -76,8 +80,10 @@ Twenty-three TAXSIM output variables are compared (see
 [`VARIABLES.md`](VARIABLES.md)).  All of them agree to within $1
 except for those summarized in the `test_results.expect` file.
 
-The only `pe_emulation.json` entries assume full take-up of the EITC
-and the refundable child tax credit, as PE does.
+The `pe_emulation.json` entries assume full take-up of the EITC and
+the refundable child tax credit, as PE does, and that every married
+filing separately unit lived with the spouse, as PE does when
+computing taxable Social Security benefits.
 
 The [`SUMMARY.md`](SUMMARY.md) file contains a high-level summary of
 the current validation results.
@@ -120,9 +126,9 @@ Step 2 is equivalent to this command:
 
 ```
 uvx --python 3.13 \
-    --from git+https://github.com/PolicyEngine/policyengine-taxsim@3e2a7589c8acda0edd2aa9e748d726c9ca9262d0 \
-    --with policyengine-us==2.30.1 \
-    --with policyengine-core==3.32.21 \
+    --from git+https://github.com/PolicyEngine/policyengine-taxsim@c0d565948af3896e3a6e4d34970f7502d17cdf34 \
+    --with policyengine-us==2.87.0 \
+    --with policyengine-core==3.33.14 \
     policyengine-taxsim policyengine LYY.in.csv --output LYY.out-pe.csv \
     --scorp-treatment active
 ```

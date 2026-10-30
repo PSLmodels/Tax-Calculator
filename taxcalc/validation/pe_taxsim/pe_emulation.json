@@ -12,7 +12,19 @@
 //     True), so these two parameters are set to 9e99, the documented
 //     value that implies every filing unit claims its credit.
 //
+// (3) SS_thd1 = SS_thd2 = 0 for married filing separately units
+//     (rather than 25000 and 34000)
+//     Tax-Calculator has no lived-apart-all-year flag and so treats
+//     every MARS=3 unit as having lived apart from the spouse all year,
+//     which gives the separate filer the single filer's base amounts
+//     in the taxable Social Security benefits worksheet.  PE treats
+//     every separate filer as having lived with the spouse, for which
+//     the worksheet base amounts are zero, so up to 85 percent of
+//     benefits are taxable.  These values make TC do the same.
+//
 {
     "eitc_claim_prob_scale": {"2013": 9e99},
-    "actc_claim_prob_scale": {"2013": 9e99}
+    "actc_claim_prob_scale": {"2013": 9e99},
+    "SS_thd1": {"2013": [25000, 32000, 0, 25000, 25000]},
+    "SS_thd2": {"2013": [34000, 44000, 0, 34000, 34000]}
 }
