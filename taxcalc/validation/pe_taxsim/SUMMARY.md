@@ -98,11 +98,6 @@ distinct causes, and every difference is explained by one of them:
 | 2 | a21, b21, c21 | `actc` | 1111 + 802 + 873 | PE counts part of the 2021 other-dependent credit (ODC) as refundable CTC | No |
 | 3 | c24, c25 | `v18`, `v26` | 1 + 1 | Different itemization tie-break when a unit owes no tax either way | No |
 
-Two other causes of MFS differences, both Tax-Calculator parameter
-errors, were fixed in `policy_current_law.json`; see the
-[Fixed Tax-Calculator errors](#fixed-tax-calculator-errors) section
-below.
-
 ### 1. 2021 MFS Schedule R credit (a21)
 
 **Nature.**  Seven a21 MFS units, each aged 65 or older with $14,000
@@ -234,43 +229,6 @@ The reported differences follow from that choice:
 
 The choice has no effect on any tax amount, so both conventions are
 defensible and these are reporting differences only.
-
-### Fixed Tax-Calculator errors
-
-Before the fixes, the a23, b23, and c23 samples had `fiitax`, `v28`,
-and `v19` differences (304, 862, and 795 MFS units, up to $4,625),
-and the b21 and c21 samples had `qbid`, `v18`, `v26`, `fiitax`,
-`v28`, and `v19` differences (40 and 43 MFS units, up to $19).
-The fixes remove all of them.  Each corrected value was checked
-against both the Rev. Proc. and the IRS form or instructions.
-
-- **2023 MFS top bracket.**  TC's 2023 `II_brk6` value for MFS was
-  $578,125, the single-filer value, so TC taxed MFS taxable income
-  between $346,875 and $578,125 at 35% rather than 37%.  Rev. Proc.
-  2022-38 (Table 3) and the 2023 Form 1040 instructions (Schedule
-  Y-2) put the MFS 37% bracket above $346,875, half the joint
-  $693,750 value.  The MFS value is now $346,875.
-
-- **2021 MFS QBID threshold.**  TC's 2021 `PT_qbid_taxinc_thd` value
-  for MFS was $164,900, the single-filer value.  Rev. Proc. 2020-45
-  (section 3.27) and the 2021 Form 8995 instructions give $164,925
-  for MFS, which is now the MFS value.  Every other year's
-  (2018-2026) MFS value was checked and is correct, including the
-  2026 value of $201,775 (Rev. Proc. 2025-32).
-
-- **Surviving-spouse QBID threshold.**  TC's 2018-2022
-  `PT_qbid_taxinc_thd` values for a surviving spouse were the joint
-  amounts.  IRC 199A(e)(2) doubles the threshold only for a joint
-  return, the Rev. Procs. give one amount for "all other returns",
-  and the 2020-2022 Form 8995 instructions list the qualifying
-  widow(er) or surviving spouse with the single amount.  The
-  2018-2022 values are now the single amounts, as the 2023-2026
-  values already were.  TAXSIM has no surviving-spouse `mstat`, so
-  the validation samples cannot test this change.
-
-The same corrections were made to the `TCJA.json` and
-`rounding.json` reform files, so the round-trip reform test still
-reproduces current-law policy.
 
 ### Summary
 
