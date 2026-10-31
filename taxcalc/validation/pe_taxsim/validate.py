@@ -73,6 +73,7 @@ def validate(letter, year, args, datadir):
     steps = []
     if args.regen:
         steps.append(("generate_sample.py", lyear + [
+            "--workflow", "pe_taxsim",
             "--size", str(args.size), "--outdir", str(sampledir)]))
         steps.append(("run_pe.py", lyear + [
             "--force", "--indir", str(sampledir), "--outdir", str(pedir)]))

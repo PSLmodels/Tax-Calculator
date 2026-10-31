@@ -14,9 +14,15 @@ The comparison involves five steps:
 1. `generate_sample.py` writes a TAXSIM-format sample `samples/LYY.in.csv.gz`
    (always `state=0`, `idtl=2`) containing joint (40%), head of
    household (30%), single (15%), and married filing separately (15%)
-   filing units.  Its `--max-depx M` option (M in 3-5, default 5)
-   lowers the maximum number of dependents and requires `--outdir`,
-   so the committed samples are never overwritten.
+   filing units.  Its required `--workflow` option names the
+   validation workflow that uses the sample (`pe_taxsim` here), which
+   sets the default output folder (`validation/WORKFLOW/samples`) and
+   the default maximum number of dependents (5 for `pe_taxsim`; 3 for
+   the planned `tbly_ts` workflow, because Tax-Simulator records only
+   three dependent ages).  Its `--max-depx M` option (M in 3-5)
+   changes the maximum number of dependents and, when M differs from
+   the workflow default, requires `--outdir`, so the committed samples
+   are never overwritten.
 2. `run_pe.py` runs policyengine-taxsim on the sample and writes
    `pe_output/LYY.out-pe.csv.gz` plus a version stamp
    `pe_output/LYY.out-pe.stamp.json`.

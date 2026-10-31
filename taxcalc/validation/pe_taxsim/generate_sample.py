@@ -1,13 +1,13 @@
 """
 Generates a random sample of tax filing units in TAXSIM-35 input format
-for use as policyengine-taxsim input (step 1 of the validation).
+for use as input to the WORKFLOW validation (step 1 of the validation).
 
-USAGE: python generate_sample.py LETTER YEAR [--size N] [--offset K]
-       [--max-depx M] [--outdir DIR]
+USAGE: python generate_sample.py LETTER YEAR --workflow WORKFLOW
+       [--size N] [--offset K] [--max-depx M] [--outdir DIR]
 
-writes samples/LYY.in.csv.gz in the folder containing this script, or
-DIR/LYY.in.csv.gz when --outdir is specified (which is required when
---max-depx changes the sample).
+writes validation/WORKFLOW/samples/LYY.in.csv.gz, or DIR/LYY.in.csv.gz
+when --outdir is specified (which is required when --max-depx M differs
+from the WORKFLOW default maximum number of dependents).
 See VARIABLES.md for the input variables and their constraints.
 """
 
@@ -25,6 +25,10 @@ DEFAULT_SIZE = 10_000
 MAX_DEPX = 5
 MIN_MAX_DEPX = 3
 BASE_SEED = 123456789
+
+# default maximum number of dependents for each validation workflow, which
+# is lower for Tax-Simulator because it records only three dependent ages
+WORKFLOW_MAX_DEPX = {"pe_taxsim": MAX_DEPX, "tbly_ts": 3}
 
 # TAXSIM input columns written to each sample file, in output order
 COLUMNS = (
@@ -346,8 +350,8 @@ def main():
     parser = argparse.ArgumentParser(
         prog="python generate_sample.py",
         description=(
-            "Writes samples/LYY.in.csv.gz containing a random sample of "
-            "filing units in TAXSIM-35 input format."
+            "Writes validation/WORKFLOW/samples/LYY.in.csv.gz containing "
+            "a random sample of filing units in TAXSIM-35 input format."
         ),
     )
     parser.add_argument(
@@ -361,6 +365,12 @@ def main():
         help=f"tax year in [{FIRST_YEAR},{LAST_YEAR}]",
     )
     parser.add_argument(
+        "--workflow",
+        required=True,
+        choices=list(WORKFLOW_MAX_DEPX),
+        help="validation workflow that uses the sample",
+    )
+    parser.add_argument(
         "--size",
         type=int,
         default=DEFAULT_SIZE,
@@ -372,23 +382,26 @@ def main():
         default=0,
         help="random-number seed offset (default 0)",
     )
+    workflow_defaults = ", ".join(
+        f"{wfl} {mdx}" for wfl, mdx in WORKFLOW_MAX_DEPX.items()
+    )
     parser.add_argument(
         "--max-depx",
         type=int,
-        default=MAX_DEPX,
+        default=None,
         choices=range(MIN_MAX_DEPX, MAX_DEPX + 1),
         metavar="M",
         help=(
             f"maximum number of dependents in [{MIN_MAX_DEPX},{MAX_DEPX}] "
-            f"(default {MAX_DEPX})"
+            f"(default depends on --workflow: {workflow_defaults})"
         ),
     )
     parser.add_argument(
         "--outdir",
         default=None,
         help=(
-            "output folder (default is samples next to this script); "
-            "required with a non-default --max-depx"
+            "output folder (default is validation/WORKFLOW/samples); "
+            "required with a --max-depx that is not the WORKFLOW default"
         ),
     )
     args = parser.parse_args()
@@ -398,9 +411,13 @@ def main():
     if args.offset < 0:
         sys.stderr.write("ERROR: --offset must be non-negative\n")
         return 1
-    if args.max_depx != MAX_DEPX and args.outdir is None:
+    workflow_max_depx = WORKFLOW_MAX_DEPX[args.workflow]
+    if args.max_depx is None:
+        args.max_depx = workflow_max_depx
+    if args.max_depx != workflow_max_depx and args.outdir is None:
         sys.stderr.write(
-            "ERROR: --outdir is required with a non-default --max-depx\n"
+            "ERROR: --outdir is required with a --max-depx that is not "
+            f"the {args.workflow} default of {workflow_max_depx}\n"
         )
         return 1
     smpl = generate_sample(
@@ -418,7 +435,8 @@ def main():
         args.max_depx,
     )
     if args.outdir is None:
-        outdir = Path(__file__).resolve().parent / "samples"
+        validation_dir = Path(__file__).resolve().parent.parent
+        outdir = validation_dir / args.workflow / "samples"
     else:
         outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
