@@ -10,7 +10,10 @@ validation workflow.
   `tbly_ts`), which sets the default output folder
   (`validation/WORKFLOW/samples`), the default year range (2021-2025
   for `pe_taxsim` and 2023-2025 for `tbly_ts`), and the default maximum
-  number of dependents.  Use `python generate_sample.py --help` for
+  number of dependents.  Its `--all` option, used in place of the
+  `LETTER` and `YEAR` arguments, writes a sample for every
+  assumption-set letter and every year in the workflow's default
+  year range.  Use `python generate_sample.py --help` for
   details, and see [`../pe_taxsim/README.md`](../pe_taxsim/README.md) and
   [`../pe_taxsim/VARIABLES.md`](../pe_taxsim/VARIABLES.md) for how
   the samples are used and what their variables mean.

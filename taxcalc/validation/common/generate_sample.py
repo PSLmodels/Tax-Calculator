@@ -2,13 +2,15 @@
 Generates a random sample of tax filing units in TAXSIM-35 input format
 for use as input to the WORKFLOW validation (step 1 of the validation).
 
-USAGE: python generate_sample.py LETTER YEAR --workflow WORKFLOW
+USAGE: python generate_sample.py (LETTER YEAR | --all) --workflow WORKFLOW
        [--size N] [--offset K] [--max-depx M] [--outdir DIR]
 
 writes validation/WORKFLOW/samples/LYY.in.csv.gz, or DIR/LYY.in.csv.gz
 when --outdir is specified (which is required when YEAR is outside the
 WORKFLOW default year range or when --max-depx M differs from the WORKFLOW
-default maximum number of dependents).
+default maximum number of dependents).  With --all instead of LETTER and
+YEAR, writes one such file for each assumption-set letter and each year
+in the WORKFLOW default year range.
 See pe_taxsim/VARIABLES.md for the input variables and their constraints.
 """
 
@@ -350,31 +352,54 @@ def check_sample(smpl, letter, year, size, max_depx=MAX_DEPX):
         raise ValueError("sample check failed: " + "; ".join(errors))
 
 
-def main():
+def parse_command_line():
     """
-    Generate, check, and write the sample specified on the command line.
+    Parse and check the command-line arguments and return them, or return
+    None after writing an error message to stderr.
     """
     parser = argparse.ArgumentParser(
         prog="python generate_sample.py",
         description=(
             "Writes validation/WORKFLOW/samples/LYY.in.csv.gz containing "
-            "a random sample of filing units in TAXSIM-35 input format."
+            "a random sample of filing units in TAXSIM-35 input format, "
+            "or with --all writes one such file for each assumption-set "
+            "letter and each year in the WORKFLOW default year range."
         ),
     )
+    valid_letters = ",".join(VALID_LETTERS)
     parser.add_argument(
-        "LETTER", choices=VALID_LETTERS, help="assumption set letter"
+        "LETTER",
+        nargs="?",
+        default=None,
+        choices=VALID_LETTERS,
+        metavar="LETTER",
+        help=(
+            f"assumption set letter in {{{valid_letters}}} "
+            "(required unless --all is specified)"
+        ),
     )
     workflow_years = ", ".join(
         f"{wfl} {fyr}-{lyr}" for wfl, (fyr, lyr) in WORKFLOW_YEARS.items()
     )
     parser.add_argument(
         "YEAR",
+        nargs="?",
+        default=None,
         type=int,
         choices=range(FIRST_YEAR, LAST_YEAR + 1),
         metavar="YEAR",
         help=(
             f"tax year in [{FIRST_YEAR},{LAST_YEAR}] "
-            f"(default range depends on --workflow: {workflow_years})"
+            "(required unless --all is specified; "
+            f"default range depends on --workflow: {workflow_years})"
+        ),
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help=(
+            "generate a sample for each LETTER and each YEAR in the "
+            "WORKFLOW default year range (LETTER and YEAR must be omitted)"
         ),
     )
     parser.add_argument(
@@ -419,20 +444,29 @@ def main():
         ),
     )
     args = parser.parse_args()
+    if args.all:
+        if args.LETTER is not None or args.YEAR is not None:
+            parser.error("LETTER and YEAR must be omitted with --all")
+    elif args.LETTER is None or args.YEAR is None:
+        parser.error("LETTER and YEAR are required unless --all is used")
     if args.size < 1:
         sys.stderr.write("ERROR: --size must be positive\n")
-        return 1
+        return None
     if args.offset < 0:
         sys.stderr.write("ERROR: --offset must be non-negative\n")
-        return 1
+        return None
     first_year, last_year = WORKFLOW_YEARS[args.workflow]
-    if not first_year <= args.YEAR <= last_year and args.outdir is None:
+    if (
+        not args.all
+        and not first_year <= args.YEAR <= last_year
+        and args.outdir is None
+    ):
         sys.stderr.write(
             "ERROR: --outdir is required with a YEAR that is outside "
             f"the {args.workflow} default year range of "
             f"{first_year}-{last_year}\n"
         )
-        return 1
+        return None
     workflow_max_depx = WORKFLOW_MAX_DEPX[args.workflow]
     if args.max_depx is None:
         args.max_depx = workflow_max_depx
@@ -441,34 +475,61 @@ def main():
             "ERROR: --outdir is required with a --max-depx that is not "
             f"the {args.workflow} default of {workflow_max_depx}\n"
         )
-        return 1
+        return None
+    return args
+
+
+def write_sample(letter, year, args, outdir):
+    """
+    Generate, check, and write to OUTDIR the sample for LETTER and YEAR.
+    """
     smpl = generate_sample(
-        args.LETTER,
-        args.YEAR,
+        letter,
+        year,
         args.size,
         args.offset,
         args.max_depx,
     )
     check_sample(
         smpl,
-        args.LETTER,
-        args.YEAR,
+        letter,
+        year,
         args.size,
         args.max_depx,
     )
-    if args.outdir is None:
-        validation_dir = Path(__file__).resolve().parent.parent
-        outdir = validation_dir / args.workflow / "samples"
-    else:
-        outdir = Path(args.outdir)
-    outdir.mkdir(parents=True, exist_ok=True)
-    fname = f"{args.LETTER}{args.YEAR % 100:02d}.in.csv.gz"
+    fname = f"{letter}{year % 100:02d}.in.csv.gz"
     # a zero gzip mtime makes the file bytes depend only on the sample
     smpl.to_csv(
         outdir / fname,
         index=False,
         compression={"method": "gzip", "mtime": 0},
     )
+
+
+def main():
+    """
+    Generate, check, and write the sample(s) specified on the command line.
+    """
+    args = parse_command_line()
+    if args is None:
+        return 1
+    if args.all:
+        first_year, last_year = WORKFLOW_YEARS[args.workflow]
+        samples = [
+            (letter, year)
+            for letter in VALID_LETTERS
+            for year in range(first_year, last_year + 1)
+        ]
+    else:
+        samples = [(args.LETTER, args.YEAR)]
+    if args.outdir is None:
+        validation_dir = Path(__file__).resolve().parent.parent
+        outdir = validation_dir / args.workflow / "samples"
+    else:
+        outdir = Path(args.outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    for letter, year in samples:
+        write_sample(letter, year, args, outdir)
     return 0
 
 
