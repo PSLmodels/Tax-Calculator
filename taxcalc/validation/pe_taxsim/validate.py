@@ -8,9 +8,10 @@ USAGE: python validate.py [--letters LETTERS] [--years YEARS]
 By default, runs steps 3-5 (taxsim_to_tc.py, run_tc.py, compare.py)
 for every letter (abc) and year (2021-2025) using the committed
 samples and PE outputs, and prints each comparison summary.  With
---regen, first runs steps 1-2 (generate_sample.py, run_pe.py --force),
-which OVERWRITES the samples and PE outputs in DATADIR; PE outputs are
-committed, so regenerate them only deliberately (see README.md).
+--regen, first runs steps 1-2 (../common/generate_sample.py and
+run_pe.py --force), which OVERWRITES the samples and PE outputs in
+DATADIR; PE outputs are committed, so regenerate them only deliberately
+(see README.md).
 
 DATADIR (default is the folder containing this script) holds the
 samples, pe_output, and work folders, so a tiny trial run can be kept
@@ -27,6 +28,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+COMMON = HERE.parent / "common"
 PIN_FILE = HERE / "pe_pin.json"
 
 VALID_LETTERS = "abc"
@@ -52,10 +54,13 @@ def print_pin():
 
 def run_step(script, args):
     """
-    Run SCRIPT in this folder with the list of string ARGS and return
-    its exit code.
+    Run SCRIPT with the list of string ARGS and return its exit code,
+    where SCRIPT is in this folder or, if not there, in the common folder.
     """
-    cmd = [sys.executable, str(HERE / script)] + args
+    path = HERE / script
+    if not path.exists():
+        path = COMMON / script
+    cmd = [sys.executable, str(path)] + args
     return subprocess.run(cmd, check=False).returncode
 
 

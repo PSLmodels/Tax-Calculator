@@ -8,7 +8,7 @@ USAGE: python generate_sample.py LETTER YEAR --workflow WORKFLOW
 writes validation/WORKFLOW/samples/LYY.in.csv.gz, or DIR/LYY.in.csv.gz
 when --outdir is specified (which is required when --max-depx M differs
 from the WORKFLOW default maximum number of dependents).
-See VARIABLES.md for the input variables and their constraints.
+See pe_taxsim/VARIABLES.md for the input variables and their constraints.
 """
 
 import argparse
