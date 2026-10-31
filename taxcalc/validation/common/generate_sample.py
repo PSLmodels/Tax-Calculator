@@ -6,8 +6,9 @@ USAGE: python generate_sample.py LETTER YEAR --workflow WORKFLOW
        [--size N] [--offset K] [--max-depx M] [--outdir DIR]
 
 writes validation/WORKFLOW/samples/LYY.in.csv.gz, or DIR/LYY.in.csv.gz
-when --outdir is specified (which is required when --max-depx M differs
-from the WORKFLOW default maximum number of dependents).
+when --outdir is specified (which is required when YEAR is outside the
+WORKFLOW default year range or when --max-depx M differs from the WORKFLOW
+default maximum number of dependents).
 See pe_taxsim/VARIABLES.md for the input variables and their constraints.
 """
 
@@ -29,6 +30,12 @@ BASE_SEED = 123456789
 # default maximum number of dependents for each validation workflow, which
 # is lower for Tax-Simulator because it records only three dependent ages
 WORKFLOW_MAX_DEPX = {"pe_taxsim": MAX_DEPX, "tbly_ts": 3}
+
+# default (first, last) year range for each validation workflow
+WORKFLOW_YEARS = {
+    "pe_taxsim": (FIRST_YEAR, LAST_YEAR),
+    "tbly_ts": (2023, 2025),
+}
 
 # TAXSIM input columns written to each sample file, in output order
 COLUMNS = (
@@ -357,12 +364,18 @@ def main():
     parser.add_argument(
         "LETTER", choices=VALID_LETTERS, help="assumption set letter"
     )
+    workflow_years = ", ".join(
+        f"{wfl} {fyr}-{lyr}" for wfl, (fyr, lyr) in WORKFLOW_YEARS.items()
+    )
     parser.add_argument(
         "YEAR",
         type=int,
         choices=range(FIRST_YEAR, LAST_YEAR + 1),
         metavar="YEAR",
-        help=f"tax year in [{FIRST_YEAR},{LAST_YEAR}]",
+        help=(
+            f"tax year in [{FIRST_YEAR},{LAST_YEAR}] "
+            f"(default range depends on --workflow: {workflow_years})"
+        ),
     )
     parser.add_argument(
         "--workflow",
@@ -401,7 +414,8 @@ def main():
         default=None,
         help=(
             "output folder (default is validation/WORKFLOW/samples); "
-            "required with a --max-depx that is not the WORKFLOW default"
+            "required with a YEAR outside the WORKFLOW default year range "
+            "or with a --max-depx that is not the WORKFLOW default"
         ),
     )
     args = parser.parse_args()
@@ -410,6 +424,14 @@ def main():
         return 1
     if args.offset < 0:
         sys.stderr.write("ERROR: --offset must be non-negative\n")
+        return 1
+    first_year, last_year = WORKFLOW_YEARS[args.workflow]
+    if not first_year <= args.YEAR <= last_year and args.outdir is None:
+        sys.stderr.write(
+            "ERROR: --outdir is required with a YEAR that is outside "
+            f"the {args.workflow} default year range of "
+            f"{first_year}-{last_year}\n"
+        )
         return 1
     workflow_max_depx = WORKFLOW_MAX_DEPX[args.workflow]
     if args.max_depx is None:
