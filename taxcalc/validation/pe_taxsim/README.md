@@ -11,12 +11,20 @@ Each validation sample is identified by an assumption-set letter `L`
 (`a`, `b`, or `c`) and a two-digit year `YY`.
 The comparison involves five steps:
 
-1. `generate_sample.py` writes a TAXSIM-format sample `samples/LYY.in.csv.gz`
+1. [`../common/generate_sample.py`](../common/generate_sample.py),
+   which is shared with other validation workflows, writes a
+   TAXSIM-format sample `samples/LYY.in.csv.gz`
    (always `state=0`, `idtl=2`) containing joint (40%), head of
    household (30%), single (15%), and married filing separately (15%)
-   filing units.  Its `--max-depx M` option (M in 3-5, default 5)
-   lowers the maximum number of dependents and requires `--outdir`,
-   so the committed samples are never overwritten.
+   filing units.  Its required `--workflow` option names the
+   validation workflow that uses the sample (`pe_taxsim` here), which
+   sets the default output folder (`validation/WORKFLOW/samples`) and
+   the default maximum number of dependents (5 for `pe_taxsim`; 3 for
+   the planned `tbly_ts` workflow, because Tax-Simulator records only
+   three dependent ages).  Its `--max-depx M` option (M in 3-5)
+   changes the maximum number of dependents and, when M differs from
+   the workflow default, requires `--outdir`, so the committed samples
+   are never overwritten.
 2. `run_pe.py` runs policyengine-taxsim on the sample and writes
    `pe_output/LYY.out-pe.csv.gz` plus a version stamp
    `pe_output/LYY.out-pe.stamp.json`.
@@ -91,7 +99,8 @@ the current validation results.
 Validation of a new tax year
 ----------------------------
 
-To add a year, change `LAST_YEAR` in all six scripts, check the
+To add a year, change `LAST_YEAR` in the five scripts in this folder
+that define it and in `../common/generate_sample.py`, check the
 year-specific logic in `run_tc.py` and [`VARIABLES.md`](VARIABLES.md)
 for the new year's law changes, generate the samples and PE outputs
 for the new year (steps 1 and 2), and examine every difference the
@@ -253,7 +262,7 @@ Use `--letters` (e.g., `ab`) and `--years` (e.g., `2021,2023-2025`) to
 run a subset, and `--tolerance` to change the tolerance.
 
 With `--regen`, `validate.py` first runs steps 1 and 2
-(`generate_sample.py` and `run_pe.py --force`), which **overwrites**
+(`../common/generate_sample.py` and `run_pe.py --force`), which **overwrites**
 the samples and PE outputs.  Do that in the committed folders only
 deliberately.  `--datadir DIR` makes `validate.py` use the
 `samples`, `pe_output`, and `work` folders in `DIR` instead of those next to the scripts, so a quick trial run with
