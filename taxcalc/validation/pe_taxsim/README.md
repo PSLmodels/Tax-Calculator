@@ -24,7 +24,8 @@ The comparison involves five steps:
    three dependent ages).  Its `--max-depx M` option (M in 3-5)
    changes the maximum number of dependents and, when M differs from
    the workflow default, requires `--outdir`, so the committed samples
-   are never overwritten.
+   are never overwritten.  Its `--all` option, used in place of the
+   `LETTER` and `YEAR` arguments, writes all fifteen samples.
 2. `run_pe.py` runs policyengine-taxsim on the sample and writes
    `pe_output/LYY.out-pe.csv.gz` plus a version stamp
    `pe_output/LYY.out-pe.stamp.json`.
@@ -185,6 +186,38 @@ A new PE version often removes some of the differences and may add
 new ones.  Run `validate.py`, examine every new or changed difference
 in `work/differences/`, and then regenerate
 `test_results.expect`.
+
+Regenerating everything
+-----------------------
+
+This command sequence updates the PE pin, regenerates all fifteen
+samples and PE outputs, regenerates all the Tax-Calculator outputs,
+and compares the results with the committed `test_results.expect`.
+Run these from `taxcalc/validation/pe_taxsim`, in the `taxcalc-dev`
+conda environment, with uv/uvx installed:
+
+```
+cd taxcalc/validation/pe_taxsim
+
+# 1. update the PE pin: dry run first to see what would change, then write it
+python update_pe_pin.py
+python update_pe_pin.py --write
+
+# 2. regenerate all 15 samples into samples/
+python ../common/generate_sample.py --all --workflow pe_taxsim
+
+# 3. regenerate all 15 PE outputs into pe_output/ (--force allows overwriting)
+python run_pe.py --all --force
+
+# 4+5. regenerate the TC outputs in work/ and run the comparisons
+python validate.py > test_results.actual
+
+# see what changed relative to the committed results
+diff test_results.actual test_results.expect
+```
+
+Note that the "4+5" command is equivalent to executing "make valtest" in
+the top-level folder of the repository.
 
 Step 3
 ------
