@@ -20,8 +20,8 @@ The comparison involves five steps:
    validation workflow that uses the sample (`pe_taxsim` here), which
    sets the default output folder (`validation/WORKFLOW/samples`) and
    the default maximum number of dependents (5 for `pe_taxsim`; 3 for
-   the planned `tbly_ts` workflow, because Tax-Simulator records only
-   three dependent ages).  Its `--max-depx M` option (M in 3-5)
+   the [`tbly_ts`](../tbly_ts/README.md) workflow, because Tax-Simulator
+   records only three dependent ages).  Its `--max-depx M` option (M in 3-5)
    changes the maximum number of dependents and, when M differs from
    the workflow default, requires `--outdir`, so the committed samples
    are never overwritten.  Its `--all` option, used in place of the
@@ -29,11 +29,21 @@ The comparison involves five steps:
 2. `run_pe.py` runs policyengine-taxsim on the sample and writes
    `pe_output/LYY.out-pe.csv.gz` plus a version stamp
    `pe_output/LYY.out-pe.stamp.json`.
-3. `taxsim_to_tc.py` translates the sample into a Tax-Calculator input file.
-4. `run_tc.py` runs the Tax-Calculator CLI with the `pe_emulation.json`
-   reform and converts its output to TAXSIM format.
-5. `compare.py` compares the two outputs, writes the differences to
-   the `work/differences/` folder, and prints a summary of them.
+3. [`../common/taxsim_to_tc.py`](../common/taxsim_to_tc.py)
+   translates the sample into a Tax-Calculator input file.
+4. [`../common/run_tc.py`](../common/run_tc.py) runs the
+   Tax-Calculator CLI with the `pe_emulation.json` reform and converts
+   its output to TAXSIM format.
+5. [`../common/compare.py`](../common/compare.py) compares the two
+   outputs, writes the differences to the `work/differences/` folder,
+   and prints a summary of them.
+
+Steps 3-5 do not depend on which model produced the TAXSIM-formatted
+output, so their scripts are shared with other validation workflows
+and live in [`../common`](../common); each has a required
+`--workflow` option (`pe_taxsim` here) that sets its default folders
+and, for step 4, the emulation reform file.  `validate.py` in this
+folder runs them (see [Running all the steps](#running-all-the-steps)).
 
 The samples and PE outputs are committed, so steps 3-5 can be rerun
 using only the `taxcalc-dev` conda environment.  Generated working
@@ -42,9 +52,10 @@ files are written to the git-ignored `work/` folder.
 Other files in this folder: [`VARIABLES.md`](VARIABLES.md) documents
 how each TAXSIM input and output variable corresponds to
 Tax-Calculator variables; [`pe_pin.json`](pe_pin.json) pins the PE
-version; [`pe_emulation.json`](pe_emulation.json) is the
-Tax-Calculator reform that adopts PE's conventions; and `dumpvars.txt`
-lists the Tax-Calculator variables that step 4 writes.
+version; and [`pe_emulation.json`](pe_emulation.json) is the
+Tax-Calculator reform that adopts PE's conventions.
+[`../common/dumpvars.txt`](../common/dumpvars.txt) lists the
+Tax-Calculator variables that step 4 writes.
 
 Rerunning the comparison
 ------------------------
@@ -100,10 +111,11 @@ the current validation results.
 Validation of a new tax year
 ----------------------------
 
-To add a year, change `LAST_YEAR` in the five scripts in this folder
-that define it and in `../common/generate_sample.py`, check the
-year-specific logic in `run_tc.py` and [`VARIABLES.md`](VARIABLES.md)
-for the new year's law changes, generate the samples and PE outputs
+To add a year, change the `pe_taxsim` `last_year` in
+`../common/workflows.py` and `LAST_YEAR` in `run_pe.py` and
+`../common/generate_sample.py`, check the year-specific logic in
+`../common/run_tc.py` and [`VARIABLES.md`](VARIABLES.md) for the new
+year's law changes, generate the samples and PE outputs
 for the new year (steps 1 and 2), and examine every difference the
 way the existing ones were examined before regenerating
 `test_results.expect`.  To move to a newer PE version, update `pe_pin.json` (see
@@ -222,7 +234,7 @@ the top-level folder of the repository.
 Step 3
 ------
 
-`python taxsim_to_tc.py L YYYY` translates `samples/LYY.in.csv.gz`
+`python ../common/taxsim_to_tc.py L YYYY --workflow pe_taxsim` translates `samples/LYY.in.csv.gz`
 into the Tax-Calculator CLI input file `work/LYY.in-tc.csv`, following
 the input tables in [`VARIABLES.md`](VARIABLES.md).  It stops if a
 TAXSIM input that has no translation (`nonprop`, `transfers`,
@@ -235,13 +247,14 @@ the dependent counts are nested by age.
 Step 4
 ------
 
-`python run_tc.py L YYYY` runs the Tax-Calculator CLI on
+`python ../common/run_tc.py L YYYY --workflow pe_taxsim` runs the
+Tax-Calculator CLI on
 `work/LYY.in-tc.csv`, which is equivalent to this command run in the
 `work/` folder with the top-level repository folder on `PYTHONPATH`:
 
 ```
 python -m taxcalc.cli.tc LYY.in-tc.csv 20YY --reform ../pe_emulation.json \
-    --dumpdb --dumpvars ../dumpvars.txt --exact --silent
+    --dumpdb --dumpvars ../../common/dumpvars.txt --exact --silent
 ```
 
 The `--exact` option makes Tax-Calculator round phase-out excesses
@@ -267,7 +280,8 @@ step 4 does not use.
 Step 5
 ------
 
-`python compare.py L YYYY [--tolerance T]` compares
+`python ../common/compare.py L YYYY --workflow pe_taxsim [--tolerance T]`
+compares
 `pe_output/LYY.out-pe.csv.gz` with `work/LYY.out-tc.csv` for the
 variables marked "Compare" in the output table in
 [`VARIABLES.md`](VARIABLES.md) (`v13`, `v17`, and `v19` only for the
@@ -298,7 +312,8 @@ With `--regen`, `validate.py` first runs steps 1 and 2
 (`../common/generate_sample.py` and `run_pe.py --force`), which **overwrites**
 the samples and PE outputs.  Do that in the committed folders only
 deliberately.  `--datadir DIR` makes `validate.py` use the
-`samples`, `pe_output`, and `work` folders in `DIR` instead of those next to the scripts, so a quick trial run with
+`samples`, `pe_output`, and `work` folders in `DIR` instead of those in
+this folder, so a quick trial run with
 a small sample leaves the committed files alone:
 
 ```

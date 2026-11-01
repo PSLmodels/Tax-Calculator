@@ -2,10 +2,10 @@ TAXSIM / Tax-Calculator variable correspondence
 ==============================================
 
 This document specifies how the TAXSIM-format sample (step 1) is
-translated into Tax-Calculator input (step 3, `taxsim_to_tc.py`) and
+translated into Tax-Calculator input (step 3, `../common/taxsim_to_tc.py`) and
 how Tax-Calculator output is converted into TAXSIM-format output
-(step 4, `run_tc.py`) so that it can be compared with the
-policyengine-taxsim output (step 5, `compare.py`).
+(step 4, `../common/run_tc.py`) so that it can be compared with the
+policyengine-taxsim output (step 5, `../common/compare.py`).
 
 All statements about policyengine-taxsim ("PE") describe the pinned
 version in [`pe_pin.json`](pe_pin.json), as read from its source code
@@ -150,8 +150,8 @@ Output variables
 ----------------
 
 PE emits 41 columns when `idtl=2`.  The table below maps
-each federal column to a Tax-Calculator expression that `run_tc.py`
-computes from the `--dumpdb` output.  "Compare" says whether `compare.py`
+each federal column to a Tax-Calculator expression that `../common/run_tc.py`
+computes from the `--dumpdb` output.  "Compare" says whether `../common/compare.py`
 checks the variable (tolerance $1 unless noted).
 
 Tax-Calculator facts that the expressions rely on:
@@ -178,7 +178,7 @@ ptax_amc` (no `e09800` in these samples).
 | `v17` | `itemized_taxable_income_deductions` (reported whether or not the unit itemizes) | `c04470` | only where TC itemizes (`standard == 0`) | TC zeroes `c04470` for non-itemizers |
 | `qbid` | `qualified_business_income_deduction` | `qbided` | yes | `otherprop` is not QBI in either model (decision D1) |
 | `v18` | `taxable_income` | `c04800` | yes | includes the 2025 senior deduction in both models |
-| `v19` | `income_tax_main_rates`: ordinary rates on taxable income less adjusted net capital gain | `c05200` | only where `dwks10 == 0` (`run_tc.py` writes `dwks10` as column `tc_dwks10`) | when there is no preferential income both equal the Schedule X/Y/Z tax on all taxable income; otherwise TC has no matching output, and `v28` is the meaningful check |
+| `v19` | `income_tax_main_rates`: ordinary rates on taxable income less adjusted net capital gain | `c05200` | only where `dwks10 == 0` (`../common/run_tc.py` writes `dwks10` as column `tc_dwks10`) | when there is no preferential income both equal the Schedule X/Y/Z tax on all taxable income; otherwise TC has no matching output, and `v28` is the meaningful check |
 | `v28` | `income_tax_main_rates + capital_gains_tax`: regular tax before credits, excl. AMT | `taxbc` | yes | |
 | `v26` | `amt_income` | `c62100` | yes | |
 | `v27` | `alternative_minimum_tax` (excess over regular tax) | `c09600` | yes | |

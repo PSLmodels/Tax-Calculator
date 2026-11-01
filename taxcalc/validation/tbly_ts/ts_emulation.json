@@ -1,0 +1,26 @@
+// JSON "reform" file that specifies the changes in current-law policy
+// required to make Tax-Calculator use the same defensible conventions
+// as Tax-Simulator (the pinned version in ts_pin.json).
+// Every entry is explained below; see SUMMARY.md for details.
+//
+// (1) eitc_claim_prob_scale = 9e99 (rather than 1.03)
+// (2) actc_claim_prob_scale = 9e99 (rather than 1.1)
+//     By default Tax-Calculator models incomplete take-up of the EITC
+//     and the refundable child tax credit by randomly zeroing some
+//     credit amounts (using the credit_claim_urn variable).  TS computes
+//     both credits with full take-up (run_ts.R also sets r.eitc_precert
+//     to zero, which turns off TS's random EITC pre-certification
+//     check), so these two parameters are set to 9e99, the documented
+//     value that implies every filing unit claims its credit.
+//
+// (3) CR_SchR_hc = 1 (rather than 0)
+//     TS does not compute the Schedule R credit for the elderly or the
+//     disabled: it is the exogenous TS input old_cred, which run_ts.R
+//     zero-fills because the TAXSIM samples have no such input.  A
+//     haircut of 1 makes Tax-Calculator's Schedule R credit zero, too.
+//
+{
+    "eitc_claim_prob_scale": {"2013": 9e99},
+    "actc_claim_prob_scale": {"2013": 9e99},
+    "CR_SchR_hc": {"2013": 1.0}
+}

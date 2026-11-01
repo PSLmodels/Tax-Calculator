@@ -63,3 +63,6 @@ and its CLI) is available
 
 Documentation on the newer optional AI-assisted approaches to using
 and enhancing the model is available [here](agents/README.md).
+
+Documentation of the ongoing validation against two other open-source
+tax models is available [here](taxcalc/validation/README.md).
