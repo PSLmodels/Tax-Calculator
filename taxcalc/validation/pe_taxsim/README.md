@@ -20,8 +20,8 @@ The comparison involves five steps:
    validation workflow that uses the sample (`pe_taxsim` here), which
    sets the default output folder (`validation/WORKFLOW/samples`) and
    the default maximum number of dependents (5 for `pe_taxsim`; 3 for
-   the [`tbly_ts`](../tbly_ts/README.md) workflow, because Tax-Simulator records only
-   three dependent ages).  Its `--max-depx M` option (M in 3-5)
+   the [`tbly_ts`](../tbly_ts/README.md) workflow, because Tax-Simulator
+   records only three dependent ages).  Its `--max-depx M` option (M in 3-5)
    changes the maximum number of dependents and, when M differs from
    the workflow default, requires `--outdir`, so the committed samples
    are never overwritten.  Its `--all` option, used in place of the
@@ -38,7 +38,7 @@ The comparison involves five steps:
    outputs, writes the differences to the `work/differences/` folder,
    and prints a summary of them.
 
-Steps 3-5 do not depend on which model produced the TAXSIM-format
+Steps 3-5 do not depend on which model produced the TAXSIM-formatted
 output, so their scripts are shared with other validation workflows
 and live in [`../common`](../common); each has a required
 `--workflow` option (`pe_taxsim` here) that sets its default folders
