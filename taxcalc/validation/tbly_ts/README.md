@@ -11,7 +11,7 @@ two-digit year `YY`.  The comparison involves five steps:
 
 1. [`../common/generate_sample.py`](../common/generate_sample.py),
    which is shared with other validation workflows, writes a
-   TAXSIM-format sample `samples/LYY.in.csv.gz`
+   TAXSIM-formatted sample `samples/LYY.in.csv.gz`
    (always `state=0`, `idtl=2`) containing joint (40%), head of
    household (30%), single (15%), and married filing separately (15%)
    filing units.  With `--workflow tbly_ts`, the samples have at most

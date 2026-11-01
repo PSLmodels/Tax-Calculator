@@ -46,7 +46,7 @@ R_SCRIPT = HERE / "run_ts.R"
 INDEXES_FILE = HERE / "ts_indexes.csv"
 OVERRIDES_FILE = HERE / "ts_law_overrides.csv"
 
-# TAXSIM-format output columns written by run_ts.R (see VARIABLES.md)
+# TAXSIM-formatted output columns written by run_ts.R (see VARIABLES.md)
 OUTPUT_COLUMNS = (
     ["taxsimid", "year", "fiitax", "fica", "tfica", "addmed", "v44"]
     + ["v10", "v11", "v12", "v13", "v14", "v17", "qbid", "v18"]

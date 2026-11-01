@@ -6,15 +6,15 @@ confirmed by reading Tax-Simulator ("TS") source code and running
 `run_ts.R` on the samples.  Differences between TS and
 Tax-Calculator results are triaged in `SUMMARY.md`.
 
-This document specifies how the TAXSIM-format sample (step 1) is
+This document specifies how the TAXSIM-formatted sample (step 1) is
 translated into TS tax units and how TS output is converted into
-TAXSIM-format output (step 2, `run_ts.R`), so that it can be compared
-with Tax-Calculator output (steps 3-5).
+TAXSIM-formatted output (step 2, `run_ts.R`), so that it can be
+compared with Tax-Calculator output (steps 3-5).
 
-The translation of the TAXSIM-format sample into Tax-Calculator
-input, and of Tax-Calculator output into TAXSIM-format output, is the
-same as in the `pe_taxsim` workflow, so it is not repeated here: see
-[`../pe_taxsim/VARIABLES.md`](../pe_taxsim/VARIABLES.md).
+The translation of the TAXSIM-formatted sample into Tax-Calculator
+input, and of Tax-Calculator output into TAXSIM-formatted output, is
+the same as in the `pe_taxsim` workflow, so it is not repeated here:
+see [`../pe_taxsim/VARIABLES.md`](../pe_taxsim/VARIABLES.md).
 
 All statements about TS describe the pinned version in
 [`ts_pin.json`](ts_pin.json), as read from its source code
@@ -100,7 +100,7 @@ read from the committed `ts_indexes.csv` (IRS-style Sept-Aug averages
 of CPI-U from 1986 and chained CPI-U, plus SSA AWI), then adjusted by
 the committed `ts_law_overrides.csv` (year, filing status, TS column,
 IRS/SSA published value) where TS's indexation gives a value that
-differs from the published one (decision D6).  `run_ts.R` checks
+differs from the published one.  `run_ts.R` checks
 that each TS value equals the `ts_value` recorded in the overrides
 file, so a change in the pin or in `ts_indexes.csv` cannot silently
 change the overrides.  The overrides (232 rows) cover ordinary and
@@ -114,10 +114,11 @@ they show up as differences and can be reported to the Budget Lab
 add-on for married filing separately (TS uses the unmarried amount,
 e.g. 1,850 instead of 1,500 in 2023).
 
-`ts_indexes.csv` was made by `build_indexes.py` from the FRED series `CPIAUCNS` (CPI-U)
-and `SUUR0000SA0` (chained CPI-U), averaged over September of the
-previous year through August, and SSA national average wage index
-values for 2020-2024; the series must start no later than 1986.
+`ts_indexes.csv` was made by `build_indexes.py` from the FRED series
+`CPIAUCNS` (CPI-U) and `SUUR0000SA0` (chained CPI-U), averaged over
+September of the previous year through August, and SSA national
+average wage index values for 2020-2024; the series must start no
+later than 1986.
 
 
 Output variables
