@@ -1,8 +1,8 @@
 # Test Results Summary
 
 The differences recorded in [`test_results.expect`](test_results.expect)
-are being explained one assumption-set letter at a time: letter `a` is
-done; the differences for letters `b` and `c` are recorded in
+are being explained one assumption-set letter at a time: letters `a`
+and `b` are done; the differences for letter `c` are recorded in
 `test_results.expect` but are not yet explained here.
 
 In the comparisons below, `diff = tc - ts`, Tax-Calculator (TC) runs
@@ -217,7 +217,202 @@ a25-2308: TS $389.13, TC $388.93).
 Letter b (2023-2025)
 --------------------
 
-To be done.
+Set `b` adds self-employment, business, S-corporation, investment,
+rental, pension, Social Security, and unemployment income to the
+set-`a` units.
+
+```
+===== b23 =====
+b23: 21913 differences (|tc - ts| > 1) in 10 variables
+variable  compared  count  max_abs  mean_abs
+  fiitax     10000   8864  4663.80    467.81
+     v13     10000    323   350.00    350.00
+    qbid     10000    809  3730.20   1096.06
+     v18     10000   1067  3730.21    936.86
+     v19       304     40   605.45    187.76
+     v28     10000   1349  3900.00    448.76
+     v26     10000    890 63250.00   3428.71
+    niit     10000   8413   969.00    423.01
+     v22     10000    156  1000.00    464.42
+    actc     10000      2   128.00     67.75
+===== b24 =====
+b24: 22364 differences (|tc - ts| > 1) in 10 variables
+variable  compared  count  max_abs  mean_abs
+  fiitax     10000   8834  4300.20    467.64
+     v13     10000    355   400.00    400.00
+    qbid     10000    932  4563.84   1158.67
+     v18     10000   1227  4563.84    995.83
+     v19       304     43   920.68    260.51
+     v28     10000   1498  3525.00    419.79
+     v26     10000    986 66650.00   2463.70
+    niit     10000   8328   912.00    422.60
+     v22     10000    158  1000.00    467.72
+    actc     10000      3   154.50     79.50
+===== b25 =====
+b25: 51805 differences (|tc - ts| > 1) in 11 variables
+variable  compared  count  max_abs  mean_abs
+  fiitax     10000   9931  4251.90    227.13
+     v13     10000  10000  1500.00   1151.33
+    qbid     10000   1037  3956.27   1009.72
+     v18     10000  10000  5701.73   1163.87
+     v19       332    332   862.18    366.49
+     v28     10000   9998  3442.50    388.91
+     v26     10000   1858 68500.00   6590.45
+    niit     10000   8384   923.40    420.19
+     v22     10000    235  1000.00    399.20
+    actc     10000     29   303.75    134.96
+     v25     10000      1    88.51     88.51
+```
+
+There are no payroll tax differences.  Every `fiitax` difference
+equals the sum of the differences in `v28`, `niit`, `v22`, `actc`, and
+`v25`, and every component difference is explained by one or more of
+twelve causes: five set-`a` causes (3-7) and seven new ones (8-14).
+Set-`a` causes 1 and 2 (the EITC of childless MFS and of joint filers
+with one spouse aged 65 or older) do not occur in set `b`, because
+nearly all such units have too much unearned income to get the EITC.
+
+| # | Years | Variable(s) | Units (b23/b24/b25) | Cause | Wrong model |
+|---|---|---|---|---|---|
+| 3 | all | `v22` | 156 / 158 / 184 | Credit for other dependents phased out separately from the CTC | TS |
+| 4 | all | `v13`, `v18`, `v19`, `v28` | 323 / 355 / 342 | MFS aged standard deduction add-on uses the unmarried amount | TS |
+| 5 | 2025 | `v13`, `v18`, `v19`, `v28`, `v22`, `actc` | - / - / all | 2025 standard deduction is the pre-OBBBA amount | TS |
+| 6 | 2025 | `v18`, `v19`, `v28` | - / - / 176 | MFS filers aged 65+ get the senior deduction | TS |
+| 7 | 2025 | `v26` | - / - / 969 | Senior deduction subtracted (twice) from AMT income | TS |
+| 8 | all | `niit` | 8413 / 8328 / 8384 | Net investment income scaled by 0.7 | TS (calibration) |
+| 9 | all | `qbid`, `v18`, `v19`, `v28`, `v26` | 802 / 922 / 934 | QBI not reduced by the deduction for half of SE tax | TS |
+| 10 | all | `v28` | 294 / 288 / 297 | Preferential income stacked above taxable income | TS |
+| 11 | all | `actc` | 2 / 3 / 3 | No payroll-tax alternative ACTC for three or more children | TS |
+| 12 | all | `actc` | 0 / 0 / 1 | Earned income not reduced by the deduction for half of SE tax | TS |
+| 13 | all | `v25` | 0 / 0 / 1 | EITC phase-out applied to the phase-in amount | TS |
+| 14 | all | `v26` | 81 / 54 / 44 | No MFS AMT income add-on | TS |
+
+The other `qbid` differences (7 / 10 / 103) and the `v26` differences
+that follow from them are caused by the standard deduction errors
+(causes 4 and 5), which change the taxable income that limits the
+deduction.  The remaining 2025 `v22` and `actc` differences (51 and
+25 units) are cause 5 moving credit between the nonrefundable and the
+refundable parts of the CTC.  All the new causes are TS errors except
+cause 8, a deliberate TS calibration; causes 9-14 should be reported
+to the Budget Lab.  None of them can be emulated by a Tax-Calculator
+reform, so `ts_emulation.json` is unchanged.
+
+### 8. NIIT net investment income scaled by 0.7 (TS calibration)
+
+**Nature.**  In about 84% of the units TS's net investment income tax
+is 70% of TC's.  For example, b23-4 (MFS, AGI $279,800, net
+investment income of $46,000: $16,000 of interest, $1,000 of
+dividends, $3,000 of net capital gain, and $26,000 of rent): TC `niit`
+3.8% x 46,000 = $1,748, TS $1,223.60.  In the other differing units
+(about 110 per sample) TC's NIIT is limited by the excess of AGI over
+the threshold, and TS's is not, or less so.
+
+**Cause.**  TS's `niit.R` multiplies net investment income by 0.7
+("TEMP: scale down by a factor to match actuals"), a calibration for
+gaps in the PUF-based tax base rather than a statement of law (IRC
+1411 has no such factor).  It is a TS modeling choice that cannot be
+emulated exactly in TC (scaling `NIIT_rt` would also scale the tax of
+units limited by AGI), so it is documented here.
+
+### 9. QBI deduction and self-employment tax (TS error)
+
+**Nature.**  Most units with self-employment or business income below
+the QBI phase-in range get a larger QBI deduction from TS.  For
+example, b23-33 (single, $75,000 of wages, $34,000 of business
+income): TS `qbid` 20% x 34,000 = $6,800; TC 20% x (34,000 - 2,402.02)
+= $6,319.60, where $2,402.02 is the deduction for one-half of the
+self-employment tax.  The smaller TS taxable income changes `v18`,
+`v19`, `v28`, and `v26` too.  Within the phase-in range the difference
+is reduced in proportion.
+
+**Cause.**  TS's `qbi_ded.R` uses gross `sole_prop` income as
+qualified business income.  Treas. Reg. 1.199A-3(b)(1)(vi) requires
+QBI to be reduced by the deductions attributable to the business,
+including the deductible part of self-employment tax (IRC 164(f)).
+Applying TS's own QBI formula to QBI net of that deduction (and to
+TC's taxable income) reproduces TC's `qbid` in every unit of all three
+samples.
+
+### 10. Tax on preferential income (TS error)
+
+**Nature.**  High-income units whose qualified dividends and net
+capital gain cross a 0%/15%/20% threshold have smaller TS tax before
+credits, with identical taxable income.  For example, b23-2 (head of
+household, taxable income $511,000 including $15,000 of qualified
+dividends, net capital loss): all $15,000 is in the 15% band, because
+$511,000 is below the $523,050 20% threshold, so the tax on it is
+$2,250 (TC); TS taxes $12,050 at 15% ($1,807.50) and the other $2,950
+not at all, so its `v28` is $442.50 lower.
+
+**Cause.**  TS's `tax.R` computes the preferential-rate tax with
+`integrate_conditional_rates_brackets(y = txbl_inc, x =
+txbl_adj_pref_inc, inclusive = T)`, which places the preferential
+income in the range from taxable income to taxable income plus
+preferential income and then limits each bracket's amount to the part
+of taxable income in that bracket.  The part of the preferential
+income that falls in a band the taxable income does not reach is
+dropped.  The Qualified Dividends and Capital Gain Tax Worksheet (IRC
+1(h)) stacks preferential income on top of ordinary income, in the
+range from taxable income less preferential income to taxable income.
+With that stacking, TS's own brackets and ordinary-rate tax reproduce
+TC's `v28` in every affected unit whose taxable income is the same in
+both models.
+
+### 11. ACTC for three or more children (TS error)
+
+**Nature.**  A few heads of household with three qualifying children
+and low earnings get a smaller ACTC from TS.  For example, b23-8528
+($5,000 of wages): TS 15% x (5,000 - 2,500) = $375; TC $382.50, the
+employee's 7.65% Social Security and Medicare tax.
+
+**Cause.**  TS's `ctc.R` computes the refundable credit only as the
+phase-in rate times earned income above $2,500.  IRC 24(d)(1)(B)(ii)
+allows a taxpayer with three or more qualifying children the larger
+of that amount and the Social Security taxes paid less the EITC, which
+TC (and Schedule 8812, Part II-B) does.
+
+### 12. Earned income and self-employment tax (TS error)
+
+**Nature.**  In b25-6462 (joint, $14,000 of wages, $4,000 of business
+income, two qualifying children), TS's ACTC is 15% x (18,000 - 2,500)
+= $2,325; TC's is 15% x (17,717.39 - 2,500) = $2,282.61.
+
+**Cause.**  TS's `pr.R` computes the earned income used by the CTC
+and EITC as wages plus self-employment income.  Under IRC
+32(c)(2)(A)(ii), which IRC 24(d)(1)(B)(i) uses, earned income includes
+net earnings from self-employment determined with regard to the
+deduction for one-half of self-employment tax (IRC 164(f)), as in TC.
+The samples have no EITC difference from this cause only because few
+units with self-employment income get the EITC.
+
+### 13. EITC phase-out (TS error)
+
+**Nature.**  In b25-3156 (joint, ages 77 and 72, one qualifying child,
+$12,000 of wages, AGI $57,000) TC's EITC is $88.51: the $4,328 maximum
+credit less 15.98% of the $26,530 by which AGI exceeds $30,470.  TS
+gives $0.
+
+**Cause.**  TS's `eitc.R` subtracts the phase-out amount from the
+phase-in amount (`pmin(ei, pi_end) * pi_rate`, here 34% x 12,000 =
+$4,080) instead of from the maximum credit.  Under IRC 32(a)(2) the
+credit is the smaller of the phase-in amount and the maximum credit
+less the phase-out amount.  The two agree unless earned income is
+below the end of the phase-in range while AGI is in the phase-out
+range, which takes unearned income, so this does not occur in set `a`.
+
+### 14. AMT income of high-income MFS filers (TS error)
+
+**Nature.**  MFS units with AMT income above the end of the
+exemption phase-out range have larger AMT income in TC, by up to the
+MFS exemption amount.  For example, b23-443 (AGI $1,087,600): TC `v26`
+$1,150,850 = AGI + $63,250; TS $1,087,600.  No unit in the samples
+owes AMT, so `v27` and `fiitax` do not differ.
+
+**Cause.**  IRC 55(d)(2) increases the AMT income of a married
+individual filing separately by the lesser of 25% of the excess of AMT
+income over the amount at which the exemption is fully phased out and
+the MFS exemption amount (Form 6251, line 4 instructions).  TS's
+`amt.R` has no such adjustment; TC's `AMT` function has it.
 
 
 Letter c (2023-2025)
