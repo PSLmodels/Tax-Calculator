@@ -1,9 +1,10 @@
 # Test Results Summary
 
 The differences recorded in [`test_results.expect`](test_results.expect)
-are being explained one assumption-set letter at a time: letters `a`
-and `b` are done; the differences for letter `c` are recorded in
-`test_results.expect` but are not yet explained here.
+are explained below one assumption-set letter at a time.  Causes are
+numbered consecutively across the letters, and a cause first explained
+for one letter is not explained again for a later one.  A summary of
+the causes that are errors in either model is at the end.
 
 In the comparisons below, `diff = tc - ts`, Tax-Calculator (TC) runs
 current-law policy plus [`ts_emulation.json`](ts_emulation.json), and
@@ -290,7 +291,8 @@ nearly all such units have too much unearned income to get the EITC.
 The other `qbid` differences (7 / 10 / 103) and the `v26` differences
 that follow from them are caused by the standard deduction errors
 (causes 4 and 5), which change the taxable income that limits the
-deduction.  The remaining 2025 `v22` and `actc` differences (51 and
+deduction, except for one b25 unit (b25-291) whose difference is
+cause 17 (see letter `c`).  The remaining 2025 `v22` and `actc` differences (51 and
 25 units) are cause 5 moving credit between the nonrefundable and the
 refundable parts of the CTC.  All the new causes are TS errors except
 cause 8, a deliberate TS calibration; causes 9-14 should be reported
@@ -418,4 +420,190 @@ the MFS exemption amount (Form 6251, line 4 instructions).  TS's
 Letter c (2023-2025)
 --------------------
 
-To be done.
+Set `c` adds child-care expenses, property taxes, other itemized
+deductions, and mortgage interest to the set-`b` units, so about
+three quarters of the units itemize.
+
+```
+===== c23 =====
+c23: 21167 differences (|tc - ts| > 1) in 11 variables
+variable  compared  count  max_abs  mean_abs
+  fiitax     10000   8709  4241.40    470.60
+     v13      2332     43   350.00    350.00
+    qbid     10000    850  3913.33   1098.94
+     v18     10000    888  3913.33   1068.86
+     v19       326     35   672.24    253.85
+     v28     10000   1192  3660.00    495.56
+     v26     10000    906 63250.00   2526.64
+    niit     10000   8342   957.60    423.01
+     v22     10000    192  1000.00    466.15
+    actc     10000      1    76.50     76.50
+     v24     10000      9   400.00    271.38
+===== c24 =====
+c24: 21401 differences (|tc - ts| > 1) in 12 variables
+variable  compared  count  max_abs  mean_abs
+  fiitax     10000   8738  4845.44    473.43
+     v13      2682     55 16550.00    693.64
+    qbid     10000    892  4535.59   1204.74
+     v18     10000    942  4535.59   1165.19
+     v19       338     37   701.49    289.44
+     v28     10000   1235  4161.44    492.60
+     v26     10000    935 66650.00   2148.80
+    niit     10000   8401   991.80    422.37
+     v22     10000    148  1000.00    455.31
+    actc     10000      5   603.40    177.23
+     v24     10000     12   600.00    250.00
+     v25     10000      1  1600.00   1600.00
+===== c25 =====
+c25: 30440 differences (|tc - ts| > 1) in 13 variables
+variable  compared  count  max_abs  mean_abs
+  fiitax     10000   9046  4699.65    411.87
+     v13      2479   2479 34700.00   3103.22
+     v17      7521    135 23934.93   4446.04
+    qbid     10000   1010  4209.48   1242.23
+     v18     10000   3464 10249.86   1429.31
+     v19       302     95  2425.50    471.76
+     v28     10000   3641  4175.25    472.09
+     v26     10000   1953 68500.00   5913.47
+    niit     10000   8385   980.40    419.73
+     v22     10000    191  1000.00    430.70
+    actc     10000     19   303.75    119.58
+     v24     10000     21   600.00    299.95
+     v25     10000      1   508.78    508.78
+```
+
+There are no payroll tax differences.  Every `fiitax` difference
+equals the sum of the differences in `v28`, `niit`, `v22`, `actc`,
+`v24`, and `v25`, and every component difference is explained by one
+or more of the causes below: eleven earlier causes and four new ones
+(15-18).
+
+| # | Years | Variable(s) | Units (c23/c24/c25) | Cause | Wrong model |
+|---|---|---|---|---|---|
+| 3 | all | `v22` | 191 / 145 / 164 | Credit for other dependents phased out separately from the CTC | TS |
+| 4 | all | `v13`, `v18`, `v19`, `v28` | 43 / 54 / 37 | MFS aged standard deduction add-on uses the unmarried amount | TS |
+| 5 | 2025 | `v13`, `v17`, `v18`, `v19`, `v28`, `v26`, `v22`, `actc` | - / - / all non-itemizers | 2025 standard deduction is the pre-OBBBA amount | TS |
+| 6 | 2025 | `v18`, `v19`, `v28` | - / - / 162 | MFS filers aged 65+ get the senior deduction | TS |
+| 7 | 2025 | `v26` | - / - / 939 | Senior deduction subtracted (twice) from AMT income | TS |
+| 8 | all | `niit` | 8342 / 8401 / 8385 | Net investment income scaled by 0.7 | TS (calibration) |
+| 9 | all | `qbid`, `v18`, `v19`, `v28`, `v26` | 849 / 891 / 980 | QBI not reduced by the deduction for half of SE tax | TS |
+| 10 | all | `v28` | 307 / 296 / 290 | Preferential income stacked above taxable income | TS |
+| 11 | all | `actc` | 1 / 1 / 1 | No payroll-tax alternative ACTC for three or more children | TS |
+| 12 | all | `v24`, `actc` | 1 / 1 / 3 | Earned income not reduced by the deduction for half of SE tax | TS |
+| 13 | all | `v25` | 0 / 1 / 1 | EITC phase-out applied to the phase-in amount | TS |
+| 14 | all | `v26` | 56 / 42 / 33 | No MFS AMT income add-on | TS |
+| 15 | 2025 | `v17`, `v18`, `v19`, `v28`, `v26` | - / - / 135 | MFS SALT cap phased down at the full 30% rate | TS |
+| 16 | all | `v24` | 8 / 12 / 19 | Earned income limit applied separately to young and older children | TS |
+| 17 | 2025 | `qbid`, `v18`, `v19`, `v28`, `v26` | - / - / 9 | QBI taxable income limit ignores the senior deduction | TS |
+| 18 | all | `v13`, `v17` | 0 / 1 / 1 | Itemize-or-not tie broken differently | neither |
+
+Some differences are knock-on effects of the causes above rather than
+causes of their own:
+
+- In c25, TS itemizes in 156 units, and TC in 8, that the other model
+  does not.  In 155 of the 156 the itemized deductions are between the
+  two models' standard deductions (cause 5, or cause 4 for MFS units
+  aged 65 or older): e.g., c25-26 (joint, $31,000 of itemized
+  deductions) itemizes against TS's $30,000 standard deduction but
+  not against TC's $31,500.  The 8 are MFS units that itemize in TC
+  only because TC allows them more SALT (cause 15).  The remaining
+  one is cause 18.  A different itemization choice changes `v26`,
+  because the standard deduction is added back for the AMT and the
+  non-SALT itemized deductions are not.
+- The 2025 `actc` differences other than causes 11 and 12 (17 units),
+  and as many `v22` differences, move credit between the
+  nonrefundable and the refundable parts of the CTC because tax
+  before credits differs.  The other 11 `v22` differences (one in c23,
+  ten in c25) are units whose ACTC is limited by earned income, so a
+  smaller tax before credits, or a larger nonrefundable child care
+  credit (cause 16), lowers the nonrefundable CTC without raising
+  the ACTC.
+- The `qbid` differences not caused by causes 9 and 17 come from the
+  taxable income differences caused by causes 4, 5, 6, and 15.
+
+None of the new causes can be emulated by a Tax-Calculator reform, so
+`ts_emulation.json` is unchanged.  Causes 15-17 should be reported to
+the Budget Lab.
+
+### 15. 2025 SALT limit for MFS filers (TS error)
+
+**Nature.**  In c25, MFS itemizers with AGI above $250,000 and
+property taxes above $5,000 get a smaller SALT deduction from TS.  For
+example, c25-13 (AGI $291,025.47, $24,000 of property tax): TC's SALT
+deduction is $20,000 - 15% x 41,025.47 = $13,846.18; TS's is $20,000 -
+30% x 41,025.47 = $7,692.36, so its `v17` is $6,153.82 smaller.
+
+**Cause.**  TS reduces the $20,000 MFS limit by 30% of the excess of
+AGI over $250,000, with a $5,000 floor.  The IRS 2025 Schedule A line
+5e worksheet (implementing IRC 164(b)(6) and (7) as amended by OBBBA)
+starts from $40,000 for every filing status, subtracts 30% of
+the excess of modified AGI over $500,000 ($250,000 if MFS), applies the
+$10,000 floor, and only then halves the result for an MFS filer.  For
+an MFS filer that is $20,000 less 15% of the excess, with a $5,000
+floor, which is what TC does.
+
+### 16. Child and dependent care credit earned income limit (TS error)
+
+**Nature.**  Units with a qualifying child aged 4 or younger (TS's
+"young" children), a qualifying child aged 5-12, and a lower-earning spouse (or
+an unmarried head) whose earned income is less than the child-care
+expenses get a larger TS credit, by up to double.  For example,
+c23-289 (head of household, children aged 2, 9, and 11, $2,000 of
+wages, $4,000 of child-care expenses): TC 20% x 2,000 = $400; TS 20% x
+4,000 = $800.
+
+**Cause.**  TS's `cdctc.R` limits the expenses for young children to
+earned income, and then separately limits the expenses for older
+children to earned income, so their sum can be twice earned income
+(here $2,000 + $2,000).  IRC 21(d)(1) limits the total
+employment-related expenses to the earned income of the taxpayer (or
+of the lower-earning spouse).  Applying TS's own credit rate to the
+correctly limited expenses (using earned income net of half of SE tax,
+cause 12) reproduces TC's `v24` in every differing unit.  The larger
+TS credit also lowers TS's nonrefundable CTC in a few units (see
+above).
+
+### 17. 2025 QBI deduction limit and the senior deduction (TS error)
+
+**Nature.**  A few 2025 units aged 65 or older whose QBI deduction is
+limited by 20% of taxable income (less net capital gain) get a larger
+deduction from TS.  For example, c25-2321 (single, age 66, $49,000 of
+S-corporation income, $3,000 of net capital gain, $4,644 senior
+deduction): TC 20% x (49,956 - 3,000) = $9,391.20, where $49,956 is
+taxable income before the QBI deduction; TS $9,800 (20% of QBI).
+
+**Cause.**  TS's `qbi_ded.R` computes the taxable income used by the
+limit as `agi - max(std_ded, item_ded) - pe_ded`, without subtracting
+the senior deduction that TS subtracts in computing taxable income.
+IRC 199A(a)(2) and (e)(1) limit the deduction using taxable income
+computed without regard to the QBI deduction only, so the senior
+deduction (IRC 151(d)(5)) reduces it, as in TC.
+
+### 18. Itemizing when it does not change tax (convention)
+
+**Nature.**  c24-6333 and c25-5391 have itemized deductions larger
+than the standard deduction, but their tax is zero either way (the
+taxable income left by the standard deduction is qualified dividends
+taxed at 0%).  TC reports the standard deduction (`v13`) and positive
+taxable income; TS reports the itemized deductions (`v17`) and zero
+taxable income.
+
+**Cause.**  TC chooses the deduction that yields the lower tax and
+takes the standard deduction when the tax is the same; TS itemizes
+whenever itemized deductions exceed the standard deduction.  Neither
+is an error, and the tax is the same.
+
+
+Errors found
+------------
+
+The comparison found one TC error and sixteen TS causes (fifteen
+errors and one calibration):
+
+- **TC**: cause 1 (EITC for childless MFS filers), to be fixed on a
+  separate branch.
+- **TS parameter errors**: causes 4 and 5 (standard deduction).
+- **TS logic errors**: causes 2, 3, 6, 7, 9-17.
+- **TS calibration**: cause 8 (NIIT 0.7 factor).
+
+Causes 2-7 and 9-17 should be reported to the Budget Lab.
