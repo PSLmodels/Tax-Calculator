@@ -4,7 +4,7 @@ Validation against the Budget Lab at Yale's Tax-Simulator
 This folder compares Tax-Calculator's **federal** income and payroll
 tax results with those of the Budget Lab at Yale's
 [Tax-Simulator](https://github.com/Budget-Lab-Yale/Tax-Simulator)
-("TS"), an R microsimulation model, for random samples of filing
+(TS), an R microsimulation model, for random samples of filing
 units in each year 2023 through 2025.  Each validation sample is
 identified by an assumption-set letter `L` (`a`, `b`, or `c`) and a
 two-digit year `YY`.  The comparison involves five steps:
