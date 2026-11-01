@@ -1,9 +1,9 @@
 # Test Results Summary
 
-**Draft (Phase 5 of the tbly_ts plan).**  Differences are triaged one
-assumption-set letter at a time; letter `a` is done, letters `b` and
-`c` are still to be done.  The `test_results.expect` file is written
-when the triage is finished.
+The differences recorded in [`test_results.expect`](test_results.expect)
+are being explained one assumption-set letter at a time: letter `a` is
+done; the differences for letters `b` and `c` are recorded in
+`test_results.expect` but are not yet explained here.
 
 In the comparisons below, `diff = tc - ts`, Tax-Calculator (TC) runs
 current-law policy plus [`ts_emulation.json`](ts_emulation.json), and

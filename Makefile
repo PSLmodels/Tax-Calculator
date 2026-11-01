@@ -17,7 +17,8 @@ help:
 	@echo "pytest     : generate report for and cleanup after"
 	@echo "             pytest -m ''"
 	@echo "valtest    : generate report for and cleanup after executing"
-	@echo "             taxcalc/validation/pe_taxsim/test.sh"
+	@echo "             taxcalc/validation/pe_taxsim/test.sh and"
+	@echo "             taxcalc/validation/tbly_ts/test.sh"
 	@echo "brtest     : generate report for and cleanup after executing"
 	@echo "             taxcalc/cli/behavioral_responses_tests/tests.sh"
 	@echo "idtest     : generate report for and cleanup after executing"
@@ -69,6 +70,8 @@ endef
 valtest: clean
 	@echo "Executing taxcalc/validation/pe_taxsim/test.sh"
 	@cd taxcalc/validation/pe_taxsim ; ./test.sh
+	@echo "Executing taxcalc/validation/tbly_ts/test.sh"
+	@cd taxcalc/validation/tbly_ts ; ./test.sh
 
 .PHONY=tctest
 tctest: package

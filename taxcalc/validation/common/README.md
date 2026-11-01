@@ -6,17 +6,17 @@ validation workflow.
 
 - `generate_sample.py` writes a random sample of filing units in
   TAXSIM-35 input format.  Its required `--workflow` option names the
-  validation workflow that uses the sample (`pe_taxsim` or the planned
-  `tbly_ts`), which sets the default output folder
+  validation workflow that uses the sample (`pe_taxsim` or `tbly_ts`), which sets the default output folder
   (`validation/WORKFLOW/samples`), the default year range (2021-2025
   for `pe_taxsim` and 2023-2025 for `tbly_ts`), and the default maximum
   number of dependents.  Its `--all` option, used in place of the
   `LETTER` and `YEAR` arguments, writes a sample for every
   assumption-set letter and every year in the workflow's default
   year range.  Use `python generate_sample.py --help` for
-  details, and see [`../pe_taxsim/README.md`](../pe_taxsim/README.md) and
-  [`../pe_taxsim/VARIABLES.md`](../pe_taxsim/VARIABLES.md) for how
-  the samples are used and what their variables mean.
+  details, and see the `README.md` and `VARIABLES.md` files in
+  [`../pe_taxsim`](../pe_taxsim/README.md) and
+  [`../tbly_ts`](../tbly_ts/README.md) for how the samples are used
+  and what their variables mean.
 
 - `workflows.py` defines each workflow's settings (the other model's
   label, such as `pe` or `ts`, the default year range, the default
@@ -34,7 +34,8 @@ validation workflow.
   variables in `dumpvars.txt`, and writes the TAXSIM-format output
   `work/LYY.out-tc.csv`; and `compare.py` compares
   `M_output/LYY.out-M.csv.gz` with it, writing the differences to
-  `work/differences/`.  The variable translations are documented in
+  `work/differences/`.  The translations between TAXSIM and
+  Tax-Calculator variables are documented in
   [`../pe_taxsim/VARIABLES.md`](../pe_taxsim/VARIABLES.md).
 
 - `validation.py` runs the steps for each letter and year; it is

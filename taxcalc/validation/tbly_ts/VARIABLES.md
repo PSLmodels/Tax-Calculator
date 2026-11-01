@@ -1,9 +1,9 @@
 TAXSIM / Tax-Simulator variable correspondence
 =============================================
 
-**Draft.**  The tables below describe what `run_ts.R` does; they were
+The tables below describe what `run_ts.R` does; they were
 confirmed by reading Tax-Simulator ("TS") source code and running
-`run_ts.R` on the samples (Phase 3).  Differences between TS and
+`run_ts.R` on the samples.  Differences between TS and
 Tax-Calculator results are triaged in `SUMMARY.md`.
 
 This document specifies how the TAXSIM-format sample (step 1) is
@@ -124,7 +124,7 @@ Output variables
 ----------------
 
 `run_ts.R` writes `taxsimid`, `year`, and the TAXSIM output variables
-that `../pe_taxsim/compare.py` compares, in its `COMPARED_VARIABLES`
+that `../common/compare.py` compares, in its `COMPARED_VARIABLES`
 order (not in the column layout of `../pe_taxsim/pe_output`).  All of
 them have a TS equivalent.  "Compare" restrictions are those of
 `../pe_taxsim/VARIABLES.md`.
