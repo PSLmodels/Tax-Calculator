@@ -1,9 +1,10 @@
 TAXSIM / Tax-Simulator variable correspondence
 =============================================
 
-**Draft (Phase 2).**  Entries marked *(to confirm)* are taken from a
-static reading of Tax-Simulator ("TS") source code and the Phase 1
-spike, and must be confirmed when `run_ts.R` is written (Phase 3).
+**Draft.**  The tables below describe what `run_ts.R` does; they were
+confirmed by reading Tax-Simulator ("TS") source code and running
+`run_ts.R` on the samples (Phase 3).  Differences between TS and
+Tax-Calculator results are triaged in `SUMMARY.md`.
 
 This document specifies how the TAXSIM-format sample (step 1) is
 translated into TS tax units and how TS output is converted into
@@ -46,8 +47,8 @@ TS columns not listed below are zero-filled.
 | (none) | `blind1`, `blind2` | `0`; `blind2` is NA when there is no spouse |
 | `depx` | `n_dep` | copy |
 | `age1..age3` | `dep_age1..dep_age3` | copy for present deps, ordered youngest first; **NA** for absent deps |
-| (none) | `dep_ctc1..3`, `dep_ssn1..3` | `1` for present deps, NA otherwise *(to confirm: whether TS applies the age < 17 test itself or `dep_ctc` must encode it)* |
-| (none) | `n_dep_eitc` | count of deps with age < 19 *(to confirm against TS's EITC child test)* |
+| (none) | `dep_ctc1..3`, `dep_ssn1..3` | `1` for present deps, NA otherwise (`dep_ctc` encodes only the non-age tests; TS applies the CTC age limits itself, and deps that are not CTC children get the $500 credit for other dependents) |
+| (none) | `n_dep_eitc` | count of deps with age < 19 (TS applies no age test of its own, so this matches TC's `EIC`) |
 | (none) | `dep_status` | `0` (not a dependent filer) |
 | (none) | `filer` | `1` |
 
@@ -59,7 +60,7 @@ TS columns not listed below are zero-filled.
 | `psemp`+`pbusinc`, `ssemp`+`sbusinc` | `sole_prop1`, `sole_prop2`, `sole_prop` | sums per person; `sole_prop = sole_prop1 + sole_prop2`; `sstb_sole_prop = 0` |
 | `pprofinc`, `sprofinc` | (none) | always 0 in the samples |
 | `scorp` | `scorp_active` | copy; `sstb_scorp = 0` |
-| `otherprop` | `rent` | copy *(to confirm: TS's QBI and NIIT treatment of `rent` vs. TC's `e02000`)* |
+| `otherprop` | `rent` | copy; not QBI in TS (its QBI deduction uses only `sole_prop`, `part`, `scorp`, `farm`), as in `pe_taxsim` decision D1; included in NIIT investment income through `sch_e` |
 | `dividends` | `div_pref` | copy; `div_ord = 0` (all dividends qualified) |
 | `intrec` | `txbl_int` | copy |
 | `stcg` | `kg_st` | copy |
@@ -80,7 +81,7 @@ AGI floor, outside the SALT cap, no AMT add-back).
 |---|---|---|
 | `proptax` | `salt_prop` | copy |
 | (none) | `salt_inc_sales`, `salt_pers` | 0 |
-| `mortgage`+`otheritem` | `first_mort_int` | sum *(to confirm: TS's mortgage-balance limit must not bind; set `first_mort_bal` = 0 or a value below the limit, and `first_mort_year` to a pre-2017 year if needed)* |
+| `mortgage`+`otheritem` | `other_item_exp` | sum; `first_mort_int` is not used, because TS's mortgage-balance limit divides by the mortgage balance (0/0 when the balance is zero); `other_item_exp` is fully deductible, not subject to the SALT cap or an AGI floor, and not added back for the AMT |
 | `childcare` | `care_exp` | copy |
 
 ### TS inputs set to constants
@@ -99,40 +100,59 @@ read from the committed `ts_indexes.csv` (IRS-style Sept-Aug averages
 of CPI-U from 1986 and chained CPI-U, plus SSA AWI), then adjusted by
 the committed `ts_law_overrides.csv` (year, filing status, TS column,
 IRS/SSA published value) where TS's indexation gives a value that
-differs from the published one (decision D6).  The 2025 standard
-deduction is **not** overridden (see `SUMMARY.md`).
+differs from the published one (decision D6).  `run_ts.R` checks
+that each TS value equals the `ts_value` recorded in the overrides
+file, so a change in the pin or in `ts_indexes.csv` cannot silently
+change the overrides.  The overrides (232 rows) cover ordinary and
+capital-gains brackets, AMT exemption, phase-out threshold, and 28%
+bracket, EITC phase-in amounts, phase-out thresholds, and investment
+income limit, QBI thresholds, and the 2024-2025 OASDI maximum taxable
+earnings.  Two TS parameter errors are **not** overridden, so that
+they show up as differences and can be reported to the Budget Lab
+(see `SUMMARY.md`): the 2025 standard deduction (TS uses the pre-OBBBA
+15,000 / 30,000 / 22,500) and the aged/blind standard deduction
+add-on for married filing separately (TS uses the unmarried amount,
+e.g. 1,850 instead of 1,500 in 2023).
+
+`ts_indexes.csv` was made by `build_indexes.py` from the FRED series `CPIAUCNS` (CPI-U)
+and `SUUR0000SA0` (chained CPI-U), averaged over September of the
+previous year through August, and SSA national average wage index
+values for 2020-2024; the series must start no later than 1986.
 
 
 Output variables
 ----------------
 
-`run_ts.R` writes the TAXSIM-35 output columns that TS can supply,
-with the same names as `../pe_taxsim/pe_output/*.out-pe.csv.gz`.
-"Compare" restrictions are those of `../pe_taxsim/VARIABLES.md`.
+`run_ts.R` writes `taxsimid`, `year`, and the TAXSIM output variables
+that `../pe_taxsim/compare.py` compares, in its `COMPARED_VARIABLES`
+order (not in the column layout of `../pe_taxsim/pe_output`).  All of
+them have a TS equivalent.  "Compare" restrictions are those of
+`../pe_taxsim/VARIABLES.md`.
 
 | TAXSIM | TS expression | Notes |
 |---|---|---|
 | `taxsimid` | `id` | key |
 | `year` | `year` | key |
-| `fiitax` | `liab_iit_net` | *(to confirm)* |
-| `fica` | `liab_pr` | employee + employer OASDI and HI, SECA, Additional Medicare Tax *(to confirm)* |
+| `fiitax` | `liab_iit_net` | income tax after all credits, incl. NIIT; excl. Additional Medicare Tax |
+| `fica` | `liab_pr` | employee + employer OASDI and HI, SECA, Additional Medicare Tax |
+| `tfica` | `liab_pr - liab_fica_er1 - liab_fica_er2` | employee OASDI and HI, full SECA, Additional Medicare Tax |
 | `addmed` | `liab_add_med` | |
+| `v44` | `pr.hi_ee_rates * wages + liab_add_med` | HI rate from the TS law row |
 | `v10` | `agi` | |
 | `v11` | `ui` | input |
 | `v12` | `txbl_ss` | |
 | `v13` | `std_ded` | |
-| `v14` | `pe` | personal exemptions; zero in 2023-2025 *(to confirm)* |
+| `v14` | `pe_ded` | zero in 2023-2025 |
 | `v17` | `item_ded` | |
+| `qbid` | `qbi_ded` | |
 | `v18` | `txbl_inc` | |
+| `v19` | `liab_ord` | tax at ordinary rates on taxable income less preferential income |
+| `v28` | `liab` | regular tax before credits, excl. AMT (TS's `liab_bc` includes `liab_amt`, so it is not used) |
+| `v26` | `amt_gross_inc` | AMT income before the exemption |
 | `v27` | `liab_amt` | |
-| `v28` | `liab_bc` | regular tax before credits *(to confirm: whether `liab_bc` includes `liab_amt`)* |
-| `niit` | `liab_niit` | |
-| `v22` | `ctc_nonref` | *(to confirm: whether it includes the $500 credit for other dependents)* |
+| `niit` | `liab_niit` | TS multiplies net investment income by 0.7 (a calibration factor in `niit.R`), so NIIT differs from TC's (see `SUMMARY.md`) |
+| `v22` | `ctc_nonref` | nonrefundable CTC incl. the $500 credit for other dependents |
 | `actc` | `ctc_ref` | |
 | `v24` | `cdctc_nonref + cdctc_ref` | |
 | `v25` | `eitc` | |
-
-TAXSIM outputs for which TS has no equivalent identified yet
-(`tfica`, `v44`, `qbid`, `v19`, `v26`, `cares`, `frate`) are
-left out until Phase 3 finds one; TS outputs with no TAXSIM
-equivalent are left out.
+| `cares` | `rebate` | zero in 2023-2025 |
