@@ -2,11 +2,11 @@
 Translates a TAXSIM-35 input sample into a Tax-Calculator CLI input
 file (step 3 of the validation).
 
-USAGE: python taxsim_to_tc.py LETTER YEAR
+USAGE: python taxsim_to_tc.py LETTER YEAR --workflow WORKFLOW
 
-reads samples/LYY.in.csv.gz and writes work/LYY.in-tc.csv in the folder
-containing this script.  The translation follows the input tables in
-VARIABLES.md.
+reads samples/LYY.in.csv.gz and writes work/LYY.in-tc.csv in the
+validation/WORKFLOW folder.  The translation follows the input tables
+in ../pe_taxsim/VARIABLES.md and does not depend on the workflow.
 """
 
 import argparse
@@ -15,11 +15,10 @@ import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
+# pylint: disable-next=import-error
+from workflows import add_sample_arguments, parse_sample_arguments
 
 
-VALID_LETTERS = ["a", "b", "c"]
-FIRST_YEAR = 2021
-LAST_YEAR = 2025
 MAX_DEPX = 5
 HERE = Path(__file__).resolve().parent
 RECORDS_VARIABLES = HERE.parents[1] / "records_variables.json"
@@ -227,32 +226,23 @@ def main():
         prog="python taxsim_to_tc.py",
         description=(
             "Translates samples/LYY.in.csv.gz into the Tax-Calculator "
-            "CLI input file work/LYY.in-tc.csv."
+            "CLI input file work/LYY.in-tc.csv in the validation/WORKFLOW "
+            "folder."
         ),
     )
-    parser.add_argument(
-        "LETTER", choices=VALID_LETTERS, help="assumption set letter"
-    )
-    parser.add_argument(
-        "YEAR",
-        type=int,
-        choices=range(FIRST_YEAR, LAST_YEAR + 1),
-        metavar="YEAR",
-        help=f"tax year in [{FIRST_YEAR},{LAST_YEAR}]",
-    )
+    add_sample_arguments(parser)
     parser.add_argument(
         "--indir",
-        default=str(HERE / "samples"),
-        help="input folder (default is samples next to this script)",
+        help="input folder (default is validation/WORKFLOW/samples)",
     )
     parser.add_argument(
         "--outdir",
-        default=str(HERE / "work"),
-        help="output folder (default is work next to this script)",
+        help="output folder (default is validation/WORKFLOW/work)",
     )
-    args = parser.parse_args()
-    lyy = f"{args.LETTER}{args.YEAR % 100:02d}"
-    infile = Path(args.indir) / f"{lyy}.in.csv.gz"
+    args, wfl, lyy = parse_sample_arguments(parser)
+    indir = Path(args.indir) if args.indir else wfl.folder / "samples"
+    outdir = Path(args.outdir) if args.outdir else wfl.folder / "work"
+    infile = indir / f"{lyy}.in.csv.gz"
     if not infile.is_file():
         sys.stderr.write(f"ERROR: input file {infile} does not exist\n")
         return 1
@@ -263,7 +253,6 @@ def main():
         return 1
     tc = translate(smpl)
     check_tc_input(tc, smpl)
-    outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     tc.to_csv(outdir / f"{lyy}.in-tc.csv", index=False)
     return 0

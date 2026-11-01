@@ -2,16 +2,17 @@
 Runs the Tax-Calculator CLI on a translated sample and converts its
 output into TAXSIM format (step 4 of the validation).
 
-USAGE: python run_tc.py LETTER YEAR
+USAGE: python run_tc.py LETTER YEAR --workflow WORKFLOW
 
 reads work/LYY.in-tc.csv (written by taxsim_to_tc.py) and writes
-work/LYY.dumpdb and work/LYY.out-tc.csv in the folder containing this
-script.  The CLI runs with the pe_emulation.json reform, the
-dumpvars.txt variables, and the --exact option, which makes
-Tax-Calculator round phase-out excesses as the statute and tax forms
-do (e.g., $50 per $1,000 "or fraction thereof" for the child tax
-credit), as PE does.  The TAXSIM-format output follows the output
-table in VARIABLES.md.
+work/LYY.dumpdb and work/LYY.out-tc.csv in the validation/WORKFLOW
+folder.  The CLI runs with the workflow's emulation reform
+(validation/WORKFLOW/M_emulation.json, where M is the other model's
+label, e.g. pe), the dumpvars.txt variables in this folder, and the
+--exact option, which makes Tax-Calculator round phase-out excesses as
+the statute and tax forms do (e.g., $50 per $1,000 "or fraction
+thereof" for the child tax credit).  The TAXSIM-format output follows
+the output table in ../pe_taxsim/VARIABLES.md.
 
 The CLI is run as "python -m taxcalc.cli.tc" with the top-level folder
 of this repository first on PYTHONPATH, so the working-tree
@@ -29,6 +30,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+# pylint: disable-next=import-error
+from workflows import add_sample_arguments, parse_sample_arguments
+
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parents[2]
 sys.path.insert(0, str(REPO_ROOT))
@@ -36,16 +40,12 @@ sys.path.insert(0, str(REPO_ROOT))
 from taxcalc import Policy  # noqa: E402
 
 
-VALID_LETTERS = ["a", "b", "c"]
-FIRST_YEAR = 2021
-LAST_YEAR = 2025
-EMULATION_FILE = HERE / "pe_emulation.json"
 DUMPVARS_FILE = HERE / "dumpvars.txt"
 
 # TAXSIM-format output columns written by this script: the federal
 # policyengine-taxsim idtl=2 columns compared in step 5 (see
-# VARIABLES.md), plus tc_dwks10, which step 5 needs to decide whether
-# v19 is compared
+# ../pe_taxsim/VARIABLES.md), plus tc_dwks10, which step 5 needs to
+# decide whether v19 is compared
 OUTPUT_COLUMNS = (
     ["taxsimid", "year", "fiitax", "fica", "tfica", "addmed", "v44"]
     + ["v10", "v11", "v12", "v13", "v14", "v17", "qbid", "v18"]
@@ -55,10 +55,11 @@ OUTPUT_COLUMNS = (
 )
 
 
-def run_cli(lyy, year, workdir):
+def run_cli(lyy, year, workdir, emulation_file):
     """
-    Run the Tax-Calculator CLI on workdir/LYY.in-tc.csv for YEAR and
-    return the path of the --dumpdb output, renamed to workdir/LYY.dumpdb.
+    Run the Tax-Calculator CLI on workdir/LYY.in-tc.csv for YEAR with
+    the EMULATION_FILE reform and return the path of the --dumpdb
+    output, renamed to workdir/LYY.dumpdb.
     """
     infile = workdir / f"{lyy}.in-tc.csv"
     if not infile.is_file():
@@ -68,7 +69,7 @@ def run_cli(lyy, year, workdir):
     # two-digit tax year, and the reform file stem
     yy = f"{year % 100:02d}"
     cli_dumpdb = (
-        workdir / f"{infile.stem}-{yy}-#-{EMULATION_FILE.stem}-#-#.dumpdb"
+        workdir / f"{infile.stem}-{yy}-#-{emulation_file.stem}-#-#.dumpdb"
     )
     dumpdb = workdir / f"{lyy}.dumpdb"
     for path in (cli_dumpdb, dumpdb):
@@ -76,7 +77,7 @@ def run_cli(lyy, year, workdir):
     cmd = [
         sys.executable, "-m", "taxcalc.cli.tc",
         infile.name, str(year),
-        "--reform", str(EMULATION_FILE),
+        "--reform", str(emulation_file),
         "--dumpdb", "--dumpvars", str(DUMPVARS_FILE),
         "--exact", "--silent",
     ]
@@ -99,28 +100,29 @@ def run_cli(lyy, year, workdir):
 def read_dumpdb(dumpdb):
     """
     Return DataFrame containing the reform table in the DUMPDB database,
-    which holds the results under current-law policy plus the
-    pe_emulation.json reform.
+    which holds the results under current-law policy plus the emulation
+    reform.
     """
     with sqlite3.connect(dumpdb) as dbcon:
         return pd.read_sql_query("SELECT * FROM reform", dbcon)
 
 
-def fica_mc_trt_employee(year):
+def fica_mc_trt_employee(year, emulation_file):
     """
     Return the employee HI payroll tax rate for YEAR under current-law
-    policy plus the pe_emulation.json reform.
+    policy plus the EMULATION_FILE reform.
     """
     pol = Policy()
-    pol.implement_reform(Policy.read_json_reform(str(EMULATION_FILE)))
+    pol.implement_reform(Policy.read_json_reform(str(emulation_file)))
     pol.set_year(year)
     return pol.FICA_mc_trt_employee[0]
 
 
-def taxsim_output(tcv, year):
+def taxsim_output(tcv, year, emulation_file):
     """
     Return DataFrame of TAXSIM-format output computed from DataFrame TCV
-    of Tax-Calculator dump variables for YEAR (see VARIABLES.md).
+    of Tax-Calculator dump variables for YEAR, computed using the
+    EMULATION_FILE reform (see ../pe_taxsim/VARIABLES.md).
     """
     out = pd.DataFrame({
         "taxsimid": tcv.RECID,
@@ -129,7 +131,8 @@ def taxsim_output(tcv, year):
         "fica": tcv.payrolltax,
         "tfica": tcv.payrolltax - tcv.ptax_er_p - tcv.ptax_er_s,
         "addmed": tcv.ptax_amc,
-        "v44": fica_mc_trt_employee(year) * tcv.e00200 + tcv.ptax_amc,
+        "v44": (fica_mc_trt_employee(year, emulation_file) * tcv.e00200
+                + tcv.ptax_amc),
         "v10": tcv.c00100,
         "v11": tcv.e02300,
         "v12": tcv.c02500,
@@ -189,33 +192,29 @@ def main():
         prog="python run_tc.py",
         description=(
             "Runs the Tax-Calculator CLI on work/LYY.in-tc.csv and writes "
-            "TAXSIM-format output to work/LYY.out-tc.csv."
+            "TAXSIM-format output to work/LYY.out-tc.csv in the "
+            "validation/WORKFLOW folder."
         ),
     )
-    parser.add_argument(
-        "LETTER", choices=VALID_LETTERS, help="assumption set letter"
-    )
-    parser.add_argument(
-        "YEAR",
-        type=int,
-        choices=range(FIRST_YEAR, LAST_YEAR + 1),
-        metavar="YEAR",
-        help=f"tax year in [{FIRST_YEAR},{LAST_YEAR}]",
-    )
+    add_sample_arguments(parser)
     parser.add_argument(
         "--workdir",
-        default=str(HERE / "work"),
-        help="working folder (default is work next to this script)",
+        help="working folder (default is validation/WORKFLOW/work)",
     )
-    args = parser.parse_args()
-    lyy = f"{args.LETTER}{args.YEAR % 100:02d}"
-    workdir = Path(args.workdir).resolve()
+    args, wfl, lyy = parse_sample_arguments(parser)
+    workdir = Path(args.workdir) if args.workdir else wfl.folder / "work"
+    workdir = workdir.resolve()
+    emulation_file = wfl.emulation_file
     try:
-        dumpdb = run_cli(lyy, args.YEAR, workdir)
+        if not emulation_file.is_file():
+            raise FileNotFoundError(
+                f"emulation reform file {emulation_file} does not exist"
+            )
+        dumpdb = run_cli(lyy, args.YEAR, workdir, emulation_file)
     except (FileNotFoundError, RuntimeError) as err:
         sys.stderr.write(f"ERROR: {err}\n")
         return 1
-    out = taxsim_output(read_dumpdb(dumpdb), args.YEAR)
+    out = taxsim_output(read_dumpdb(dumpdb), args.YEAR, emulation_file)
     check_output(out, pd.read_csv(workdir / f"{lyy}.in-tc.csv"), args.YEAR)
     out.to_csv(workdir / f"{lyy}.out-tc.csv", index=False)
     return 0

@@ -19,6 +19,7 @@ import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
+from workflows import WORKFLOWS  # pylint: disable=import-error
 
 
 VALID_LETTERS = ["a", "b", "c"]
@@ -29,14 +30,13 @@ MAX_DEPX = 5
 MIN_MAX_DEPX = 3
 BASE_SEED = 123456789
 
-# default maximum number of dependents for each validation workflow, which
-# is lower for Tax-Simulator because it records only three dependent ages
-WORKFLOW_MAX_DEPX = {"pe_taxsim": MAX_DEPX, "tbly_ts": 3}
+# default maximum number of dependents for each validation workflow
+# (see workflows.py)
+WORKFLOW_MAX_DEPX = {name: wfl.max_depx for name, wfl in WORKFLOWS.items()}
 
 # default (first, last) year range for each validation workflow
 WORKFLOW_YEARS = {
-    "pe_taxsim": (FIRST_YEAR, LAST_YEAR),
-    "tbly_ts": (2023, 2025),
+    name: (wfl.first_year, wfl.last_year) for name, wfl in WORKFLOWS.items()
 }
 
 # TAXSIM input columns written to each sample file, in output order
