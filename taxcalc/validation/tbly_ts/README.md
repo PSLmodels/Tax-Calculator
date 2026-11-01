@@ -50,7 +50,8 @@ Other files in this folder:
   (the Tax-Calculator translations are those in
   [`../pe_taxsim/VARIABLES.md`](../pe_taxsim/VARIABLES.md)).
 - [`ts_pin.json`](ts_pin.json) pins the Tax-Simulator commit and the
-  R environment.
+  R environment; `update_ts_pin.py` updates the commit pin (see
+  [Updating the TS pin](#updating-the-ts-pin)).
 - [`ts_indexes.csv`](ts_indexes.csv) contains the public price and
   wage indexes Tax-Simulator uses to index its tax law parameters
   (see [Tax law](#tax-law)); `build_indexes.py` writes it.
@@ -201,10 +202,19 @@ Updating the TS pin
 -------------------
 
 Tax-Simulator is under active development, so change the pin only
-deliberately.  To move to a newer commit, edit
-`tax_simulator_sha`, `tax_simulator_sha_date`, and `pinned_on` in
-`ts_pin.json` (and the R package versions, if needed, recreating the
-`tbly-ts` environment), then regenerate all nine TS outputs with
+deliberately.  `python update_ts_pin.py` finds the newest commit on
+Tax-Simulator's default branch using the GitHub API, checks that it
+contains the Tax-Simulator files `run_ts.R` sources, and reports each
+`ts_pin.json` entry that would change, the number of commits between
+the pinned and the new commit, and which of the files that can affect
+the TS outputs (`src/calc/`, `src/data/tax_law.R`, `src/misc/utils.R`,
+and the baseline tax-law YAML files) those commits changed.  It is a
+dry run unless `--write` is given, which updates `tax_simulator_sha`,
+`tax_simulator_sha_date`, and `pinned_on`.  Use `--sha SHA` to pin a
+specific Tax-Simulator commit instead of the newest one.  The script
+does not change the R package versions; edit those by hand if the new
+commit needs newer packages, recreating the `tbly-ts` environment.
+After writing a new pin, regenerate all nine TS outputs with
 `python run_ts.py --all --force`.  If `run_ts.R` reports that a
 Tax-Simulator value no longer equals the `ts_value` in
 `ts_law_overrides.csv`, check the new value against the published one
