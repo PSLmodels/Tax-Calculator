@@ -1,31 +1,49 @@
 # Test Results Summary
 
-```
-(taxcalc-dev) pe_taxsim> awk 'NR<=12' test_results.expect
-===== PE_PIN =====
-policyengine_taxsim_repo: https://github.com/PolicyEngine/policyengine-taxsim
-policyengine_taxsim_sha: c0d565948af3896e3a6e4d34970f7502d17cdf34
-policyengine_taxsim_sha_date: 2026-10-30
-policyengine_taxsim_version: 3.3.0
-policyengine_us_version: 2.87.0
-policyengine_core_version: 3.33.14
-python_version: 3.13
-python_version_resolved: 3.13.16
-uv_version: 0.12.23
-pinned_on: 2026-10-30
-pe_cli_options: --scorp-treatment active
-```
+The differences recorded in [`test_results.expect`](test_results.expect)
+are explained below one assumption-set letter at a time.  Causes are
+numbered consecutively across the letters, and a cause first explained
+for one letter is not explained again for a later one.  A summary of
+the causes that are errors in either model is at the end.
 
-The remainder of the `test_results.expect` file shows no differences
-in payroll taxes.  It does show federal income tax (`fiitax`)
-differences in seven married filing separately units in the a21
-sample, which are caused by a PE error.  The other differences below
-do not affect income or payroll tax liability in the validation
-samples used here.  See the Diffs Analysis section below for
-details.
+In the comparisons below, `diff = tc - pe`, Tax-Calculator (TC) runs
+current-law policy plus [`pe_emulation.json`](pe_emulation.json), and
+PolicyEngine (PE) is the pinned version of `policyengine-taxsim` in
+[`pe_pin.json`](pe_pin.json) (run with `--scorp-treatment active`),
+whose variables are described in [`VARIABLES.md`](VARIABLES.md).
+The samples contain single, joint, head-of-household, and married
+filing separately (MFS, `mstat=6`) units; MFS units never have
+dependents.
+
+There are no payroll tax differences in any sample.  The only
+federal income tax (`fiitax`) differences are in seven a21 MFS units
+and are caused by a PE error (cause 1).  The other differences do not
+affect income or payroll tax liability in these samples.
+
+
+Emulation conventions
+---------------------
+
+`pe_emulation.json` makes TC adopt three PE conventions, none of which
+is an error in either model:
+
+| # | TC parameter | Why |
+|---|---|---|
+| 1 | `eitc_claim_prob_scale = 9e99` | PE computes EITC entitlement (full take-up) |
+| 2 | `actc_claim_prob_scale = 9e99` | PE computes ACTC entitlement (full take-up) |
+| 3 | `SS_thd1 = SS_thd2 = 0` for MFS | PE treats every MFS filer as having lived with the spouse, so the taxable Social Security base amounts are zero |
+
+Without (1) and (2), TC's random credit non-claiming zeroes the EITC
+or ACTC of some units in each sample.  Without (3), TC treats every
+MFS unit as having lived apart from the spouse all year (TC has no
+lived-apart flag) and so applies the single filer's base amounts in
+the taxable Social Security benefits worksheet.
+
+
+Letter a (2021-2025)
+--------------------
 
 ```
-(taxcalc-dev) pe_taxsim> awk 'NR>12' test_results.expect
 ===== a21 =====
 a21: 1118 differences (|tc - pe| > 1) in 2 variables
 variable  compared  count  max_abs  mean_abs
@@ -39,66 +57,21 @@ a23: 0 differences (|tc - pe| > 1) in 0 variables
 a24: 0 differences (|tc - pe| > 1) in 0 variables
 ===== a25 =====
 a25: 0 differences (|tc - pe| > 1) in 0 variables
-===== b21 =====
-b21: 802 differences (|tc - pe| > 1) in 1 variables
-variable  compared  count  max_abs  mean_abs
-    actc     10000    802   1600.0     616.9
-===== b22 =====
-b22: 0 differences (|tc - pe| > 1) in 0 variables
-===== b23 =====
-b23: 0 differences (|tc - pe| > 1) in 0 variables
-===== b24 =====
-b24: 0 differences (|tc - pe| > 1) in 0 variables
-===== b25 =====
-b25: 0 differences (|tc - pe| > 1) in 0 variables
-===== c21 =====
-c21: 873 differences (|tc - pe| > 1) in 1 variables
-variable  compared  count  max_abs  mean_abs
-    actc     10000    873   1600.0     639.0
-===== c22 =====
-c22: 0 differences (|tc - pe| > 1) in 0 variables
-===== c23 =====
-c23: 0 differences (|tc - pe| > 1) in 0 variables
-===== c24 =====
-c24: 2 differences (|tc - pe| > 1) in 2 variables
-variable  compared  count  max_abs  mean_abs
-     v18     10000      1   1375.0    1375.0
-     v26     10000      1  24000.0   24000.0
-===== c25 =====
-c25: 2 differences (|tc - pe| > 1) in 2 variables
-variable  compared  count  max_abs  mean_abs
-     v18     10000      1   1875.0    1875.0
-     v26     10000      1  39000.0   39000.0
 ```
 
+There are no payroll tax differences, and there are no differences at
+all in 2022-2025.  Every 2021 difference is explained by one of two
+causes:
 
-# Diffs Analysis
-
-## Agent:
-
-Claude Code running Opus 5.5 on Tax-Calculator fix-bugs branch
-on Fri Oct 30 2026.
-
-## Prompt:
-
-Fix the Tax-Calculator parameter errors found by the new validation
-samples, confirm the PE Schedule R error, and update the SUMMARY.md
-analysis section.
-
-## Results:
-
-In the comparisons below, `diff = tc - pe`.  The samples contain all
-four filing statuses, including married filing separately (MFS,
-`mstat=6`) units, which never have dependents.  There are three
-distinct causes, and every difference is explained by one of them:
-
-| # | Samples | Variable(s) | Units | Cause | Affects `fiitax`? |
+| # | Years | Variable(s) | Units (a21) | Cause | Wrong model |
 |---|---|---|---|---|---|
-| 1 | a21 | `fiitax` | 7 MFS | PE gives an MFS filer the wrong Schedule R initial amount | Yes (PE too low) |
-| 2 | a21, b21, c21 | `actc` | 1111 + 802 + 873 | PE counts part of the 2021 other-dependent credit (ODC) as refundable CTC | No |
-| 3 | c24, c25 | `v18`, `v26` | 1 + 1 | Different itemization tie-break when a unit owes no tax either way | No |
+| 1 | 2021 | `fiitax` | 7 | MFS Schedule R credit uses the wrong initial amount | PE |
+| 2 | 2021 | `actc` | 1111 | Part of the credit for other dependents (ODC) counted as refundable CTC | PE |
 
-### 1. 2021 MFS Schedule R credit (a21)
+Cause 1 changes tax liability (PE's tax is too low); cause 2 does not
+in these samples.
+
+### 1. 2021 MFS Schedule R credit (PE error)
 
 **Nature.**  Seven a21 MFS units, each aged 65 or older with $14,000
 of wages, have `fiitax` $10 higher in TC.  Every compared component
@@ -125,29 +98,29 @@ credit is 15% x (5,000 - 0.5 x (14,000 - 5,000)) = $75, limited to the
 $10 tax.  TC's `SchR` uses $3,750, which gives no credit at that AGI.
 Probing PE directly gives `elderly_disabled_credit` = $10 at $14,000
 of wages and $0 at $15,000, which matches the samples: MFS units with
-$15,000 of wages show no difference.  This is a PE error.  The credit
-is so small for MFS filers that it shows up only when the unit's tax
-is also small, which in these samples (wages in $1,000 steps) happens
-only in 2021.  Under the statute, an MFS filer who lived with the
-spouse at any time during the year gets no Schedule R credit at all
-(IRC 22(e)(1)).  `pe_emulation.json` already assumes that every MFS
-unit lived with the spouse, as PE does when it computes taxable
-Social Security benefits, but both models allow the credit to every
-MFS filer aged 65 or older.
+$15,000 of wages show no difference.  The credit is so small for MFS
+filers that it shows up only when the unit's tax is also small, which
+in these samples (wages in $1,000 steps) happens only in 2021.
 
-### 2. 2021 `actc` (a21, b21, c21)
+Under the statute, an MFS filer who lived with the spouse at any time
+during the year gets no Schedule R credit at all (IRC 22(e)(1)).
+`pe_emulation.json` already assumes that every MFS unit lived with the
+spouse, as PE does when it computes taxable Social Security benefits,
+but both models allow the credit to every MFS filer aged 65 or older.
 
-**Nature.**  These are all the remaining a21, b21, and c21
-differences.  Every `diff` is negative (PE's refundable CTC is
-larger).  Most are multiples of the $500 ODC: in a21, 684 are -$500,
-273 are -$1,000, and 42 are -$1,500; the rest are smaller amounts.
-Every unit with a difference is a joint or head-of-household unit
-with at least one qualifying child (under 18) and at least one other
-dependent (18 or older), and has AGI above the ARPA phase-out
-threshold ($112,500 head of household, $150,000 joint).  The total
-credit (`v22`) agrees in every one of these units, so the two models
-differ only in how they split the same credit between its refundable
-CTC and nonrefundable ODC parts.
+### 2. 2021 refundable CTC and the ODC (PE error)
+
+**Nature.**  These are all the remaining 2021 differences.  Every
+`diff` is negative (PE's refundable CTC is larger).  Most are
+multiples of the $500 ODC: in a21, 684 are -$500, 273 are -$1,000, and
+42 are -$1,500; the rest are smaller amounts.  Every unit with a
+difference is a joint or head-of-household unit with at least one
+qualifying child (under 18) and at least one other dependent (18 or
+older), and has AGI above the ARPA phase-out threshold ($112,500 head
+of household, $150,000 joint).  The total credit (`v22`) agrees in
+every one of these units, so the two models differ only in how they
+split the same credit between its refundable CTC and nonrefundable
+ODC parts.
 
 **Cause.**  In a fully refundable year (2021 only), PE's
 `refundable_ctc` is
@@ -177,16 +150,83 @@ lines 7 and 12), and only the remainder, line 14b, is refundable.
 `ChildDepTaxCredit` in `calcfunctions.py` does exactly this
 (`odc = min(line7, line12)`, `c07220 = line12 - odc`).  ARPA's IRC
 24(i) refundability does not extend to the 24(h)(4) credit for other
-dependents, so this is a PE error that overstates the 2021 refundable
-CTC and understates the nonrefundable ODC by the same amount.  It
-leaves tax unchanged in these samples only because each unit's tax
-liability is large enough to absorb the nonrefundable ODC; a unit
-with less tax liability would get too large a refund from PE.  The
-error is limited to 2021 because PE's 2022-2025 branch caps the
-refundable amount per child and phases it in with earnings, which
-keeps the ODC out.
+dependents, so PE overstates the 2021 refundable CTC and understates
+the nonrefundable ODC by the same amount.  It leaves tax unchanged in
+these samples only because each unit's tax liability is large enough
+to absorb the nonrefundable ODC; a unit with less tax liability would
+get too large a refund from PE.  The error is limited to 2021 because
+PE's 2022-2025 branch caps the refundable amount per child and phases
+it in with earnings, which keeps the ODC out.
 
-### 3. `v26` and `v18` (c24, c25)
+
+Letter b (2021-2025)
+--------------------
+
+Set `b` adds self-employment, business, S-corporation, investment,
+rental, pension, Social Security, and unemployment income to the
+set-`a` units.
+
+```
+===== b21 =====
+b21: 802 differences (|tc - pe| > 1) in 1 variables
+variable  compared  count  max_abs  mean_abs
+    actc     10000    802   1600.0     616.9
+===== b22 =====
+b22: 0 differences (|tc - pe| > 1) in 0 variables
+===== b23 =====
+b23: 0 differences (|tc - pe| > 1) in 0 variables
+===== b24 =====
+b24: 0 differences (|tc - pe| > 1) in 0 variables
+===== b25 =====
+b25: 0 differences (|tc - pe| > 1) in 0 variables
+```
+
+There are no payroll tax or `fiitax` differences, and there are no
+differences at all in 2022-2025.  Every b21 difference is explained by
+set-`a` cause 2; there are no new causes, and set-`a` cause 1 does
+not occur in set `b`.
+
+| # | Years | Variable(s) | Units (b21) | Cause | Wrong model |
+|---|---|---|---|---|---|
+| 2 | 2021 | `actc` | 802 | Part of the ODC counted as refundable CTC | PE |
+
+
+Letter c (2021-2025)
+--------------------
+
+Set `c` adds child-care expenses, property taxes, other itemized
+deductions, and mortgage interest to the set-`b` units.
+
+```
+===== c21 =====
+c21: 873 differences (|tc - pe| > 1) in 1 variables
+variable  compared  count  max_abs  mean_abs
+    actc     10000    873   1600.0     639.0
+===== c22 =====
+c22: 0 differences (|tc - pe| > 1) in 0 variables
+===== c23 =====
+c23: 0 differences (|tc - pe| > 1) in 0 variables
+===== c24 =====
+c24: 2 differences (|tc - pe| > 1) in 2 variables
+variable  compared  count  max_abs  mean_abs
+     v18     10000      1   1375.0    1375.0
+     v26     10000      1  24000.0   24000.0
+===== c25 =====
+c25: 2 differences (|tc - pe| > 1) in 2 variables
+variable  compared  count  max_abs  mean_abs
+     v18     10000      1   1875.0    1875.0
+     v26     10000      1  39000.0   39000.0
+```
+
+There are no payroll tax or `fiitax` differences.  Every difference is
+explained by one earlier cause and one new one (3):
+
+| # | Years | Variable(s) | Units (c21/c22/c23/c24/c25) | Cause | Wrong model |
+|---|---|---|---|---|---|
+| 2 | 2021 | `actc` | 873 / - / - / - / - | Part of the ODC counted as refundable CTC | PE |
+| 3 | all | `v18`, `v26` | 0 / 0 / 0 / 1 / 1 | Itemize-or-not tie broken differently when no tax is owed | neither |
+
+### 3. Itemizing when it does not change tax (convention)
 
 **Nature.**
 
@@ -227,13 +267,19 @@ The reported differences follow from that choice:
   compares `v13` only for TC non-itemizers (and PE reports the same
   standard deduction) and `v17` only for TC itemizers.
 
-The choice has no effect on any tax amount, so both conventions are
-defensible and these are reporting differences only.
+The choice has no effect on any tax amount, so neither is an error
+and these are reporting differences only.
 
-### Summary
 
-| Cause | Which model follows the law | Affects tax liability? |
-|---|---|---|
-| 1. Schedule R initial amount for MFS (`fiitax`) | TC (IRC 22(c)(2)(A)(iii): $3,750) | Yes: PE overstates the MFS credit |
-| 2. 2021 refundable ODC (`actc`) | TC (2021 Sch 8812 lines 14a-14b; IRC 24(i)) | Not in these samples; a PE error that would overstate refunds for units with less tax liability |
-| 3. Itemization tie-break at zero tax (`v18`, `v26`) | Both defensible | No |
+Errors found
+------------
+
+The comparison found no TC errors and two PE errors:
+
+- **PE**: cause 1 (2021 MFS Schedule R initial amount: $5,000 instead
+  of the $3,750 in IRC 22(c)(2)(A)(iii)), which makes PE's tax too low.
+- **PE**: cause 2 (2021 refundable CTC includes part of the ODC,
+  contrary to the 2021 Schedule 8812 lines 14a-14b and IRC 24(i)),
+  which leaves tax unchanged in these samples but would overstate the
+  refund of a unit with less tax liability.
+- **Neither**: cause 3 (itemization tie-break when no tax is owed).
