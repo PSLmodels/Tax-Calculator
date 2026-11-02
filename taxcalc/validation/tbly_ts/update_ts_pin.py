@@ -228,7 +228,8 @@ def main():
         f"wrote {run_ts.PIN_FILE.name}; next steps:\n"
         "  1. update the R package versions in ts_pin.json if needed\n"
         "  2. regenerate all TS outputs with run_ts.py --all --force\n"
-        "     (and update ts_law_overrides.csv if run_ts.R says so)\n"
+        "     (first regenerating ts_law_overrides.csv with\n"
+        "     build_overrides.py if build_overrides.py --check fails)\n"
         "  3. run validate.py and re-examine every difference\n"
         "  4. update test_results.expect, VARIABLES.md, and SUMMARY.md\n"
     )
