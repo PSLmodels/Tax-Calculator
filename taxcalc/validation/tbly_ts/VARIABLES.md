@@ -99,11 +99,14 @@ The 2023-2025 baseline law is built by
 read from the committed `ts_indexes.csv` (IRS-style Sept-Aug averages
 of CPI-U from 1986 and chained CPI-U, plus SSA AWI), then adjusted by
 the committed `ts_law_overrides.csv` (year, filing status, TS column,
-IRS/SSA published value) where TS's indexation gives a value that
-differs from the published one.  `run_ts.R` checks
+IRS/SSA published value, TS value) where TS's indexation gives a value
+that differs from the published one.  `build_overrides.py` generates
+that file by comparing the TS law with Tax-Calculator's policy
+parameters (see the "Building the overrides file" section of
+`README.md`).  `run_ts.R` checks
 that each TS value equals the `ts_value` recorded in the overrides
 file, so a change in the pin or in `ts_indexes.csv` cannot silently
-change the overrides.  The overrides (232 rows) cover ordinary and
+change the overrides.  The overrides cover ordinary and
 capital-gains brackets, AMT exemption, phase-out threshold, and 28%
 bracket, EITC phase-in amounts, phase-out thresholds, and investment
 income limit, QBI thresholds, and the 2024-2025 OASDI maximum taxable

@@ -57,7 +57,8 @@ Other files in this folder:
   (see [Tax law](#tax-law)); `build_indexes.py` writes it.
 - [`ts_law_overrides.csv`](ts_law_overrides.csv) replaces indexed
   Tax-Simulator parameter values that differ from the IRS and SSA
-  published values.
+  published values (see [Tax law](#tax-law)); `build_overrides.py`
+  writes it, using `dump_ts_law.R`.
 - [`ts_emulation.json`](ts_emulation.json) is the Tax-Calculator
   reform that adopts Tax-Simulator's conventions (full EITC and ACTC
   take-up and no Schedule R credit).
@@ -122,8 +123,11 @@ Validation of a new tax year
 To add a year, change the `tbly_ts` `last_year` in
 `../common/workflows.py` and `LAST_YEAR` in `run_ts.py`, check that
 the pinned Tax-Simulator law covers the new year, add the new year's
-index values to `ts_indexes.csv` (`build_indexes.py`) and any needed
-rows to `ts_law_overrides.csv`, check the year-specific logic in
+index values to `ts_indexes.csv` (`build_indexes.py`), check that
+Tax-Calculator's `policy_current_law.json` contains the IRS and SSA
+published values for the new year, regenerate `ts_law_overrides.csv`
+(`build_overrides.py`; see [Building the overrides
+file](#building-the-overrides-file)), check the year-specific logic in
 `../common/run_tc.py`, `run_ts.R`, and [`VARIABLES.md`](VARIABLES.md)
 for the new year's law changes, generate the samples and TS outputs
 for the new year (steps 1 and 2), and examine every difference the
@@ -198,6 +202,71 @@ Tax-Simulator YAML files themselves (not because of indexation), such
 as the 2025 standard deduction, are deliberately not overridden; see
 [`VARIABLES.md`](VARIABLES.md) and [`SUMMARY.md`](SUMMARY.md).
 
+### Building the overrides file
+
+`ts_law_overrides.csv` is generated, never edited by hand:
+
+```
+python build_overrides.py
+```
+
+For each year from `FIRST_YEAR` through `LAST_YEAR` in `run_ts.py`,
+`build_overrides.py` runs `dump_ts_law.R`, which builds the pinned
+Tax-Simulator baseline law from `ts_indexes.csv` exactly as `run_ts.R`
+does (before any overrides) and writes it in long form.  It then
+compares the Tax-Simulator values with the corresponding
+Tax-Calculator parameter values in `policy_current_law.json`, which
+are the IRS and SSA published values.  So the `value` column comes
+from Tax-Calculator, and the `ts_value` column from Tax-Simulator.
+This means that an error in one of those Tax-Calculator parameter
+values would be copied into Tax-Simulator rather than show up as a
+difference, so the Tax-Calculator values must be checked against the
+IRS revenue procedures and SSA announcements before they are used.
+Note that the Tax-Calculator values are checked in the validation
+against `PolicyEngine-US` described [here](../pe_taxsim/README.md).
+
+The comparison uses three tables at the top of `build_overrides.py`:
+
+- `OVERRIDE` maps the Tax-Simulator variables whose values can differ
+  from the published ones only because of indexation (ordinary and
+  capital-gains brackets, AMT exemption, exemption phase-out threshold,
+  and 28% bracket, EITC earned income amounts, phase-out thresholds,
+  and investment income limit, QBI thresholds, and the OASDI maximum
+  taxable earnings) to Tax-Calculator parameters.  Each year and
+  filing status where the two differ becomes a row of the overrides
+  file; the rows are sorted by variable, year, and filing status.
+- `CHECK` maps other Tax-Simulator variables (standard deduction
+  amounts, child tax credit amounts and thresholds, the SALT limit,
+  the senior deduction, and others) to Tax-Calculator parameters.
+  These are compared but never overridden: each difference must be
+  listed in `KNOWN_TS_ERRORS`, together with the `SUMMARY.md` item
+  that explains it, or the script fails.  An entry in
+  `KNOWN_TS_ERRORS` that no longer matches any difference also makes
+  the script fail.
+- `EITC_EARNED_AMOUNT` holds IRS-published EITC earned income amounts
+  for the cases where Tax-Calculator's maximum credit and phase-in
+  rate are consistent with more than one multiple of $10 (currently
+  only 2025 with no children).  The script fails if such a case is
+  missing from the table.
+
+`python build_overrides.py --check` writes nothing and fails if the
+generated file differs from the committed one.  Run it after any
+change to the pin, `ts_indexes.csv`, `policy_current_law.json`, or the
+tables above.  A change to `ts_law_overrides.csv` changes its
+SHA-256 recorded in the `ts_output/*.stamp.json` files, so the TS
+outputs must then be regenerated with `python run_ts.py --all --force`.
+
+To add a year, first run
+`python build_overrides.py --last-year YEAR --output FILE`, which
+writes to `FILE` and leaves the committed file alone, and review the
+new year's rows.  A large difference in an `OVERRIDE` variable may
+be a Tax-Simulator YAML error rather than an indexation difference;
+in that case move the variable to `CHECK` and add a
+`KNOWN_TS_ERRORS` entry instead.  A difference in a `CHECK` variable
+that is due to indexation is handled by moving the variable to
+`OVERRIDE`.  Then change `LAST_YEAR` and run
+`python build_overrides.py` to write the committed file.
+
 Updating the TS pin
 -------------------
 
@@ -217,8 +286,10 @@ commit needs newer packages, recreating the `tbly-ts` environment.
 After writing a new pin, regenerate all nine TS outputs with
 `python run_ts.py --all --force`.  If `run_ts.R` reports that a
 Tax-Simulator value no longer equals the `ts_value` in
-`ts_law_overrides.csv`, check the new value against the published one
-and update or remove that row.  Recheck the statements about
+`ts_law_overrides.csv`, or if `python build_overrides.py --check`
+fails, regenerate the overrides file with `python build_overrides.py`
+(see [Building the overrides file](#building-the-overrides-file)),
+review its changes, and rerun `run_ts.py`.  Recheck the statements about
 Tax-Simulator in [`VARIABLES.md`](VARIABLES.md), re-examine every
 difference, update [`SUMMARY.md`](SUMMARY.md), and regenerate
 `test_results.expect`.
