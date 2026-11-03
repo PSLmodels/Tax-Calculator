@@ -10,8 +10,11 @@ Claude Code with free LLMs, but that work is in the future.
 
 ### Model-Development Agent
 
-In the top-level Tax-Calculator repository folder with the taxcalc-dev
-conda environment activated, execute this command:
+Move to the top-level Tax-Calculator repository folder (the one
+containing `setup.py`) and activate the taxcalc-dev conda environment
+(`conda activate taxcalc-dev`).  Then on the `local-enhancements` git
+branch (`git switch local-enhancements` if it already exists, or `git
+checkout -b local-enhancements` if it does not), execute this command:
 ```
 (taxcalc-dev) Tax-Calculator> claude --model opus --effort medium
 ```
@@ -29,6 +32,11 @@ on.
 Here are several examples:
  - [PR 3116](https://github.com/PSLmodels/Tax-Calculator/pull/3116) (Aug 2026)
  - [PR 3194](https://github.com/PSLmodels/Tax-Calculator/pull/3194) (Oct 2026)
+
+After commiting the changes on the `local-enhancements` branch,
+execute `make package` and then use the new local version of the model
+via either the Python API, the CLI, or the Tax-Calculator Assistant
+(see below).
 
 ### Model-Use Agent
 
