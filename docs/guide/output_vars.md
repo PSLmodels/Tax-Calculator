@@ -32,7 +32,7 @@ _Datatype_: float
 
 
 ##  `c01000`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Net capital gain or loss after loss limitation (Sch D line 21)  
 _Datatype_: float  
 
 
@@ -47,7 +47,7 @@ _Datatype_: float
 
 
 ##  `c03260`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Deductible part of self-employment tax (Sch 1 line 15)  
 _Datatype_: float  
 
 
@@ -72,7 +72,7 @@ _Datatype_: float
 
 
 ##  `c05700`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Tax on lump-sum distributions (Form 4972), which is not modeled and so is zero  
 _Datatype_: float  
 
 
@@ -107,32 +107,32 @@ _Datatype_: float
 
 
 ##  `c07240`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Retirement savings contributions credit (Sch 3 line 4) limited by tax liability  
 _Datatype_: float  
 
 
 ##  `c07260`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Residential clean energy credit (Sch 3 line 5a) limited by tax liability  
 _Datatype_: float  
 
 
 ##  `c07300`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Foreign tax credit (Sch 3 line 1) limited by tax liability  
 _Datatype_: float  
 
 
 ##  `c07400`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: General business credit (Sch 3 line 6a) limited by tax liability  
 _Datatype_: float  
 
 
 ##  `c07600`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Prior-year minimum tax credit (Sch 3 line 6b) limited by tax liability  
 _Datatype_: float  
 
 
 ##  `c08000`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Other nonrefundable credits (Sch 3 line 6z) limited by tax liability  
 _Datatype_: float  
 
 
@@ -197,7 +197,7 @@ _Datatype_: float
 
 
 ##  `c23650`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Net capital gain or loss before loss limitation (Sch D line 16)  
 _Datatype_: float  
 
 
@@ -207,7 +207,7 @@ _Datatype_: float
 
 
 ##  `c59660`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Earned income tax credit (Form 1040 line 27) after all eligibility limits  
 _Datatype_: float  
 
 
@@ -232,7 +232,7 @@ _Datatype_: float
 
 
 ##  `codtc_limited`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: CTC and ODC not absorbed by tax liability (Sch 8812 line 12 minus line 14)  
 _Datatype_: float  
 
 
@@ -247,7 +247,7 @@ _Datatype_: unchanging_float
 
 
 ##  `ctc_new`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Reform-only new refundable child tax credit after phase-in and phase-out  
 _Datatype_: float  
 
 
@@ -267,22 +267,22 @@ _Datatype_: float
 
 
 ##  `dwks10`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Qualified dividends plus net capital gain (Sch D Tax Worksheet line 10)  
 _Datatype_: float  
 
 
 ##  `dwks13`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Sch D Tax Worksheet line 13 (zero when no preferential-rate income)  
 _Datatype_: float  
 
 
 ##  `dwks14`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Sch D Tax Worksheet line 14 (zero when no preferential-rate income)  
 _Datatype_: float  
 
 
 ##  `dwks21`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Taxable income taxed at ordinary rates (Sch D Tax Worksheet line 21)  
 _Datatype_: float  
 
 
@@ -292,17 +292,17 @@ _Datatype_: float
 
 
 ##  `earned`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Earned income for filing unit: wages plus sey minus c03260 (floored at zero)  
 _Datatype_: float  
 
 
 ##  `earned_p`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Earned income for taxpayer: wages plus SE income minus deductible SE tax  
 _Datatype_: float  
 
 
 ##  `earned_s`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Earned income for spouse: wages plus SE income minus deductible SE tax  
 _Datatype_: float  
 
 
@@ -312,7 +312,7 @@ _Datatype_: float
 
 
 ##  `exact`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: 1 if phase-outs use stepped tax-form formulas; 0 if smoothed for sensible MTRs  
 _Datatype_: int  
 
 
@@ -327,7 +327,7 @@ _Datatype_: float
 
 
 ##  `invinc_agi_ec`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Reform-only exclusion of qualified dividends and capital gains from AGI  
 _Datatype_: float  
 
 
@@ -447,7 +447,7 @@ _Datatype_: float
 
 
 ##  `sey`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Total self-employment income (Sch C, Sch F, and K-1 box 14) for filing unit  
 _Datatype_: float  
 
 
@@ -477,10 +477,10 @@ _Datatype_: float
 
 
 ##  `ymod`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Modified AGI used to compute taxable Social Security benefits  
 _Datatype_: float  
 
 
 ##  `ymod1`  
-_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Description_: Gross income excluding Social Security benefits, before adjustments  
 _Datatype_: float  

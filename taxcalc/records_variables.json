@@ -563,15 +563,15 @@
     },
     "earned": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Earned income for filing unit: wages plus sey minus c03260 (floored at zero)"
     },
     "earned_p": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Earned income for taxpayer: wages plus SE income minus deductible SE tax"
     },
     "earned_s": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Earned income for spouse: wages plus SE income minus deductible SE tax"
     },
     "eitc": {
       "type": "float",
@@ -579,7 +579,7 @@
     },
     "exact": {
       "type": "int",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "1 if phase-outs use stepped tax-form formulas; 0 if smoothed for sensible MTRs"
     },
     "expanded_income": {
       "type": "float",
@@ -607,7 +607,7 @@
     },
     "sey": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Total self-employment income (Sch C, Sch F, and K-1 box 14) for filing unit"
     },
     "standard": {
       "type": "float",
@@ -623,7 +623,7 @@
     },
     "c01000": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Net capital gain or loss after loss limitation (Sch D line 21)"
     },
     "c02500": {
       "type": "float",
@@ -635,7 +635,7 @@
     },
     "c03260": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Deductible part of self-employment tax (Sch 1 line 15)"
     },
     "c04470": {
       "type": "float",
@@ -659,7 +659,7 @@
     },
     "c05700": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Tax on lump-sum distributions (Form 4972), which is not modeled and so is zero"
     },
     "c05800": {
       "type": "float",
@@ -695,27 +695,27 @@
     },
     "c07240": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Retirement savings contributions credit (Sch 3 line 4) limited by tax liability"
     },
     "c07260": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Residential clean energy credit (Sch 3 line 5a) limited by tax liability"
     },
     "c07300": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Foreign tax credit (Sch 3 line 1) limited by tax liability"
     },
     "c07400": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "General business credit (Sch 3 line 6a) limited by tax liability"
     },
     "c07600": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Prior-year minimum tax credit (Sch 3 line 6b) limited by tax liability"
     },
     "c08000": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Other nonrefundable credits (Sch 3 line 6z) limited by tax liability"
     },
     "c09200": {
       "type": "float",
@@ -767,11 +767,11 @@
     },
     "c23650": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Net capital gain or loss before loss limitation (Sch D line 16)"
     },
     "c59660": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Earned income tax credit (Form 1040 line 27) after all eligibility limits"
     },
     "c62100": {
       "type": "float",
@@ -783,7 +783,7 @@
     },
     "ctc_new": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Reform-only new refundable child tax credit after phase-in and phase-out"
     },
     "odc": {
       "type": "float",
@@ -819,19 +819,19 @@
     },
     "dwks10": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Qualified dividends plus net capital gain (Sch D Tax Worksheet line 10)"
     },
     "dwks13": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Sch D Tax Worksheet line 13 (zero when no preferential-rate income)"
     },
     "dwks14": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Sch D Tax Worksheet line 14 (zero when no preferential-rate income)"
     },
     "dwks21": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Taxable income taxed at ordinary rates (Sch D Tax Worksheet line 21)"
     },
     "dwks45": {
       "type": "float",
@@ -839,7 +839,7 @@
     },
     "invinc_agi_ec": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Reform-only exclusion of qualified dividends and capital gains from AGI"
     },
     "lumpsum_tax": {
       "type": "float",
@@ -851,7 +851,7 @@
     },
     "codtc_limited": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "CTC and ODC not absorbed by tax liability (Sch 8812 line 12 minus line 14)"
     },
     "ptax_amc": {
       "type": "float",
@@ -879,11 +879,11 @@
     },
     "ymod": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Modified AGI used to compute taxable Social Security benefits"
     },
     "ymod1": {
       "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used"
+      "desc": "Gross income excluding Social Security benefits, before adjustments"
     },
     "senior_deduction": {
       "type": "float",
