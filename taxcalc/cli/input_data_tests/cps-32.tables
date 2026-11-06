@@ -2,7 +2,7 @@ Weighted Tax Reform Totals by Baseline Expanded-Income Decile for 2032
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
  0    23.50      61.5      -0.8       4.8       0.0       4.0
- 1    23.50     525.4     -10.3      44.1       0.0      33.8
+ 1    23.50     525.4     -10.2      44.1       0.0      33.9
  2    23.50     971.2      -2.4      65.1       0.0      62.7
  3    23.50    1296.2       9.4      79.1       0.0      88.5
  4    23.50    1632.1      24.9     112.2       0.0     137.1
@@ -11,7 +11,7 @@ Weighted Tax Reform Totals by Baseline Expanded-Income Decile for 2032
  7    23.50    3438.8     172.5     277.6       0.0     450.1
  8    23.50    4763.5     363.0     434.8       0.0     797.8
  9    23.50   11135.7    1997.3     859.2       0.0    2856.5
- A   234.97   28511.7    2696.7    2229.5       0.0    4926.2
+ A   234.97   28511.7    2696.8    2229.5       0.0    4926.3
 
 Weighted Tax Differences by Baseline Expanded-Income Decile for 2032
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax

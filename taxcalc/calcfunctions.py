@@ -3062,7 +3062,11 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
       (C) Pub 596 Rule 3 (MFS) and Rule 10 (claimed as dependent).
           MFS eligibility tracks IRC §32(d) as amended by ARPA 2021
           §9621 via `EITC_sep_filers_elig` (false 2013-2020, true
-          2021+); DSI==1 always disqualifies.
+          2021+), which applies only to MFS filers with a qualifying
+          child (EIC > 0); childless MFS filers are never eligible.
+          The separated-spouse test is not modeled, so every MFS
+          filer with a qualifying child is treated as meeting it when
+          `EITC_sep_filers_elig` is true.  DSI==1 always disqualifies.
       (D) Pub 596 Rule 6: investment-income cliff (IRC §32(i)).
           Investment income = taxable interest (`e00300`) + tax-exempt
           interest (`e00400`) + ordinary dividends (`e00600`) + net
@@ -3171,8 +3175,10 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
         individual earnings and summed; default false (filing-unit
         EITC per the form)
     EITC_sep_filers_elig: bool
-        MFS eligibility (Pub 596 Rule 3 / IRC §32(d) as amended by
-        ARPA 2021 §9621); false 2013-2020, true 2021+
+        Eligibility of MFS filers with a qualifying child (Pub 596
+        Rule 3 / IRC §32(d) as amended by ARPA 2021 §9621); false
+        2013-2020, true 2021+; childless MFS filers are always
+        ineligible regardless of this parameter
     c59660: float
         Records-bound EITC amount (input, overwritten)
 
@@ -3220,7 +3226,7 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
     c59660 = eitc
 
     # ---------------- (C) Pub 596 Rules 3 (MFS) and 10 (dependent) ---
-    if (MARS == 3 and not EITC_sep_filers_elig) or DSI == 1:
+    if (MARS == 3 and (EIC == 0 or not EITC_sep_filers_elig)) or DSI == 1:
         c59660 = 0.
 
     # ---------------- (D) Pub 596 Rule 6: investment-income cliff ----

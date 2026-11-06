@@ -11,18 +11,31 @@ uv_version: 0.12.23
 pinned_on: 2026-10-30
 pe_cli_options: --scorp-treatment active
 ===== a21 =====
-a21: 1118 differences (|tc - pe| > 1) in 2 variables
+a21: 1587 differences (|tc - pe| > 1) in 3 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000      7     10.0     10.00
+  fiitax     10000    238   1502.0    801.64
     actc     10000   1111   1600.0    650.81
+     v25     10000    238   1502.0    801.35
 ===== a22 =====
-a22: 0 differences (|tc - pe| > 1) in 0 variables
+a22: 48 differences (|tc - pe| > 1) in 2 variables
+variable  compared  count  max_abs  mean_abs
+  fiitax     10000     24    560.0    402.91
+     v25     10000     24    560.0    402.91
 ===== a23 =====
-a23: 0 differences (|tc - pe| > 1) in 0 variables
+a23: 74 differences (|tc - pe| > 1) in 2 variables
+variable  compared  count  max_abs  mean_abs
+  fiitax     10000     37    600.0    377.16
+     v25     10000     37    600.0    377.16
 ===== a24 =====
-a24: 0 differences (|tc - pe| > 1) in 0 variables
+a24: 60 differences (|tc - pe| > 1) in 2 variables
+variable  compared  count  max_abs  mean_abs
+  fiitax     10000     30    632.0    393.73
+     v25     10000     30    632.0    393.73
 ===== a25 =====
-a25: 0 differences (|tc - pe| > 1) in 0 variables
+a25: 74 differences (|tc - pe| > 1) in 2 variables
+variable  compared  count  max_abs  mean_abs
+  fiitax     10000     37    649.0    383.58
+     v25     10000     37    649.0    383.58
 ===== b21 =====
 b21: 802 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs

@@ -2,7 +2,7 @@ Weighted Tax Reform Totals by Baseline Expanded-Income Decile for 2027
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
  0    22.27      54.1      -0.7       4.2       0.0       3.5
- 1    22.27     434.1      -9.2      37.5       0.0      28.2
+ 1    22.27     434.1      -9.2      37.5       0.0      28.3
  2    22.27     810.3      -3.7      58.7       0.0      55.0
  3    22.26    1083.4       6.8      68.4       0.0      75.2
  4    22.27    1361.5      18.2      94.1       0.0     112.3
@@ -11,7 +11,7 @@ Weighted Tax Reform Totals by Baseline Expanded-Income Decile for 2027
  7    22.27    2844.7     129.4     228.9       0.0     358.3
  8    22.27    3916.8     270.4     350.1       0.0     620.5
  9    22.27    9333.7    1633.9     689.2       0.0    2323.2
- A   222.68   23735.3    2147.4    1821.6       0.0    3969.0
+ A   222.68   23735.3    2147.5    1821.6       0.0    3969.1
 
 Weighted Tax Differences by Baseline Expanded-Income Decile for 2027
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
