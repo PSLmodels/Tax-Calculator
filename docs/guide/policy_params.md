@@ -2157,7 +2157,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `EITC_sep_filers_elig`  
-_Description:_ Current-law value is false, implying ineligibility.  
+_Description:_ false implies ineligible; childless MFS are always EITC ineligible.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  

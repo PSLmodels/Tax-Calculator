@@ -9,29 +9,29 @@ conda_channels: conda-forge
 conda_packages: r-base=4.4.3 r-tidyverse=2.0.0 r-dplyr=1.2.1 r-purrr=1.2.2 r-tidyr=1.3.2 r-readr=2.2.0 r-tibble=3.3.1 r-stringr=1.6.0 r-magrittr=2.0.5 r-rlang=1.3.0 r-yaml=2.3.12 r-data.table=1.18.6.1
 ts_source_files: src/calc/**/*.R (excluding src/calc/state/) src/data/tax_law.R src/misc/utils.R
 ===== a23 =====
-a23: 1452 differences (|tc - ts| > 1) in 7 variables
+a23: 1378 differences (|tc - ts| > 1) in 7 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000    416   1000.0    299.21
+  fiitax     10000    379   1000.0    291.60
      v13     10000    308    350.0    350.00
      v18     10000    156    350.0    350.00
      v19     10000    156     42.0     36.79
      v28     10000    156     42.0     36.79
      v22     10000    222   1000.0    469.82
-     v25     10000     38    600.0    379.75
+     v25     10000      1    475.3    475.30
 ===== a24 =====
-a24: 1408 differences (|tc - ts| > 1) in 7 variables
+a24: 1348 differences (|tc - ts| > 1) in 7 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000    401   1000.0    308.25
+  fiitax     10000    371   1000.0    301.34
      v13     10000    304    400.0    400.00
      v18     10000    151    400.0    400.00
      v19     10000    151     48.0     41.58
      v28     10000    151     48.0     41.58
      v22     10000    218   1000.0    481.65
-     v25     10000     32    632.0    385.31
+     v25     10000      2    402.5    259.06
 ===== a25 =====
-a25: 45227 differences (|tc - ts| > 1) in 9 variables
+a25: 45159 differences (|tc - ts| > 1) in 9 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000   8067   1480.0    354.46
+  fiitax     10000   8036   1480.0    354.06
      v13     10000  10000   1500.0   1145.62
      v18     10000   8146   5650.0   1224.15
      v19     10000   8146    579.5    336.04
@@ -39,7 +39,7 @@ variable  compared  count  max_abs  mean_abs
      v26     10000   2105  24000.0  15597.26
      v22     10000    467   1000.0    321.38
     actc     10000    111    180.0    129.25
-     v25     10000     39    649.0    385.42
+     v25     10000      2    496.0    419.50
 ===== b23 =====
 b23: 21913 differences (|tc - ts| > 1) in 10 variables
 variable  compared  count  max_abs  mean_abs

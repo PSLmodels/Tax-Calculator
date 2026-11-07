@@ -20834,8 +20834,8 @@
         }
     },
     "EITC_sep_filers_elig": {
-        "title": "Separate filers are eligibile for the EITC",
-        "description": "Current-law value is false, implying ineligibility.",
+        "title": "Separate (MFS) filers with children are EITC eligible",
+        "description": "false implies ineligible; childless MFS are always EITC ineligible.",
         "indexable": false,
         "indexed": false,
         "type": "bool",

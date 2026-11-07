@@ -3059,10 +3059,21 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
           age == 0 in the data is treated as eligible).  Applies only
           when EIC == 0; for MFJ either spouse meeting the age test
           qualifies.
-      (C) Pub 596 Rule 3 (MFS) and Rule 10 (claimed as dependent).
+      (C) Pub 596 Rule 3 (MFS) and Rules 10 and 12 (dependents).
           MFS eligibility tracks IRC §32(d) as amended by ARPA 2021
           §9621 via `EITC_sep_filers_elig` (false 2013-2020, true
-          2021+); DSI==1 always disqualifies.
+          2021+), which applies only to MFS filers with a qualifying
+          child (EIC > 0); childless MFS filers are never eligible.
+          The separated-spouse test is not modeled, so every MFS
+          filer with a qualifying child is treated as meeting it when
+          `EITC_sep_filers_elig` is true.  DSI==1 is treated as
+          disqualifying.  For childless filers this is exact (Rule 12,
+          IRC §32(c)(1)(A)(ii)(III): cannot be another's dependent).
+          For filers with a qualifying child, the actual test is
+          Rule 10 (cannot be a qualifying child of another taxpayer,
+          IRC §32(c)(1)(B)), which the data cannot identify directly;
+          DSI==1 approximates it (a filer claimed as a qualifying
+          relative is not barred by Rule 10).
       (D) Pub 596 Rule 6: investment-income cliff (IRC §32(i)).
           Investment income = taxable interest (`e00300`) + tax-exempt
           interest (`e00400`) + ordinary dividends (`e00600`) + net
@@ -3093,7 +3104,7 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
                                  4=household-head, 5=widow(er))
     DSI: int
         1 if claimed as dependent on another return, otherwise 0
-        (Pub 596 Rule 10)
+        (Pub 596 Rules 10 and 12)
     EIC: int
         Number of EIC qualifying children (from Schedule EIC,
         capped at 3 for parameter-lookup purposes; values up to 4
@@ -3171,8 +3182,10 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
         individual earnings and summed; default false (filing-unit
         EITC per the form)
     EITC_sep_filers_elig: bool
-        MFS eligibility (Pub 596 Rule 3 / IRC §32(d) as amended by
-        ARPA 2021 §9621); false 2013-2020, true 2021+
+        Eligibility of MFS filers with a qualifying child (Pub 596
+        Rule 3 / IRC §32(d) as amended by ARPA 2021 §9621); false
+        2013-2020, true 2021+; childless MFS filers are always
+        ineligible regardless of this parameter
     c59660: float
         Records-bound EITC amount (input, overwritten)
 
@@ -3219,8 +3232,8 @@ def EITC(eitc_claim_prob_min, eitc_claim_prob_scale, credit_claim_urn,
                 eitc = 0.
     c59660 = eitc
 
-    # ---------------- (C) Pub 596 Rules 3 (MFS) and 10 (dependent) ---
-    if (MARS == 3 and not EITC_sep_filers_elig) or DSI == 1:
+    # ---------------- (C) Pub 596 Rules 3 (MFS) and 10/12 (dependent) -
+    if (MARS == 3 and (EIC == 0 or not EITC_sep_filers_elig)) or DSI == 1:
         c59660 = 0.
 
     # ---------------- (D) Pub 596 Rule 6: investment-income cliff ----

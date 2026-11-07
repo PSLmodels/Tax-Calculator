@@ -2,7 +2,7 @@ Weighted Tax Reform Totals by Baseline Expanded-Income Decile for 2025
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
  0    19.71    -312.4       5.6       6.8       0.0      12.4
- 1    19.72      76.9      -3.3       9.6       0.0       6.4
+ 1    19.72      76.9      -3.2       9.6       0.0       6.4
  2    19.72     304.8     -31.3      37.8       0.0       6.5
  3    19.72     585.9     -38.0      70.8       0.0      32.7
  4    19.72     869.1      -2.4      98.9       0.0      96.5
@@ -11,7 +11,7 @@ Weighted Tax Reform Totals by Baseline Expanded-Income Decile for 2025
  7    19.72    2195.1     147.5     228.6       0.0     376.1
  8    19.72    3260.8     281.4     347.7       0.0     629.1
  9    19.72   10699.7    1881.6     612.9       0.0    2494.5
- A   197.16   20441.9    2353.7    1706.9       0.0    4060.6
+ A   197.16   20441.9    2353.8    1706.9       0.0    4060.7
 
 Weighted Tax Differences by Baseline Expanded-Income Decile for 2025
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
