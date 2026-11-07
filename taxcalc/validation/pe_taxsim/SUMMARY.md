@@ -15,10 +15,9 @@ The samples contain single, joint, head-of-household, and married
 filing separately (MFS, `mstat=6`) units; MFS units never have
 dependents.
 
-There are no payroll tax differences in any sample.  The only
-federal income tax (`fiitax`) differences are in seven a21 MFS units
-and are caused by a PE error (cause 1).  The other differences do not
-affect income or payroll tax liability in these samples.
+There are no payroll tax or federal income tax (`fiitax`)
+differences in any sample.  The differences that remain do not affect
+income or payroll tax liability in these samples.
 
 
 Emulation conventions
@@ -39,15 +38,24 @@ MFS unit as having lived apart from the spouse all year (TC has no
 lived-apart flag) and so applies the single filer's base amounts in
 the taxable Social Security benefits worksheet.
 
+The same lived-with-spouse assumption affects the credit for the
+elderly (Schedule R).  PE allows no Schedule R credit to an MFS filer
+who lived with the spouse (IRC 22(e)(1)), while TC's `SchR` treats
+every MFS filer aged 65 or older as having lived apart all year
+(Schedule R box 8) and uses the $3,750 initial amount.  This produces
+no differences, so no emulation parameter is needed: TC's MFS credit
+is positive only when AGI is below $12,500, which is less than the
+MFS standard deduction, so the unit owes no tax for the credit to
+offset.
+
 
 Letter a (2021-2025)
 --------------------
 
 ```
 ===== a21 =====
-a21: 1118 differences (|tc - pe| > 1) in 2 variables
+a21: 1111 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000      7     10.0     10.00
     actc     10000   1111   1600.0    650.81
 ===== a22 =====
 a22: 0 differences (|tc - pe| > 1) in 0 variables
@@ -59,58 +67,19 @@ a24: 0 differences (|tc - pe| > 1) in 0 variables
 a25: 0 differences (|tc - pe| > 1) in 0 variables
 ```
 
-There are no payroll tax differences, and there are no differences at
-all in 2022-2025.  Every 2021 difference is explained by one of two
-causes:
+There are no payroll tax or `fiitax` differences, and there are no
+differences at all in 2022-2025.  Every 2021 difference is explained
+by one cause:
 
 | # | Years | Variable(s) | Units (a21) | Cause | Wrong model |
 |---|---|---|---|---|---|
-| 1 | 2021 | `fiitax` | 7 | MFS Schedule R credit uses the wrong initial amount | PE |
-| 2 | 2021 | `actc` | 1111 | Part of the credit for other dependents (ODC) counted as refundable CTC | PE |
+| 1 | 2021 | `actc` | 1111 | Part of the credit for other dependents (ODC) counted as refundable CTC | PE |
 
-Cause 1 changes tax liability (PE's tax is too low); cause 2 does not
-in these samples.
+Cause 1 does not change tax liability in these samples.
 
-### 1. 2021 MFS Schedule R credit (PE error)
+### 1. 2021 refundable CTC and the ODC (PE error)
 
-**Nature.**  Seven a21 MFS units, each aged 65 or older with $14,000
-of wages, have `fiitax` $10 higher in TC.  Every compared component
-agrees: taxable income is $100 (AGI less the $12,550 standard
-deduction and $1,350 additional aged amount) and tax before credits is
-$10.  PE's `income_tax` is $10 lower than the sum of the components
-because PE allows a $10 credit for the elderly (Schedule R), which is
-not one of the compared output variables.
-
-**Cause.**  PE's `section_22_income` chooses the Schedule R initial
-amount with
-
-```
-select([num_qualifying_individuals == 1,
-        num_qualifying_individuals == 2,
-        filing_status == SEPARATE],
-       [5_000, 7_500, 3_750])
-```
-
-Because the one-qualifying-individual test comes first, an MFS filer
-aged 65 or older gets $5,000 rather than the statutory $3,750 (IRC
-22(c)(2)(A)(iii)).  With PE's $5,000 MFS phase-out threshold, the
-credit is 15% x (5,000 - 0.5 x (14,000 - 5,000)) = $75, limited to the
-$10 tax.  TC's `SchR` uses $3,750, which gives no credit at that AGI.
-Probing PE directly gives `elderly_disabled_credit` = $10 at $14,000
-of wages and $0 at $15,000, which matches the samples: MFS units with
-$15,000 of wages show no difference.  The credit is so small for MFS
-filers that it shows up only when the unit's tax is also small, which
-in these samples (wages in $1,000 steps) happens only in 2021.
-
-Under the statute, an MFS filer who lived with the spouse at any time
-during the year gets no Schedule R credit at all (IRC 22(e)(1)).
-`pe_emulation.json` already assumes that every MFS unit lived with the
-spouse, as PE does when it computes taxable Social Security benefits,
-but both models allow the credit to every MFS filer aged 65 or older.
-
-### 2. 2021 refundable CTC and the ODC (PE error)
-
-**Nature.**  These are all the remaining 2021 differences.  Every
+**Nature.**  These are all the a21 differences.  Every
 `diff` is negative (PE's refundable CTC is larger).  Most are
 multiples of the $500 ODC: in a21, 684 are -$500, 273 are -$1,000, and
 42 are -$1,500; the rest are smaller amounts.  Every unit with a
@@ -183,12 +152,11 @@ b25: 0 differences (|tc - pe| > 1) in 0 variables
 
 There are no payroll tax or `fiitax` differences, and there are no
 differences at all in 2022-2025.  Every b21 difference is explained by
-set-`a` cause 2; there are no new causes, and set-`a` cause 1 does
-not occur in set `b`.
+set-`a` cause 1; there are no new causes.
 
 | # | Years | Variable(s) | Units (b21) | Cause | Wrong model |
 |---|---|---|---|---|---|
-| 2 | 2021 | `actc` | 802 | Part of the ODC counted as refundable CTC | PE |
+| 1 | 2021 | `actc` | 802 | Part of the ODC counted as refundable CTC | PE |
 
 
 Letter c (2021-2025)
@@ -219,14 +187,14 @@ variable  compared  count  max_abs  mean_abs
 ```
 
 There are no payroll tax or `fiitax` differences.  Every difference is
-explained by one earlier cause and one new one (3):
+explained by one earlier cause and one new one (2):
 
 | # | Years | Variable(s) | Units (c21/c22/c23/c24/c25) | Cause | Wrong model |
 |---|---|---|---|---|---|
-| 2 | 2021 | `actc` | 873 / - / - / - / - | Part of the ODC counted as refundable CTC | PE |
-| 3 | all | `v18`, `v26` | 0 / 0 / 0 / 1 / 1 | Itemize-or-not tie broken differently when no tax is owed | neither |
+| 1 | 2021 | `actc` | 873 / - / - / - / - | Part of the ODC counted as refundable CTC | PE |
+| 2 | all | `v18`, `v26` | 0 / 0 / 0 / 1 / 1 | Itemize-or-not tie broken differently when no tax is owed | neither |
 
-### 3. Itemizing when it does not change tax (convention)
+### 2. Itemizing when it does not change tax (convention)
 
 **Nature.**
 
@@ -274,12 +242,10 @@ and these are reporting differences only.
 Errors found
 ------------
 
-The comparison found no TC errors and two PE errors:
+The comparison found no TC errors and one PE error:
 
-- **PE**: cause 1 (2021 MFS Schedule R initial amount: $5,000 instead
-  of the $3,750 in IRC 22(c)(2)(A)(iii)), which makes PE's tax too low.
-- **PE**: cause 2 (2021 refundable CTC includes part of the ODC,
+- **PE**: cause 1 (2021 refundable CTC includes part of the ODC,
   contrary to the 2021 Schedule 8812 lines 14a-14b and IRC 24(i)),
   which leaves tax unchanged in these samples but would overstate the
   refund of a unit with less tax liability.
-- **Neither**: cause 3 (itemization tie-break when no tax is owed).
+- **Neither**: cause 2 (itemization tie-break when no tax is owed).
