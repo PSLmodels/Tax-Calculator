@@ -4,15 +4,15 @@
     "output_file": "b24.out-pe.csv.gz",
     "output_sha256": "0ab3e33235769b4365023326b61e1db3bcb62d34e89c64432a67d00a7b11eef3",
     "rows": 10000,
-    "policyengine_taxsim_sha": "c0d565948af3896e3a6e4d34970f7502d17cdf34",
+    "policyengine_taxsim_sha": "253cf3f2393e9d3cd486f6e2051b526e89304f64",
     "pe_cli_options": [
         "--scorp-treatment",
         "active"
     ],
-    "policyengine_taxsim_version": "3.3.0",
-    "policyengine_us_version": "2.87.0",
-    "policyengine_core_version": "3.33.14",
+    "policyengine_taxsim_version": "3.3.1",
+    "policyengine_us_version": "2.104.3",
+    "policyengine_core_version": "3.34.9",
     "python_version_resolved": "3.13.16",
-    "run_date": "2026-10-31",
-    "run_seconds": 19.5
+    "run_date": "2026-11-07",
+    "run_seconds": 20.6
 }

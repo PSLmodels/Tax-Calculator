@@ -1,15 +1,15 @@
 {
     "_comment": "Pinned policyengine-taxsim environment used to generate pe_output/*.out-pe.csv.gz.  Re-pin only deliberately: doing so requires regenerating all PE outputs and re-triaging.",
     "policyengine_taxsim_repo": "https://github.com/PolicyEngine/policyengine-taxsim",
-    "policyengine_taxsim_sha": "c0d565948af3896e3a6e4d34970f7502d17cdf34",
-    "policyengine_taxsim_sha_date": "2026-10-30",
-    "policyengine_taxsim_version": "3.3.0",
-    "policyengine_us_version": "2.87.0",
-    "policyengine_core_version": "3.33.14",
+    "policyengine_taxsim_sha": "253cf3f2393e9d3cd486f6e2051b526e89304f64",
+    "policyengine_taxsim_sha_date": "2026-11-03",
+    "policyengine_taxsim_version": "3.3.1",
+    "policyengine_us_version": "2.104.3",
+    "policyengine_core_version": "3.34.9",
     "python_version": "3.13",
     "python_version_resolved": "3.13.16",
     "uv_version": "0.12.23",
-    "pinned_on": "2026-10-30",
+    "pinned_on": "2026-11-07",
     "pe_cli_options": [
         "--scorp-treatment",
         "active"

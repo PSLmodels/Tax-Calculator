@@ -1,41 +1,27 @@
 ===== PE_PIN =====
 policyengine_taxsim_repo: https://github.com/PolicyEngine/policyengine-taxsim
-policyengine_taxsim_sha: c0d565948af3896e3a6e4d34970f7502d17cdf34
-policyengine_taxsim_sha_date: 2026-10-30
-policyengine_taxsim_version: 3.3.0
-policyengine_us_version: 2.87.0
-policyengine_core_version: 3.33.14
+policyengine_taxsim_sha: 253cf3f2393e9d3cd486f6e2051b526e89304f64
+policyengine_taxsim_sha_date: 2026-11-03
+policyengine_taxsim_version: 3.3.1
+policyengine_us_version: 2.104.3
+policyengine_core_version: 3.34.9
 python_version: 3.13
 python_version_resolved: 3.13.16
 uv_version: 0.12.23
-pinned_on: 2026-10-30
+pinned_on: 2026-11-07
 pe_cli_options: --scorp-treatment active
 ===== a21 =====
-a21: 1587 differences (|tc - pe| > 1) in 3 variables
+a21: 1111 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000    238   1502.0    801.64
     actc     10000   1111   1600.0    650.81
-     v25     10000    238   1502.0    801.35
 ===== a22 =====
-a22: 48 differences (|tc - pe| > 1) in 2 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000     24    560.0    402.91
-     v25     10000     24    560.0    402.91
+a22: 0 differences (|tc - pe| > 1) in 0 variables
 ===== a23 =====
-a23: 74 differences (|tc - pe| > 1) in 2 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000     37    600.0    377.16
-     v25     10000     37    600.0    377.16
+a23: 0 differences (|tc - pe| > 1) in 0 variables
 ===== a24 =====
-a24: 60 differences (|tc - pe| > 1) in 2 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000     30    632.0    393.73
-     v25     10000     30    632.0    393.73
+a24: 0 differences (|tc - pe| > 1) in 0 variables
 ===== a25 =====
-a25: 74 differences (|tc - pe| > 1) in 2 variables
-variable  compared  count  max_abs  mean_abs
-  fiitax     10000     37    649.0    383.58
-     v25     10000     37    649.0    383.58
+a25: 0 differences (|tc - pe| > 1) in 0 variables
 ===== b21 =====
 b21: 802 differences (|tc - pe| > 1) in 1 variables
 variable  compared  count  max_abs  mean_abs
