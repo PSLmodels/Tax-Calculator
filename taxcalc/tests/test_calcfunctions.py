@@ -3359,3 +3359,84 @@ def test_AfterTaxIncome(call_calcfunc, rvars, expected):
     """
     actual = call_calcfunc('AfterTaxIncome', **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# AGISurtax
+# ----------------------------------------------------------------------
+
+
+# AGISurtax is a reform-only construct with no IRS form; AGI_surtax_trt
+# is zero under current law.  The returned tuple is
+# (agi_surtax, iitax, combined).  The reforms below specify 2026
+# threshold values for the five MARS categories (single, mjoint,
+# mseparate, headhh, widow) and the tests are run for 2026, so
+# the threshold values are not changed by inflation indexing.
+AGI_SURTAX_REFORM1 = {
+    'AGI_surtax_trt': {2026: 0.01},
+    'AGI_surtax_thd': {2026: [20000., 40000., 20000., 20000., 40000.]},
+}
+AGI_SURTAX_REFORM2 = {
+    'AGI_surtax_trt': {2026: 0.02},
+    'AGI_surtax_thd': {2026: [100000., 200000., 100000., 100000., 200000.]},
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # 2026 current law: no surtax even at high AGI
+    pytest.param(None,
+                 {'MARS': 1, 'c00100': 1e6, 'iitax': 1000.,
+                  'combined': 1500.},
+                 (0., 1000., 1500.), id='current law'),
+    # reform1 single: 0.01 * (50000 - 20000) = 300
+    pytest.param(AGI_SURTAX_REFORM1,
+                 {'MARS': 1, 'c00100': 50000., 'iitax': 1000.,
+                  'combined': 1500.},
+                 (300., 1300., 1800.), id='reform1 single above'),
+    # reform1 single: AGI exactly at threshold ==> no surtax
+    pytest.param(AGI_SURTAX_REFORM1,
+                 {'MARS': 1, 'c00100': 20000., 'iitax': 1000.,
+                  'combined': 1500.},
+                 (0., 1000., 1500.), id='reform1 single at'),
+    # reform1 single: AGI below threshold ==> no surtax (refund kept)
+    pytest.param(AGI_SURTAX_REFORM1,
+                 {'MARS': 1, 'c00100': 15000., 'iitax': -500.,
+                  'combined': 600.},
+                 (0., -500., 600.), id='reform1 single below'),
+    # reform1 single: negative AGI ==> no surtax
+    pytest.param(AGI_SURTAX_REFORM1,
+                 {'MARS': 1, 'c00100': -10000., 'iitax': 0.,
+                  'combined': 0.},
+                 (0., 0., 0.), id='reform1 single negative AGI'),
+    # reform1 joint: 0.01 * (50000 - 40000) = 100
+    pytest.param(AGI_SURTAX_REFORM1,
+                 {'MARS': 2, 'c00100': 50000., 'iitax': 2000.,
+                  'combined': 5000.},
+                 (100., 2100., 5100.), id='reform1 joint above'),
+    # reform1 joint: AGI below joint threshold but above single threshold
+    pytest.param(AGI_SURTAX_REFORM1,
+                 {'MARS': 2, 'c00100': 30000., 'iitax': 2000.,
+                  'combined': 5000.},
+                 (0., 2000., 5000.), id='reform1 joint below'),
+    # reform2 single: 0.02 * (250000 - 100000) = 3000
+    pytest.param(AGI_SURTAX_REFORM2,
+                 {'MARS': 1, 'c00100': 250000., 'iitax': 40000.,
+                  'combined': 50000.},
+                 (3000., 43000., 53000.), id='reform2 single above'),
+    # reform2 joint: 0.02 * (250000 - 200000) = 1000
+    pytest.param(AGI_SURTAX_REFORM2,
+                 {'MARS': 2, 'c00100': 250000., 'iitax': 30000.,
+                  'combined': 50000.},
+                 (1000., 31000., 51000.), id='reform2 joint above'),
+    # reform2 joint: AGI below joint threshold ==> no surtax
+    pytest.param(AGI_SURTAX_REFORM2,
+                 {'MARS': 2, 'c00100': 150000., 'iitax': 20000.,
+                  'combined': 30000.},
+                 (0., 20000., 30000.), id='reform2 joint below'),
+])
+def test_AGISurtax(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the AGISurtax function
+    """
+    actual = call_calcfunc('AGISurtax', reform=reform, year=2026, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'

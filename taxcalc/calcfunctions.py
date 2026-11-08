@@ -4932,6 +4932,69 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new,
 
 
 @iterate_jit(nopython=True)
+def AGISurtax(MARS, c00100,
+              AGI_surtax_trt, AGI_surtax_thd,
+              agi_surtax, iitax, combined):
+    """
+    Computes a surtax on adjusted gross income (AGI) above a threshold
+    that varies by filing status, and adds it to income tax liability.
+
+    No IRS form correspondence: ``AGI_surtax_trt`` and ``AGI_surtax_thd``
+    are reform constructs in ``policy_current_law.json``.  Under current
+    law ``AGI_surtax_trt`` is zero and ``AGI_surtax_thd`` is 9e99 for every
+    filing status, so this function is inert.
+
+    When active, the surtax equals ``AGI_surtax_trt`` times the amount by
+    which AGI (``c00100``) exceeds ``AGI_surtax_thd[MARS - 1]``.  The
+    surtax is added to ``iitax`` (and so to ``combined``) after all
+    refundable and nonrefundable credits, so no credit offsets it.
+    Because the surtax depends on AGI and not on taxable income, it does
+    not affect the choice between the standard and itemized deductions.
+
+    Calling order: invoked by `Calculator._calc_one_year` right after
+    `IITAX`, so that ``iitax`` and ``combined`` already reflect all
+    credits, and before `LumpSumTax` adds any lump-sum tax to
+    ``combined``.
+
+    Parameters
+    ----------
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate,
+        4=household-head, 5=widow(er))
+    c00100: float
+        Adjusted gross income (AGI)
+    AGI_surtax_trt: float
+        AGI surtax rate (reform parameter; 0.0 under current law)
+    AGI_surtax_thd: list
+        AGI surtax threshold by filing status (reform parameter;
+        9e99 under current law)
+    agi_surtax: float
+        AGI surtax
+    iitax: float
+        Total federal individual income tax liability
+    combined: float
+        Sum of iitax and payrolltax (and lumpsum_tax)
+
+    Returns
+    -------
+    agi_surtax: float
+        AGI surtax
+    iitax: float
+        Total federal individual income tax liability including AGI surtax
+    combined: float
+        Sum of iitax and payrolltax (and lumpsum_tax) including AGI surtax
+    """
+    if AGI_surtax_trt > 0.:
+        agi_surtax = AGI_surtax_trt * max(
+            0., c00100 - AGI_surtax_thd[MARS - 1])
+    else:
+        agi_surtax = 0.
+    iitax += agi_surtax
+    combined += agi_surtax
+    return (agi_surtax, iitax, combined)
+
+
+@iterate_jit(nopython=True)
 def LumpSumTax(DSI, num, XTOT,
                LST,
                lumpsum_tax, combined):

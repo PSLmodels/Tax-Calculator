@@ -22,7 +22,7 @@ from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax,
                                    AmOppCreditParts, EducationTaxCredit,
                                    CharityCredit,
                                    NonrefundableCredits, C1040, IITAX,
-                                   LumpSumTax, BenefitPrograms,
+                                   AGISurtax, LumpSumTax, BenefitPrograms,
                                    ExpandIncome, AfterTaxIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
@@ -1513,3 +1513,4 @@ class Calculator():
         C1040(self.__policy, self.__records)
         CTC_new(self.__policy, self.__records)
         IITAX(self.__policy, self.__records)
+        AGISurtax(self.__policy, self.__records)

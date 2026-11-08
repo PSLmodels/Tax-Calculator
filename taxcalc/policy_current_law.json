@@ -21759,6 +21759,75 @@
             "tmd": true
         }
     },
+    "AGI_surtax_trt": {
+        "title": "AGI surtax rate",
+        "description": "The surtax rate is applied to the portion of adjusted gross income (AGI) above the AGI surtax threshold. The AGI surtax is added to income tax liability after all credits, so it is not offset by nonrefundable credits.",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true,
+            "tmd": true
+        }
+    },
+    "AGI_surtax_thd": {
+        "title": "AGI surtax threshold",
+        "description": "The AGI surtax rate is applied to the portion of adjusted gross income (AGI) above this threshold.",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e+99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true,
+            "tmd": true
+        }
+    },
     "UBI_u18": {
         "title": "UBI benefit for those under 18",
         "description": "UBI benefit provided to people under 18.",
