@@ -32,6 +32,7 @@ on.
 Here are several examples:
  - [PR 3116](https://github.com/PSLmodels/Tax-Calculator/pull/3116) (Aug 2026)
  - [PR 3194](https://github.com/PSLmodels/Tax-Calculator/pull/3194) (Oct 2026)
+ - [PR 3224](https://github.com/PSLmodels/Tax-Calculator/pull/3224) (Nov 2026)
 
 After commiting the changes on the `local-enhancements` branch,
 execute `make package` and then use the new local version of the model
