@@ -147,14 +147,6 @@ taxcalc/reforms/ptaxes2.json
 taxcalc/reforms/ptaxes2.out.csv
 taxcalc/reforms/ptaxes3.json
 taxcalc/reforms/ptaxes3.out.csv
-taxcalc/reforms/archive/Clinton2016.json
-taxcalc/reforms/archive/RyanBrady.json
-taxcalc/reforms/archive/TCJA_House.json
-taxcalc/reforms/archive/TCJA_House_Amended.json
-taxcalc/reforms/archive/TCJA_Reconciliation.json
-taxcalc/reforms/archive/TCJA_Senate.json
-taxcalc/reforms/archive/TCJA_Senate_111417.json
-taxcalc/reforms/archive/TCJA_Senate_120117.json
 taxcalc/tests/benefits_expect.csv
 taxcalc/tests/conftest.py
 taxcalc/tests/cpscsv_agg_expect.csv
