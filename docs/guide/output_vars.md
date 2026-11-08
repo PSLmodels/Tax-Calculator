@@ -11,6 +11,11 @@ _Description_: After tax income is equal to expanded_income minus combined
 _Datatype_: float  
 
 
+##  `agi_surtax`  
+_Description_: AGI surtax (reform construct) added to income tax liability after all credits; included in iitax  
+_Datatype_: float  
+
+
 ##  `auto_loan_interest_deduction`  
 _Description_: Deduction for payment of qualified auto loan interest  
 _Datatype_: float  
