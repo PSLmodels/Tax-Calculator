@@ -8,7 +8,7 @@ for a complete commit history.
 2026-11-11 Release 6.9.1
 ------------------------
 (last merged pull request is
-[#3225](https://github.com/PSLmodels/Tax-Calculator/pull/3225))
+[#3226](https://github.com/PSLmodels/Tax-Calculator/pull/3226))
 
 **This is an enhancement and bug fix release.**
 
@@ -30,8 +30,9 @@ for a complete commit history.
    [#3215](https://github.com/PSLmodels/Tax-Calculator/pull/3215)
    by Martin Holmer]
 - Validate Tax-Calculator against Tax-Simulator by TheBudgetLab@Yale
-  [[#3216](https://github.com/PSLmodels/Tax-Calculator/pull/3216) and
-   [#3218](https://github.com/PSLmodels/Tax-Calculator/pull/3218)
+  [[#3216](https://github.com/PSLmodels/Tax-Calculator/pull/3216),
+   [#3218](https://github.com/PSLmodels/Tax-Calculator/pull/3218), and
+   [#3226](https://github.com/PSLmodels/Tax-Calculator/pull/3226)
    by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]
 - Revise `agents/README.md` text
   [[#3220](https://github.com/PSLmodels/Tax-Calculator/pull/3220)
