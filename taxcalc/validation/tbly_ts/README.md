@@ -84,10 +84,7 @@ change altered at least one compared result: examine the
 `work/differences/LYY-taxdiffs.csv` file for each sample whose
 summary changed and decide whether the change fixes a bug (then
 regenerate `test_results.expect` and update [`SUMMARY.md`](SUMMARY.md))
-or whether the Tax-Calculator change introduces a bug.  For example,
-fixing the Tax-Calculator error described as cause 1 in `SUMMARY.md`
-(the EITC of childless married-filing-separately units) will remove
-most of the `v25` differences.
+or whether the Tax-Calculator change introduces a bug.
 
 Results summary
 ---------------
@@ -109,11 +106,11 @@ increasingly complex tax units:
 The same twenty-three TAXSIM output variables are compared as in the
 `pe_taxsim` workflow (see [`VARIABLES.md`](VARIABLES.md)).  All of
 them agree to within $1 except for those summarized in the
-`test_results.expect` file.  Unlike the `pe_taxsim` comparison, many
-of the differences are Tax-Simulator errors (such as its pre-OBBBA
-2025 standard deduction and the 0.7 factor it applies to net
-investment income when computing the net investment income tax), which
-`SUMMARY.md` documents so that they can be reported to the Budget Lab.
+`test_results.expect` file.  Nearly all of those differences are
+caused by the 0.7 factor Tax-Simulator applies to net investment
+income when computing the net investment income tax, a deliberate
+Tax-Simulator calibration; [`SUMMARY.md`](SUMMARY.md) explains them
+and lists the earlier differences that were fixed.
 Tax-Simulator is never modified (see [Tax law](#tax-law) for the
 parameter values this workflow replaces).
 
@@ -198,8 +195,8 @@ published one, `run_ts.R` uses the value in `ts_law_overrides.csv`,
 after checking that Tax-Simulator's own value equals the `ts_value`
 recorded there, so a change of pin or of `ts_indexes.csv` cannot
 silently change an override.  Parameter values that are wrong in the
-Tax-Simulator YAML files themselves (not because of indexation), such
-as the 2025 standard deduction, are deliberately not overridden; see
+Tax-Simulator YAML files themselves (not because of indexation) are
+deliberately not overridden, so that they show up as differences; see
 [`VARIABLES.md`](VARIABLES.md) and [`SUMMARY.md`](SUMMARY.md).
 
 ### Building the overrides file
@@ -277,7 +274,12 @@ contains the Tax-Simulator files `run_ts.R` sources, and reports each
 `ts_pin.json` entry that would change, the number of commits between
 the pinned and the new commit, and which of the files that can affect
 the TS outputs (`src/calc/`, `src/data/tax_law.R`, `src/misc/utils.R`,
-and the baseline tax-law YAML files) those commits changed.  It is a
+and the federal baseline tax-law YAML files in
+`config/scenarios/tax_law/default/`, excluding state code and state
+law) those commits changed.  GitHub
+lists at most 300 changed files, so when there are more the script
+says so, and the changed files must be listed with `git diff
+--stat OLD NEW` in a Tax-Simulator clone that has both commits.  It is a
 dry run unless `--write` is given, which updates `tax_simulator_sha`,
 `tax_simulator_sha_date`, and `pinned_on`.  Use `--sha SHA` to pin a
 specific Tax-Simulator commit instead of the newest one.  The script

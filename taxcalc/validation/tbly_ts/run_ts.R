@@ -84,7 +84,7 @@ if (length(errors) > 0) {
 # Build the tax law for YEAR and apply the published-value overrides
 #--------------------------------------------------------------------
 indexes = read_csv(idx_file, show_col_types = FALSE, progress = FALSE)
-law = build_tax_law_from_id('baseline', year, indexes)
+law = build_tax_law_from_id('default', year, indexes)
 overrides = read_csv(ovr_file, show_col_types = FALSE, progress = FALSE) %>%
   filter(year == !!year)
 for (i in seq_len(nrow(overrides))) {
@@ -209,8 +209,10 @@ if (anyNA(tax_units$ord.rates1)) stop('tax-law join failed')
 #--------------------------------------------------------------------
 # Calculate taxes and write TAXSIM-format output (VARIABLES.md)
 #--------------------------------------------------------------------
+# estate and wealth taxes are not income or payroll taxes, so skip them
 res = do_taxes(tax_units, NULL, fed_calc_vars(incl_payroll = FALSE),
-               return_vars$calc_pr)
+               return_vars$calc_pr,
+               calc_estate_flag = FALSE, calc_wealth_flag = FALSE)
 if (nrow(res) != nrow(tax_units) || !identical(res$id, tax_units$id)) {
   stop('do_taxes output rows differ from input rows')
 }

@@ -2,11 +2,11 @@
     "input_file": "a25.in.csv.gz",
     "input_sha256": "fc015c91177bb4b23c62f474a4fa83468d9d1ac93e84713d10e834438f1dc31f",
     "output_file": "a25.out-ts.csv.gz",
-    "output_sha256": "3f22a30ba6795d32c49de476af17ef069737eefa6f8cacf2c03745eb258077c6",
+    "output_sha256": "48a71dabbca36f83b499c577d4f127a13b154a3dec3bd779d5c108f58728c6c2",
     "rows": 10000,
-    "tax_simulator_sha": "5a045cd67f53c389e55daa4e0f90e11dede3b2c3",
-    "run_ts_R_sha256": "3fde6f0a0b6327ec693c08ab19b6911fe93506f95a9b924d65bdccfd2437bc57",
-    "ts_indexes_sha256": "e4c924f6d3aa7779232c77820faff52b4f3e8bcca5c5a2013ba932764f128575",
+    "tax_simulator_sha": "a91a0714804c077692b0eecd4530ae5c698ecac7",
+    "run_ts_R_sha256": "20d80ad7fd944e03d7a686ff38f7ab50eb7ccf35cf6e77565f1483a89baadeed",
+    "ts_indexes_sha256": "4cbd87dbc905a2727c8656ad7f39d77c2b06c10d7c3f4ec7896cf4b7406438e4",
     "ts_law_overrides_sha256": "d42916d3ba43af2ddef204013ae5c48c55bf60d167a6ab6812bcd58cd77c2201",
     "r_versions": {
         "R": "4.4.3",
@@ -22,6 +22,6 @@
         "yaml": "2.3.12",
         "data.table": "1.18.6.1"
     },
-    "run_date": "2026-11-01",
-    "run_seconds": 5.3
+    "run_date": "2026-11-09",
+    "run_seconds": 5.2
 }

@@ -25,13 +25,14 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 
 # SSA national average wage index (https://www.ssa.gov/oact/cola/AWI.html),
-# entered by hand and verified against the 2023-2026 OASDI wage bases
+# entered by hand and verified against the 2023-2027 OASDI wage bases
 AWI = {
     2020: 55628.60,
     2021: 60575.07,
     2022: 63795.13,
     2023: 66621.80,
     2024: 69846.57,
+    2025: 72800.33,
 }
 CPI_FILES = {"cpi": "CPIAUCNS.csv", "chained_cpi": "SUUR0000SA0.csv"}
 

@@ -35,7 +35,7 @@ REQUIRED_FILES = [
     "src/calc/utils.R",
     "src/data/tax_law.R",
     "src/misc/utils.R",
-    "config/scenarios/tax_law/baseline",
+    "config/scenarios/tax_law/default",
 ]
 
 # prefixes of the Tax-Simulator paths whose changes can affect the
@@ -44,7 +44,13 @@ RELEVANT_PREFIXES = (
     "src/calc/",
     "src/data/tax_law.R",
     "src/misc/utils.R",
-    "config/scenarios/tax_law/baseline/",
+    "config/scenarios/tax_law/default/",
+)
+# prefixes of paths that match RELEVANT_PREFIXES but contain state code
+# or state law, which run_ts.R does not use
+IRRELEVANT_PREFIXES = (
+    "src/calc/state/",
+    "config/scenarios/tax_law/default/state/",
 )
 
 
@@ -116,6 +122,7 @@ def relevant_changes(api, old_sha, new_sha):
         (fil["status"], fil["filename"])
         for fil in comp.get("files", [])
         if fil["filename"].startswith(RELEVANT_PREFIXES)
+        and not fil["filename"].startswith(IRRELEVANT_PREFIXES)
     ]
     truncated = len(comp.get("files", [])) >= 300
     return comp["ahead_by"], comp["behind_by"], files, truncated

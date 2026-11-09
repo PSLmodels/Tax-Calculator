@@ -95,7 +95,7 @@ AGI floor, outside the SALT cap, no AMT add-back).
 ### Tax law
 
 The 2023-2025 baseline law is built by
-`build_tax_law_from_id('baseline', years, indexes)` with `indexes`
+`build_tax_law_from_id('default', years, indexes)` with `indexes`
 read from the committed `ts_indexes.csv` (IRS-style Sept-Aug averages
 of CPI-U from 1986 and chained CPI-U, plus SSA AWI), then adjusted by
 the committed `ts_law_overrides.csv` (year, filing status, TS column,
@@ -110,17 +110,15 @@ change the overrides.  The overrides cover ordinary and
 capital-gains brackets, AMT exemption, phase-out threshold, and 28%
 bracket, EITC phase-in amounts, phase-out thresholds, and investment
 income limit, QBI thresholds, and the 2024-2025 OASDI maximum taxable
-earnings.  Two TS parameter errors are **not** overridden, so that
-they show up as differences and can be reported to the Budget Lab
-(see `SUMMARY.md`): the 2025 standard deduction (TS uses the pre-OBBBA
-15,000 / 30,000 / 22,500) and the aged/blind standard deduction
-add-on for married filing separately (TS uses the unmarried amount,
-e.g. 1,850 instead of 1,500 in 2023).
+earnings.  A TS parameter value that is wrong in the TS YAML files
+themselves (not because of indexation) would **not** be overridden, so
+that it shows up as a difference and can be reported to the Budget
+Lab; the pinned TS has no such errors.
 
 `ts_indexes.csv` was made by `build_indexes.py` from the FRED series
 `CPIAUCNS` (CPI-U) and `SUUR0000SA0` (chained CPI-U), averaged over
 September of the previous year through August, and SSA national
-average wage index values for 2020-2024; the series must start no
+average wage index values for 2020-2025; the series must start no
 later than 1986.
 
 
