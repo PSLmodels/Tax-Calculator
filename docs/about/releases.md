@@ -1,8 +1,55 @@
-Release history
+Release History
 ===============
 Go
 [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
+
+
+2026-11-11 Release 6.9.1
+------------------------
+(last merged pull request is
+[#3225](https://github.com/PSLmodels/Tax-Calculator/pull/3225))
+
+**This is an enhancement and bug fix release.**
+
+**API Changes**
+
+**New Features**
+- Update validation results using more diverse samples and a newer
+  PolicyEngine-US version
+  [[#3211](https://github.com/PSLmodels/Tax-Calculator/pull/3211),
+   [#3219](https://github.com/PSLmodels/Tax-Calculator/pull/3219), and
+   [#3223](https://github.com/PSLmodels/Tax-Calculator/pull/3223)
+   by Martin Holmer]
+- Pare down number of years in `update_pcl.py` script
+  [[#3213](https://github.com/PSLmodels/Tax-Calculator/pull/3213)
+   by Martin Holmer]
+- Move `generate_sample.py` to the `taxcalc/validation/common` folder
+  and add its `--all` option
+  [[#3214](https://github.com/PSLmodels/Tax-Calculator/pull/3214) and
+   [#3215](https://github.com/PSLmodels/Tax-Calculator/pull/3215)
+   by Martin Holmer]
+- Validate Tax-Calculator against Tax-Simulator by TheBudgetLab@Yale
+  [[#3216](https://github.com/PSLmodels/Tax-Calculator/pull/3216) and
+   [#3218](https://github.com/PSLmodels/Tax-Calculator/pull/3218)
+   by Martin Holmer assisted by Claude Code 2.1 running Opus 5.5]
+- Revise `agents/README.md` text
+  [[#3220](https://github.com/PSLmodels/Tax-Calculator/pull/3220)
+   by Martin Holmer]
+- Add better variable descriptions to the `records_variables.json` file
+  [[#3221](https://github.com/PSLmodels/Tax-Calculator/pull/3221)
+   by Martin Holmer]
+- Remove obsolete `taxcalc/reforms/archive/*.json` reform files
+  [[#3225](https://github.com/PSLmodels/Tax-Calculator/pull/3225)
+   by Martin Holmer]
+
+**Bug Fixes**
+- Fix several bugs identified in recent validation work
+  [[#3212](https://github.com/PSLmodels/Tax-Calculator/pull/3212)
+   by Martin Holmer]
+- Fix MFS EITC bug
+  [[#3222](https://github.com/PSLmodels/Tax-Calculator/pull/3222)
+   by Martin Holmer]
 
 
 2026-10-30 Release 6.9.0
