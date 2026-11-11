@@ -15,6 +15,6 @@ from taxcalc.taxcalcio import *
 from taxcalc.utils import *
 from taxcalc.cli import *
 
-__version__ = '6.9.0'
+__version__ = '6.9.1'
 __min_python3_version__ = 13
 __max_python3_version__ = 15

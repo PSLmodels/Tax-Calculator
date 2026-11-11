@@ -1,10 +1,10 @@
 {
     "_comment": "Pinned Tax-Simulator environment used to generate ts_output/*.out-ts.csv.gz.  Re-pin only deliberately: doing so requires regenerating all TS outputs and re-triaging.",
     "tax_simulator_repo": "https://github.com/Budget-Lab-Yale/Tax-Simulator",
-    "tax_simulator_sha": "5a045cd67f53c389e55daa4e0f90e11dede3b2c3",
-    "tax_simulator_sha_date": "2026-10-23",
+    "tax_simulator_sha": "a91a0714804c077692b0eecd4530ae5c698ecac7",
+    "tax_simulator_sha_date": "2026-11-09",
     "tax_simulator_dir_default": "~/.cache/tbly_ts/Tax-Simulator-<sha>",
-    "pinned_on": "2026-11-01",
+    "pinned_on": "2026-11-09",
     "conda_env_name": "tbly-ts",
     "conda_channels": ["conda-forge"],
     "conda_packages": [

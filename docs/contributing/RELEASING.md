@@ -14,6 +14,7 @@ In the top-level Tax-Calculator directory, do the following:
 --> edit docs/about/releases.md to finalize detailed X.Y.Z features
 --> run `python update_pcl.py`  [to update policy_current_law.json]
 --> run `make tests`  [executes cstest, pytest, valtest, brtest, idtest]
+--> run `tc --test`  [to ensure CLI test is passing]
 --> run `make tctest-jit`  [to ensure JIT decorators are not hiding bugs]
 --> run `make transfer` in T-C-LLM repo  [to install agents/tca/tca.zip]
 --> commit X-Y-Z branch and push to origin

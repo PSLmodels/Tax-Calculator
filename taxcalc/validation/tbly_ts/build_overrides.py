@@ -113,16 +113,10 @@ CHECK = {
 
 # (TS variable, years or None for all, filing statuses or None for all)
 # -> reason the CHECK difference is left in place
-KNOWN_TS_ERRORS = {
-    ("std.bonus", None, (3,)): (
-        "TS uses the unmarried aged/blind amount for married filing "
-        "separately (SUMMARY.md item 4)"
-    ),
-    ("std.value", (2025,), None): (
-        "TS uses the pre-OBBBA 2025 standard deduction "
-        "(SUMMARY.md item 5)"
-    ),
-}
+# (the pinned TS has no such errors: the earlier ones, its married
+# filing separately aged/blind amount and its pre-OBBBA 2025 standard
+# deduction, are fixed in the TS YAML files)
+KNOWN_TS_ERRORS = {}
 
 # TC holds the EITC maximum credit and phase-in rate, not the earned
 # income amount at the end of the phase-in, which the IRS rounds to a

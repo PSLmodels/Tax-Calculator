@@ -41,7 +41,7 @@ ts_sources = ts_sources[!grepl('^src/calc/state/', ts_sources)]
 for (src in ts_sources) source(src)
 
 indexes = read_csv(idx_file, show_col_types = FALSE, progress = FALSE)
-law = build_tax_law_from_id('baseline', year, indexes)
+law = build_tax_law_from_id('default', year, indexes)
 law %>%
   filter(year == !!year) %>%
   select(year, filing_status, where(is.numeric)) %>%
