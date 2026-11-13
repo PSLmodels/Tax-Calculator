@@ -20,7 +20,7 @@ The comparison involves five steps:
    validation workflow that uses the sample (`pe_taxsim` here), which
    sets the default output folder (`validation/WORKFLOW/samples`) and
    the default maximum number of dependents (5 for `pe_taxsim`; 3 for
-   the [`tbly_ts`](../tbly_ts/README.md) workflow, because Tax-Simulator
+   the [`tbly_ts`](../tbly_ts/README.md) workflow, because tax-simulator-gpu
    records only three dependent ages).  Its `--max-depx M` option (M in 3-5)
    changes the maximum number of dependents and, when M differs from
    the workflow default, requires `--outdir`, so the committed samples

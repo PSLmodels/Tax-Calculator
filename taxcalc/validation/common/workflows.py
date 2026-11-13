@@ -78,7 +78,7 @@ WORKFLOWS = {
             name="pe_taxsim", model="pe", first_year=2021, last_year=2025,
             max_depx=5, pin_file="pe_pin.json",
         ),
-        # Tax-Simulator records only three dependent ages
+        # tax-simulator-gpu records only three dependent ages
         Workflow(
             name="tbly_ts", model="ts", first_year=2023, last_year=2025,
             max_depx=3, pin_file="ts_pin.json",

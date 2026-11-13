@@ -1,52 +1,92 @@
 ===== TS_PIN =====
-tax_simulator_repo: https://github.com/Budget-Lab-Yale/Tax-Simulator
-tax_simulator_sha: a91a0714804c077692b0eecd4530ae5c698ecac7
-tax_simulator_sha_date: 2026-11-09
-tax_simulator_dir_default: ~/.cache/tbly_ts/Tax-Simulator-<sha>
-pinned_on: 2026-11-09
-conda_env_name: tbly-ts
-conda_channels: conda-forge
-conda_packages: r-base=4.4.3 r-tidyverse=2.0.0 r-dplyr=1.2.1 r-purrr=1.2.2 r-tidyr=1.3.2 r-readr=2.2.0 r-tibble=3.3.1 r-stringr=1.6.0 r-magrittr=2.0.5 r-rlang=1.3.0 r-yaml=2.3.12 r-data.table=1.18.6.1
-ts_source_files: src/calc/**/*.R (excluding src/calc/state/) src/data/tax_law.R src/misc/utils.R
+tax_simulator_repo: https://github.com/Budget-Lab-Yale/tax-simulator-gpu
+tax_simulator_sha: 448ec372bca2c92520f2699833fb71140b9698e4
+tax_simulator_sha_date: 2026-11-12
+tax_simulator_dir_default: ~/.cache/tbly_ts/tax-simulator-gpu-<sha>
+pinned_on: 2026-11-13
 ===== a23 =====
 a23: 0 differences (|tc - ts| > 1) in 0 variables
 ===== a24 =====
-a24: 0 differences (|tc - ts| > 1) in 0 variables
+a24: 12098 differences (|tc - ts| > 1) in 2 variables
+variable  compared  count  max_abs  mean_abs
+    fica     10000   6049    297.6    180.48
+   tfica     10000   6049    148.8     90.24
 ===== a25 =====
-a25: 0 differences (|tc - ts| > 1) in 0 variables
+a25: 11848 differences (|tc - ts| > 1) in 2 variables
+variable  compared  count  max_abs  mean_abs
+    fica     10000   5924    148.8     89.66
+   tfica     10000   5924     74.4     44.83
 ===== b23 =====
-b23: 16826 differences (|tc - ts| > 1) in 2 variables
+b23: 17322 differences (|tc - ts| > 1) in 4 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000   8413    969.0    423.01
-    niit     10000   8413    969.0    423.01
+  fiitax     10000   8504   969.00    419.65
+     v28     10000     18     1.25      1.25
+    niit     10000   8413   969.00    423.01
+     v22     10000    387    49.92     25.58
 ===== b24 =====
-b24: 16656 differences (|tc - ts| > 1) in 2 variables
+b24: 39743 differences (|tc - ts| > 1) in 11 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000   8328    912.0     422.6
-    niit     10000   8328    912.0     422.6
+  fiitax     10000   8435   912.00    412.57
+    fica     10000   7366   297.61    187.85
+   tfica     10000   7366   297.61    113.55
+     v10     10000   1861   148.80     77.69
+    qbid     10000    318   110.50     23.06
+     v18     10000   1861   259.30     79.11
+     v19       304     59    52.08     26.34
+     v28     10000   1877    82.98     26.80
+     v26     10000   1861   259.30     79.17
+    niit     10000   8334   912.00    422.30
+     v22     10000    405    48.66     26.30
 ===== b25 =====
-b25: 16768 differences (|tc - ts| > 1) in 2 variables
+b25: 39940 differences (|tc - ts| > 1) in 11 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000   8384    923.4    420.19
-    niit     10000   8384    923.4    420.19
+  fiitax     10000   8466   923.40    414.24
+    fica     10000   7234   148.81     93.05
+   tfica     10000   7234   148.81     56.96
+     v10     10000   1950    74.40     38.72
+    qbid     10000    320    57.95     11.82
+     v18     10000   1950   132.36     39.41
+     v19       332     64    27.53     14.05
+     v28     10000   1965    42.35     13.39
+     v26     10000   1950   132.36     39.42
+    niit     10000   8385   923.40    420.14
+     v22     10000    422    48.74     24.45
 ===== c23 =====
-c23: 16684 differences (|tc - ts| > 1) in 2 variables
+c23: 17192 differences (|tc - ts| > 1) in 4 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000   8342    957.6    423.01
-    niit     10000   8342    957.6    423.01
+  fiitax     10000   8429   957.60    419.88
+     v28     10000     21     1.25      1.25
+    niit     10000   8342   957.60    423.01
+     v22     10000    400    49.92     25.94
 ===== c24 =====
-c24: 16805 differences (|tc - ts| > 1) in 5 variables
+c24: 40445 differences (|tc - ts| > 1) in 13 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000   8401    991.8    422.37
-     v13      2682      1  16550.0  16550.00
-     v18     10000      1   1375.0   1375.00
-     v26     10000      1  24000.0  24000.00
-    niit     10000   8401    991.8    422.37
+  fiitax     10000   8488   991.80    412.75
+    fica     10000   7432   297.61    188.06
+   tfica     10000   7432   297.61    114.68
+     v10     10000   1973   148.80     77.80
+     v13      2682      1 16550.00  16550.00
+    qbid     10000    350   115.08     25.87
+     v18     10000   1974  1375.00     80.66
+     v19       338     71    84.44     27.86
+     v28     10000   1985    84.44     27.11
+     v26     10000   1974 24000.00     92.13
+    niit     10000   8403   991.80    422.27
+     v22     10000    360    49.93     24.08
+     v24     10000      2     8.00      6.44
 ===== c25 =====
-c25: 16773 differences (|tc - ts| > 1) in 5 variables
+c25: 40165 differences (|tc - ts| > 1) in 13 variables
 variable  compared  count  max_abs  mean_abs
-  fiitax     10000   8385    980.4    419.73
-     v13      2479      1  25625.0  25625.00
-     v18     10000      1   1875.0   1875.00
-     v26     10000      1  39000.0  39000.00
-    niit     10000   8385    980.4    419.73
+  fiitax     10000   8466   980.40    413.96
+    fica     10000   7309   148.81     93.20
+   tfica     10000   7309   148.80     56.81
+     v10     10000   1933    74.40     38.60
+     v13      2479      1 25625.00  25625.00
+     v17      7521     79    22.32      9.54
+    qbid     10000    366    50.14     12.81
+     v18     10000   1934  1875.00     40.82
+     v19       302     55    39.84     14.07
+     v28     10000   1951    39.84     13.42
+     v26     10000   1934 39000.00     59.63
+    niit     10000   8386   980.40    419.68
+     v22     10000    442    49.86     25.52
