@@ -20,8 +20,8 @@ currently compared with those of two other models:
 - [policyengine-taxsim](https://github.com/PolicyEngine/policyengine-taxsim),
   a TAXSIM-35 emulator built on `policyengine-us`, for 2021 through
   2025, in the [`pe_taxsim`](pe_taxsim/README.md) folder; and
-- the Budget Lab at Yale's
-  [Tax-Simulator](https://github.com/Budget-Lab-Yale/Tax-Simulator)
+- the Budget Lab at Yale's Python-based
+  [tax-simulator-gpu](https://github.com/Budget-Lab-Yale/tax-simulator-gpu)
   for 2023 through 2025, in the [`tbly_ts`](tbly_ts/README.md) folder.
 
 Each folder contains the tools, inputs, expected differences, and

@@ -188,7 +188,7 @@ reported to the Budget Lab.
 Updating the TS pin
 -------------------
 
-tax-simulator-gpu is under active development, so change the pin only
+`tax-simulator-gpu` is under active development, so change the pin only
 deliberately.  `python update_ts_pin.py` finds the newest commit on
 tax-simulator-gpu's default branch using the GitHub API, checks that it
 contains the tax-simulator-gpu files `run_ts.py` and `ts_batch.py`
