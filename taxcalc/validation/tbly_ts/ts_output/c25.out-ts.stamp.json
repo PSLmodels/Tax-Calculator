@@ -2,26 +2,49 @@
     "input_file": "c25.in.csv.gz",
     "input_sha256": "8c4da961439906c7e6120d3c3adaf5addd82e4bec4e93a7523c2d14824246748",
     "output_file": "c25.out-ts.csv.gz",
-    "output_sha256": "42d47309b5efb58353ef90c46ebab30e7a0cfcfd090b60709745099d4db2b77d",
+    "output_sha256": "332954bcf579219e3865b57efc1b03c1d5e54e9edcdbc39491fc7ed10b8d40d7",
     "rows": 10000,
-    "tax_simulator_sha": "a91a0714804c077692b0eecd4530ae5c698ecac7",
-    "run_ts_R_sha256": "20d80ad7fd944e03d7a686ff38f7ab50eb7ccf35cf6e77565f1483a89baadeed",
-    "ts_indexes_sha256": "4cbd87dbc905a2727c8656ad7f39d77c2b06c10d7c3f4ec7896cf4b7406438e4",
-    "ts_law_overrides_sha256": "d42916d3ba43af2ddef204013ae5c48c55bf60d167a6ab6812bcd58cd77c2201",
-    "r_versions": {
-        "R": "4.4.3",
-        "tidyverse": "2.0.0",
-        "dplyr": "1.2.1",
-        "purrr": "1.2.2",
-        "tidyr": "1.3.2",
-        "readr": "2.2.0",
-        "tibble": "3.3.1",
-        "stringr": "1.6.0",
-        "magrittr": "2.0.5",
-        "rlang": "1.3.0",
-        "yaml": "2.3.12",
-        "data.table": "1.18.6.1"
+    "tax_simulator_sha": "448ec372bca2c92520f2699833fb71140b9698e4",
+    "run_ts_py_sha256": "b09ef076674c3bc1a0c86b81632c22c9e349372f994b2fc02f0af1dd8789bd01",
+    "ts_batch_py_sha256": "d5319687171945bfc2d7baaa46bec4398379c4406e71c8596933de8de171ace6",
+    "uv": "uv 0.12.23 (46b84fd0b 2026-10-03 aarch64-apple-darwin)",
+    "jax": "0.7.0",
+    "devices": [
+        "TFRT_CPU_0"
+    ],
+    "index_table": "resources/macro_projections",
+    "law_values_by_filing_status": {
+        "std.value": [
+            15750.0,
+            31500.0,
+            15750.0,
+            23625.0
+        ],
+        "item.salt_limit": [
+            40000.0,
+            40000.0,
+            20000.0,
+            40000.0
+        ],
+        "ctc.need_ssn": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "ctc.value_young1": [
+            2200.0,
+            2200.0,
+            2200.0,
+            2200.0
+        ],
+        "amt.exempt": [
+            88100.0,
+            137000.0,
+            68500.0,
+            88100.0
+        ]
     },
-    "run_date": "2026-11-09",
-    "run_seconds": 5.2
+    "run_date": "2026-11-13",
+    "run_seconds": 3.0
 }
