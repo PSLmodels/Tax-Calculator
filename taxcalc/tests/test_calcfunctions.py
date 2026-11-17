@@ -3359,3 +3359,76 @@ def test_AfterTaxIncome(call_calcfunc, rvars, expected):
     """
     actual = call_calcfunc('AfterTaxIncome', **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# ----------------------------------------------------------------------
+# dc_ee_pencon_taxable reform
+# ----------------------------------------------------------------------
+
+
+# Under current law, employee elective-deferral contributions to DC
+# pension plans (pencon_p and pencon_s) are excluded from W-2 box 1
+# wages (e00200), and so are excluded from Form 1040 line 1 wages and
+# from earned income, but they are included in W-2 box 5 Medicare wages
+# and W-2 box 3 social security wages.  The dc_ee_pencon_taxable reform
+# includes them in Form 1040 line 1 wages and in earned income, while
+# leaving FICA payroll taxes unchanged.
+PENCON_TAXABLE_REFORM = {'dc_ee_pencon_taxable': {2025: True}}
+PENCON_AGIINC_ITEMS = {
+    'MARS': 2, 'e00200': 72000., 'pencon_p': 5000., 'pencon_s': 3000.,
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # current law: Form 1040 line 1 wages exclude DC pension contributions
+    pytest.param(None, PENCON_AGIINC_ITEMS,
+                 (72000., 72000., 0.), id='current law'),
+    # reform: Form 1040 line 1 wages are 72000 + 5000 + 3000
+    pytest.param(PENCON_TAXABLE_REFORM, PENCON_AGIINC_ITEMS,
+                 (80000., 80000., 0.), id='reform'),
+    # reform: Pub. 915 worksheet line 7 is 80000 + 0.5 * 20000, because
+    # the reform raises Form 1040 line 1 wages
+    pytest.param(PENCON_TAXABLE_REFORM,
+                 {**PENCON_AGIINC_ITEMS, 'e02400': 20000.},
+                 (90000., 80000., 0.), id='reform social security modagi'),
+])
+def test_AGIIncome_pencon_taxable(call_calcfunc, reform, rvars, expected):
+    """
+    Tests the AGIIncome function under the dc_ee_pencon_taxable reform
+    """
+    actual = call_calcfunc('AGIIncome', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# FICA wages are 45000 + 5000 = 50000 for the taxpayer and
+# 27000 + 3000 = 30000 for the spouse, under both current law and the
+# reform: wage FICA = 0.153 * 80000 = 12240; employer shares are
+# 0.0765 * 50000 = 3825 and 0.0765 * 30000 = 2295;
+# OASDI = 0.124 * 80000 = 9920; no self-employment income.
+PENCON_PAYROLL_ITEMS = {
+    'e00200p': 45000., 'e00200s': 27000.,
+    'pencon_p': 5000., 'pencon_s': 3000.,
+}
+
+
+@pytest.mark.parametrize('reform, rvars, expected', [
+    # current law: earned income excludes DC pension contributions:
+    # 45000 + 27000 = 72000
+    pytest.param(None, PENCON_PAYROLL_ITEMS,
+                 (0., 12240., 3825., 2295., 12240., 0., 0., 9920.,
+                  72000., 45000., 27000.),
+                 id='current law'),
+    # reform: earned income includes DC pension contributions:
+    # 50000 + 30000 = 80000, while all payroll taxes are unchanged
+    pytest.param(PENCON_TAXABLE_REFORM, PENCON_PAYROLL_ITEMS,
+                 (0., 12240., 3825., 2295., 12240., 0., 0., 9920.,
+                  80000., 50000., 30000.),
+                 id='reform'),
+])
+def test_EI_PayrollTax_pencon_taxable(call_calcfunc, reform, rvars,
+                                      expected):
+    """
+    Tests the EI_PayrollTax function under the dc_ee_pencon_taxable reform
+    """
+    actual = call_calcfunc('EI_PayrollTax', reform=reform, **rvars)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'

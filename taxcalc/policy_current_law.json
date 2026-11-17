@@ -932,6 +932,30 @@
             "tmd": true
         }
     },
+    "dc_ee_pencon_taxable": {
+        "title": "Employee contributions to defined-contribution (DC) pension plans are included in taxable income",
+        "description": "Specifies whether or not employee elective-deferral contributions to defined-contribution pension plans (input variables pencon_p and pencon_s), which are excluded from W-2 box 1 wages (input variable e00200) under current law, are included in AGI and in earned income.",
+        "indexable": false,
+        "indexed": false,
+        "type": "bool",
+        "value": [
+            {
+                "year": 2013,
+                "value": false
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": false,
+                "max": true
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true,
+            "tmd": true
+        }
+    },
     "ALD_EducatorExpenses_hc": {
         "title": "Deduction for educator expenses haircut",
         "description": "If greater than zero, this decimal fraction reduces the portion of educator expenses that can be deducted from AGI.  The final adjustment amount would be (1-Haircut)*EducatorExpenses.",
