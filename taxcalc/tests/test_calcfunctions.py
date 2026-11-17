@@ -3432,3 +3432,44 @@ def test_EI_PayrollTax_pencon_taxable(call_calcfunc, reform, rvars,
     """
     actual = call_calcfunc('EI_PayrollTax', reform=reform, **rvars)
     assert np.allclose(actual, expected), f'{actual} != {expected}'
+
+
+# The EITC function takes earned income (earned) and AGI (c00100) as
+# arguments, so this test chains the EI_PayrollTax, AGIIncome, and EITC
+# functions to check that the dc_ee_pencon_taxable reform raises both
+# EITC income measures.  The single filer has one qualifying child,
+# wages of 25000, and DC pension contributions of 3000; with no other
+# income and no adjustments, AGI equals the AGIIncome ymod1 result.
+# The 2025 one-child EITC has a 4328 maximum credit, a 23350 phase-out
+# start, and a 0.1598 phase-out rate.
+PENCON_EITC_ITEMS = {'e00200': 25000., 'e00200p': 25000., 'pencon_p': 3000.}
+
+
+@pytest.mark.parametrize('reform, expected', [
+    # current law: earned income and AGI are 25000, so the credit is
+    # 4328 - 0.1598 * (25000 - 23350)
+    pytest.param(None, (25000., 25000., 4064.33), id='current law'),
+    # reform: earned income and AGI are 25000 + 3000 = 28000, so the
+    # credit is 4328 - 0.1598 * (28000 - 23350)
+    pytest.param(PENCON_TAXABLE_REFORM, (28000., 28000., 3584.93),
+                 id='reform'),
+])
+def test_EITC_pencon_taxable(call_calcfunc, reform, expected):
+    """
+    Tests the EITC for a single filer under the dc_ee_pencon_taxable reform
+    """
+    items = PENCON_EITC_ITEMS
+    earned = call_calcfunc(
+        'EI_PayrollTax', reform=reform,
+        e00200p=items['e00200p'], pencon_p=items['pencon_p'],
+    )[8]
+    agi = call_calcfunc(
+        'AGIIncome', reform=reform, MARS=1,
+        e00200=items['e00200'], pencon_p=items['pencon_p'],
+    )[1]
+    eitc = call_calcfunc(
+        'EITC', reform=reform, MARS=1, EIC=1, earned=earned,
+        earned_p=earned, c00100=agi,
+    )
+    actual = (earned, agi, eitc)
+    assert np.allclose(actual, expected), f'{actual} != {expected}'
