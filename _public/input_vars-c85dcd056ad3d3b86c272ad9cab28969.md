@@ -4,13 +4,14 @@ Input variables
 This section contains documentation of input variables in a format that is easy to search and print.
 The input variables are ordered alphabetically by name.
 There are no subsections, just a long list of input variables that Tax-Calculator is programmed to use in its calculations.
-The Availability information indicates which input data files contain the variable.
+The Availability information indicates which input data files contain the variable with some nonzero values;
+a value of `none` means that the variable has only zero values in every input data file.
 
 
 ##  `a_lineno`  
 _Description_: CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_puf, taxdata_cps  
 
 
 ##  `age_head`  
@@ -28,7 +29,7 @@ _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd
 ##  `agi_bin`  
 _Description_: Historical AGI category used in data extrapolation  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_puf, taxdata_cps  
 
 
 ##  `auto_loan_interest`  
@@ -52,7 +53,7 @@ _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd
 ##  `cmbtp`  
 _Description_: Estimate of income on (AMT) Form 6251 but not in AGI  
 _Datatype_: float  
-_Availability_: taxdata_puf, taxmicrodata_tmd  
+_Availability_: taxdata_puf  
 
 
 ##  `data_source`  
@@ -64,7 +65,7 @@ _Availability_: taxdata_puf, taxmicrodata_tmd
 ##  `DSI`  
 _Description_: 1 if claimed as dependent on another return; otherwise 0  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_puf, taxdata_cps  
 
 
 ##  `e00200`  
@@ -436,19 +437,19 @@ _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd
 ##  `f6251`  
 _Description_: 1 if Form 6251 (AMT) attached to return; otherwise 0  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxmicrodata_tmd  
+_Availability_: taxdata_puf  
 
 
 ##  `ffpos`  
 _Description_: CPS family identifier within household (not used in tax-calculation logic)  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_puf, taxdata_cps  
 
 
 ##  `fips`  
 _Description_: FIPS state code (not used in tax-calculation logic)  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_puf, taxdata_cps  
 
 
 ##  `FLPDYR`  
@@ -466,25 +467,25 @@ _Availability_: taxdata_puf, taxmicrodata_tmd
 ##  `h_seq`  
 _Description_: CPS household sequence number (not used in tax-calculation logic)  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_puf, taxdata_cps  
 
 
 ##  `housing_ben`  
 _Description_: Imputed housing benefits  
 _Datatype_: float  
-_Availability_: taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_cps  
 
 
 ##  `k1bx14p`  
 _Description_: Partner self-employment earnings/loss for taxpayer (included in e26270 total)  
 _Datatype_: float  
-_Availability_: taxdata_puf, taxmicrodata_tmd  
+_Availability_: taxdata_puf  
 
 
 ##  `k1bx14s`  
 _Description_: Partner self-employment earnings/loss for spouse (included in e26270 total)  
 _Datatype_: float  
-_Availability_: taxdata_puf, taxmicrodata_tmd  
+_Availability_: taxdata_puf  
 
 
 ##  `MARS`  
@@ -497,19 +498,19 @@ _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd
 ##  `mcaid_ben`  
 _Description_: Imputed Medicaid benefits expressed as the actuarial value of Medicaid health insurance  
 _Datatype_: float  
-_Availability_: taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_cps  
 
 
 ##  `mcare_ben`  
 _Description_: Imputed Medicare benefits expressed as the actuarial value of Medicare health insurance  
 _Datatype_: float  
-_Availability_: taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_cps  
 
 
 ##  `MIDR`  
 _Description_: 1 if separately filing spouse itemizes; otherwise 0  
 _Datatype_: int  
-_Availability_: taxdata_puf, taxmicrodata_tmd  
+_Availability_: taxdata_puf  
 
 
 ##  `n1820`  
@@ -551,7 +552,7 @@ _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd
 ##  `other_ben`  
 _Description_: Non-imputed benefits  
 _Datatype_: float  
-_Availability_: taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_cps  
 
 
 ##  `overtime_income`  
@@ -581,13 +582,13 @@ _Availability_: taxdata_puf, taxmicrodata_tmd
 ##  `pencon_p`  
 _Description_: Employee contributions to defined-contribution (DC) pension plans for taxpayer  
 _Datatype_: float  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_puf, taxmicrodata_tmd  
 
 
 ##  `pencon_s`  
 _Description_: Employee contributions to defined-contribution (DC) pension plans for spouse  
 _Datatype_: float  
-_Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_puf, taxmicrodata_tmd  
 
 
 ##  `PT_binc_w2_wages`  
@@ -599,13 +600,13 @@ _Availability_: taxmicrodata_tmd
 ##  `PT_SSTB_income`  
 _Description_: Value of one implies business income is from a specified service trade or business (SSTB); value of zero implies business income is from a qualified trade or business  
 _Datatype_: int  
-_Availability_: taxmicrodata_tmd  
+_Availability_: none  
 
 
 ##  `PT_ubia_property`  
 _Description_: Filing unit's share of total business property owned by the pass-through business  
 _Datatype_: float  
-_Availability_: taxmicrodata_tmd  
+_Availability_: none  
 
 
 ##  `RECID`  
@@ -624,19 +625,19 @@ _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd
 ##  `snap_ben`  
 _Description_: Imputed SNAP benefits  
 _Datatype_: float  
-_Availability_: taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_cps  
 
 
 ##  `ssi_ben`  
 _Description_: Imputed SSI benefits  
 _Datatype_: float  
-_Availability_: taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_cps  
 
 
 ##  `tanf_ben`  
 _Description_: Imputed TANF benefits  
 _Datatype_: float  
-_Availability_: taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_cps  
 
 
 ##  `tip_income`  
@@ -648,13 +649,13 @@ _Availability_: taxmicrodata_tmd
 ##  `vet_ben`  
 _Description_: Imputed Veteran's benefits  
 _Datatype_: float  
-_Availability_: taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_cps  
 
 
 ##  `wic_ben`  
 _Description_: Imputed WIC benefits  
 _Datatype_: float  
-_Availability_: taxdata_cps, taxmicrodata_tmd  
+_Availability_: taxdata_cps  
 
 
 ##  `XTOT`  
