@@ -147,7 +147,7 @@ def main():
     assert json.loads(new_text) == old_dict
     # write revised records_variables.json file
     if new_text == old_text:
-        print('NO CHANGES in availability information')
+        print('NO CHANGES in variable availability information')
     else:
         with open(RVJSON_PATH, 'w', encoding='utf-8') as jfile:
             jfile.write(new_text)
