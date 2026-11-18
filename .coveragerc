@@ -3,6 +3,7 @@ omit =
     ./setup.py
     ./update_pcl.py
     ./update_availability.py
+    ./update_compatibility.py
     taxcalc/cli/*
     taxcalc/tests/*
     taxcalc/validation/*
