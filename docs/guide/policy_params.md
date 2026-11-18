@@ -1895,6 +1895,23 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error  
 
 
+####  `dc_ee_pencon_taxable`  
+_Description:_ Specifies whether or not employee elective-deferral contributions to defined-contribution pension plans (input variables pencon_p and pencon_s), which are excluded from W-2 box 1 wages (input variable e00200) under current law, are included in AGI and in earned income.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ bool  
+_Known Values:_  
+2013: False  
+2014: False  
+2015: False  
+2016: False  
+2017: False  
+2018: False  
+2019: False  
+_Valid Range:_ min = False and max = True  
+_Out-of-Range Action:_ error  
+
+
 ####  `EITC_basic_frac`  
 _Description:_ This fraction of EITC_c is always paid as a credit and one minus this fraction is applied to the phasein rate, EITC_rt.  This fraction is zero under current law.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  

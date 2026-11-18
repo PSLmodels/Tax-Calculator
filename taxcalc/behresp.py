@@ -575,7 +575,8 @@ def response(calc_1, calc_2, elasticities, dump=False):
         Returns array of post-shift wages, which are the solution of the
         fixed-point equation described in the response function
         docstring, where wage is the array of pre-shift reform wages,
-        pencon is the array of employer pension contributions, ptax_er_1
+        pencon is the array of employee elective-deferral contributions
+        to DC pension plans (which are subject to FICA tax), ptax_er_1
         is the array of baseline employer payroll tax liability on wages,
         esf is the earnings shift factor, and calc is the reform-policy
         Calculator object.

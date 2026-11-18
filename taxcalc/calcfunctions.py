@@ -87,7 +87,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   FICA_ss_trt_employer, FICA_ss_trt_employee,
                   FICA_mc_trt_employer, FICA_mc_trt_employee,
                   ALD_SelfEmploymentTax_hc, SS_Earnings_thd,
-                  SECA_Earnings_deminimus,
+                  SECA_Earnings_deminimus, dc_ee_pencon_taxable,
                   e00900p, e00900s, e02100p, e02100s, k1bx14p,
                   k1bx14s, payrolltax, ptax_er_p, ptax_er_s, ptax_was, setax,
                   c03260, ptax_oasdi,
@@ -133,6 +133,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Threshold value for an individual's net self-employment earnings
         (Sch SE line 4c) below which that individual has no SECA tax
         liability; applied to taxpayer and spouse separately
+    dc_ee_pencon_taxable: bool
+        Reform: when True, DC pension contributions (pencon_p, pencon_s)
+        are included in taxable wages and therefore in earned income
     e00900p: float
         Schedule C business net profit/loss for taxpayer
     e00900s: float
@@ -286,10 +289,18 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     # c03260: deductible half of SE tax (Sch SE line 13 / Sch 1 line 15),
     # optionally reduced by the ALD_SelfEmploymentTax_hc reform haircut
     c03260 = (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax
-    earned = max(0., e00200p + e00200s + sey - c03260)
-    earned_p = max(0., (e00200p + sey_p -
+    # earned income uses taxable (W-2 box 1) wages, which exclude DC
+    # pension contributions unless the dc_ee_pencon_taxable reform is on
+    if dc_ee_pencon_taxable:
+        taxable_ws_p = gross_ws_p
+        taxable_ws_s = gross_ws_s
+    else:
+        taxable_ws_p = e00200p
+        taxable_ws_s = e00200s
+    earned = max(0., taxable_ws_p + taxable_ws_s + sey - c03260)
+    earned_p = max(0., (taxable_ws_p + sey_p -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
-    earned_s = max(0., (e00200s + sey_s -
+    earned_s = max(0., (taxable_ws_s + sey_s -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (sey, payrolltax, ptax_er_p, ptax_er_s, ptax_was, setax, c03260,
             ptax_oasdi, earned, earned_p, earned_s)
@@ -426,12 +437,14 @@ def CapGainsLoss(p22250, p23250, Capital_loss_limitation, MARS,
 
 
 @iterate_jit(nopython=True)
-def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
+def AGIIncome(e00200, pencon_p, pencon_s,
+              e00300, e00400, e00600, e00650, e00700, e00800,
               e00900, e01100, e01200, e01400, e01700, e02000, e02100,
               e02300, e02400, c01000, c02900, e03210, e03230, e03240,
               ALD_StudentLoan_hc, ALD_Tuition_hc, ALD_DomesticProduction_hc,
               CG_nodiff, CG_ec, CG_reinvest_ec_rt,
-              ALD_BusinessLosses_c, AlimonyReceived_frac_in_AGI, MARS,
+              ALD_BusinessLosses_c, AlimonyReceived_frac_in_AGI,
+              dc_ee_pencon_taxable, MARS,
               ymod, ymod1, invinc_agi_ec):
     """
     Builds ymod1 (Form 1040 income lines + Schedule 1 Part I, the
@@ -443,6 +456,12 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
     ----------
     e00200: float
       Wages, salaries, tips (Form 1040 line 1)
+    pencon_p: float
+      Contributions to defined-contribution pension plans for taxpayer
+      (excluded from Form 1040 line 1 unless dc_ee_pencon_taxable)
+    pencon_s: float
+      Contributions to defined-contribution pension plans for spouse
+      (excluded from Form 1040 line 1 unless dc_ee_pencon_taxable)
     e00300: float
       Taxable interest (Form 1040 line 2b)
     e00400: float
@@ -513,6 +532,9 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
       1.0 pre-TCJA (alimony was income to the recipient); 0.0 under
       TCJA (alimony received excluded from income for divorce or
       separation agreements executed after 2018-12-31)
+    dc_ee_pencon_taxable: bool
+      Reform: when True, DC pension contributions (pencon_p and
+      pencon_s) are included in Form 1040 line 1 wages
     MARS: int
       Filing marital status
     ymod: float
@@ -536,7 +558,12 @@ def AGIIncome(e00200, e00300, e00400, e00600, e00650, e00700, e00800,
     # (e00800 = alimony received, Sch 1 line 2a, included only to the
     # extent of AlimonyReceived_frac_in_AGI -- TCJA excludes alimony
     # received from income for post-2018 divorces.)
-    ymod1 = (e00200 + e00700 +
+    # (pencon_p and pencon_s are excluded from Form 1040 line 1 wages
+    # unless the dc_ee_pencon_taxable reform makes them taxable.)
+    wages = e00200
+    if dc_ee_pencon_taxable:
+        wages += pencon_p + pencon_s
+    ymod1 = (wages + e00700 +
              AlimonyReceived_frac_in_AGI * e00800 +
              e01400 + e01700 +
              invinc + e02100 + e02300 +
