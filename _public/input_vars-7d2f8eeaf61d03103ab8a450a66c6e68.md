@@ -74,13 +74,13 @@ _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd
 
 
 ##  `e00200p`  
-_Description_: Wages, salaries, tips/otime for taxpayer net of pension contributions (pencon_p)  
+_Description_: Wages, salaries, tips/otime for taxpayer net of employee DC pension contributions (pencon_p)  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
 
 ##  `e00200s`  
-_Description_: Wages, salaries, tips/otime for spouse net of pension contributions (pencon_s)  
+_Description_: Wages, salaries, tips/otime for spouse net of employee DC pension contributions (pencon_s)  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
@@ -579,13 +579,13 @@ _Availability_: taxdata_puf, taxmicrodata_tmd
 
 
 ##  `pencon_p`  
-_Description_: Contributions to defined-contribution pension plans for taxpayer  
+_Description_: Employee contributions to defined-contribution (DC) pension plans for taxpayer  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
 
 ##  `pencon_s`  
-_Description_: Contributions to defined-contribution pension plans for spouse  
+_Description_: Employee contributions to defined-contribution (DC) pension plans for spouse  
 _Datatype_: float  
 _Availability_: taxdata_puf, taxdata_cps, taxmicrodata_tmd  
 
