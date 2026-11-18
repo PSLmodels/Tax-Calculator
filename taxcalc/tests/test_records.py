@@ -250,69 +250,77 @@ def test_records_variables_content(tests_path):
                 assert variable['required'] is True
 
 
+AVAILABILITY_SOURCES = ['taxdata_puf', 'taxdata_cps', 'taxmicrodata_tmd']
+
+
+def read_variables_availability(tests_path):
+    """
+    Return dictionary mapping each read variable in records_variables.json
+    to the list of data sources in its availability value.
+    """
+    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
+    with open(rvpath, 'r', encoding='utf-8') as rvfile:
+        rvdict = json.load(rvfile)
+    avail = {}
+    for vname, vdict in rvdict['read'].items():
+        value = vdict['availability']
+        if value == 'none':
+            avail[vname] = []
+        else:
+            avail[vname] = [src.strip() for src in value.split(',')]
+    return avail
+
+
+def check_availability(tests_path, data_path, source):
+    """
+    Check that the read variables marked as available in the specified
+    data source are exactly those variables that are present in the
+    specified data file and have some nonzero values.
+    """
+    if not Path(data_path).exists():
+        pytest.skip(f'{data_path} is not present')
+    avail = read_variables_availability(tests_path)
+    dfx = pd.read_csv(data_path)
+    # check that all variables in data file are read variables
+    assert set(dfx.columns) - set(avail) == set()
+    # check that availability is consistent with the data file
+    datavars = {var for var in dfx.columns if (dfx[var] != 0).any()}
+    recvars = {var for var, srcs in avail.items() if source in srcs}
+    assert datavars - recvars == set(), 'run update_availability.py'
+    assert recvars - datavars == set(), 'run update_availability.py'
+
+
+def test_availability_format(tests_path):
+    """
+    Check format of availability values in records_variables.json file.
+    """
+    avail = read_variables_availability(tests_path)
+    for vname, sources in avail.items():
+        # check that each source is valid
+        assert set(sources) <= set(AVAILABILITY_SOURCES), vname
+        # check that sources are in canonical order with no duplicates
+        ordered = [src for src in AVAILABILITY_SOURCES if src in sources]
+        assert sources == ordered, vname
+
+
 def test_cps_availability(tests_path, cps_data_path):
     """
     Cross-check records_variables.json data with variables in cps.csv file.
     """
-    # make set of variable names that are in the cps.csv file
-    cpsdf = pd.read_csv(cps_data_path)
-    cpsvars = set(sorted(list(cpsdf)))
-    # make set of variable names that are marked as cps available in r_v.json
-    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
-    with open(rvpath, 'r', encoding='utf-8') as rvfile:
-        rvdict = json.load(rvfile)
-    recvars = set()
-    for vname, vdict in rvdict['read'].items():
-        if 'taxdata_cps' in vdict.get('availability', ''):
-            recvars.add(vname)
-    # check that cpsvars and recvars sets are the same
-    assert (cpsvars - recvars) == set()
-    assert (recvars - cpsvars) == set()
+    check_availability(tests_path, cps_data_path, 'taxdata_cps')
 
 
 @pytest.mark.requires_puf
 def test_puf_availability(tests_path, puf_data_path):
     """
-    Cross-check records_variables.json data with variables in puf.csv file
+    Cross-check records_variables.json data with variables in puf.csv file.
     """
-    # skip test if puf.csv is not available
-    if not Path(puf_data_path).exists():
-        return
-    # make set of variable names that are in the puf.csv file
-    pufdf = pd.read_csv(puf_data_path)
-    pufvars = set(sorted(list(pufdf)))
-    # make set of variable names that are marked as puf available in r_v.json
-    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
-    with open(rvpath, 'r', encoding='utf-8') as rvfile:
-        rvdict = json.load(rvfile)
-    recvars = set()
-    for vname, vdict in rvdict['read'].items():
-        if 'taxdata_puf' in vdict.get('availability', ''):
-            recvars.add(vname)
-    # check that pufvars and recvars sets are the same
-    assert (pufvars - recvars) == set()
-    assert (recvars - pufvars) == set()
+    check_availability(tests_path, puf_data_path, 'taxdata_puf')
 
 
 @pytest.mark.requires_tmd
 def test_tmd_availability(tests_path, tmd_data_path):
     """
-    Cross-check records_variables.json data with variables in tmd.csv file
+    Cross-check records_variables.json data with variables in tmd.csv file.
     """
-    # skip test if tmd.csv is not available
-    if not Path(tmd_data_path).exists():
-        return
-    # make set of variable names that are in the tmd.csv file
-    tmddf = pd.read_csv(tmd_data_path)
-    tmdvars = set(sorted(list(tmddf)))
-    # make set of variable names that are marked as tmd available in r_v.json
-    rvpath = os.path.join(tests_path, '..', 'records_variables.json')
-    with open(rvpath, 'r', encoding='utf-8') as rvfile:
-        rvdict = json.load(rvfile)
-    recvars = set()
-    for vname, vdict in rvdict['read'].items():
-        if 'taxmicrodata_tmd' in vdict.get('availability', ''):
-            recvars.add(vname)
-    # check that tmdvars and recvars sets are the same
-    assert (tmdvars - recvars) == set()
-    assert (recvars - tmdvars) == set()
+    check_availability(tests_path, tmd_data_path, 'taxmicrodata_tmd')

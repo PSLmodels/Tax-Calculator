@@ -3,7 +3,7 @@
     "DSI": {
       "type": "int",
       "desc": "1 if claimed as dependent on another return; otherwise 0",
-      "availability": "taxdata_puf, taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "EIC": {
       "type": "int",
@@ -24,7 +24,7 @@
     "MIDR": {
       "type": "int",
       "desc": "1 if separately filing spouse itemizes; otherwise 0",
-      "availability": "taxdata_puf, taxmicrodata_tmd"
+      "availability": "taxdata_puf"
     },
     "RECID": {
       "required": true,
@@ -50,7 +50,7 @@
     "agi_bin": {
       "type": "int",
       "desc": "Historical AGI category used in data extrapolation",
-      "availability": "taxdata_puf, taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "blind_head": {
       "type": "int",
@@ -65,7 +65,7 @@
     "cmbtp": {
       "type": "float",
       "desc": "Estimate of income on (AMT) Form 6251 but not in AGI",
-      "availability": "taxdata_puf, taxmicrodata_tmd"
+      "availability": "taxdata_puf"
     },
     "e00200": {
       "type": "float",
@@ -85,12 +85,12 @@
     "pencon_p": {
       "type": "float",
       "desc": "Employee contributions to defined-contribution (DC) pension plans for taxpayer",
-      "availability": "taxdata_puf, taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_puf, taxmicrodata_tmd"
     },
     "pencon_s": {
       "type": "float",
       "desc": "Employee contributions to defined-contribution (DC) pension plans for spouse",
-      "availability": "taxdata_puf, taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_puf, taxmicrodata_tmd"
     },
     "e00300": {
       "type": "float",
@@ -380,27 +380,27 @@
     "f6251": {
       "type": "int",
       "desc": "1 if Form 6251 (AMT) attached to return; otherwise 0",
-      "availability": "taxdata_puf, taxmicrodata_tmd"
+      "availability": "taxdata_puf"
     },
     "a_lineno": {
       "type": "int",
       "desc": "CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)",
-      "availability": "taxdata_puf, taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "ffpos": {
       "type": "int",
       "desc": "CPS family identifier within household (not used in tax-calculation logic)",
-      "availability": "taxdata_puf, taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "fips": {
       "type": "int",
       "desc": "FIPS state code (not used in tax-calculation logic)",
-      "availability": "taxdata_puf, taxdata_puf, taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "h_seq": {
       "type": "int",
       "desc": "CPS household sequence number (not used in tax-calculation logic)",
-      "availability": "taxdata_puf, taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "data_source": {
       "type": "int",
@@ -410,22 +410,22 @@
     "k1bx14p": {
       "type": "float",
       "desc": "Partner self-employment earnings/loss for taxpayer (included in e26270 total)",
-      "availability": "taxdata_puf, taxmicrodata_tmd"
+      "availability": "taxdata_puf"
     },
     "k1bx14s": {
       "type": "float",
       "desc": "Partner self-employment earnings/loss for spouse (included in e26270 total)",
-      "availability": "taxdata_puf, taxmicrodata_tmd"
+      "availability": "taxdata_puf"
     },
     "mcaid_ben": {
       "type": "float",
       "desc": "Imputed Medicaid benefits expressed as the actuarial value of Medicaid health insurance",
-      "availability": "taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_cps"
     },
     "mcare_ben": {
       "type": "float",
       "desc": "Imputed Medicare benefits expressed as the actuarial value of Medicare health insurance",
-      "availability": "taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_cps"
     },
     "n24": {
       "type": "int",
@@ -460,7 +460,7 @@
     "other_ben": {
       "type": "float",
       "desc": "Non-imputed benefits",
-      "availability": "taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_cps"
     },
     "p08000": {
       "type": "float",
@@ -490,37 +490,37 @@
     "snap_ben": {
       "type": "float",
       "desc": "Imputed SNAP benefits",
-      "availability": "taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_cps"
     },
     "housing_ben": {
       "type": "float",
       "desc": "Imputed housing benefits",
-      "availability": "taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_cps"
     },
     "ssi_ben": {
       "type": "float",
       "desc": "Imputed SSI benefits",
-      "availability": "taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_cps"
     },
     "tanf_ben": {
       "type": "float",
       "desc": "Imputed TANF benefits",
-      "availability": "taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_cps"
     },
     "vet_ben": {
       "type": "float",
       "desc": "Imputed Veteran's benefits",
-      "availability": "taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_cps"
     },
     "wic_ben": {
       "type": "float",
       "desc": "Imputed WIC benefits",
-      "availability": "taxdata_cps, taxmicrodata_tmd"
+      "availability": "taxdata_cps"
     },
     "PT_SSTB_income": {
       "type": "int",
       "desc": "Value of one implies business income is from a specified service trade or business (SSTB); value of zero implies business income is from a qualified trade or business",
-      "availability": "taxmicrodata_tmd"
+      "availability": "none"
     },
     "PT_binc_w2_wages": {
       "type": "float",
@@ -530,7 +530,7 @@
     "PT_ubia_property": {
       "type": "float",
       "desc": "Filing unit's share of total business property owned by the pass-through business",
-      "availability": "taxmicrodata_tmd"
+      "availability": "none"
     },
     "auto_loan_interest": {
       "type": "float",
