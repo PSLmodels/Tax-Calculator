@@ -12,8 +12,8 @@ In the top-level Tax-Calculator directory, do the following:
 --> run `git checkout -b X-Y-Z`  [to create X-Y-Z (e.g., `6-8-5`) branch]
 --> specify release X.Y.Z in setup.py, taxcalc/__init__.py, docs/index.md
 --> edit docs/about/releases.md to finalize detailed X.Y.Z features
---> run `python update_pcl.py`  [to update policy_current_law.json]
 --> run `python update_availability.py`  [to update records_variables.json]
+--> run `python update_paramvalues.py`  [to update policy_current_law.json]
 --> run `python update_compatibility.py`  [to update policy_current_law.json]
 --> run `make tests`  [executes cstest, pytest, valtest, brtest, idtest]
 --> run `tc --test`  [to ensure CLI test is passing]
