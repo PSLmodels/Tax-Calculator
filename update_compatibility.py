@@ -54,8 +54,8 @@ DATA_FILES = {
     ],
 }
 YEAR = 2026  # year in which the effect of each parameter change is assessed
-MIN_UNITS = 5  # minimum number of unweighted filing units that must change
-TOLERANCE = 0.01  # dollar change in an output that counts as a change
+MIN_UNITS = 1  # minimum number of unweighted filing units that must change
+TOLERANCE = 0.1  # dollar change in an output that counts as a change
 OUTPUTS = [  # outputs whose change indicates that the parameter has effect
     'iitax', 'payrolltax', 'lumpsum_tax', 'ubi',
     'benefit_cost_total', 'benefit_value_total',

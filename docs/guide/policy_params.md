@@ -33,7 +33,7 @@ _Out-of-Range Action:_ error
 
 ####  `ACTC_ChildNum`  
 _Description:_ Families with this number of qualified children or more may qualify for a different formula to calculate the Additional Child Tax Credit, which is a partially refundable credit that supplements the Child Tax Credit for some taxpayers.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
 _Known Values:_  
@@ -2175,7 +2175,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_sep_filers_elig`  
 _Description:_ false implies ineligible; childless MFS are always EITC ineligible.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  

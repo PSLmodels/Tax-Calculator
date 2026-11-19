@@ -20881,7 +20881,7 @@
         },
         "compatible_data": {
             "puf": false,
-            "cps": false,
+            "cps": true,
             "tmd": true
         }
     },
@@ -21161,7 +21161,7 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false,
+            "cps": true,
             "tmd": true
         }
     },
