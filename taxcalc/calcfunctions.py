@@ -3296,7 +3296,7 @@ def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
                       c07200,
                       CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
                       CTC_c_under6_bonus, nu06,
-                      CTC_is_refundable, CTC_include17,
+                      CTC_is_refundable, CTC_include17, ODC_is_refundable,
                       c07220, odc, codtc_limited):
     """
     Computes nonrefundable Child Tax Credit and Credit for Other Dependents
@@ -3351,6 +3351,13 @@ def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
         Bonus child tax credit maximum for qualifying children under six
     nu06: int
         Number of dependents under 6 years old
+    CTC_is_refundable: bool
+        Reform-only switch: line 12 is not limited by tax liability
+    CTC_include17: bool
+        Reform-only switch: qualifying children are those under 18
+    ODC_is_refundable: bool
+        Reform-only switch: ODC share of line 12 is not limited by tax
+        liability (it is refunded in IITAX)
     c07220: float
         Child tax credit (adjusted) from Form 8812
     odc: float
@@ -3409,6 +3416,16 @@ def ChildDepTaxCredit(age_head, age_spouse, nu18, n24, MARS, c00100, XTOT, num,
             # 2021 Sch 8812 line 14b: refundable CTC is the remainder
             c07220 = line12 - odc
             codtc_limited = 0.
+        elif ODC_is_refundable:  # reform-only: ODC not limited by tax
+            # ODC gets its line 7 share of line 12 (the same split as
+            # below when line 12 is not tax limited); ODC is then
+            # routed to the refundable side in IITAX
+            odc = line12 * line7 / line8
+            # Sch 8812 line 14 applies only to the CTC share of line 12
+            ctc_share = line12 - odc
+            c07220 = min(ctc_share, clwA_limit)
+            # tentative CTC not absorbed by tax — passed to AdditionalCTC
+            codtc_limited = max(0., ctc_share - c07220)
         else:
             # Sch 8812 line 14: smaller of line 12 or Credit Limit Worksheet A
             line14 = min(line12, clwA_limit)
