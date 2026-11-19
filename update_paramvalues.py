@@ -1,19 +1,30 @@
 """
 This script uses known values of inflation-indexed policy parameters after
-2025 to write an updated version of the taxcalc/policy_current_law.json file.
+2025 to update the values of those parameters in the
+taxcalc/policy_current_law.json file.
 
-USAGE: (taxcalc-dev) T-C% python update_pcl.py
-THEN CHECK:             % diff pcl.json taxcalc/policy_current_law.json
-IF DIFFS OK:            % mv pcl.json taxcalc/policy_current_law.json
+USAGE: (taxcalc-dev) T-C% python update_paramvalues.py
+THEN CHECK:             % git diff taxcalc/policy_current_law.json
+
+For each indexed policy parameter in the NEW_KNOWN_ITEMS dictionary below,
+the parameter's value items for years no less than the first year in its
+NEW_KNOWN_ITEMS list are replaced by the items in that list.  The value
+items of other parameters are left unchanged.  Each parameter whose values
+change is written to stdout, as is each indexed parameter that is not in
+the NEW_KNOWN_ITEMS dictionary.
 
 WHEN TO USE: use this script to update taxcalc/policy_current_law.json
 whenever inflation rates in the growfactors.csv files are changed, or
-whenever new known policy parameter values are published.
+whenever new known policy parameter values are published, then regenerate
+the docs/guide/policy_params.md file using the `make docs` command.
 """
 
 import os
 import sys
 import json
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+PCLJSON_PATH = os.path.join(ROOT, 'taxcalc', 'policy_current_law.json')
 
 LIST_MARS_ZERO = [
     {'year': 2026, 'MARS': 'single', 'value': 0.0},
@@ -233,48 +244,78 @@ for num in range(1, 3 + 1):
     NEW_KNOWN_ITEMS[f'AMT_CG_brk{num}'] = NEW_KNOWN_ITEMS[f'CG_brk{num}']
 
 
+def new_value_list(old_list, new_items):
+    """
+    Return parameter value list that is old_list with its items for years
+    no less than the first year in new_items replaced by new_items.
+    """
+    first_new_year = min(item['year'] for item in new_items)
+    kept = [item for item in old_list if item['year'] < first_new_year]
+    return kept + [dict(item) for item in new_items]
+
+
+def new_values(params):
+    """
+    Return dictionary of new value lists for each indexed parameter in
+    NEW_KNOWN_ITEMS.
+    """
+    new_vals = {}
+    for pname, meta in params.items():
+        if not meta.get('indexed', False):
+            continue
+        if pname not in NEW_KNOWN_ITEMS:
+            print(f'NO NEW_KNOWN_ITEMS FOR INDEXED PARAMETER {pname}')
+            continue
+        new_vals[pname] = new_value_list(meta['value'],
+                                         NEW_KNOWN_ITEMS[pname])
+        if new_vals[pname] != meta['value']:
+            print(f'{pname}: values changed')
+    return new_vals
+
+
+def json_text(pdict):
+    """
+    Return policy_current_law.json text for the specified dictionary.
+    """
+    return json.dumps(pdict, indent=4) + '\n'
+
+
 def main():
     """
-    High-level script logic.
+    High-level logic of the script.
     """
-    # read existing policy_current_law.json into pdict dictionary
-    fname = os.path.join('taxcalc', 'policy_current_law.json')
-    with open(fname, 'r', encoding='utf-8') as jfile:
-        pdict = json.load(jfile)
-
-    # update indexed parameter values in pdict dictionary using NEW_KNOWN_ITEMS
-    num_indexed_params = 0
-    for pname, pinfo in pdict.items():
-        if pname == 'schema':
-            continue
-        if not pinfo.get('indexed', False):
-            continue
-        num_indexed_params += 1
-        if pname not in NEW_KNOWN_ITEMS:
-            print(f'NO NEW_KNOWN_ITEMS FOR INDEXED POLICY PARAMETER {pname}')
-            continue
-        # specify plist as policy_current_law.json value list
-        plist = pdict[pname]['value']
-        # specify new list and its first_new_year in NEW_KNOWN_ITEMS
-        newlist = NEW_KNOWN_ITEMS[pname]
-        first_new_year = newlist[0]['year']
-        # remove plist items for years no less than first_new_year
-        while True:
-            if plist[-1]['year'] >= first_new_year:
-                del plist[-1]
-            else:
-                break  # out of while loop
-        # add newlist to end of plist
-        pdict[pname]['value'] = plist + newlist
-    print('NUMBER OF INDEXED PARAMETERS =', num_indexed_params)
-
-    # write updated pdict dictionary to pcl.json file
-    with open('pcl.json', 'w', encoding='utf-8') as jfile:
-        jfile.write(json.dumps(pdict, indent=4) + '\n')
-
-    # return no-error exit code
+    # read policy_current_law.json file
+    with open(PCLJSON_PATH, 'r', encoding='utf-8') as jfile:
+        old_text = jfile.read()
+    old_dict = json.loads(old_text)
+    # check that writing unrevised dictionary leaves text unchanged
+    if json_text(old_dict) != old_text:
+        print(f'ERROR: {PCLJSON_PATH} is not formatted as expected')
+        return 1
+    params = {k: v for k, v in old_dict.items() if k != 'schema'}
+    # check that all NEW_KNOWN_ITEMS parameters are indexed parameters
+    unknown = set(NEW_KNOWN_ITEMS) - set(params)
+    if unknown:
+        print(f'ERROR: unknown parameters in script: {sorted(unknown)}')
+        return 1
+    unindexed = {pname for pname in NEW_KNOWN_ITEMS
+                 if not params[pname].get('indexed', False)}
+    if unindexed:
+        print(f'ERROR: unindexed parameters in script: {sorted(unindexed)}')
+        return 1
+    # compute new value lists and revise JSON text
+    new_vals = new_values(params)
+    new_dict = json.loads(old_text)  # deep copy of old_dict
+    for pname, vlist in new_vals.items():
+        new_dict[pname]['value'] = vlist
+    new_text = json_text(new_dict)
+    # write revised policy_current_law.json file
+    if new_text == old_text:
+        print('NO CHANGES in parameter values')
+    else:
+        with open(PCLJSON_PATH, 'w', encoding='utf-8') as jfile:
+            jfile.write(new_text)
     return 0
-# end main function code
 
 
 if __name__ == '__main__':

@@ -27,6 +27,8 @@ help:
 	@echo "             tc --test"
 	@echo "tctest-jit : generate report for and cleanup after"
 	@echo "             tc --test when environment var NOTAXCALCJIT is set"
+	@echo "updates    : generate three update_*.py reports and then"
+	@echo "             runs git diff taxcalc/*_*.json"
 	@echo "docs       : generate docs/guide/{*_vars.md,*_params.md} and"
 	@echo "             docs/api/*.md files"
 	@echo "docs-peek  : preview docs at http://localhost:3000 (Ctrl-C ends)"
@@ -107,6 +109,13 @@ brtest: package
 idtest: package
 	@echo "Executing taxcalc/cli/input_data_tests"
 	@cd taxcalc/cli/input_data_tests ; ./tests.sh
+
+.PHONY=updates
+updates: clean
+	python update_availability.py
+	python update_paramvalues.py
+	python update_compatibility.py
+	git diff taxcalc/*_*.json
 
 .PHONY=docs
 docs: package
