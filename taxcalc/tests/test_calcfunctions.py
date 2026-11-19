@@ -2294,8 +2294,12 @@ def test_EITC_reform(call_calcfunc, reform, rvars, expected):
 # as on 2021 Schedule 8812 line 14a.  The returned tuple is (c07220,
 # odc, codtc_limited).  The reform-only CTC_include17 and
 # CTC_is_refundable switches are both false under 2025 current law.
+# Under the reform-only ODC_is_refundable switch, the ODC share of line
+# 12 is not limited by tax liability and only the CTC share is subject
+# to line 14.
 CTC_INCLUDE17_REFORM = {'CTC_include17': {2025: True}}
 CTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
+ODC_REFUNDABLE_REFORM = {'ODC_is_refundable': {2025: True}}
 
 
 @pytest.mark.parametrize('reform, rvars, expected', [
@@ -2362,6 +2366,26 @@ CTC_REFUNDABLE_REFORM = {'CTC_is_refundable': {2025: True}}
                  {'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
                   'c00100': 230000., 'c05800': 40000.},
                  (700., 500., 0.), id='reform refundable phase-out'),
+    # reform: line 7 = 500 is not limited by the 100 of tax, so the full
+    # 500 ODC is available for refund in IITAX (compare odc of 100 and
+    # codtc_limited of 400 under current law)
+    pytest.param(ODC_REFUNDABLE_REFORM,
+                 {'MARS': 1, 'num': 1, 'XTOT': 2,
+                  'c00100': 17100., 'c05800': 100.},
+                 (0., 500., 0.), id='reform ODC refundable'),
+    # reform: line 12 = 2700, of which ODC gets 500 not limited by tax
+    # and CTC gets min(2200, 1000) = 1000, leaving 1200 for Part II
+    pytest.param(ODC_REFUNDABLE_REFORM,
+                 {'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
+                  'c00100': 30000., 'c05800': 1000.},
+                 (1000., 500., 1200.), id='reform ODC refundable with child'),
+    # reform: line 12 = 2700 - 0.05 * 30000 = 1200, split 2200:500
+    # between CTC and ODC; neither share is limited by tax
+    pytest.param(ODC_REFUNDABLE_REFORM,
+                 {'MARS': 4, 'num': 1, 'XTOT': 3, 'n24': 1,
+                  'c00100': 230000., 'c05800': 40000.},
+                 (1200. * 2200. / 2700., 1200. * 500. / 2700., 0.),
+                 id='reform ODC refundable phase-out'),
 ])
 def test_ChildDepTaxCredit(call_calcfunc, reform, rvars, expected):
     """
