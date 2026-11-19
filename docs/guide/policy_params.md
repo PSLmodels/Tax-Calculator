@@ -3625,7 +3625,7 @@ _Out-of-Range Action:_ error
 
 ####  `ODC_is_refundable`  
 _Description:_ If true, the other dependents tax credit is made fully refundable.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
