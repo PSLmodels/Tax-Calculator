@@ -166,7 +166,7 @@ _Out-of-Range Action:_ error
 
 ####  `ALD_BusinessLosses_c`  
 _Description:_ Business losses in excess of this amount may not be deducted from AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -537,7 +537,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_rt1250`  
 _Description:_ Unrecaptured Section 1250 gain (Form 6251 line 36) is taxed at this rate under the AMT maximum-capital-gains computation.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -588,7 +588,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_rt4`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  The default value of 0.2 is a placeholder that has no effect while AMT_CG_brk3 is at its essentially-infinite default value, so any reform that lowers AMT_CG_brk3 must also specify a higher rate.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -605,7 +605,7 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_child_em`  
 _Description:_ Under IRC section 59(j), the AMT exemption of a child subject to the kiddie tax is capped by this amount plus the child's earned income.  The cap applies only to filers younger than AMT_child_em_c_age, so this amount has no effect under current law after 2017 (even though IRS continues to publish it).  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ False  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
 _Known Values:_  
@@ -771,7 +771,7 @@ _Out-of-Range Action:_ error
 
 ####  `AutoLoanInterestDed_c`  
 _Description:_ Auto loan interest in excess of this amount may not be deducted from AGI.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -788,7 +788,7 @@ _Out-of-Range Action:_ error
 
 ####  `AutoLoanInterestDed_po_rate_per_step`  
 _Description:_ Auto loan interest deduction is phased-out at this rate for each AGI step.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -805,7 +805,7 @@ _Out-of-Range Action:_ error
 
 ####  `AutoLoanInterestDed_po_step_size`  
 _Description:_ Auto loan interest deduction is phased-out in AGI steps of this size.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -822,7 +822,7 @@ _Out-of-Range Action:_ error
 
 ####  `AutoLoanInterestDed_ps`  
 _Description:_ Auto loan interest deduction is phased-out if AGI exceeds this amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1027,7 +1027,7 @@ _Out-of-Range Action:_ error
 
 ####  `Capital_loss_limitation`  
 _Description:_ The amount of capital loss deductions is limited to this dollar amount.  Note that the nature of some datasets may limit the usefulness of this parameter.  For example the IRS Public Use File (PUF) does not report capital losses in excess of the current law limitation (e.g., $,3000) and therefore setting a higher limit will not affect results.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1045,7 +1045,7 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_c`  
 _Description:_ The maximum amount of expenses allowed for each qualifying dependent.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1609,7 +1609,7 @@ _Out-of-Range Action:_ error
 
 ####  `CR_SchR_hc`  
 _Description:_ If greater than zero, this decimal fraction reduces the portion of Schedule R credit that can be claimed.  Credit claimed will be (1-Haircut)*ScheduleRCredit.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -1897,7 +1897,7 @@ _Out-of-Range Action:_ error
 
 ####  `dc_ee_pencon_taxable`  
 _Description:_ Specifies whether or not employee elective-deferral contributions to defined-contribution pension plans (input variables pencon_p and pencon_s), which are excluded from W-2 box 1 wages (input variable e00200) under current law, are included in AGI and in earned income.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -2175,7 +2175,7 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_sep_filers_elig`  
 _Description:_ false implies ineligible; childless MFS are always EITC ineligible.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
 _Known Values:_  
@@ -2522,7 +2522,7 @@ _Out-of-Range Action:_ warn
 
 ####  `ID_Charity_crt_noncash`  
 _Description:_ The deduction for noncash charity contributions is capped at this fraction of AGI.  When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3515,7 +3515,7 @@ _Out-of-Range Action:_ error
 
 ####  `LLC_Expense_c`  
 _Description:_ The maximum expense eligible for lifetime learning credit, per child.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False _TMD data:_ False  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3642,7 +3642,7 @@ _Out-of-Range Action:_ error
 
 ####  `OvertimeIncomeDed_c`  
 _Description:_ Overtime deduction is capped at this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3660,7 +3660,7 @@ _Out-of-Range Action:_ error
 
 ####  `OvertimeIncomeDed_po_rate_per_step`  
 _Description:_ Overtime income deduction is phased-out at this rate for each AGI step.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3677,7 +3677,7 @@ _Out-of-Range Action:_ error
 
 ####  `OvertimeIncomeDed_po_step_size`  
 _Description:_ Overtime income deduction is phased-out in AGI steps of this size.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -3694,7 +3694,7 @@ _Out-of-Range Action:_ error
 
 ####  `OvertimeIncomeDed_ps`  
 _Description:_ Overtime deduction is phased-out if modified AGI exceeds this amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4389,7 +4389,7 @@ _Out-of-Range Action:_ error
 
 ####  `TipIncomeDed_c`  
 _Description:_ Tip deduction is capped at this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4406,7 +4406,7 @@ _Out-of-Range Action:_ error
 
 ####  `TipIncomeDed_po_rate_per_step`  
 _Description:_ Tip income deduction is phased-out at this rate for each AGI step.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4423,7 +4423,7 @@ _Out-of-Range Action:_ error
 
 ####  `TipIncomeDed_po_step_size`  
 _Description:_ Tip income deduction is phased-out in AGI steps of this size.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  
@@ -4440,7 +4440,7 @@ _Out-of-Range Action:_ error
 
 ####  `TipIncomeDed_ps`  
 _Description:_ Tip deduction is phased-out if modified AGI exceeds this amount.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True _TMD data:_ True  
+_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False _TMD data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
 _Known Values:_  

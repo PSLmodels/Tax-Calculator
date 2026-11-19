@@ -952,7 +952,7 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true,
+            "cps": false,
             "tmd": true
         }
     },
@@ -1482,7 +1482,7 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true,
+            "cps": false,
             "tmd": true
         }
     },
@@ -7545,7 +7545,7 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true,
+            "cps": false,
             "tmd": true
         }
     },
@@ -9834,7 +9834,7 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true,
+            "cps": false,
             "tmd": true
         }
     },
@@ -12246,7 +12246,7 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": false,
+            "cps": true,
             "tmd": true
         }
     },
@@ -12270,7 +12270,7 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true,
+            "cps": false,
             "tmd": true
         }
     },
@@ -17774,7 +17774,7 @@
         "compatible_data": {
             "puf": true,
             "cps": true,
-            "tmd": false
+            "tmd": true
         }
     },
     "AMT_child_em_c_age": {
@@ -18283,7 +18283,7 @@
         },
         "compatible_data": {
             "puf": true,
-            "cps": true,
+            "cps": false,
             "tmd": true
         }
     },
@@ -20880,8 +20880,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": false,
+            "puf": false,
+            "cps": true,
             "tmd": true
         }
     },
@@ -20906,7 +20906,7 @@
         "compatible_data": {
             "puf": true,
             "cps": false,
-            "tmd": true
+            "tmd": false
         }
     },
     "ETC_pe_Single": {
@@ -22224,7 +22224,7 @@
         "compatible_data": {
             "puf": true,
             "cps": false,
-            "tmd": true
+            "tmd": false
         }
     },
     "CR_OtherCredits_hc": {
@@ -22496,8 +22496,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22541,8 +22541,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22565,8 +22565,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22589,8 +22589,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22684,8 +22684,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22729,8 +22729,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22753,8 +22753,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22777,8 +22777,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22809,8 +22809,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22854,8 +22854,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22878,8 +22878,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
@@ -22902,8 +22902,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true,
+            "puf": false,
+            "cps": false,
             "tmd": true
         }
     },
