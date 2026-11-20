@@ -7,9 +7,12 @@ USAGE: (taxcalc-dev) T-C% python update_paramvalues.py
 THEN CHECK:             % git diff taxcalc/policy_current_law.json
 
 For each indexed policy parameter in the NEW_KNOWN_ITEMS dictionary below,
-the parameter's value items for years no less than the first year in its
-NEW_KNOWN_ITEMS list are replaced by the items in that list.  The value
-items of other parameters are left unchanged.  Each parameter whose values
+the parameter's value items for years in the range spanned by its
+NEW_KNOWN_ITEMS list are replaced by the items in that list.  Value items
+for years after that range (for example, a scheduled statutory change) are
+kept, and each parameter with such items is written to stdout so that the
+kept items can be checked.  The value items of other parameters are left
+unchanged.  Each parameter whose values
 change is written to stdout, as is each indexed parameter that is not in
 the NEW_KNOWN_ITEMS dictionary.
 
@@ -191,6 +194,9 @@ NEW_KNOWN_ITEMS = {
         {'year': 2026, 'MARS': 'headhh', 'value': 2050.0},
         {'year': 2026, 'MARS': 'widow', 'value': 1650.0},
     ],
+    # Rev. Proc. 2025-32 section 4.26 sets the 2026 mseparate threshold
+    # at $201,775, which is $25 more than the threshold for all other
+    # non-joint returns (and is not half the mjoint threshold)
     'PT_qbid_taxinc_thd': [
         {'year': 2026, 'MARS': 'single', 'value': 201750.0},
         {'year': 2026, 'MARS': 'mjoint', 'value': 403500.0},
@@ -217,7 +223,7 @@ NEW_KNOWN_ITEMS = {
     'ACTC_c': [
         {'year': 2026, 'value': 1700.0},
     ],
-    # OTHER PARAMS THAT ARE NOT INDEXED:
+    # OTHER INDEXED PARAMS THAT ARE ZERO OR UNLIMITED UNDER CURRENT LAW:
     'II_em': LIST_SCALAR_ZERO,
     'II_em_ps': LIST_MARS_INF,
     'II_credit': LIST_MARS_ZERO,
@@ -244,14 +250,20 @@ for num in range(1, 3 + 1):
     NEW_KNOWN_ITEMS[f'AMT_CG_brk{num}'] = NEW_KNOWN_ITEMS[f'CG_brk{num}']
 
 
-def new_value_list(old_list, new_items):
+def new_value_list(pname, old_list, new_items):
     """
     Return parameter value list that is old_list with its items for years
-    no less than the first year in new_items replaced by new_items.
+    in the range spanned by new_items replaced by new_items.  Items in
+    old_list for years after that range are kept.
     """
     first_new_year = min(item['year'] for item in new_items)
-    kept = [item for item in old_list if item['year'] < first_new_year]
-    return kept + [dict(item) for item in new_items]
+    last_new_year = max(item['year'] for item in new_items)
+    before = [item for item in old_list if item['year'] < first_new_year]
+    after = [item for item in old_list if item['year'] > last_new_year]
+    if after:
+        years = sorted({item['year'] for item in after})
+        print(f'{pname}: KEEPING value items for years {years}')
+    return before + [dict(item) for item in new_items] + after
 
 
 def new_values(params):
@@ -266,7 +278,7 @@ def new_values(params):
         if pname not in NEW_KNOWN_ITEMS:
             print(f'NO NEW_KNOWN_ITEMS FOR INDEXED PARAMETER {pname}')
             continue
-        new_vals[pname] = new_value_list(meta['value'],
+        new_vals[pname] = new_value_list(pname, meta['value'],
                                          NEW_KNOWN_ITEMS[pname])
         if new_vals[pname] != meta['value']:
             print(f'{pname}: values changed')
