@@ -6,7 +6,8 @@ USAGE: (taxcalc-dev) T-C% python update_availability.py
 THEN CHECK:             % git diff taxcalc/records_variables.json
 
 A variable is available in an input data file when the variable is
-present in the file and has some nonzero values.
+present in the file and has some nonzero values (missing values do not
+count as nonzero values).
 
 Only the availability information for the data sources whose input
 data files are present is updated; the availability information for
@@ -57,10 +58,11 @@ def make_availability(sources):
 def nonzero_variables(data_path):
     """
     Return set of variable names in specified data file that have some
-    nonzero values.
+    nonzero values, where a missing (NaN) value is not a nonzero value.
     """
     dfx = pd.read_csv(data_path)
-    return {var for var in dfx.columns if (dfx[var] != 0).any()}
+    return {var for var in dfx.columns
+            if (dfx[var].notna() & (dfx[var] != 0)).any()}
 
 
 def new_availability(read_vars, nonzero):

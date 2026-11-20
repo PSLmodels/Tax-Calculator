@@ -231,12 +231,18 @@ def candidate_values(value, meta):
     if value.dtype.kind == 'i':
         cands = [value + 1, value - 1]
     else:
+        # a zero value says nothing about the scale of the parameter, so
+        # unless the parameter is known to be a rate, zero values are moved
+        # by both a dollar-sized step and a rate-sized step
         is_rate = vmax is not None and vmax <= 1.0
-        step = 0.05 if is_rate else 1000.
+        steps = [0.05] if is_rate else [1000., 0.05]
         huge = value >= HUGE
-        up_val = np.where(value == 0, step, value * 1.1)
-        dn_val = np.where(value == 0, -step, value * 0.9)
-        cands = [np.where(huge, value, up_val), np.where(huge, value, dn_val)]
+        cands = []
+        for step in steps:
+            up_val = np.where(value == 0, step, value * 1.1)
+            dn_val = np.where(value == 0, -step, value * 0.9)
+            cands.append(np.where(huge, value, up_val))
+            cands.append(np.where(huge, value, dn_val))
         if huge.any():
             cands.extend(np.where(huge, fval, value) for fval in FINITE)
     candidates = []
@@ -267,9 +273,12 @@ def activated_calc(base_calc, activation):
 
 def num_units_affected(base_calc, base_outputs, pname, meta):
     """
-    Return maximum number of filing units whose outputs are changed by
-    any of the candidate changes in the pname parameter, stopping as soon
-    as that number is at least MIN_UNITS.
+    Return number of filing units whose outputs are changed by the
+    candidate changes in the pname parameter.  The candidates are tried
+    in order, stopping at the first one that changes at least MIN_UNITS
+    units, so when the returned number is at least MIN_UNITS it is the
+    number changed by that candidate (a lower bound on the maximum over
+    all candidates); otherwise it is the maximum over all candidates.
     """
     activation = ACTIVATION.get(pname, {})
     act_calc = activated_calc(base_calc, activation)
@@ -328,9 +337,10 @@ def new_compatibility(params, effects):
             if pname in src_effects:
                 new[src] = src_effects[pname] >= MIN_UNITS
                 if new[src] != old[src]:
+                    qualifier = 'at least ' if new[src] else ''
                     print(f'{pname}: {src} {str(old[src]).lower()} ==> '
                           f'{str(new[src]).lower()} '
-                          f'({src_effects[pname]} units changed)')
+                          f'({qualifier}{src_effects[pname]} units changed)')
         new_cdata[pname] = new
     return new_cdata
 
