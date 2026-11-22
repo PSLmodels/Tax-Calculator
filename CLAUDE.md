@@ -78,11 +78,10 @@ below.
   `respy`; do not rely on its last line alone, since collection errors
   and crashes are reported differently from test failures.
 
-- Execute the "make valtest > resvt 2>&1 ; echo EXIT=$?" command
-  * Test fails if the EXIT value is not zero (consult the resvt file to
-    diagnose the failure; do not rely on the last line of resvt alone,
-    because collection errors and crashes are reported differently from
-    test failures)
+- `make valtest > resvt 2>&1 ; echo EXIT=$?` — validation tests;
+  fails if the EXIT value is not zero. Diagnose failures by consulting
+  `resvt`; do not rely on its last line alone, since collection errors
+  and crashes are reported differently from test failures.
 
 - `make brtest > resbr 2>&1` and `make idtest > resid 2>&1` — CLI tests.
   Both always exit zero, so check them using this command:
